@@ -43,20 +43,13 @@ import os
 import sys
 from pathlib import Path
 
+from themes import get_theme, resolve_suit, emblem_svg, page_gradient
+
 # ---- Card geometry (poker, trimmed, 300 DPI) --------------------------------
 CARD_W, CARD_H = 750, 1050          # px @ 300 DPI
 MARGIN = 54                         # ~4.5 mm safe margin
-TITLE_SIZE, TYPE_SIZE, BODY_SIZE = 52, 30, 36
-LINE_H = 46
-
-# A calm default palette per card "type" (edit freely).
-TYPE_COLORS = {
-    "Building":  ("#2f4b3f", "#eaf3ee"),
-    "Transport": ("#33475b", "#e9f0f6"),
-    "Action":    ("#5b3a2e", "#f6efe9"),
-    "Event":     ("#4a3a5b", "#f0ecf6"),
-    "_default":  ("#333333", "#f4f4f2"),
-}
+TITLE_SIZE, TYPE_SIZE, BODY_SIZE = 50, 28, 34
+LINE_H = 44
 
 
 def esc(s: str) -> str:
@@ -78,48 +71,79 @@ def wrap(text: str, max_chars: int) -> list[str]:
     return out
 
 
-def render_card_svg(row: dict) -> str:
+def render_card_svg(row: dict, theme: dict) -> str:
     ctype = (row.get("type") or "").strip()
-    ink, paper = TYPE_COLORS.get(ctype, TYPE_COLORS["_default"])
+    suit = resolve_suit(theme, ctype)
+    scol = suit["color"]
+    ink, text, muted, accent, radius = theme["ink"], theme["text"], theme["muted"], theme["accent"], theme["radius"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
     name = esc(row.get("name", ""))
-    cost = esc(row.get("cost", ""))
-    value = esc(row.get("value", ""))
-    body_lines = wrap(row.get("effect", ""), max_chars=30)
+    cost = str(row.get("cost", "")).strip()
+    value = str(row.get("value", "")).strip()
+
+    body_lines = wrap(row.get("effect", ""), max_chars=32)
     body_tspans = "".join(
         f'<tspan x="{MARGIN}" dy="{0 if i == 0 else LINE_H}">{esc(l)}</tspan>'
         for i, l in enumerate(body_lines)
     )
+
+    header_h = 104
+    # cost badge (top-right, on the header band)
     cost_badge = ""
-    if str(cost).strip():
-        cx, cy, r = CARD_W - MARGIN - 40, MARGIN + 40, 52
+    if cost:
+        cx, cy, r = CARD_W - MARGIN - 6, MARGIN + 24, 46
         cost_badge = (
-            f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{ink}"/>'
-            f'<text x="{cx}" y="{cy + 18}" font-size="52" fill="{paper}" '
-            f'text-anchor="middle" font-family="Georgia, serif" font-weight="bold">{cost}</text>'
+            f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="#ffffff" stroke="{scol}" stroke-width="6"/>'
+            f'<text x="{cx}" y="{cy + 16}" font-size="48" fill="{scol}" text-anchor="middle" '
+            f'font-family="{tfont}" font-weight="bold">{esc(cost)}</text>'
         )
-    value_badge = ""
-    if str(value).strip() and str(value).strip() != "0":
-        value_badge = (
-            f'<text x="{CARD_W - MARGIN}" y="{CARD_H - MARGIN}" font-size="44" fill="{ink}" '
-            f'text-anchor="end" font-family="Georgia, serif" font-weight="bold">★ {value}</text>'
-        )
+    # value as a row of suit emblems + numeral (bottom-left)
+    value_row = ""
+    try:
+        vn = int(float(value)) if value else 0
+    except ValueError:
+        vn = 0
+    if vn > 0:
+        pips = "".join(emblem_svg(suit["emblem"], MARGIN + 22 + i * 46, CARD_H - MARGIN - 22, 16, scol)
+                        for i in range(min(vn, 6)))
+        value_row = (pips +
+            f'<text x="{CARD_W - MARGIN}" y="{CARD_H - MARGIN - 6}" font-size="46" fill="{scol}" '
+            f'text-anchor="end" font-family="{tfont}" font-weight="bold">{vn}</text>')
+
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
-  <rect x="0" y="0" width="{CARD_W}" height="{CARD_H}" rx="36" fill="{paper}" stroke="{ink}" stroke-width="8"/>
-  <rect x="{MARGIN - 18}" y="{MARGIN - 18}" width="{CARD_W - 2*(MARGIN - 18)}" height="96" rx="16" fill="{ink}"/>
-  <text x="{MARGIN}" y="{MARGIN + 46}" font-size="{TITLE_SIZE}" fill="{paper}" font-family="Georgia, serif" font-weight="bold">{name}</text>
-  <text x="{MARGIN}" y="{MARGIN + 150}" font-size="{TYPE_SIZE}" fill="{ink}" font-family="Georgia, serif" font-style="italic" letter-spacing="2">{esc(ctype).upper()}</text>
-  <text x="{MARGIN}" y="{MARGIN + 260}" font-size="{BODY_SIZE}" fill="#222" font-family="Georgia, serif">{body_tspans}</text>
+  <defs>{page_gradient(theme, 'pg')}</defs>
+  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>
+  <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{scol}" stroke-width="2" opacity="0.5"/>
+  <!-- header band in the suit colour -->
+  <path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{scol}"/>
+  <text x="{MARGIN}" y="{MARGIN+44}" font-size="{TITLE_SIZE}" fill="#ffffff" font-family="{tfont}" font-weight="bold">{name}</text>
   {cost_badge}
-  {value_badge}
+  <!-- type line with emblem -->
+  {emblem_svg(suit['emblem'], MARGIN+16, MARGIN+96, 15, scol)}
+  <text x="{MARGIN+44}" y="{MARGIN+106}" font-size="{TYPE_SIZE}" fill="{muted}" font-family="{tfont}" font-style="italic" letter-spacing="2">{esc(ctype).upper()}</text>
+  <!-- body -->
+  <text x="{MARGIN}" y="{MARGIN+210}" font-size="{BODY_SIZE}" fill="{text}" font-family="{bfont}">{body_tspans}</text>
+  <!-- footer flourish -->
+  <line x1="{MARGIN}" y1="{CARD_H-MARGIN-70}" x2="{CARD_W-MARGIN}" y2="{CARD_H-MARGIN-70}" stroke="{accent}" stroke-width="2" opacity="0.5"/>
+  {value_row}
 </svg>"""
 
 
-def render_back_svg(slug: str) -> str:
-    ink, paper = TYPE_COLORS["_default"]
+def render_back_svg(slug: str, theme: dict) -> str:
+    ink, accent, radius = theme["ink"], theme["accent"], theme["radius"]
+    scol = theme["suits"].get("_default", {}).get("color", accent)
+    cx, cy = CARD_W / 2, CARD_H / 2
+    rings = "".join(
+        f'<circle cx="{cx}" cy="{cy}" r="{90 + i*46}" fill="none" stroke="{accent}" stroke-width="3" opacity="0.35"/>'
+        for i in range(4)
+    )
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
-  <rect width="{CARD_W}" height="{CARD_H}" rx="36" fill="{ink}"/>
-  <rect x="40" y="40" width="{CARD_W-80}" height="{CARD_H-80}" rx="24" fill="none" stroke="{paper}" stroke-width="6"/>
-  <text x="{CARD_W/2}" y="{CARD_H/2}" font-size="60" fill="{paper}" text-anchor="middle" font-family="Georgia, serif" font-style="italic">{esc(slug)}</text>
+  <defs>{page_gradient(theme, 'pgb')}</defs>
+  <rect width="{CARD_W}" height="{CARD_H}" rx="{radius}" fill="{ink}"/>
+  <rect x="34" y="34" width="{CARD_W-68}" height="{CARD_H-68}" rx="{radius-8}" fill="url(#pgb)"/>
+  {rings}
+  {emblem_svg('spark', cx, cy, 60, accent)}
+  <text x="{cx}" y="{CARD_H-90}" font-size="46" fill="{ink}" text-anchor="middle" font-family="{theme['title_font']}" font-style="italic">{esc(slug)}</text>
 </svg>"""
 
 
@@ -135,8 +159,11 @@ def main() -> int:
     ap.add_argument("--slug", default=None, help="name for combined outputs (default: csv stem)")
     ap.add_argument("--formats", nargs="+", default=["svg", "png", "screentop"],
                     choices=["svg", "png", "pdf", "tts", "screentop"])
+    ap.add_argument("--theme", default="clean",
+                    help="visual theme (see themes.py): clean, nautical, ember, parchment, cozy")
     args = ap.parse_args()
 
+    theme = get_theme(args.theme)
     slug = args.slug or args.csv.stem
     rows = load_rows(args.csv)
     if not rows:
@@ -150,9 +177,9 @@ def main() -> int:
     for row in rows:
         cid = (row.get("id") or row.get("name") or f"card{len(svg_paths)}").strip()
         p = args.out / "svg" / f"{cid}.svg"
-        p.write_text(render_card_svg(row), encoding="utf-8")
+        p.write_text(render_card_svg(row, theme), encoding="utf-8")
         svg_paths.append((cid, p, int(row.get("quantity") or 1)))
-    back_svg = render_back_svg(slug)
+    back_svg = render_back_svg(slug, theme)
     (args.out / "svg" / "_back.svg").write_text(back_svg, encoding="utf-8")
     print(f"[svg]  wrote {len(svg_paths)} card SVGs -> {args.out/'svg'}")
 
