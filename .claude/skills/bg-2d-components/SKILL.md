@@ -56,6 +56,18 @@ vector pipeline, so **always apply a theme and generate a rough cover** — don'
   consistent. It's a *placeholder vibe* — flag that real art comes later (and mind the human-vs-AI-art
   stance in `knowledge/trends-2026.md`).
 
+## Boards, tracks & tokens (`tools/boards/build_board.py`)
+
+Cards aren't the whole game. Render the other 2D bits themed to match the deck:
+- **Track** (tug-of-war / score / round track): `--type track --spaces N --title ... --left-label ...
+  --right-label ...` → a strip with a centred start and directional end labels (e.g. Beacon's Tide).
+- **Tokens** (markers/resources): `--type tokens --labels "Tide,1st" --shape circle|square|hex`
+  (or `--from-csv label[,color][,qty]`) → a token sheet tiled for cutting.
+- **Player mat / board**: `--type mat --spec mat.json` → a titled panel with labelled zones (copy
+  `tools/boards/sample_mat.json`).
+All take `--theme` (shared with the cards) and output SVG→PNG/PDF. Upload them into Screentop/TTS as
+image assets/tiles alongside the decks.
+
 ## Print specs to bake in (from `knowledge/manufacturing-specs.md`)
 
 - **Poker card = 63.5 × 88.9 mm = 750 × 1050 px @300 DPI** (trimmed); full-bleed ≈ 825 × 1125 px.

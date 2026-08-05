@@ -1,0 +1,13 @@
+{
+  "title": "Player Mat",
+  "width": 1400,
+  "height": 800,
+  "zones": [
+    { "x": 40,  "y": 130, "w": 640, "h": 300, "label": "Hand" },
+    { "x": 720, "y": 130, "w": 640, "h": 300, "label": "Play area" },
+    { "x": 40,  "y": 470, "w": 1320, "h": 280, "label": "Harbour (claimed ships)" }
+  ],
+  "texts": [
+    { "x": 40, "y": 790, "text": "example mat — copy this file and edit zones/texts", "size": 26 }
+  ]
+}

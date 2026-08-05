@@ -30,6 +30,8 @@ Speed and playability beat polish — get it to the table (or Tabletop Simulator
 - Record the chosen theme in the game-bible / manifest so renders stay consistent.
 
 ## Other outputs (on request)
+- **Boards, tracks & tokens** — `tools/boards/build_board.py` (`--type track|tokens|mat`, themed to
+  match the deck). Most games need a track/tokens, not just cards — generate them too.
 - **Print-and-play PDF** — gutterfold or per-page, with crop/registration marks (see the 2D skill).
 - **Card/board/tile PNGs** for review.
 - **3D components** — via `bg-3d-components`: use **Blender MCP** for organic/aesthetic pieces + renders,

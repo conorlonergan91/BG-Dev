@@ -9,11 +9,16 @@ python3 ../../tools/cards/build_cards.py --csv components/ships.csv   --out buil
 python3 ../../tools/cards/build_cards.py --csv components/signals.csv --out build --theme nautical --formats screentop
 python3 ../../tools/cards/build_cover.py --title "Beacon" --subtitle "Two keepers. One coast." \
     --theme nautical --players 2 --time "20 min" --weight 1.8 --out build/cover.png
+python3 ../../tools/boards/build_board.py --type track --spaces 7 --title "The Tide" \
+    --left-label "Keeper A harbour" --right-label "Keeper B harbour" --theme nautical --out build/tide-track.png
+python3 ../../tools/boards/build_board.py --type tokens --labels "Tide,1st" --shape circle \
+    --theme nautical --out build/tokens.png
 ```
 Produces (under `build/`, gitignored — regenerated from the CSVs):
 - `sheets/ships_sheet_1.png` — **10 × 3 grid**, 24 ships + back  ·  `sheets/ships_back.png`
 - `sheets/signals_sheet_1.png` — **10 × 2 grid**, 12 signals + back  ·  `sheets/signals_back.png`
 - `cover.png` — themed box/title image (use it as the game's cover/thumbnail in Screentop)
+- `tide-track.png` — the 7-space Tide track  ·  `tokens.png` — Tide marker + First-Keeper token
 
 ## 2. Build the room on Screentop.gg
 1. Sign in (free) → **Create a Game** → name it *Beacon*.
@@ -21,8 +26,8 @@ Produces (under `build/`, gitignored — regenerated from the CSVs):
    **back**; set the grid to **columns 10 × rows 3** (24 cards + 1 back cell).
 3. **Add a Deck → "Signals"**: upload `signals_sheet_1.png` (face) + `signals_back.png` (back); grid
    **columns 10 × rows 2** (12 cards = two identical sets of 6, one per player).
-4. Add two **Harbour** zones (image or just table areas) and a simple **Tide track** image (7 spaces)
-   with a small token as the marker. (Placeholder art is fine for testing.)
+4. Upload **`tide-track.png`** as a board/table image and drop a **token** (from `tokens.png`) on its
+   centre space as the Tide marker; give each player a **Harbour** area (table space is fine).
 5. **Share the room link** with your friend — they join in a browser, no install.
 
 ## 3. Play
