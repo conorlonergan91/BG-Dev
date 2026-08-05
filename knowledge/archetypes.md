@@ -40,8 +40,20 @@ Shared randomizer (dice/cards); each player **marks a personal sheet**. Near-zer
 *Refs:* **Qwixx**, **Ganz schön clever** ("That's Pretty Clever"), **Welcome To...** (flip-and-write), **Cartographers**.
 
 ### Cooperative
-All players **win or lose together** vs the system. Watch for the alpha-player/"quarterbacking" problem and building a compelling rules-driven opponent.
+All players **win or lose together** vs the system. Two hard problems to solve by design: the
+**alpha-player/"quarterbacking"** problem (one dominant player runs everyone's turn) and building a
+**compelling opponent from rules alone** (the system must *push back* — a timer, escalating threat, or
+automa-like adversary).
 *Refs:* **Pandemic** (archetype), **Spirit Island** (heavy, asymmetric), **The Crew** (co-op trick-taking).
+
+- **Constrained-communication co-op** (a studio favourite — see `designer-profile.md`): the design
+  *limits what players may tell each other*, so the **information bottleneck becomes the core fun** —
+  and it neatly dissolves the alpha-player problem (no one can dictate; you must infer). *Refs:*
+  **Hanabi** (hidden own-hand, coded hints), **Sky Team** (no table talk, simultaneous placement),
+  **SAIL** (no talking), **The Crew** (only limited signalling). Design levers: hidden hands, a tiny
+  legal-communication vocabulary, simultaneous reveals, and pressure that punishes over-coordination.
+- **Co-op + progression:** deckbuilding/campaign co-ops (**Slay the Spire: TBG**, **Gloomhaven**,
+  **Aeon's End**) fight solvability with variable setups and an escalating, evolving adversary.
 
 ### Campaign / Legacy
 Play persists across sessions. **Legacy** permanently alters components (stickers, tearing, writing) and unlocks content — an evolving, one-time narrative. Campaigns may reset/replay.

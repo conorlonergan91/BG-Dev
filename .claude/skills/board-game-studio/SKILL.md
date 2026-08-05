@@ -26,18 +26,27 @@ collaboration — not a form to fill in.**
 
 ## House style (current studio focus)
 
-- **2-player first.** Default new designs to **2 players**. Two-player craft is specific: no "gang up on
-  the leader," tighter direct tension, tug-of-war / denial / bluff over multiplayer majority. Lean on
-  2p touchstones — *7 Wonders Duel*, *The Crew*, *The Fox in the Forest*, *Patchwork*, *Jaipur*,
-  *Sky Team*, *Air, Land & Sea*, *Watergate*. (The human can widen the count any time.)
-- **Screentop.gg is the default playtest platform** — free, browser, join-by-link (works remote or in
+**Read `knowledge/designer-profile.md` first, and point every dispatched agent at it** — it's the
+studio's north star (taste, favourite games, design values). In brief:
+
+- **2-player first**, spanning **both co-op and competitive duels** — co-op is a first-class focus.
+- **Co-op signature: constrained communication.** The designer loves co-ops where the *information
+  bottleneck is the fun* (*Hanabi*, *Sky Team*, *SAIL*). Design that bottleneck deliberately — it's
+  also the clean fix for co-op's alpha-player/quarterbacking problem. Give co-ops a system that *pushes
+  back* (timer, escalating threat, automa-like adversary) and design for the "we almost made it" ache.
+- **Duels: tug-of-war / race** with catch-up built in (2p has no "gang up on the leader"). Touchstones:
+  *Splendor Duel*, *LOTR: Duel for Middle-earth*, *Patchwork*, *7 Wonders Duel*, *Jaipur*, *Watergate*.
+- **Elegance over heft** — high depth from low complexity (~1.5–2.5 weight, ~20–40 min); input
+  randomness, not output; low downtime; theme you can feel.
+- **Screentop.gg is the default playtest platform** — free, browser, join-by-link (remote or in
   person). Get a Screentop-ready build early. TTS/Tabletopia/print-and-play are alternates.
-- **Small, testable, fun.** Favour a tight card-driven core that reaches the table this week.
+- **Small, testable, fun.** Favour a tight core that reaches the table this week.
 
 ## The pipeline (dispatch these agents)
 
 Use the `Agent` tool with the matching `subagent_type`. Give each the game slug and point it at
-`games/<slug>/game-bible.md`. Launch independent agents in parallel.
+`games/<slug>/game-bible.md` **and `knowledge/designer-profile.md`** (the taste north star). Launch
+independent agents in parallel.
 
 | Stage | Agent | Dispatch when… |
 |-------|-------|----------------|

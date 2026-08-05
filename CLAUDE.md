@@ -9,10 +9,15 @@ publishing/compliance plan.
 The guiding principles: **human in the loop throughout, quick and fun decision-making, tight
 iteration loops, and one living source of truth per game.**
 
-**Current studio focus (house style):** design **2-player games first** (tight direct tension, no
-"bash the leader"; touchstones: 7 Wonders Duel, The Crew, Fox in the Forest, Patchwork, Jaipur,
-Sky Team), and target **Screentop.gg** as the default playtest platform (free, browser, join-by-link,
-works remote or in person). TTS / Tabletopia / print-and-play are alternates.
+**Current studio focus (house style):** design **2-player games first**, spanning **both co-op and
+competitive duels** — co-op is a first-class focus, not an afterthought. Prize **elegance** (high depth
+from low complexity, ~1.5–2.5 weight, ~20–40 min). A signature love is **constrained-communication
+co-op** (Hanabi / Sky Team / SAIL) and **tug-of-war / race duels** (Splendor Duel / LOTR: Duel for
+Middle-earth / Patchwork). Target **Screentop.gg** as the default playtest platform (free, browser,
+join-by-link, remote or in person); TTS / Tabletopia / print-and-play are alternates.
+
+**Read `knowledge/designer-profile.md`** for the full taste signature and design values, and point every
+dispatched `bg-*` agent at it — it's the studio's north star.
 
 ---
 

@@ -37,6 +37,25 @@ concept ("it's *Wingspan* meets *Root*") and for studying how respected designs 
 - **Dixit** — Jean-Louis Roubira, 2008 — evocative-art storytelling. SdJ 2010.
 - **The Crew** — Thomas Sing, 2019 — cooperative trick-taking. Kennerspiel 2020.
 
+## Two-player & co-op touchstones (studio focus — see `designer-profile.md`)
+
+- **Splendor Duel** — Marc André / Bruno Cathala, 2022 — 2p engine/gem **race** on a shared board with a
+  tug-of-war pull; multiple win paths. Elegant duel.
+- **7 Wonders Duel** — Bauza & Bombela, 2015 — the model 2p **tug-of-war** (military + science tracks) +
+  card-pyramid draft.
+- **The Lord of the Rings: Duel for Middle-earth** — Reiner Knizia / Repos, 2024 — 2p tug-of-war in the
+  7WD lineage; asymmetric pull toward opposing win conditions.
+- **Patchwork** — Uwe Rosenberg, 2014 — 2p **spatial** quilt-building on a shared time track; cozy, tactile.
+- **Jaipur** / **Watergate** / **The Fox in the Forest** — other sharp 2p duels (market set-collection /
+  asymmetric tug-of-war / trick-taking).
+- **Hanabi** — Antoine Bauza, 2010 — **constrained-communication** co-op (SdJ 2013); you can't see your
+  own hand and may give only coded hints. The bottleneck *is* the game.
+- **Sky Team** — Luc Rémond, 2023 — 2p co-op, **no table talk**, simultaneous dice placement landing a
+  plane; SdJ 2024 (first 2p-only winner). Tense, atmospheric, clean.
+- **SAIL** — 2p co-op, **no talking**, sailing/hand management — same constrained-comms DNA, cozy-tense.
+- **The Crew** — Thomas Sing, 2019 — co-op trick-taking with limited signalling; Kennerspiel 2020.
+- **Slay the Spire: The Board Game** — 2024 — co-op **deckbuilder** with a campaign/progression arc.
+
 ## Awards & ranking context (verify live)
 
 - **Spiel des Jahres (SdJ)** rewards accessible, elegant family games; **Kennerspiel des Jahres**

@@ -6,6 +6,7 @@ change** — re-verify live (via `bg-research` / `bg-publishing`) when precision
 
 | File | Use it for |
 |------|-----------|
+| [`designer-profile.md`](./designer-profile.md) | **The studio's north star** — this designer's taste, favourite games, and design values. Read first; every agent biases toward it. |
 | [`archetypes.md`](./archetypes.md) | Mechanism families, canonical reference games per family, and how games blend mechanisms. |
 | [`reference-games.md`](./reference-games.md) | Landmark designs and what each is known for; award & ranking context. |
 | [`design-fundamentals.md`](./design-fundamentals.md) | Core loop, agency, interaction, randomness, feedback loops, MDA, weight, solo/Automa. |
