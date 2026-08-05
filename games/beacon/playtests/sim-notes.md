@@ -3,6 +3,21 @@
 Hand-written reading of the auto-generated `sim-results.md` (3000 games/matchup, first-pass rules).
 *Regenerate the raw report with:* `python tools/sim/simulate.py --module games/beacon/sim/beacon.py --n 3000 --out games/beacon/playtests/sim-results.md`
 
+## Iteration log (design → critic → simulate → tune)
+
+| Version | Rule change | Result |
+|---------|-------------|--------|
+| **v0.1** | beam winner takes the ship *and* the Tide | `always_high` **dominant 66.7%**; spread ~55 pts; margin ~10. Critic's #1: winning the beam is too cheap. |
+| **v0.2** | **loser of the beam picks the ship first** (winner still steers the Tide) | **No dominant line** — field within ~13–16 pts of 50%; margin ↓ to ~6 (closer games); Tide decides ~26% (↑ from 16%); a rule-aware **`grabber`** line (bid low to grab valuable ships, high to steal the Tide) **leads at 58.7%** → skill is rewarded, thoughtless play (`reactive`) punished (42%). |
+
+**Verdict:** the v0.2 change resolved the top critique and turned a "just bid high" game into a real
+read: *do I grab the cargo in front of me, or steer the Tide for the end-of-Night bonus?* Keep v0.2;
+confirm the feel with a human session.
+
+---
+
+## v0.1 baseline findings (historical)
+
 ## What the sim answered
 
 **Q1 — Is a fixed signal policy dominant?** *Partly — and it's a yellow flag.*

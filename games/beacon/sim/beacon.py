@@ -99,11 +99,15 @@ class BeaconGame:
             s["harbor"][fk].append(pick)
             s["harbor"][1 - fk].append(other)
         else:
-            winner = 0 if a0 > a1 else 1
+            # v0.2: brighter light wins the beam & steers the Tide toward you, but the keeper who
+            # held back (lower Signal) grabs first pick of a ship. You can't have both position and
+            # cargo — this taxes greedy high-play (see playtests/sim-notes.md iteration 1).
+            winner = 0 if a0 > a1 else 1              # higher Signal
+            loser = 1 - winner
             s["tide"] = max(-3, min(3, s["tide"] + (1 if winner == 1 else -1)))
-            pick, other = _pick(s["harbor"][winner], s["channel"])
-            s["harbor"][winner].append(pick)
-            s["harbor"][1 - winner].append(other)
+            pick, other = _pick(s["harbor"][loser], s["channel"])   # loser picks first (consolation)
+            s["harbor"][loser].append(pick)
+            s["harbor"][winner].append(other)
 
         # refill channel from this night's deck
         s["channel"] = []
@@ -180,10 +184,17 @@ def s_reactive(view, p, legal, rng):
     top = max((v for _s, v in view["channel"]), default=0)
     return max(legal) if top >= 3 else min(legal)
 
+def s_grabber(view, p, legal, rng):
+    # v0.2-aware: the LOWER signal grabs the ship, so bid LOW to snatch a valuable ship (>=3),
+    # and bid HIGH when only cheap ships are on offer (steal the Tide instead).
+    top = max((v for _s, v in view["channel"]), default=0)
+    return min(legal) if top >= 3 else max(legal)
+
 STRATEGIES = {
     "random": s_random,
     "always_high": s_always_high,
     "always_low": s_always_low,
     "hoarder": s_hoarder,
     "reactive": s_reactive,
+    "grabber": s_grabber,
 }

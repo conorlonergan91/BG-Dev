@@ -19,10 +19,12 @@ loser takes the other → refill the Channel → repeat.
 - Each Night both players hold their **full hand of 6 Signals** (0–5) and will commit **4** of them —
   so you **hold back 2**. *Which 4 you commit, and in what order, is the game.*
 
-## A round
+## A round  *(v0.2 — see "Design history" below)*
 1. Both players secretly choose 1 Signal and reveal simultaneously.
-2. **Higher Signal wins the beam:** move the Tide marker **1 space toward the winner**; the winner
-   **picks either Channel ship** into their Harbour; the loser takes the remaining one.
+2. **Higher Signal wins the beam:** move the Tide marker **1 space toward the winner**. **But the keeper
+   who held back (the *lower* Signal) picks a Channel ship first**; the beam winner takes the other. You
+   can't grab position *and* cargo in the same round — bright light steers the Tide, a dim light snatches
+   the ship in front of you.
 3. **Tie:** Tide does not move; the current **first keeper** picks first, then the other.
 4. Spent Signals are set aside for this Night. Refill the Channel to 2.
 
@@ -80,9 +82,20 @@ bonuses feel like too much, the first cut is the **run bonus** (keep convoys).
 · **Harbour** (your claimed ships) · **Keeper** (player) · **First Keeper** (initiative).
 
 ## Open questions for playtesting
-1. **Depth of blind commit:** does reading your opponent reward skill over 3 Nights, or feel random?
+1. **Depth of blind commit:** ~~does reading your opponent reward skill?~~ *Simulation (v0.2) supports
+   "yes": a rule-aware line beats naive ones ~59% vs ~42–54%, no dominance. Confirm the feel with humans.*
 2. **Signal economy:** is "commit 4, hold 2 of 6" the right ratio? Try 5-of-7 or reclaim rules.
 3. **Set bonuses:** do convoy/run bonuses add meaningful direction, or just scoring overhead? Test
    without them.
-4. **Denial:** is "loser still takes a ship" too gentle? Test the optional **Rocks** variant (Channel
-   of 3, winner + loser take one, third is lost).
+4. **Does anyone ever want the Tide?** Under v0.2 the Tide is now the *reward for losing the beam*; make
+   sure winning the beam (high Signal) still has enough pull (it steers the Tide + hands opponent the
+   worse ship) that the game isn't just "always bid low". Sim says it's close (grabber mixes both) —
+   watch in play.
+
+## Design history
+- **v0.1** — beam winner picked the ship *and* moved the Tide toward themselves. Sim: `always_high`
+  dominant (66.7%), spread ~55 pts, avg margin ~10.
+- **v0.2** — *loser of the beam picks the ship first* (winner still steers the Tide). Sim: no dominant
+  line (spread ~13–16 pts), avg margin ~6, Tide decides ~26% of games, and a rule-aware `grabber`
+  strategy leads at ~59% (skill rewarded). Big improvement on the #1 critique. *(This studio's
+  design→critic→simulate→tune loop, iteration 1.)*

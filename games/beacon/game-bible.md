@@ -35,8 +35,9 @@ is the payoff and catch-up valve that makes each blind bid matter beyond the sin
 
 ## Core loop
 Reveal 2 ships to the Channel → both commit a Signal face-down → reveal → higher Signal wins the beam
-(move the Tide 1 step + first pick of a ship); loser takes the other → refill → 4 rounds/Night,
-committing 4 of your 6 Signals (hold 2 back) → score at each Night's end.
+(the Tide steps toward you) **but the lower Signal picks a ship first** → refill → 4 rounds/Night,
+committing 4 of your 6 Signals (hold 2 back) → score at each Night's end. *(v0.2 — the "can't grab
+position and cargo at once" tension came out of the design→sim→tune loop; see design-doc history.)*
 
 ## Signature twist
 **The tide turns.** At each Night's end the Tide side scores +3, resets to centre, and the keeper who

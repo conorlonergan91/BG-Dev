@@ -28,8 +28,9 @@ Tide bonuses.
 1. **Reveal** the top 2 ships of this Night's deck to the **Channel**.
 2. Play **4 rounds**:
    a. Both keepers secretly pick **one Signal** and reveal together.
-   b. **Higher value wins the beam:** move the **Tide one space toward you**, then **choose one**
-      Channel ship for your Harbour. Your opponent takes the **other**.
+   b. **Higher value wins the beam:** move the **Tide one space toward you**. **But your opponent (who
+      showed the dimmer light) picks a Channel ship first** — a dim light snatches the cargo in front of
+      it while your bright beam steers the Tide. You take the ship they leave.
       *Tie:* the Tide stays; the **First Keeper** chooses first, then the other.
    c. Set spent Signals aside. **Refill** the Channel back to 2 from this Night's deck.
    (You will commit 4 of your 6 Signals this Night and hold 2 back.)
@@ -53,6 +54,6 @@ When revealing the Channel, place the top ship **face-down**. The beam winner ma
 unseen** before the face-up one. *Adds a gamble; test after the base game feels right.*
 
 ## Player aid (quick reference)
-> Reveal 2 → both commit a Signal → **higher = Tide step + first pick** → refill → ×4 rounds →
+> Reveal 2 → both commit a Signal → **higher = Tide step toward you; *lower* picks a ship first** → refill → ×4 rounds →
 > Night end: Tide side +3, reset, loser becomes First Keeper. After Night 3: score ships + convoys +
 > runs + Tide.
