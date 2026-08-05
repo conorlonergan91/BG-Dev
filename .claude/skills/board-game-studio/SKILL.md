@@ -56,7 +56,8 @@ independent agents in parallel.
 | Design | `bg-design` | A direction is locked and the game needs specifying (rules, economy, math). |
 | Development | `bg-developer` | Turning the spec into component data + rules draft + build scaffolding. |
 | Prototyping | `bg-prototyper` | Turning data into a TTS module / PnP PDF / renders / 3D pieces. |
-| Testing | `bg-playtest` | Planning a playtest or synthesizing feedback into the next change. |
+| Critique | `bg-critic` | Red-teaming a design before playtests — dominant strategies, dead turns, swinginess, co-op alpha-player leaks. |
+| Testing | `bg-playtest` | Planning a playtest, simulating (`tools/sim`), or synthesizing feedback into the next change. |
 | Marketing | `bg-marketing` | There's a stable game to pitch/sell (sell sheet, campaign, positioning). |
 | Publishing | `bg-publishing` | Naming, commissioning art, or planning to sell (IP/compliance IE/UK/US). |
 

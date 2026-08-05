@@ -50,7 +50,8 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 | Design | `bg-design` | Systems design — core loop, components, rules architecture, economy/math, balance. |
 | Development | `bg-developer` | Turns design into concrete artifacts: card/component data, rules spec, build code. |
 | Prototyping | `bg-prototyper` | Produces playable outputs: **Screentop.gg** deck (default) / TTS module, print-and-play PDF, 3D pieces. |
-| Testing | `bg-playtest` | Playtest plans, session logging, feedback synthesis, balance analysis, solo/simulation. |
+| Critique | `bg-critic` | Adversarial red-team: hunts dominant strategies, dead turns, swinginess, co-op alpha-player leaks — before you spend playtests. |
+| Testing | `bg-playtest` | Playtest plans, session logging, feedback synthesis, balance analysis, and simulation (`tools/sim`). |
 | Marketing | `bg-marketing` | Pitch, elevator, box copy, sell sheet, crowdfunding page, audience strategy. |
 | Publishing | `bg-publishing` | IP / copyright / trademark / compliance for **Ireland, UK, USA**; self-publish vs pitch. |
 
