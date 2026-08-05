@@ -109,6 +109,15 @@ Encode a game's rules once as `games/<slug>/sim/<slug>.py` and play it thousands
 dominant strategies, balance, and score spreads **before** human playtesting (stdlib-only). Owned by
 `bg-playtest`; see `tools/sim/README.md` and the worked example `games/beacon/sim/beacon.py`.
 
+### Guardrails (`tools/lint/`, `tools/rulebook/`)
+
+- **Linter** — `python tools/lint/check_game.py --game games/<slug> --theme <name>`: validates card data
+  (unique ids, numeric fields, quantities, theme suit coverage) and that sim modules still import.
+  Stdlib-only; run it as a quick sanity check (ideally before committing component changes).
+- **Rulebook generator** — `python tools/rulebook/build_rulebook.py --md <rules.md> --theme <name> --out
+  <build>/rulebook.pdf`: rules markdown → themed A5 HTML/PDF. Rules stay diffable markdown; this lays
+  them out.
+
 ### Recommended free installs (macOS)
 
 - `uv` (for `uvx blender-mcp`): `curl -LsSf https://astral.sh/uv/install.sh | sh`

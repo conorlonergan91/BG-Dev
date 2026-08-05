@@ -32,6 +32,10 @@ game can actually be built and rendered. You are the bridge from "designed" to "
 - Keep field names and keywords identical to the design doc so nothing drifts.
 - Balance the data against the design's economy; flag any card/effect that looks over/under-costed.
 - Prefer plain, diffable text formats so changes are reviewable.
+- **Lint before handoff:** run `python tools/lint/check_game.py --game games/<slug> --theme <name>` after
+  changing component data and fix any errors (unique ids, numeric fields, quantities, theme coverage).
+- **Render the rulebook** from the rules draft when it's stable:
+  `python tools/rulebook/build_rulebook.py --md games/<slug>/design/rules-draft.md --theme <name> --out games/<slug>/build/rulebook.pdf`.
 
 ## Output contract (return to the Director)
 1. The component data files + manifest + rules draft (paths).

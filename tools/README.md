@@ -44,6 +44,27 @@ python boards/build_board.py --type tokens --labels "Tide,1st" --shape circle --
 python boards/build_board.py --type mat --spec boards/sample_mat.json --theme nautical --out out/mat.png
 ```
 
+## `lint/` — consistency linter (stdlib-only)
+
+Keeps the "data is the source of truth" promise honest as data/rules/manifest drift.
+
+```bash
+python lint/check_game.py --game games/beacon --theme nautical
+```
+Checks: unique card ids, numeric value/cost, positive integer quantities, recommended columns, card
+`type`s that a theme actually colours, and that any `sim/*.py` still imports and exposes GAME +
+STRATEGIES. Non-zero exit on errors — good as a pre-commit sanity check.
+
+## `rulebook/` — rules markdown → themed rulebook
+
+```bash
+python rulebook/build_rulebook.py --md games/beacon/design/rules-draft.md \
+    --title "Beacon" --theme nautical --out games/beacon/build/rulebook.pdf
+```
+Always writes a themed `.html`; writes `.pdf` too if WeasyPrint is installed
+(`pip install weasyprint markdown`; macOS also `brew install pango gdk-pixbuf`). Rules stay as
+diffable markdown (the source of truth); this just lays them out.
+
 ## 3D components
 
 Driven live through the Blender / FreeCAD / OpenSCAD **MCP servers** rather than a script here — see the
