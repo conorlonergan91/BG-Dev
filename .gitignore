@@ -8,9 +8,10 @@ venv/
 # Node (Figma plugin / puppeteer helpers, if used)
 node_modules/
 
-# Generated component output (regenerated from data — keep the data, not the renders)
+# Scratch render output (regenerated from data — disposable).
+# NOTE: games/<slug>/exports/ IS committed — it holds the curated, shareable deliverables
+# (deck sheets, cover, rulebook PDF, track, tokens). Only build/ (scratch) is ignored.
 games/**/build/
-games/**/exports/
 tools/**/out/
 *.tmp
 

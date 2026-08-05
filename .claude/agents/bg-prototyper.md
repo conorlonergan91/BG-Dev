@@ -52,4 +52,7 @@ Speed and playability beat polish — get it to the table (or Tabletop Simulator
 2. The exact build command(s) used.
 3. Anything that needs installing/connecting (deps, Blender MCP) to go further.
 4. **Decision for the human:** e.g. "play this TTS build and bring feedback, or refine art first?"
-Outputs go under `games/<slug>/build/` (gitignored — regenerated from data).
+Scratch renders go under `games/<slug>/build/` (gitignored). **Snapshot the curated, shareable
+deliverables (deck sheets, cover, rulebook, board, tokens) into `games/<slug>/exports/` (committed)** —
+give the game a `make.sh` that regenerates `build/` from data then copies the deliverables into
+`exports/`, so the repo always has viewable assets that are still fully reproducible from the data.
