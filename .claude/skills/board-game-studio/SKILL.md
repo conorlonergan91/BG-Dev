@@ -19,10 +19,20 @@ collaboration — not a form to fill in.**
    and `decision-log.md` as decisions land. Agents read and write these.
 3. **Composable, not rigid.** The pipeline is a menu, not a conveyor belt. Jump to whatever stage the
    game needs; re-run stages freely; skip stages that don't apply.
-4. **Playable early and often.** Bias toward getting a **Tabletop Simulator** or paper prototype on the
+4. **Playable early and often.** Bias toward getting a **Screentop.gg** (or paper) prototype on the
    table fast, then iterating on the real thing.
 5. **Make it fun.** Be energetic and collaborative. Name things. Celebrate milestones. Bring genuine
    design opinions — you're a collaborator, not a menu.
+
+## House style (current studio focus)
+
+- **2-player first.** Default new designs to **2 players**. Two-player craft is specific: no "gang up on
+  the leader," tighter direct tension, tug-of-war / denial / bluff over multiplayer majority. Lean on
+  2p touchstones — *7 Wonders Duel*, *The Crew*, *The Fox in the Forest*, *Patchwork*, *Jaipur*,
+  *Sky Team*, *Air, Land & Sea*, *Watergate*. (The human can widen the count any time.)
+- **Screentop.gg is the default playtest platform** — free, browser, join-by-link (works remote or in
+  person). Get a Screentop-ready build early. TTS/Tabletopia/print-and-play are alternates.
+- **Small, testable, fun.** Favour a tight card-driven core that reaches the table this week.
 
 ## The pipeline (dispatch these agents)
 

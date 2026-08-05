@@ -9,6 +9,11 @@ publishing/compliance plan.
 The guiding principles: **human in the loop throughout, quick and fun decision-making, tight
 iteration loops, and one living source of truth per game.**
 
+**Current studio focus (house style):** design **2-player games first** (tight direct tension, no
+"bash the leader"; touchstones: 7 Wonders Duel, The Crew, Fox in the Forest, Patchwork, Jaipur,
+Sky Team), and target **Screentop.gg** as the default playtest platform (free, browser, join-by-link,
+works remote or in person). TTS / Tabletopia / print-and-play are alternates.
+
 ---
 
 ## How to start
@@ -39,7 +44,7 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 | Explore / Brainstorm | `bg-explore` | Divergent exploration of the design space; mechanism blends, twists, "what ifs". |
 | Design | `bg-design` | Systems design — core loop, components, rules architecture, economy/math, balance. |
 | Development | `bg-developer` | Turns design into concrete artifacts: card/component data, rules spec, build code. |
-| Prototyping | `bg-prototyper` | Produces playable outputs: **Tabletop Simulator** module, print-and-play PDF, 3D pieces. |
+| Prototyping | `bg-prototyper` | Produces playable outputs: **Screentop.gg** deck (default) / TTS module, print-and-play PDF, 3D pieces. |
 | Testing | `bg-playtest` | Playtest plans, session logging, feedback synthesis, balance analysis, solo/simulation. |
 | Marketing | `bg-marketing` | Pitch, elevator, box copy, sell sheet, crowdfunding page, audience strategy. |
 | Publishing | `bg-publishing` | IP / copyright / trademark / compliance for **Ireland, UK, USA**; self-publish vs pitch. |
@@ -77,7 +82,7 @@ Rule: **data is the source; renders are disposable.** Cards/tiles/tokens are def
 Two tooling skills describe the concrete pipelines. Read the relevant one before producing components.
 
 - **`bg-2d-components`** — cards, tiles, player boards, game boards, tokens, rulebook layout.
-  Code-native pipeline: **data (CSV/JSON) → SVG/HTML template → print-ready PDF / PNG / TTS sheet.**
+  Code-native pipeline: **data (CSV/JSON) → SVG/HTML template → print-ready PDF / PNG / Screentop or TTS deck sheet.**
   Free/open, deterministic, diffable. Optional Figma MCP for visual/board layout with a human.
 - **`bg-3d-components`** — miniatures, dice, custom pieces, inserts, boxes via **Blender MCP**
   (organic/aesthetic + renders) and **FreeCAD / OpenSCAD MCP** (precision, print-first parts).
@@ -123,7 +128,7 @@ want 3D pieces (Blender) or collaborative visual layout (Figma).
 - **Update the living docs as you go.** Every meaningful choice → `game-bible.md` + `decision-log.md`.
 - **Make it fun.** This is a creative project. Be energetic, celebrate milestones, name things, and
   keep prototypes playable early and often.
-- **Prefer playable over polished.** Get to a testable Tabletop Simulator / paper prototype fast, then
+- **Prefer playable over polished.** Get to a testable Screentop.gg / paper prototype fast, then
   iterate on the real thing.
 - **Cite the knowledge base** when giving design/publishing advice, and flag when something should be
   re-checked live (rankings, fees, legal/compliance specifics).

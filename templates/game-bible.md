@@ -11,7 +11,7 @@
 
 ## Positioning
 - **Weight (BGG 1–5):**
-- **Players:**
+- **Players:** 2 <!-- studio focus: 2-player first -->
 - **Playtime:**
 - **Tone:** <!-- cozy / cutthroat / epic / silly / thinky … -->
 - **Comparable:** <!-- "X meets Y" -->
@@ -45,7 +45,7 @@
 - [ ] Exploration
 - [ ] Design
 - [ ] Development
-- [ ] Prototype (TTS / PnP)
+- [ ] Prototype (Screentop.gg / PnP)
 - [ ] Playtesting
 - [ ] Marketing
 - [ ] Publishing / IP

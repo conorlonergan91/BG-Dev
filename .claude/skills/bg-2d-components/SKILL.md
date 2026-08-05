@@ -10,7 +10,7 @@ truth; templates render it to print-ready and TTS-ready output. Everything is pl
 and re-runnable — regenerate on every data change; never hand-edit renders.
 
 ```
-data (CSV/JSON)  →  template (SVG or HTML/CSS)  →  render  →  PDF (print) / PNG / TTS deck sheet
+data (CSV/JSON)  →  template (SVG or HTML/CSS)  →  render  →  PDF (print) / PNG / deck sheet (Screentop/TTS)
 ```
 
 ## When to use what
@@ -20,7 +20,8 @@ data (CSV/JSON)  →  template (SVG or HTML/CSS)  →  render  →  PDF (print) 
   data-driven board, **or** the **Figma MCP** when the human wants to art-direct layout interactively
   (Figma is the only production-grade design MCP — good for boards/rulebooks; still export + treat as
   final art). See `CLAUDE.md` for the Figma endpoint.
-- **Quick prototype to play now:** render TTS deck sheets (see below) — this is the fast path.
+- **Quick prototype to play now:** render a deck sheet for **Screentop.gg** (the studio default — see
+  below) — this is the fast path. TTS / Tabletopia use the same grid-sheet format.
 
 ## The recommended stack (free / open, macOS-friendly)
 
@@ -46,11 +47,24 @@ Starter code lives in `tools/cards/` — copy/adapt it per game into `games/<slu
 - Manufacturer output: **per-card PNGs** for The Game Crafter / MakePlayingCards; **multi-page PDF, one
   face per page** for PrintNinja / Panda. Always fetch the manufacturer's current dieline.
 
-## Tabletop Simulator export (default prototype target)
+## Digital playtest export — Screentop.gg (default), TTS, Tabletopia
 
-- Deck **sheet grid up to 10×7** (≤70 cards/sheet), **≤4096×4096 px** → per-card ceiling **≈409×585 px**.
-- Downsample print-DPI art to fit; last cell of the sheet is typically the shared card **back**.
-- Output one PNG per deck sheet + a short setup note (which decks/objects to load). RGB is fine.
+All three use the same **grid deck-sheet** format, so one render feeds any of them:
+
+- Grid up to **10×7** (≤70 cards/sheet), **≤4096×4096 px** → per-card ceiling **≈409×585 px**.
+  Downsample print-DPI art to fit; RGB is fine. Emit **one PNG per deck sheet + a standalone back PNG**.
+- Build it: `python tools/cards/build_cards.py --csv <cards.csv> --out <build> --formats screentop`
+  (produces `sheets/<slug>_sheet_N.png` + `sheets/<slug>_back.png`).
+
+**Screentop.gg (studio default — free, browser, best for playtesting with a friend):**
+- Free plan: 3 games, 32 MB/game. Create a game → add a **Deck** → upload the sheet as the deck **face**
+  and the standalone **back** image → set columns/rows to the grid. Add a board/tokens as image assets.
+- Share the **room link**; your friend joins in a browser (no install, works remote or in person).
+- Always include a short **setup note** (which decks/pieces, starting layout) with the render.
+
+**Tabletop Simulator (Steam, ~€20 each):** Objects → Components → Custom → Deck; set Width/Height to the
+grid, Face = sheet, Back = standalone back. Richest/most tactile; each player needs a copy.
+**Tabletopia (free tier, browser):** build components from the same images; more setup, nicer visuals.
 
 ## Print-and-play layout
 

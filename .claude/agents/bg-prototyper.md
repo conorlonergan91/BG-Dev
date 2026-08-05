@@ -13,11 +13,14 @@ Speed and playability beat polish — get it to the table (or Tabletop Simulator
 - `knowledge/manufacturing-specs.md` (TTS grid ≤10×7, 4096px cap ≈409×585px/card; poker 63.5×88.9mm;
   bleed/DPI; gutterfold PnP).
 
-## Default target: Tabletop Simulator (this studio's fast-iteration path)
-- Render the deck(s) as **TTS deck-sheet images** (grid up to 10×7, ≤4096×4096px, last cell = back).
-- Produce a clear **setup note** (what objects/decks to load, starting layout) so the human can spin up
-  a table quickly. If a board/player-mats exist, render them too.
-- Keep source at print DPI and downsample for TTS so the same data also feeds PnP/manufacturing later.
+## Default target: Screentop.gg (this studio's fast-iteration path)
+- Render the deck(s) as **grid deck-sheet images + a standalone back** via
+  `build_cards.py --formats screentop` (grid ≤10×7, ≤4096×4096px). The same sheet also works in TTS.
+- Produce a clear **setup note**: which decks/pieces to add, the grid dimensions to enter, and the
+  starting layout — so the human can build the Screentop room in a couple of minutes and share the link
+  with a friend (works remote or in person). If a board/player-mats exist, render them as image assets.
+- Keep source at print DPI and downsample for the sheet so the same data also feeds PnP/manufacturing.
+- Bias toward **2-player** setups (the studio's current focus) unless the design says otherwise.
 
 ## Other outputs (on request)
 - **Print-and-play PDF** — gutterfold or per-page, with crop/registration marks (see the 2D skill).

@@ -1,0 +1,7 @@
+id,name,type,cost,value,effect,quantity,tags,art_note
+G0,Dark Lantern,Signal,,0,"Show no light. Lose the beam on purpose to save your bright signals.",2,signal;low,Shuttered dark lantern
+G1,Ember Glow,Signal,,1,"The faintest beam.",2,signal,Dim red ember light
+G2,Half Beam,Signal,,2,"A steady, modest light.",2,signal,Soft steady beam
+G3,Clear Beam,Signal,,3,"A confident sweep of light.",2,signal,Bright rotating beam
+G4,Full Beam,Signal,,4,"Bright enough to cut the fog.",2,signal,Powerful beam through fog
+G5,Blinding Flare,Signal,,5,"The brightest light on the coast. Wins almost any beam.",2,signal;high,Brilliant white flare

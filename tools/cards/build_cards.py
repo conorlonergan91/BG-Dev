@@ -19,15 +19,19 @@ CSV columns used (extra columns are ignored, missing ones are blank):
 
 Outputs (under --out)
 ---------------------
-    svg/<id>.svg         one vector card each (always produced; no deps needed)
-    png/<id>.png         raster cards            (needs cairosvg)
-    print/<slug>.pdf     one card face per page  (needs cairosvg)  -- good for PrintNinja-style
-    tts/<slug>_sheet_N.png   Tabletop Simulator deck sheet(s) (needs cairosvg + Pillow)
+    svg/<id>.svg              one vector card each (always produced; no deps needed)
+    png/<id>.png              raster cards               (needs cairosvg)
+    print/<slug>.pdf          one card face per page     (needs cairosvg)  -- PrintNinja-style
+    sheets/<slug>_sheet_N.png deck sheet(s) for Screentop.gg / TTS (needs cairosvg + Pillow)
+    sheets/<slug>_back.png    standalone shared card back (needs cairosvg + Pillow)
+
+Formats: svg png pdf tts screentop  (default: svg png screentop)
+`screentop` and `tts` produce the same grid sheet + standalone back, with platform import notes.
 
 Specs (see knowledge/manufacturing-specs.md)
 --------------------------------------------
     Poker card = 63.5 x 88.9 mm = 750 x 1050 px @ 300 DPI (trimmed).
-    TTS deck sheet: grid up to 10 x 7, <= 4096 x 4096 px, last cell = shared card back.
+    Deck sheet: grid up to 10 x 7, <= 4096 x 4096 px, last cell = shared card back.
 """
 from __future__ import annotations
 
@@ -129,8 +133,8 @@ def main() -> int:
     ap.add_argument("--csv", required=True, type=Path)
     ap.add_argument("--out", default=Path("out"), type=Path)
     ap.add_argument("--slug", default=None, help="name for combined outputs (default: csv stem)")
-    ap.add_argument("--formats", nargs="+", default=["svg", "png", "tts"],
-                    choices=["svg", "png", "pdf", "tts"])
+    ap.add_argument("--formats", nargs="+", default=["svg", "png", "screentop"],
+                    choices=["svg", "png", "pdf", "tts", "screentop"])
     args = ap.parse_args()
 
     slug = args.slug or args.csv.stem
@@ -187,8 +191,9 @@ def main() -> int:
                 cairosvg.svg2pdf(url=str(p), write_to=str(args.out / "print" / f"{cid}.pdf"))
             print(f"[pdf]  wrote per-card PDFs -> {args.out/'print'} (install PyPDF2 to combine)")
 
-    # 4) Tabletop Simulator deck sheet(s)
-    if "tts" in args.formats and cairosvg:
+    # 4) Deck sheet(s) for Screentop.gg (default) / Tabletop Simulator — same grid-sheet format.
+    want_sheet = "screentop" in args.formats or "tts" in args.formats
+    if want_sheet and cairosvg:
         try:
             from PIL import Image  # type: ignore
         except Exception:
@@ -214,7 +219,10 @@ def main() -> int:
         back_png = cairosvg.svg2png(bytestring=back_svg.encode(), output_width=cell_w, output_height=cell_h)
         back_img = Image.open(io.BytesIO(back_png)).convert("RGBA")
 
-        (args.out / "tts").mkdir(parents=True, exist_ok=True)
+        sheet_dir = args.out / "sheets"
+        sheet_dir.mkdir(parents=True, exist_ok=True)
+        # standalone back image (Screentop lets you set one shared back per deck)
+        back_img.save(sheet_dir / f"{slug}_back.png")
         sheets = math.ceil(len(expanded) / per_sheet) or 1
         for s in range(sheets):
             chunk = expanded[s * per_sheet:(s + 1) * per_sheet]
@@ -228,11 +236,17 @@ def main() -> int:
             # place the back in the final cell
             r, c = divmod(len(chunk), cols)
             sheet.paste(back_img, (c * cell_w, r * cell_h))
-            out_png = args.out / "tts" / f"{slug}_sheet_{s+1}.png"
+            out_png = sheet_dir / f"{slug}_sheet_{s+1}.png"
             sheet.save(out_png)
-            print(f"[tts]  wrote {out_png}  ({cols}x{rows_n} grid, {len(chunk)} cards + back)")
-        print("[tts]  In TTS: Objects > Components > Custom > Deck; set Width/Height to the grid, "
-              "point Face at the sheet and Back at the same sheet (back is the last cell).")
+            print(f"[sheet] wrote {out_png}  ({cols}x{rows_n} grid, {len(chunk)} cards + back)")
+        print(f"[sheet] standalone back -> {sheet_dir / f'{slug}_back.png'}")
+        if "screentop" in args.formats:
+            print("[screentop] New Game > add a Deck > upload the sheet as the deck face and "
+                  f"'{slug}_back.png' as the back; set columns/rows to the grid above. "
+                  "Share the room link to play with a friend.")
+        if "tts" in args.formats:
+            print("[tts] Objects > Components > Custom > Deck; set Width/Height to the grid, "
+                  "point Face at the sheet and Back at the standalone back image.")
 
     print("Done.")
     return 0

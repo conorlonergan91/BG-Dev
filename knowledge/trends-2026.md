@@ -15,7 +15,8 @@ Current context for positioning a design. **Re-verify live** for a real launch �
   sell, but the novelty premium narrowed.
 - **Digital-first prototyping is mainstream.** Tabletop Simulator, Tabletopia, and Screentop are core
   to iteration, remote blind-testing, and crowdfunding demos — compressing the cycle and globalizing
-  playtesting. *(This studio prioritizes a TTS-ready prototype early.)*
+  playtesting. *(This studio defaults to a Screentop.gg-ready prototype early — free, browser,
+  join-by-link.)*
 - **Crowdfunding platform shift.** Kickstarter is no longer the default: **Gamefound** captured much of
   the heavier-hobbyist segment (co-op, campaign, miniatures) and hosted a majority of 2024's
   top-funded tabletop campaigns; **BackerKit** grew as both a platform and the standard **pledge

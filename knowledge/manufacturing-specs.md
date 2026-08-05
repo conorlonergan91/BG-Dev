@@ -33,9 +33,14 @@ Bake these constants into every 2D template. See the `bg-2d-components` skill fo
 > Always request the manufacturer's **current dieline/template** before final files — specs differ per
 > SKU and change over time.
 
-## Tabletop Simulator (TTS) export — **the studio's default prototype target**
+## Digital-table export — **Screentop.gg (studio default), TTS, Tabletopia**
 
-- TTS uses **deck sheet grids up to 10×7** (70 cards per sheet image).
+All three share the **grid deck-sheet** format below, so one render feeds any of them. **Screentop.gg**
+is the studio default (free, browser, join-by-link — best for playtesting with a friend, remote or in
+person; free plan = 3 games, 32 MB each). Export a deck **sheet** + a **standalone back** PNG and set
+the deck's columns/rows to the grid.
+
+- Grid up to **10×7** (70 cards per sheet image).
 - **4096 × 4096 px texture cap** per sheet → practical per-card ceiling ≈ **409 × 585 px**.
 - Downsample 300-DPI source to fit; readable and cuts file size ~95–99%.
 - RGB is fine for TTS. One image = one deck sheet; the last cell is often the card back.
