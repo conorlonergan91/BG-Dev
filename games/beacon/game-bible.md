@@ -40,7 +40,7 @@ committing 4 of your 6 Signals (hold 2 back) → score at each Night's end. *(v0
 position and cargo at once" tension came out of the design→sim→tune loop; see design-doc history.)*
 
 ## Signature twist
-**The tide turns.** At each Night's end the Tide side scores +3, resets to centre, and the keeper who
+**The tide turns.** At each Night's end the Tide side scores 2 VP per space from centre (v0.3), resets to centre, and the keeper who
 **lost** the Tide takes the First-Keeper token (initiative) for the next Night — a built-in catch-up
 lever so the trailing player stays live. Winning the Tide scores now but hands your rival the edge next
 Night. (The "commit 4 of 6, hold 2" hand also creates a constant bluff space.)

@@ -29,7 +29,9 @@ loser takes the other → refill the Channel → repeat.
 4. Spent Signals are set aside for this Night. Refill the Channel to 2.
 
 ## End of a Night
-- **Tide bonus:** whichever side the Tide marker is on scores **+3 VP** (dead centre = no one).
+- **Tide bonus (v0.3):** whichever side the Tide marker is on scores **2 VP per space from centre**
+  (so a decisive Tide is worth up to 6; dead centre = no one). Scaling it (vs a flat +3) is what makes
+  a voluntary high bid a live choice rather than a wasted turn — see the design history.
 - **Reset:** Tide returns to centre; both players take all Signals back to hand.
 - **The tide turns (catch-up):** the player who **lost the Tide** (or, if centred, the player with fewer
   ships) becomes **first keeper** for the next Night — initiative as a comeback lever.
@@ -87,15 +89,23 @@ bonuses feel like too much, the first cut is the **run bonus** (keep convoys).
 2. **Signal economy:** is "commit 4, hold 2 of 6" the right ratio? Try 5-of-7 or reclaim rules.
 3. **Set bonuses:** do convoy/run bonuses add meaningful direction, or just scoring overhead? Test
    without them.
-4. **Does anyone ever want the Tide?** Under v0.2 the Tide is now the *reward for losing the beam*; make
-   sure winning the beam (high Signal) still has enough pull (it steers the Tide + hands opponent the
-   worse ship) that the game isn't just "always bid low". Sim says it's close (grabber mixes both) —
-   watch in play.
+4. **Does anyone ever want the Tide?** *Addressed in v0.3 (scaled Tide bonus) — contesting the Tide is
+   now a co-viable line in the sim.* New watch-item from v0.3: the **draw rate** rose (~21% in
+   grab-vs-contest); if humans see too many ties, add a tie-breaker or nudge scoring.
+5. **Is the blind read actually fun?** The sim can't answer this — it's the whole point of human
+   session 1. Do players feel a live "grab or contest?" read each commit, or settle into a shrug?
 
 ## Design history
 - **v0.1** — beam winner picked the ship *and* moved the Tide toward themselves. Sim: `always_high`
   dominant (66.7%), spread ~55 pts, avg margin ~10.
 - **v0.2** — *loser of the beam picks the ship first* (winner still steers the Tide). Sim: no dominant
   line (spread ~13–16 pts), avg margin ~6, Tide decides ~26% of games, and a rule-aware `grabber`
-  strategy leads at ~59% (skill rewarded). Big improvement on the #1 critique. *(This studio's
-  design→critic→simulate→tune loop, iteration 1.)*
+  strategy leads at ~59% (skill rewarded). Big improvement on the #1 critique. *(Loop iteration 1.)*
+- **v0.2 diagnostic** — the critic re-checked and the sim confirmed a *successor* problem: `grabber`
+  is a one-liner no cleverer line beats, and in skilled mirror play the **Tide is 100% dormant**
+  (every round ties, Tide never moves, token/luck decides). *(Loop iteration 2.)*
+- **v0.3** — *Tide bonus scales with how far you push it* (`2 × |position|`). Sim: the top four lines
+  land within ~3 pts across *different* approaches (contest-Tide, selective-grab, grab, adapt), pure
+  grabbing drops to ~45%, and the Tide is decisive in ~56% of grab-vs-contest games — a real
+  grab-or-contest fork. Watch-item: draw rate rose (~21%). Next step: **human playtest** (is the read
+  fun?). *(Loop iteration 3.)*

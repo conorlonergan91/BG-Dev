@@ -35,7 +35,8 @@ Tide bonuses.
    c. Set spent Signals aside. **Refill** the Channel back to 2 from this Night's deck.
    (You will commit 4 of your 6 Signals this Night and hold 2 back.)
 3. **End of Night:**
-   - **Tide bonus:** whoever's side the Tide is on scores **+3** (centre = nobody).
+   - **Tide bonus:** whoever's side the Tide is on scores **2 points per space from centre** (up to 6;
+     centre = nobody). The harder you pushed the Tide, the bigger the payoff.
    - Return the Tide marker to **centre**; take all your Signals back to hand.
    - **The tide turns:** the keeper who **lost the Tide** (fewest ships if centred) takes the
      **First-Keeper token** for the next Night.
@@ -55,5 +56,5 @@ unseen** before the face-up one. *Adds a gamble; test after the base game feels 
 
 ## Player aid (quick reference)
 > Reveal 2 → both commit a Signal → **higher = Tide step toward you; *lower* picks a ship first** → refill → ×4 rounds →
-> Night end: Tide side +3, reset, loser becomes First Keeper. After Night 3: score ships + convoys +
-> runs + Tide.
+> Night end: Tide side scores 2×spaces-from-centre, reset, loser becomes First Keeper. After Night 3:
+> score ships + convoys + runs + Tide.

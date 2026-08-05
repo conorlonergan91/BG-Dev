@@ -8,11 +8,21 @@ Hand-written reading of the auto-generated `sim-results.md` (3000 games/matchup,
 | Version | Rule change | Result |
 |---------|-------------|--------|
 | **v0.1** | beam winner takes the ship *and* the Tide | `always_high` **dominant 66.7%**; spread ~55 pts; margin ~10. Critic's #1: winning the beam is too cheap. |
-| **v0.2** | **loser of the beam picks the ship first** (winner still steers the Tide) | **No dominant line** — field within ~13–16 pts of 50%; margin ↓ to ~6 (closer games); Tide decides ~26% (↑ from 16%); a rule-aware **`grabber`** line (bid low to grab valuable ships, high to steal the Tide) **leads at 58.7%** → skill is rewarded, thoughtless play (`reactive`) punished (42%). |
+| **v0.2** | **loser of the beam picks the ship first** (winner still steers the Tide) | **No dominant line** — field within ~13–16 pts of 50%; margin ↓ to ~6; Tide decides ~26%; a rule-aware **`grabber`** (bid low to grab ships) **leads at 58.7%**. Critic re-check found the *successor* issue: `grabber` is a one-liner and the **Tide goes dormant** in skilled mirror play (see below). |
+| **v0.3** | **Tide bonus scales with how far you push it** (`2 × |position|`, was flat 3) | Top four lines now within **3 pts** across *different* approaches (contest-Tide `always_high` 54%, `hand_smart` 54%, `grabber` 53%, `tide_racer` 51%); pure grabbing (`always_low`) falls to 45%. In grab-vs-contest the **Tide is decisive in ~56%** of games, margins ~3 (very close). The Tide is finally part of optimal play. New watch-item: draw rate rose (~21% in that matchup). |
 
-**Verdict:** the v0.2 change resolved the top critique and turned a "just bid high" game into a real
-read: *do I grab the cargo in front of me, or steer the Tide for the end-of-Night bonus?* Keep v0.2;
-confirm the feel with a human session.
+## What v0.2's diagnostic (iteration 2) proved
+The critic asked us to measure before changing rules. It was right:
+- **No cleverer line beat `grabber`** (57.7%); `hand_smart` 53.8%, `tide_racer` 48.8% — the optimum was a memorizable one-liner.
+- **`grabber`-vs-`grabber` mirror:** `round_ties = 12/12`, `tide_points_total = 0`, `nights_tide_centered = 3/3` — the Tide never moved and the first-keeper token + deck luck decided everything (margin ~15.6). The signature mechanic was dead at equilibrium → drove the v0.3 fix.
+
+**Verdict & honest caveats.** v0.3 makes the Tide load-bearing and restores a real *grab-or-contest*
+fork (co-viable pure strategies → humans must read/mix). **Two caveats the sim itself flags:**
+(1) the `grabber` mirror *still* ties every round — but that's inherent to two **identical deterministic**
+bots in a simultaneous game, **not** proof of shallowness; the depth signal is that no pure line
+dominates and opposite approaches tie at ~50%. (2) v0.3 raised the **draw rate** — the next thing to
+tune (a tie-breaker or scoring nudge). **The honest next step is a human playtest** — the sim can rule
+out broken math and dead mechanics, but only humans can tell us whether the blind read is *fun*.
 
 ---
 

@@ -19,6 +19,7 @@ SUITS = ("C", "P", "N")            # Cargo, Passenger, Naval
 NIGHTS = 3
 ROUNDS_PER_NIGHT = 4
 CHANNEL = 2
+TIDE_MULT = 2                      # v0.3: Night Tide bonus = TIDE_MULT * |tide position| (was flat 3)
 
 
 def _new_deck():
@@ -120,11 +121,13 @@ class BeaconGame:
 
         s["round_in_night"] += 1
         if s["round_in_night"] >= ROUNDS_PER_NIGHT:
-            # Tide bonus
+            # Tide bonus — v0.3: scales with how hard you pushed the marker, so contesting the Tide
+            # (a voluntary high bid) is a live choice against grabbing ships.
+            bonus = TIDE_MULT * abs(s["tide"])
             if s["tide"] > 0:
-                s["tide_bonus"][1] += 3
+                s["tide_bonus"][1] += bonus
             elif s["tide"] < 0:
-                s["tide_bonus"][0] += 3
+                s["tide_bonus"][0] += bonus
             else:
                 s["nights_centered"] += 1     # Tide idled all Night — no bonus, no initiative flip
             # "The tide turns": the Tide loser becomes first keeper (fewer ships if centred)
