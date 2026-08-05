@@ -75,6 +75,8 @@ class BeaconGame:
             "first_keeper": rng.randint(0, 1),
             "tide_bonus": {0: 0, 1: 0},
             "round_in_night": 0,
+            "round_ties": 0,          # diagnostic: rounds where both bid equal (token decides pick)
+            "nights_centered": 0,     # diagnostic: Nights the Tide ended dead-centre (no bonus/flip)
             "done": False,
         }
 
@@ -94,6 +96,7 @@ class BeaconGame:
         s["played"][0] += 1; s["played"][1] += 1
 
         if a0 == a1:                                  # tie: no tide move, first keeper picks first
+            s["round_ties"] += 1
             fk = s["first_keeper"]
             pick, other = _pick(s["harbor"][fk], s["channel"])
             s["harbor"][fk].append(pick)
@@ -122,6 +125,8 @@ class BeaconGame:
                 s["tide_bonus"][1] += 3
             elif s["tide"] < 0:
                 s["tide_bonus"][0] += 3
+            else:
+                s["nights_centered"] += 1     # Tide idled all Night — no bonus, no initiative flip
             # "The tide turns": the Tide loser becomes first keeper (fewer ships if centred)
             if s["tide"] > 0:
                 s["first_keeper"] = 0
@@ -159,6 +164,8 @@ class BeaconGame:
             "tie": 1.0 if winner_full == -1 else 0.0,
             "tide_points_total": state["tide_bonus"][0] + state["tide_bonus"][1],
             "tide_decisive": 1.0 if winner_full != winner_base else 0.0,
+            "round_ties": float(state["round_ties"]),          # of 12 rounds/game
+            "nights_tide_centered": float(state["nights_centered"]),  # of 3 Nights
         }
 
 
@@ -190,6 +197,18 @@ def s_grabber(view, p, legal, rng):
     top = max((v for _s, v in view["channel"]), default=0)
     return min(legal) if top >= 3 else max(legal)
 
+def s_hand_smart(view, p, legal, rng):
+    # hand-counting: low signals are scarce (only 0,1,2 of the 0-5 hand, and you play 4/Night),
+    # so spend a 'grab' (low bid) ONLY on the biggest ships (value 4); contest the Tide otherwise.
+    top = max((v for _s, v in view["channel"]), default=0)
+    return min(legal) if top >= 4 else max(legal)
+
+def s_tide_racer(view, p, legal, rng):
+    # adaptive: if the Tide is drifting against you, bid high to reclaim it; otherwise grab ships (low).
+    tide = view["tide"]                       # + toward player 1
+    behind = (tide < 0) if p == 1 else (tide > 0)
+    return max(legal) if behind else min(legal)
+
 STRATEGIES = {
     "random": s_random,
     "always_high": s_always_high,
@@ -197,4 +216,6 @@ STRATEGIES = {
     "hoarder": s_hoarder,
     "reactive": s_reactive,
     "grabber": s_grabber,
+    "hand_smart": s_hand_smart,      # diagnostic: is a more selective grab better?
+    "tide_racer": s_tide_racer,      # diagnostic: does adapting to the Tide beat pure grabbing?
 }
