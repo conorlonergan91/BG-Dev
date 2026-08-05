@@ -10,9 +10,16 @@ approach and manufacturer specs.
 ```bash
 cd tools/cards
 pip install -r requirements.txt          # cairosvg + Pillow (macOS: brew install cairo pango)
-python build_cards.py --csv example_deck.csv --out out
-open out/tts/example_deck_sheet_1.png    # the Tabletop Simulator deck sheet
+python build_cards.py --csv example_deck.csv --out out --theme nautical
+open out/sheets/example_deck_sheet_1.png # the Screentop.gg / TTS deck sheet
+
+# a rough themed cover for the simulator (procedural, no assets):
+python build_cover.py --title "My Game" --subtitle "a tiny duel" --theme nautical \
+    --players 2 --time "20 min" --out out/cover.png
 ```
+
+**Themes** (`themes.py`, pick with `--theme`): `clean`, `nautical`, `ember`, `parchment`, `cozy`.
+A card's `type` column maps to a suit colour + emblem.
 
 - **No deps installed?** The script still writes per-card **SVGs** — a useful baseline. PNG/PDF/TTS need
   `cairosvg` (and `Pillow` for TTS sheets).

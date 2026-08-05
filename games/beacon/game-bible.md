@@ -24,6 +24,8 @@ theirs — and claim the fat cargo runs while the tide is with you.
   dash of *Jaipur* set-collection.
 - **Audience:** couples/friends who want a quick, thinky 2-player filler; café/travel play.
 - **Target platform:** Screentop.gg first (playtest); print-and-play + card POD later.
+- **Visual theme:** `nautical` (deep sea + brass + sea-foam; see `tools/cards/themes.py`). Rough
+  placeholder cover generated to `build/cover.png` — real art TBD (human-illustrated, no AI).
 
 ## Mechanism spine
 **Simultaneous blind selection** (the core tension) + **tug-of-war track** (the Tide, area-majority in

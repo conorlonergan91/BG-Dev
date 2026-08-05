@@ -39,6 +39,23 @@ Starter code lives in `tools/cards/` — copy/adapt it per game into `games/<slu
 - **Deps:** `pip install -r tools/cards/requirements.txt` (`weasyprint cairosvg jinja2 pandas`).
   Optional: Inkscape, `playwright` for RGB preview/TTS sheets.
 
+## Style — themes & a cover (cheap, do it by default)
+
+Even a prototype should carry a basic sense of style so a playtester feels the vibe. It's free with our
+vector pipeline, so **always apply a theme and generate a rough cover** — don't ship grey boxes.
+
+- **Themes** live in `tools/cards/themes.py` (palette + type styling + per-suit colour & emblem). Pick
+  one with `--theme` when rendering cards:
+  `build_cards.py --csv <cards.csv> --out <build> --theme nautical --formats screentop`
+  Ships with `clean`, `nautical`, `ember` (dark/dungeon), `parchment`, `cozy`. A card's `type` column
+  maps to a suit colour+emblem; add/edit themes freely (one dict entry each).
+- **Cover image** (procedural, themed, no assets): a placeholder box/title image for Screentop/TTS or a
+  sell sheet:
+  `build_cover.py --title "Beacon" --subtitle "Two keepers. One coast." --theme nautical --players 2 --time "20 min" --weight 1.8 --out build/cover.png`
+- **Choose the theme to match the mood**, and record the choice (game-bible / manifest) so renders stay
+  consistent. It's a *placeholder vibe* — flag that real art comes later (and mind the human-vs-AI-art
+  stance in `knowledge/trends-2026.md`).
+
 ## Print specs to bake in (from `knowledge/manufacturing-specs.md`)
 
 - **Poker card = 63.5 × 88.9 mm = 750 × 1050 px @300 DPI** (trimmed); full-bleed ≈ 825 × 1125 px.

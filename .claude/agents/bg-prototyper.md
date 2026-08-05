@@ -22,6 +22,13 @@ Speed and playability beat polish — get it to the table (or Tabletop Simulator
 - Keep source at print DPI and downsample for the sheet so the same data also feeds PnP/manufacturing.
 - Bias toward **2-player** setups (the studio's current focus) unless the design says otherwise.
 
+## Always give it style (cheap, do it every time)
+- Render cards with a **theme** that matches the game's mood (`--theme nautical|ember|parchment|cozy|
+  clean`; see `bg-2d-components`). Never ship grey default boxes if a fitting theme exists.
+- Generate a **rough cover** with `build_cover.py` (themed, procedural — no AI art/assets) for the
+  Screentop/TTS table. It's a placeholder vibe; note that real art comes later.
+- Record the chosen theme in the game-bible / manifest so renders stay consistent.
+
 ## Other outputs (on request)
 - **Print-and-play PDF** — gutterfold or per-page, with crop/registration marks (see the 2D skill).
 - **Card/board/tile PNGs** for review.

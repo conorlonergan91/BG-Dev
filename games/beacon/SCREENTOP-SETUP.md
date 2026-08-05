@@ -2,15 +2,18 @@
 
 How to turn the generated sheets into a playable Screentop room for you + a friend.
 
-## 1. Regenerate the decks (if needed)
+## 1. Regenerate the decks + cover (if needed)
 ```bash
 cd games/beacon
-python3 ../../tools/cards/build_cards.py --csv components/ships.csv   --out build --formats screentop
-python3 ../../tools/cards/build_cards.py --csv components/signals.csv --out build --formats screentop
+python3 ../../tools/cards/build_cards.py --csv components/ships.csv   --out build --theme nautical --formats screentop
+python3 ../../tools/cards/build_cards.py --csv components/signals.csv --out build --theme nautical --formats screentop
+python3 ../../tools/cards/build_cover.py --title "Beacon" --subtitle "Two keepers. One coast." \
+    --theme nautical --players 2 --time "20 min" --weight 1.8 --out build/cover.png
 ```
-Produces (under `build/sheets/`, gitignored — regenerated from the CSVs):
-- `ships_sheet_1.png` — **10 × 3 grid**, 24 ships + back  ·  `ships_back.png`
-- `signals_sheet_1.png` — **10 × 2 grid**, 12 signals + back  ·  `signals_back.png`
+Produces (under `build/`, gitignored — regenerated from the CSVs):
+- `sheets/ships_sheet_1.png` — **10 × 3 grid**, 24 ships + back  ·  `sheets/ships_back.png`
+- `sheets/signals_sheet_1.png` — **10 × 2 grid**, 12 signals + back  ·  `sheets/signals_back.png`
+- `cover.png` — themed box/title image (use it as the game's cover/thumbnail in Screentop)
 
 ## 2. Build the room on Screentop.gg
 1. Sign in (free) → **Create a Game** → name it *Beacon*.

@@ -16,8 +16,10 @@ Feeds prototyping (Screentop.gg) and, later, manufacturing. Cards are poker size
 - Ships → one deck (24 cards) + shared back.
 - Signals → one deck of 12 (or two 6-card decks, one per player).
 - Tide track + tokens → image assets placed on the table; a marker piece to slide.
-- Build sheets: `python ../../tools/cards/build_cards.py --csv components/ships.csv --out build --formats screentop`
+- Build sheets (theme = **nautical**):
+  `python ../../tools/cards/build_cards.py --csv components/ships.csv --out build --theme nautical --formats screentop`
   (and again for `signals.csv`).
+- Cover image: `python ../../tools/cards/build_cover.py --title "Beacon" --subtitle "Two keepers. One coast." --theme nautical --players 2 --time "20 min" --weight 1.8 --out build/cover.png`
 
 ## For manufacture (later)
 36 poker cards total → a small-box card game. Add bleed (3 mm) and export CMYK per
