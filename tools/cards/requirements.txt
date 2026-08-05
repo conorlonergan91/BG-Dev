@@ -1,0 +1,9 @@
+# 2D card pipeline dependencies.
+# Core (needed by build_cards.py):
+cairosvg>=2.7      # SVG -> PNG/PDF  (macOS also needs the native cairo lib: `brew install cairo pango gdk-pixbuf libffi`)
+Pillow>=10.0       # compose Tabletop Simulator deck sheets
+
+# Optional / recommended for richer layouts (see the bg-2d-components skill):
+# weasyprint>=61    # HTML/CSS -> print-ready CMYK PDF with bleed + crop marks
+# jinja2>=3.1       # template engine if you outgrow the built-in SVG generator
+# pandas>=2.0       # if you prefer dataframes over the stdlib csv module
