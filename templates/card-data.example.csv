@@ -1,0 +1,5 @@
+id,name,type,cost,value,effect,quantity,tags,art_note
+C001,Market Stall,building,2,1,"Gain 1 coin when you sell goods.",3,economy;starter,"Cozy wooden stall, morning light"
+C002,River Barge,transport,3,2,"Move up to 2 goods along the river.",2,transport,"Flat-bottomed barge on a calm river"
+C003,Guild Charter,action,4,0,"Draw 2 cards, then discard 1.",2,card-draw,"Wax-sealed parchment charter"
+C004,Night Market,event,1,0,"All players draw 1 card. You draw 2.",1,event;interaction,"Lantern-lit stalls after dark"

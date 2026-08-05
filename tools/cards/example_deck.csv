@@ -1,0 +1,6 @@
+id,name,type,cost,value,effect,quantity,tags,art_note
+C001,Market Stall,Building,2,1,Gain 1 coin whenever you sell goods here.,3,economy;starter,Cozy wooden stall in morning light
+C002,River Barge,Transport,3,2,Move up to 2 goods along the river to any dock.,2,transport,Flat-bottomed barge on a calm river
+C003,Guild Charter,Action,4,0,Draw 2 cards then discard 1. Take an extra turn.,2,card-draw,Wax-sealed parchment charter
+C004,Night Market,Event,1,0,All players draw 1 card. You draw 2 and gain 1 coin.,1,event;interaction,Lantern-lit stalls after dark
+C005,Old Lighthouse,Building,5,3,At game end score 1 point per Transport card you own.,1,scoring,Weathered stone lighthouse at dusk

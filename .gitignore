@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Node (Figma plugin / puppeteer helpers, if used)
+node_modules/
+
+# Generated component output (regenerated from data — keep the data, not the renders)
+games/**/build/
+games/**/exports/
+tools/**/out/
+*.tmp
+
+# Blender
+*.blend1
+*.blend2
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keep the games directory itself
+!games/.gitkeep
