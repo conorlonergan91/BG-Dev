@@ -13,12 +13,15 @@ python3 ../../tools/boards/build_board.py --type track --spaces 7 --title "The T
     --left-label "Keeper A harbour" --right-label "Keeper B harbour" --theme nautical --out build/tide-track.png
 python3 ../../tools/boards/build_board.py --type tokens --labels "Tide,1st" --shape circle \
     --theme nautical --out build/tokens.png
+python3 ../../tools/rulebook/build_rulebook.py --md design/rules-draft.md --title "Beacon" \
+    --theme nautical --out build/rulebook.pdf
 ```
 Produces (under `build/`, gitignored — regenerated from the CSVs):
 - `sheets/ships_sheet_1.png` — **10 × 3 grid**, 24 ships + back  ·  `sheets/ships_back.png`
 - `sheets/signals_sheet_1.png` — **10 × 2 grid**, 12 signals + back  ·  `sheets/signals_back.png`
 - `cover.png` — themed box/title image (use it as the game's cover/thumbnail in Screentop)
 - `tide-track.png` — the 7-space Tide track  ·  `tokens.png` — Tide marker + First-Keeper token
+- `rulebook.pdf` — the v0.3 rules, laid out (share it with your friend before you start)
 
 ## 2. Build the room on Screentop.gg
 1. Sign in (free) → **Create a Game** → name it *Beacon*.
