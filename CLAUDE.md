@@ -138,7 +138,22 @@ want 3D pieces (Blender) or collaborative visual layout (Figma).
 - **Cite the knowledge base** when giving design/publishing advice, and flag when something should be
   re-checked live (rankings, fees, legal/compliance specifics).
 
-## Git
+## Git & commit conventions
 
-Work on branch `claude/board-game-design-agents-81gkkl`. Commit with clear messages. Only push when
-the work is complete or the user asks. Do not open a PR unless explicitly requested.
+Work on branch `claude/board-game-design-agents-81gkkl`.
+
+**Commit early and often, and push as you go** (the maintainer's explicit preference):
+- **Small, logical commits** — one coherent change per commit, not a big end-of-session dump. A new
+  design stage, a component-data change, a rules revision, a tooling tweak → each its own commit.
+- **Messages explain the WHY, not just the what.** The subject line says what changed; the body says
+  *why it changed* — the motivation, the design reasoning, the trade-off or alternative rejected. A
+  reader (or future session) should understand the intent without re-reading the diff. Mirror the
+  `decision-log.md` habit: capture rationale, not just mechanics.
+- **Push after each meaningful commit** (`git push -u origin <branch>`), so work is never stranded in
+  the ephemeral container. Retry with backoff on network errors.
+- Do **not** open a PR unless the user explicitly asks.
+
+Example subject + body:
+> `Swap Beacon's signal-reclaim rule for the "tide turns" initiative handoff`
+> *Why: signal-reclaim added per-Night bookkeeping and was hard to teach; handing the Night's Tide-loser
+> first-keeper next Night gives the same catch-up valve with zero extra components. Keeps weight ~1.8.*
