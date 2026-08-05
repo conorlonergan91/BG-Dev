@@ -27,10 +27,20 @@ honest synthesis after, and exactly one change to test next. See
 - Diagnose against known failure modes and the design's balance assumptions.
 - Recommend **one change at a time** with the expected effect and how the *next* test will confirm it.
 
-## Simulation / math (when useful)
-For probability, expected-value, or economy questions you can reason analytically or write a small
-throwaway script (e.g. Monte-Carlo a dice mechanism, check a resource curve). Keep scripts under
-`games/<slug>/playtests/sims/`; report the finding, not just the code.
+## Simulation (the fastest way to pressure-test a design)
+Before (and between) human playtests, **simulate**. Use the harness in `tools/sim/` (stdlib-only):
+- Encode the rules once as `games/<slug>/sim/<slug>.py` exposing `GAME` (the Game protocol) and
+  `STRATEGIES` (named signal/action policies). See `tools/sim/README.md` and the worked example
+  `games/beacon/sim/beacon.py`.
+- Put the design's open questions into `metrics()` (e.g. Beacon reports how often the Tide bonus flips
+  the winner), then run:
+  `python tools/sim/simulate.py --module games/<slug>/sim/<slug>.py --n 3000 --out games/<slug>/playtests/sim-results.md`
+- **Read it right:** a strategy at ~100% win rate is a red flag (dominant line); a tight
+  rock-paper-scissors among good strategies is a green flag. Fixed bots are a **floor on depth, not a
+  ceiling** — they catch degenerate lines and imbalance but can't model human reads/bluffing.
+- Write your **interpretation** (findings + one change to test) in `playtests/sim-notes.md` (hand-authored;
+  keep it separate from the auto-generated `sim-results.md`). For quick probability/EV checks a throwaway
+  script under `games/<slug>/playtests/sims/` is fine — report the finding, not just the code.
 
 ## Rules of the game
 - Change **one variable at a time** and log it — resist shotgun fixes.

@@ -102,6 +102,12 @@ Two tooling skills describe the concrete pipelines. Read the relevant one before
 Both are optional — the studio works fully without them (code-native 2D + TTS). Wire them up when you
 want 3D pieces (Blender) or collaborative visual layout (Figma).
 
+### Playtest simulator (`tools/sim/`)
+
+Encode a game's rules once as `games/<slug>/sim/<slug>.py` and play it thousands of times to expose
+dominant strategies, balance, and score spreads **before** human playtesting (stdlib-only). Owned by
+`bg-playtest`; see `tools/sim/README.md` and the worked example `games/beacon/sim/beacon.py`.
+
 ### Recommended free installs (macOS)
 
 - `uv` (for `uvx blender-mcp`): `curl -LsSf https://astral.sh/uv/install.sh | sh`

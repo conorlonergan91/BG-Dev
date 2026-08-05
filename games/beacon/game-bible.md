@@ -69,7 +69,7 @@ blind), with the Tide creating a second layer of pressure.
 - [x] Design
 - [x] Development (component data + rules draft + build)
 - [x] Prototype (Screentop.gg deck sheets generated)
-- [ ] Playtesting (session 1 planned — `playtests/session-01-plan.md`)
+- [~] Playtesting (simulated — `playtests/sim-notes.md`; human session 1 planned — `playtests/session-01-plan.md`)
 - [x] Marketing (sell sheet drafted)
 - [x] Publishing / IP (IE/UK/US quick plan drafted)
 
