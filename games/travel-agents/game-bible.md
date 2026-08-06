@@ -26,16 +26,16 @@ that's the gag. Kinds of fun (**locked**): **Discovery** (lead) + **Fellowship**
 - **Details:** see `identity.md`.
 
 ## Positioning
-- **Weight (BGG 1–5):** aim ~1.8, acceptable up to **~2.2** if gameplay needs it (lighter is better, but don't let the budget hamper the fun — CD 2026-08-06). Band: TtR Europe ~1.9, Let's Go! To Japan ~2.25.
+- **Weight (BGG 1–5):** aim ~2.2, acceptable up to **~2.5** (raised 2026-08-06 for the engine-building pivot — lighter still better, tight-two-player engine not a heavy euro). Band: Splendor Duel ~2.3 · LOTR: Duel for Middle-earth ~2.4 · Arnak ~2.7.
 - **Players:** 2–4 (this game leads with a first-class **2-player duel** by its own design choice, then scales to a 3–4p race)
 - **Playtime:** ~30–45 min (TBD)
 - **Tone:** silly / warm / adventurous
-- **Comparable:** *Let's Go! To Japan* meets *Ticket to Ride*, with a dash of *Couture* and *Agent Avenue*.
+- **Comparable:** *Splendor Duel* / *Arnak*-style engine-building + *Ticket to Ride* routing, wrapped in a warm Taiwan food-tour with a secret-agent wink (the CD's touchstones: *LOTR: Duel*, *Splendor Duel*, *Arnak*).
 - **Audience:** families, foodies, casual + gateway hobbyist; travel/Taiwan-culture fans.
 - **Target platform:** Screentop.gg for playtest (studio default); route-to-market TBD (`bg-funding`).
 
 ## Complexity budget (set at the START — defend it as you iterate)
-- **Target weight:** aim ~1.8; **acceptable ceiling ~2.2** (CD raise 2026-08-06 — gameplay wins over strictness; lighter still preferred)
+- **Target weight:** aim ~2.2; **acceptable ceiling ~2.5** (CD raise #2, 2026-08-06 — for the engine-building pivot; still a tight 2p engine, lighter preferred, every rule earns its place)
 - **Caps:** see `complexity-budget.json`. Check drift with
   `python tools/complexity/check_complexity.py --game games/travel-agents` and run **`bg-elegance`** each
   iteration. Over budget → simplify, or consciously log a raise. Never silent creep.
