@@ -28,6 +28,16 @@ theirs — and claim the fat cargo runs while the tide is with you.
   renders (decks, cover, rulebook, track, tokens) are committed in `exports/` — regenerate with
   `./make.sh`. Cover is a rough placeholder — real art TBD (human-illustrated, no AI).
 
+## Modes & scope (see `design/architecture.md`)
+- **Player modes:** 2-player duel = the complete base. Natural additions (optional, reuse the base):
+  **solo** (Rival Keeper automa), **co-op "Storm"** variant (fits the constrained-comms taste). 3–4p is
+  out of scope (would need a re-engineering, not a mode).
+- **Campaign?** Not in the base — a later optional add-on: an ordered, non-destructive "Coastline"
+  scenario campaign (Sky Team / The Crew mold).
+- **Expansion ambition:** hold back a "Ports & Cargo" variety module (new ship types + alt/asymmetric
+  Signal sets). Base stays complete without it. Hooks kept: spare suit slot, reusable Tide track, no
+  hard-coded "3 suits / 3 Nights" language.
+
 ## Mechanism spine
 **Simultaneous blind selection** (the core tension) + **tug-of-war track** (the Tide, area-majority in
 miniature) + **set collection** (ship suits for scoring). The blind commit *needs* the Tide: the Tide

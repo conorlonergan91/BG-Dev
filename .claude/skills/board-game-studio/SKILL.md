@@ -54,6 +54,7 @@ independent agents in parallel.
 | Research | `bg-research` | Reality-checking a concept vs the market (uses live web). |
 | Explore/Brainstorm | `bg-explore` | Opening the design space; breaking a deadlock; finding the fun. |
 | Design | `bg-design` | A direction is locked and the game needs specifying (rules, economy, math). |
+| Architecture | `bg-architect` | Deciding player modes (solo/duel/multi/party), campaign, and base-vs-expansion scope; component reuse. |
 | Development | `bg-developer` | Turning the spec into component data + rules draft + build scaffolding. |
 | Prototyping | `bg-prototyper` | Turning data into a TTS module / PnP PDF / renders / 3D pieces. |
 | Critique | `bg-critic` | Red-teaming a design before playtests — dominant strategies, dead turns, swinginess, co-op alpha-player leaks. |
@@ -73,6 +74,11 @@ A/B/C choice, get the call, record it, and move to the next stage.
    iteration by `bg-elegance`. Never let weight creep silently past it. To anchor on a real game
    ("budget it like *Arcs* / *The White Castle*"), seed it deterministically from BoardGameGeek:
    `python tools/bgg/bgg_lookup.py --name "<game>" --suggest-budget --out games/<slug>/complexity-budget.json`.
+   Ask about **modes & expansion ambition** — but don't force it. If the human has an upfront ambition
+   (solo? co-op *and* duel? campaign? expansions?), capture it so `bg-architect` builds the core loop to
+   *accommodate* it. If not, **keep it a focused single-mode game and let scope emerge later** only when
+   it clearly adds fun/variety/replayability. A focused game (even 2p-only) is a valid, often best
+   answer. **A base game must be complete and great on its own.**
 2. **Resume:** read `game-bible.md` + `decision-log.md`, give a 3-line "where we are / what's next"
    recap, then propose the next stage as an A/B/C choice.
 3. If no game exists yet and the human is unsure, offer: **(A)** ideate from a blank slate, **(B)**

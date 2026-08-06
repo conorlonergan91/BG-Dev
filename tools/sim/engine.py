@@ -85,6 +85,48 @@ def play_series(game, agents, n=2000, base_seed=1):
     }
 
 
+class _AtCount:
+    """Wrap a game so play_series runs it at a fixed player count. The game's new_state must accept an
+    optional player count: new_state(rng, n_players). Games with a fixed count don't support this."""
+    def __init__(self, game, n):
+        self._g, self._n = game, n
+    def new_state(self, rng):
+        return self._g.new_state(rng, self._n)
+    def __getattr__(self, k):
+        return getattr(self._g, k)
+
+
+def seat_balance(game, agent, n_players, n=1500, base_seed=1):
+    """Self-play mirror at a given count: is any seat/turn-order winning more than its fair share?
+    A fair game → each of the n_players seats wins ~1/n_players. Requires new_state(rng, n_players)."""
+    res = play_series(_AtCount(game, n_players), {p: agent for p in range(n_players)},
+                      n=n, base_seed=base_seed)
+    wr = res["win_rate"]
+    fair = 1.0 / n_players
+    return {
+        "n_players": n_players,
+        "seat_win_rate": wr,
+        "tie_rate": res["tie_rate"],
+        "score_mean": res["score_mean"],
+        "fair_share": fair,
+        # heuristic: a seat winning ≥1.5× or ≤0.5× its fair share is a balance smell
+        "suspect": max(wr.values()) > fair * 1.5 or min(wr.values()) < fair * 0.5,
+    }
+
+
+def per_count(game, agent, counts, n=1500, base_seed=1):
+    """Run seat_balance at each player count. Games that don't parametrise count report that clearly."""
+    out, seed = {}, base_seed
+    for c in counts:
+        try:
+            out[c] = seat_balance(game, agent, c, n=n, base_seed=seed)
+        except TypeError:
+            out[c] = {"n_players": c, "error": "game.new_state(rng, n_players) not supported — "
+                      "this game has a fixed player count and can't be tested at other counts."}
+        seed += n
+    return out
+
+
 def round_robin(game, strategies, n=1000, base_seed=1):
     """
     Two-player strategy tournament. `strategies` = {name: agent}. Plays every ordered pair

@@ -18,7 +18,7 @@ import importlib.util
 import sys
 from pathlib import Path
 
-from engine import round_robin, format_round_robin, play_series
+from engine import round_robin, format_round_robin, play_series, per_count
 
 
 def load_module(path: Path):
@@ -37,12 +37,30 @@ def main():
     ap.add_argument("--out", type=Path, default=None, help="write the markdown report here")
     ap.add_argument("--matchup", default=None,
                     help="run a single matchup 'A:B' (P0:P1) and print its detailed metrics instead of a tournament")
+    ap.add_argument("--counts", default=None,
+                    help="seat-balance across player counts, e.g. '2,3,4' (needs new_state(rng, n_players))")
+    ap.add_argument("--agent", default=None,
+                    help="strategy name to self-play for --counts (default: first in STRATEGIES)")
     args = ap.parse_args()
 
     mod = load_module(args.module)
     game = getattr(mod, "GAME")
     strategies = getattr(mod, "STRATEGIES")
     title = getattr(mod, "TITLE", args.module.stem)
+
+    if args.counts:
+        counts = [int(c) for c in args.counts.split(",")]
+        agent_name = args.agent or next(iter(strategies))
+        rep = per_count(game, strategies[agent_name], counts, n=args.n, base_seed=args.seed)
+        print(f"# {title} — seat balance by player count (self-play: {agent_name}, {args.n} games each)\n")
+        for c, r in rep.items():
+            if "error" in r:
+                print(f"  {c}p: {r['error']}"); continue
+            flag = "⚠ suspect" if r["suspect"] else "✓ balanced"
+            wr = "  ".join(f"seat{p}={v*100:.0f}%" for p, v in r["seat_win_rate"].items())
+            print(f"  {c}p  {flag}  (fair {r['fair_share']*100:.0f}%)  {wr}  ties={r['tie_rate']*100:.0f}%")
+        print("\nNo count should be 'garbage'. If one is irredeemable, cap the player range (bg-playtest).")
+        return 0
 
     if args.matchup:
         a, b = args.matchup.split(":")

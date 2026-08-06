@@ -22,7 +22,7 @@ MCP servers (see below).
 
 | Path | What it is |
 |------|------------|
-| `.claude/agents/` | The composable pipeline — 11 specialist subagents (`bg-ideation` … `bg-critic` … `bg-elegance` … `bg-publishing`). |
+| `.claude/agents/` | The composable pipeline — 12 specialist subagents (`bg-ideation` … `bg-architect` … `bg-critic` … `bg-elegance` … `bg-publishing`). |
 | `.claude/skills/board-game-studio/` | The **Creative Director** orchestrator (human-in-the-loop protocol). |
 | `.claude/skills/bg-2d-components/` | Cards / boards / tracks / tokens / player aids: **data → SVG → PNG / PDF / Screentop**, themed. |
 | `.claude/skills/bg-3d-components/` | Miniatures / dice / inserts / boxes via **Blender / FreeCAD / OpenSCAD MCP**. |
@@ -35,7 +35,8 @@ MCP servers (see below).
 | `tools/lint/`, `tools/rulebook/` | Consistency **linter** + **rulebook** generator (markdown → themed A5 PDF). |
 | `tools/complexity/` | **Complexity gauge** — proxies vs the game's budget, so weight doesn't creep as you iterate. |
 | `tools/bgg/` | **BoardGameGeek lookups** — deterministic weight/players/mechanisms/rank; seed a budget "like *Arcs*". |
-| `games/` | Your games live here — data + docs committed; `build/` is scratch, `exports/` holds committed deliverables. |
+| `tools/version/` | **Build snapshots** — freeze/list/restore whole-product builds; revert to "build 3" and branch off it. |
+| `games/` | Your games live here — data + docs committed; `build/` is scratch, `exports/` holds deliverables, `builds/` holds frozen build snapshots. Structure grows into `expansions/`, `modes/`, `product.md` only as scope demands. |
 
 ## Optional integrations
 

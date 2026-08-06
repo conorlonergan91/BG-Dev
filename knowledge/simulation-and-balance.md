@@ -60,12 +60,28 @@ The sim rules out broken math, dominant lines, and dead mechanics. It **cannot**
 - table feel, downtime, social dynamics, the "we almost made it" ache in co-op.
 Those are the human session-1 questions. Simulate to *de-risk and target* playtests, never to replace them.
 
+## Test every player count & variant (not just the sweet spot)
+A game offered at 2–5 players is really several games. Test them all — in sim and with humans:
+- **Seat balance per count:** `simulate.py --counts "2,3,4,5" --agent <line>` self-plays a strategy at
+  each count and reports each **seat's win rate** vs its fair share (1/n). A seat winning ≥1.5× or ≤0.5×
+  fair is flagged **⚠ suspect** — usually a turn-order/first-player problem. (Needs a game whose
+  `new_state(rng, n_players)` parametrises count; fixed-count games report that cleanly.)
+- **Variants/modes** get the same treatment — run the round-robin (and mirror probes) per active variant.
+- **It needn't be perfect at every count — but never garbage at any offered count.** If a count is weak
+  but fixable, fix it. **If it's irredeemable, cap the player range** ("2–3, not 2–5") or rework the
+  offending part. A narrower range done well beats a wide one done badly — the goal is the *best game*,
+  not the longest count list. `bg-playtest` owns this call; `bg-critic` flags the mismatch.
+- The sim measures *balance*; **playtime, downtime, and the social feel per count** are human-session
+  observations (see `design-fundamentals.md` → Social axis).
+
 ## Quick commands
 ```bash
 # full tournament + health read
 python tools/sim/simulate.py --module games/<slug>/sim/<slug>.py --n 3000 --out games/<slug>/playtests/sim-results.md
 # probe a specific matchup (esp. the strongest line's mirror)
 python tools/sim/simulate.py --module games/<slug>/sim/<slug>.py --n 2000 --matchup best:best
+# seat balance across player counts (multi-count games)
+python tools/sim/simulate.py --module games/<slug>/sim/<slug>.py --counts "2,3,4" --agent <line>
 ```
 Write the *interpretation* (findings + the one change to test) in `playtests/sim-notes.md`, separate
 from the auto-generated `sim-results.md`.

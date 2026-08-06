@@ -1,0 +1,25 @@
+id,name,type,cost,value,effect,quantity,tags,art_note
+S01,Salt Drifter,Cargo,,1,"A low, laden hull riding the swell.",1,cargo;v1,Weathered cargo sloop at dawn
+S02,Kelp Runner,Cargo,,1,"Smells of the shallows and salt.",1,cargo;v1,Small boat trailing seaweed
+S03,Copper Maud,Cargo,,2,"Her hold rings with ingots.",1,cargo;v2,Broad-beamed trader
+S04,Tin Gull,Cargo,,2,"Grey sails patched a dozen times.",1,cargo;v2,Patched grey sails
+S05,Amber Hold,Cargo,,3,"Riches sealed below decks.",1,cargo;v3,Golden-lit cargo hold
+S06,Grain Sovereign,Cargo,,3,"Feeds a city for a week.",1,cargo;v3,Tall grain freighter
+S07,The Deepkeel,Cargo,,4,"The fattest run of the season.",1,cargo;v4,Massive deep-hulled ship
+S08,Ironbank,Cargo,,4,"Sits low, heavy with ore.",1,cargo;v4,Iron-grey heavy hauler
+S09,Ferry Wren,Passenger,,1,"A handful of sleepy travellers.",1,passenger;v1,Little coastal ferry
+S10,Little Puffin,Passenger,,1,"Bright and small in the fog.",1,passenger;v1,Cheerful tiny ferry
+S11,Pilgrim's Rest,Passenger,,2,"Pilgrims bound for the far chapel.",1,passenger;v2,Wooden pilgrim boat
+S12,Merry Tide,Passenger,,2,"Music drifts from her deck.",1,passenger;v2,Festive lantern-lit deck
+S13,Gilded Swallow,Passenger,,3,"Wealthy passengers, wealthier fares.",1,passenger;v3,Elegant gilded steamer
+S14,Empress Rose,Passenger,,3,"A liner of quiet luxury.",1,passenger;v3,Rose-hulled liner
+S15,The Aurelia,Passenger,,4,"The night's grandest arrival.",1,passenger;v4,Grand ocean liner lit gold
+S16,Star of Cobh,Passenger,,4,"Every berth booked and paid.",1,passenger;v4,Great emigrant liner
+S17,Cutter Pike,Naval,,1,"A swift little patrol.",1,naval;v1,Sleek patrol cutter
+S18,Skiff Vane,Naval,,1,"Scouts the dark water.",1,naval;v1,Small scouting skiff
+S19,HMS Thistle,Naval,,2,"Colours snapping in the wind.",1,naval;v2,Frigate with flags flying
+S20,The Gannet,Naval,,2,"Dives fast on the tide.",1,naval;v2,Fast attack vessel
+S21,Warden's Lance,Naval,,3,"Guardian of the strait.",1,naval;v3,Armoured warden ship
+S22,Brine Serpent,Naval,,3,"Feared from cape to cape.",1,naval;v3,Serpent-figurehead warship
+S23,Dread Aurora,Naval,,4,"The flagship of the fleet.",1,naval;v4,Imposing lantern-lit flagship
+S24,The Leviathan,Naval,,4,"Nothing outguns her.",1,naval;v4,Colossal ship of the line

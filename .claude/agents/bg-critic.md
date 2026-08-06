@@ -28,7 +28,16 @@ the designer, and always pair a problem with a way to confirm or fix it.
   the information/communication design has failed); **solvability** (does the puzzle stop surprising
   after a few plays?); **is there a real opponent** (does the system push back, or is it a solitaire?).
 - **Theme–mechanism mismatch** — does the theme fight the rules or feel pasted on?
-- **Scaling / count** — does it hold at every stated player count (esp. the 2p core)?
+- **Scaling / count** — does it hold at *every* stated player count (esp. the core)? Flag any count
+  that's weak or garbage; if a count can't be fixed without wrecking the core, recommend **capping the
+  range** rather than shipping a bad count (a smaller range done well wins). (Probe with `bg-playtest`
+  per-count sims.)
+- **Social fit & the clock** — is the game *social when it intends to be* (negotiation/bluff/reads/table
+  talk actually matter), or is it accidentally solvable in silence? Conversely, is forced "interaction"
+  bolted onto what's really a quiet puzzle? Does the **synchronous/asynchronous** structure create
+  downtime, and does the resulting **playtime fit the target audience** (a filler running long, a party
+  game too slow)? A game can be non-social and great — the flaw is a *mismatch* with intent/audience.
+  (See `knowledge/design-fundamentals.md` → Social axis.)
 - **Is the fun actually there?** — name the intended aesthetic (MDA) and argue whether the mechanics
   deliver it. This is the most important question.
 
