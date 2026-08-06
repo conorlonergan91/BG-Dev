@@ -3,7 +3,7 @@
 > The living source of truth for this game's **felt identity**: concept, theme, tone/vibe, story/lore,
 > look & feel, and naming. Owned by `bg-theme`; read alongside `game-bible.md`. Keep it current — and
 > keep it **coherent** while letting it **evolve** with the design.
-> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-06 (bg-theme — v4 fiction pass: Schmooze rename · Buzz-on-vendor hype-war · Lunchbox Grandma re-theme · Acts / a-day's-arc end-game)
+> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-06 (bg-theme — **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game)
 
 > **Restraint first.** Match identity depth to what the game *earns*. Leaving story/lore light on purpose
 > is a correct answer, not a gap. Never invent lore to fill a section.
@@ -164,20 +164,33 @@ correct answer for this rung.
 ## Theme ↔ mechanic resonance
 *(**v4 fiction pass** — checked against the CD's v4 direction (`decision-log.md` TOP entry), 2026-08-06,
 with a parallel `bg-design` pass locking the mechanics. Updates the v3 vendor-courting resonance for the
-four v4 moves: **Court→Schmooze**, **Buzz becomes committed/contested ON the vendor**, **Extract removed →
-Acts end-game**, **Conductor→Lunchbox Grandma**. Supersedes v1/v2 resonance. Aim: a player could half-guess
-the rules from the fiction.)*
-- **Schmooze a Vendor (pay ingredients + out-hype your rival → the vendor features on your tour)** —
-  **integrated & anti-extraction; this is the load-bearing check and it HOLDS, and the rename PROTECTS
-  it.** The fiction: you *win a vendor's blessing* by promoting them harder than your rival and sourcing
-  what their dish needs. A rival's lock-out reads as *the vendor chose the agent who schmoozed them best*
-  — **"out-charmed, not robbed,"** never a place seized or monopolised. **Why "Schmooze," not "Bribe":** a
-  *bribe* makes the corruption/outsider-buys-off-a-local reading the DEFAULT, and the warm reframe the
-  exception you must explain — which inverts the rail's "celebration **by construction**" principle. A
-  *schmooze* is charm and patter; the smarm lands on the over-the-top agent (punch at yourself), the
-  vendor gets a genuinely great deal, and they still **choose you**. Keep the rulebook voice on **schmooze
-  / win over / feature / showcase / champion**, never *acquire / control / own / claim / bribe* a vendor.
-  *(The "Bribe" gag survives as flavour only — see Naming.)*
+four v4 moves: **Court→Bribe a Vendor** *(CD lock, over bg-theme's Schmooze rec — warm framing now
+BINDING)*, **Buzz becomes committed/contested ON the vendor**, **Extract removed → Acts end-game**,
+**Conductor→Lunchbox Grandma**. Supersedes v1/v2 resonance. Aim: a player could half-guess the rules from
+the fiction.)*
+- **Bribe a Vendor (pay ingredients + out-hype your rival → the vendor features on your tour)** —
+  **integrated; anti-extraction, and this is now the #1 load-bearing check in the whole game.** The
+  fiction: you *win a vendor's blessing* by promoting them harder than your rival and sourcing what their
+  dish needs. A rival's lock-out reads as *the vendor chose the agent who won them over best* — **"out-
+  charmed, not robbed,"** never a place seized or monopolised. **The CD chose "Bribe" over bg-theme's
+  "Schmooze"** for the funnier, spicier word — the *right* comedy call, but it means the warm reframe is no
+  longer optional garnish: it is **binding, load-bearing, and must run through every "Bribe" line**, because
+  the bare word *bribe* otherwise defaults to an outsider-corrupts-a-local reading (the opposite of the
+  rail). **The reframe that makes "Bribe" rail-safe (BINDING — for `bg-elegance` / `bg-developer`, every
+  "Bribe" line carries it):**
+  1. **A "bribe" here is a *marketing opportunity*, not corruption.** The running gag is explicit: the
+     agent, in full spy-caper mode, theatrically slides a "bribe" across the table — *"this isn't a bribe,
+     it's a **marketing opportunity**."* What's actually on offer is **free publicity, a glowing five-star
+     review, and a busload of hungry tourists** — a windfall the vendor *genuinely wants*.
+  2. **The smarm lands on the AGENT — punch at yourself, never the vendor or the place.** The comedy is the
+     over-the-top trench-coated agent playing gangster over a bowl of noodles; the vendor is never the butt,
+     never a mark, never corrupt. Taiwan and its cooks are the *beloved*, not the joke.
+  3. **The vendor still freely *chooses* the bigger fan.** Winning a vendor = they picked the agent driving
+     the bigger crowd. No one is bought against their interest; the "bribe" is a gift they're delighted to
+     accept. **Never** *acquire / control / own / claim / corrupt* a vendor.
+  This binding reframe is what keeps the spicy keyword on the celebration-by-construction rail rather than
+  inverting it — hold it hard and "Bribe" reads as cheeky-agent-comedy; drop it and the word tips extractive.
+  ***→ #1 item for the paid Taiwanese consultant (see Sensitivity) — the one to watch.***
 - **Buzz-on-the-vendor = the hype war (v4: committed, contested majority you pile ON a vendor, Arcs-Court-
   like)** — **integrated, and it STRENGTHENS the anti-extraction rail.** In-world a Buzz stack on a vendor
   is **the queue you've drummed up** — the busloads of hungry tourists, the five-star reviews, the "trust
@@ -269,19 +282,29 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   - **signature itinerary / signature Mission** = your secret star tour (the +7 hidden hook, draw-3-
     keep-1). Individual ones can keep the *"Operation: ___"* code-name gag as the agency's internal
     project name for the tour ("Operation: Beef Noodle") — the wordplay survives.
-  - **Vendor** + **Schmooze** = the stall/cook you win over, and the action of doing so (pay ingredients +
-    hold the Buzz majority → they feature on your tour). ***v4 spine word — replaces "Court" (RECOMMENDED,
-    pending CD pick).*** *Flavour:* "You don't **bribe** a vendor — you **schmooze** one: lay on the patter,
-    promise them a busload of hungry tourists, and out-charm your rival for their blessing." Why Schmooze
-    over Court/Bribe: it's the funny word the CD wanted **without** tripping the anti-extraction rail (see
-    resonance) — cheeky charm, not corruption; the vendor still chooses you. Alternatives if the CD wants a
-    different flavour: **Butter Up** (food pun, warm — but two words, butter isn't TW-coded), **Sweet-talk**,
-    **Woo** (warmest, least funny), **Recruit** (spy-caper register — a bit cool). The shared tiered
-    **Vendor Board** is the public race — it **absorbs the old "Hot-List of dishes"**, no longer a separate row.
-  - **The "Bribe" running gag = FLAVOUR ONLY, never the keyword.** The CD's funny "bribe" instinct is
-    preserved as a recurring margin aside: the agent, in full spy-caper mode, theatrically *slides a bribe
-    across the table* — that turns out to be a glowing review and a busload of tourists. *"This isn't a
-    bribe. It's a **marketing opportunity**."* Keeps the joke; keeps the box/rulebook keyword warm.
+  - **Vendor** + **Bribe** = the stall/cook you win over, and the action of doing so (pay ingredients +
+    hold the Buzz majority → they feature on your tour). ***v4 spine word — replaces "Court." LOCKED by
+    the CD (2026-08-06), chosen over bg-theme's "Schmooze" rec for the funnier, spicier word.*** *Flavour
+    (the load-bearing reframe — carry it on EVERY "Bribe" line):* "You **bribe** a vendor — but this isn't
+    a bribe, it's a **marketing opportunity**: free publicity, a glowing five-star review, and a busload
+    of hungry tourists. The vendor's thrilled; they just pick whichever agent's driving the bigger crowd."
+    **Binding rulebook-voice guidance (→ `bg-elegance` / `bg-developer`):** the smarm lands on the
+    over-the-top **agent** (punch at yourself), **never** the vendor or the place; a "bribe" = a windfall
+    the vendor genuinely wants; the vendor still **freely chooses the bigger fan**. Keep the surrounding
+    voice on **win over / feature / showcase / champion / put on the poster** so the cheeky "bribe" keyword
+    is always cushioned by warmth — **never** *acquire / control / own / claim / corrupt* a vendor. (Full
+    reframe + the three binding rails in Theme↔mechanic resonance.) The shared tiered **Vendor Board** is
+    the public race — it **absorbs the old "Hot-List of dishes"**, no longer a separate row.
+    - *Rejected: **Schmooze** (bg-theme's rec — safer, cheeky-charm-not-corruption, but the CD wanted the
+      spicier laugh), **Court** (v3, cooler), **Butter Up / Sweet-talk / Woo / Recruit** (logged v4
+      alternatives). The trade the CD accepted: **spicier word, so the warm reframe becomes mandatory
+      rather than optional** — logged as the #1 consultant watch-item.*
+  - **The "marketing opportunity" running gag = now the keyword's built-in cushion, not a separate aside.**
+    Because "Bribe" IS the keyword, the *"this isn't a bribe, it's a marketing opportunity"* gag is no
+    longer an optional margin joke — it's the **primary device that keeps the keyword rail-safe**, so it
+    recurs wherever "Bribe" appears (rulebook, player aid, box copy): the agent theatrically slides a
+    "bribe" across the table that turns out to be a glowing review and a busload of tourists. The joke does
+    double duty — it's funny *and* it's the guardrail.
   - **Buzz** + **Promote** = the second currency (now **committed & contested ON a vendor** — v4) and the
     action that earns it. *Flavour of the physical stack:* **the Queue** — a Buzz token = a busload/a wave
     of your clients you've steered to that stall; the pile of Buzz on a vendor = the queue snaking out their
@@ -318,12 +341,14 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   - **best-tour title** = the season's prize you're both racing for — the compete-engine's payoff. A
     cutesy award *name* (a "Golden Boarding-Pass"-type gag) is **fluid** — hold it light; route any
     Chinese/Tâi-lô coinage through the native reviewer before it locks.
-  - Read the v4 set aloud together (travel agency / head office / signature Mission / **Schmooze a Vendor** /
+  - Read the v4 set aloud together (travel agency / head office / signature Mission / **Bribe a Vendor** /
     **Buzz → the Queue** / Vendor Board / **Act I Breakfast Run · Act II Afternoon Crawl · Act III Night
     Market** / **Prestige · Reputation · Coverage** / Events / best-tour title / Stamps) — one warm travel-
-    agent-playing-spy voice, no clashes. *"Schmooze,"* *"the queue you drummed up,"* and *"night market"*
-    all point the same way (charm + a crowd + the neon climax); the "Bribe" gag stays a wink, never a
-    keyword. Kill any that drift toward menace. *(Note: the objectives = **Missions** register above stays;
+    agent-playing-spy voice, no clashes. **"Bribe"** is the spiciest word in the set, so it *depends* on its
+    neighbours to stay warm: *"the queue you drummed up,"* *"marketing opportunity,"* *"put her on the
+    poster,"* and *"night market"* all point the same way (a crowd + the neon climax + a delighted vendor) —
+    which is exactly what cushions "Bribe" into cheeky-agent-comedy rather than corruption. Kill any that
+    drift toward menace, and make sure no "Bribe" line is left standing *without* its warm cushion. *(Note: the objectives = **Missions** register above stays;
     "Traveller's Log" is now just flavour for the tour, not a scoring keyword — v3/v4 score via the three
     named tracks.)*
 - **→ `bg-publishing` clearance flags (before art/print):** the **"Travel Agents" mark itself** is
@@ -360,6 +385,16 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   come from *the island itself* (it acts on you). Keep those true and the conceit reads as **showcasing,
   not consuming.** If playtest/consultant feedback finds it still reads extractive, that's a re-theme
   flag, not a paint job.
+- **⚑ #1 LOAD-BEARING CONSULTANT FLAG — the "Bribe a Vendor" keyword (→ `bg-publishing`, watch this one
+  above all).** The CD locked **"Bribe"** as the vendor-winning keyword (over bg-theme's safer "Schmooze"),
+  for the funnier, spicier laugh. It is deliberately baked in warm — *"this isn't a bribe, it's a marketing
+  opportunity"*: the smarm is on the over-the-top **agent** (punch at yourself), a "bribe" = free publicity
+  + a glowing review + a busload of hungry tourists the vendor genuinely wants, and the vendor still freely
+  **chooses the bigger fan**. **The single question for the paid Taiwanese consultant:** does "Bribe" read
+  as **cheeky-agent-comedy** (the intended cushion holds), or does it tip into an **outsider-corrupts-a-
+  local** frame (extraction)? This is the highest-risk keyword in the game — spicier word = thinner margin —
+  so it is the one to watch. If the consultant finds it tips extractive even *with* the warm framing, the
+  fallback is bg-theme's **"Schmooze"** (or Butter Up / Woo), a cheap keyword swap, not a redesign.
 - **New consultant items from the re-frame (→ `bg-publishing`, add to the existing paid-consultant
   brief):** (1) do the **rival travel agents read as local/passionate promoters** (celebration) rather
   than **foreigners packaging Taiwan for outsiders** (extraction)? — the load-bearing check; (2) which
@@ -432,20 +467,44 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   re-frame):** the **north star** above; the **rival-travel-agencies frame** (players are travel agents
   who *behave* like spies — the literal-title, celebration-not-extraction move); the **agents as
   local/passionate promoters** (the anti-extraction nuance); the **island-as-active-subject** framing of
-  conditions; the **friendly best-tour-title** compete-engine.
+  conditions; the **friendly best-tour-title** compete-engine. **New (CD lock, 2026-08-06):** the
+  vendor-winning keyword = **"Bribe a Vendor"** (chosen over bg-theme's Schmooze), *and* the **binding warm
+  reframe** that keeps it rail-safe (the *"marketing opportunity"* gag on every "Bribe" line; smarm on the
+  agent, never the vendor/place; the vendor freely chooses the bigger fan) — this warm framing is **locked
+  as load-bearing**, not fluid.
 - **Fluid:** the mechanism spine details and how the v4 layers earn rules (→ `bg-design`, parallel pass);
   the *exact naming* of head office / the tour / the award (proposals above, pending consultant +
   `bg-publishing`); the suit set (food categories vs regions) and final palette hues; whether the 2p duel
   or the 3–4 race is the true home.
-- **v4 fiction proposals (RECOMMENDED, pending the CD pick + the `bg-design` mechanics lock):** the
-  **Schmooze** rename (over Court/Bribe — the one call for the human); **Buzz kept as the keyword**, its
-  on-vendor stack flavoured as **"the Queue"** (the hype war); **A-má the Lunchbox Grandma 阿嬤** re-theming
-  the Conductor; the **Act I Breakfast Run / II Afternoon Crawl / III Night Market** day-arc; the
-  **last-train-home** gag re-homed from the cut Extract onto the close of Act III; the **"Bribe" running
-  gag** demoted to flavour only. All are cheap re-skins of the v4 spine — rung held at evocative.
+- **v4 fiction proposals (RECOMMENDED, pending the `bg-design` mechanics lock):** **Buzz kept as the
+  keyword**, its on-vendor stack flavoured as **"the Queue"** (the hype war); **A-má the Lunchbox Grandma
+  阿嬤** re-theming the Conductor; the **Act I Breakfast Run / II Afternoon Crawl / III Night Market**
+  day-arc; the **last-train-home** gag re-homed from the cut Extract onto the close of Act III. All are
+  cheap re-skins of the v4 spine — rung held at evocative. *(The vendor keyword is no longer a proposal —
+  **"Bribe a Vendor" is CD-LOCKED**; see Locked, above.)*
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
+- 2026-08-06 (Creative Director + bg-theme, **NAMING LOCK — vendor keyword = "Bribe a Vendor"**) —
+  **NAMING DECISION, no mechanical change; warm framing PROMOTED to binding/load-bearing.** The CD
+  considered bg-theme's **Schmooze** recommendation and **chose "Bribe a Vendor"** — the spicier, funnier
+  word — as the vendor-winning keyword. bg-theme had recommended Schmooze precisely because a bare *bribe*
+  defaults to an outsider-corrupts-a-local reading (inverting the anti-extraction rail's "celebration by
+  construction" principle). The CD's call stands, **with the explicit condition that the warm reframe is
+  now load-bearing, not garnish** — so this entry **bakes it in HARD** so the keyword is as rail-safe as it
+  can be. **The binding reframe (carried on EVERY "Bribe" line — rulebook voice for `bg-elegance` /
+  `bg-developer`):** (1) the running gag *"this isn't a bribe, it's a **marketing opportunity**"* is now the
+  keyword's built-in cushion, not an optional aside; (2) the smarm/comedy lands on the over-the-top **agent**
+  (punch at yourself), **never** the vendor or the place; (3) a "bribe" here = **free publicity, a glowing
+  review, and a busload of hungry tourists** the vendor *genuinely wants*; (4) the vendor still freely
+  **chooses the bigger fan** — no one bought against their interest. Updated: naming register (Bribe locked,
+  Schmooze logged as rejected), the Theme↔mechanic resonance bullet (now the game's #1 load-bearing check),
+  the read-aloud coherence line, Locked-vs-fluid (Bribe + its warm framing → Locked). **Flagged "Bribe" as
+  the ⚑ #1 load-bearing item for the paid Taiwanese consultant (→ `bg-publishing`):** does it read as
+  cheeky-agent-comedy, or tip into outsider-corrupts-a-local? The one to watch — spicier word, thinner
+  margin. Fallback if it tips even with the framing: revert to **Schmooze** (cheap keyword swap, no
+  redesign). Rest of v4 fiction intact (A-má, the Acts day-arc, Buzz = the Queue / hype war). Rung held at
+  evocative.
 - 2026-08-06 (bg-theme, **v4 fiction pass — parallel with `bg-design`'s v4 mechanics rework**) —
   **RE-THEME (five coherent re-skins over the v4 spine; rung HELD at evocative — no new lore).** Delivered
   the fiction for the CD's v4 direction (`decision-log.md` TOP entry). **(1) Court → "Schmooze a Vendor"
