@@ -98,8 +98,9 @@ does **not** end the game — the Season timer paces the game so the engine has 
 ## 8. Scoring (reveal signature missions now!)
 Your markers already show two vectors live. Total four sources:
 1. **Prestige** — the sum of your vendors' stars (already on your score track).
-2. **Reputation** — end-VP by where your Rep marker sits (3→+2 · 6→+4 · 9→+6 · top→+9). *(You also
-   collected one-time perks as you passed 3 / 6 / 9.)*
+2. **Reputation** — score the VP for your **final** position **only** (NOT cumulative): end at 3–5 → **+2**
+   · 6–8 → **+4** · 9–11 → **+6** · 12 → **+9**. *(You also collected one-time perks as you passed 3 / 6 / 9
+   during play. Reaching 12 does **not** end the game — the Season timer does.)*
 3. **Region-Coverage** — distinct regions your vendors cover: **2→2 · 3→5 · all 4→9**.
 4. **Signature mission** — flip it: **+7** if you pulled off its vendor pattern, else 0.
 Add them up. Most points wins → **Top Agent**. **Ties:** highest Reputation, then most vendors, then most
