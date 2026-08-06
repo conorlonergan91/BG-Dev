@@ -45,6 +45,7 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 | Stage | Agent | What it does |
 |-------|-------|--------------|
 | Ideation | `bg-ideation` | Generates and frames concepts (theme × mechanism hooks), blank-slate or from a seed. |
+| Creative identity | `bg-theme` | Owns & guards the felt identity — concept, theme, tone/vibe, story/lore, look & feel, naming — keeping it coherent while it *evolves* with the design (the MDA "aesthetics" leg). |
 | Research | `bg-research` | Market/competitive research — comparable games, gaps, audience, what's been done. |
 | Explore / Brainstorm | `bg-explore` | Divergent exploration of the design space; mechanism blends, twists, "what ifs". |
 | Design | `bg-design` | Systems design — core loop, components, rules architecture, economy/math, balance. |
@@ -61,6 +62,11 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 `bg-design`). Give it the game slug and point it at that game's `game-bible.md`. When work is
 independent, launch agents in parallel.
 
+**The guardian sweep:** after every `bg-design` / `bg-developer` pass, auto-run the guardians in
+parallel before advancing — **`bg-theme`** (does the fiction still fit the changed mechanics? re-theme
+vs drift/restriction) and **`bg-elegance`** (still within the complexity budget?). Cheap by default; only
+surface to the human when one actually flags something. (Full cadence in the `board-game-studio` skill.)
+
 ---
 
 ## One source of truth per game
@@ -71,6 +77,7 @@ document the human and every agent read and update. Supporting files:
 ```
 games/<slug>/
 ├── game-bible.md        # THE living design document — single source of truth
+├── identity.md          # THE living creative identity — concept/theme/tone/lore/look&feel/naming (bg-theme)
 ├── decision-log.md      # every key decision + the rationale (fast to skim)
 ├── design/              # deeper design notes, math/economy spreadsheets, rules drafts
 ├── components/          # component DATA (CSV/JSON) — cards, tiles, tokens (the real source)
@@ -174,6 +181,7 @@ WebSearch). Offline-testable via `--thing-xml`.
 - `archetypes.md` — mechanism families + canonical reference games + how blends work.
 - `reference-games.md` — landmark designs and what each is known for; award context.
 - `design-fundamentals.md` — MDA, core loop, agency, randomness, feedback, weight, solo/Automa.
+- `theme-and-identity.md` — the felt identity: concept/theme/tone/lore/look&feel/naming, the kinds of fun, theme↔mechanic resonance, the restraint ladder (owned by `bg-theme`).
 - `process-and-playtesting.md` — the indie pipeline and rules-writing + blind-testing best practice.
 - `trends-2026.md` — what's current (cozy games, solo, crowdfunding shift, market pressures).
 - `manufacturing-specs.md` — card sizes, bleed, DPI, POD specs, TTS export limits.
