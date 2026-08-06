@@ -26,7 +26,7 @@ MCP servers (see below).
 | `.claude/skills/board-game-studio/` | The **Creative Director** orchestrator (human-in-the-loop protocol). |
 | `.claude/skills/bg-2d-components/` | Cards / boards / tracks / tokens / player aids: **data → SVG → PNG / PDF / Screentop**, themed. |
 | `.claude/skills/bg-3d-components/` | Miniatures / dice / inserts / boxes via **Blender / FreeCAD / OpenSCAD MCP**. |
-| `.claude/commands/` | Quick slash commands: `/bg`, `/bg-new`, `/bg-status`, `/bg-decide`. |
+| `.claude/commands/` | Quick slash commands: `/bg`, `/bg-new`, `/bg-status`, `/bg-decide`, `/bg-artmock` (opt-in AI mockup). |
 | `knowledge/` | Up-to-date knowledge base + `designer-profile.md` (the studio's taste north star). |
 | `templates/` | Game bible, design doc, playtest log, decision log, sell sheet, `make.sh`, example data. |
 | `tools/cards/` | 2D pipeline: data → themed SVG → PNG/PDF, deck sheets, **covers** (`themes.py`). |
