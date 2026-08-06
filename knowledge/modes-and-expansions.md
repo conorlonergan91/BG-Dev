@@ -7,6 +7,12 @@ party / campaign) so it's great standalone *and* great combined, while reusing c
 `tools/bgg/bgg_lookup.py` when precision matters.
 
 ## Prime principles
+0. **Restraint first — don't force modes/expansions.** A single-mode, tightly focused game (even
+   2p-only) is a valid and often *best* outcome. Scope should be **earned**, arriving one of two honest
+   ways: a **deliberate ambition set upfront**, or an idea that **emerges** during design/playtesting
+   where splitting something out clearly adds *fun / variety / replayability*. If neither holds,
+   recommend the focused game. Never invent modes/expansions to look ambitious — and remember **capping
+   the player range** can be the right call.
 1. **The base must be complete and excellent alone.** Expansions *extend*; they never *fix* a base that
    only sings once you buy more. Ship the canonical/complete core; hold back **variety**, not the
    finished experience.

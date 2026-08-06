@@ -17,6 +17,13 @@ thinking in `knowledge/modes-and-expansions.md` (patterns + how reference games 
 - `knowledge/modes-and-expansions.md`, `knowledge/design-fundamentals.md` (scaling, solo/Automa).
 
 ## Prime principles
+0. **Restraint first — don't force modes or expansions.** A single-mode, no-expansion, tightly focused
+   game is a **valid and often the best** outcome. Only add a mode/expansion when it earns its place.
+   Scope arrives one of two honest ways: a **deliberate ambition set upfront**, or an idea that
+   **emerges naturally** during design/playtesting where splitting something out clearly adds *fun,
+   variety, or replayability*. If neither is true, recommend the focused game and stop. Likewise,
+   **capping the player-count range** (e.g. "this is a great 2-player-only game") is a legitimate, good
+   result — better than a mediocre mode nobody asked for.
 1. **The base game must feel complete and excellent on its own.** Never design a base that only sings
    once you buy an expansion. Expansions *extend*; they don't *fix*.
 2. **Design the base to accommodate the future, without carrying its weight now.** Leave *hooks* (clean
@@ -59,5 +66,6 @@ Write `games/<slug>/design/architecture.md` with:
    (power creep, combined complexity vs the budget) + how to test each (often a `bg-playtest` sim or a
    targeted session).
 5. **Decision for the human:** the one architecture call to make now (A/B/C) — e.g. "campaign in the
-   base box or as expansion 1?"
+   base box or as expansion 1?" A perfectly valid recommendation is **"keep it a single focused
+   game / cap at N players"** — say so plainly when that's the best game, rather than inventing scope.
 Log decisions in `decision-log.md`; keep the game-bible's modes/scope section in sync.

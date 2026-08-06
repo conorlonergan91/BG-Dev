@@ -25,12 +25,15 @@
   and run **`bg-elegance`** each iteration. Over budget → simplify, or consciously log a raise. Never
   silent creep.
 
-## Modes & scope (decide the ambition at the START — see knowledge/modes-and-expansions.md)
-- **Player modes:** <!-- which of solo/automa · 2p/duel · multiplayer · party · co-op/competitive; and the sweet spot -->
-- **Campaign?** <!-- none / replayable campaign / one-shot legacy — and: in the base box, or an expansion? -->
-- **Expansion ambition:** <!-- what the base deliberately holds complete, and what's imagined for later -->
-- **Guardrail:** the base must be complete & great on its own; leave *hooks* for the future, not baggage.
-  Owned by `bg-architect`; keep new components per mode/expansion minimal (reuse the base).
+## Modes & scope (see knowledge/modes-and-expansions.md)
+*Focused by default — a single-mode, no-expansion game is a valid, often best answer. Set an ambition
+upfront only if you have one; otherwise leave this light and let scope **emerge** if/when it clearly
+adds fun/variety/replayability. Don't invent modes/expansions to fill the section.*
+- **Player modes:** <!-- e.g. "2-player only, deliberately" OR which of solo/automa · duel · multiplayer · party; and the sweet spot -->
+- **Campaign?** <!-- none (fine!) / replayable campaign / one-shot legacy — and if any: base box or expansion? -->
+- **Expansion ambition:** <!-- "none for now" is a fine answer; else what the base holds complete vs what's imagined later -->
+- **Guardrail:** the base must be complete & great on its own; leave *hooks* for the future, not baggage;
+  capping the player range is a valid good outcome. Owned by `bg-architect`.
 
 ## Mechanism spine
 <!-- 1–3 mechanism families and the blend; why each part needs the others (see knowledge/archetypes.md). -->
