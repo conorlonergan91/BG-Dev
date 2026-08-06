@@ -23,7 +23,7 @@ likely **Discovery + Fellowship + Challenge**.)
 
 ## Positioning
 - **Weight (BGG 1–5):** target ~1.8 (light-to-mid; family+ / gateway+)
-- **Players:** 2–4 (**2-player duel mode** a first-class possibility — studio focus is 2p)
+- **Players:** 2–4 (this game leads with a first-class **2-player duel** by its own design choice, then scales to a 3–4p race)
 - **Playtime:** ~30–45 min (TBD)
 - **Tone:** silly / warm / adventurous
 - **Comparable:** *Let's Go! To Japan* meets *Ticket to Ride*, with a dash of *Couture* and *Agent Avenue*.
@@ -63,10 +63,15 @@ A **competitive + co-op blend in one box**, built on:
 
 ## Core loop
 <!-- The repeated cycle of decisions and rewards, step by step. -->
-*(→ `bg-design` to specify.)* Sketch: travel to a region → source ingredients there → plate dishes
-(toward your **hidden Assignment** and the shared **Grand Dossier**) → optionally **tip off** a rival for
-a personal reward → score. The tension every turn: advance my secret mission, or feed the shared Dossier
-for the Discovery bonus everyone shares?
+Specified in `design/design-doc.md`. **A turn = ONE action:** **Stock Up** (take 2 ingredients where you
+stand) · **Travel** (move one region, arrive with 1) · **Plate** (spend a recipe from your Larder to take
+a Menu dish → VP + Grand Dossier +1) · **Dead-drop** (give a rival 1 ingredient → bank an Insider Tip +
+Grand Dossier +1) · **Extract** (trigger the end-game). You can only take a region's **specialty** while
+there (oysters South, tea/pearls Central, rice/greens East, beef/pork North); **pantry** staples are at
+the convenience store anywhere — so you *travel because the ingredient lives there*. **Larder caps at 7**,
+so surplus is common → dead-dropping surplus (for an Insider Tip) beats discarding it: that's what makes
+cooperation individually rational. The tension every turn: advance my secret **Assignment**, race a dish
+off the shared **Menu**, or convert surplus into leverage — all while the shared **Grand Dossier** rises.
 
 ## Signature twist
 <!-- The one memorable rule/hook that makes it *this* game. -->
@@ -75,16 +80,27 @@ helping a rival can be the selfish play. Fused with **recipes-by-region**, so th
 the food-geography fiction drive the *same* decisions.
 
 ## Components (summary)
-*(→ `bg-design` / `bg-developer`; detailed manifest in `components/manifest.md`.)* Likely: ingredient
-cards (by region), dish/recipe cards, hidden Assignment cards, the shared Grand Dossier track/board, a
-Taiwan region map, player itinerary/log, tip-off/dead-drop tokens.
+*(Full table + quantities in `design/design-doc.md`; detailed manifest → `bg-developer`.)* **6 component
+types — exactly at the budget cap:** (1) **Map board** — Taiwan, 4 regions on a ring + HSR spine, with
+the Grand Dossier track and score track printed along the edge; (2) **~24 Dish cards** (recipe + VP +
+name romanised & 繁體); (3) **~14–16 Assignment cards** (secret objectives, +7 VP); (4) **~120 ingredient
+tokens** — 9 types: 8 region specialties (2 per region) + 1 fungible **pantry** (the convenience store);
+(5) **~30 Insider Tip tokens**; (6) **4 Agent pawns**. (Dossier/score markers ride the board — not a 7th
+type.) No headroom for a new type — new content reuses these (flag: `bg-elegance`).
 
 ## Win condition & scoring
-*(→ `bg-design`.)* Sketch: most points from your completed **hidden Assignment** + plated dishes + your
-share of **Grand Dossier** Discovery bonuses + tip-off rewards. "Best trip" wins.
+Highest **Traveller's Log** wins. Score = **plated dishes** (3 VP for 2-ingredient · 4 VP for 3-ingredient
+· 5 VP for a 3-region Signature) + **Assignment** (+7 if completed, revealed at scoring) + your banked
+**Grand Dossier** Discovery bonuses (flat, equal to all — the warm rising tide). **Tiebreak:** most dishes,
+then most regions visited. The contested margin is **dishes + Assignment + Insider-Tip efficiency** (the
+Dossier bonus is a rising tide, so it doesn't decide ranking). Expected 2p total ~48–52 VP. Detail +
+balance model in `design/design-doc.md`.
 
 ## Rules summary
-*(To be drafted in `design/rules-draft.md`.)*
+Drafted in `design/rules-draft.md` (teach-in-play order). Turn = one of **Stock Up / Travel / Plate /
+Dead-drop / Extract**; Larder cap 7; Grand Dossier +1 per Plate or Dead-drop with milestone Discovery
+bonuses; end-game triggers on **Extract** or the Dossier's final milestone → finish the round + one more
+full round → score. **One hidden-info hook only:** the secret Assignment (no deduction engine).
 
 ## Open questions & risks
 - ✅ **Mechanism spine — DECIDED:** A "Rival Agents, Shared Beat" (2026-08-06).
