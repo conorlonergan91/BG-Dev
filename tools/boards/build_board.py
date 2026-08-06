@@ -30,7 +30,8 @@ from pathlib import Path
 
 # themes.py lives with the card pipeline; make it importable regardless of cwd.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "cards"))
-from themes import get_theme, page_gradient, emblem_svg, pick_text_color, boost_contrast  # noqa: E402
+from themes import (get_theme, page_gradient, emblem_svg, pick_text_color,  # noqa: E402
+                    boost_contrast, resolve_suit)
 
 DPI = 300
 
@@ -154,7 +155,7 @@ def render_mat(theme, spec):
                      f'fill="none" stroke="{col}" stroke-width="4" stroke-dasharray="10 8"/>')
         if z.get("label"):
             parts.append(f'<text x="{z["x"]+16}" y="{z["y"]+40}" font-size="34" fill="{muted}" '
-                         f'font-family="{theme["body_font"]}" letter-spacing="1">{esc(z["label"]).upper()}</text>')
+                         f'font-family="{theme["body_font"]}" letter-spacing="1">{esc(z["label"].upper())}</text>')
     for t in spec.get("texts", []):
         parts.append(f'<text x="{t["x"]}" y="{t["y"]}" font-size="{t.get("size",30)}" fill="{ink}" '
                      f'font-family="{theme["body_font"]}">{esc(t["text"])}</text>')
@@ -174,7 +175,7 @@ def render_aid(theme, spec):
     y = head_h + 40
     for sec in spec.get("sections", []):
         body.append((f'<text x="{pad}" y="{y}" font-size="34" fill="{accent}" font-family="{tfont}" '
-                     f'font-weight="bold" letter-spacing="1">{esc(sec.get("heading","")).upper()}</text>'))
+                     f'font-weight="bold" letter-spacing="1">{esc(sec.get("heading","").upper())}</text>'))
         y += 20
         for line in sec.get("lines", []):
             for i, seg in enumerate(textwrap.wrap(line, wrap_at) or [""]):
@@ -202,6 +203,188 @@ def render_aid(theme, spec):
     return _svg(W, H, parts), W, H
 
 
+# ---- region-ring map --------------------------------------------------------
+def render_regionmap(theme, spec):
+    """A clean region-ring board: region cards laid on a diamond, ring edges + an
+    HSR spine drawn as real connectors, each region showing its specialty chips
+    (colour + emblem + 繁體 + English). Purpose-built to replace the overlapping
+    free-text mat. Spec: {title, width, height, regions[], ring[], hsr[], notes[]}."""
+    W = spec.get("width", 1600)
+    H = spec.get("height", 1200)
+    ink, accent, muted, text = theme["ink"], theme["accent"], theme["muted"], theme["text"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    regions = {r["key"]: r for r in spec.get("regions", [])}
+    RW, RH = spec.get("region_w", 330), spec.get("region_h", 214)
+
+    parts = [f'<defs>{page_gradient(theme, "pg")}</defs>',
+             f'<rect width="{W}" height="{H}" rx="30" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>']
+
+    # title — a slim top band with generous clearance below (the diamond starts well under it)
+    title = spec.get("title", "")
+    if title:
+        parts.append(f'<rect x="0" y="0" width="{W}" height="84" fill="{ink}"/>')
+        parts.append(f'<rect x="0" y="84" width="{W}" height="5" fill="{accent}"/>')
+        parts.append(f'<text x="{W/2}" y="56" font-size="42" fill="#fff" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(title)}</text>')
+
+    def center(r):
+        return (r["x"] + RW / 2, r["y"] + RH / 2)
+
+    # edges drawn BEFORE the cards, so cards sit on top and the connector shows in the gap
+    for a, b in spec.get("ring", []):
+        if a in regions and b in regions:
+            (x1, y1), (x2, y2) = center(regions[a]), center(regions[b])
+            parts.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{muted}" '
+                         f'stroke-width="12" stroke-linecap="round" opacity="0.55"/>')
+    # HSR spine — a distinct double-rail with ties, drawn between its two regions
+    hsr = spec.get("hsr", [])
+    if len(hsr) == 2 and all(k in regions for k in hsr):
+        (x1, y1), (x2, y2) = center(regions[hsr[0]]), center(regions[hsr[1]])
+        # shorten the rail so it starts/ends at the card edges, not the centres
+        ln = math.hypot(x2 - x1, y2 - y1) or 1
+        ux, uy = (x2 - x1) / ln, (y2 - y1) / ln
+        sx, sy = x1 + ux * (RH / 2 + 6), y1 + uy * (RH / 2 + 6)
+        ex, ey = x2 - ux * (RH / 2 + 6), y2 - uy * (RH / 2 + 6)
+        px, py = -uy, ux                      # perpendicular for the two rails
+        off = 9
+        steel = "#4A5A72"
+        for s in (off, -off):
+            parts.append(f'<line x1="{sx + px*s}" y1="{sy + py*s}" x2="{ex + px*s}" y2="{ey + py*s}" '
+                         f'stroke="{steel}" stroke-width="6" stroke-linecap="round"/>')
+        ties = 14
+        for i in range(1, ties):
+            t = i / ties
+            mx, my = sx + (ex - sx) * t, sy + (ey - sy) * t
+            parts.append(f'<line x1="{mx + px*(off+5)}" y1="{my + py*(off+5)}" '
+                         f'x2="{mx - px*(off+5)}" y2="{my - py*(off+5)}" stroke="{steel}" stroke-width="4"/>')
+        # HSR label pill at the midpoint
+        mx, my = (sx + ex) / 2, (sy + ey) / 2
+        lbl = "HSR 高鐵 · 北–南"
+        lw = 300
+        parts.append(f'<rect x="{mx - lw/2}" y="{my - 26}" width="{lw}" height="52" rx="26" '
+                     f'fill="{steel}" stroke="#fff" stroke-width="2"/>')
+        parts.append(f'<text x="{mx}" y="{my + 10}" font-size="28" fill="#fff" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold">{esc(lbl)}</text>')
+
+    # region cards
+    for r in spec.get("regions", []):
+        X, Y = r["x"], r["y"]
+        rcol = r.get("color", accent)
+        emb = r.get("emblem", "circle")
+        rad = 20
+        parts.append(f'<rect x="{X}" y="{Y}" width="{RW}" height="{RH}" rx="{rad}" '
+                     f'fill="#ffffff" stroke="{rcol}" stroke-width="5"/>')
+        # header strip in the region colour
+        parts.append(f'<path d="M{X} {Y+rad} a {rad} {rad} 0 0 1 {rad} -{rad} h {RW-2*rad} '
+                     f'a {rad} {rad} 0 0 1 {rad} {rad} v {60-rad} h -{RW} z" fill="{rcol}"/>')
+        parts.append(emblem_svg(emb, X + 32, Y + 30, 15, "#ffffff"))
+        parts.append(f'<text x="{X+58}" y="{Y+40}" font-size="34" fill="#fff" '
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(r.get("name",""))}</text>')
+        # specialty chips (emblem-shaped, region colour, 繁體) with an English label under each
+        specs = r.get("specialties", [])
+        n = len(specs)
+        chip_r = 30
+        span = n * (2 * chip_r) + (n - 1) * 22
+        x0 = X + (RW - span) / 2 + chip_r
+        cy = Y + 118
+        for i, sp in enumerate(specs):
+            suit = resolve_suit(theme, sp.get("id", "")) if sp.get("id") in theme["suits"] else {}
+            scol = suit.get("color", rcol)
+            semb = suit.get("emblem", "circle")
+            cx = x0 + i * (2 * chip_r + 22)
+            tcol = pick_text_color(scol, dark=ink, light="#ffffff")
+            parts.append(emblem_svg(semb, cx, cy, chip_r, scol, stroke=ink))
+            parts.append(f'<text x="{cx}" y="{cy + chip_r*0.34}" font-size="30" fill="{tcol}" '
+                         f'text-anchor="middle" font-family="{bfont}" font-weight="bold">{esc(sp.get("label",""))}</text>')
+            parts.append(f'<text x="{cx}" y="{cy + chip_r + 34}" font-size="21" fill="{text}" '
+                         f'text-anchor="middle" font-family="{bfont}">{esc(sp.get("en",""))}</text>')
+        # Market-slots line, centred at the foot of the region card (clear of the header)
+        slots = r.get("slots")
+        if slots:
+            parts.append(f'<text x="{X+RW/2}" y="{Y+RH-16}" font-size="23" fill="{rcol}" '
+                         f'text-anchor="middle" font-family="{tfont}" font-weight="bold" '
+                         f'letter-spacing="1">Market: {esc(slots)}</text>')
+
+    # footer legend band — adjacency + pantry + start (no overlap with the diamond)
+    notes = spec.get("notes", [])
+    if notes:
+        fy = H - 40 - len(notes) * 34
+        parts.append(f'<rect x="0" y="{fy-30}" width="{W}" height="{H-(fy-30)}" fill="{ink}" opacity="0.06"/>')
+        parts.append(f'<line x1="40" y1="{fy-30}" x2="{W-40}" y2="{fy-30}" stroke="{muted}" stroke-width="2" opacity="0.4"/>')
+        for i, nt in enumerate(notes):
+            parts.append(f'<circle cx="52" cy="{fy + i*34 - 8}" r="6" fill="{accent}"/>')
+            parts.append(f'<text x="72" y="{fy + i*34}" font-size="26" fill="{text}" '
+                         f'font-family="{bfont}">{esc(nt)}</text>')
+    return _svg(W, H, parts), W, H
+
+
+# ---- score / reputation track (serpentine, numbered) ------------------------
+def render_scoretrack(theme, max_v, per_row, title, milestones, note, start_label):
+    """A compact numbered 0..max track that snakes across rows — a real running
+    tracker you advance a per-player marker along. Milestones (pos->label) are
+    highlighted with a call-out above the cell."""
+    ink, accent, muted, text = theme["ink"], theme["accent"], theme["muted"], theme["text"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    cell = 108
+    gap = 12
+    pad = 44
+    n = max_v + 1
+    per_row = min(per_row, n)
+    rows = math.ceil(n / per_row)
+    title_h = 92
+    call_h = 46                                   # room above each row for milestone call-outs
+    row_h = cell + call_h + gap
+    W = pad * 2 + per_row * (cell + gap) - gap
+    H = title_h + rows * row_h + 70
+
+    def cell_xy(v):
+        row = v // per_row
+        col = v % per_row
+        if row % 2 == 1:                          # snake
+            col = per_row - 1 - col
+        x = pad + col * (cell + gap)
+        y = title_h + row * row_h + call_h
+        return x, y
+
+    parts = [f'<defs>{page_gradient(theme, "pg")}</defs>',
+             f'<rect width="{W}" height="{H}" rx="26" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>']
+    if title:
+        parts.append(f'<text x="{W/2}" y="60" font-size="50" fill="{ink}" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(title)}</text>')
+    # groove: a faint polyline through cell centres in snake order (shows one continuous track)
+    pts = " ".join(f"{cell_xy(v)[0]+cell/2},{cell_xy(v)[1]+cell/2}" for v in range(n))
+    parts.append(f'<polyline points="{pts}" fill="none" stroke="{muted}" stroke-width="8" '
+                 f'stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>')
+    for v in range(n):
+        x, y = cell_xy(v)
+        is_ms = v in milestones
+        is_dec = (v % 10 == 0)
+        if is_ms:
+            fill, stroke, tcol, sw = accent, ink, "#ffffff", 5
+        elif v == 0:
+            fill, stroke, tcol, sw = ink, ink, "#ffffff", 4
+        elif is_dec:
+            fill, stroke, tcol, sw = "#ffffff", accent, ink, 4
+        else:
+            fill, stroke, tcol, sw = "#ffffff", muted, ink, 3
+        op = "1" if is_ms else "0.92"
+        parts.append(f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="16" '
+                     f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}" opacity="{op}"/>')
+        parts.append(f'<text x="{x+cell/2}" y="{y+cell/2+16}" font-size="46" fill="{tcol}" '
+                     f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{v}</text>')
+        if v == 0 and start_label:
+            parts.append(f'<text x="{x+cell/2}" y="{y-14}" font-size="24" fill="{ink}" '
+                         f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(start_label)}</text>')
+        if is_ms:
+            for j, seg in enumerate(textwrap.wrap(milestones[v], 16)[:2]):
+                parts.append(f'<text x="{x+cell/2}" y="{y-16+j*22}" font-size="21" fill="{accent}" '
+                             f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(seg)}</text>')
+    if note:
+        parts.append(f'<text x="{pad}" y="{H-28}" font-size="26" fill="{muted}" '
+                     f'font-family="{bfont}" font-style="italic">{esc(note)}</text>')
+    return _svg(W, H, parts), W, H
+
+
 def _svg(W, H, parts):
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">'
             + "".join(parts) + "</svg>")
@@ -209,7 +392,8 @@ def _svg(W, H, parts):
 
 def main():
     ap = argparse.ArgumentParser(description="Render themed boards, tracks, and tokens.")
-    ap.add_argument("--type", required=True, choices=["track", "tokens", "mat", "aid"])
+    ap.add_argument("--type", required=True,
+                    choices=["track", "tokens", "mat", "aid", "regionmap", "scoretrack"])
     ap.add_argument("--theme", default="clean")
     ap.add_argument("--out", type=Path, default=Path("build/board.png"))
     # track
@@ -218,6 +402,12 @@ def main():
     ap.add_argument("--labels", default="", help="comma-separated (per space, or per token)")
     ap.add_argument("--left-label", default="")
     ap.add_argument("--right-label", default="")
+    # scoretrack
+    ap.add_argument("--max", type=int, default=50, help="scoretrack: highest value (0..max)")
+    ap.add_argument("--per-row", type=int, default=13, help="scoretrack: cells per row before snaking")
+    ap.add_argument("--milestones", default="", help="scoretrack: 'pos:label;pos:label' call-outs")
+    ap.add_argument("--note", default="", help="scoretrack: footer note")
+    ap.add_argument("--start-label", default="", help="scoretrack: label above the 0 cell")
     # tokens
     ap.add_argument("--shape", default="circle", choices=["circle", "square", "hex"])
     ap.add_argument("--diameter-mm", type=float, default=22.0)
@@ -248,6 +438,23 @@ def main():
             ap.error("--type mat requires --spec <file.json>")
         spec = json.loads(args.spec.read_text(encoding="utf-8"))
         svg, W, H = render_mat(theme, spec)
+    elif args.type == "regionmap":
+        if not args.spec:
+            ap.error("--type regionmap requires --spec <file.json>")
+        spec = json.loads(args.spec.read_text(encoding="utf-8"))
+        svg, W, H = render_regionmap(theme, spec)
+    elif args.type == "scoretrack":
+        milestones = {}
+        for chunk in args.milestones.split(";"):
+            chunk = chunk.strip()
+            if ":" in chunk:
+                pos, _, lab = chunk.partition(":")
+                try:
+                    milestones[int(pos)] = lab.strip()
+                except ValueError:
+                    pass
+        svg, W, H = render_scoretrack(theme, args.max, args.per_row, args.title,
+                                      milestones, args.note, args.start_label)
     else:  # aid
         if not args.spec:
             ap.error("--type aid requires --spec <file.json>")

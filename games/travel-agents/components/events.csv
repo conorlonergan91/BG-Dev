@@ -1,0 +1,12 @@
+id,name,hanzi,type,region,market,kind,value,quantity,tags,effect,art_note
+E01,Mango Season,芒果季,south,S,S,boon,,1,boon;fruit;south,"Add 2 extra South specialty tokens to the South Market — a glut both agents can grab.",Crates of golden mangoes piled at a roadside stand
+E02,Oyster Glut,蚵仔盛產,south,S,S,boon,,1,boon;harvest;south,"The drawer takes 1 free oyster token.",Baskets of fresh oysters on a tidal-flat rack
+E03,Bubble-Tea Festival,珍奶節,central,C,C,boon,,1,boon;festival;central,"The drawer takes 2 Buzz — the whole town is buzzing.",A street lined with bubble-tea stalls and paper lanterns
+E04,Bumper Harvest,豐收,east,E,E,boon,,1,boon;harvest;east,"The drawer takes 2 free East specialty tokens.",Terraced rice paddies heavy with golden grain
+E05,Tourist Season,觀光季,signature,table,any,boon,,1,boon;table-wide,"Every agent's NEXT Promote gives +1 Buzz.",A tour bus disgorging happy visitors with cameras
+E06,Pop-Up Queue,快閃排隊,signature,any,any,boon,,1,boon;movement,"The drawer may immediately move 1 region for free (a lift to the next town).",A sudden forty-deep queue snaking around a pop-up stall
+E07,Featured in the Guide,食尚報導,signature,any,any,boon,,1,boon;vendor,"The cheapest face-up Tier-1 vendor gains +1 Prestige (tempting a court).",A glossy food-guide spread with a stall circled in red
+E08,Word of Mouth,暖心街坊,signature,any,any,boon,,1,boon;warm-local,"The drawer gains +1 Buzz AND +1 ingredient — a kind local sets you up.",A smiling auntie pressing an extra snack into your hands
+E09,Typhoon Warning,颱風警報,south,coastal,S,hazard,,1,hazard;weather;coast,"Wash out the affected coastal region's face-up specialty tokens (discard + refill). You lose nothing you hold — the shelf resets, a reroute not a theft. (Salt into South AND East supplies.)",A shuttered coastal market under storm clouds
+E10,Plum Rains,梅雨,central,C,C,hazard,,1,hazard;weather;central,"The drawer's Stock Up this turn yields 1 fewer (a slow, wet day — a tempo tax).",Grey drizzle over a quiet inland market street
+E11,Fully Booked,客滿,signature,any,any,shakeup,,1,shakeup;neutral,"Clear and refill an entire Market row (can help or hurt).",A -FULLY BOOKED- sign hung across a busy restaurant door

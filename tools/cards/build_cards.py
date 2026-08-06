@@ -85,7 +85,196 @@ def wrap(text: str, max_chars: int) -> list[str]:
     return out
 
 
+# ---- Vendor card (Travel Agents) --------------------------------------------
+# A vendor row carries a two-input economy (ingredients + Buzz) and three reward
+# vectors (Prestige / Reputation / perk). The generic template buries all of that
+# in body text, so vendor-shaped rows get a dedicated cost-row / reward-row layout.
+# Dispatch is guarded by `_is_vendor` (needs BOTH `tier` and `buzz_cost`), so decks
+# without those columns — Beacon, missions, events, characters — are byte-unchanged.
+TIER_FICTION = {"1": "攤 STALL", "2": "小吃 EATERY", "3": "名店 MARQUEE"}
+REGION_LABEL = {"north": "NORTH 北", "central": "CENTRAL 中",
+                "south": "SOUTH 南", "east": "EAST 東"}
+
+
+def _is_vendor(row: dict) -> bool:
+    return bool(str(row.get("tier", "")).strip()) and bool(str(row.get("buzz_cost", "")).strip())
+
+
+def _english_name(effect: str) -> str:
+    """Vendor `effect` is '繁體 · English Name · flavour…' — pull the English dish name."""
+    parts = [p.strip() for p in str(effect or "").split("·")]
+    return parts[1] if len(parts) >= 2 else ""
+
+
+def _perk_visual(perk_code: str, region_suit: dict, theme: dict) -> tuple[str, str]:
+    """(emblem, colour) for the perk icon, keyed off the machine perk_code."""
+    code = str(perk_code or "").split(":")[0].strip().lower()
+    gold = "#C9A227"
+    teal = "#1F8A7A"
+    violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
+    slate = "#8A8F98"
+    if code in ("icon", "double_icon"):
+        return (region_suit["emblem"], region_suit["color"])
+    if code == "wild_icon":
+        return ("spark", gold)
+    if code in ("rep_engine", "rep_court"):
+        return ("stamp", teal)
+    if code == "buzz_income":
+        return ("spark", violet)
+    if code == "wild_pantry":
+        return ("beam", slate)
+    return ("circle", region_suit["color"])
+
+
+def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> str:
+    ink, text, muted, accent = theme["ink"], theme["text"], theme["muted"], theme["accent"]
+    radius = theme["radius"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    region = (row.get("type") or "").strip().lower()
+    rsuit = resolve_suit(theme, region)
+    rcol, remb = rsuit["color"], rsuit["emblem"]
+    gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
+    teal = theme["suits"].get("central", {}).get("color", "#1F8A7A")
+    violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
+
+    recipe = [s.strip() for s in (row.get("recipe") or "").split(";") if s.strip()]
+    buzz = str(row.get("buzz_cost", "")).strip()
+    prestige = str(row.get("value", "")).strip()
+    rep = str(row.get("rep", "")).strip()
+    tier = str(row.get("tier", "")).strip()
+    perk_text = (row.get("perk") or "").strip()
+    perk_code = (row.get("perk_code") or "").strip()
+
+    # --- header band (region colour): Tâi-lô title (wraps) + 繁體 subtitle -------
+    # wrap at 16 so a long title breaks BEFORE the top-right tier pill instead of under it
+    title_lines = wrap(row.get("name", ""), max_chars=16) or [""]
+    han = esc(row.get("hanzi", ""))
+    ty0 = MARGIN + 42
+    title_tspans = "".join(
+        f'<tspan x="{MARGIN}" y="{ty0 + i * TITLE_LINE_H}">{esc(l)}</tspan>'
+        for i, l in enumerate(title_lines))
+    han_y = ty0 + (len(title_lines) - 1) * TITLE_LINE_H + 52
+    header_h = (han_y + 22) - 26
+    header_end = 26 + header_h
+
+    # tier pill (top-right on the band) — CJK glyphs are ~full-width, so size for them
+    tier_label = TIER_FICTION.get(tier, f"T{tier}")
+    cjk = sum(1 for ch in tier_label if ord(ch) > 0x2E7F)
+    pill_w = 34 + cjk * 26 + (len(tier_label) - cjk) * 14
+    pill_x = CARD_W - MARGIN - pill_w
+    tier_pill = (
+        f'<rect x="{pill_x}" y="{MARGIN - 6}" width="{pill_w}" height="46" rx="23" '
+        f'fill="#ffffff" opacity="0.9"/>'
+        f'<text x="{pill_x + pill_w/2}" y="{MARGIN + 24}" font-size="24" fill="{rcol}" '
+        f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(tier_label)}</text>')
+
+    # --- region strip + English dish name (just under the header) ---------------
+    strip_y = header_end + 46
+    region_strip = (
+        emblem_svg(remb, MARGIN + 16, strip_y - 10, 15, rcol) +
+        f'<text x="{MARGIN + 44}" y="{strip_y}" font-size="30" fill="{rcol}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="1">'
+        f'{esc(REGION_LABEL.get(region, region.upper()))}</text>'
+        f'<text x="{CARD_W - MARGIN}" y="{strip_y}" font-size="24" fill="{muted}" '
+        f'text-anchor="end" font-family="{bfont}" font-style="italic">discount + coverage</text>')
+    eng = _english_name(row.get("effect", ""))
+    eng_line = ""
+    if eng:
+        eng_line = (f'<text x="{MARGIN}" y="{strip_y + 40}" font-size="30" fill="{text}" '
+                    f'font-family="{bfont}" font-style="italic">{esc(eng)}</text>')
+
+    # --- PAY row: ingredient chips (emblem-shaped, region colour, 繁體) + Buzz ----
+    pay_label_y = strip_y + 104
+    chips_cy = pay_label_y + 66
+    r = 34
+    x = MARGIN + 6
+    chips = ""
+    for iid in recipe:
+        isuit = resolve_suit(theme, iid) if iid in theme["suits"] else {"color": muted, "emblem": "circle"}
+        icol = isuit["color"]
+        lab = esc((glyph_map or {}).get(iid, {}).get("label", "")) if glyph_map else ""
+        tcol = pick_text_color(icol, dark=ink, light="#ffffff")
+        chips += emblem_svg(isuit["emblem"], x + r, chips_cy, r, icol, stroke=ink)
+        chips += (f'<text x="{x + r}" y="{chips_cy + r * 0.34}" font-size="30" fill="{tcol}" '
+                  f'text-anchor="middle" font-family="{bfont}" font-weight="bold">{lab}</text>')
+        x += 2 * r + 20
+    # plus + Buzz badge
+    plus_x = x + 6
+    x2 = plus_x + 40
+    buzz_badge = (
+        f'<text x="{plus_x}" y="{chips_cy + 14}" font-size="46" fill="{muted}" '
+        f'font-family="{tfont}" font-weight="bold">+</text>'
+        f'<circle cx="{x2 + r}" cy="{chips_cy}" r="{r}" fill="{violet}" stroke="{ink}" stroke-width="3"/>'
+        f'<text x="{x2 + r}" y="{chips_cy + 12}" font-size="40" fill="#ffffff" text-anchor="middle" '
+        f'font-family="{tfont}" font-weight="bold">{esc(buzz)}</text>'
+        f'<text x="{x2 + r}" y="{chips_cy + 62}" font-size="24" fill="{violet}" text-anchor="middle" '
+        f'font-family="{tfont}" font-weight="bold">讚 BUZZ</text>')
+    pay_block = (
+        f'<text x="{MARGIN}" y="{pay_label_y}" font-size="28" fill="{accent}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">PAY 付</text>' + chips + buzz_badge)
+
+    # --- GAIN row: Prestige star + number, Reputation chip ----------------------
+    gain_label_y = chips_cy + 118
+    gain_cy = gain_label_y + 62
+    # Prestige
+    px = MARGIN + 40
+    prestige_block = (
+        emblem_svg("spark", px, gain_cy, 38, gold) +
+        f'<text x="{px + 66}" y="{gain_cy + 18}" font-size="56" fill="{gold}" '
+        f'font-family="{tfont}" font-weight="bold">{esc(prestige)}</text>'
+        f'<text x="{px - 4}" y="{gain_cy + 70}" font-size="24" fill="{muted}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="1">PRESTIGE</text>')
+    # Reputation
+    rx = MARGIN + 320
+    rep_block = (
+        f'<circle cx="{rx + 34}" cy="{gain_cy}" r="38" fill="{teal}" stroke="{ink}" stroke-width="3"/>'
+        f'<text x="{rx + 34}" y="{gain_cy + 14}" font-size="40" fill="#ffffff" text-anchor="middle" '
+        f'font-family="{tfont}" font-weight="bold">+{esc(rep)}</text>'
+        f'<text x="{rx + 90}" y="{gain_cy + 18}" font-size="34" fill="{teal}" '
+        f'font-family="{tfont}" font-weight="bold">譽</text>'
+        f'<text x="{rx - 4}" y="{gain_cy + 70}" font-size="24" fill="{muted}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="1">REPUTATION</text>')
+    gain_block = (
+        f'<text x="{MARGIN}" y="{gain_label_y}" font-size="28" fill="{accent}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">GAIN 得</text>'
+        + prestige_block + rep_block)
+
+    # --- PERK box: icon + wrapped text ------------------------------------------
+    perk_label_y = gain_cy + 108
+    pemb, pcol = _perk_visual(perk_code, rsuit, theme)
+    box_y = perk_label_y + 18
+    box_h = CARD_H - MARGIN - box_y
+    perk_lines = wrap(perk_text, max_chars=26)
+    perk_tspans = "".join(f'<tspan x="{MARGIN + 96}" dy="{0 if i == 0 else 40}">{esc(l)}</tspan>'
+                          for i, l in enumerate(perk_lines))
+    perk_block = (
+        f'<text x="{MARGIN}" y="{perk_label_y}" font-size="28" fill="{accent}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">PERK 技</text>'
+        f'<rect x="{MARGIN}" y="{box_y}" width="{CARD_W - 2*MARGIN}" height="{box_h}" rx="18" '
+        f'fill="#ffffff" opacity="0.45" stroke="{pcol}" stroke-width="3"/>'
+        + emblem_svg(pemb, MARGIN + 46, box_y + 52, 30, pcol) +
+        f'<text x="{MARGIN + 96}" y="{box_y + 46}" font-size="30" fill="{text}" '
+        f'font-family="{bfont}">{perk_tspans}</text>')
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
+  <defs>{page_gradient(theme, 'pg')}</defs>
+  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>
+  <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{rcol}" stroke-width="2" opacity="0.5"/>
+  <path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{rcol}"/>
+  <text font-size="{TITLE_SIZE}" fill="#ffffff" font-family="{tfont}" font-weight="bold">{title_tspans}</text>
+  <text x="{MARGIN}" y="{han_y}" font-size="40" fill="#ffffff" font-family="{tfont}" opacity="0.92">{han}</text>
+  {tier_pill}
+  {region_strip}
+  {eng_line}
+  {pay_block}
+  {gain_block}
+  {perk_block}
+</svg>"""
+
+
 def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> str:
+    if _is_vendor(row):
+        return render_vendor_svg(row, theme, glyph_map)
     ctype = (row.get("type") or "").strip()
     suit = resolve_suit(theme, ctype)
     scol = suit["color"]

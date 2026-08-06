@@ -102,14 +102,19 @@ THEMES = {
             "south":      {"color": "#E6A930", "emblem": "circle"},    # Golden amber — oysters / milkfish
             "east":       {"color": "#26324D", "emblem": "square"},    # Dusk indigo — rice / wild greens
             "signature":  {"color": "#C9A227", "emblem": "spark"},     # Gold — the cross-region feasts
-            # --- assignment deck: the secret "Operation" dossier cards ---
+            # --- assignment deck: the secret "Operation" dossier cards (legacy v2, retained) ---
             "assignment": {"color": "#26324D", "emblem": "stamp"},     # Dusk indigo + a passport stamp
+            # --- v3 secret signature-tour Mission cards: the +7 prize (gold seal, distinct from the
+            # indigo assignment stamp and the gold spark of `signature`) ---
+            "mission":    {"color": "#C9A227", "emblem": "stamp"},     # Gold + a passport stamp — the prize
             # --- ingredient tokens: colour = region, emblem distinct per specialty within its region.
             # NB: beef/tea/rice deliberately DON'T reuse their region's own emblem (north=triangle,
             # central=diamond, east=square) — a same-colour + same-emblem clash reads as two meanings for
             # one glyph and trips the CVD checker. Canonicalised so nothing renders a conflicting emblem. ---
             "beef":       {"color": "#D64545", "emblem": "square"},    # (region north = triangle)
             "pork":       {"color": "#D64545", "emblem": "hex"},
+            "chicken":    {"color": "#D64545", "emblem": "diamond"},   # v3 NEW North specialty
+            "egg":        {"color": "#D64545", "emblem": "circle"},    # v3 NEW North specialty
             "tea":        {"color": "#1F8A7A", "emblem": "hex"},       # (region central = diamond)
             "pearls":     {"color": "#1F8A7A", "emblem": "circle"},
             "oysters":    {"color": "#E6A930", "emblem": "hex"},
@@ -117,6 +122,8 @@ THEMES = {
             "rice":       {"color": "#26324D", "emblem": "circle"},    # (region east = square)
             "greens":     {"color": "#26324D", "emblem": "triangle"},
             "pantry":     {"color": "#8A8F98", "emblem": "beam"},      # slate — convenience store, anywhere
+            # --- v3 second currency: Buzz (its own colour, off the four region hues + the CVD checker) ---
+            "buzz":       {"color": "#6A4C93", "emblem": "spark"},     # violet — promotional Buzz
             "_default":   {"color": "#26324D", "emblem": "circle"},
         },
     },
