@@ -70,4 +70,6 @@ concept ("it's *Wingspan* meets *Root*") and for studying how respected designs 
   War of the Ring 2E, Terraforming Mars, Star Wars: Rebellion.
 
 > **Recency:** award facts verified for 2024–2025; exact BGG order and weights shift continuously —
-> re-check with `bg-research` when it matters. Sources: spiel-des-jahres.de, boardgamegeek.com.
+> re-check with `bg-research`. For a specific game's **weight / players / playtime / mechanisms / rank**,
+> pull them deterministically: `python tools/bgg/bgg_lookup.py --name "<game>"` (BGG XML API).
+> Sources: spiel-des-jahres.de, boardgamegeek.com.

@@ -58,6 +58,19 @@ Checks: unique card ids, numeric value/cost, positive integer quantities, recomm
 `type`s that a theme actually colours, and that any `sim/*.py` still imports and exposes GAME +
 STRATEGIES. Non-zero exit on errors — good as a pre-commit sanity check.
 
+## `bgg/` — BoardGameGeek reference lookups (stdlib-only)
+
+Deterministic facts (community **weight** 1–5, players, playtime, mechanisms, rank) for grounding
+research/ideation and seeding a complexity budget from a real game.
+
+```bash
+python bgg/bgg_lookup.py --name "Arcs"                      # reference card
+python bgg/bgg_lookup.py --name "Arcs" --suggest-budget     # complexity-budget.json seeded from its weight
+python bgg/bgg_lookup.py --thing-xml bgg/sample_thing.xml   # offline parse test (no network)
+```
+Needs outbound access to boardgamegeek.com; some managed-session egress policies block it (403 from the
+proxy) — then fall back to cited WebSearch. Owned by `bg-research` / `bg-elegance`.
+
 ## `complexity/` — complexity-drift gauge (stdlib-only)
 
 Objective proxies for rules overhead vs the game's target, so weight doesn't creep as you iterate.

@@ -70,7 +70,9 @@ A/B/C choice, get the call, record it, and move to the next stage.
 1. **New game:** scaffold `games/<slug>/` from `templates/` (see `/bg-new`). Create `game-bible.md`
    and `decision-log.md`. Confirm the slug/title with the human. **Set the target weight +
    `complexity-budget.json` now** — the complexity target is defined at the *start* and defended every
-   iteration by `bg-elegance`. Never let weight creep silently past it.
+   iteration by `bg-elegance`. Never let weight creep silently past it. To anchor on a real game
+   ("budget it like *Arcs* / *The White Castle*"), seed it deterministically from BoardGameGeek:
+   `python tools/bgg/bgg_lookup.py --name "<game>" --suggest-budget --out games/<slug>/complexity-budget.json`.
 2. **Resume:** read `game-bible.md` + `decision-log.md`, give a 3-line "where we are / what's next"
    recap, then propose the next stage as an A/B/C choice.
 3. If no game exists yet and the human is unsure, offer: **(A)** ideate from a blank slate, **(B)**

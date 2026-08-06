@@ -34,6 +34,7 @@ MCP servers (see below).
 | `tools/sim/` | **Playtest simulator** — play a game thousands of times to expose dominant strategies & balance. |
 | `tools/lint/`, `tools/rulebook/` | Consistency **linter** + **rulebook** generator (markdown → themed A5 PDF). |
 | `tools/complexity/` | **Complexity gauge** — proxies vs the game's budget, so weight doesn't creep as you iterate. |
+| `tools/bgg/` | **BoardGameGeek lookups** — deterministic weight/players/mechanisms/rank; seed a budget "like *Arcs*". |
 | `games/` | Your games live here — data + docs committed; `build/` is scratch, `exports/` holds committed deliverables. |
 
 ## Optional integrations

@@ -117,6 +117,14 @@ ends with an auto **Health read** (dominant line? intransitive depth?). Owned by
 playbook `knowledge/simulation-and-balance.md`, `tools/sim/README.md`, and the worked example
 `games/beacon/sim/beacon.py`.
 
+### Reference data — BoardGameGeek (`tools/bgg/`)
+
+`python tools/bgg/bgg_lookup.py --name "<game>"` fetches **deterministic** facts from BGG's XML API —
+community **weight** (1–5), player count, playtime, mechanisms, rank — for grounding research/ideation.
+`--suggest-budget [--out …]` seeds a `complexity-budget.json` from a reference game's weight ("budget it
+like *Arcs*"). Needs egress to boardgamegeek.com (some managed sessions block it — fall back to cited
+WebSearch). Offline-testable via `--thing-xml`.
+
 ### Guardrails (`tools/lint/`, `tools/rulebook/`)
 
 - **Linter** — `python tools/lint/check_game.py --game games/<slug> --theme <name>`: validates card data

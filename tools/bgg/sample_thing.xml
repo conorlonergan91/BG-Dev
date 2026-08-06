@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SYNTHETIC fixture for offline testing of bgg_lookup.py — NOT real BoardGameGeek data.
+     Mirrors the shape of a /xmlapi2/thing?id=...&stats=1 response. -->
+<items>
+  <item type="boardgame" id="999999">
+    <name type="primary" sortindex="1" value="Example Fixture Game"/>
+    <name type="alternate" sortindex="1" value="Beispielspiel"/>
+    <yearpublished value="2024"/>
+    <minplayers value="1"/>
+    <maxplayers value="4"/>
+    <playingtime value="90"/>
+    <minplaytime value="60"/>
+    <maxplaytime value="90"/>
+    <minage value="14"/>
+    <link type="boardgamecategory" id="1021" value="Economic"/>
+    <link type="boardgamecategory" id="1026" value="Environmental"/>
+    <link type="boardgamemechanic" id="2040" value="Hand Management"/>
+    <link type="boardgamemechanic" id="2082" value="Worker Placement"/>
+    <link type="boardgamedesigner" id="7" value="A. Designer"/>
+    <statistics page="1">
+      <ratings>
+        <usersrated value="12345"/>
+        <average value="8.12"/>
+        <averageweight value="3.4"/>
+        <ranks>
+          <rank type="subtype" id="1" name="boardgame" friendlyname="Board Game Rank" value="42"/>
+        </ranks>
+      </ratings>
+    </statistics>
+  </item>
+</items>

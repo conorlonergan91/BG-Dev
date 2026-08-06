@@ -25,6 +25,9 @@ evidence, not gospel; weight is ultimately judgment.
 ### 1. Guard the complexity budget
 - **At project start:** make sure a **target weight + `complexity-budget.json`** exist. If not, propose
   sensible caps for the game's target (an elegant ~1.8 filler ≠ a 3.5 hobbyist game) and get them set.
+  If the human anchors on a reference game ("budget it like *Arcs*"), seed it deterministically:
+  `python tools/bgg/bgg_lookup.py --name "Arcs" --suggest-budget --out games/<slug>/complexity-budget.json`
+  (reads the real BGG weight; then tune to taste).
 - **Every iteration:** compare current vs budget. If a proposed/landed change pushes a proxy over,
   there are only two honest outcomes — **simplify it back under, or make a conscious, logged decision to
   raise the budget** (in `decision-log.md`). **Never silent bloat.** A rule that adds complexity must
