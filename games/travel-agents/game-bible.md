@@ -1,24 +1,28 @@
 # 🎲 Travel Agents: Taiwan — Game Bible
 
 > The single living source of truth for this game. Every agent reads and updates this. Keep it current.
-> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design** (spine A locked)
+> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design** (interaction model C locked; design-doc v2)
 
 ## One-liner
 <!-- The hook a stranger would repeat. -->
-You're a globe-trotting "travel agent" on a delicious undercover mission across Taiwan — chase night-market
-eats, ride the rails, and out-adventure your rivals. *(working hook — to be sharpened)*
+You and your rival run competing **travel agencies** racing to build the best Taiwan food **tour** — ride
+the rails, source real regional ingredients, plate the island's great dishes, and lock the must-visit
+stalls before your rival does. You just *behave* like covert agents about it. Best tour = **Top Agent**.
 
 ## Core fantasy / player role
 <!-- Who you are, what you're doing, the feeling (the "kind of fun"). -->
-The spirit of **adventure and discovery** with a **lighthearted, quirky** edge. You're part food-obsessed
-traveller, part secret agent on a "mission" that's really just: eat the best stuff, see the island, one-up
-your friends. Big emphasis on **food** and **Taiwanese humour**. (Kinds of fun to lock with `bg-theme`:
-likely **Discovery + Fellowship + Challenge**.)
+You run a travel agency (so does your rival), racing to assemble the single best Taiwan foodie **tour** —
+and you take it *so* seriously you behave like a covert agent about it (trench coat over the Hawaiian
+shirt, guarding your dossier, muttering into an earpiece). The literal job is wholesome: showing off the
+island's best food. "Secret agent" is pure wordplay on **travel agent** — the title is literal, and
+that's the gag. Kinds of fun (**locked**): **Discovery** (lead) + **Fellowship** (warm rivalry) +
+**Challenge**.
 
 ## Creative identity (concept · theme · tone · look & feel)
-- **North star:** *(to be set with `bg-theme`)* — a warm, funny "eat your way across Taiwan" adventure.
-- **Tone/vibe:** lighthearted, playful, adventurous; the quirky **secret-agent wink is now first-class**
-  — a present, rule-earning layer (kept warm/comedic), not optional flavour (Creative Director, 2026-08-06).
+- **North star:** *The mission is the meal — race your rival to build the island's best food tour before
+  the last train home.* (full framing in `identity.md`)
+- **Tone/vibe:** warm, funny, adventurous; the **secret-agent wink is first-class** (a rule-earning layer,
+  kept comedic) over the wholesome travel-agent day job (Creative Director, 2026-08-06).
 - **Details:** see `identity.md`.
 
 ## Positioning
@@ -40,86 +44,103 @@ likely **Discovery + Fellowship + Challenge**.)
 - **Player modes:** 2–4. Explore a dedicated **2-player duel** (head-to-head "who has the better trip")
   alongside a 3–4p multiplayer race. Owned by `bg-architect`.
 - **Campaign?** None planned (fine!). Possible light "trip journal" replay hook later.
-- **Expansion ambition:** base = travel-food optimiser **with the secret-agent layer load-bearing**
-  (hidden Assignments + a shared Dossier — CD call 2026-08-06, so the hidden-mission content is IN the
-  base, no longer a held expansion). Remaining held hooks (not baggage): explicit **co-op / duel mode
-  split** (spine B — cheap to graft later since it shares this core), a deeper **campaign / "trip
-  journal"** arc, and a **destination series** (other regions/countries) if the base sings. Owned by
-  `bg-architect`.
+- **Expansion ambition:** base = the competitive food-tour race (**model C**): the public **Hot-List** +
+  your secret **signature itinerary** + the living-island **Conditions** + head-office **Briefs**. (v1's
+  co-op shared-Dossier + dead-drop was **cut** — not fun/on-theme.) Held hooks (not baggage): the fuller
+  **"Command Centre Duel" (model B)** take-that economy as a cheap upgrade (shares this core), a deeper
+  **campaign / "tour journal"** arc, and a **destination series** ("Travel Agents: &lt;place&gt;" — the
+  agency's field offices worldwide) if the base sings. Owned by `bg-architect`.
 - **Guardrail:** base must be complete & great on its own.
 
 ## Mechanism spine
 <!-- 1–3 mechanism families and the blend; why each part needs the others (see knowledge/archetypes.md). -->
-**LOCKED — spine A "Rival Agents, Shared Beat"** (CD, 2026-08-06; see `design/explore-agent-layer.md`).
-A **competitive + co-op blend in one box**, built on:
+**Sourcing engine LOCKED (spine A) + interaction model C "Rivals on a Living Island" LOCKED** (CD,
+2026-08-06; see `design/explore-interaction-v2.md`, `design/design-doc.md` v2). A **competitive
+food-tour race**, built on:
 - **Set collection with a twist — recipes by region.** A dish = a tiny recipe of 2–3 named ingredients;
   ingredients are sourced from the Taiwan **regions that actually supply them** (oysters coastal, Hakka
   mountain towns, east-coast Indigenous cuisines…). This is the generic-defeater — the map is shaped by
   real food geography, not "food + map." (from the Yes! Ginseng / Taiwan Snackbar inspirations)
 - **Region routing / travel** — you move *because* the ingredient you need lives *there*.
-- **The load-bearing agent layer:** a **hidden Assignment** (secret objective you race to plate) + a
-  face-up **Grand Dossier** the whole table advances together + **tip-off / dead-drop** hand-offs that
-  help a rival yet bank *you* a reward. This is what makes "I'm a food spy on a mission" a thing you *do*.
+- **The rival-contest + living-island layer (model C):** a **public Hot-List** both agents race to lock
+  in (public bonus tours) + a **secret signature itinerary** (your hidden +7 headline) + a telegraphed
+  **Conditions** deck (the island's festivals/weather/roads, fired by the shared **Season** clock) +
+  a *minimal* set of head-office **Briefs** (safe boost / risky gamble / light nudge). This is what
+  makes "rival travel agents racing to build the best tour" a thing you *do*.
 
 ## Core loop
 <!-- The repeated cycle of decisions and rewards, step by step. -->
-Specified in `design/design-doc.md`. **A turn = ONE action:** **Stock Up** (take 2 ingredients where you
-stand) · **Travel** (move one region, arrive with 1) · **Plate** (spend a recipe from your Larder to take
-a Menu dish → VP + Grand Dossier +1) · **Dead-drop** (give a rival 1 ingredient → score +1 VP + bank an
-Insider Tip + Grand Dossier +1) · **Extract** (trigger the end-game). You can only take a region's **specialty** while
-there (oysters South, tea/pearls Central, rice/greens East, beef/pork North); **pantry** staples are at
-the convenience store anywhere — so you *travel because the ingredient lives there*. Your **Larder sits
-face-up in the open** (no hidden hand — the secret Assignment is the game's *only* hidden info).
-**Larder caps at 7**,
-so surplus is common → dead-dropping surplus (for an Insider Tip) beats discarding it: that's what makes
-cooperation individually rational. The tension every turn: advance my secret **Assignment**, race a dish
-off the shared **Menu**, or convert surplus into leverage — all while the shared **Grand Dossier** rises.
+Specified in `design/design-doc.md` (v2). **A turn = ONE action:** **Stock Up** (take 2 ingredients
+where you stand) · **Travel** (move one region, arrive with 1) · **Plate** (spend a recipe from your
+Larder to add a Menu Dish to your tour → VP scored **live**, Season +1, then **lock in** any completed
+Hot-List spot for free) · **Extract** (trigger the end-game). Free riders: **play one Brief** and **lock
+in** completed Hot-List spots. You can only take a region's **specialty** while there (oysters South,
+tea/pearls Central, rice/greens East, beef/pork/chicken/egg North); **pantry** staples are at the
+convenience store anywhere — so you *travel because the ingredient lives there*. Your **Larder sits
+face-up** (the secret **signature itinerary** is the game's *only* hidden info). **Larder caps at 7.**
+The tension every turn: source toward my next Dish, **race the rival to a Hot-List spot**, or bank my
+lead and wrap — all under a **living island** whose next **Condition** you can already see coming.
 
 ## Signature twist
 <!-- The one memorable rule/hook that makes it *this* game. -->
-**The shared Dossier + tip-offs** — a genuinely cooperative spine running *inside* a competitive race, so
-helping a rival can be the selfish play. Fused with **recipes-by-region**, so the spy-mission fiction and
-the food-geography fiction drive the *same* decisions.
+**The public Hot-List race on the same Operation cards as your secret signature itinerary, under a
+telegraphed living island.** Two rival agents race to lock the island's hot spots into competing tours
+while the shared **Season** clock keeps turning the island (festivals open windows, typhoons shut
+roads). Fused with **recipes-by-region**, so the travel-agent fiction and the food-geography fiction
+drive the *same* decisions. *(v2 — replaces the v1 co-op shared-Dossier + dead-drop twist, which was
+cut: the paid one-way gift wasn't fun or on-theme even though the sim proved it rational.)*
 
 ## Components (summary)
-*(Full table in `design/design-doc.md`; firmed quantities + BOM in `components/manifest.md`.)* **6 component
-types — exactly at the budget cap** (counts firmed by `bg-developer` 2026-08-06, data in `components/`):
-(1) **Map board** — Taiwan, 4 regions on a ring + HSR spine, with the Grand Dossier track and score track
-printed along the edge; (2) **24 Dish cards** (`dishes.csv` — 18 × 3 VP · 3 × 4 VP · 3 × Signature 5 VP;
-recipe + VP + name romanised & 繁體); (3) **15 Assignment cards** (`assignments.csv` — secret "Operation"
-objectives, +7 VP); (4) **120 ingredient tokens** (`ingredients.csv`) — 9 types: 8 region specialties × 12
-+ fungible **pantry** × 24 (the convenience store); (5) **30 Insider Tip tokens**; (6) **4 Agent pawns**.
-(Dossier/score markers + the 2 player aids ride existing types — not a 7th.) No headroom for a new type —
-new content reuses these.
+*(Full table in `design/design-doc.md` v2; quantities being re-firmed by `bg-developer`.)* **7 component
+types** (+1 over v1's 6-cap — the CD softened the cap, cost is fun-first): (1) **Map board** — Taiwan, 4
+regions on a ring + HSR spine, now also carrying the **Season clock**, the **VP score track**, the
+**Hot-List row (3 slots)** and the **Condition queue (2 slots)**; (2) **~24→30 Dish cards** (recipe + VP
++ Tâi-lô & 繁體; grows with North chicken/egg + East); (3) **Operation cards** — *one type, two decks:*
+a **Hot-List deck** (~14–18 public bonus tours, 4–6 VP) + a **Sealed deck** (~10–12 secret signature
+itineraries, +7) — reuses v1's Assignment type, so the whole Hot-List race costs **no new component**;
+(4) **Condition cards** (~10–14 — the living-island event deck; *new type*); (5) **Brief cards** (~10–14
+head-office directives; *new type — scope = CD decision; may collapse to a printed set → back to 6
+types*); (6) **~130–150 ingredient tokens** (region specialties + pantry; adding **chicken 雞 + egg
+蛋**); (7) **4 Agent pawns** (+ VP markers on the track). **Cut from v1:** Insider Tip tokens.
+Conditions & Briefs stay **separate decks on purpose** (sensitivity rail — head-office vs island must
+not blur).
 
 ## Win condition & scoring
-Highest **Traveller's Log** wins. Score = **plated dishes** (3 VP for 2-ingredient · 4 VP for 3-ingredient
-· 5 VP for a 3-region Signature) + **Assignment** (+7 if completed, revealed at scoring) + **+1 VP per
-Dead-drop made** (the sim-adopted fix that makes cooperating rational — see decision-log/sim-notes) + your
-banked **Grand Dossier** bonuses. Dossier payout = **Hybrid (C, CD call 2026-08-06):** each milestone pays a flat
-Discovery bonus to *everyone* (+2/+3/+4/+5 — a warm rising tide) **and** the player who triggers it picks
-a small reward — an **Insider Tip or +1 VP**. **Tiebreak:** most dishes, then most regions visited. The
-contested margin is **dishes + Assignment + Dead-drop VP + Insider-Tip/trigger efficiency** (the flat
-Dossier base is a rising tide that doesn't decide ranking; only the ≤+4 VP of triggerer-picks touches it).
-Expected 2p total ~52–58 VP. Detail + balance model in `design/design-doc.md`.
+Highest tour (Traveller's Log) wins → **Top Agent**. Score = **plated Dishes** (3 / 4 / 5 VP) +
+**Hot-List spots locked** (4–6 VP each — the public race) + **Condition/Brief VP gains** + **secret
+signature itinerary** (+7 if completed, revealed at scoring). A **live VP tracker** (score track +
+marker per player) shows all *open* VP as earned — Dishes, locks, event/brief gains — so the race is
+legible; the **only** off-tracker VP is the secret +7, held face-down until the reveal. **Tiebreak:**
+most Hot-List spots, then most Dishes, then most regions visited. Expected 2p winner ~50–55 VP. Detail
++ balance model in `design/design-doc.md` v2. *(v2 — the v1 flat Grand Dossier payout + triggerer's
+pick + +1-VP-per-Dead-drop are all cut; the Grand Dossier is repurposed into the Season clock that fires
+Conditions.)*
 
 ## Rules summary
-Drafted in `design/rules-draft.md` (teach-in-play order). Turn = one of **Stock Up / Travel / Plate /
-Dead-drop / Extract**; Larder cap 7; Grand Dossier +1 per Plate or Dead-drop with milestone Discovery
-bonuses; end-game triggers on **Extract** or the Dossier's final milestone → finish the round + one more
-full round → score. **One hidden-info hook only:** the secret Assignment (no deduction engine).
+Drafted in `design/rules-draft.md` v2 (teach-in-play order). Turn = one of **Stock Up / Travel / Plate /
+Extract** (+ free: play a **Brief**, **lock in** a completed Hot-List spot); Larder cap 7; the **Season**
+advances +1 per Plate and per lock-in, firing a **Condition** at each milestone (telegraphed queue:
+ACTIVE + NEXT); end-game triggers on **Extract** or the Season's final milestone → finish the round + one
+more full round → score. **One hidden-info hook only:** the secret signature itinerary (no deduction
+engine).
 
 ## Open questions & risks
-- ✅ **Mechanism spine — DECIDED:** A "Rival Agents, Shared Beat" (2026-08-06).
-- ✅ **Is the "secret agent" wink load-bearing? — DECIDED:** yes, in the base (hidden Assignments +
-  shared Dossier). Reverses the earlier "flavour-only / held expansion" call (2026-08-06).
-- ✅/⚠️ **TOP RISK — SIM-RESOLVED, now a human feel-test.** Is the co-op layer *individually rational*?
-  Sim verdict: as first written it FAILED (hoarding dominated 66.8% vs 24.0%); **+1 VP per Dead-drop**
-  (adopted 2026-08-06) flips it to a PASS (Generous 47.0% vs Hoarder 41.1%), kingmaking bounded, payout-C
-  picks non-decisive. Remaining open question is the one the sim can't judge → **a 2p Screentop session:**
-  does tipping *feel* worth it, is "arm my rival?" live, and does anyone VP-farm Dead-drops (fallback:
-  restrict +1 VP to surplus drops)? Deeper fallback if the feel fails: spine B's explicit co-op mode.
-- Hold weight at **~1.8** — one clean hidden-info hook, not a deduction engine (`bg-elegance` guards).
+- ✅ **Mechanism spine — DECIDED:** sourcing engine (spine A) + **interaction model C "Rivals on a Living
+  Island"** (2026-08-06). Dead-drop + Insider Tip **cut**; Grand Dossier repurposed as the Season clock.
+- ✅ **Is the "agent" wink load-bearing? — DECIDED:** yes — now via the public **Hot-List** race + secret
+  **signature itinerary** + head-office **Briefs** (re-skinned to rival travel agents building a tour).
+- ⚠️ **TOP RISK (v2) — the Hot-List race must be *fun-tense*, not resentment-on-snipe or a leader-runaway.**
+  Attack first with the named sim **bounty-claim-share vs finishing position** (extend
+  `sim/travel_agents.py`: Chaser vs Signature-focus; pass = locks spread, winner doesn't sweep) **and** a
+  2p Screentop feel-test (does a snipe feel outraced-not-robbed?). Rules designed to defuse it: refilling
+  3-spot pool · a snipe never wastes your plated Dishes · fully open info + live VP tracker · modest 4–6
+  VP · the Season clock ties a leader's tempo to a faster endgame. Fallback knobs: per-player lock cap /
+  trailing discount / faster refresh. (design-doc v2 *Interaction & tension*.)
+- ⚠️ **Secondary risks:** does Fellowship survive cutting co-op (carried now by shared Condition drama +
+  rivalry banter)? do the Briefs read affectionate not mean? do Conditions vary routing without erasing a
+  planned plate (telegraph + tax-not-block)?
+- Hold weight **~2.0–2.1, ceiling 2.2** — one clean hidden-info hook, no deduction engine; the 7th
+  component type (Brief deck) is the trim point (`bg-elegance` guards).
 - 2p-first, but confirm it scales cleanly to 3–4 (`bg-architect`).
 - **Sensitivity:** the game depicts a **real place & culture (Taiwan)** — flag for `bg-theme` +
   `bg-publishing` (respectful, well-researched, avoid caricature; "Taiwanese humour" done *with* not *at*;

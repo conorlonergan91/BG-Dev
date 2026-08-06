@@ -1,83 +1,130 @@
-# Travel Agents: Taiwan — Design Doc
+# Travel Agents: Taiwan — Design Doc (v2)
 
 Deeper design detail than the game bible. Owned by `bg-design`; keep the bible's summary in sync.
-Spine A **"Rival Agents, Shared Beat"** (LOCKED, 2026-08-06). Slug `travel-agents`.
+**Interaction model C "Rivals on a Living Island" (LOCKED, 2026-08-06).** Slug `travel-agents`.
+Supersedes v1 (spine A "Rival Agents, Shared Beat"): the sourcing engine is retained; the co-op
+tip-economy is **cut** and replaced by a direct rival contest + a living-island event layer.
 
-> **One-line frame:** a warm competitive food-travel duel where a secret **Assignment** drives your
-> trip, but the surplus in your **Larder** is worth more handed to a rival than hoarded — because a
-> **Dead-drop** banks you a flexible **Insider Tip** and nudges the shared **Grand Dossier** everyone
-> profits from. Race to plate real Taiwanese dishes across an island shaped by real food geography.
+> **Fiction labels (CD re-skin, 2026-08-06):** the players are rival **travel agents** building the
+> best Taiwan foodie **tour**, who comedically *behave* like covert agents. Mechanics below are model C
+> **unchanged**; only the theme names change. Where a name is `bg-theme`'s to finalise against
+> `identity.md` it's flagged *[fiction → bg-theme]*. Mechanically-neutral labels kept from v1
+> (Larder / Menu / Dish / Stock Up / Travel / Plate) are unchanged.
+
+> **One-line frame:** two rival travel agents race to build the best Taiwan food **tour** — source real
+> ingredients from the regions that supply them and **Plate** the island's great dishes into your tour,
+> while you both race to lock the same **Hot-List** spots, chase a **secret signature itinerary**, and
+> ride an island that won't sit still (festivals open windows, typhoons shut roads). Most impressive
+> tour is named **Top Agent**.
+
+---
+
+## What changed from v1 (the model-C swap, for `bg-elegance`)
+
+This is a **swap, not a pile-on.** Honest ledger:
+
+| Cut (−) | Added (+) |
+|---------|-----------|
+| **Dead-drop** action (keyword + rule) | **Hot-List** — a public race-to-claim row (reuses the Operation card type) |
+| **Insider Tip** tokens + spend rules (keyword + **component type**) | **Conditions** — a lean, telegraphed island-event deck |
+| **Flat Grand Dossier payout** (+2/3/4/5 to all) + **triggerer's-pick** sub-race (a scoring line + a mini-race) | **Briefs** — a *minimal* head-office directive set (boost / risky gamble / light nudge) |
+| The "is helping a rival rational?" **balance knife-edge** (sim had to bribe it with +1 VP) | A **live VP tracker** (open score raced in the open) |
+
+Net: we retire **2 keywords** (Dead-drop, Insider Tip), **one whole scoring line** (flat Dossier
+payout), and **one balance knife-edge**; we add **2–3 keywords** (Hot-List, Condition, Brief). The
+Insider Tip's flexible-leverage job (extra source / wild / extra hop) is **re-homed into the Briefs**,
+so no capability is lost. Actions drop from **5 → 4** (Stock Up / Travel / Plate / Extract; claiming a
+Hot-List spot rides on a Plate, and playing a Brief is free). See *Complexity budget* for the weight
+call.
 
 ---
 
 ## Design goals
-- **Target weight ~1.8** (Ticket to Ride / Splendor band). **One** hidden-info hook only: the secret
-  **Assignment**. Everything else is open information — no deduction engine.
-- **Aesthetics (locked):** Discovery (lead) + Fellowship + Challenge. The market/menu *reveals*, the
-  Dead-drop and Grand Dossier make cooperation *real* (not just warm rivalry), the trip is a light
-  optimisation puzzle.
-- **The meaningful decision at the heart of the game (every turn):** *advance my secret mission, feed
-  the shared tour, or convert my surplus into leverage?* — travel toward what I need, stock the local
-  specialty, cash in a dish (timing the Grand Dossier), or dead-drop surplus to a rival for an Insider
-  Tip.
-- **Design the top risk out:** make the Dead-drop **individually rational often enough** that players
-  actually cooperate, without a dominant "hoard, never tip" line or kingmaking (see *Interaction &
-  tension* and *First-pass balance model*).
-- **Taiwan does real work:** the region↔ingredient↔dish web is real food geography; rename the setting
-  and it breaks (re-skin-test defeater). Real dishes, romanised + 繁體, never mangled.
+
+- **Target weight ~2.0–2.1, ceiling 2.2** (`complexity-budget.json`; `bg-elegance` guards). The
+  interaction layer is deliberately growing from v1's ~1.8, so **every addition must earn its rules** —
+  we take the two highest interaction-per-rule pieces (Hot-List + Conditions) and keep Briefs *minimal*.
+- **2-player first.** Every new interaction is designed to be fun *head-to-head*; 3–4p is a scaling
+  delta, not a redesign. The sharpest, most resentment-prone case (a two-person snipe) is the one we
+  design and sim against.
+- **Aesthetics (locked, `identity.md`):** **Discovery (lead)** — the island reveals & remakes itself
+  (Conditions) and the Menu/Hot-List reveal; **Fellowship** — carried now by *shared island drama +
+  warm rivalry banter*, not mechanical co-op (per `identity.md`'s own definition of Fellowship);
+  **Challenge** — a light two-front routing puzzle (race the Hot-List *and* the shifting island).
+- **The meaningful decision every turn:** *source toward my next Dish, race the rival to a Hot-List
+  spot, or bank my lead and wrap the tour?* — under an island whose next **Condition** you can already
+  see coming. No forced/obvious move (Travel always arrives with something; the Menu/Hot-List/Condition
+  interplay keeps every turn live).
+- **Taiwan does real work** (unchanged v1 strength): the region↔ingredient↔dish web is real food
+  geography — rename the setting and the recipes break. Real dishes, Tâi-lô primary + 繁體, never mangled.
+- **Design the top risk out:** make the **Hot-List race fun-tense**, not resentment-on-snipe or a
+  leader-runaway (see *Interaction & tension* and *Riskiest assumption*).
 
 ---
 
 ## Core loop (detailed)
 
-A player's turn is **one action** from a menu of four. Turns are short; downtime is low (crucial at
-2p). Each cycle you are optimising: *which ingredients do I still need for my next dish / my secret
-Assignment, and is it worth a turn to travel for them, or to convert surplus into an Insider Tip?*
+A turn is **one action** from four; short turns, low downtime (crucial at 2p). Each cycle you optimise:
+*which ingredients do I still need for my next Dish / to lock a Hot-List spot / to advance my secret
+Signature Itinerary — and is the island's current **Condition** telling me to hurry or reroute?*
 
-1. **Read the board.** Your secret **Assignment** points at a shape of trip (a regional crawl, a
-   variety tour, two hero dishes…). The face-up **Menu** shows which dishes are plate-able now. The
-   **Grand Dossier** shows how close the table is to the next shared **Discovery bonus** (and to the
-   end).
+1. **Read the board.** Your **secret signature itinerary** *[fiction → bg-theme; was secret Operation]*
+   points at a shape of tour (a regional crawl, a variety tour, two hero dishes…). The face-up **Menu**
+   shows plate-able Dishes. The **Hot-List** shows the public bonus tours both agents are racing to lock
+   in. The **Season** clock shows how close the tour is to the next **Condition** — and to the end. The
+   **active Condition** (and the *next* one, previewed) is modifying what's valuable where.
 2. **Source what you need.** *Stock Up* (2 ingredients where you stand) or *Travel* (move one region,
    arrive with 1). You can only take a region's **specialty** in that region; **pantry** supplies are
-   available anywhere (the convenience store).
-3. **Plate a dish.** Spend a Menu dish's recipe from your **Larder** → the Dish card enters your
-   **Traveller's Log** (VP), the **Grand Dossier** advances +1, and you check your Assignment.
-4. **Convert surplus into leverage.** Your Larder caps at **7**. Rather than discard a surplus
-   ingredient, **Dead-drop** it to a rival: they get the ingredient, *you* get an **Insider Tip**
-   (a flexible boost) and the Grand Dossier advances +1.
-5. **Decide when the trip ends.** When you judge your lead is set, **Extract** ("catch the last train
-   home") to trigger the wind-down — or ride the shared Grand Dossier to its final milestone.
+   available anywhere (the convenience store). The active Condition may boost, tax, or block a region.
+3. **Plate a Dish.** Spend a Menu Dish's recipe from your **Larder** → the Dish enters your tour (your
+   Traveller's Log) for its VP (**tracked live** on the score track), the **Season** advances **+1**,
+   and — as a **free rider** — you immediately **lock in** any Hot-List spot your tour now completes
+   (score it live; Season **+1**; refill the Hot-List). Then check your secret Signature Itinerary
+   quietly (it stays face-down).
+4. **The island turns.** Whenever a Plate / lock-in pushes the Season across a **milestone**, the active
+   Condition ends, the previewed one becomes active, and a new Condition is drawn to the preview slot
+   (the telegraph). ~4–5 Conditions fire across a 2p game.
+5. **Decide when to wrap.** When your lead looks set, **Extract** ("file the finished tour / catch the
+   last train home") to trigger the wind-down — or let the Season reach its final milestone.
 
-The loop compounds gently: Insider Tips earned from dead-drops let you source faster / wild-substitute
-/ hop further, which lets you plate more, which advances the Dossier, which pays everyone.
+The loop compounds gently and legibly: plating faster advances the Season (turning the island and
+firing Conditions), and locks Hot-List spots before your rival — but it also **hurries the end-clock**,
+so a leader racing to lock spots is also shortening the game a trailer needs. That tension is the
+built-in rubber-band (see *Interaction & tension*).
 
 ---
 
 ## Turn / round / phase structure
 
 **Setup (2p shown; deltas in *Player counts & scaling*):**
-- Place the **Taiwan map board** (4 regions on a ring: North 北 – Central 中 – South 南 – East 東 –
-  back to North; an **HSR** spine links North–Central–South down the west coast). The **Grand Dossier**
-  track and a shared **score track** run along the board edge.
-- Deal the **Menu**: 4 face-up Dish cards from the shuffled Dish deck.
-- Each player: take an **Agent** pawn (start on opposite regions — one North, one South), draw **2
-  Assignments and keep 1** secret (return the other), take an empty **Traveller's Log** area in front
-  of them. Your Larder starts empty and sits **face-up in the open** all game (see below).
-- Seed the Grand Dossier marker at 0. Place ingredient and Insider Tip supplies in reach.
+- Place the **Taiwan map board** (4 regions on a ring: North 北 – Central 中 – South 南 – East 東; an
+  **HSR** spine links North–Central–South down the west coast). The board also carries the **Season
+  clock**, the **VP score track**, the **Hot-List row (3 slots)**, and the **Condition queue (2 slots:
+  ACTIVE + NEXT)**.
+- Build the two Operation sub-decks (same card type): shuffle the **Hot-List deck** and the **Sealed
+  deck** separately.
+- Deal the **Menu**: 4 face-up Dish cards. Deal the **Hot-List**: **3** face-up Operation cards.
+- Seed the **Condition queue**: draw 1 to ACTIVE, 1 to NEXT (both face-up).
+- Each player: take an **Agent** pawn (start on opposite regions — one North, one South) and a **VP
+  marker** on the score track at 0; draw **2 Sealed Operations, keep 1** as your **secret signature
+  itinerary** (return the other, face-down); take your empty tour (Traveller's Log) area. Your Larder
+  starts empty and sits **face-up in the open** all game.
+- **Briefs (scope = CD decision, see below):** deal each agent a small opening hand of **Briefs**
+  (default 3). Larder empty. Season marker at 0.
 
-**A turn = choose ONE action** (detailed in *Actions*): **Stock Up**, **Travel**, **Plate**,
-**Dead-drop**, or **Extract**. Then, if your Larder exceeds 7, discard down to 7. Play passes clockwise.
+**A turn = choose ONE action:** **Stock Up**, **Travel**, **Plate**, or **Extract** (detailed in
+*Actions*). At the appropriate moment you may also **play one Brief** (free, not an action) and, riding
+on a Plate, **lock in** any completed Hot-List spot (free). Then, if your Larder exceeds 7, discard down
+to 7. Play passes clockwise.
 
-**End-trigger (either path):**
+**End-trigger (either path, unchanged from v1):**
 - A player takes the **Extract** action, **or**
-- The **Grand Dossier** reaches its **final milestone**.
+- The **Season** reaches its **final milestone**.
 
-Either way: **finish the current round** (so everyone has had an equal number of turns), then play
-**one more full round**, then **score**. (A fair, unswingy wind-down — no "extract turn 1 to deny
-turns" degeneracy.)
+Either way: **finish the current round** (equal turns for all), then play **one more full round**, then
+**score**. (A fair, unswingy wind-down.)
 
-Target length: **~30–40 min at 2p**, roughly **18–24 turns per player**.
+Target length: **~35–45 min at 2p**, roughly **18–24 turns per player**.
 
 ---
 
@@ -85,15 +132,16 @@ Target length: **~30–40 min at 2p**, roughly **18–24 turns per player**.
 
 | Action | Cost | Effect | Notes |
 |--------|------|--------|-------|
-| **Stock Up** | your turn | Take **2 ingredients** available at your current region: any mix of this region's **specialty** ingredients and **pantry** supplies. | The workhorse. Frictionless (open supply, no market decks). |
-| **Travel** | your turn | Move your Agent to an **adjacent** region on the ring; on arrival, take **1 ingredient** available there. (HSR: North↔South counts as adjacent — the west-coast shortcut.) | Travel is never a dead turn — you always arrive with something. The "tax" vs Stock Up (1 vs 2) is the time cost of moving. |
-| **Plate** | your turn + spend a recipe from Larder | Choose a **Menu** dish you can afford; return its recipe ingredients to supply; take the Dish card into your **Traveller's Log**; refill the Menu from the deck. Advance the **Grand Dossier +1**. | The scoring engine + the indirect race (a rival can plate the dish you wanted). |
-| **Dead-drop** | your turn + give 1 ingredient | Give **1 ingredient from your Larder to a rival** ("a hot tip on where the good stuff is"). Gain **1 Insider Tip**, score **+1 VP**, and advance the **Grand Dossier +1**. | The cooperation engine. The **+1 VP** (sim-adopted) is what pays for the turn and makes it rational — see *Interaction & tension*. At 3–4p a player may **receive at most 1 Dead-drop per round**. |
-| **Extract** | your turn | Trigger the end-game wind-down (finish the round + one more full round). Your Assignment stays secret until scoring. | Push-your-luck tempo: end it while you're ahead vs plate one more. |
-| *(free, not an action)* **Spend an Insider Tip** | 1 Insider Tip | Choose one: **(a)** take 1 extra ingredient from your current region now; **(b)** treat 1 recipe ingredient as **any type** when plating (wild); **(c)** when you Travel, move **1 extra** region. | Flexible leverage — this is what makes a Dead-drop worth doing. |
+| **Stock Up** | your turn | Take **2 ingredients** available at your current region (this region's **specialties** and/or **pantry**). The active **Condition** may add/tax this. | The workhorse. Frictionless (open supply). |
+| **Travel** | your turn | Move your Agent to an **adjacent** region on the ring; on arrival, take **1 ingredient** there. (HSR: North↔South counts as adjacent.) Conditions may block/tax a region — see *Conditions*. | Never a dead turn — you always arrive with something. |
+| **Plate** | your turn + spend a recipe from Larder | Choose a **Menu** Dish you can afford; return its recipe ingredients to supply; add the Dish to your tour (VP scored **live** on the track); refill the Menu. **Season +1.** Then **lock in** (free) any Hot-List spot your tour now completes (see below). | The scoring engine + the trigger for both the Hot-List race and the Season/Condition clock. |
+| **Extract** | your turn | Trigger the end-game wind-down (finish the round + one more full round). Your secret Signature Itinerary stays face-down until scoring. | Push-your-luck tempo: wrap while ahead vs plate/lock one more. |
+| *(free, not an action)* **Lock in a Hot-List spot** | — (rides on a Plate) | The instant your tour satisfies a face-up Hot-List spot's condition, take that card into your tour for its VP (scored **live**), **Season +1**, and refill the Hot-List from its deck. Multiple may lock in one turn. | The direct rival race. First to satisfy-and-lock takes it; the rival is shut out of *that* spot but the refill gives a fresh target. |
+| *(free, not an action)* **Play a Brief** | discard the Brief | One-shot head-office directive: a safe self-boost, a risky self-gamble, or a light keep-your-rival-honest nudge (see *Briefs*). Max **one Brief per turn**. | The Insider Tip's flexible-leverage role, re-homed + given the Chief's/head-office voice. |
 
-Every turn has multiple viable options with real trade-offs (travel-for-what-I-need vs stock-the-local
-vs plate-now vs convert-surplus vs end-it). No forced/obvious move; Travel is never empty.
+Every turn has multiple live options with real trade-offs (source-what-I-need vs race a Hot-List spot
+vs plate-now-and-turn-the-island vs wrap-it), all under a telegraphed, shifting Condition. No
+forced/obvious move.
 
 ---
 
@@ -101,87 +149,140 @@ vs plate-now vs convert-surplus vs end-it). No forced/obvious move; Travel is ne
 
 | Component | Qty | Notes |
 |-----------|-----|-------|
-| **Map board** (Taiwan) | 1 | 4 regions on a ring + HSR spine; **Grand Dossier** track + shared **score track** printed along the edge. (One board absorbs three functions to save a component type.) |
-| **Dish cards** | ~24 | Recipe (ingredient icons) + VP + name (romanised **and** 繁體) + a small region tag. The heroes — each a little postcard. |
-| **Assignment cards** | ~14–16 | Secret objectives ("Operation: ___"). ~+7 VP each on completion. |
-| **Ingredient tokens** | ~120 | **9 types**: 8 region **specialties** (2 per region) + 1 fungible **pantry**. Open supply. |
-| **Insider Tip tokens** | ~30 | The flexible dead-drop reward. |
-| **Agent pawns** | 4 | One per player; on the map. |
-| *(Grand Dossier marker + score markers)* | — | Cubes/discs on the board tracks; not a distinct "type." |
+| **Map board** (Taiwan) | 1 | 4 regions on a ring + HSR spine; **Season clock**, **VP score track**, **Hot-List row (3 slots)** and **Condition queue (2 slots)** all printed on the one board. |
+| **Dish cards** | ~24–30 | Recipe (ingredient icons) + VP + name (Tâi-lô + 繁體) + region tag. (v1 has 24; East pending + chicken/egg dishes incoming → grows toward ~30.) |
+| **Operation cards** *(one type, two decks)* | ~26–30 | **Sealed deck** (~10–12): secret Signature Itineraries, +7, draw-2-keep-1. **Hot-List deck** (~14–18): public bonus tours, **4–6 VP**, dealt face-up. Same card stock/type — *reuses v1's Assignment type, no new component for the whole Hot-List race.* |
+| **Condition cards** | ~10–14 | The living-island event deck (festivals / weather / roads / warm characters). Small — ~4–5 fire per game. **New component type.** |
+| **Brief cards** | ~10–14 | Head-office directive deck (boost / risky gamble / light nudge). *Scope = CD decision; may collapse to a printed mini-set (no deck) — see below.* **New component type (in the deck version).** |
+| **Ingredient tokens** | ~130–150 | Region **specialties** + fungible **pantry**. Adding **chicken 雞** + **egg 蛋** (see *Ingredients*). Open supply. |
+| **Agent pawns + VP markers** | 4 + 4 | Pawns on the map; markers on the VP track. (Markers are bits on the board's track — not a distinct "type.") |
 
-**Component types = 6** (board / dish cards / assignment cards / ingredient tokens / tip tokens /
-pawns) — **exactly at the budget cap** (`complexity-budget.json`: `max_component_types: 6`). Flag to
-`bg-elegance`: no room for a seventh type; new content must reuse these.
+**Component types = 7** (board / Dish cards / Operation cards / Condition cards / Brief cards /
+ingredient tokens / pawns): **one over v1's 6-type cap.** We *cut* Insider Tip tokens (−1) and *add*
+Condition + Brief decks (+2). The CD has explicitly softened this cap (cost is fun-first; a 7th type is
+fine when the game needs it — `decision-log`, 2026-08-06). **The Brief deck is the 7th type**, so the
+CD's Briefs-scope decision (below) is *also* the "do we cross 7 types" decision: fixed-set/fold Briefs →
+back to **6 types**. Flagged honestly to `bg-elegance` / `bg-architect`. Conditions and Briefs are kept
+as **separate decks on purpose** — `identity.md`'s binding rail is that **head-office directives (from
+within) must not blur with island conditions (that happen to you)**; merging them is a sensitivity
+regression, not an elegance win.
 
-### Ingredients — the region↔ingredient web (the Taiwan engine)
+### Ingredients — the region↔ingredient web (the Taiwan engine, retained + extended)
 
-| Region | Specialty 1 | Specialty 2 | Real-geography basis |
-|--------|-------------|-------------|----------------------|
-| **North 北** (Taipei · Keelung · Hsinchu) | **Beef 牛肉** | **Pork belly 五花肉** | Beef noodle is Taipei-iconic; gua bao a northern night-market staple; Hsinchu Hakka pork. |
-| **Central 中** (Taichung · Nantou · Changhua) | **Tea 茶葉** | **Tapioca pearls 粉圓** | Bubble tea born in Taichung; Nantou/Lugu oolong; central tea country. |
-| **South 南** (Tainan · Kaohsiung · Chiayi) | **Oysters 蚵仔** | **Milkfish 虱目魚** | Tainan/Chiayi oyster farms (七股/東石); Tainan milkfish. |
-| **East 東** (Hualien · Taitung · Yilan) | **Mountain rice 池上米** | **Wild greens 野菜** | Chishang/Guanshan premium rice; Indigenous & mountain cuisines. |
-| **Anywhere** | **Pantry 補給** (fungible) | — | The ubiquitous **convenience store** (7-11 / 全家) — a real, beloved Taiwan feature. Noodles, egg, starch, milk, seasoning, abstracted to one flexible token. |
+v1's web (8 specialties, 2 per region, + fungible pantry) is retained. **New ingredients from the
+locked North dishes** (雞排 / 火雞肉飯 / 卡拉雞腿堡 / 蛋餅): **chicken 雞** and **egg 蛋**.
 
-> **Sensitivity note (binds — see identity.md):** the East specialties draw on **Indigenous** cuisines;
-> keep the label generic and respectful ("mountain rice / wild greens / mountain produce"), never
-> costume or exoticise, and route through the **paid Taiwanese cultural consultant** before art/print.
-> Dead-drops are framed as *sharing a recommendation* ("you HAVE to try that stall"), never *extracting*
-> — the traveller is a guest and fan. Dishes named in romanisation **and** 繁體, never invented/mangled.
+**Framework rule (systems-level; exact list finalised by `bg-developer` — East still pending):**
+- Every region must remain the **sole source of ≥1 ingredient that appears in cross-region Dishes**, so
+  Travel stays motivated — this is the non-negotiable that keeps the "travel because the food lives
+  there" engine alive. A region may carry **2–4 specialties**; do **not** let any one region become so
+  self-sufficient that a player can build a whole tour without leaving it (that kills routing).
+- **chicken 雞** → recommend a **North specialty** (雞排 night-market; 卡拉雞腿堡 breakfast-shop; Chiayi
+  火雞肉飯 is southern-adjacent — a possible South/North bridge Dish, a `bg-developer` call).
+- **egg 蛋** → two clean options, a **data call, not a systems blocker**: (a) a **North specialty**
+  (breakfast-shop identity), or (b) a **second everyday token alongside pantry** (egg is ubiquitous;
+  茶葉蛋 / 蛋餅 both use it). Recommend **(a)** so North's breakfast-shop character earns a real token
+  and North doesn't over-rely on pantry — but if North then reads as too self-sufficient, fall to (b).
+- **Watch:** North now holds beef/pork/chicken(/egg) → richest region. Keep enough **cross-region**
+  Dishes pulling North ingredients *out* to other regions (滷肉飯 N+E, 池上便當 E+N, etc.) so North isn't
+  a stay-home trap. `bg-developer` to keep cross-region ≥ ~25% (geography-capped, as v1).
 
-### Dishes — recipes (exemplars; full deck ~24)
+> **Sensitivity note (binds — see `identity.md`):** East specialties draw on **Indigenous** cuisines —
+> generic, respectful labels ("mountain rice / wild greens"), consultant before art/print. Dishes named
+> Tâi-lô + 繁體, never mangled. The travel-agent re-skin is **net safer**: agents *promote* Taiwan's food
+> to clients — advocacy, not extraction.
 
-A dish = **specialties (region-locked) + at most 1 pantry** (keeping recipes travel-motivated — a
-pantry-heavy dish would be plate-anywhere and kill routing). VP: **2-ingredient = 3 · 3-ingredient = 4
-· Signature (3 specialties from 3 regions) = 5**.
+### Dishes — recipes (v1 exemplars retained; deck grows with North + East)
 
-| Dish | 繁體 | Recipe | VP | Regions |
-|------|------|--------|----|---------|
-| Beef noodle soup | 牛肉麵 | Beef + Pantry | 3 | N |
-| Gua bao | 刈包 | Pork belly + Pantry | 3 | N |
-| Bubble tea | 珍珠奶茶 | Tea + Pearls | 3 | C |
-| Tea egg | 茶葉蛋 | Tea + Pantry | 3 | C |
-| Oyster omelette | 蚵仔煎 | Oysters + Pantry | 3 | S |
-| Oyster vermicelli | 蚵仔麵線 | Oysters + Pantry | 3 | S |
-| Bamboo-tube rice | 竹筒飯 | Rice + Wild greens | 3 | E |
-| Milkfish porridge | 虱目魚粥 | Milkfish + Rice | 3 | S+E |
-| Chishang bento | 池上便當 | Rice + Pork belly + Pantry | 4 | E+N |
-| East-coast platter | 東部風味餐 | Wild greens + Milkfish + Pantry | 4 | E+S |
-| Hakka stir-fry | 客家小炒 | Pork belly + Tea + Pantry | 4 | N+C |
-| Braised-pork rice | 滷肉飯 | Pork belly + Rice + Pantry | 4 | N+E |
-| Banquet platter *(Signature)* | 辦桌 | Oysters + Beef + Wild greens | 5 | S+N+E |
-| Round-island feast *(Signature)* | 環島大餐 | Beef + Tea + Milkfish | 5 | N+C+S |
+Unchanged model: a Dish = **specialties (region-locked) + at most 1 pantry**. VP: **2-ingredient = 3 ·
+3-ingredient = 4 · Signature (3 specialties, 3 regions) = 5**. (Full data in `components/dishes.csv`;
+North chicken/egg Dishes and the East set are being finalised separately — design here is at the
+systems level and does not block on the final list.)
 
-**Deck balance guideline:** each specialty appears in ~5–6 recipes; **~40% of the deck is cross-region**
-(2+ regions) to keep travel and the "island tour" alive; ~3 Signatures as aspirational showpieces.
+### Operations — the Hot-List (public race) + the Sealed Signature Itinerary (secret +7)
 
-### Assignments (the one hidden hook) — types
+**One card type, two grades printed on the card**, both drawn from the objective families below
+(crawl / variety / obsession / big-eater / volume — same as v1's Assignments):
 
-Each an "Operation: ___", achievable with ~2–4 plated dishes, **+7 VP** on completion (binary).
+| Grade | Where | Count in play | VP | Info |
+|-------|-------|--------------:|----|------|
+| **Sealed Signature Itinerary** | secret, in front of each player | 1 / player | **+7** (binary) | **Hidden** until scoring — the one hidden hook, the dramatic reveal. |
+| **Hot-List spot** | face-up on the board | **3** (2p) | **4–6** (by difficulty) | **Public** — both agents see it and race to complete-and-lock. |
 
-| Type | Example | Steers you toward |
-|------|---------|-------------------|
-| Regional crawl | "Plate **3 dishes** using a **Southern** ingredient." | Depth in one region |
-| Variety tour | "Plate dishes using an ingredient from **all 4 regions**." | Round-island breadth |
-| Signature obsession | "Plate **2 specific hero dishes** (e.g., beef noodle + oyster omelette)." | Targeted routing |
-| Big eater | "Plate **2 three-ingredient dishes**." | Ambitious sets |
-| Night-market crawl | "Plate **4 dishes total**." | A safe volume floor |
+- **Hot-List VP scaling:** 2-dish condition = **4**; 3-dish = **5**; a breadth/harder condition = **6**.
+  Kept **below the +7 Sealed** so the secret itinerary stays the headline and the public race is the
+  supporting contest, not the whole game.
+- **A single plated Dish can count toward your Sealed Itinerary *and* one-or-more Hot-List spots
+  simultaneously** (your tour is evaluated against every condition). This is deliberate: it makes
+  routing decisions richer ("this oyster Dish advances my secret Southern crawl *and* lets me snipe the
+  oyster Hot-List spot") and raises payoff density with **zero extra rules**.
+- **Hot-List conditions skew to the faster/legible end** (2–3 dishes, readable "she's one oyster Dish
+  away"); Sealed itineraries can be meatier (~2–4 dishes) since they're your private +7 headline.
 
-Balance intent: completion difficulty roughly equal across the deck (~2–4 dishes / ~half your Log), so
-no Assignment is a trap or a gimme. **+7 ≈ two dishes ≈ ~20% of a winning score** — a real secret-race
-stake that steers your trip without making the rest of the game irrelevant.
+### Conditions — the living-island event deck (Discovery + the shared drama)
+
+A **lean, telegraphed** deck. **Trigger:** each **Season milestone** ends the ACTIVE Condition, slides
+NEXT into ACTIVE, and draws a new NEXT (always previewed face-up). The preview is the agency-preserver —
+you *see the storm coming* and route around it, or the festival coming and race toward it. Three
+families, **secular only** (binding rail):
+
+| Family | Effect shape | Scope | Fun |
+|--------|--------------|-------|-----|
+| **Festival (window opens)** | a region's specialty stocks +1 extra / its Dishes plated this window score +1 VP | one region (or table-wide) | a **hotspot both agents suddenly want** → turns the map live; contention amplifier |
+| **Hazard (window shuts/taxes)** | Travel into a region costs +1 step this window, or its specialty costs your whole turn to take 1 (delay-not-destroy; prefer **tax** over hard **block**) | one region / a named pass | shared "oh no, typhoon!" reroute drama; the *island* is the antagonist, never a rival |
+| **Warm character (one-off boon)** | resolve once, **symmetrically** (each agent gains the same) | table-wide | the warm heart; generous hosts, never a punchline |
+
+**Starter set (~8; wording via the Taiwanese consultant before lock):**
+1. **芒果季 Mango Season** *(festival, South)* — Dishes using a Southern ingredient plated this window
+   score **+1 VP**.
+2. **珍奶節 Bubble-Tea Festival** *(festival, Central)* — when you Stock Up in Central, take **+1** extra.
+3. **豐收 Bumper Harvest** *(festival, East)* — when you Stock Up in the East, take **+1** extra.
+4. **夜市週年慶 Night-Market Anniversary** *(festival, table-wide)* — the **first Dish each agent plates**
+   this window scores **+1 VP**.
+5. **颱風 Typhoon** *(hazard, East coast)* — Travelling **into the East** costs **+1 step** this window
+   (tax, not block — you can still get there, it just costs tempo).
+6. **土石流 Landslide** *(hazard, a mountain pass)* — Travel between **Central↔East** (the cross-island
+   link) is closed this window; use the ring the long way.
+7. **熱心阿姨 The Generous Auntie** *(warm one-off)* — each agent immediately takes **1 free ingredient**
+   of the ACTIVE region's specialty ("she insists you take one more").
+8. **送貨小哥 The Scooter Kid** *(warm one-off)* — each agent may immediately move their Agent **1 region
+   for free** (a lift to the next town).
+
+> **Venues = flavour only (not a subsystem).** Venue vocabulary rides on Conditions for free: "the
+> **breakfast shop** runs a 蛋餅 special," "the **dessert** stall's 芒果冰 is the festival," "the **night
+> market** throws its anniversary." No venue rules — it scored worst on fun-per-rule (exploration §4).
+>
+> **Sensitivity (binding):** **secular only** — festivals are food/fruit-season/market/road/weather
+> events; **NO** temple/deity/ghost-month/funerary content as mechanics or gags. Characters are
+> **dignified, varied hosts**, never obstacles-as-punchline. Hazards are **comic inconveniences**, never
+> disaster-porn. Consultant reviews the full list before art/print.
+
+### Briefs — the head-office directive set (minimal; scope = CD decision)
+
+*[fiction → bg-theme; "Briefs / head-office memos / client briefs" for the v1 "Orders"]* The three
+flavours the CD wants, **bounded to delay-not-destroy** and kept deliberately small:
+
+| Brief | Flavour | Effect (examples) | Bounding |
+|-------|---------|-------------------|----------|
+| **"Free Sample" / Priority Clearance** | safe self-boost | choose one: take **1 extra ingredient** here · treat **1 recipe ingredient as wild** this Plate · **Travel +1** region | self-only (re-homes the cut Insider Tip's flexibility) |
+| **"Deep Cover" / All-In** | **risky self-gamble** (the risk-reward the CD wants — an *input* gamble, no dice) | discard **2 ingredients now** (or skip your next Stock Up), then your **next Plate scores +2 VP** (or your next Hot-List lock-in +2) | self-only; the downside is real and immediate, the upside deferred |
+| **"Sold Out!" / Beat You To It** | **light keep-rival-honest nudge** (warm sibling prank) | name a region; your rival **can't take that region's specialty on their next turn** ("the good stall's sold out") | **one-turn DELAY, never destroy**: never removes VP/ingredients/a whole turn · **symmetric access** (same deck/set) · **capped** at one Brief/turn, no chaining the same target |
+
+**How few / how held / how played (the minimal default the doc specs):** an **opening hand of 3
+Briefs** per agent (a one-time "briefing packet" — no ongoing draw engine, no sub-economy). Play **one
+per turn max**, free (not an action); discard when used. That's your whole supply for the game. This is
+the *minimal* Model-C dose — enough spice to answer "more direct interaction" without paying for a full
+Orders economy (that's the Model-B upgrade path). **See the CD decision** for whether to trim this
+further (fixed printed set → drops the 7th component type) or keep the small deck.
 
 ---
 
 ## Economy & math
 
-**Sourcing throughput.** Stock Up = +2 ingredients; Travel = +1 (and reposition). A typical
-3-ingredient cross-region dish (e.g., Chishang bento: Rice(E) + Pork(N) + Pantry) takes ~3 turns to
-assemble+plate: Stock Up where you are (+2) → Travel to the other region (+1) → Plate. A 2-ingredient
-single-region dish takes ~2 turns.
+**Sourcing throughput (unchanged).** Stock Up = +2 ingredients; Travel = +1 (and reposition). A typical
+3-ingredient cross-region Dish takes ~3 turns to assemble+plate; a 2-ingredient single-region Dish ~2.
 
-**VP per turn (the anti-dominant-strategy check).** Deliberately kept *flat-ish* so no dish size
-dominates:
+**VP per turn (the anti-dominant-strategy check, unchanged).** Kept flat-ish so no Dish size dominates:
 
 | Dish | VP | ~Turns to make+plate | VP/turn |
 |------|----|--------------------:|--------:|
@@ -189,274 +290,271 @@ dominates:
 | 3-ingredient | 4 | 3 | **1.33** |
 | Signature (3-region) | 5 | ~4 | **1.25** |
 
-Small dishes are marginally more efficient per turn, so big dishes are **not** an auto-win — they're
-justified by **Assignment** and Grand Dossier synergy, not raw rate. (Key knob for sim — see below.)
+Small Dishes stay marginally more efficient/turn, so big Dishes aren't an auto-win — they're justified
+by Sealed-itinerary / Hot-List synergy, not raw rate.
 
-**Larder cap = 7.** Guarantees surplus arises regularly → makes Dead-drop's "convert dead weight into an
-Insider Tip" the core of why cooperation is rational (below). Discarding for nothing is strictly worse
-than dead-dropping for a Tip.
+**Larder cap = 7 (retained).** Still forces the source→plate rhythm and prevents hoarding a burst; the
+**risky-gamble Brief** ("discard 2 → next Plate +2") now provides the "convert dead weight into
+leverage" decision the sim liked (the job the Dead-drop used to do), minus the paid-gift weirdness.
+Thematic justification unchanged: travel light, eat fresh.
 
-**Insider Tip value ≈ +1 ingredient of flexibility** (an extra source, a wild, or a longer hop) ≈ ~+1
-VP-equivalent amortised.
+**The Season clock (repurposed).** Advances **+1 per Plate** and **+1 per Hot-List lock-in**. Milestones
+**fire Conditions** (they no longer pay VP). First-pass 2p schedule — *a sim/feel tuning knob:*
 
-**Target game arc (2p):** ~8–9 dishes plated per player; end ~turn 20–24 each; ~30–40 min.
+| | milestone marks (fire a Condition) | final (ends game) |
+|-|-|-|
+| **2p** | 4 · 8 · 12 · 16 | **~20–24** |
 
-**Expected 2p score:**
+So a 2p game (~8–9 Plates + ~4–6 lock-ins per player-pair over the pair… ≈ 20–26 advances) fires **~4–5
+Conditions** — a rhythm, not a barrage. Scale by count (see *Player counts*).
 
-| Source | ~VP | Affects ranking? |
-|--------|----:|------------------|
-| Plated dishes (~8–9 × ~3.3) | 28–30 | **Yes — the main contest** |
-| Assignment (0 or 7) | 0 / 7 | **Yes — the secret swing** |
-| **Dead-drop VP (+1 each; sim-adopted fix)** | ~+3–6 | **Yes — this is what makes cooperating rational (see below)** |
-| Grand Dossier Discovery bonuses — flat base (2+3+4+5) | +14 to *everyone* | No — a rising tide (the warm co-op *feel*) |
-| Grand Dossier **triggerer's pick** (4 milestones × Insider Tip *or* +1 VP) | up to +4 spread across triggerers | **Slightly** — a light race to be the one who crosses a milestone |
-| Insider Tips used | soft ~+2–4 | Slightly — efficiency edge |
-| **Total** | **~52–58** | Winner decided by dishes + Assignment + **Dead-drop VP** + tip/trigger efficiency |
+**Target 2p score (winner ~50–55 VP; the VP track sized 0–~55):**
 
-> **The +1 VP per Dead-drop is the sim-validated fix (adopted 2026-08-06).** As originally written the
-> Dead-drop paid only an Insider Tip, and simulation showed hoarding *dominated* (Hoarder 66.8% vs
-> Generous 24.0% at 2p) — a full turn spent to arm a rival wasn't worth one Tip. Paying the giver **+1 VP**
-> directly covers the turn cost and flips it to rational (**Generous 47.0% vs Hoarder 41.1%** — the target
-> "G ≥ H by a small margin"). Kept at **exactly +1** (+2 over-corrects) with the **≤1-received-per-round**
-> cap intact. See `playtests/sim-notes.md`.
+| Source | ~VP | On the live tracker? |
+|--------|----:|----------------------|
+| Plated Dishes (~8–9 × ~3.3) | 28–30 | **Yes — live** |
+| Hot-List spots locked (~2–3 × ~5) | 10–15 | **Yes — live** |
+| Condition/Brief VP gains | +3–6 | **Yes — live** |
+| **Secret Signature Itinerary** | **0 / 7** | **NO — face-down until the end (the reveal)** |
+| **Total** | **~50–55** | winner = Dishes + Hot-List + event/brief gains + the hidden +7 |
+
+**Balance assumptions (to attack with sim + Screentop):** (1) Hot-List spots split roughly evenly at 2p
+(no runaway); (2) 4–6 VP each keeps the race meaningful but sub-headline to the +7; (3) ~4–5 Conditions
+per game is enough to vary routing game-to-game without any single hazard erasing a planned plate;
+(4) the minimal Brief set adds a gotcha or two without a slap-fight.
 
 ---
 
-## Scoring / win condition
+## Scoring / win condition — "Top Agent"
 
-At game end, each player totals their **Traveller's Log**:
-1. **Plated dishes** — sum of VP (3 / 4 / 5).
-2. **Assignment** — +7 if completed (revealed now), else 0.
-3. **Dead-drop VP** — **+1 VP for each Dead-drop you made** (the sim-adopted fix that makes cooperating
-   rational — banked as you go; see the scoring-model note above and `playtests/sim-notes.md`).
-4. **Grand Dossier Discovery bonuses (payout C — Hybrid, CD call):** each of the **4 milestones** pays a
-   **flat base to every player** (+2 / +3 / +4 / +5 — the celebratory "we did the tour" rising tide, not a
-   ranking lever), **and** the player whose Plate/Dead-drop *crossed* that milestone picks **one small
-   reward: an Insider Tip *or* +1 VP.** Bank the +1 VP into your Log immediately; it's the only part of
-   the Dossier that moves the ranking.
-5. **Leftover Insider Tips** — 0 VP (they're leverage, spend them). *(Optional variant: 1 VP per 2
-   unused Tips, to remove a "hoard Tips" corner case — flag for sim.)*
+At game end each agent totals their tour (Traveller's Log):
+1. **Plated Dishes** — sum of VP (3 / 4 / 5). *(Tracked live.)*
+2. **Hot-List spots locked** — sum of VP (4–6 each). *(Tracked live.)*
+3. **Condition / Brief VP gains** — any +VP earned along the way. *(Tracked live.)*
+4. **Secret Signature Itinerary** — **+7 if completed** (revealed now), else 0. *(The one thing NOT on
+   the live tracker — face-down until this reveal, so it stays a moment.)*
 
-Highest total wins. **Tiebreak:** most dishes plated, then furthest-travelled (regions visited).
+Highest total is named **Top Agent of the Year** *[title fluid → bg-theme/consultant]*. **Tiebreak:**
+most Hot-List spots locked, then most Dishes plated, then most regions visited.
+
+**The VP tracker (CD request, spec'd as a board element).** A **score track** printed along the board
+edge (0–~55) with **one marker per player**. **All open VP is tracked live as earned** — every Plate,
+lock-in, and event/brief gain moves your marker immediately. This makes the race **legible and tense**:
+you always see who's ahead, which is exactly what fuels the Extract-vs-push end decision (and the
+anti-runaway rubber-band — a trailer *sees* they need more turns). The **only** off-tracker VP is the
+Sealed Signature Itinerary (+7), held face-down to keep the endgame reveal a genuine swing and to keep
+hope alive for a visibly-trailing player.
 
 **Guard against a single dominant strategy:**
-- **"Only big dishes":** blocked by flat VP/turn (small dishes are *more* efficient per turn).
-- **"Ignore the Dossier / never tip":** *was* the top risk, and the sim showed it dominated as originally
-  written — now fixed by the **+1 VP per Dead-drop** (see the scoring-model note): tipping surplus is
-  strictly better than discarding, so hoarding drops from dominant to mid-pack.
-- **"Point-salad":** avoided — only three real scoring avenues (dishes, one Assignment, shared Dossier).
-  The Dossier's flat base is equal-to-all (can't be gamed into a runaway); only its small **triggerer's
-  pick** (max +4 VP across the whole game, spread across whoever crosses milestones) touches the ranking.
+- **"Only big Dishes":** blocked by flat VP/turn (small Dishes are *more* efficient/turn).
+- **"Ignore the Hot-List, just build my own tour":** viable but not dominant — Hot-List spots overlap
+  the Dishes you'd plate anyway, so ignoring them leaves ~10–15 VP on the table for the rival. The
+  question the sim must answer is the *opposite* (does a greedy Hot-List-chaser run away — see below).
+- **"Point-salad":** avoided — three open avenues (Dishes, Hot-List, small event/brief gains) + one
+  hidden (the +7), all pulling on the *same* plated Dishes. No orthogonal salad axis (venues were cut).
 
 ---
 
 ## Randomness
 
 - **Input randomness only** (preserves agency, per `design-fundamentals.md`):
-  - The **Menu** reveal (which dishes are available now) — the Discovery engine; you *adapt* your
-    routing to what's fresh, and can plate a dish out from under a rival.
-  - Your **Assignment** draw — mitigated by **draw 2, keep 1** (choose the trip you want).
-  - Dish-deck order.
-- **No output randomness.** No dice, no to-hit, no post-decision luck. A source/travel/plate is
-  deterministic once chosen. This suits the warm, "nail your trip" tone and keeps skill legible at
-  ~1.8 without swing.
+  - The **Menu** reveal, the **Hot-List** reveal, the **Condition queue** (all telegraphed/face-up — you
+    *adapt* to what's revealed). The Condition **preview** (NEXT slot) is the key agency-preserver.
+  - Your **Sealed Itinerary** draw — mitigated by **draw-2-keep-1**.
+  - **Brief** hand draw; deck orders.
+- **No output randomness.** No dice, no post-decision luck. Suits the warm "nail your trip" tone and
+  keeps skill legible at ~2.0 without swing.
 
-**One hidden-information hook only — the Larder is PUBLIC** (bg-elegance ruling, applied). Every player's
-**Larder sits face-up in the open**; ingredients are never a concealed hand. The **only** hidden
-information in the game is your secret **Assignment**. This is deliberate: a concealed Larder would smuggle
-in a *second* hidden layer (rivals deducing your recipe from a hidden hand) — exactly the deduction engine
-the ~1.8 budget forbids. Making the Larder public *sharpens* the intended read: rivals can see **what** you
-hold but not **why** (which Assignment it serves), so the single hidden hook does all the concealment work.
-**Nothing else in the spec depends on the Larder being secret** — the Dead-drop's decision is the giver's
-own choice (they pick recipient and ingredient), the Menu race is open, and the "is their beef-run a real
-op or a feint?" tension lives entirely in the hidden **Assignment**, not the visible ingredients.
+**One hidden-information hook only — everything else is open** (v1 ruling retained). Larder is
+face-up; the Hot-List, both tours, and the VP tracker are all open. The **only** hidden information is
+your **Sealed Signature Itinerary**. Rivals see *what* you hold and plate but not *which secret tour it
+serves* — the single hidden hook does all the concealment work; no deduction engine.
 
 ---
 
 ## Interaction & tension
 
-**Indirect (the spine):**
-- **The Menu race** — a rival can plate the dish you were routing toward (light "grab it first"
-  tension; the reason to watch the board).
-- **The Grand Dossier trigger-race** (payout C) — being the player whose Plate/Dead-drop *crosses* a
-  milestone lets you pick a small prize (**an Insider Tip *or* +1 VP**) inside the shared payout. It adds
-  a light "be the one to tip it over" race — see the runaway/kingmaking check below.
-- **End-tempo** — **Extract** and the Dossier's final milestone are levers on when the game ends; a
-  leader wants to end it, a trailer wants more turns.
+**Direct (the new spine):**
+- **The Hot-List race** — the headline new interaction. A public row both agents complete-and-lock from;
+  first to satisfy a spot's condition locks it, denying the rival *that* spot (a fresh one refills). The
+  race lives in **routing prioritisation** — "she's one oyster Dish from the seafood spot; I'll grab the
+  variety spot first, or race her South." Razor-sharp and legible at exactly 2 players.
+- **Briefs** — a light, bounded, direct lever (a self-gamble or a one-turn "sold out" nudge) — the
+  affectionate gotcha the co-op v1 lacked.
 
-**Direct-but-warm:** the **Dead-drop** — you literally hand a rival an ingredient. Framed as generosity
-("you HAVE to try this"), it's the Fellowship mechanic and the crux of the semi-co-op knife-edge.
+**Indirect (retained):**
+- **The Menu race** — a rival can plate the Dish you were routing toward.
+- **The Season/Condition clock** — plating turns the island (fires the next Condition); a player can
+  *time* a Plate to flip the season toward a festival they want or delay one they don't.
+- **End-tempo** — **Extract** and the Season's final milestone are levers on when the game ends.
 
-### Making cooperation individually rational (designing the top risk out)
+**Fellowship after cutting co-op (the §0 wager, per `identity.md`):** carried by **shared island drama**
+(the table groaning together at a typhoon, cheering a festival) + **warm rivalry banter** over the
+Hot-List ("you did *not* just lock my oyster spot") + the light warm Brief nudge. This matches
+`identity.md`'s *own* definition of Fellowship ("warm rivalry + table talk"), not mechanical co-op.
 
-The failure modes to beat: **(1)** "hoard, never tip" dominates → dead co-op sticker; **(2)** kingmaking
-→ tips arbitrarily decide the winner. Here is exactly why neither should happen, with the numbers:
+### Designing the top risk out — the Hot-List race must be *fun-tense*
 
-**Why tipping is rational (beats "always hoard") — corrected by the sim.** The original theory below
-*over-valued* the Insider Tip: it assumed Tip + Dossier ≈ enough to justify the turn. **Simulation
-falsified that** — a Dead-drop costs a *whole turn* plus arms a rival plus speeds the end-clock, and one
-Tip didn't cover it, so hoarding dominated (66.8% vs 24.0%). The **+1 VP per Dead-drop** (adopted) is the
-piece that actually closes the gap:
-- The **Larder cap of 7** forces surplus. A surplus ingredient you'd otherwise **discard for nothing** is
-  now **dead-dropped for +1 VP + 1 Insider Tip + a Grand Dossier step** — **strictly, clearly** better
-  than discarding.
-- Net for the giver on a **surplus** tip: **+1 VP (banked, theirs) + 1 Insider Tip + fractional Dossier
-  push − a soon-dead ingredient.** The **+1 VP is the load-bearing term** — it pays the turn directly.
-  Sim result with the fix: **Generous 47.0% vs Hoarder 41.1%** (rational, no runaway).
-- Net for the giver on a **useful** (non-surplus) tip: **+1 VP +Tip +Dossier − (a needed ingredient) ≈
-  still marginal**, and the receiver may net more — so a rational player still *won't* hand a threatening
-  rival something they need. That stays the **interesting** decision (tip a trailing rival for the VP +
-  goodwill / Dossier timing; don't arm the leader), not a dominant "spam dead-drops" line — though the
-  human session should watch for VP-farming; fallback = restrict the +1 VP to at-cap/surplus drops.
+Two failure modes to beat: **(a) resentment-on-snipe** (a permanent claim stings more than losing a
+refillable Menu card) and **(b) leader-runaway** (leader plates faster → locks more spots → snowballs).
+The rules that keep it fair:
 
-**Why it isn't kingmaking:**
-- **At 2p there is no kingmaking** (one rival). The decision is cleanly "does my Tip + Dossier gain beat
-  the help I give my only opponent?" — yes for surplus, a judgement call for useful. Clean duel.
-- **At 3–4p:** the giver **chooses recipient and ingredient**, and the reward (the Insider Tip) is
-  **theirs regardless of recipient** — so the incentive is self-focused, not "boost my ally." A player
-  may **receive at most one Dead-drop per round** (no gang-feeding a kingmade player). The help is small
-  (1 ingredient) relative to the giver's flexible Tip, so tips rarely swing *who wins*.
+1. **Refilling shared pool (3 face-up).** You're rarely robbed of your *only* option — a sniped spot
+   refills with a new target, and your Dishes still count toward it. (Contrast: v1's single contested
+   Menu row.)
+2. **A snipe never wastes your plated Dishes (the structural anti-resentment move).** The same Dishes
+   that were racing a sniped spot **still scored their base VP, still advance your Sealed Itinerary, and
+   still count toward the next Hot-List spot.** The snipe costs you a *bonus*, not your *plan*. This is
+   the load-bearing reason a snipe reads as "outraced," not "robbed."
+3. **Fully open information.** Board + both tours + the **live VP tracker** are all face-up, so a snipe
+   is a race you **saw coming and lost**, not a hidden ambush. Open information is the standard defuser
+   of take-that resentment.
+4. **Modest, bounded swing.** Spots are 4–6 VP (below the +7 headline) and only ~4–6 lock across a whole
+   game → the total Hot-List swing is bounded well under the game's decision margin.
+5. **Anti-runaway via the clock.** A leader racing to lock spots also **advances the Season → hurries
+   the end** a trailer needs; a trailer can push for more turns / grab the breadth spot while the leader
+   is committed. **Extract** lets a trailer stop the bleeding or a leader lock the lead. Organic
+   rubber-band, no leader-bashing. Tuning knobs held in reserve if the sim flags snowball: a **per-player
+   lock cap**, a **trailing-player discount** (trailer completes a spot with one fewer Dish), or **faster
+   Hot-List refresh**.
 
-**The payout-C triggerer's pick — runaway / kingmaking check.** The Hybrid reward adds a light race to be
-the player who *crosses* a milestone (pick an Insider Tip or +1 VP). Two effects to watch:
-- **Runaway:** a leader plates fastest, so they tend to trigger more milestones and collect more picks —
-  a mild positive-feedback nudge toward the leader. It is **deliberately tiny and hard-capped: only 4
-  triggers exist all game, worth ≤+1 VP each (≤+4 VP total, split across whoever triggers).** That's well
-  under one dish's swing and far under the +7 Assignment, so it can flavour tempo without snowballing. If
-  sim shows a leader routinely sweeping most of the 4 picks *and* converting that into wins, the fix is to
-  cap it (e.g., a player may claim **at most 2** triggerer-picks per game) or drop the +1-VP option so the
-  pick is only an Insider Tip (reverting toward payout A).
-- **Kingmaking (3–4p):** the pick goes to the **triggerer themselves**, never to a chosen rival, so it
-  creates **no "boost my ally" lever** — it can't kingmake directly. The only indirect angle is a trailing
-  player deliberately *timing* a Dead-drop to deny a leader a milestone pick; that's legitimate tempo play,
-  not kingmaking.
-- **Sim task (add to the run):** track **milestone-trigger share vs finishing position** — does the eventual
-  winner claim a disproportionate share of the 4 picks (runaway signal)? And does the +1-VP option ever
-  decide a game on its own (margin ≤ the picks claimed)? *Pass:* picks are spread and rarely decisive.
-  *Fail:* apply the per-player pick cap or drop the +1-VP option.
-
-**The single most important open balance question** (attack first with `tools/sim` + a 2p Screentop
-session): *Is the Dead-drop reward tuned so cooperation is rational without a dominant hoard line or
-kingmaking?* Concretely:
-- **Sim: Hoarder vs Generous-tipper (2p).** Strategy **H** never dead-drops (discards surplus over 7);
-  strategy **G** dead-drops every surplus ingredient (to the safest rival) and spends Tips for tempo.
-  *Pass:* **G ≥ H** by a small margin. *Fail high (H ≥ G):* Tip reward too weak → raise Insider Tip
-  power, or add +1 VP per dead-drop. *Fail low (G ≫ H, or runaway):* dampen the Tip / cap tips per game.
-- **Sim: Kingmaker probe (3p).** Measure how much a single player's tip-targeting choice moves the
-  win-rate of the *other two*. *Pass:* small. *Fail:* tighten the per-round receive cap or reduce tip
-  value.
-- If the layer can't be made rational, the logged fallback is **spine B**'s explicit co-op mode (co-op
-  as the win condition, not a temptation) on the same components.
-
-**Catch-up / runaway control:** flat VP/turn (no snowball on dish size); the flat Grand Dossier bonus
-is a rising tide (doesn't widen gaps); tips naturally flow to trailing players (giver avoids arming the
-leader) = mild, organic rubber-banding; **Extract** lets a trailer stop the bleeding, a leader lock the
-lead. No heavy-handed leader-bashing.
+**Catch-up / runaway control overall:** flat VP/turn (no snowball on Dish size); the Season clock ties a
+leader's tempo to a faster endgame (built-in valve); Conditions act **symmetrically** on both agents;
+Briefs are bounded delay-not-destroy.
 
 ---
 
 ## Player counts & scaling
 
-Base rules are written for **2p** (the design home — a genuine duel). Deltas:
+Base rules = **2p** (the design home — a genuine duel). Deltas:
 
 | Element | 2p | 3p | 4p |
 |---------|----|----|----|
 | **Menu size** | 4 | 5 | 6 |
-| **Grand Dossier milestones** (stamps) | 4 / 8 / 12 / **16** | 6 / 12 / 18 / **24** | 8 / 16 / 24 / **32** |
+| **Hot-List slots** | 3 | 4 | 4 |
+| **Season milestones** (fire a Condition) | 4/8/12/16 | 6/12/18/24 | 8/16/24/32 |
+| **Season final (ends game)** | ~20–24 | ~30 | ~36 |
 | **Start positions** | opposite (N & S) | spread on the ring | spread on the ring |
-| **Dead-drop cap** | — | ≤1 received / player / round | ≤1 received / player / round |
-| **Assignments** | draw 2 keep 1 | draw 2 keep 1 | draw 2 keep 1 |
+| **Briefs (opening hand)** | 3 | 3 | 3 |
+| **Sealed Itinerary** | draw 2 keep 1 | draw 2 keep 1 | draw 2 keep 1 |
 
-Dossier thresholds = `[n×2, n×4, n×6, n×8]` (n = player count) so the shared track scales with the
-faster plating rate at higher counts and holds ~game length. Menu grows so contention stays fair as more
-Agents compete for dishes. Everything else is identical — the same board, recipes, deck, and Assignment
-pool carry all counts. **Best-at:** designed for **2p**; 3–4p is a warmer, chattier, slightly longer
-race (more table talk, more tip targeting).
+Season thresholds scale with the faster plating/locking rate at higher counts (≈ `n × [2,4,6,8]`) to
+hold game length. The Hot-List grows to keep contention fair as more agents compete (same logic as the
+Menu). **Resentment risk is actually *lower* at 3–4p** (a snipe is diffuse, not personal) — the sharp
+case to design/sim is **2p**. **Best-at:** designed for **2p**; 3–4p is a warmer, chattier, slightly
+longer race.
 
 ---
 
 ## Solo mode / Automa
 
-**Low priority given positioning** (Fellowship is a core aesthetic → the game wants ≥2 humans; solo is a
-bonus, not a headline). Sketch of a light **"Rival Agent" Automa** if pursued:
-- The Automa has a small **Route deck**. On its turn, flip the top card: it either **plates** the
-  highest-VP Menu dish it can "afford" against a running ingredient counter (then advances the Dossier),
-  **travels** (rotating the region it "controls"), or **dead-drops to you** (hands you a random
-  ingredient, takes a Tip) — so the shared layer still breathes solo.
-- The Automa's pressure is **tempo**: it plates steadily to push the Dossier's end-clock and to snipe
-  Menu dishes you wanted. Difficulty = how aggressively it plates (deck ratio) + a target score to beat.
-- Keep upkeep near-zero (one card flip, one lookup). **Defer to `bg-architect`; not in the base MVP.**
+**Low priority** (Fellowship wants ≥2 humans; solo is a bonus). Updated "Rival Agent" Automa sketch:
+- A small **Route deck**. On its turn, flip the top card: it **plates** the highest-VP Menu Dish it can
+  "afford" against a running ingredient counter (Season +1; **locks** a Hot-List spot if its running
+  tour now satisfies one — so the race still bites solo), or **travels** (rotating the region it
+  "controls"), or **reacts** to the active Condition.
+- Pressure = **tempo + the Hot-List race**: it plates steadily to hurry the Season and to lock spots you
+  wanted. Difficulty = plate-aggressiveness (deck ratio) + a target score. Keep upkeep near-zero (one
+  flip, one lookup). **Defer to `bg-architect`; not in the base MVP.**
 
 ---
 
 ## Complexity budget
 
-Target **~1.8**; `complexity-budget.json` caps guarded by `bg-elegance`.
-- **Component types = 6 → exactly at the cap.** No seventh type; the board absorbs map + Dossier +
-  score. New content reuses existing types.
-- **Keywords (glossary) = 8, under the 10 cap:** Larder · Menu · Dish · Assignment · Grand Dossier ·
-  Insider Tip · Dead-drop · Extract. (Actions — Stock Up / Travel / Plate — and *region / specialty /
-  pantry / Traveller's Log* are described in plain language, not defined terms.) **Five of the eight
-  keywords are the agent/co-op layer** — that layer is the game's complexity load; it's the signature,
-  so it earns its place, but it leaves little headroom. Flag for `bg-elegance`.
-- **What gets cut if we drift over:** (1) the HSR shortcut (fold into plain adjacency); (2) Signature
-  5-VP dishes (collapse to the 3/4 schedule); (3) the Extract action (let the Dossier's final milestone
-  be the sole end-trigger). Depth lives in the Larder-cap ↔ Dead-drop ↔ Dossier interplay, not in the
-  count of subsystems — protect that, cut around it.
+Target **~2.0–2.1, ceiling 2.2**; `complexity-budget.json` caps, guarded by `bg-elegance`.
+
+- **The weight call (honest).** We *cut* the whole co-op tip-economy (Dead-drop, Insider Tip, flat
+  Dossier payout + triggerer's-pick sub-race, and the "is helping rational?" knife-edge) — roughly
+  −0.3 of what those cost — and spend it on the **two highest interaction-per-rule pieces**: the
+  **Hot-List** (~+0.15–0.2, but *reuses the Operation card type* and its rule is just "complete →
+  lock → refill") and **Conditions** (~+0.2–0.25 — the varied event deck is the real spend; the
+  telegraphed queue is one small rule). That lands ~**2.0**. **Briefs are the marginal, weakest-per-rule
+  addition** (~+0.1 minimal / ~+0.2 as a full deck) — this is the piece to trim if we drift, and it's the
+  explicit CD decision below.
+- **Actions dropped 5 → 4** (Dead-drop gone; lock-in and Briefs are free riders) — a genuine
+  simplification that partly offsets the new subsystems.
+- **Component types = 7** (+1 over v1's 6): cut Insider Tip tokens, added Condition + Brief decks. The
+  CD softened the cap; the **Brief-scope decision doubles as the 7-types decision** (fixed-set Briefs →
+  back to 6). Conditions/Briefs stay separate decks (sensitivity rail — do not blur head-office vs
+  island).
+- **Keywords ≈ 9–10, under the 12 cap:** Larder · Menu · Dish · **Signature Itinerary (secret)** ·
+  **Hot-List** *(verb: lock in)* · **the Season** · **Condition** · **Brief** · Extract. (Stock Up /
+  Travel / Plate and region/specialty/pantry stay plain-language.)
+- **What gets cut if we drift over 2.2, in order:** (1) **Briefs** (drop to a fixed printed self-boost
+  rider on a warm Condition — recovers ~0.1–0.2 and the 7th type); (2) the **HSR shortcut** (fold into
+  plain adjacency); (3) **Signature 5-VP Dishes** (collapse to 3/4). Depth lives in the *Hot-List race
+  under a shifting island*, not the subsystem count — protect that, cut around it.
 
 ---
 
 ## Keywords / glossary
 
-- **Larder** — your ingredients, sat **face-up in the open** in front of you (**not** a hidden hand).
-  Cap **7**; discard down at end of turn.
-- **Menu** — the shared face-up row of Dish cards available to plate; refills from the Dish deck.
-- **Dish** — a recipe card (2–3 ingredients) worth VP; plated into your Traveller's Log.
-- **Assignment** — your **secret** objective (the one hidden-info hook); +7 VP if completed, revealed at
-  scoring.
-- **Grand Dossier** — the shared track the whole table advances (+1 per Plate or Dead-drop); each
-  milestone pays every player a flat Discovery bonus **and** lets the triggerer pick a small reward
-  (an Insider Tip *or* +1 VP — payout C); its final milestone can end the game.
-- **Insider Tip** — a flexible token (extra source / wild ingredient / extra travel hop). Earned by
-  Dead-dropping and by triggering Dossier milestones.
-- **Dead-drop** — give a rival 1 ingredient; **score +1 VP**, gain 1 Insider Tip, and advance the Grand
-  Dossier. The cooperation engine (the +1 VP is the sim-adopted fix that makes it rational).
-- **Extract** — the action that triggers the end-game wind-down.
+- **Larder** — your sourced ingredients, **face-up in the open** (not a hidden hand). Cap **7**.
+- **Menu** — the shared face-up row of Dish cards; refills from the Dish deck.
+- **Dish** — a recipe card (2–3 ingredients) worth VP; plated into your tour.
+- **Signature Itinerary** *(secret; [fiction → bg-theme])* — your **hidden** Operation, the one hidden
+  hook; **+7** if completed, revealed at scoring.
+- **Hot-List** — the shared face-up row of public bonus tours (Operation cards, 4–6 VP) both agents race
+  to complete and **lock in**; refills when one is locked.
+- **the Season** *(repurposed Grand Dossier; [fiction → bg-theme])* — the shared clock; **+1 per Plate
+  and per Hot-List lock-in**. Each milestone fires a **Condition**; the final milestone can end the game.
+- **Condition** *([fiction → bg-theme]; was Happening/event)* — an island event (festival / hazard /
+  warm character) from the telegraphed queue (ACTIVE + NEXT). Secular only.
+- **Brief** *([fiction → bg-theme]; was Order)* — a one-shot head-office directive (safe boost / risky
+  gamble / light nudge). Play ≤1/turn, free.
+- **Extract** — the action that triggers the end-game wind-down ("file the finished tour / catch the
+  last train home").
 
 ---
 
-## Open questions for playtesting
+## Open questions for playtesting (top 3)
 
-1. **The knife-edge — SIM-RESOLVED, now a feel-test.** Is the Dead-drop tuned so cooperation is
-   individually rational without a dominant hoard line or kingmaking? **Sim verdict:** as originally
-   written it FAILED (Hoarder 66.8% vs Generous 24.0%); **+1 VP per Dead-drop** (adopted) flips it to a
-   PASS (Generous 47.0% vs Hoarder 41.1%), with kingmaking bounded (~3pt) and payout-C picks non-decisive
-   (~2.6%). The **only remaining question is the human one the sim can't judge**: does tipping now *feel*
-   worth it, and is "arm my rival?" a live decision? → a 2p Screentop session. Also watch for **VP-farming**
-   (spamming Dead-drops of non-surplus just for the +1 VP); fallback = restrict the +1 VP to at-cap/surplus
-   drops, or cap dead-drops/round.
-2. **Grand Dossier teeth (payout C, CD-chosen).** The Hybrid gives the flat base *plus* a triggerer's
-   pick (Insider Tip or +1 VP). Does the pick add a satisfying "tip it over" race without a leader-runaway
-   (see the check above)? Watch **milestone-trigger share vs finishing position**. If the pick proves
-   ignorable, strengthen it (raise the +1-VP option); if it snowballs to the leader, cap it at 2 picks per
-   player or drop the +1-VP option toward flat (payout A).
-3. **Dish VP schedule & Assignment weight.** Is 3 / 4 / 5 flat enough that no dish size dominates, and is
-   **+7** the right Assignment swing (too small = ignore your mission; too big = the rest is filler)?
-   Also: is 2-ingredient-single-region plating a "just churn cheap dishes" degenerate line?
+1. **Is the Hot-List race fun-tense, not resentment-on-snipe or a leader-runaway? (THE load-bearing
+   bet.)** Attack first with the sim (below) *and* a 2p Screentop feel-test: does sniping a spot feel
+   *tense-fun* or *rage-inducing*? Does the winner sweep the spots (runaway) or do they split? *Fail
+   fixes:* per-player lock cap · trailing-player discount · faster refresh · lower spot VP.
+2. **Do Conditions vary routing game-to-game without erasing a planned plate (agency)?** Does the
+   telegraphed queue (preview NEXT) give enough warning to reroute? Is ~4–5 Conditions/game the right
+   rhythm (not a barrage, not forgettable)? *Fail fixes:* preview 2 ahead · hazards *tax* not *block* ·
+   retune milestone spacing.
+3. **Fellowship without co-op + the Briefs' register.** Does the table groan/cheer together at
+   Conditions (is Fellowship actually present now that co-op is gone)? Do Briefs read as **affectionate
+   needling** or **mean**? Is the minimal Brief set enough spice, or forgettable? *Fail fixes:* bound the
+   nudge harder (if mean) · add variety / fold to fixed set (if forgettable) — the CD decision below.
+
+**Named sim (extend `games/travel-agents/sim/travel_agents.py`):** **bounty-claim-share vs finishing
+position.** The v1 harness already tracks "milestone-trigger share vs finish"; re-point it at the
+Hot-List. Model two strategies over the shared sourcing brain: **Chaser** (routes greedily to lock any
+completable Hot-List spot ASAP) vs **Signature-focus** (routes for its Sealed +7, locks spots only
+incidentally). Track the **distribution of locks between players** and the **correlation of lock-share
+with winning**. *Pass:* locks spread (~50/50 ±) and the eventual winner does **not** claim a
+disproportionate share — Chaser is competitive but **not dominant**. *Fail:* leader sweeps locks → apply
+a per-player lock cap / trailing discount / faster refresh. Secondary sim: **Condition variance** (do
+events shift optimal routing across games without a single hazard being able to erase a planned plate?).
 
 ---
 
-## Handoff notes (guardian sweep)
+## Handoff notes (guardian sweep — where to look)
 
-Mechanics that moved from the locked spine into concrete rules — **where the guardian sweep should
-look:**
-- **Signature twist (shared Dossier + tip-offs)** is now the **Larder-cap → Dead-drop → Insider Tip →
-  Grand Dossier** loop. `bg-theme`: does "sharing a hot tip / catching the last train / the island grand
-  tour" still read warm and guest-not-extractor? `bg-elegance`: 6 component types (at cap) and 8 keywords
-  (5 of them the agent layer) — is the budget honestly held?
-- **Recipes-by-region** is now a concrete region↔ingredient web + the **convenience-store pantry** gag.
-  `bg-theme`: Indigenous/Hakka representation in the East/North specialties (consult); `bg-access`: the
-  night-market palette must dual-code the 4 region colours + 9 ingredient icons (red/green risk noted).
-- **New rule the fiction must still explain:** the **Larder cap** (why can't I carry more? — "you can
-  only eat so much / the good stuff spoils / your bag's full") and **Extract** ("catch the last train
-  home"). Confirm the fiction covers them.
+Mechanics that moved from v1 into model C:
+- **Signature twist has moved.** v1's twist was the shared-Dossier + tip-offs co-op loop. **v2's
+  signature twist is the public Hot-List race running on the same Operation cards as your secret
+  Signature Itinerary, under a telegraphed living island (Conditions) that the shared Season clock
+  fires.** `bg-theme`: does "rival travel agents racing to lock the island's hot spots into competing
+  tours, while the island throws weather/festivals" read warm, guest-and-fan, celebratory (the re-skin
+  makes agents *promoters* of Taiwan — net safer)? Confirm the **secular-only Conditions** and
+  **dignified characters** rails are honoured, and that **head-office Briefs stay distinct from island
+  Conditions** (the binding anti-blur rail). `bg-elegance`: is the weight honestly held at ~2.0–2.1 —
+  the swap ledger (top of doc), the 7th component type (Brief deck), and the Briefs-scope trim?
+- **Cut mechanics to sweep for stranded names/rules:** **Dead-drop**, **Insider Tip**, the **flat
+  Dossier payout / triggerer's pick** are gone — check nothing in components/rulebook/sim still
+  references them.
+- **New rules the fiction must explain:** the **Larder cap** (retained — "travel light, eat fresh"), the
+  **Hot-List** ("HQ's hot-list of must-visit spots"), **Conditions** ("the island doesn't wait for
+  you"), and **Extract** ("file the finished tour / catch the last train"). Confirm the fiction covers
+  them.
+- **`bg-developer` data:** add **chicken 雞 + egg 蛋** ingredients (framework above); build the
+  **Hot-List deck** (4–6 VP objectives) + **Condition deck** (~8, starter set above) + **Brief** set
+  (per the CD decision); the **VP score track** + markers on the board.
+- **`bg-access`:** the board now shows the Season clock + VP track + Hot-List row + Condition queue —
+  keep the night-market palette dual-coding intact across the busier board.
