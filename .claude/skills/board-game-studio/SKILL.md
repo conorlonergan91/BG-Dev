@@ -51,6 +51,7 @@ independent agents in parallel.
 | Stage | Agent | Dispatch when… |
 |-------|-------|----------------|
 | Ideation | `bg-ideation` | Starting fresh or the game needs new directions. |
+| Creative identity | `bg-theme` | Framing/guarding the felt identity — concept, theme, tone/vibe, story/lore, look & feel, naming. Run at start (lightly) and each iteration to keep theme & mechanics resonating and re-theme as the design moves. |
 | Research | `bg-research` | Reality-checking a concept vs the market (uses live web). |
 | Explore/Brainstorm | `bg-explore` | Opening the design space; breaking a deadlock; finding the fun. |
 | Design | `bg-design` | A direction is locked and the game needs specifying (rules, economy, math). |
@@ -74,6 +75,11 @@ A/B/C choice, get the call, record it, and move to the next stage.
    iteration by `bg-elegance`. Never let weight creep silently past it. To anchor on a real game
    ("budget it like *Arcs* / *The White Castle*"), seed it deterministically from BoardGameGeek:
    `python tools/bgg/bgg_lookup.py --name "<game>" --suggest-budget --out games/<slug>/complexity-budget.json`.
+   **Frame the creative identity now — lightly.** Create `identity.md` (from `templates/identity.md`)
+   and run `bg-theme` to set the north star, target aesthetics, and tone. Restraint first: pick the
+   identity rung the game earns (an elegant abstract wants a vibe + clean look, not lore) and leave the
+   rest blank. `bg-theme` then guards that identity every iteration — keeping theme & mechanics
+   resonating, and re-theming as the design moves rather than letting the fiction restrict it.
    Ask about **modes & expansion ambition** — but don't force it. If the human has an upfront ambition
    (solo? co-op *and* duel? campaign? expansions?), capture it so `bg-architect` builds the core loop to
    *accommodate* it. If not, **keep it a focused single-mode game and let scope emerge later** only when
@@ -98,6 +104,8 @@ Keep each loop short. If the human says "you decide," make the call, note it, an
 ## Living documents
 
 - `game-bible.md` — the concept, positioning, core loop, components, rules summary, status. Always current.
+- `identity.md` — the felt identity: north star, target aesthetics, tone/vibe, story/lore (scaled),
+  look & feel, naming. Owned by `bg-theme`; kept coherent and evolving alongside the bible.
 - `decision-log.md` — dated one-liners: *decision — why — alternatives rejected*. Fast to skim.
 - Stage outputs live in `design/`, `components/`, `playtests/`, `marketing/`, `art/` (see `CLAUDE.md`).
 

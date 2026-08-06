@@ -9,6 +9,16 @@
 ## Core fantasy / player role
 <!-- Who you are, what you're doing, the feeling (the "kind of fun"). -->
 
+## Creative identity (concept · theme · tone · look & feel)
+<!-- The felt identity lives in `identity.md` (owned by `bg-theme`) — north star, target aesthetics,
+     tone/vibe, story/lore (scaled to what the game earns), art direction, naming. Keep it COHERENT and
+     let it EVOLVE with the design; never let it freeze into a restriction or drift into muddle. Restraint
+     first — an elegant abstract wants a vibe + clean look, not lore. Summarise the north star + tone here;
+     the living detail is in identity.md. -->
+- **North star:** <!-- the one image/phrase the whole game points at -->
+- **Tone/vibe:** <!-- see Positioning below; held across art, names, rules-voice -->
+- **Details:** see `identity.md`.
+
 ## Positioning
 - **Weight (BGG 1–5):**
 - **Players:** 2 <!-- studio focus: 2-player first -->
