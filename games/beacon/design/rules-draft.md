@@ -9,7 +9,7 @@ Two lighthouse keepers, one treacherous coast. Across **three nights** you read 
 night wins.
 
 ## Components
-- **24 Ship cards** — three suits (⚓ Cargo, ☺ Passenger, ⚔ Naval), values **1–4** (two of each per suit).
+- **24 Ship cards** — three suits (⬢ Cargo, ◆ Passenger, ▲ Naval), values **1–4** (two of each per suit).
 - **2 sets of 6 Signal cards** (values **0–5**) — one set each.
 - **Tide track** (7 spaces) + **1 Tide marker**.
 - **First-Keeper token**.
