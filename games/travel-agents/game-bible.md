@@ -1,7 +1,7 @@
 # 🎲 Travel Agents: Taiwan — Game Bible
 
 > The single living source of truth for this game. Every agent reads and updates this. Keep it current.
-> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design** (v2.1 vendor-courting engine locked; design-doc v3)
+> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design** (v2.1 vendor-courting engine locked; design-doc **v3.1** — movement rebalance + the Poach)
 
 ## One-liner
 <!-- The hook a stranger would repeat. -->
@@ -66,7 +66,11 @@ that's the gag. Kinds of fun (**locked**): **Discovery** (lead) + **Fellowship**
 - **Set collection with a twist — recipes by region** (the ingredient input). A vendor's cost names
   region-specific ingredients sourced from the Taiwan **regions that actually supply them** (oysters
   coastal, tea in the hills, east-coast Indigenous produce, North's beef/pork/chicken/egg). The
-  generic-defeater — real food geography, not "food + map."
+  generic-defeater — real food geography, not "food + map." **v3.1 movement rebalance:** vendor costs
+  re-tuned so **every region is a meaningful sourcing destination** (each vendor anchored in its own
+  icon-region + ~40% cross-region links; workhorses pork/rice capped; South demand up from ~6% to ~23%) —
+  so players **must travel** and every region's discount ramp is fed. Zero new rules; `bg-developer`
+  re-costs `vendors.csv`/`ingredients.csv` to the design-doc target distribution.
 - **Region routing / travel** — you move *because* the ingredient a vendor needs lives *there*.
 - **The rival race + living Market (model C, evolved):** the **Vendor Board** is the public race (courting
   a vendor locks the rival out of it — the ex-Hot-List, merged in); **events ("Conditions")** are salted
@@ -75,11 +79,13 @@ that's the gag. Kinds of fun (**locked**): **Discovery** (lead) + **Fellowship**
 
 ## Core loop
 <!-- The repeated cycle of decisions and rewards, step by step. -->
-Specified in `design/design-doc.md` (v3). **A turn = ONE action:** **Stock Up** (take 2 ingredients where
+Specified in `design/design-doc.md` (v3.1). **A turn = ONE action:** **Stock Up** (take 2 ingredients where
 you stand) · **Travel** (move one region, arrive with 1) · **Promote** (take 2 Buzz) · **Court a Vendor**
 (pay ingredients − discounts + Buzz → secure a Board vendor: Prestige scored **live**, a Reputation bump, a
 permanent perk/discount, a Coverage tick; refill the Board, Season +1, lock it from the rival) ·
-**Extract** (trigger the end-game). You can only take a region's **specialty** while there (oysters South,
+**Extract** (trigger the end-game) · **Poach** *(v3.1, conditional — only when a rival shares your region:
+take 1 random specialty from their Larder, pay −1 Reputation; a cheeky agent-vs-agent swipe, a reason to
+track the rival)*. You can only take a region's **specialty** while there (oysters South,
 tea/pearls Central, rice/greens East, beef/pork/chicken/egg North); **pantry** staples are anywhere
 (unlimited) — so you *travel because the ingredient lives there*. Your **Larder sits face-up** (the secret
 **signature mission** is the game's *only* hidden info). **Larder caps at 7.** The tension every turn:
@@ -111,7 +117,10 @@ fire on refill; *new type*); (7) **5 Character mats** (*new type* — one abilit
 pawns + Prestige/Rep/Season markers (board bits). **Cut from v2:** the **Brief** deck; the separate
 **Hot-List** row (merged into the Vendor Board) and the **Conditions queue** (events now in the Market).
 Deck-size note: the vendor deck is **25** (one per locked real dish) — comfortable for a 2p game (~16–18
-courts) but tight for headroom / 3–4p; see the CD decision in the handoff.
+courts) but tight for headroom / 3–4p; see the CD decision in the handoff. **v3.1 (no new components):**
+the 25 vendor **costs** are re-balanced for movement and the ingredient token **supply** is re-flattened to
+match (per design-doc *Movement rebalance*); the new **Poach** action reuses the Larder + Rep track (no new
+piece). Still **7 component types**.
 
 ## Win condition & scoring
 Hybrid multi-track: tracks **trigger the endgame + a bonus**, but **highest total VP wins** (no
@@ -124,8 +133,9 @@ other; Rep is decoupled from raw Prestige). **Tiebreak:** highest Reputation, th
 regions. Expected 2p winner ~35–42 VP. Detail + balance model in `design/design-doc.md` v3.
 
 ## Rules summary
-Drafted in `design/rules-draft.md` v3 (teach-in-play order). Turn = one of **Stock Up / Travel / Promote /
-Court a Vendor / Extract**; Larder cap 7; courting pays ingredients (− region discounts, floored) + Buzz
+Drafted in `design/rules-draft.md` v3.1 (teach-in-play order). Turn = one of **Stock Up / Travel / Promote /
+Court a Vendor / Extract** (+ conditional **Poach** when co-located: 1 random specialty from the rival's
+Larder, −1 Rep); Larder cap 7; courting pays ingredients (− region discounts, floored) + Buzz
 (**never discounted — the ramp brake**); each vendor gives Prestige + Rep + a permanent discount icon +
 coverage, and locks the rival out of it. Events fire on Market refill (Season is a **pure end-timer**,
 +1 per court). End-game triggers on **Extract** or the **Season filling** (Rep-top scores +9 but no longer
@@ -151,9 +161,19 @@ the secret signature mission (no deduction engine).
   shared-Board scarcity (rival snipes your ramp icons), the end-timer (fast courting hurries the end).
   *Attack:* sim runaway probe (court-rate ceiling, leader VP-gap over time). Reserve knobs: trailing
   discount / vendor cap / discount cap.
+- ⚠️ **TOP RISK #3 (v3.1) — does movement actually spread?** Change 1 evens ingredient demand on paper, but
+  the **cross-link rate (~40%)** is load-bearing (anchoring alone could let a player camp a region). *Attack:*
+  re-sim with the re-costed vendors — per-region sourcing share (each ≥~18%; South up from near-zero),
+  inter-region moves/game, and confirm the stay-home-North line is no longer top (Probe 1 re-run). *Fail
+  fixes:* tune the cross-link rate / per-specialty targets / North-pull.
+- ⚠️ **TOP RISK #4 (v3.1) — is Poach a fun risk-reward, not griefy?** *Attack:* Poach frequency/game (low,
+  situational), win-rate of a Poach-lean line (≤~55%), steal-war frequency (~0, self-correcting), Rep spent
+  vs Rep-VP forgone (real cost?). *Fail fixes (reserve):* Rep cost 1→2 if spammed; 1→0 / free rider if dead.
+  The "cheeky not mean" *feel* is the Screentop question. Bound: a 2p duel can't spiral (turn-cost + Rep-tax
+  + move-away/lean-Larder exits).
 - ⚠️ **Secondary risks:** per-character win-rate **45–55%** with no dominant char×mission combo (round-robin
   5×5 + mirror); do Market events feel *swingy-fun* not random (boon-skew + tax-not-destroy + the "brewing"
-  reserve knob)?; does Fellowship survive (shared Market drama + Board rivalry)?
+  reserve knob)?; does Fellowship survive (shared Market drama + Board rivalry + the Poach banter)?
 - Hold weight **~2.2–2.4, ceiling 2.5** (`bg-elegance` guards). Trim order: Rep milestone perks → pure
   end-VP; Coverage → mission-only; characters 5→4; fold Promote into Travel; cap the discount.
 - 2p-first, but confirm it scales cleanly to 3–4 (`bg-architect`); Automa sketch now near-expected on a

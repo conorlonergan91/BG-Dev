@@ -1,7 +1,25 @@
-# Travel Agents: Taiwan — Design Doc (v3 · the vendor-courting engine)
+# Travel Agents: Taiwan — Design Doc (v3.1 · the vendor-courting engine)
 
 Deeper design detail than the game bible. Owned by `bg-design`; keep the bible's summary in sync.
 **v3 = the v2.1 vendor-courting engine (LOCKED direction, 2026-08-06).** Slug `travel-agents`.
+
+> **v3.1 (2026-08-06) — two playtest-driven changes, engine unchanged.** Both from the CD after the
+> bg-developer imbalance flag + the first feel-reads:
+> 1. **Movement rebalance (Change 1).** The locked real-dish recipes made ingredient demand lopsided —
+>    **pork named on 10 vendors, rice 7, but pearls / oysters / milkfish on exactly 1 each** — so
+>    Central/South barely bit, their discount ramps were starved, and a **stay-home-North line** loomed.
+>    v3.1 re-costs the vendors to a **target demand distribution** (below) so **every region is a
+>    meaningful sourcing destination** and players **must travel** to source across the island.
+>    `bg-developer` re-costs `vendors.csv` (and flattens `ingredients.csv` supply) to this spec. **Zero
+>    new rules** — pure re-costing of existing components.
+> 2. **The Poach (Change 2) — a new *conditional* same-location action.** When both agents are in the
+>    **same region**, on your turn you may **Poach**: take 1 random specialty from the rival's Larder,
+>    paying **−1 Reputation**. A cheeky agent-vs-agent swipe (never a vendor or place), a real
+>    risk-reward, and a reason to **track the rival's position** — synergising with Change 1 (more travel
+>    → more encounters).
+>
+> Everything else in v3 stands: the recipes-by-region engine, the Hot-List→Vendor-Board race, the Buzz
+> brake, the hybrid tracks, the 5 characters. Full detail: *Movement rebalance* and *The Poach* sections.
 Evolves v2 ("Rivals on a Living Island"): the **recipes-by-region** sourcing engine, the **public rival
 race**, the **secret +7 signature mission**, the **live VP tracker**, and **Extract** all carry over.
 What changes is the **scoring beat and the depth**: you no longer *Plate a dish* (a chef's verb — off
@@ -116,8 +134,9 @@ the reliable half (Buzz) stays a fixed per-vendor tax. That Buzz floor is the pr
   (ingredients) starts empty and sits **face-up** all game. Deal **3 Mission cards, secretly keep 1**
   (your signature mission, +7), return 2 unseen.
 
-**A turn = choose ONE action:** **Stock Up · Travel · Promote · Court a Vendor · Extract** (detailed
-below). Then if your Larder (ingredients) exceeds **7**, discard down to 7. Play passes clockwise (the
+**A turn = choose ONE action:** **Stock Up · Travel · Promote · Court a Vendor · Extract** — **plus a
+conditional sixth, Poach**, available only when a rival's pawn shares your region (v3.1; detailed below).
+Then if your Larder (ingredients) exceeds **7**, discard down to 7. Play passes clockwise (the
 Influencer's flaw = goes last; see *Characters*).
 
 **End-trigger (either, whichever first):**
@@ -151,10 +170,12 @@ into ingredients / Buzz / travel because they carry the routing + risk texture t
 | **Promote** | your turn | Take **2 Buzz** from the supply (the always-available soft input). | The second currency. Safe, uncontested, never event-risky — the calm axis opposite the contested ingredients. |
 | **Court a Vendor** | your turn + pay cost | Choose a Board vendor; pay its **named ingredients minus your region discounts** (floored at 0) **+ its Buzz (never discounted)**. Gain its **Prestige** (VP live), **Rep** bump, **perk** (usually a region discount icon), and a **Coverage** tick if new region. Refill the Board slot; **Season +1**; the vendor is locked from the rival. | The scoring + engine beat. The one action that advances the end-timer. |
 | **Extract** | your turn | Trigger the end-game wind-down (finish the round + one more full round). Your signature mission stays face-down until scoring. | Push-your-luck tempo: wrap while ahead vs court one more. |
+| **Poach** *(conditional — v3.1)* | your turn **+ −1 Reputation** | **Only if a rival's pawn shares your region.** Take **1 random specialty ingredient** from that rival's Larder into yours (pantry ignored; if they hold no specialties, there's nothing to Poach). Move your **Rep marker down 1** (floored at 0 — no Rep, no Poach). Does **not** refill the Market, fire an event, or advance the Season. | The cheeky same-location swipe. Situational tempo/denial, not a staple — see *The Poach*. |
 
-Every turn has multiple live options with real trade-offs (source the contested specialty vs bank safe
-Buzz vs court-now-and-ramp vs wrap-it), under a Market that can hand you a festival or a typhoon. No
-forced/obvious move.
+**Five core actions + one conditional** (Poach). Every turn has multiple live options with real
+trade-offs (source the contested specialty vs bank safe Buzz vs court-now-and-ramp vs wrap-it — vs, when
+you're nose-to-nose with your rival, swipe the thing they just hauled), under a Market that can hand you a
+festival or a typhoon. No forced/obvious move.
 
 ---
 
@@ -198,6 +219,86 @@ Retained from v2, now the **ingredient input** to courting. **New from the locke
 > **Sensitivity (binds — `identity.md` §9):** East specialties draw on **Indigenous** cuisines — generic,
 > respectful labels, consultant before art/print. Han/Hakka/Indigenous/newer-community range across
 > vendors. Taiwan as itself; Traditional characters; Tâi-lô + 繁體, never mangled.
+
+### Movement rebalance (v3.1) — the target demand distribution (`bg-developer` re-costs to this)
+
+**The problem (bg-developer flagged, CD confirmed).** v3's vendor costs were faithful to real recipes, and
+real Taiwanese food leans hard on a few workhorses — so ingredient **demand** came out lopsided:
+
+| | pork | rice | chicken | tea | egg | beef | greens | pearls | oysters | milkfish |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| **v3 vendors naming it** | **10** | **7** | 4 | 3 | 3 | 3 | 2 | **1** | **1** | **1** |
+
+Rolled up by **region of sourcing** (which region you must physically stand in to take that specialty),
+the v3 deck demanded: **North ~20 tokens · East ~9 · Central ~5 · South ~2.** South is a ghost town — two
+tokens' worth of pull across the *entire* deck. So Central/South specialties barely bite, **each region's
+discount ramp is only fed if that region's vendors actually name that region's specialties** (they didn't —
+火雞肉飯/S named chicken+rice, 爌肉飯/C named pork+rice, 牛肉湯/S named beef), and a **stay-home North (±East)
+line** can court most of the deck without ever routing South or Central. The travel engine doesn't bite.
+
+**Why it happened (and the license to fix it).** The costs were pinned to *literal recipes*. The CD grants
+license to **deviate from strict recipe faithfulness** where movement needs it — read a vendor's cost as
+*"what it takes to feature them on your tour"* (the ingredients you supply **+ the regional connections you
+bring**), **not** a literal ingredient list. Hard rail (binds): **real dishes are never mangled** — keep
+the *anchor* ingredient true to the dish; use the CD's framing only for the *cross-region link* token, and
+route any deviation through the consultant. Don't put oysters "in" a dish that has none — frame the South
+token as *the Southern leg / connection you arrange to seat this vendor on the tour.*
+
+**The four re-costing principles (`bg-developer` applies across all 25 vendors):**
+
+1. **Anchor in-region.** Every vendor names **≥1 specialty from its own icon-region.** This is the
+   structural fix: with icon balance **N7·C6·S6·E6**, anchoring alone demands each region's specialties
+   ~6–7× (once per same-region vendor) and — crucially — **feeds that region's discount ramp** (holding
+   South icons finally discounts something South vendors actually cost). T1 stalls = 1 in-region specialty
+   + pantry; T2/T3 = ≥1 in-region + often a cross-link.
+2. **Cross-region links on ~40% of vendors (concentrated in T2/T3).** Name **1 ingredient from a
+   *different* region** than the icon, to force a trip — but **spread the links evenly** so each region is
+   both a source-of-links and a receiver, instead of every cross-link defaulting to North-pork / East-rice.
+   This is what produces actual *inter-region* travel (anchoring alone could let a player camp one region
+   and court locally — the links are the load-bearing anti-camp lever; see *Riskiest assumptions*).
+3. **Cap the workhorses.** **pork ≤5 vendors** (from 10), **rice ≤5** (from 7). Redistribute the freed
+   demand onto **oysters / milkfish / pearls / greens.**
+4. **Per-specialty floor: every specialty named on ≥3 vendors.** Kills the dead tokens (pearls/oysters/
+   milkfish were on 1). No region's specialty is a museum piece.
+
+**Target demand distribution (the number `bg-developer` re-costs toward — a guide, ±1 is fine):**
+
+| Specialty | Region | v3 (vendors) | **v3.1 target** |
+|---|---|---:|---:|
+| pork | N | 10 | **4–5** |
+| chicken | N | 4 | **3–4** |
+| beef | N | 3 | **2–3** (marquee-held) |
+| egg | N | 3 | **2–3** |
+| tea | C | 3 | **5–6** |
+| pearls | C | 1 | **3** |
+| oysters | S | 1 | **4** |
+| milkfish | S | 1 | **3–4** |
+| rice | E | 7 | **4–5** |
+| greens | E | 2 | **3–4** |
+
+→ **regional sourcing demand:** North ~28–30% · Central ~22–24% · South ~22–24% · East ~22–24% (North
+stays modestly richest — it has 4 specialties — but no region is starved; South rises from ~6% to ~23%,
+the headline fix).
+
+5. **Marquees stay single-region but Buzz-heavy.** Keep 牛肉麵 (N, beef), 珍珠奶茶 (C, tea+pearls), 小籠包
+   (N, pork), 虱目魚粥 (S, milkfish) iconic and single-region — they are **not** a stay-home trap because
+   they're **few**, their **Buzz is undiscountable** (a fixed tax that doesn't ramp), and Coverage + the
+   spread of anchored/cross-link vendors pull you across the island regardless.
+
+6. **Supply follows demand (`ingredients.csv` flag).** Re-flatten token **supply** to track the new
+   demand — bring **pork 18→~12, rice 16→~12** down and **oysters/milkfish/pearls 8→~10–12** up — so
+   scarcity ≈ **2× per-region solo demand** is roughly even across all four regions (no pork glut, no
+   oyster drought). This keeps the Market-contention texture even, and makes the South/Central **boon
+   events** (Mango Season, Oyster Glut, Bubble-Tea Festival) finally matter (their specialties are now
+   demanded). *Event tiles themselves need no respec — flag to `bg-theme` (events pass in parallel): the
+   rebalance only makes South/Central events bite harder, a plus for the "funnier events" work.*
+
+**How this makes the engine bite in all four regions.** (a) *Sourcing:* you must stand in a region to take
+its specialty, and each region is now demanded ~9× across the deck → you route to all four over a game.
+(b) *Discount ramp:* the per-region ramp finally saves something on that region's own vendors (anchor
+principle) → every region's ramp is worth building, not just North's. (c) *Travel:* the ~40% cross-links
+force trips *between* regions, spread so no single region is the default detour. (d) *Coverage/missions*
+(unchanged) now have real sourcing reasons behind the breadth, not just a scoring nudge.
 
 ### Vendors — the engine cards (the merged Dish + Hot-List, now a shop)
 
@@ -453,6 +554,57 @@ character×mission combo **>~60%** (worst ~57%).
   and thematically the vendor simply **chose the agent who courted them best**, never a place being seized.
 - **Market scarcity.** Taking the last of a contested specialty forces the rival to reroute (free,
   impersonal, anti-hoard).
+- **The Poach (v3.1) — the same-location swipe.** When you and your rival are nose-to-nose in the same
+  region, you can cheekily grab something they hauled. Detail below.
+
+### The Poach (same-location steal — v3.1)
+
+**Trigger + cost + effect** (as in *Actions*): on your turn, **if a rival's pawn shares your region**, you
+may **Poach** instead of your normal action: take **1 random specialty** from that rival's Larder into
+yours and move your **Reputation down 1** (floored at 0). Pantry is ignored (unlimited — nothing to swipe);
+if the rival holds only pantry, there's nothing to Poach. It touches nothing else (no Market refill, no
+event, no Season tick).
+
+**What's stolen — and why *random specialty* is the fun, low-feel-bad pick** (the design call):
+- **Not a vendor** (would undo scored Prestige + a discount + coverage — massively swingy, feel-bad, and it
+  *violates the anti-extraction rail*: a vendor **chose** you, you can't steal a blessing). **Not the
+  mission** (the only hidden info — stealing it wrecks the one secret and breaks the no-deduction rule).
+  **Not Buzz** (location-independent — Promote anywhere — so it wouldn't reward *tracking movement*, the
+  whole point).
+- **A random specialty from the face-up Larder** is the sweet spot: it's **material the rival *traveled*
+  for** (so poaching it rewards Change 1's movement and synergises with it — fuller Larders from more
+  travel are juicier targets), it's **bounded** (Larder cap 7; one token ≈ half a Stock Up), and **random
+  (not chosen)** keeps it **cheeky, not surgical** — you can *see* they're holding good stuff (face-up) so
+  the decision to spend Rep is informed, but you can't cherry-pick the single scarce token, so it never
+  becomes a precision engine-kill. Excluding pantry means a Poach that lands always *means* something.
+
+**Why it's a real risk-reward, not a griefy staple:**
+- **It costs your whole turn** — you gave up a Stock Up (+2), a Promote (+2 Buzz), or a Court. A Poach
+  yields **+1 ingredient to you and −1 to them** (a 2-swing on a *contested* token), with **no** refill/
+  event/reposition. So it's **usually worse than Stock Up** — you only Poach when the specific denied token
+  *matters* (the rival is one oyster from the seafood marquee; a scarce specialty you can't easily source
+  yourself). A situational tempo/**denial** play, not an every-turn move.
+- **The Rep cost is a genuine price now** that Rep scores only at your **final** track position (v3
+  end-trigger fix). Each Poach chips Rep, which converts to end-VP (bands at 3/6/9/12) **and** costs
+  milestone perks (passing 3/6/9). Spam three Poaches ≈ pay ~3 Rep ≈ a whole scoring band and maybe a
+  missed perk — a real, compounding tax on the material you're grabbing.
+- **The Rep floor (0) is the early-game guard:** you can only Poach if you have standing to spend, i.e.
+  you've **courted at least one vendor** — so it's never a turn-1 grief tool, and total Poaches are capped
+  by the Rep you can afford to burn.
+- **No spiral (state it plainly for `bg-elegance`/sim):** a "steal war" (A poaches B, B poaches back) is
+  **self-correcting** — both burn a turn *and* a Rep for a net-zero material swing, so neither gains; and
+  it has two free exits — **move away** (break co-location) or **hold a pantry-lean Larder** (nothing to
+  steal). Nobody rationally sustains it. Season is untouched, so Poach is not an end-clock lever either.
+
+**Tone (binds — `identity.md`):** warm agent-vs-agent slapstick — you're both crammed at the same
+night-market corner and you swipe the oysters off their tray / call in a cheeky favour to nab the last of
+something first. Targets **the rival agent only, never a vendor or the place.** The Rep ding = *"word gets
+round that you play a little dirty."* Keyword proposal **"Poach"** (a cooking term *and* a
+poach-a-rival's-client wink) or **"Tip-Off"** — final name is `bg-theme`'s call.
+
+**Reserve knobs (if the sim/table flags it):** Rep cost 1→2 if spammed; 1→0 or "free rider once/turn on a
+Travel/Stock Up" if it's a dead rule (see the A/B for the human); a hard "once per turn" is already implied
+(Poach *is* your turn). Do **not** let it steal vendors/missions/Buzz — those break the rails above.
 
 **Indirect:** the shared Market events (table groans at a typhoon, races to a festival); the **Season**
 timer (a fast courter times the end); **Extract** tempo.
@@ -512,12 +664,18 @@ component types 8, aid 22 lines); `bg-elegance` guards.
   **cut** (−1 deck, −1 keyword), the **Conditions queue** collapsed to Market tiles (−1 subsystem),
   Hot-List **merged** into the Board (no separate row). The two-input beat **replaces** (not adds to) the
   plate-and-score beat. **Net ~2.3–2.4** — in the aim band, off the ceiling.
-- **Actions = 5** (Stock Up / Travel / Promote / Court / Extract). *Elegance option held:* fold **Promote
-  into Travel** ("tour a region → arrive with 1 ingredient + 1 Buzz") to hold **4 actions** if the gauge
-  drifts — at the cost of tying Buzz to movement.
-- **Keywords ≈ 11–12** (under 15): Larder · Vendor · **Court** · **Buzz** · **Promote** · region
+- **Actions = 5 core + 1 conditional** (Stock Up / Travel / Promote / Court / Extract, **+ Poach** when
+  co-located). Poach is the only v3.1 weight add: **conditional** (teaches only when two pawns meet),
+  reuses existing pieces (Larder + the Rep track as its cost), no new component — an honest **~+0.05–0.1**.
+  Change 1 is **weight-neutral** (pure re-costing) and arguably *reduces* teach friction: the v3
+  "icon≠named-ingredient" confusion the developer flagged (a South vendor costing North pork) goes away
+  when vendors **anchor in-region**, partly offsetting Poach. Net still **~2.35–2.45**, under the 2.5
+  ceiling but eating headroom — `bg-elegance` guards; if it drifts past 2.5 the first trim (Rep milestones
+  → pure end-VP) recovers ~0.15. *Elegance option held:* fold **Promote into Travel** to hold 4 core
+  actions if the gauge drifts.
+- **Keywords ≈ 12–13** (under 15): Larder · Vendor · **Court** · **Buzz** · **Promote** · region
   **discount icon** · **Prestige** · **Reputation** · **Coverage** · **Event/Condition** · signature
-  **Mission** · Extract. (Stock Up / Travel / specialty / pantry stay plain-language.)
+  **Mission** · Extract · **Poach** *(v3.1)*. (Stock Up / Travel / specialty / pantry stay plain-language.)
 - **Trim order if we drift >2.5, in order:** (1) **Reputation milestone perks → pure end-VP** (recovers
   ~0.15; Rep becomes a clean parallel scorer + endgame trigger); (2) **Coverage → mission-only breadth**
   (recovers ~0.1); (3) **characters 5→4** (drop the Influencer or Gourmand — hardest to balance); (4)
@@ -544,8 +702,28 @@ component types 8, aid 22 lines); `bg-elegance` guards.
   refill. Secular only.
 - **signature Mission** — your secret **+7** vendor pattern (draw-3-keep-1); the only hidden info.
 - **Extract** — the action that triggers the end-game wind-down ("file the tour / catch the last train").
+- **Poach** *(v3.1)* — the conditional same-location action: when a rival shares your region, take 1 random
+  specialty from their Larder and pay −1 Reputation. Warm agent-vs-agent swipe; targets the rival only.
 
 ## Open questions for playtesting (top 3)
+
+**v3.1 adds two probes the re-sim must lead with (before re-confirming the v3 three below):**
+
+- **A. Does movement actually spread? (Change 1's make-or-break.)** The rebalance is *designed* to even
+  out demand, but even demand on paper ≠ travel in play — **anchoring in-region could let a player camp a
+  region and court locally**, so the **cross-link rate (~40%) is the load-bearing knob.** *Attack:* re-cost
+  the sim's vendor model to the target distribution, then measure **per-region sourcing share** (target:
+  each region ≥~18% of ingredient-take actions; South rises from near-zero) and **inter-region moves per
+  game** (should climb), and confirm the **stay-home-North line is no longer a top strategy** (Probe 1
+  re-run — no line >~55%). *Fail fixes:* raise/lower the cross-link rate; nudge the per-specialty targets;
+  strengthen Coverage/marquee pull out of North.
+- **B. Is the Poach a fun risk-reward, or degenerate/griefy? (Change 2's make-or-break.)** *Attack:*
+  **Poach frequency/game** (should be low, situational — not every-turn), **win-rate of a Poach-lean
+  strategy** (≤~55%), **steal-war frequency** (should be ~0 — self-correcting), and **Rep spent on Poach
+  vs Rep-VP forgone** (is the −1 cost real?). *Fail fixes (reserve knobs):* Rep cost 1→2 if spammed; 1→0
+  or a free once/turn rider if it's a dead rule. The *feel* ("cheeky not mean") is a human-only Screentop
+  question. **Bound check:** confirm a 2p duel can't spiral into griefing (the turn-cost + Rep-tax +
+  move-away/lean-Larder exits should hold).
 
 1. **No dominant track or opening? (THE make-or-break.)** Do **tall (Prestige) ≈ rep-climb ≈ breadth**
    land competitively, and is **ingredient-heavy ≈ Buzz-heavy** as an opening? *Attack:* the sim's
@@ -561,6 +739,27 @@ component types 8, aid 22 lines); `bg-elegance` guards.
    exclude a mission from a character's implied pool; add the "brewing" telegraph.
 
 ## Handoff notes (guardian sweep — where to look)
+
+**v3.1 — what moved (run `bg-theme` coherence + `bg-elegance` budget on the change):**
+- **The signature twist did NOT move** — the vendor-courting engine is untouched. What moved: (1) **vendor
+  costs re-balanced for movement** (South/Central specialties now demanded; `bg-developer` re-costs
+  `vendors.csv` + `ingredients.csv` supply to the *Movement rebalance* spec); (2) **a new conditional
+  Poach action** (same-location steal, −1 Rep). Neither touches the engine, the tracks, or the Buzz brake.
+- **`bg-theme` check (the load-bearing one):** does the **Poach** read **warm agent-vs-agent slapstick**
+  (a cheeky swipe at your *rival*, never a vendor or place) — the anti-extraction rail must hold; the
+  keyword ("Poach"/"Tip-Off") is theme's call. And do the **re-costed vendors** still keep every dish
+  *real* (the anchor ingredient true; the CD "connections you bring" framing used only for cross-links,
+  routed past the consultant)? — the *never-mangle* rail binds.
+- **`bg-elegance` check:** the honest ledger — Poach is a **conditional 6th action** (~+0.05–0.1, no new
+  component), Change 1 is weight-neutral and may *reduce* teach friction (icon-matches-cost now). Net
+  ~2.35–2.45, headroom thinning; first trim (Rep milestones → pure end-VP) held in reserve.
+- **`bg-theme` events pass (in parallel):** the rebalance needs **no event respec** — it only makes
+  South/Central boon events (Mango Season, Oyster Glut, Bubble-Tea Festival) bite harder (their specialties
+  are now demanded). Keep the events market-compatible; a plus for the "funnier events" work.
+- **`bg-playtest`:** re-cost the sim vendor model to the target distribution + add the Poach action, then
+  run probes **A (movement spread)** and **B (Poach risk-reward)** above before re-confirming the v3 three.
+
+---
 
 **The signature twist has moved.** v2's twist was the Hot-List race on the same cards as the secret
 itinerary. **v3's signature twist is: you *court the island's vendors* — paying fresh ingredients + Buzz —
