@@ -58,6 +58,20 @@ Checks: unique card ids, numeric value/cost, positive integer quantities, recomm
 `type`s that a theme actually colours, and that any `sim/*.py` still imports and exposes GAME +
 STRATEGIES. Non-zero exit on errors — good as a pre-commit sanity check.
 
+## `art/` — AI-art MOCKUPS (opt-in, manual — never shipped)
+
+Explore a high-fidelity vibe *without* committing to AI final art. Builds the prompt from a game's
+`identity.md` (so it reflects the current felt identity) and optionally renders it.
+
+```bash
+python art/mockup.py --game games/beacon --subject cover              # writes the identity-derived prompt
+python art/mockup.py --game games/beacon --subject card --card "Blinding Flare"
+OPENAI_API_KEY=... python art/mockup.py --game games/beacon --subject cover --backend openai   # render (your key + egress)
+```
+⚠️ **Mockup-only.** Studio stance = human-illustrated final art (no AI). Output lands in
+`games/<slug>/art/mockups/` (gitignored), is labelled a mockup, and must never move to `exports/` or
+ship. Not part of `make.sh`. Owned by `bg-theme`.
+
 ## `version/` — build snapshots (stdlib-only)
 
 Freeze / list / restore whole-product "builds" so you can revert to a known-good state and branch off it.

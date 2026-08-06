@@ -62,7 +62,9 @@ Beacon's theme is **integrated**, not pasted on — the fiction makes each core 
 - **Moodboard / references:** see `art/` (to populate) — foggy coastlines, brass lanterns, admiralty
   charts, *The Fox in the Forest*'s warmth.
 - **Art production:** **human-illustrated — no AI art** (studio stance, `designer-profile.md`). Current
-  `exports/cover` is a clearly-labelled placeholder; real art TBD.
+  `exports/cover` is a clearly-labelled placeholder; real art TBD. To *explore* a high-fidelity vibe you
+  can generate an opt-in **AI mockup** (`python tools/art/mockup.py --game games/beacon --subject cover`)
+  — mockups are exploration only, live in `art/mockups/` (gitignored), and never ship as final art.
 
 ## Naming & voice
 - **Game name:** *Beacon* — evocative, sayable, ownable (clear via `bg-publishing` before committing).
