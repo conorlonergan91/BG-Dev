@@ -82,13 +82,15 @@ helping a rival can be the selfish play. Fused with **recipes-by-region**, so th
 the food-geography fiction drive the *same* decisions.
 
 ## Components (summary)
-*(Full table + quantities in `design/design-doc.md`; detailed manifest → `bg-developer`.)* **6 component
-types — exactly at the budget cap:** (1) **Map board** — Taiwan, 4 regions on a ring + HSR spine, with
-the Grand Dossier track and score track printed along the edge; (2) **~24 Dish cards** (recipe + VP +
-name romanised & 繁體); (3) **~14–16 Assignment cards** (secret objectives, +7 VP); (4) **~120 ingredient
-tokens** — 9 types: 8 region specialties (2 per region) + 1 fungible **pantry** (the convenience store);
-(5) **~30 Insider Tip tokens**; (6) **4 Agent pawns**. (Dossier/score markers ride the board — not a 7th
-type.) No headroom for a new type — new content reuses these (flag: `bg-elegance`).
+*(Full table in `design/design-doc.md`; firmed quantities + BOM in `components/manifest.md`.)* **6 component
+types — exactly at the budget cap** (counts firmed by `bg-developer` 2026-08-06, data in `components/`):
+(1) **Map board** — Taiwan, 4 regions on a ring + HSR spine, with the Grand Dossier track and score track
+printed along the edge; (2) **24 Dish cards** (`dishes.csv` — 18 × 3 VP · 3 × 4 VP · 3 × Signature 5 VP;
+recipe + VP + name romanised & 繁體); (3) **15 Assignment cards** (`assignments.csv` — secret "Operation"
+objectives, +7 VP); (4) **120 ingredient tokens** (`ingredients.csv`) — 9 types: 8 region specialties × 12
++ fungible **pantry** × 24 (the convenience store); (5) **30 Insider Tip tokens**; (6) **4 Agent pawns**.
+(Dossier/score markers + the 2 player aids ride existing types — not a 7th.) No headroom for a new type —
+new content reuses these.
 
 ## Win condition & scoring
 Highest **Traveller's Log** wins. Score = **plated dishes** (3 VP for 2-ingredient · 4 VP for 3-ingredient
@@ -97,9 +99,9 @@ Dead-drop made** (the sim-adopted fix that makes cooperating rational — see de
 banked **Grand Dossier** bonuses. Dossier payout = **Hybrid (C, CD call 2026-08-06):** each milestone pays a flat
 Discovery bonus to *everyone* (+2/+3/+4/+5 — a warm rising tide) **and** the player who triggers it picks
 a small reward — an **Insider Tip or +1 VP**. **Tiebreak:** most dishes, then most regions visited. The
-contested margin is **dishes + Assignment + Insider-Tip/trigger efficiency** (the flat Dossier base is a
-rising tide that doesn't decide ranking; only the ≤+4 VP of triggerer-picks touches it). Expected 2p total
-~48–52 VP. Detail + balance model in `design/design-doc.md`.
+contested margin is **dishes + Assignment + Dead-drop VP + Insider-Tip/trigger efficiency** (the flat
+Dossier base is a rising tide that doesn't decide ranking; only the ≤+4 VP of triggerer-picks touches it).
+Expected 2p total ~52–58 VP. Detail + balance model in `design/design-doc.md`.
 
 ## Rules summary
 Drafted in `design/rules-draft.md` (teach-in-play order). Turn = one of **Stock Up / Travel / Plate /

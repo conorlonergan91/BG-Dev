@@ -1,0 +1,25 @@
+id,name,hanzi,type,recipe,regions,value,vp_class,effect,quantity,tags,art_note
+D01,Beef Noodle Soup,牛肉麵,north,beef;pantry,N,3,2-ingredient,"牛肉麵 · Beef + pantry · Taipei in a bowl. Do NOT skip the broth, agent.",1,north;v3,Steaming bowl of beef noodle with shank and greens
+D02,Beef Roll,牛肉捲餅,north,beef;pantry,N,3,2-ingredient,"牛肉捲餅 · Beef + pantry · Flaky scallion pancake wrapped around the good stuff.",1,north;v3,Sliced beef roll in a rolled scallion pancake
+D03,Gua Bao,割包,north,pork;pantry,N,3,2-ingredient,"割包 · Pork belly + pantry · The 'Taiwanese burger'. Extra peanut powder, always.",1,north;v3,Steamed bao folded over braised pork belly and pickles
+D04,Xiao Long Bao,小籠包,north,pork;pantry,N,3,2-ingredient,"小籠包 · Pork + pantry · Soup dumplings. Mind the molten centre, rookie.",1,north;v3,Bamboo steamer of pleated soup dumplings
+D05,Hakka Stir-Fry,客家小炒,north,pork;pantry,N,3,2-ingredient,"客家小炒 · Pork belly + pantry · Salty-savoury Hakka classic from the hill towns.",1,north;hakka;v3,Wok of sliced pork belly with dried squid celery and tofu
+D06,Bubble Tea,珍珠奶茶,central,tea;pearls,C,3,2-ingredient,"珍珠奶茶 · Tea + tapioca pearls · Born in Taichung. Chew responsibly.",1,central;v3,Tall cup of milk tea with dark tapioca pearls and a fat straw
+D07,Tea Egg,茶葉蛋,central,tea;pantry,C,3,2-ingredient,"茶葉蛋 · Tea + pantry · The smell that IS a Taiwan convenience store.",1,central;v3,Marbled tea-steeped egg cracked to show the pattern
+D08,Hakka Lei Cha,擂茶,central,tea;pantry,C,3,2-ingredient,"擂茶 · Ground tea + pantry · Hakka pounded-tea, nutty and green. Grind it yourself.",1,central;hakka;v3,Bowl of ground tea with puffed rice and seeds
+D09,Tapioca Shaved Ice,粉圓冰,central,pearls;pantry,C,3,2-ingredient,"粉圓冰 · Tapioca pearls + pantry · Mountain of shaved ice. Summer, solved.",1,central;v3,Shaved ice heaped with tapioca pearls and syrup
+D10,Pearl Tofu Pudding,珍珠豆花,central,pearls;pantry,C,3,2-ingredient,"珍珠豆花 · Pearls + pantry · Silky douhua with chewy pearls. Warm or iced.",1,central;v3,Bowl of soft tofu pudding topped with pearls
+D11,Oyster Omelette,蚵仔煎,south,oysters;pantry,S,3,2-ingredient,"蚵仔煎 · Oysters + pantry · Night-market royalty. Sweet-savoury sauce mandatory.",1,south;v3,Griddled oyster omelette glossed with red sauce
+D12,Oyster Vermicelli,蚵仔麵線,south,oysters;pantry,S,3,2-ingredient,"蚵仔麵線 · Oysters + pantry · Thick, dark, slurpable. Grab a spoon.",1,south;v3,Bowl of thin brown noodles with oysters and cilantro
+D13,Fried Oyster Fritter,蚵嗲,south,oysters;pantry,S,3,2-ingredient,"蚵嗲 · Oysters + pantry · Deep-fried coastal snack. Careful, it bites back hot.",1,south;v3,Golden deep-fried oyster and vegetable fritter
+D14,Milkfish Porridge,虱目魚粥,south,milkfish;pantry,S,3,2-ingredient,"虱目魚粥 · Milkfish + pantry · Tainan breakfast of champions. Boneless, they promise.",1,south;v3,Bowl of rice porridge with milkfish and ginger
+D15,Milkfish Belly Soup,虱目魚肚湯,south,milkfish;pantry,S,3,2-ingredient,"虱目魚肚湯 · Milkfish belly + pantry · The fatty cut. Locals queue for this.",1,south;v3,Clear soup with a rich slab of milkfish belly
+D16,Bamboo-Tube Rice,竹筒飯,east,rice;greens,E,3,2-ingredient,"竹筒飯 · Mountain rice + wild greens · Cooked in bamboo, an East-coast staple.",1,east;indigenous;v3,Split bamboo tube revealing sticky mountain rice
+D17,Mountain Fern Stir-Fry,炒山蘇,east,greens;pantry,E,3,2-ingredient,"炒山蘇 · Wild greens + pantry · Bird's-nest fern, garlicky and green. East-coast fresh.",1,east;indigenous;v3,Wok of stir-fried bird's-nest fern shoots
+D18,Sticky Rice Cake,米糕,east,rice;pantry,E,3,2-ingredient,"米糕 · Mountain rice + pantry · Savoury steamed sticky rice. Premium 池上 grain.",1,east;v3,Small bowl of savoury sticky rice topped with meat floss
+D19,Chishang Bento,池上便當,east,rice;pork;pantry,E+N,4,3-ingredient,"池上便當 · East 池上 rice + Northern pork + pantry · The railway lunchbox. Eat it on the move.",1,east;north;cross;v4,Classic wooden-style bento of rice pork and vegetables
+D20,Braised Pork Rice,滷肉飯,north,pork;rice;pantry,N+E,4,3-ingredient,"滷肉飯 · Northern pork + East rice + pantry · Minced braised pork over rice. The national comfort.",1,north;east;cross;v4,Bowl of glossy minced braised pork over white rice
+D21,Milkfish Rice Bowl,魚肚燴飯,south,milkfish;rice;pantry,S+E,4,3-ingredient,"魚肚燴飯 · Southern milkfish + East rice + pantry · Braised fish belly over rice. A coast-meets-valley bowl.",1,south;east;cross;v4,Rice bowl topped with braised milkfish belly and gravy
+D22,Banquet Feast,辦桌,signature,oysters;beef;greens,S+N+E,5,signature,"辦桌 · Oysters (S) + Beef (N) + Wild greens (E) · The roadside banquet. A whole island on one table.",1,signature;cross;v5,Lavish outdoor banquet spread of many shared dishes
+D23,Round-Island Feast,環島大餐,signature,beef;tea;milkfish,N+C+S,5,signature,"環島大餐 · Beef (N) + Tea (C) + Milkfish (S) · The full lap of the island, plated. You earned this.",1,signature;cross;v5,Celebratory feast laid out like a map of the west coast
+D24,Reunion Feast,團圓飯,signature,pork;milkfish;greens,N+S+E,5,signature,"團圓飯 · Pork (N) + Milkfish (S) + Wild greens (E) · The reunion dinner. Everyone home, everyone fed.",1,signature;cross;v5,Warm family reunion table crowded with festive dishes

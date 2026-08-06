@@ -1,0 +1,32 @@
+{
+  "_note": "Player aid for build_board.py --type aid. Reuses the card/token component budget (not a new type). Keep <= 18 lines (complexity-budget.json: max_player_aid_lines 18).",
+  "title": "Travel Agents: Taiwan",
+  "subtitle": "Your turn = ONE action. Larder caps at 7 (discard down at end of turn).",
+  "sections": [
+    {
+      "heading": "Do one action",
+      "lines": [
+        "STOCK UP  —  take 2 ingredients where you stand (this region's specialties and/or pantry).",
+        "TRAVEL  —  move to a neighbouring region, then take 1 ingredient there (North<->South by HSR).",
+        "PLATE  —  spend a Menu dish's recipe from your Larder; log it for VP; refill Menu; Grand Dossier +1.",
+        "DEAD-DROP  —  give a rival 1 ingredient; score +1 VP, take 1 Insider Tip, Grand Dossier +1.",
+        "EXTRACT  —  catch the last train home: trigger the end-game wind-down."
+      ]
+    },
+    {
+      "heading": "Insider Tip (free, anytime) — pick one",
+      "lines": [
+        "Take 1 extra ingredient here  ·  treat 1 recipe ingredient as ANY type  ·  Travel 1 extra region."
+      ]
+    },
+    {
+      "heading": "End and score",
+      "lines": [
+        "End trigger: someone Extracts, OR the Grand Dossier hits its final milestone.",
+        "Then finish the round + play one more full round, then score.",
+        "Dishes 3 / 4 / 5 VP  ·  Assignment +7 (if done)  ·  +1 VP per Dead-drop  ·  banked Dossier bonuses.",
+        "Tiebreak: most dishes, then most regions visited. (Unused Insider Tips = 0 VP.)"
+      ]
+    }
+  ]
+}
