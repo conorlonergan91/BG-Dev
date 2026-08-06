@@ -63,7 +63,7 @@ The loop compounds gently: Insider Tips earned from dead-drops let you source fa
 - Deal the **Menu**: 4 face-up Dish cards from the shuffled Dish deck.
 - Each player: take an **Agent** pawn (start on opposite regions — one North, one South), draw **2
   Assignments and keep 1** secret (return the other), take an empty **Traveller's Log** area in front
-  of them. Larder starts empty.
+  of them. Your Larder starts empty and sits **face-up in the open** all game (see below).
 - Seed the Grand Dossier marker at 0. Place ingredient and Insider Tip supplies in reach.
 
 **A turn = choose ONE action** (detailed in *Actions*): **Stock Up**, **Travel**, **Plate**,
@@ -207,9 +207,10 @@ VP-equivalent amortised.
 |--------|----:|------------------|
 | Plated dishes (~8–9 × ~3.3) | 28–30 | **Yes — the main contest** |
 | Assignment (0 or 7) | 0 / 7 | **Yes — the secret swing** |
-| Grand Dossier Discovery bonuses (2+3+4+5) | +14 to *everyone* | No — a rising tide (the warm co-op *feel*) |
+| Grand Dossier Discovery bonuses — flat base (2+3+4+5) | +14 to *everyone* | No — a rising tide (the warm co-op *feel*) |
+| Grand Dossier **triggerer's pick** (4 milestones × Insider Tip *or* +1 VP) | up to +4 spread across triggerers | **Slightly** — a light race to be the one who crosses a milestone |
 | Insider Tips used | soft ~+2–4 | Slightly — efficiency edge |
-| **Total** | **~48–52** | Winner decided by dishes + Assignment + tip efficiency |
+| **Total** | **~48–52** | Winner decided by dishes + Assignment + tip/trigger efficiency |
 
 ---
 
@@ -218,8 +219,11 @@ VP-equivalent amortised.
 At game end, each player totals their **Traveller's Log**:
 1. **Plated dishes** — sum of VP (3 / 4 / 5).
 2. **Assignment** — +7 if completed (revealed now), else 0.
-3. **Grand Dossier Discovery bonuses** — the flat milestone VP banked in play (equal for all present —
-   the celebratory "we did the tour" points; a rising tide, not a ranking lever).
+3. **Grand Dossier Discovery bonuses (payout C — Hybrid, CD call):** each of the **4 milestones** pays a
+   **flat base to every player** (+2 / +3 / +4 / +5 — the celebratory "we did the tour" rising tide, not a
+   ranking lever), **and** the player whose Plate/Dead-drop *crossed* that milestone picks **one small
+   reward: an Insider Tip *or* +1 VP.** Bank the +1 VP into your Log immediately; it's the only part of
+   the Dossier that moves the ranking.
 4. **Leftover Insider Tips** — 0 VP (they're leverage, spend them). *(Optional variant: 1 VP per 2
    unused Tips, to remove a "hoard Tips" corner case — flag for sim.)*
 
@@ -229,8 +233,9 @@ Highest total wins. **Tiebreak:** most dishes plated, then furthest-travelled (r
 - **"Only big dishes":** blocked by flat VP/turn (small dishes are *more* efficient per turn).
 - **"Ignore the Dossier / never tip":** the top risk — addressed structurally below; the Larder cap +
   Insider Tip make tipping surplus a near-free gain.
-- **"Point-salad":** avoided — only three real scoring avenues (dishes, one Assignment, shared Dossier),
-  and the Dossier term is equal-to-all so it can't be gamed into a runaway.
+- **"Point-salad":** avoided — only three real scoring avenues (dishes, one Assignment, shared Dossier).
+  The Dossier's flat base is equal-to-all (can't be gamed into a runaway); only its small **triggerer's
+  pick** (max +4 VP across the whole game, spread across whoever crosses milestones) touches the ranking.
 
 ---
 
@@ -245,6 +250,16 @@ Highest total wins. **Tiebreak:** most dishes plated, then furthest-travelled (r
   deterministic once chosen. This suits the warm, "nail your trip" tone and keeps skill legible at
   ~1.8 without swing.
 
+**One hidden-information hook only — the Larder is PUBLIC** (bg-elegance ruling, applied). Every player's
+**Larder sits face-up in the open**; ingredients are never a concealed hand. The **only** hidden
+information in the game is your secret **Assignment**. This is deliberate: a concealed Larder would smuggle
+in a *second* hidden layer (rivals deducing your recipe from a hidden hand) — exactly the deduction engine
+the ~1.8 budget forbids. Making the Larder public *sharpens* the intended read: rivals can see **what** you
+hold but not **why** (which Assignment it serves), so the single hidden hook does all the concealment work.
+**Nothing else in the spec depends on the Larder being secret** — the Dead-drop's decision is the giver's
+own choice (they pick recipient and ingredient), the Menu race is open, and the "is their beef-run a real
+op or a feint?" tension lives entirely in the hidden **Assignment**, not the visible ingredients.
+
 ---
 
 ## Interaction & tension
@@ -252,8 +267,9 @@ Highest total wins. **Tiebreak:** most dishes plated, then furthest-travelled (r
 **Indirect (the spine):**
 - **The Menu race** — a rival can plate the dish you were routing toward (light "grab it first"
   tension; the reason to watch the board).
-- **The Grand Dossier trigger-race** — being the player whose Plate/Dead-drop *crosses* a milestone
-  earns a bonus **Insider Tip** (a small individual prize inside the shared payout).
+- **The Grand Dossier trigger-race** (payout C) — being the player whose Plate/Dead-drop *crosses* a
+  milestone lets you pick a small prize (**an Insider Tip *or* +1 VP**) inside the shared payout. It adds
+  a light "be the one to tip it over" race — see the runaway/kingmaking check below.
 - **End-tempo** — **Extract** and the Dossier's final milestone are levers on when the game ends; a
   leader wants to end it, a trailer wants more turns.
 
@@ -285,6 +301,24 @@ The failure modes to beat: **(1)** "hoard, never tip" dominates → dead co-op s
   **theirs regardless of recipient** — so the incentive is self-focused, not "boost my ally." A player
   may **receive at most one Dead-drop per round** (no gang-feeding a kingmade player). The help is small
   (1 ingredient) relative to the giver's flexible Tip, so tips rarely swing *who wins*.
+
+**The payout-C triggerer's pick — runaway / kingmaking check.** The Hybrid reward adds a light race to be
+the player who *crosses* a milestone (pick an Insider Tip or +1 VP). Two effects to watch:
+- **Runaway:** a leader plates fastest, so they tend to trigger more milestones and collect more picks —
+  a mild positive-feedback nudge toward the leader. It is **deliberately tiny and hard-capped: only 4
+  triggers exist all game, worth ≤+1 VP each (≤+4 VP total, split across whoever triggers).** That's well
+  under one dish's swing and far under the +7 Assignment, so it can flavour tempo without snowballing. If
+  sim shows a leader routinely sweeping most of the 4 picks *and* converting that into wins, the fix is to
+  cap it (e.g., a player may claim **at most 2** triggerer-picks per game) or drop the +1-VP option so the
+  pick is only an Insider Tip (reverting toward payout A).
+- **Kingmaking (3–4p):** the pick goes to the **triggerer themselves**, never to a chosen rival, so it
+  creates **no "boost my ally" lever** — it can't kingmake directly. The only indirect angle is a trailing
+  player deliberately *timing* a Dead-drop to deny a leader a milestone pick; that's legitimate tempo play,
+  not kingmaking.
+- **Sim task (add to the run):** track **milestone-trigger share vs finishing position** — does the eventual
+  winner claim a disproportionate share of the 4 picks (runaway signal)? And does the +1-VP option ever
+  decide a game on its own (margin ≤ the picks claimed)? *Pass:* picks are spread and rarely decisive.
+  *Fail:* apply the per-player pick cap or drop the +1-VP option.
 
 **The single most important open balance question** (attack first with `tools/sim` + a 2p Screentop
 session): *Is the Dead-drop reward tuned so cooperation is rational without a dominant hoard line or
@@ -359,14 +393,15 @@ Target **~1.8**; `complexity-budget.json` caps guarded by `bg-elegance`.
 
 ## Keywords / glossary
 
-- **Larder** — your held ingredients (hand). Cap **7**; discard down at end of turn.
+- **Larder** — your ingredients, sat **face-up in the open** in front of you (**not** a hidden hand).
+  Cap **7**; discard down at end of turn.
 - **Menu** — the shared face-up row of Dish cards available to plate; refills from the Dish deck.
 - **Dish** — a recipe card (2–3 ingredients) worth VP; plated into your Traveller's Log.
 - **Assignment** — your **secret** objective (the one hidden-info hook); +7 VP if completed, revealed at
   scoring.
-- **Grand Dossier** — the shared track the whole table advances (+1 per Plate or Dead-drop); milestones
-  pay every player a Discovery bonus and the triggerer a bonus Insider Tip; its final milestone can end
-  the game.
+- **Grand Dossier** — the shared track the whole table advances (+1 per Plate or Dead-drop); each
+  milestone pays every player a flat Discovery bonus **and** lets the triggerer pick a small reward
+  (an Insider Tip *or* +1 VP — payout C); its final milestone can end the game.
 - **Insider Tip** — a flexible token (extra source / wild ingredient / extra travel hop). Earned by
   Dead-dropping and by triggering Dossier milestones.
 - **Dead-drop** — give a rival 1 ingredient; gain 1 Insider Tip and advance the Grand Dossier. The
@@ -381,10 +416,11 @@ Target **~1.8**; `complexity-budget.json` caps guarded by `bg-elegance`.
    without a dominant hoard line or kingmaking? → Hoarder-vs-Tipper sim (target **G ≥ H**) + Kingmaker
    probe (3p) + a 2p Screentop session watching whether players *feel* like tipping. Knobs: Insider Tip
    power, a possible +1 VP per dead-drop, the per-round receive cap, the Larder cap.
-2. **Grand Dossier teeth.** Is a **flat** Discovery bonus (equal to all) engaging, or does it feel
-   ignorable? Options if flat: make milestone payouts **differential** (+1 VP per dish in *your* Log
-   matching that region), or keep flat and lean on the trigger-Tip + end-tempo for the strategy. Trades
-   warmth vs teeth vs bookkeeping.
+2. **Grand Dossier teeth (payout C, CD-chosen).** The Hybrid gives the flat base *plus* a triggerer's
+   pick (Insider Tip or +1 VP). Does the pick add a satisfying "tip it over" race without a leader-runaway
+   (see the check above)? Watch **milestone-trigger share vs finishing position**. If the pick proves
+   ignorable, strengthen it (raise the +1-VP option); if it snowballs to the leader, cap it at 2 picks per
+   player or drop the +1-VP option toward flat (payout A).
 3. **Dish VP schedule & Assignment weight.** Is 3 / 4 / 5 flat enough that no dish size dominates, and is
    **+7** the right Assignment swing (too small = ignore your mission; too big = the rest is filler)?
    Also: is 2-ingredient-single-region plating a "just churn cheap dishes" degenerate line?
