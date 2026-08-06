@@ -58,6 +58,18 @@ Checks: unique card ids, numeric value/cost, positive integer quantities, recomm
 `type`s that a theme actually colours, and that any `sim/*.py` still imports and exposes GAME +
 STRATEGIES. Non-zero exit on errors — good as a pre-commit sanity check.
 
+## `complexity/` — complexity-drift gauge (stdlib-only)
+
+Objective proxies for rules overhead vs the game's target, so weight doesn't creep as you iterate.
+
+```bash
+python complexity/check_complexity.py --game games/beacon          # report
+python complexity/check_complexity.py --game games/beacon --strict # exit 1 if over budget
+```
+Reads `games/<slug>/complexity-budget.json` (set at project start; copy `templates/complexity-budget.json`)
+and reports rulebook words, glossary keyword count, exception density, component types, and player-aid
+length. Owned by the `bg-elegance` agent; see `knowledge/elegance-and-clarity.md`.
+
 ## `rulebook/` — rules markdown → themed rulebook
 
 ```bash

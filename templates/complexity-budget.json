@@ -1,0 +1,9 @@
+{
+  "target_weight": 2.0,
+  "max_rulebook_words": 1000,
+  "max_keywords": 10,
+  "max_exception_words": 10,
+  "max_component_types": 5,
+  "max_player_aid_lines": 18,
+  "_note": "Set at project START to match the game's target weight, then guard it every iteration with `python tools/complexity/check_complexity.py --game games/<slug>` and the bg-elegance agent. Going over budget has exactly two honest outcomes: simplify back under, or make a conscious, logged decision (decision-log.md) to raise the budget. Never let it creep silently. Tighten these caps for a lighter filler, loosen for a heavier hobbyist game."
+}

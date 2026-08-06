@@ -51,6 +51,7 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 | Development | `bg-developer` | Turns design into concrete artifacts: card/component data, rules spec, build code. |
 | Prototyping | `bg-prototyper` | Produces playable outputs: **Screentop.gg** deck (default) / TTS module, print-and-play PDF, 3D pieces. |
 | Critique | `bg-critic` | Adversarial red-team: hunts dominant strategies, dead turns, swinginess, co-op alpha-player leaks — before you spend playtests. |
+| Elegance | `bg-elegance` | Guards the complexity budget (set at start), hunts what to cut/merge, keeps the rulebook + player aid succinct/clear/fun, disciplined FAQ. |
 | Testing | `bg-playtest` | Playtest plans, session logging, feedback synthesis, balance analysis, and simulation (`tools/sim`). |
 | Marketing | `bg-marketing` | Pitch, elevator, box copy, sell sheet, crowdfunding page, audience strategy. |
 | Publishing | `bg-publishing` | IP / copyright / trademark / compliance for **Ireland, UK, USA**; self-publish vs pitch. |
@@ -124,6 +125,9 @@ playbook `knowledge/simulation-and-balance.md`, `tools/sim/README.md`, and the w
 - **Rulebook generator** — `python tools/rulebook/build_rulebook.py --md <rules.md> --theme <name> --out
   <build>/rulebook.pdf`: rules markdown → themed A5 HTML/PDF. Rules stay diffable markdown; this lays
   them out.
+- **Complexity gauge** — `python tools/complexity/check_complexity.py --game games/<slug>`: objective
+  drift proxies (rulebook words, keywords, exceptions, component types, player-aid length) vs the
+  game's `complexity-budget.json`. Owned by `bg-elegance`; set the budget at project start and guard it.
 
 ### Recommended free installs (macOS)
 

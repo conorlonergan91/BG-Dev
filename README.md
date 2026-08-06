@@ -22,7 +22,7 @@ MCP servers (see below).
 
 | Path | What it is |
 |------|------------|
-| `.claude/agents/` | The composable pipeline — 10 specialist subagents (`bg-ideation` … `bg-critic` … `bg-publishing`). |
+| `.claude/agents/` | The composable pipeline — 11 specialist subagents (`bg-ideation` … `bg-critic` … `bg-elegance` … `bg-publishing`). |
 | `.claude/skills/board-game-studio/` | The **Creative Director** orchestrator (human-in-the-loop protocol). |
 | `.claude/skills/bg-2d-components/` | Cards / boards / tracks / tokens / player aids: **data → SVG → PNG / PDF / Screentop**, themed. |
 | `.claude/skills/bg-3d-components/` | Miniatures / dice / inserts / boxes via **Blender / FreeCAD / OpenSCAD MCP**. |
@@ -33,6 +33,7 @@ MCP servers (see below).
 | `tools/boards/` | Themed **tracks, tokens, mats, player aids**. |
 | `tools/sim/` | **Playtest simulator** — play a game thousands of times to expose dominant strategies & balance. |
 | `tools/lint/`, `tools/rulebook/` | Consistency **linter** + **rulebook** generator (markdown → themed A5 PDF). |
+| `tools/complexity/` | **Complexity gauge** — proxies vs the game's budget, so weight doesn't creep as you iterate. |
 | `games/` | Your games live here — data + docs committed; `build/` is scratch, `exports/` holds committed deliverables. |
 
 ## Optional integrations
