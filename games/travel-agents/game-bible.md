@@ -22,7 +22,7 @@ likely **Discovery + Fellowship + Challenge**.)
 - **Details:** see `identity.md`.
 
 ## Positioning
-- **Weight (BGG 1–5):** target ~1.8 (light-to-mid; family+ / gateway+)
+- **Weight (BGG 1–5):** aim ~1.8, acceptable up to **~2.2** if gameplay needs it (lighter is better, but don't let the budget hamper the fun — CD 2026-08-06). Band: TtR Europe ~1.9, Let's Go! To Japan ~2.25.
 - **Players:** 2–4 (this game leads with a first-class **2-player duel** by its own design choice, then scales to a 3–4p race)
 - **Playtime:** ~30–45 min (TBD)
 - **Tone:** silly / warm / adventurous
@@ -31,7 +31,7 @@ likely **Discovery + Fellowship + Challenge**.)
 - **Target platform:** Screentop.gg for playtest (studio default); route-to-market TBD (`bg-funding`).
 
 ## Complexity budget (set at the START — defend it as you iterate)
-- **Target weight:** ~1.8 (BGG 1–5)
+- **Target weight:** aim ~1.8; **acceptable ceiling ~2.2** (CD raise 2026-08-06 — gameplay wins over strictness; lighter still preferred)
 - **Caps:** see `complexity-budget.json`. Check drift with
   `python tools/complexity/check_complexity.py --game games/travel-agents` and run **`bg-elegance`** each
   iteration. Over budget → simplify, or consciously log a raise. Never silent creep.
