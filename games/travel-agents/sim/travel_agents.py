@@ -102,6 +102,26 @@ ROOKIE_EVENT_MULT = float(os.environ.get("TA_ROOKIE_EVT", "2.2"))  # her event a
 GOURMAND_BOONS = os.environ.get("TA_GOURMAND_BOONS", "half")       # boon handling: "none"|"half"|"full" (softened flaw)
 GOURMAND_WILD_USES = int(os.environ.get("TA_GOURMAND_WILD", "2"))  # pantry->specialty substitutions per turn (was 1)
 INFLUENCER_BEHIND = int(os.environ.get("TA_INFL_BEHIND", "2"))     # resources the Influencer starts behind (was 1)
+# CONDUCTOR flaw (v3.1 fix, LOCKED default "stock1_if_double" -> 48.7% in-band): the old "Stock Up
+# always takes 1" ("stock1") collapsed him to ~26% once the anchored real deck made Stock-Up-2 the core
+# sourcing move. "stock1_if_double" = the second of two BACK-TO-BACK Stock Ups takes only 1 (can't camp
+# one market 2+2; the first is always full) — a light, thematic flaw that keeps his travel identity and
+# lands him at 45-55%. Other options: "stock1_if_stayed" (30%, too harsh — bots double-stock anchored
+# costs), "none" (50%, but a character needs a flaw). NB: the sim UNDER-values his Travel+2 mobility
+# ability (routing blind spot), so any heavier flaw reads too costly in-sim (start-2-behind 37%, cap-6 41%).
+CONDUCTOR_FLAW = os.environ.get("TA_CONDUCTOR_FLAW", "stock1_if_double")
+CONDUCTOR_BEHIND = int(os.environ.get("TA_CONDUCTOR_BEHIND", "0"))  # light tempo flaw: opponents start +N Buzz
+CONDUCTOR_CAP = int(os.environ.get("TA_CONDUCTOR_CAP", "7"))        # light storage flaw: his Larder cap (7 = none)
+# EAST FIX (v3.1): lift East sourcing (~15.6%) toward the ~18% floor. Levels:
+#   0 = none.
+#   1 = re-point 蚵仔煎/V12's non-hero North cross token egg(N) -> greens(E) (authentic: omelette茼蒿).
+#       (Tested insufficient alone: +0.6pt — one T2 courted ~once/game.)
+#   2 = level 1 PLUS de-pantry the three East T1 stalls so they cost 2 East (not 1 East + pantry):
+#       竹筒飯/V21 & 麻糬/V23 rice;pantry -> rice;rice; 山蘇/V22 greens;pantry -> greens;greens.
+#       (All three are honestly single-ingredient dishes — bamboo rice, mochi, stir-fried greens.)
+#       This kills the pantry-substitution that was diluting East's real demand on its cheapest cards.
+EAST_FIX_LEVEL = int(os.environ.get("TA_EAST_FIX", "2"))
+EAST_FIX = EAST_FIX_LEVEL >= 1   # back-compat flag
 
 # ---- map -------------------------------------------------------------------------------------------
 REGIONS = ("N", "C", "S", "E")
@@ -171,6 +191,43 @@ def _load_vendor_table():
 
 
 _load_vendor_table()
+
+
+def _vendor_by_csv(cid):
+    for v in VENDORS:
+        if v.get("csv_id") == cid:
+            return v
+    return None
+
+
+def _apply_east_fix():
+    """v3.1 East lift (see EAST_FIX_LEVEL doc above)."""
+    if EAST_FIX_LEVEL < 1:
+        return
+    # Level 1: 蚵仔煎 V12 egg(N) -> greens(E). oysters;egg;pantry -> oysters;greens;pantry.
+    v = _vendor_by_csv("V12")
+    if v:
+        cr = Counter(v["cost_regions"])
+        if cr.get("N", 0) > 0:
+            cr["N"] -= 1
+            if cr["N"] <= 0:
+                del cr["N"]
+            cr["E"] = cr.get("E", 0) + 1
+            v["cost_regions"] = dict(cr)
+    if EAST_FIX_LEVEL < 2:
+        return
+    # Level 2: de-pantry the East T1 stalls (1 East + pantry -> 2 East), killing pantry-dilution.
+    for cid in ("V21", "V22", "V23"):
+        v = _vendor_by_csv(cid)
+        if v and v["cost_pantry"] > 0:
+            reg = "E"                       # all three are East single-ingredient stalls
+            cr = Counter(v["cost_regions"])
+            cr[reg] = cr.get(reg, 0) + 1
+            v["cost_regions"] = dict(cr)
+            v["cost_pantry"] -= 1
+
+
+_apply_east_fix()
 _BY_TIER = {t: [v["id"] for v in VENDORS if v["tier"] == t] for t in (1, 2, 3)}
 
 
@@ -271,6 +328,7 @@ class TravelAgentsGame:
         starts = {2: ["N", "S"], 3: ["N", "S", "C"], 4: ["N", "S", "C", "E"]}[n_players]
         players = []
         infl_present = "influencer" in chars
+        cond_present = "conductor" in chars
         for p in range(n_players):
             ch = chars[p]
             # missions: explicit per-seat if given, else deal a random one (draw-3-keep-1 with no
@@ -286,7 +344,9 @@ class TravelAgentsGame:
                 "pos": starts[p],
                 "home": starts[p],           # camp line stays here; also the "stay-home" region under test
                 "larder": Counter(),
-                "buzz": (INFLUENCER_BEHIND if (infl_present and ch != "influencer") else 0),  # Influencer starts behind
+                # tempo deficits: opponents start with extra Buzz when a behind-flaw character is present
+                "buzz": ((INFLUENCER_BEHIND if (infl_present and ch != "influencer") else 0)
+                         + (CONDUCTOR_BEHIND if (cond_present and ch != "conductor") else 0)),
                 "vendors": [],
                 "icons": Counter(),
                 "wild": 0,
@@ -301,6 +361,7 @@ class TravelAgentsGame:
                 "wild_used": 0,
                 "tourist_boost": False,
                 "acted": 0,
+                "moved_last": False,          # did this player Travel on their previous turn? (Conductor flaw)
             })
         return {
             "n": n_players,
@@ -467,6 +528,8 @@ class TravelAgentsGame:
         # end-of-turn: Larder cap
         self._discard_to_cap(s, p)
         pl["acted"] += 1
+        pl["moved_last"] = (kind == "travel")     # for the Conductor's "stock1_if_stayed" flaw next turn
+        pl["last_kind"] = kind                    # for the Conductor's "stock1_if_double" flaw next turn
 
         # advance turn
         s["turn"] += 1
@@ -565,8 +628,14 @@ class TravelAgentsGame:
         _, ings = act
         pl = s["players"][p]
         n_take = 2
-        if pl["char"] == "conductor":
-            n_take = 1                                        # Timetable-bound: Stock Up takes 1
+        if pl["char"] == "conductor":                         # Timetable-bound flaw (v3.1 softened)
+            if CONDUCTOR_FLAW == "stock1":
+                n_take = 1                                     # old: always 1 (collapsed him to ~26%)
+            elif CONDUCTOR_FLAW == "stock1_if_stayed":
+                n_take = 2 if pl["moved_last"] else 1          # full 2 right after a Travel; 1 if he stayed put
+            elif CONDUCTOR_FLAW == "stock1_if_double":
+                n_take = 1 if pl.get("last_kind") == "stock" else 2   # can't camp one market (2+2); first is full
+            # else "none": no Stock flaw (n_take stays 2)
         taken = 0
         for ing in ings:
             if taken >= n_take:
@@ -687,7 +756,8 @@ class TravelAgentsGame:
 
     def _discard_to_cap(self, s, p):
         pl = s["players"][p]
-        cap = ROOKIE_CAP if pl["char"] == "rookie" else CAP_DEFAULT
+        cap = (ROOKIE_CAP if pl["char"] == "rookie"
+               else CONDUCTOR_CAP if pl["char"] == "conductor" else CAP_DEFAULT)
         total = sum(pl["larder"].values())
         if total <= cap:
             return
@@ -982,7 +1052,8 @@ def _poach_target_region(state, p):
 def _engine_policy(view, p, legal, rng, W, flags):
     state = view
     pl = state["players"][p]
-    cap = ROOKIE_CAP if pl["char"] == "rookie" else CAP_DEFAULT
+    cap = (ROOKIE_CAP if pl["char"] == "rookie"
+           else CONDUCTOR_CAP if pl["char"] == "conductor" else CAP_DEFAULT)
     near_cap = sum(pl["larder"].values()) >= cap - 1
 
     # ---- POACH decisions (v3.1) ----------------------------------------------------------------
@@ -1501,8 +1572,8 @@ def health(n=1200):
 
 if __name__ == "__main__":
     print(f"[knobs] SEASON_FINAL(2p)={SEASON_FINAL[2]}  REGION_SUPPLY={REGION_SUPPLY}  "
-          f"EVENT_PROB={EVENT_PROB}  POACH_REP={POACH_REP_COST}  BUZZ_FLOOR_KNOB={BUZZ_FLOOR_KNOB}  "
-          f"DISCOUNT_CAP={DISCOUNT_CAP}\n")
+          f"EVENT_PROB={EVENT_PROB}  POACH_REP={POACH_REP_COST}  CONDUCTOR_FLAW={CONDUCTOR_FLAW}  "
+          f"EAST_FIX_LEVEL={EAST_FIX_LEVEL}  DISCOUNT_CAP={DISCOUNT_CAP}\n")
     # NOTE: a full run is a few minutes (the char x mission mirror scan in Probe 3 dominates). The
     # n-values below are those used for the committed v3.1 sim-notes read (2026-08-06).
     print("### v3.1 LEAD PROBES (the two changes under test) ###\n")
