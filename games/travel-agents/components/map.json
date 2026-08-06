@@ -1,23 +1,52 @@
 {
-  "_note": "v3 schematic prototype board for build_board.py --type mat. PLACEHOLDER layout (labelled zones) for the Screentop prototype; the real illustrated Taiwan map is a bg-infodesign / illustration task. Region colours are first-pass night-market (identity.md), CVD-checked via check_access.py. Regions sit on a RING: North-Central-South-East-back to North; the HSR spine links North<->South down the west coast (they count adjacent). The board also carries the Season end-timer, the Prestige (score) track, the Reputation track with milestones, the tiered Vendor Board (3 rows), and each region's Market slots. Tracks/board rows are rendered separately by build_board --type track in make.sh; this mat shows the map + the layout callouts.",
+  "_note": "v3 region-ring board spec for build_board.py --type regionmap. Rebuilt (bg-prototyper) to replace the overlapping free-text mat the CD flagged: a clean Taiwan 4-region DIAMOND (North 北 top, Central 中 west, South 南 bottom, East 東 east coast) with the ring edges (N-C-S-E-N) and the HSR 高鐵 spine (North<->South) drawn as REAL connectors, not text. Each region shows its specialty ingredients in the shared colour + 繁體 + emblem grammar. The Season timer, Prestige (VP) track, Reputation track, Vendor Board and Market slots render as SEPARATE components (build_board --type scoretrack/track in make.sh) so nothing overlaps. No game values changed vs the previous placeholder: region<->ingredient web, Market slot counts, ring + HSR adjacency, pantry rule and 2p start positions are all preserved; this is a layout/rendering rebuild only. Real illustrated Taiwan map remains a bg-infodesign / illustration task. Region colours: first-pass night-market (identity.md), CVD-checked via check_access.py.",
+  "title": "Travel Agents: Taiwan  —  four regions on the ring",
   "width": 1600,
-  "height": 1240,
-  "title": "Travel Agents: Taiwan  —  four regions on the ring (v3 vendor-courting engine)",
-  "zones": [
-    {"x": 640, "y": 70,  "w": 320, "h": 200, "label": "North 北  (beef / pork / chicken / egg)  ·  Market: 4 slots", "color": "#D64545"},
-    {"x": 300, "y": 400, "w": 300, "h": 200, "label": "Central 中  (tea / tapioca pearls)  ·  Market: 3 slots", "color": "#1F8A7A"},
-    {"x": 640, "y": 730, "w": 320, "h": 200, "label": "South 南  (oysters / milkfish)  ·  Market: 3 slots", "color": "#E6A930"},
-    {"x": 1000,"y": 400, "w": 300, "h": 200, "label": "East 東  (rice / mountain greens)  ·  Market: 3 slots", "color": "#26324D"},
-    {"x": 60,  "y": 980, "w": 1480,"h": 70,  "label": "VENDOR BOARD  —  3 face-up rows: Marquee 名店 / Eatery 小吃 / Stall 攤 (2p: 3 per tier). Court to sign; refill from that tier's deck.", "color": "#C9A227"},
-    {"x": 60,  "y": 1060,"w": 720, "h": 70,  "label": "SEASON end-timer  —  +1 per Court (any agent). Final mark ~16 courts (2p) -> wind-down.", "color": "#D64545"},
-    {"x": 60,  "y": 1140,"w": 720, "h": 70,  "label": "PRESTIGE (score) track  0-42  —  a vendor's stars, live.", "color": "#8A8F98"},
-    {"x": 820, "y": 1060,"w": 720, "h": 70,  "label": "REPUTATION track  —  milestones 3 / 6 / 9 (one-time perks) and top 12 (endgame trigger).", "color": "#1F8A7A"},
-    {"x": 820, "y": 1140,"w": 720, "h": 70,  "label": "REPUTATION end-VP  3->+2  6->+4  9->+6  top 12->+9   ·   COVERAGE end-VP  2 regions->2  3->5  all 4->9", "color": "#26324D"}
+  "height": 1270,
+  "region_w": 330,
+  "region_h": 236,
+  "regions": [
+    {
+      "key": "north", "name": "NORTH 北", "color": "#D64545", "emblem": "triangle",
+      "x": 635, "y": 150, "slots": "4 slots",
+      "specialties": [
+        {"id": "beef", "label": "牛", "en": "Beef"},
+        {"id": "pork", "label": "豬", "en": "Pork"},
+        {"id": "chicken", "label": "雞", "en": "Chicken"},
+        {"id": "egg", "label": "蛋", "en": "Egg"}
+      ]
+    },
+    {
+      "key": "central", "name": "CENTRAL 中", "color": "#1F8A7A", "emblem": "diamond",
+      "x": 250, "y": 470, "slots": "3 slots",
+      "specialties": [
+        {"id": "tea", "label": "茶", "en": "Tea"},
+        {"id": "pearls", "label": "圓", "en": "Pearls"}
+      ]
+    },
+    {
+      "key": "east", "name": "EAST 東", "color": "#26324D", "emblem": "square",
+      "x": 1020, "y": 470, "slots": "3 slots",
+      "specialties": [
+        {"id": "rice", "label": "米", "en": "Rice"},
+        {"id": "greens", "label": "菜", "en": "Greens"}
+      ]
+    },
+    {
+      "key": "south", "name": "SOUTH 南", "color": "#E6A930", "emblem": "circle",
+      "x": 635, "y": 790, "slots": "3 slots",
+      "specialties": [
+        {"id": "oysters", "label": "蚵", "en": "Oysters"},
+        {"id": "milkfish", "label": "魚", "en": "Milkfish"}
+      ]
+    }
   ],
-  "texts": [
-    {"x": 540, "y": 340, "size": 28, "text": "HSR spine (west coast): North <-> South count ADJACENT (Central sits between on the ring)"},
-    {"x": 610, "y": 690, "size": 24, "text": "Pantry (convenience store) is available in EVERY region, unlimited"},
-    {"x": 300, "y": 380, "size": 22, "text": "Start (2p): one Agent North, one Agent South"},
-    {"x": 70,  "y": 1215,"size": 20, "text": "Reputation milestone perks — pass 3: take 2 wild ingredients · pass 6: Promote +1 Buzz · pass 9: gain 1 permanent discount icon of choice"}
+  "ring": [["north", "central"], ["central", "south"], ["south", "east"], ["east", "north"]],
+  "hsr": ["north", "south"],
+  "notes": [
+    "Ring: North–Central–South–East–North are adjacent — a Travel action moves 1 step along the ring.",
+    "HSR 高鐵: North and South also count ADJACENT (the west-coast high-speed spine).",
+    "Pantry 補: the convenience store — available in EVERY region, unlimited (and never discounted).",
+    "Start (2p): one Agent begins in North 北, the other in South 南 (opposite ends of the ring)."
   ]
 }

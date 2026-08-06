@@ -19,14 +19,27 @@ python3 $T/cards/build_cards.py --csv components/missions.csv   --out build --th
 python3 $T/cards/build_cards.py --csv components/events.csv     --out build --theme "$theme" --formats png screentop
 python3 $T/cards/build_cards.py --csv components/characters.csv --out build --theme "$theme" --formats png screentop
 
-# Board + tracks + token keys + aid
-python3 $T/boards/build_board.py --type mat    --spec components/map.json --theme "$theme" --out build/map.png
-python3 $T/boards/build_board.py --type track  --spaces 16 --title "Season end-timer" \
-    --labels ",,,,,,,,,,,,,,,final" --left-label "start" --right-label "wind-down (~16 courts, 2p)" \
-    --theme "$theme" --out build/season-track.png
-python3 $T/boards/build_board.py --type track  --spaces 12 --title "Reputation track" \
-    --labels ",,3,,,6,,,9,,,top" --left-label "0" --right-label "+9 & endgame" \
+# Board (the rebuilt clean region-ring map) — replaces the old overlapping free-text mat.
+python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --out build/map.png
+
+# Live in-game trackers — the three running scores, each its own clean numbered track.
+# Prestige = the VP tracker the CD asked for (0->50, a marker per player, mark points as you earn them).
+python3 $T/boards/build_board.py --type scoretrack --max 50 --per-row 13 \
+    --title "Prestige (VP) track" --start-label "START" \
+    --note "One marker per player. Advance it as you score — each vendor you court adds its Prestige stars. Most points = Top Agent." \
+    --theme "$theme" --out build/prestige-track.png
+python3 $T/boards/build_board.py --type scoretrack --max 12 --per-row 13 \
+    --title "Reputation track" --start-label "START" \
+    --milestones "3:+2 VP · perk;6:+4 VP · perk;9:+6 VP · perk;12:+9 VP · ENDS" \
+    --note "Climb by courting (each vendor's printed Rep). Passing 3 / 6 / 9 grants a one-time perk; the top (12) pays +9 VP and is an end-game trigger." \
     --theme "$theme" --out build/reputation-track.png
+python3 $T/boards/build_board.py --type scoretrack --max 16 --per-row 17 \
+    --title "Season end-timer" --start-label "START" \
+    --milestones "16:WIND-DOWN" \
+    --note "Advance +1 each time ANY agent courts a vendor. Reaching the final mark (~16 courts at 2p) triggers the end-game wind-down." \
+    --theme "$theme" --out build/season-track.png
+
+# Token key + player aid
 python3 $T/boards/build_board.py --type tokens --from-csv components/tokens.csv --shape circle --cols 6 \
     --theme "$theme" --out build/token-key.png
 python3 $T/boards/build_board.py --type aid    --spec components/player-aid.json --theme "$theme" --out build/player-aid.png
@@ -46,8 +59,9 @@ cp build/sheets/missions_back.png         exports/ 2>/dev/null || true
 cp build/sheets/events_sheet_*.png        exports/ 2>/dev/null || true
 cp build/sheets/characters_sheet_*.png    exports/ 2>/dev/null || true
 cp build/map.png                          exports/map.png 2>/dev/null || true
-cp build/season-track.png                 exports/season-track.png 2>/dev/null || true
+cp build/prestige-track.png               exports/prestige-track.png 2>/dev/null || true
 cp build/reputation-track.png             exports/reputation-track.png 2>/dev/null || true
+cp build/season-track.png                 exports/season-track.png 2>/dev/null || true
 cp build/token-key.png                    exports/token-key.png 2>/dev/null || true
 cp build/player-aid.png                   exports/player-aid.png 2>/dev/null || true
 cp build/rulebook.pdf                     exports/rulebook.pdf 2>/dev/null || true
