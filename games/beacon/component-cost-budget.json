@@ -1,0 +1,13 @@
+{
+  "target_retail_price": 15,
+  "currency": "USD",
+  "max_component_types": 4,
+  "max_total_pieces": 90,
+  "max_unique_cards": 40,
+  "box_tier": "small",
+  "target_cogs_fraction": 0.20,
+  "unit_cost_per_type": {
+    "cards": 0.03, "tokens": 0.05, "board": 0.80, "box": 0.90, "rulebook": 0.35
+  },
+  "_note": "Beacon: a small-box 2p tug-of-war filler. Tight caps to stay cheap to POD/pitch. See knowledge/cost-and-manufacturability.md."
+}

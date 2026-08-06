@@ -1,0 +1,21 @@
+{
+  "target_retail_price": 20,
+  "currency": "USD",
+  "max_component_types": 4,
+  "max_total_pieces": 120,
+  "max_unique_cards": 60,
+  "box_tier": "small",
+  "target_cogs_fraction": 0.20,
+  "unit_cost_per_type": {
+    "cards": 0.03,
+    "tokens": 0.05,
+    "tiles": 0.08,
+    "board": 0.80,
+    "dice": 0.15,
+    "meeples": 0.10,
+    "box": 0.90,
+    "rulebook": 0.35,
+    "insert": 0.40
+  },
+  "_note": "The COST analog of complexity-budget.json — set at project START and guard it as the design grows, with `python tools/cost/check_cost.py --game games/<slug>` and the bg-architect agent. Fewer UNIQUE component TYPES is the biggest lever (each type = its own tooling/assembly/QC), then box size (drives freight + tariff exposure), then piece count. A game that busts its cost budget has two honest outcomes: cut/merge components back under, or consciously (and log-ably) accept a higher price tier / thinner margin. `target_cogs_fraction` is the manufactured unit cost as a fraction of retail (indie POD ~0.5; a healthy pitch/crowdfund target is ~0.2). `unit_cost_per_type` are ROUGH at-volume order-of-magnitude figures (USD, pre-freight, pre-tariff) — re-verify with a live manufacturer quote before pricing. Tighten for a small-box filler; loosen for a bigger boxed game. See knowledge/cost-and-manufacturability.md."
+}
