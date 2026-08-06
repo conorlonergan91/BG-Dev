@@ -95,9 +95,17 @@ hazards). When you **Visit**, flipped events happen immediately:
   "SOLD OUT" sign, scooter gridlock eats your next trip. They **tax or delay — never destroy** what you
   already hold, never cost a whole turn.
 - **boons** *(the minority)* — a mango glut, a bubble-tea festival that hands out Buzz, a kind auntie who
-  loads you up.
+  loads you up, or — the big one — a vendor **suddenly gets hot** (see ★ below).
 Warm, secular, region-flavoured. **Only Visiting fires events** — a lone card flipped by Travel or the
 Convenience Store just means "shelf was bare."
+
+> **★ Star vendors — the hot targets.** Some standout vendors are worth crossing the island for. A few
+> **Legendary** night-market names carry a **printed ★** (a real Michelin / Bib-Gourmand / competition
+> nod) and score **7–8 Prestige** — the apex prizes both agents fight over. And a boon event —
+> **摘星了！ Michelin Nod / 得獎了！ Just Won the Competition** — drops a **★ Star token** on a Board vendor
+> (usually the most-ignored stall), making it worth **+2 Prestige and +1 Rep** to whoever wins it. Watch a
+> quiet little stall suddenly become the thing everyone's racing to — pack your bags and out-hype your
+> rival for it.
 
 ## 7. The day-clock — two Acts (the day escalates)
 It's **one glorious eating day**. The **day-clock** climbs **+1 every time anyone Bribes a vendor** (yours
@@ -161,9 +169,12 @@ covered.
 - Re-cost the **25 vendors** to **named specialties only** (pantry removed), preserving the movement
   rebalance (anchor in-region + ~40% cross-links + workhorse caps + every specialty ≥3). Re-tier into the
   three **types** — **Stalls / Eateries / Marquee** — and build the **two Act decks** (Stalls-top +
-  Eateries-beneath = Act I; Marquee = Act II).
+  Eateries-beneath = Act I; Marquee = Act II). Build the **value curve**: Stall 1 / Eatery 3 / Marquee 5–6,
+  with **2–3 apex "Legendary" Marquee at 7–8 marked with a printed ★** (real accolades, dish names intact).
 - Build the **four region market decks** (specialty cards + event cards, hazard-leaning); rebuild
   `events.csv` (~14; drop the boon skew; re-home into the decks; ~2 hazards/deck + table-wide ones).
+  Include the **"vendor gets hot" boon** (摘星了／得獎了／爆紅) + **~4 ★ Star tokens** (+2 Prestige / +1 Rep,
+  recyclable).
 - Re-home orphaned perks: **wild_pantry → wild_specialty**; add the **Buzz-reach** marquee perk.
 - Size the **Buzz supply** (~24 @2p; +8–10/player). Set the **day-clock marks** (2p: dusk **6** / Code Red
   **10**) — sim-tunable.

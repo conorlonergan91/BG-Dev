@@ -118,15 +118,19 @@ region; (2) **25 Vendor cards** — three **types** (**Stalls ×11 / Eateries ×
 **two Act decks** (Act I Afternoon Crawl = Stalls-on-top + Eateries-beneath; Act II Night Market =
 Marquee), one per **real locked dish** (Tâi-lô + 繁體), each with cost (**named specialties only**), a
 **region icon** (discount + **the region you must stand in to hype/Bribe it**), **Prestige**,
-**Reputation**, a **perk**, and its **type**; region-icon balance held across N/C/S/E; (3) **~12 Mission
+**Reputation**, a **perk**, and its **type**; **2–3 apex "Legendary" Marquee carry a printed ★ (7–8
+Prestige)** — a real Michelin/Bib-Gourmand/competition accolade making them the hot targets; region-icon
+balance held across N/C/S/E; (3) **~12 Mission
 cards** (secret +7 vendor patterns, draw-3-keep-1 — **now the sole breadth/grand-tour carrier**); (4)
 **~50–56 Market cards** — four face-down region decks of **specialty ingredient cards** (10 specialties
 incl. chicken 雞 + egg 蛋) **+ event cards** (~14, hazard-leaning ~55–60%), sharing a common back; (5)
 **~24 Buzz tokens** (@2p; the committed, public, contested resource — placed on vendors, cleared on a win);
 (6) **5 Character mats** (one ability + one flaw each — the v5 cast: **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**;
 里長伯 & 媽寶 = KEPT kits re-lored, 大胃王 & 大哥 = NEW, numbers sim-tunable) + 4 Agent pawns +
-Prestige/Rep markers + **day-clock marker** (board bits). **Cut:** **pantry tokens**, **Event tiles** as a
-separate type (now market cards), the **Season counter** (→ day-clock), the **Coverage scoring key**.
+Prestige/Rep markers + **day-clock marker** + **~4 ★ Star tokens** (the dynamic value swing — a "vendor
+gets hot" boon event drops one on a Board vendor for **+2 Prestige / +1 Rep**, recyclable) (board bits).
+**Cut:** **pantry tokens**, **Event tiles** as a separate type (now market cards), the **Season counter**
+(→ day-clock), the **Coverage scoring key**.
 Deck-size note: 25 vendors across 2 Act decks is comfortable at 2p; 3–4p may want a few more per type
 (→ `bg-architect`).
 

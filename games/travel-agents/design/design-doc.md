@@ -202,9 +202,20 @@ Hazards (the majority): **颱風假 Typhoon Day**, **梅雨 Plum Rains** (your V
 arrives empty), **客滿 Fully Booked** (shuffle this region's deck — reset the run), plus new per-region
 hazards so every deck carries ~2 hazards. Boons (the minority): **芒果季 Mango Season**, **珍奶節 Bubble-Tea
 Festival**, **臭豆腐大挑戰 Stinky-Tofu Dare** (opt-in push-your-luck), **再吃一點啦 The Aunty Insists**,
-**網紅來了 Food Blogger** (table-wide next-Promote +1 Buzz). *Reserve knob:* if blind decks feel too swingy
-at the table, add a **"brewing" telegraph** (the top card of each region deck is face-up before you Visit)
-— ~1 rule, restores preview agency.
+**網紅來了 Food Blogger** (table-wide next-Promote +1 Buzz), and — **the CD's dynamic value-swing boon** —
+**摘星了！ Michelin Nod / 得獎了！ Competition Winner** (see below). *Reserve knob:* if blind decks feel too
+swingy at the table, add a **"brewing" telegraph** (the top card of each region deck is face-up before you
+Visit) — ~1 rule, restores preview agency.
+
+**The "vendor gets hot" boon (CD, 2026-08-06 — makes vendor value DYNAMIC).** At least one boon event —
+**摘星了！ Michelin Nod** (variants: **得獎了！ Just Won the Competition**, **爆紅 Went Viral**) — **places a
+★ Star token on a Board vendor**, raising its worth to **+2 Prestige / +1 Rep** for whoever wins it (see
+*Vendor value curve*). **Targeting (proposed):** the Star lands on the **lowest-Prestige unstarred vendor
+currently on the Board** (ties → the revealing agent chooses) — deterministically turning *the most-ignored
+stall* into a live contested prize neither agent set up, which **pulls both toward that region** and starts
+a fresh Buzz fight. Warm, secular, and real (a genuine Taiwan food accolade; dish names intact). *(Design
+knob → sim: the targeting rule — lowest-value vs revealing-agent's-choice vs Visited-region — and how many
+of these events sit in the ~40% boon slice; 1–2 is the proposed dose.)*
 
 ---
 
@@ -258,12 +269,45 @@ value) are dealt across **two Acts**:
 |------|-------:|-----------------|--------------:|--------------:|----:|------|------|
 | **Stalls** | ~11 | **1–2** (in-region) | ≥2 | **1** | **+1** | its **region discount icon** (the base ramp) | Act I (top) |
 | **Eateries** | ~8 | **2–3** (1 cross-region) | ≥2 | **3** | **+2** | region icon **+ one** of {Promote +1 Buzz · once/turn treat 1 specialty as any specialty when Bribing · +1 Rep on each future Bribe} | Act I (beneath) |
-| **Marquee** | ~6 | **3–4** (2–3 regions) | ≥2 (but heavily contested) | **5–6** | **+2/+3** | a **strong** perk: a **wild region icon** · **or** Buzz-reach (place Buzz on adjacent-region vendors too) · **or** counts as **2** region icons · **or** +2 Rep on Bribing | Act II |
+| **Marquee** | ~6 | **3–4** (2–3 regions) | ≥2 (but heavily contested) | **5–6** *(★ apex 7–8)* | **+2/+3** | a **strong** perk: a **wild region icon** · **or** Buzz-reach (place Buzz on adjacent-region vendors too) · **or** counts as **2** region icons · **or** +2 Rep on Bribing | Act II |
 
 > **"Buzz to win ≥2" is the *floor* (uncontested).** The real cost of a Marquee is that your rival is
 > fighting you for it — the ≥2 majority against *their* pile is what makes the night-market names hard, not
 > a bigger printed number. The Act escalates on **contest intensity + ingredient/region breadth +
 > Prestige**, not ever-larger Buzz numbers (which would just drain the supply).
+
+### Vendor value curve & ★ Star vendors — the swing that makes the fight worth it (CD, 2026-08-06)
+
+**The Buzz fight only fires if the best vendors are *clearly* worth fighting for and worth crossing the
+island to reach.** A flat value field means nobody contests and nobody travels — everyone just takes the
+nearest convenient stall. So v5 builds a **deliberate value curve**, humble stalls → standout stars, not a
+flat one:
+
+- **The printed curve (an ~8× top-to-bottom spread):** a humble **Stall = 1** Prestige · a solid
+  **Eatery = 3** · an ordinary **Marquee = 5–6** · and **2–3 apex "Legendary" Marquee = 7–8** carrying a
+  **printed ★** (a standing **Michelin star / Bib Gourmand / recent competition win** — a real, warm reason
+  *that* stall is the one everyone's chasing). The apex names are the **guaranteed Act II prizes both agents
+  want** — worth an HSR haul across the island and several undiscounted Buzz to out-hype a rival for.
+- **★ Star tokens (the DYNAMIC swing — makes value move mid-game):** a small supply (~4) of **★ Star
+  tokens**. A **"vendor gets hot" boon event** (below) drops a Star onto a Board vendor — **+2 Prestige /
+  +1 Rep** to whoever wins it. This can land on an *ignored humble stall* (1 → 3 Prestige), instantly
+  turning it into a live contested prize and **pulling both agents toward that region** — travel pull and a
+  fresh hype fight, on the fly. On the win, the +2/+1 scores and the token returns to the supply
+  (recyclable). *(A printed-★ apex Marquee is a **standing** star; a Star **token** is a **new/temporary**
+  one — same ★ language, one is baked, one is dynamic.)*
+- **Why this is anti-flat *and* anti-runaway.** The swing gives the Buzz fight a **reason to exist** (a
+  clear apex to converge on) without breaking the brake: an apex/starred vendor still demands the same
+  region-gated, undiscounted ≥2 Buzz majority — it's just *worth overpaying for*, which is exactly the
+  tension we want. The star is a **value** hook, kept distinct from the engine **perk** (a starred marquee
+  with a strong perk = the ultimate prize — the game's natural climax fight).
+- **Reputation/perk can echo the swing too:** the apex names carry the **+2/+3 Rep** end of the band and
+  the strongest perks, so a star vendor is a jump on *all three* of Prestige, Reputation and engine — a
+  triple reason to fight for it.
+
+> **Sensitivity (binds — `identity.md`):** accolades stay **real and warm** — Taiwan genuinely has the
+> Michelin Guide + Bib Gourmand street-food nods; frame a star as **celebration** (this beloved stall got
+> its due), dish names intact, never a fabricated grand claim about a specific real business. → light
+> consultant note (confirm the accolade framing reads as pride, not marketing spin).
 
 **The discount ramp (kept, unchanged in spirit).** Each secured vendor carries a **region icon** (N/C/S/E,
 or wild). Holding *k* vendors with the X-icon reduces the **X-region ingredient** portion of any future
@@ -381,8 +425,9 @@ count (≈ +8–10 per extra player).
 2. **VP/turn stays flat-ish across types** (~1.1–1.9) so no type is an auto-win; Stalls pay **indirectly**
    (cheap icons make everything else cheaper), Marquee pay in Prestige + mission synergy, not raw rate.
 3. **Larder cap 7** (ingredient cards) forces the source→spend rhythm.
-4. **Target 2p winner ~24–32 total VP** (retuned down for the shorter ~5–6-win game). Rough split:
-   vendors' Prestige ~16–22 + Reputation end-VP ~4–6 + signature mission 0/**7**.
+4. **Target 2p winner ~24–34 total VP** (retuned for the shorter ~5–6-win game; the wider ★ value curve
+   lifts the top end). Rough split: vendors' Prestige ~16–24 (incl. any ★ apex/Star swing) + Reputation
+   end-VP ~4–6 + signature mission 0/**7**.
 
 ---
 
@@ -391,8 +436,9 @@ count (≈ +8–10 per extra player).
 Hybrid multi-track, now **two live tracks + one hidden vector** (Coverage cut). Tracks pay bonuses,
 **highest total VP wins** (no sudden-death — warm, and a trailing player always has a live second vector).
 At game end each agent totals:
-1. **Tour Prestige (VP)** — sum of your vendors' stars (Stalls 1 / Eateries 3 / Marquee 5–6). *(Live on the
-   VP track.)* — the **tall / prestige** line.
+1. **Tour Prestige (VP)** — sum of your vendors' stars (Stalls 1 / Eateries 3 / Marquee 5–6 / **★ apex or
+   Star-token'd 7–8**). *(Live on the VP track.)* — the **tall / prestige** line, and the axis the **★ Star**
+   swing amplifies.
 2. **Reputation** — end-VP by final marker position: **3→+2 · 6→+4 · 9→+6 · 12 (max)→+9.** Climbed by
    Bribing (each vendor's printed Rep). *(Live on the Rep track.)* — the **reputation-climb** line.
    *(Milestone perks passing 3/6/9 are cut — Rep is pure end-VP; a clean parallel scorer. Banked ≈0.15.)*
@@ -547,10 +593,15 @@ two on one day-clock** (fewer phases; ≈ −0.05 teach), **Rep milestone perks 
 **~2.4–2.5**. The Buzz-majority remains the deliberate spend and the CD's headline ask; depth lives there —
 protect it, cut around it.
 
-**Keywords ≈ 11** (under 15): Larder · Vendor · **Bribe** · **Buzz** · **Promote** · region **discount
-icon** · **Prestige** · **Reputation** · **market deck** · signature **Mission** · **day-clock / Act**.
-(Visit / Convenience Store / Travel / specialty / Code Red stay plain-language.) *(Coverage keyword
-dropped.)*
+**Keywords ≈ 12** (under 15): Larder · Vendor · **Bribe** · **Buzz** · **Promote** · region **discount
+icon** · **Prestige** · **Reputation** · **★ Star** · **market deck** · signature **Mission** · **day-clock
+/ Act**. (Visit / Convenience Store / Travel / specialty / Code Red stay plain-language.) *(Coverage keyword
+dropped; ★ Star added for the value swing.)*
+
+**The ★ Star cost (honest, for `bg-elegance`).** The Star adds **one keyword + one small token type**
+(~+0.05 weight) and one event line. It's the CD's fix for a real hole — a flat value field where nobody
+contests or travels — so it **earns the Buzz fight's whole payoff**; net weight holds **~2.5**. The printed
+★ apex costs nothing (it's Prestige on existing cards); only the dynamic Star *token* is new.
 
 ## Keywords / glossary
 
@@ -567,6 +618,11 @@ dropped.)*
 - **discount icon** — a vendor's region badge; each held reduces that region's ingredient cost on future
   vendors by 1 (floored at 0). The compounding engine (ingredients only).
 - **Prestige (VP)** — a vendor's star value; the headline VP vector; live on the track.
+- **★ Star** — a value hook marking a **standout** vendor: either **printed** on an apex "Legendary"
+  Marquee (a standing Michelin/Bib-Gourmand/competition accolade, worth 7–8) or a **Star token** dropped
+  mid-game by a "vendor gets hot" boon event (**+2 Prestige / +1 Rep** to whoever wins that vendor; token
+  returns to supply on the win). The deliberate value swing that makes a specific vendor worth crossing the
+  island and burning Buzz for.
 - **Reputation** — the parallel track climbed by Bribing; end-VP by final position (pure, no milestone
   perks).
 - **market deck** — a region's face-down deck of its 2 specialties + events; **Visit** draws 3 keeps 2
@@ -620,6 +676,11 @@ day-clock pacing landing ~5–6 wins/player in **≤30 min**; mission patterns a
 - **大哥 threshold:** **≥0 (tie-win)** vs **≥1 (must lead by 1)** — the make-or-break dominance probe.
 - **大哥 flaw:** the **+1-ingredient tab** vs the harsher **Promote-places-1** — does the tab under-brake?
 - **Board slot count / contest density** (5 @2p): fewer slots = sharper head-to-head Buzz fights.
+- **Vendor value spread (the swing that drives contest + travel):** the apex Marquee value (**7–8**), how
+  many are ★-printed (**2–3**), the ★ Star-token bonus (**+2 Prestige / +1 Rep**), and how many "vendor
+  gets hot" boon events (**1–2**) + their targeting rule. Probe: do agents actually **cross the island and
+  burn Buzz** for the standout/★ vendors (contest rate on top-value vs bottom-value vendors; travel-to-a-hot
+  region rate), and does the swing stay *fun*, not *swingy* (a single lucky Star shouldn't decide the game)?
 - **Character win-rate targets:** each **45–55%**, no dominant char×mission combo (里長伯 / 媽寶 / 網紅
   unchanged-kit re-checks; 大胃王 + 大哥 the real tuning).
 - **Mission thresholds** for the shorter game (the ≥14-Prestige, 5-vendor, and grand-tour patterns).
@@ -658,18 +719,23 @@ the sim. (Both are also sim-tunable — the CD can defer either to "let the sim 
   vendors) — but two things around it moved that `bg-theme` should check: **(1)** the **two-Act day-clock +
   Code Red** end-game (does the "afternoon crawl → night market → last train" arc read on the north star,
   and is "Code Red" warm-not-menacing?); **(2)** the **五-character re-cast** (do 里長伯 & 大哥 stay
-  rail-safe next to the "Bribe" keyword — the tied-#1 consultant flags?).
+  rail-safe next to the "Bribe" keyword — the tied-#1 consultant flags?); **(3)** the **★ Star / accolade**
+  value swing — do Michelin/Bib-Gourmand/competition nods read as **warm celebration** (this beloved stall
+  got its due), and stay real/secular with dish names intact? (light consultant note.)
 - **`bg-elegance` check:** teach-weight **down** to ~2.4–2.5 (both v4 trims spent: Coverage→mission, 3→2
   Acts, Rep→pure end-VP). Keyword count down to ~11 (Coverage dropped). Guard the rulebook word count.
 - **`bg-access` / `bg-infodesign`:** unchanged component reads from v4 (Buzz piled on vendor cards; the
   day-clock is a single track with two printed marks — simpler than three act thresholds). Keep dual-coding.
 - **`bg-developer` (AFTER CD sign-off — not yet):** re-tier the 25 vendors into **Stall / Eatery / Marquee
-  types** and build the **two Act decks** (Stalls-top + Eateries-beneath = Act I; Marquee = Act II);
-  **remove the Coverage scoring track** (board + player-aid) and the Coverage tick from Bribe; print the
-  **day-clock with dusk + last-train marks** in place of the 3-act track; bake the **five v5 characters**
-  (里長伯 / 媽寶 = KEPT kits re-lored; 網紅 unchanged; **大胃王** keep-all-3 + the chosen flaw; **大哥**
-  the chosen threshold + flaw); size the **Buzz supply** (~24 @2p); rebuild `events.csv` (hazard-leaning,
-  in-deck); re-tune mission thresholds for the shorter game.
+  types** and build the **two Act decks** (Stalls-top + Eateries-beneath = Act I; Marquee = Act II); build
+  the **value curve** — Stall 1 / Eatery 3 / Marquee 5–6 with **2–3 apex "Legendary" Marquee at 7–8 marked
+  with a printed ★** (real Michelin/Bib-Gourmand/competition accolades, dish names intact); add **~4 ★ Star
+  tokens** + the **"vendor gets hot" boon event(s)** (摘星了／得獎了／爆紅) to `events.csv`; **remove the
+  Coverage scoring track** (board + player-aid) and the Coverage tick from Bribe; print the **day-clock with
+  dusk + last-train marks** in place of the 3-act track; bake the **five v5 characters** (里長伯 / 媽寶 =
+  KEPT kits re-lored; 網紅 unchanged; **大胃王** keep-all-3 + the chosen flaw; **大哥** the chosen threshold
+  + flaw); size the **Buzz supply** (~24 @2p); rebuild `events.csv` (hazard-leaning, in-deck); re-tune
+  mission thresholds for the shorter game.
 - **`bg-playtest` (GATED — DO NOT run until the CD signs off):** rework `sim/travel_agents.py` to model the
   **two-Act day-clock**, the **v5 characters** (esp. 大哥's threshold + 大胃王's hazard flaw), and the
   **mission-only breadth**; then run the three probes, **leading with Riskiest #1 (the Buzz fight, incl.
