@@ -17,7 +17,8 @@ likely **Discovery + Fellowship + Challenge**.)
 
 ## Creative identity (concept · theme · tone · look & feel)
 - **North star:** *(to be set with `bg-theme`)* — a warm, funny "eat your way across Taiwan" adventure.
-- **Tone/vibe:** lighthearted, playful, adventurous; quirky secret-agent wink optional (not mandatory).
+- **Tone/vibe:** lighthearted, playful, adventurous; the quirky **secret-agent wink is now first-class**
+  — a present, rule-earning layer (kept warm/comedic), not optional flavour (Creative Director, 2026-08-06).
 - **Details:** see `identity.md`.
 
 ## Positioning

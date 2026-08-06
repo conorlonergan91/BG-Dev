@@ -18,10 +18,14 @@ that night market?*
 
 ## Concept & premise
 A lighthearted travel-and-food game set in **Taiwan**. You're a food-obsessed "travel agent" on a
-gleefully low-stakes "mission" — really just: eat the best things, ride the island, out-adventure your
-friends. The comedy is **warm and celebratory** of Taiwanese food culture — done *with*, never *at*. The
-secret-agent framing is a **wink** (mission-dossier flavour, code-name gags), not a spy thriller — and
-in the base game it is **flavour only** (the load-bearing hidden-mission version is a held expansion).
+gleefully low-stakes **secret mission** — eat the best things, ride the island, out-adventure your
+rivals. The comedy is **warm and celebratory** of Taiwanese food culture — done *with*, never *at*. The
+secret-agent framing stays a **warm comedic wink** (trench-coat-over-a-Hawaiian-shirt, mission-dossier
+voice, code-name gags), never a spy thriller — **but it is a first-class part of the game, not just
+paint.** Per the **Creative Director (2026-08-06)**, the agent layer is deliberately **leaned into**: the
+earlier draft read as a generic "food + map" game *because* the agent gag had been demoted to flavour, so
+the fix is to make the mission fantasy **earn real rules in the base** (covert "Missions" / secret
+objectives, a light touch of hidden information) — kept small enough to hold the ~1.8 weight.
 
 ## Target aesthetics (the kinds of fun) — **locked: 3**
 1. **Discovery** *(lead)* — uncovering the island: which stall, which region, what's around the next
@@ -45,14 +49,18 @@ genuinely, ridiculously obsessed with Taiwan showing you around.
   locals are right." Punch at yourself and the gag; never at the place.
 - **The one test:** *would a Taiwanese player laugh **with** this, or feel it laughs **at** their home?*
   If a joke only works because you find Taiwan itself strange/foreign, cut it.
-- **Keeping the wink a wink:** the spy layer lives in *register only* — a trench coat over a Hawaiian
-  shirt, "Operation: Beef Noodle," a mission-dossier rulebook voice. No grit, no real espionage, no
-  cataloguing/extracting gaze (see sensitivity pass).
+- **Keeping the wink warm (even as it earns rules):** leaning into the agent layer means giving the gag
+  *real rules*, **not** adding grit. The register stays pure comedy — a trench coat over a Hawaiian shirt,
+  "Operation: Beef Noodle," a mission-dossier rulebook voice. No real espionage, no menace, and above all
+  **no cataloguing/extracting "outsider harvests the exotic East" gaze** (see sensitivity pass) — the
+  spy fantasy is a *silly holiday game*, not a heist.
 
 ## Restraint rung — **Evocative theme** (studio sweet spot)
 A felt world you could describe in a sentence; **light-to-no narrative**. The *setting* does the heavy
-lifting, humour is the seasoning, the agent gag is dressing. We are deliberately **not** climbing to
-"light narrative / deep lore" — that's the held expansion's job, not the base game's.
+lifting; humour is the seasoning. Note the distinction now that the agent layer is being leaned into:
+**leaning in mechanically ≠ climbing the lore ladder.** The mission fantasy earns *rules* (light
+hidden-info Missions), but there is still **no plot to track and no deep lore** — we hold firmly at
+evocative theme. More agent *gameplay*, not more agent *story*.
 
 ## Story / world / lore
 **Light by design — and staying that way.** There is no plot to keep straight. The "mission" is comedic
@@ -64,10 +72,13 @@ correct answer for this rung.
 fiction.)*
 - **collect dishes = eating** · **build routes / ride the rail = travelling** · **the "log" = your trip**
   — these read as inevitable, good.
-- **Watch:** the **agent/mission** layer must earn a rule or it's just paint. In the base it is
-  *honestly* light dressing (a themed name for objective cards) — that is fine, **as long as we're
-  honest about it and don't pretend it's load-bearing.** The moment a mechanic makes the "mission" gag
-  do real work (hidden info, bluff), that's the expansion — log the re-theme then.
+- **The agent layer now earns rules (Creative Director's call, 2026-08-06).** It is no longer
+  honest-to-demote dressing — the base game should make the *secret-mission* fantasy do mechanical work.
+  Most natural fit: **hidden objectives / secret "Assignments"** (score if you pull it off), possibly a
+  dash of covert selection or a small bluff, so "I'm a food spy on a mission" is something you *do*, not
+  just read. Keep it to **one clean hidden-info hook** (~1.8), not a deduction engine. **→ design driver
+  for `bg-explore` / `bg-ideation`**; and the former "held hidden-mission expansion" now moves at least
+  partly into the base (**→ `bg-architect` re-scopes**).
 - **Re-skin test:** if the whole game renames to any other food-travel setting with zero loss, the
   *place* (Taiwan) isn't doing work. It should: dish/region specifics should shape which sets and routes
   exist. Push design toward Taiwan-specific structure, not generic "food + map."
@@ -109,18 +120,13 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   shipped).
 
 ## Naming & voice
-- **Working title:** "Travel Agents: Taiwan" — **flagged for a decision** (see the coherence note
-  below). The travel/secret-agent pun is series-ready but **foregrounds the espionage layer we
-  deliberately demoted to flavour** — a real tension.
-- **Directions on the table** (all → `bg-publishing` for trademark/clearance before commissioning art):
-  1. **Travel Agents: Taiwan** *(incumbent)* — max series-generality ("…: Japan", "…: Thailand"); but
-     "Travel Agents" is generic/booking-site-ish and over-promises the agent gag.
-  2. **Operation: Night Market** *(bg-theme lead)* — keeps the mission gag as an explicit *wink*
-     ("Operation" = playful), while the title's real promise is the **market & food**; series-ready as
-     "Operation: <place>". Threads the needle.
-  3. **Night Market** *(warmest tonal fit)* — line-brand foregrounding the north-star image
-     ("Night Market: Taiwan"); agent gag lives only inside the box. Weakest series-generality (not every
-     country is night-market-centric) and a generic, crowded mark.
+- **Title — LOCKED: "Travel Agents: Taiwan"** (Creative Director, 2026-08-06). The travel/secret-agent
+  pun is kept **and doubled down on**: the cure for "generic" isn't a different name, it's making the
+  agent layer *real* (see the resonance section). Series-ready as **"Travel Agents: <place>"**.
+  **→ `bg-publishing`** for trademark/clearance (the mark "Travel Agents" is descriptive/crowded — clear
+  it, and lean on the distinctive full-lockup + logo) before commissioning art.
+  - *Rejected: "Operation: Night Market" and "Night Market: Taiwan" — both **demote** the agent gag the
+    Creative Director explicitly wants to foreground.*
 - **Component/keyword register (pick ONE, hold it):** playful travel-guide + light dossier garnish —
   objectives = **Missions/Assignments**, the trip = your **Itinerary**, scoring = the **Traveller's
   Log**, places visited = **Stamps**. Read them aloud together; kill any that clash.
@@ -160,11 +166,13 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   `bg-research` from Taiwanese sources.
 
 ## Locked vs fluid
-- **Locked:** setting = Taiwan; **tone** = the over-enthusiastic-travel-buddy register above;
-  **aesthetics** = Discovery + Fellowship + Challenge; **rung** = evocative theme; agent framing =
-  flavour-only in base; human-illustrated art; the sensitivity guardrails above.
-- **Fluid:** the exact **name** (decision below); the mechanism spine (→ resonance revisit); the suit
-  set (food categories vs regions) and final palette hues; whether 2p duel or 3–4 race is the true home.
+- **Locked:** **title = Travel Agents: Taiwan**; setting = Taiwan; **tone** = the
+  over-enthusiastic-travel-buddy register above; **aesthetics** = Discovery + Fellowship + Challenge;
+  **rung** = evocative theme; **agent framing = a present, mechanically-earning layer** (kept
+  warm/comedic — CD call); human-illustrated art; the sensitivity guardrails above.
+- **Fluid:** the mechanism spine and **exactly how the agent layer earns rules** (→ `bg-explore`); the
+  suit set (food categories vs regions) and final palette hues; whether the 2p duel or the 3–4 race is
+  the true home.
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
@@ -176,3 +184,9 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   language. Ran the **sensitivity pass → REAL FLAG** (Taiwan is a real, politically-sensitive place):
   paid Taiwanese consultant warranted before art/print. Surfaced the **title tension** (the "Agents" pun
   foregrounds the demoted espionage layer) as a decision for the Creative Director.
+- 2026-08-06 (Creative Director) — **Lean into the agent.** Title **locked = Travel Agents: Taiwan**, and
+  the secret-agent layer is **promoted from flavour-only to a first-class, rule-earning layer** in the
+  base (kept warm/comedic). Why: the current draft felt generic *because* the agent gag was demoted —
+  the personality of the game *is* the food-spy pun, so make it do work rather than renaming around it.
+  Design driver handed to `bg-explore` / `bg-ideation` (find the one light hidden-mission hook) and
+  `bg-architect` (re-scope: hidden-mission content moves toward the base, not a held expansion).
