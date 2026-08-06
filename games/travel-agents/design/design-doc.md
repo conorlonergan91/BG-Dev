@@ -1,820 +1,672 @@
-# Travel Agents: Taiwan — Design Doc (v3.1 · the vendor-courting engine)
+# Travel Agents: Taiwan — Design Doc (v4 · the Buzz-majority / Acts rework)
 
 Deeper design detail than the game bible. Owned by `bg-design`; keep the bible's summary in sync.
-**v3 = the v2.1 vendor-courting engine (LOCKED direction, 2026-08-06).** Slug `travel-agents`.
+**v4 = a substantial CD-directed rework of the v3.1 vendor-courting engine** (decision-log TOP entry,
+2026-08-06). Slug `travel-agents`. Working keyword **"Bribe"** replaces **Court** throughout — `bg-theme`
+owns the final name (must stay cheeky-warm, not corrupt). Where this doc says *Bribe / Promote / Act /
+Lunch-Box Granny*, treat them as working labels the parallel `bg-theme` pass will finalize.
 
-> **v3.1 (2026-08-06) — two playtest-driven changes, engine unchanged.** Both from the CD after the
-> bg-developer imbalance flag + the first feel-reads:
-> 1. **Movement rebalance (Change 1).** The locked real-dish recipes made ingredient demand lopsided —
->    **pork named on 10 vendors, rice 7, but pearls / oysters / milkfish on exactly 1 each** — so
->    Central/South barely bit, their discount ramps were starved, and a **stay-home-North line** loomed.
->    v3.1 re-costs the vendors to a **target demand distribution** (below) so **every region is a
->    meaningful sourcing destination** and players **must travel** to source across the island.
->    `bg-developer` re-costs `vendors.csv` (and flattens `ingredients.csv` supply) to this spec. **Zero
->    new rules** — pure re-costing of existing components.
-> 2. **The Poach (Change 2) — a new *conditional* same-location action.** When both agents are in the
->    **same region**, on your turn you may **Poach**: take 1 random specialty from the rival's Larder,
->    paying **−1 Reputation**. A cheeky agent-vs-agent swipe (never a vendor or place), a real
->    risk-reward, and a reason to **track the rival's position** — synergising with Change 1 (more travel
->    → more encounters).
->
-> Everything else in v3 stands: the recipes-by-region engine, the Hot-List→Vendor-Board race, the Buzz
-> brake, the hybrid tracks, the 5 characters. Full detail: *Movement rebalance* and *The Poach* sections.
-Evolves v2 ("Rivals on a Living Island"): the **recipes-by-region** sourcing engine, the **public rival
-race**, the **secret +7 signature mission**, the **live VP tracker**, and **Extract** all carry over.
-What changes is the **scoring beat and the depth**: you no longer *Plate a dish* (a chef's verb — off
-identity). You **court a Vendor to secure their exclusive blessing** on your tour, paying **two inputs**
-(fresh **ingredients** + **Buzz**); each secured vendor is an **engine piece** feeding **several scoring
-vectors**. This is the CD's "past collection, into an engine" pivot (Splendor Duel / Duel for
-Middle-earth / Arnak band).
+> **The v4 spine (what makes it *this* rework):** the private Buzz currency becomes a **committed,
+> public, contested majority placed ON each vendor** (Arcs-Court-like) — you must be *on-site* to pile
+> Buzz on a prize vendor, both agents can pile onto the same one, and you only **win it by out-hyping
+> your rival by ≥2 while holding its ingredients**. The market becomes a **face-down push-your-luck deck**
+> (draw 3, keep 2; hazards fire), the linear Season counter becomes **escalating Acts** (Stalls → Eateries
+> → Marquee — vendors get harder as the game goes on), and events lean **hazard-heavy** inside the market
+> decks. **Extract and Poach are cut.** The recipes-by-region ingredient engine, the discount ramp, the
+> three scoring vectors + secret mission, and the 5 characters (Conductor re-themed to a **lunch-box
+> granny**) all **carry over**.
 
-Primary brief: `design/explore-v2.1-engine.md` (the four adopted forks). Sensitivity rails bind
-throughout (`identity.md` §9): securing exclusive rights reads as **a vendor granting their blessing to
-the agent they like best**, never an agent monopolising or extracting a place.
+Sensitivity rails bind throughout (`identity.md` §Sensitivity): winning a vendor reads as **the vendor
+choosing the agent who hyped them best** — never an agent seizing, cornering, or corrupting a place.
+"Bribe" is a **comedic** slip-the-auntie-a-little-extra-buzz caper, not real corruption (a `bg-theme`
+naming/tone flag — below).
 
-> **One-line frame:** two rival travel agents race to build Taiwan's best food **tour** — source real
-> regional ingredients, generate **Buzz**, and spend both to **win over the island's vendors** (each an
-> engine piece that makes the next courting cheaper), climbing **Prestige**, **Reputation** and
-> **Region-Coverage** toward the hidden **signature tour**. Most impressive tour is **Top Agent**.
+> **One-line frame:** two rival travel agents race across Taiwan through **three escalating Acts** —
+> source real regional ingredients from face-down region **markets** (push-your-luck: a typhoon may be the
+> next card), and pile **Buzz** onto the island's vendors to **win them over** (you must be on-site, and
+> you must out-hype your rival). Each vendor won is an engine piece (a compounding ingredient discount)
+> climbing **Prestige**, **Reputation** and **Coverage** toward a hidden **signature tour**. Best tour is
+> **Top Agent**.
 
 ---
 
-## What changed from v2 (the engine pivot — honest ledger for `bg-elegance`)
+## What changed from v3.1 (the honest ledger for `bg-elegance`)
 
-This is a **redirect of the scoring beat + a deliberate, CD-sanctioned depth increase**, not a pile-on.
+This is a **real systems rework**, not a re-cost. Several changes interlock. Honest ± ledger:
 
 | Cut / banked (−) | Added / spent (+) |
 |---|---|
-| **Plate a Dish** (spend recipe → VP) | **Court a Vendor** (spend **ingredients + Buzz** → secure it) — the two-input engine beat |
-| **Briefs** deck (whole subsystem + keyword) | **Buzz** — the second, fungible currency + **Promote** action (re-homes the Brief's flexible-resource job) |
-| **v2 events queue** (ACTIVE/NEXT slots + Season-fire machinery) | **Events salted into the Market**, firing **on refill** (fewer moving parts than the queue) |
-| Hot-List as a *separate* board | **merged INTO the Vendor Board** — the public race *is* courting vendors |
-| Single flat VP total | **Compounding discount engine** + **Reputation track** + **Region-Coverage** — the multi-vector depth |
-| Symmetric players | **5 Agent Characters** (1 ability + 1 flaw each) |
+| **Private Buzz currency** + the passive "undiscountable-Buzz tax" brake | **Buzz-majority on vendors** — committed, public, region-gated, contested (the headline spend; the new interactive brake) |
+| **Stock Up** (take 2 from a face-up Market) | **Visit the Local Market** — draw 3 / keep 2 from a face-down region **deck**, hazards fire (the push-your-luck spine) |
+| "**pantry available anywhere**" + the pantry ingredient type | **Convenience Store** — a separate action: top card of ANY region's deck, blind (the flexible valve) |
+| **Extract** action (player end-trigger) | **Acts** — the game advances/ends by act conditions; **board escalates** (Stalls → Eateries → Marquee) |
+| **The 16-Season linear counter** | (folded into the Act-advance condition) |
+| **The Poach** (conditional steal) | (cut — the Buzz-majority contest *is* the co-location interaction now) |
+| **Event tiles** salted in a finite face-up supply, boon-skewed 60/40 | **Events as cards inside the market decks**, **hazard-leaning ~55–60%** (fire when you Visit) |
+| **Retired Conductor** character | **Lunch-Box Granny** (draw the *leaving* region on Travel) |
 
-**Honest weight call:** this lands around **~2.3–2.4** (Splendor Duel ~2.3, 7WD/LOTR-Duel ~2.4, Arnak
-~2.7) — squarely in the raised band (`complexity-budget.json`: aim 2.2, ceiling 2.5). The two-input
-economy + the discount ramp + two real tracks are the deliberate spend; cutting Briefs and the v2 events
-queue, and merging Hot-List into the Board, bank the weight so it does **not** drift to the ceiling.
-Trim order held in reserve (see *Complexity budget*).
+**Honest weight call (stated up front, expanded in *Complexity budget*):** v4 is a **genuine weight
+increase**. Pre-trim I estimate **~2.5–2.6 — at or slightly over the 2.5 ceiling** — driven almost
+entirely by the **Buzz-majority system** (the CD's headline ask). I bank what I can (Extract cut, Poach
+cut, pantry folded, Season→Acts, event tiles→market cards, **component types 7→~6**). To hold **≤2.5** I
+recommend **one further trim** (Coverage → mission-only). If the CD wants to keep every track, this needs a
+**conscious ceiling raise to ~2.6** — defensible next to Arcs (~3.0) / Splendor Duel+ (~2.3–2.5).
+`bg-elegance` guards; see the decision set.
 
 ---
 
 ## Design goals
 
-- **Target weight ~2.2–2.4, ceiling 2.5.** A **tight two-player engine** in the Splendor Duel / LOTR
-  Duel mould — NOT a heavy euro. Every rule earns its place; `bg-elegance` guards the ledger.
-- **2-player first.** The duel is the design home; 3–4p is a scaling delta (see *Player counts*). The
-  sharpest balance case — a two-person race for the same vendor and the same ramp — is what we design and
-  sim against.
-- **Aesthetics (locked, `identity.md`):** **Discovery (lead)** — the Market, the Vendor Board and the
-  events reveal and remake the island; **Fellowship** — warm rivalry over the shared Board + shared event
-  drama; **Challenge** — the routing + two-input engine puzzle (kept tight, ~2.3, not a heavy optimiser).
-- **The meaningful decision every turn:** *do I source the specialty a vendor needs (and race the rival
-  to the Market before the last one's gone), bank Buzz, or spend both to court now — and which vector does
-  this vendor push me up?* No forced move: Travel always arrives with an ingredient; Promote always yields
-  Buzz; the Board always offers several affordable-soon vendors.
-- **Taiwan does real work** (unchanged core strength): the region↔ingredient web is real food geography —
-  rename the setting and the recipes break. Dishes/vendors named Tâi-lô + 繁體, never mangled.
-- **Design the two make-or-break risks out** (see *Interaction & tension* and *Riskiest assumptions*):
-  **(a) no dominant track or opening**, **(b) no economy runaway** past the end-clock.
+- **A tight two-player engine with a real *fight* at its centre.** v3.1's interaction was mostly "race to
+  pay first"; v4's Buzz-majority makes each prize vendor a **public, escalating, on-site tug-of-war** — the
+  Arcs-Court tension the CD asked for, in a lighter frame.
+- **Target weight ~2.4–2.5, ceiling 2.5 (pending the raise decision).** Depth from the Buzz contest +
+  push-your-luck market + Acts; complexity banked by cutting Extract/Poach/pantry.
+- **2-player first.** The duel is the design home; the Buzz-majority is sharpest as a two-person
+  tug-of-war. 3–4p is a scaling delta (majority = ≥2 over the *highest* rival).
+- **Aesthetics (locked, `identity.md`):** **Discovery (lead)** — face-down markets and escalating acts
+  keep revealing the island; **Fellowship** — the shared, comedic fight over a prize vendor and the market
+  drama; **Challenge** — the routing + two-input + when-do-I-commit puzzle.
+- **The meaningful decision every turn:** *do I dig the market for the specialty I need (and risk a
+  typhoon), grab a safe blind card at the convenience store, travel on, pile more Buzz onto the vendor I'm
+  fighting for — or close the Bribe now before my rival out-hypes me?* No forced move.
+- **Taiwan does real work** (unchanged): the region↔ingredient web is real food geography — rename the
+  setting and the recipes break. Dishes named Tâi-lô + 繁體, never mangled.
+- **Design the make-or-break risks out:** **(a)** the Buzz contest is fun/tense, not a swingy
+  slap-fight or a "never commit early, always snipe" degenerate; **(b)** no economy runaway past the acts;
+  **(c)** the push-your-luck market is spicy, not punishing; **(d)** movement still spreads across regions.
 
 ---
 
 ## Core loop (detailed)
 
-A turn is **one action**; short turns, low downtime (crucial at 2p). Each cycle you optimise: *which
-input am I short — the region-specific ingredients a target vendor needs, or Buzz — and is now the moment
-to court before my rival locks that vendor (and its discount icon) away?*
+A turn is **one action**; short turns, low downtime. Each cycle you weigh three questions: *which input am
+I short — the region-specific ingredients a vendor needs, or the Buzz majority on it? am I on-site to act
+on it? and is now the moment to close before my rival swoops?*
 
-1. **Read the board.** The tiered **Vendor Board** shows the vendors both agents are courting from (each
-   printed with its cost = named ingredients + Buzz, its **region icon**, its **Prestige**, its **Rep**,
-   and its **perk**). Your **secret signature mission** points at a vendor pattern worth **+7**. The
-   face-up region **Markets** show which specialties are available where (and how contested). Your
-   **Prestige** (VP track) and **Reputation** (Rep track) markers show two of your vectors live.
-2. **Take one action** (see *Actions*): **Stock Up**, **Travel**, **Promote**, **Court a Vendor**, or
-   **Extract**.
-3. **Court a Vendor** is the beat that pays. Pay its ingredients **(minus your region discounts)** + its
-   **Buzz** (never discounted). The vendor joins your **tour**, and *all at once* you gain: **Prestige**
-   (VP, live on the track), a **Reputation** bump (marker up), its **engine perk** (usually a permanent
-   region **discount icon** that makes future vendors cheaper — the ramp), and a **Region-Coverage** tick
-   if it's your first vendor in that region. Then **refill** the Board slot from that tier's deck, advance
-   the **Season** end-timer **+1**, and — because the vendor has chosen *you* — the rival is **locked out**
-   of that specific vendor.
-4. **The Market lives.** When you Stock Up and refill the face-up Market, a flipped **Event tile**
-   fires on the spot — a region-thematic festival window, a typhoon reroute, a warm local — boon-skewed,
-   tax-not-destroy. Taking the last of a scarce specialty forces your rival to reroute.
-5. **Decide when to wrap.** **Extract** ("file the finished tour / catch the last train home") triggers
-   the wind-down; or the **Season** timer fills (Rep-top no longer ends the game — see *End-trigger*).
-   Whichever fires first → finish the round + one full round → **reveal missions** → score.
+1. **Read the board.** The **Vendor Board** shows this Act's vendors (each with its ingredient cost, its
+   **region icon**, its **Prestige/Rep/perk**, and **the Buzz both agents have piled on it**). Your secret
+   **signature mission** points at a vendor pattern worth **+7**. The four **region market decks** are
+   face-down (you know each region's two specialties + that hazards lurk). Your **Prestige** and
+   **Reputation** markers show two vectors live; the **Act track** shows how close this act is to turning.
+2. **Take one action** (see *Actions*): **Visit the Local Market**, **Convenience Store**, **Travel**,
+   **Promote**, or **Bribe a Vendor**.
+3. **Sourcing is a gamble now.** *Visit the Local Market* (in your region) flips the top 3 of that region's
+   deck: any **hazard** fires on the spot (a typhoon, a sold-out sign), then you keep up to **2** of the
+   **specialties** you turned up. *Convenience Store* and *Travel* each take a single blind top card
+   (specialty → keep it; event → the shelf was bare, nothing fires).
+4. **Buzz is a public fight.** *Promote* places Buzz from the supply **onto vendor(s) in your current
+   region** — committed, visible, and your rival can pile onto the same vendor. You can only close a
+   **Bribe** on a vendor when you're **in its region**, hold **≥2 more Buzz on it than your rival**, and
+   can **pay its ingredients** (minus your discounts). Winning it clears all its Buzz back to the supply,
+   scores you Prestige + Rep + its perk + a Coverage tick, and **advances the Act** toward its turn.
+5. **Acts escalate and end the game.** When enough vendors have been won this act, the board **sweeps and
+   re-stocks from the next, harder tier** (Stalls → Eateries → Marquee). When the **final Act's** condition
+   is met → finish the round + one full round → **reveal missions** → score. No Extract; the acts pace and
+   end the game.
 
 The loop compounds **legibly and with a brake**: each vendor makes a *class* of future vendors cheaper in
-ingredients, so your courting **rate** climbs — but every vendor still costs **Buzz**, which is never
-discounted and comes one action at a time, so the ramp accelerates the contested half (ingredients) while
-the reliable half (Buzz) stays a fixed per-vendor tax. That Buzz floor is the primary anti-runaway brake
-(see *Economy* and *Interaction & tension*).
+**ingredients** (the ramp) — but every vendor still demands you **win an undiscounted, region-gated,
+contested Buzz majority**, one Promote at a time, on-site. That Buzz fight is the primary anti-runaway
+brake (see *The Buzz-majority system* and *Economy*).
 
 ---
 
 ## Turn / round / phase structure
 
 **Setup (2p shown; deltas in *Player counts & scaling*):**
-- Place the **Taiwan map board** — 4 regions on a ring: **North 北 – Central 中 – South 南 – East 東**;
-  an **HSR** spine links North↔South down the west coast. The board also carries the **Season end-timer**,
-  the **VP (Prestige) track**, the **Reputation track**, the tiered **Vendor Board** (3 rows), and each
-  region's **Market slots**.
-- Build each region's **Market supply**: its specialty ingredient tokens **+ ~2–3 Event tiles** shuffled
-  in; draw to fill that region's face-up Market slots. **Pantry** tokens form an **unlimited** open pile
-  (the convenience store, available anywhere).
-- Build the **Vendor deck**, split by tier (**T1 Stalls / T2 Eateries / T3 Marquee**); shuffle each tier
-  separately and deal the Board rows face-up (2p: **3 per tier**).
-- Form the **Buzz** token pool (open supply).
+- Place the **Taiwan map board** — 4 regions on a ring: **North 北 – Central 中 – South 南 – East 東**; an
+  **HSR** spine links North↔South down the west coast. The board carries the **Act track**, the **VP
+  (Prestige) track**, the **Reputation track**, the **Vendor Board** slots, and a face-down **market deck**
+  zone per region.
+- Build the **four region market decks**: each = its **two specialty ingredient cards** (several copies
+  each) **+ 3–4 event cards** (hazard-leaning), shuffled face-down. (No pantry pile — the Convenience Store
+  replaces it.)
+- Sort the **Vendor deck** into three Act tiers — **Act 1 Stalls / Act 2 Eateries / Act 3 Marquee**;
+  shuffle each. Deal the **Act 1** vendors to fill the Board (2p: **5 slots**). Set the **Act track** to
+  Act 1.
+- Form the **Buzz** supply (open pool; **~24 at 2p** — see *Economy*).
 - Each agent: choose/deal an **Agent Character** (ability + flaw, public); take a pawn (start on opposite
-  regions — one North, one South); place **VP** and **Rep** markers at 0; take an empty tour area. Larder
-  (ingredients) starts empty and sits **face-up** all game. Deal **3 Mission cards, secretly keep 1**
-  (your signature mission, +7), return 2 unseen.
+  regions — one North, one South); place **VP** and **Rep** markers at 0; take an empty tour + Larder area.
+  The Larder (ingredient cards) sits **face-up** all game. Deal **3 Mission cards, secretly keep 1** (your
+  signature mission, +7), return 2 unseen.
 
-**A turn = choose ONE action:** **Stock Up · Travel · Promote · Court a Vendor · Extract** — **plus a
-conditional sixth, Poach**, available only when a rival's pawn shares your region (v3.1; detailed below).
-Then if your Larder (ingredients) exceeds **7**, discard down to 7. Play passes clockwise (the
-Influencer's flaw = goes last; see *Characters*).
+**A turn = choose ONE action:** **Visit the Local Market · Convenience Store · Travel · Promote · Bribe a
+Vendor.** Then if your Larder exceeds **7** ingredients, discard down to 7 (to that region's market
+discard). Play passes clockwise (the Influencer's flaw = goes last; see *Characters*).
 
-**End-trigger (either, whichever first):**
-- A player takes the **Extract** action, **or**
-- The **Season** end-timer reaches its final mark (advances +1 per Court by anyone).
+**End-trigger:** when the **final Act (Act 3)** advance-condition is met (see *Acts & end-game*), **finish
+the current round** (equal turns for all), play **one more full round**, then **reveal signature missions**
+and score. A fair, unswingy wind-down; the extra full round guarantees the trailing player answers the
+trigger. **Reputation-top scores its bonus but does not end the game** (carried from v3.1's sim-fix).
 
-**Reputation-top does NOT end the game** (sim-fix, 2026-08-06): reaching Rep-top scores its **+9** but is
-**not** an end-trigger. Why: with Rep-top ending the game it fired 100% of games at only ~5 courts/player,
-so the Season timer never paced anything and the *engine never ramped* (an engine game whose engine
-doesn't build). Decoupling it lets the Season timer (final mark ~16 courts at 2p) pace the game →
-**~8–9 courts/player, ~23 turns**, the discount ramp fully develops, and track balance tightens
-(sim-verified: Probe-1 leader 54.7% → 51.9%).
-
-Then: **finish the current round** (equal turns for all), play **one more full round**, then **reveal
-signature missions** and score. A fair, unswingy wind-down; the extra full round guarantees the trailing
-player answers the trigger.
-
-Target length: **~40–50 min at 2p**, roughly **18–22 turns per player**.
+Target length: **~40–45 min at 2p**, roughly **22–26 turns per player**, **~7–8 vendors won per player**.
 
 ---
 
 ## Actions
 
-A turn = ONE of five. All are simple (Splendor is essentially *take-tokens / buy-card*; we split "take"
-into ingredients / Buzz / travel because they carry the routing + risk texture the theme needs).
+A turn = ONE of five. Each is simple; the depth is in *when* and *where*.
 
-| Action | Cost | Effect | Notes |
-|--------|------|--------|-------|
-| **Stock Up** | your turn | Take **2 ingredients** from your current region's face-up Market (its **specialties** and/or **pantry**). Then **refill** the Market slots from the region supply — each flipped **Event** fires now (see *Market & Events*). | The ingredient workhorse. Taking the last of a scarce specialty forces the rival to reroute. Take-2 = up to two refill flips = more event exposure (push-your-luck, no extra rule). |
-| **Travel** | your turn | Move your Agent to an **adjacent** region on the ring (HSR: North↔South counts adjacent); on arrival take **1 ingredient** there (and refill/fire as above). | Never a dead turn — you always arrive with something. |
-| **Promote** | your turn | Take **2 Buzz** from the supply (the always-available soft input). | The second currency. Safe, uncontested, never event-risky — the calm axis opposite the contested ingredients. |
-| **Court a Vendor** | your turn + pay cost | Choose a Board vendor; pay its **named ingredients minus your region discounts** (floored at 0) **+ its Buzz (never discounted)**. Gain its **Prestige** (VP live), **Rep** bump, **perk** (usually a region discount icon), and a **Coverage** tick if new region. Refill the Board slot; **Season +1**; the vendor is locked from the rival. | The scoring + engine beat. The one action that advances the end-timer. |
-| **Extract** | your turn | Trigger the end-game wind-down (finish the round + one more full round). Your signature mission stays face-down until scoring. | Push-your-luck tempo: wrap while ahead vs court one more. |
-| **Poach** *(conditional — v3.1)* | your turn **+ −1 Reputation** | **Only if a rival's pawn shares your region.** Take **1 random specialty ingredient** from that rival's Larder into yours (pantry ignored; if they hold no specialties, there's nothing to Poach). Move your **Rep marker down 1** (floored at 0 — no Rep, no Poach). Does **not** refill the Market, fire an event, or advance the Season. | The cheeky same-location swipe. Situational tempo/denial, not a staple — see *The Poach*. |
+| Action | Where | Effect | Notes |
+|--------|-------|--------|-------|
+| **Visit the Local Market** | your current region | Reveal the top **3** cards of this region's market deck. Resolve **any event** revealed immediately (**hazards fire**), discard them. Keep up to **2** of the revealed **specialty** cards (to your Larder); discard the rest. | The ingredient workhorse **and** the push-your-luck spine. More hazards in the deck = more chance a flip both hurts you and eats an ingredient slot. |
+| **Convenience Store** | anywhere | Reveal the **top 1** card of **any one** region's market deck. Specialty → take it. Event → discard it, **nothing fires** ("shelf was picked clean"). | The flexible, reliable-ish valve: sourcing from *any* region without travelling, but only 1 blind card and it can whiff. Replaces the old pantry. |
+| **Travel** | to an adjacent region | Move your Agent to an **adjacent** region (HSR: North↔South counts adjacent); then reveal the **top 1** card of the **arriving** region's deck (specialty → take it; event → whiff, nothing fires). | Never a dead turn — you (usually) arrive with something. *Lunch-Box Granny draws the region she LEFT instead.* |
+| **Promote** | your current region | Place **2 Buzz** from the supply onto **vendor(s) in your current region** (2 on one, or 1 on each of two). Buzz stays on the card, public; the rival may also Buzz the same vendor. | The Buzz-placement action. Region-gated — you can only hype vendors you're standing with. *Influencer places 3; Lunch-Box Granny places 1.* |
+| **Bribe a Vendor** | in the vendor's region | Choose a Board vendor **in your current region** on which you hold **≥2 more Buzz than your rival**; **pay its ingredients** (− your region discounts, floored at 0). Take it to your tour → gain **Prestige** (VP live), a **Rep** bump, its **perk** (usually a region discount icon), and a **Coverage** tick if a new region. **All Buzz on it (yours + rival's) returns to the supply.** Refill the Board slot from the current Act deck; **advance the Act track +1**; the vendor is locked from the rival. | The scoring + engine beat, now gated by **position + majority + ingredients**. The only action that advances the Act. |
 
-**Five core actions + one conditional** (Poach). Every turn has multiple live options with real
-trade-offs (source the contested specialty vs bank safe Buzz vs court-now-and-ramp vs wrap-it — vs, when
-you're nose-to-nose with your rival, swipe the thing they just hauled), under a Market that can hand you a
-festival or a typhoon. No forced/obvious move.
+**Five actions, no conditional sixth.** (Poach is **cut** — see *Interaction*.) Every turn has multiple
+live options with real trade-offs: dig the market (risk), grab a safe blind card, reposition + draw, pile
+Buzz onto a contested prize, or close a Bribe. No forced/obvious move.
+
+**Two rules stated once, to keep the ruleset small:**
+- **Hazards fire only when you Visit the Local Market.** A hazard revealed by *Travel* or the *Convenience
+  Store* (single blind draws) is simply discarded — "that shelf was bare," no ingredient, nothing fires.
+  (Protects the travel engine; makes *Visit* the true push-your-luck.)
+- **Buzz lives only in the supply or ON a vendor.** There is no private Buzz pool. You never "hold" Buzz;
+  you place it, and it is either won-and-cleared or fizzled-and-cleared.
 
 ---
 
-## Components
+## The market decks & events (the push-your-luck sourcing layer)
 
-| Component | Qty | Notes |
-|-----------|-----|-------|
-| **Map board** (Taiwan) | 1 | 4 regions on a ring + HSR spine; carries the **Season end-timer**, the **VP/Prestige track**, the **Reputation track**, the tiered **Vendor Board** (3 rows) and each region's **Market slots**. |
-| **Vendor cards** | ~44–52 | Tiered: **T1 Stalls** (~20), **T2 Eateries** (~16), **T3 Marquee** (~10). Each: cost (named ingredient icons + Buzz), **region icon** (= discount + coverage), **Prestige**, **Rep**, **perk**, name (Tâi-lô + 繁體). *Reuses/renames v2's Dish/Operation card type — the vendor is the old "Dish/Hot-List" merged into one engine card.* |
-| **Mission cards** | ~12–16 | Secret signature patterns (+7). Draw-3-keep-1. Same card stock as vendors; distinct content. |
-| **Ingredient tokens** | ~150 | Region **specialties** (N: beef/pork/**chicken 雞**/**egg 蛋**; C: tea/pearls; S: oysters/milkfish; E: rice/greens) + fungible **pantry** (unlimited). Open supply. |
-| **Buzz tokens** | ~50 | The second currency. Open supply. **New type.** |
-| **Event tiles** | ~10–14 | Region-thematic events salted into the region Market supplies; fire on refill. Secular only. **New type** (was v2's event *cards* + queue — now tiles in the Market, no queue). |
-| **Character mats** | 5 | 1 ability + 1 flaw each (see *Characters*). **New type.** |
-| **Agent pawns + markers** | 4 + 8 | Pawns on the map; VP + Rep markers on their tracks (board bits, not a distinct "type"). |
+- **Four face-down region decks.** Each region's deck = its **two specialty types** (several copies) **+
+  3–4 event cards**, shuffled. You know each region's specialties (printed on the board) and that hazards
+  lurk — you don't know the order. *(This replaces v3.1's telegraphed face-up Market: sourcing is now
+  blind and opted-into — the deliberate variance the CD wants.)*
+- **Visit the Local Market** is the risk/reward: 3 flips, hazards fire, keep 2 specialties. If two of your
+  three flips are events, you keep only 1 (or 0) specialty **and** eat the hazard effects — the genuine
+  push-your-luck. **Convenience Store / Travel** are the low-variance single blind draws (whiff, don't
+  fire).
+- **Events lean hazard (~55–60% hazard / ~40–45% boon across the pooled decks)** — the CD's "cut the boon
+  skew." They stay **warm-comedic** and **tax-not-destroy** (a hazard delays, reroutes, or taxes tempo;
+  it never removes an ingredient you already hold or a whole turn). The boon minority keeps a Visit from
+  being pure dread and preserves the "living island" warmth.
+- **Where events sit:** hazards are **per-region cards in that region's deck** (a typhoon in the coastal
+  South/East decks, plum rains in Central, scooter gridlock in the North). A few **table-wide** events
+  (e.g. a food-blogger frenzy, an island-wide typhoon day) are cards whose *effect* reaches everyone but
+  still live in a region deck and fire when that region is Visited. `bg-developer` rebuilds `events.csv`
+  to this composition (drop the boon skew; re-home tiles into the four decks).
+- **Recycling:** ingredient cards flow deck → Larder → (spent on a Bribe) → that region's discard; when a
+  deck runs dry, reshuffle its discard (fired hazards return too, so the pressure persists). A deck running
+  dry mid-act is a natural scarcity beat.
 
-**Component types ≈ 7** (board / Vendor cards / Mission cards / ingredient tokens / Buzz tokens / Event
-tiles / Character mats) — within the raised cap of **8** (`complexity-budget.json`). New vs v2: **Buzz
-tokens**, **Character mats**, **Event tiles**. Banked vs v2: **Brief cards cut**; the **v2 event
-card-deck + queue** collapse to Event tiles in the Market; **Hot-List** is no longer a separate row (it
-*is* the Vendor Board). Missions reuse vendor card stock. Honest flag to `bg-elegance`/`bg-architect`:
-Buzz + Characters are the real new-type spend — they're the depth the CD asked for.
+**Event starter set (~14; secular, hazard-leaning, warm-comedic; wording via the consultant before lock).**
+Re-uses the v3.1 comedy set, re-weighted. Hazards (the majority): **颱風假 Typhoon Day** (wash + refill the
+coastal decks' next reveals; table-wide catch-up sop), **梅雨 Plum Rains** (your Visit this turn keeps 1
+fewer), **完售 Sold Out** (discard the next specialty in this deck), **機車陣 Scooter Gridlock** (your next
+Travel arrives empty), **客滿 Fully Booked** (shuffle this region's deck — reset the run), plus new
+per-region hazards `bg-developer` fleshes out so every deck carries ~2 hazards. Boons (the minority):
+**芒果季 Mango Season**, **珍奶節 Bubble-Tea Festival**, **臭豆腐大挑戰 Stinky-Tofu Dare** (opt-in
+push-your-luck), **再吃一點啦 The Aunty Insists**, **網紅來了 Food Blogger** (table-wide next-Promote +1
+Buzz). *Reserve knob:* if blind decks feel too swingy at the table, add a **"brewing" telegraph** (the top
+card of each region deck is face-up, so you see the next flip before you Visit) — ~1 rule, restores
+preview agency.
 
-### Ingredients — the region↔ingredient web (retained + extended)
+---
 
-Retained from v2, now the **ingredient input** to courting. **New from the locked North picks**
-(雞排 / 火雞肉飯 / 卡拉雞腿堡 / 蛋餅): **chicken 雞** and **egg 蛋** — both **North** specialties
-(night-market + breakfast-shop identity). North now carries **4** specialties (beef/pork/chicken/egg) vs
-2 elsewhere.
+## The Buzz-majority system (the headline rework)
 
-**Framework rules (systems-level; final list by `bg-developer`):**
-- Every region remains the **sole source of ≥1 ingredient named on cross-region vendors**, so Travel stays
-  motivated — the non-negotiable that keeps the "travel because the food lives there" engine alive.
-- **Watch — North is now the richest region (4 specialties).** Two guards: (1) keep **vendor region-icons
-  balanced across all four regions** regardless of ingredient counts (so North isn't the auto-ramp
-  region); (2) keep enough **cross-region** and **East/South/Central-icon marquee** vendors that the
-  Coverage bonus and the tall line *pull players out of* North. `bg-developer` to keep North from being a
-  stay-home ramp trap.
-- **Pantry is unlimited** (the anti-stuck valve on the hard axis) but still costs an action to gather.
+This is the big new thing. Read it as the Arcs-Court "agents on a card" mechanic, re-skinned to **hype on a
+vendor** and lightened for a 2p duel.
 
-> **Sensitivity (binds — `identity.md` §9):** East specialties draw on **Indigenous** cuisines — generic,
-> respectful labels, consultant before art/print. Han/Hakka/Indigenous/newer-community range across
-> vendors. Taiwan as itself; Traditional characters; Tâi-lô + 繁體, never mangled.
+**The rules, plainly:**
+1. **Buzz is committed, public, and region-gated.** **Promote** places **2 Buzz** from the supply onto one
+   or two vendors **in your current region**. Buzz sits on the vendor card, face-up, for anyone to see.
+   **Both agents may pile Buzz on the same vendor.**
+2. **Winning = ingredients + a ≥2 majority + presence.** To **Bribe** a vendor you must be **in its
+   region**, hold **at least 2 more Buzz on it than your rival**, and **pay its ingredient cost** (− region
+   discounts). The majority is checked at the instant you pay.
+3. **On a win, all Buzz on that vendor clears to the supply** — winner's and loser's alike. The winner's
+   hype "paid off" (spent); the loser's hype "fizzled" (the vendor chose the rival). **Neither player gets
+   Buzz back into a private pool** (there isn't one). The loser lost **only tempo** — the actions they
+   spent promoting — never ingredients or VP. **"Outraced, not robbed"** holds mechanically and
+   thematically (the vendor simply chose the agent who wooed them best).
+4. **Committing early is a risk *and* a weapon.** Every Buzz you place raises the bar a rival must clear to
+   swoop (they need ≥2 over *your* current pile) — so early commitment can price a rival out. But Buzz
+   placed is an action **not** spent sourcing the ingredients you also need — over-invest and you can't pay
+   the Bribe when the moment comes, and a rival with the ingredients ready can force the close.
+5. **No private hoarding, no windfalls.** Because Buzz never enters a private pool and clears on every
+   win, it **recycles** — a modest supply (~24 at 2p) sustains the whole game and keeps every placement a
+   real, scarce choice.
 
-### Movement rebalance (v3.1) — the target demand distribution (`bg-developer` re-costs to this)
+**Why this is the new anti-runaway brake (replacing the undiscountable-Buzz tax).** Every vendor —
+however cheap its ingredients become as your discount ramp grows — still demands that you **win a
+contested, region-gated, undiscounted Buzz majority, one Promote at a time, on-site**. The ramp cheapens
+only the *ingredient* half; the Buzz fight never ramps and can be **actively raised by your rival**. So the
+courting *rate* stays capped at roughly **1 vendor per 2–3 turns** even fully ramped (a Promote-or-two + a
+Bribe + the on-site travel), and a fast/wide leader can't simply buy the board — each win is a fight they
+can be made to overpay for. This is a **stronger, interactive** brake than v3.1's passive tax.
 
-**The problem (bg-developer flagged, CD confirmed).** v3's vendor costs were faithful to real recipes, and
-real Taiwanese food leans hard on a few workhorses — so ingredient **demand** came out lopsided:
+**The escalation question (a real risk to sim).** Two agents can keep piling Buzz on the same vendor,
+each needing ≥2 over the other — a bidding war. Three things cap it: **(a)** you can only *win* with the
+ingredients in hand and while on-site, so the war ends the instant one agent is ready to close;
+**(b)** Buzz supply is finite (~24) — you physically can't over-stack every vendor; **(c)** every Buzz
+placed is an action stolen from sourcing, so a runaway bidder starves their own ingredient half.
+Nonetheless — *is the war fun or a slap-fight?* is **Riskiest Assumption #1** (below).
 
-| | pork | rice | chicken | tea | egg | beef | greens | pearls | oysters | milkfish |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| **v3 vendors naming it** | **10** | **7** | 4 | 3 | 3 | 3 | 2 | **1** | **1** | **1** |
+**Reconciliation with Poach.** In v3.1 Poach was the co-location swipe. In v4, **co-location is the centre
+of the game** (both agents converge on contested regions to fight over vendors), so a separate "steal an
+ingredient because you share a region" action would (a) fire constantly and tip griefy, and (b) duplicate
+the interaction the Buzz contest already delivers, far richer. **Poach is cut.** (Banks ~0.1 weight; see
+the decision set if the CD wants it kept, re-scoped.)
 
-Rolled up by **region of sourcing** (which region you must physically stand in to take that specialty),
-the v3 deck demanded: **North ~20 tokens · East ~9 · Central ~5 · South ~2.** South is a ghost town — two
-tokens' worth of pull across the *entire* deck. So Central/South specialties barely bite, **each region's
-discount ramp is only fed if that region's vendors actually name that region's specialties** (they didn't —
-火雞肉飯/S named chicken+rice, 爌肉飯/C named pork+rice, 牛肉湯/S named beef), and a **stay-home North (±East)
-line** can court most of the deck without ever routing South or Central. The travel engine doesn't bite.
+---
 
-**Why it happened (and the license to fix it).** The costs were pinned to *literal recipes*. The CD grants
-license to **deviate from strict recipe faithfulness** where movement needs it — read a vendor's cost as
-*"what it takes to feature them on your tour"* (the ingredients you supply **+ the regional connections you
-bring**), **not** a literal ingredient list. Hard rail (binds): **real dishes are never mangled** — keep
-the *anchor* ingredient true to the dish; use the CD's framing only for the *cross-region link* token, and
-route any deviation through the consultant. Don't put oysters "in" a dish that has none — frame the South
-token as *the Southern leg / connection you arrange to seat this vendor on the tour.*
+## Vendors — the engine cards (tiered by Act)
 
-**The four re-costing principles (`bg-developer` applies across all 25 vendors):**
+A **Vendor** is a stall/cook who agrees to feature on your tour once you've wooed them (ingredients +
+winning Buzz majority). Three tiers, now mapped to the **three Acts** so the board escalates over the game:
 
-1. **Anchor in-region.** Every vendor names **≥1 specialty from its own icon-region.** This is the
-   structural fix: with icon balance **N7·C6·S6·E6**, anchoring alone demands each region's specialties
-   ~6–7× (once per same-region vendor) and — crucially — **feeds that region's discount ramp** (holding
-   South icons finally discounts something South vendors actually cost). T1 stalls = 1 in-region specialty
-   + pantry; T2/T3 = ≥1 in-region + often a cross-link.
-2. **Cross-region links on ~40% of vendors (concentrated in T2/T3).** Name **1 ingredient from a
-   *different* region** than the icon, to force a trip — but **spread the links evenly** so each region is
-   both a source-of-links and a receiver, instead of every cross-link defaulting to North-pork / East-rice.
-   This is what produces actual *inter-region* travel (anchoring alone could let a player camp one region
-   and court locally — the links are the load-bearing anti-camp lever; see *Riskiest assumptions*).
-3. **Cap the workhorses.** **pork ≤5 vendors** (from 10), **rice ≤5** (from 7). Redistribute the freed
-   demand onto **oysters / milkfish / pearls / greens.**
-4. **Per-specialty floor: every specialty named on ≥3 vendors** — with two deliberate premium/supporting
-   exceptions, **beef 2** (marquee-held) and **egg 2** (a minor North breakfast add; see the East-fix note).
-   Kills the dead tokens (pearls/oysters/milkfish were on 1). No region's specialty is a museum piece.
+| Act / Tier | ~Count in deck | Ingredient cost | Buzz to win (uncontested) | Prestige (VP) | Rep | Perk |
+|------|-------:|-----------------|--------------:|--------------:|----:|------|
+| **Act 1 · Stalls** | ~11 | **1–2** (in-region) | ≥2 | **1** | **+1** | its **region discount icon** (the base ramp) |
+| **Act 2 · Eateries** | ~8 | **2–3** (1 cross-region) | ≥2 | **3** | **+2** | region icon **+ one** of {Promote +1 Buzz · once/turn treat 1 specialty as any specialty when Bribing · +1 Rep on each future Bribe} |
+| **Act 3 · Marquee** | ~6 | **3–4** (2–3 regions) | ≥2 (but heavily contested) | **5–6** | **+2/+3** | a **strong** perk: a **wild region icon** · **or** Buzz-reach (place Buzz on adjacent-region vendors too) · **or** counts as **2** region icons · **or** +2 Rep on Bribing |
 
-**Target demand distribution (the number `bg-developer` re-costs toward — a guide, ±1 is fine):**
+> **"Buzz to win ≥2" is the *floor* (uncontested).** The real cost of a marquee is that your rival is
+> fighting you for it — the ≥2 majority against *their* pile is what makes late vendors hard, not a bigger
+> printed number. This is why the board escalates on **contest intensity + ingredient/region breadth +
+> Prestige**, not on ever-larger Buzz numbers (which would just drain the supply).
 
-| Specialty | Region | v3 (vendors) | **v3.1 target** |
-|---|---|---:|---:|
-| pork | N | 10 | **4–5** |
-| chicken | N | 4 | **3–4** |
-| beef | N | 3 | **2–3** (marquee-held) |
-| egg | N | 3 | **2–3** |
-| tea | C | 3 | **5–6** |
-| pearls | C | 1 | **3** |
-| oysters | S | 1 | **4** |
-| milkfish | S | 1 | **3–4** |
-| rice | E | 7 | **4–5** |
-| greens | E | 2 | **3–4** |
+**The discount ramp (kept, unchanged in spirit).** Each secured vendor carries a **region icon** (N/C/S/E,
+or wild). Holding *k* vendors with the X-icon reduces the **X-region ingredient** portion of any future
+vendor by *k* (floored at 0). Early vendors are dear; each one signed makes a *class* of future vendors
+cheaper in ingredients. **Buzz is never reduced** — the brake.
 
-→ **regional sourcing demand:** North ~28–30% · Central ~22–24% · South ~22–24% · East ~22–24% (North
-stays modestly richest — it has 4 specialties — but no region is starved; South rises from ~6% to ~23%,
-the headline fix).
+**Re-cost note for `bg-developer` (pantry removed).** v3.1 costs used `pantry` filler (e.g. T1 = "1
+specialty + pantry"). **Pantry is cut** — re-cost the 25 vendors to **named specialties only**, preserving
+the v3.1 *movement rebalance* (anchor every vendor in its own icon-region; ~40% carry a cross-region link;
+cap pork ≤5 / rice ≤5; every specialty on ≥3 vendors). T1 = **1 in-region specialty** (Buzz ≥2); some T1 =
+**2 in-region**. Keep every real dish real (anchor true; cross-link = "the regional leg you bring";
+consultant-checked). Re-home the two orphaned **wild_pantry** perks (V08b 肉圓, V10 凍頂烏龍) to the new
+**wild_specialty** perk (once/turn treat 1 specialty as any). Re-tier the deck into the three Act decks
+(the existing T1/T2/T3 split maps cleanly to Act 1/2/3).
 
-**Sim-confirmed East fix (v3.1, baked 2026-08-06).** The first re-cost left **East sourcing at ~15.6%** —
-just under the ~18% floor — because East's cheap T1 stalls were `1 East + 1 pantry`, so bots
-pantry-substituted the East token away, and East is a leaf on the ring. Four authentic edits (sim-verified
-to lift East to **17.9%**, N/C/S spread held, ramp-line neutral, camp line still 0%) are now baked into
-`vendors.csv`:
-- **V12 蚵仔煎 (Oyster Omelette, icon S):** `oysters;egg;pantry` → **`oysters;greens;pantry`** — its real
-  茼蒿 crown-daisy greens. Keeps the South oyster anchor; converts a 6th North-bound cross-link into an
-  **East import**.
-- **V21 竹筒飯 / V23 麻糬 (rice, icon E):** `rice;pantry` → **`rice;rice`**; **V22 山蘇/龍鬚菜 (greens, icon
-  E):** `greens;pantry` → **`greens;greens`** — de-pantrying the East T1 stalls to a pure 2-East cost, the
-  lever that actually moves the needle. All three are honest single-ingredient dishes, and 2-of-one-region
-  matches the T1 "cost 2 (1 region)" spec better than 1+pantry.
-- **Egg knock-on — decision: accept egg @ 2 vendors** (still on V15 蛋餅 + V16 卡拉雞腿堡). Egg joins **beef**
-  as a deliberate sub-floor North specialty: it is a minor breakfast-shop add, not a headline regional
-  specialty, and restoring a 3rd egg would add demand to **North — the region v3.1 is deliberately *not*
-  over-feeding** (North is already the richest). This is exactly the deck the sim confirmed at East 17.9%.
-  Knock-on the other way: **greens rises to 5 vendors** (V12 adds it).
-- **Content note (→ consultant / table watch):** this leaves the three East T1s at pure 2-East while N/C/S
-  T1s stay 1-spec + pantry — a mild value asymmetry (East T1s slightly harder). It did **not** hurt Probe 1
-  or the coverage line in sim, but the *feel* (are East stalls now slightly unrewarding?) is a table
-  question.
+> **Sensitivity (binds — `identity.md`):** East specialties draw on **Indigenous** cuisines — generic,
+> respectful labels, consultant before art/print. Taiwan as itself; Traditional characters; Tâi-lô + 繁體,
+> never mangled. The "Bribe" keyword must read as **warm comedy** (hype + goodwill), never corruption —
+> a `bg-theme` flag.
 
-5. **Marquees stay single-region but Buzz-heavy.** Keep 牛肉麵 (N, beef), 珍珠奶茶 (C, tea+pearls), 小籠包
-   (N, pork), 虱目魚粥 (S, milkfish) iconic and single-region — they are **not** a stay-home trap because
-   they're **few**, their **Buzz is undiscountable** (a fixed tax that doesn't ramp), and Coverage + the
-   spread of anchored/cross-link vendors pull you across the island regardless.
+---
 
-6. **Supply follows demand (`ingredients.csv` flag).** Re-flatten token **supply** to track the new
-   demand — bring **pork 18→~12, rice 16→~12** down and **oysters/milkfish/pearls 8→~10–12** up — so
-   scarcity ≈ **2× per-region solo demand** is roughly even across all four regions (no pork glut, no
-   oyster drought). This keeps the Market-contention texture even, and makes the South/Central **boon
-   events** (Mango Season, Oyster Glut, Bubble-Tea Festival) finally matter (their specialties are now
-   demanded). *Event tiles themselves need no respec — flag to `bg-theme` (events pass in parallel): the
-   rebalance only makes South/Central events bite harder, a plus for the "funnier events" work.*
+## Acts & end-game (replaces the Season counter)
 
-**How this makes the engine bite in all four regions.** (a) *Sourcing:* you must stand in a region to take
-its specialty, and each region is now demanded ~9× across the deck → you route to all four over a game.
-(b) *Discount ramp:* the per-region ramp finally saves something on that region's own vendors (anchor
-principle) → every region's ramp is worth building, not just North's. (c) *Travel:* the ~40% cross-links
-force trips *between* regions, spread so no single region is the default detour. (d) *Coverage/missions*
-(unchanged) now have real sourcing reasons behind the breadth, not just a scoring nudge.
+**Three Acts**, each escalating the Vendor Board:
+- **Act 1 — Stalls (the easy season).** Cheap vendors, low contest. This is where you **build your discount
+  ramp** and stake early region positions. Board dealt from the Stalls deck.
+- **Act 2 — Eateries (the middle).** Pricier, cross-region, richer perks. The ramp starts paying off.
+- **Act 3 — Marquee (the finale).** The big names — expensive, multi-region, fiercely contested. Where the
+  game is won or lost.
 
-### Vendors — the engine cards (the merged Dish + Hot-List, now a shop)
+**Advancing an Act.** An Act advances when **N vendors have been won table-wide during that Act** (the
+recommended trigger — see the decision set for alternatives). At 2p, **N ≈ 5 per act** (≈ 15 total wins ≈
+7–8 per player across three acts). On advance: **sweep any unwon vendors** of the current tier off the
+Board, deal fresh from the next Act's deck, and move the **Act track** to the new act. Any Buzz sitting on a
+swept vendor **returns to the supply** (the season moved on).
 
-A **Vendor** is a stall/cook who agrees to feature on your tour. Courting one = paying **what the stall
-needs to shine**: **(a) fresh ingredients** (region-specific — the vendor's signature dish defines them;
-real food geography does the work) **+ (b) Buzz** (you *promote* them, promising customers and hype — the
-travel agent's actual job, and the anti-extraction linchpin: courting = *showcasing/helping*, never
-taking). Three tiers on a Splendor-style Board:
+**Why sweeping-on-advance is the escalation.** Cheap ramp vendors are only available *in Act 1* — grab
+your discount icons early or fall behind on the ingredient half (the multi-track scoring keeps a laggard
+alive via Rep / breadth / the hidden +7). This creates a clean **build-then-cash arc** and a real
+tempo/pacing pressure that replaces Extract's "wrap while ahead."
 
-| Tier | ~Count | Ingredient cost | Buzz | Prestige (VP) | Rep | Perk |
-|------|-------:|-----------------|-----:|--------------:|----:|------|
-| **T1 Stalls** | ~20 | **2** (1 region) | **1** | **1** | **+1** | its **region discount icon** (the base ramp) |
-| **T2 Eateries** | ~16 | **3** (2 regions) | **2** | **3** | **+2** | region icon **+ one** of {Promote +1 Buzz · once/turn treat 1 pantry as a wild specialty when courting · +1 Rep on each future court} |
-| **T3 Marquee** | ~10 | **3–4** (2–3 regions) | **3–4** | **5–6** | **+2/+3** | a **strong** perk: a **wild region icon** (counts as any 1 region for discount *and* coverage), **or** +2 Rep on courting, **or** counts as **2** region icons |
+**Ending the game.** When **Act 3's** advance-condition is met (its N-th win, or its deck exhausted as a
+backstop) → **finish the current round + one more full round → reveal missions → score.** No Extract, no
+player end-trigger; the acts do the pacing.
 
-**The discount ramp (the Splendor engine).** Each secured vendor carries a **region icon** (N/C/S/E, or
-wild). Holding *k* vendors with the X-icon reduces the **X-region ingredient** portion of any future
-vendor by *k* (floored at 0). Early vendors are dear and slow; each one signed makes a *class* of future
-vendors cheaper. **Buzz is never reduced** — this is the brake (below).
+**The built-in catch-up co-brake (carried from v3.1's Season logic).** Because *table-wide wins* advance
+the acts, a **fast** winner **hurries the end** they'd need to keep winning, while a **tall/slow** player
+(fewer, bigger vendors) leaves the threshold low and gets **more turns to reach parity**. Gentle, not
+leader-bashing.
 
-### Missions — the secret +7 (draw-3-keep-1)
+---
+
+## Missions — the secret +7 (draw-3-keep-1, unchanged)
 
 Deal **3**, secretly **keep 1**, discard 2 unseen. A mission is a **secret vendor pattern** worth **+7 at
-scoring** (binary). Starter pool (variety on purpose, so it doesn't just reinforce one track):
-- *"3 vendors in the South"* (regional crawl) · *"a vendor in all 4 regions"* (grand tour — overlaps
-  Coverage) · *"3 T1 Stalls"* (the humble-eats tour) · *"2 T3 Marquee vendors"* (the fine-dining tour) ·
-  *"a vendor of each of 3 named cuisines"* · *"vendors totalling ≥ 18 Prestige"* (go tall) · *"5 vendors,
-  any"* (the volume tour) · *"a Marquee + its two feeder-region Stalls."*
-Why a **pick, not a random deal:** with **public characters** and **multiple tracks**, the pick lets you
-steer your character/track synergy on purpose and **launders the char×mission balance problem** — a broken
-combo can't be randomly gifted; you choose it, the opponent sees your character and contests.
+scoring** (binary). Starter pool (variety on purpose): *"3 vendors in the South"* · *"a vendor in all 4
+regions"* (grand tour) · *"3 Act-1 Stalls"* · *"2 Act-3 Marquee vendors"* · *"a vendor of each of 3 named
+cuisines"* · *"vendors totalling ≥ 18 Prestige"* (go tall) · *"5 vendors, any"* · *"a Marquee + two Stalls
+of its feeder regions."* Draw-3-keep-1 (not a random deal) lets you steer your character/track synergy on
+purpose and launders the char×mission balance problem (you *choose* the combo; the opponent sees your
+public character and contests). *If Coverage is cut to mission-only (weight decision), the "all 4 regions"
+mission absorbs the breadth vector.*
 
 ---
 
 ## Economy & math
 
-The two-input economy is the make-or-break. Numbers below are first-pass — the sim's job is to attack
-them (see *Riskiest assumptions* and the sim plan in `explore-v2.1-engine.md` §8).
+The Buzz-majority + push-your-luck market are the make-or-break. Numbers below are first-pass — the sim's
+job is to attack them (see *Riskiest assumptions*).
 
 **Income vs spend (per action):**
 
-| Action | Yield |
+| Action | Yield (EV) |
 |--------|-------|
-| Stock Up | +2 ingredients (region-gated) |
-| Travel | +1 ingredient + reposition |
-| Promote | +2 Buzz (→ +3 for the Influencer / with a Buzz-income perk) |
-| Court | −(ingredients − discount) − Buzz; +Prestige +Rep +perk +coverage |
+| Visit the Local Market | +~1.3–1.7 specialties (region-gated) − hazard exposure |
+| Convenience Store | +~0.6–0.8 specialty (blind, any region, can whiff) |
+| Travel | +~0.7 specialty + reposition |
+| Promote | +2 Buzz **onto the board** (no private gain — a positional investment) |
+| Bribe | − ingredients (− discount); win vendor → +Prestige +Rep +perk +Coverage; clears the vendor's Buzz |
 
-**Courting cost vs reward, and the ramp** (illustrative vendors):
+**Cost of a vendor, in actions (the real currency).** Uncontested, a vendor costs roughly: **source its
+ingredients** (1–3 Visits/draws, fewer as the ramp grows) **+ ≥1 Promote** (to reach the ≥2 floor) **+ the
+Bribe** — call it **~3–4 actions early, ~2–3 actions ramped.** Contested, add a Promote or two to
+out-stack the rival. So the **courting rate** sits at **~1 vendor / 2–3 turns** and never approaches
+1/turn — the ramp accelerates the ingredient half but the Buzz fight is a fixed, contestable floor.
 
-| Vendor | Base cost | Cost at mid-ramp* | Reward (Prestige + Rep) | ~Turns | VP/turn** |
-|--------|-----------|-------------------|-------------------------|-------:|----------:|
-| T1 Oyster-Omelette Stall (S) | 2×S + 1 Buzz | 1×S + 1 Buzz | 1 + (+1 Rep) | ~1.5 | ~1.1 |
-| T2 Beef-Noodle Institution (N) | 2×N +1P + 2 Buzz | 1 ingr + 2 Buzz | 3 + (+2 Rep) + perk | ~2.5 | ~1.7 |
-| T3 Banquet Master (N+S+E) | 1×N+1×S+1×E + 3 Buzz | 1 ingr + 3 Buzz | 6 + (+3 Rep) | ~4 | ~1.9 |
-
-\* *mid-ramp = holding ~1 icon per named region.* \*\* *counting ~0.7 VP per Rep point via end-track VP.*
+**Buzz supply sizing (2p ≈ 24).** At any moment ~2–4 vendors carry 2–6 Buzz each (≈ 8–16 committed), the
+rest in supply; wins recycle it. If ~24 proves too tight (players can't contest) or too loose (no
+scarcity), the supply size is the first tuning knob. Scales with player count (≈ +8–10 per extra player).
 
 **Balance assumptions (attack these):**
-1. **VP/turn is flat-ish (~1.1–1.9)** so no tier is an auto-win. T2 is the intended workhorse (best raw
-   rate via its perk); T1 pays **indirectly** — its cheap region icons are what make everything else
-   cheap (the engine investment); T3 pays in Prestige + mission/Coverage synergy, not raw rate.
-2. **The binding constraint *shifts*** — a feature, not a bug. **Early:** ingredients bind (can I get the
-   contested specialty?). **Late:** the discount ramp makes ingredients trivial, so **Buzz** binds (do I
-   have enough Buzz to court again?). That shift keeps the decision fresh across the game.
-3. **Larder cap 7** (ingredients) forces the source→court rhythm; **Buzz uncapped** (hoarding Buzz just
-   means not courting = losing tempo — self-correcting, no rule needed).
-4. **Target 2p winner ~35–42 total VP.** Rough split for a balanced game: vendors' Prestige ~18–24 +
-   Reputation end-VP ~4–9 + Coverage ~2–9 + signature mission 0/**7**.
-
-**The Season end-timer.** Advances **+1 per Court** (any player). Final mark at **~16** total courts at 2p
-(≈ 8 each) → wind-down. Because a *fast* courter fills the timer, the wide/ramp player **hurries the end**
-they'd need to keep courting — while a *tall* player (fewer courts) leaves the timer low and gets **more
-turns to reach parity**. That is a gentle, built-in catch-up co-brake (see *Interaction & tension*). A
-sim/feel tuning knob; scales by count.
+1. **The binding constraint alternates** — a feature. *Early:* ingredients bind (can I dig the specialty
+   out of a hazard-y deck?). *Late:* the ramp trivialises ingredients, so **the Buzz fight + position**
+   bind (can I out-hype and be on-site before my rival closes?). Keeps decisions fresh.
+2. **VP/turn stays flat-ish across tiers** (~1.1–1.9) so no Act's vendors are an auto-win; Act 1 pays
+   **indirectly** (its cheap icons make everything else cheaper — the engine investment), Act 3 pays in
+   Prestige + mission synergy, not raw rate.
+3. **Larder cap 7** (ingredient cards) forces the source→spend rhythm.
+4. **Target 2p winner ~32–40 total VP.** Rough split: vendors' Prestige ~20–24 + Reputation end-VP ~4–6 +
+   Coverage ~2–9 *(if kept)* + signature mission 0/**7**.
 
 ---
 
 ## Scoring / win condition — "Top Agent"
 
-Hybrid multi-track: tracks **trigger the endgame and pay a bonus**, but **highest total VP wins** (no
-Splendor-style sudden-death — warm, non-feel-bad, and a trailing player always has a live second vector).
-
-At game end each agent totals four sources:
-1. **Tour Prestige (VP)** — sum of your vendors' star values (T1=1, T2=3, T3=5–6). *(Live on the VP
-   track.)* — the **tall / prestige-rush** line.
-2. **Reputation** — end-VP by your marker's final position: **3→+2 · 6→+4 · 9→+6 · 12 (max)→+9**. You climb
-   it by courting (each vendor's printed Rep). Passing **3 / 6 / 9** grants a one-time perk (below); the
-   **top (12)** is an endgame trigger and pays its +9. *(Live on the Rep track.)* — the **reputation-climb
-   / engine** line.
-3. **Region-Coverage** — end-game breadth bonus for distinct regions among your vendors: **2 regions→2 ·
-   3→5 · 4→9.** Keeps routing relevant to scoring so the travel engine still matters. — the **grand-tour /
-   breadth** line.
-4. **Secret signature mission** — **+7 if completed** (revealed now), else 0. *(The one hidden vector —
-   face-down until the reveal, so it stays a moment and keeps a visibly-trailing player hopeful.)*
-
-**Reputation milestone perks** (one-time, as you pass — these are what make climbing a *strategy*, not
-just a parallel scorer): **pass 3** → take 2 wild ingredients now; **pass 6** → your Promote is
-permanently +1 Buzz; **pass 9** → gain 1 permanent region discount icon of your choice. (Kept to three
-clean perks; the top is pure VP. If weight drifts, these collapse to pure end-VP — see *Complexity
-budget*.)
+Hybrid multi-track: tracks pay bonuses, **highest total VP wins** (no sudden-death — warm, and a trailing
+player always has a live second vector). At game end each agent totals:
+1. **Tour Prestige (VP)** — sum of your vendors' stars (Stalls 1 / Eateries 3 / Marquee 5–6). *(Live on the
+   VP track.)* — the **tall / prestige** line.
+2. **Reputation** — end-VP by final marker position: **3→+2 · 6→+4 · 9→+6 · 12 (max)→+9.** Climbed by
+   Bribing (each vendor's printed Rep). *(Live on the Rep track.)* — the **reputation-climb** line.
+   *(Milestone perks passing 3/6/9 are a weight-decision — see the trim list.)*
+3. **Region-Coverage** — end-game breadth bonus for distinct regions among your vendors: **2→2 · 3→5 ·
+   4→9.** *(Weight decision: fold into mission-only — see the decision set. The v4 region-gating already
+   forces travel, making an explicit Coverage bonus partly redundant.)* — the **grand-tour** line.
+4. **Secret signature mission** — **+7 if completed** (revealed now), else 0. *(The one hidden vector.)*
 
 Highest total is **Top Agent**. **Tiebreak:** highest Reputation, then most vendors, then most regions.
 
-### Designing out the top risk (a): no dominant track or opening
-
-The classic tight-2p-engine failure is a solved line. Four structural guards keep **≥2 paths genuinely
-competitive** (target: tall ≈ rep-climb ≈ breadth, none >~55% in sim):
-- **The three tracks reward *different behaviours*, and pull against each other.** Prestige rewards *few,
-  big* vendors; the discount ramp rewards *many, doubled-up in a couple of regions*; Coverage rewards
-  *one spread across all four*. You cannot maximise ramp (concentrate) **and** Coverage (spread) at once —
-  a real tension, not a false choice. Reputation rewards *steady courting for its perks*, converting to VP
-  late.
-- **Reputation is decoupled from raw Prestige.** Rep is a printed value (roughly tier), so a *tall* player
-  and a *wide* player climb it at similar rates — neither the volume nor the marquee line double-dips Rep.
-- **The mission is a pick** — each player steers their own keel, so no single global "best line": the
-  mission diversifies what each agent is optimising.
-- **No dominant opening:** an **ingredient-heavy** open ramps discounts fastest but is scarcity/event-
-  exposed (a rival can take the last specialty, an event can wash a Market); a **Buzz-heavy** open is safe
-  and grabs a strong T2 perk-engine early but doesn't ramp discounts. Different textures, comparable
-  payoff — the sim's #1 probe.
-
-### Designing out the top risk (b): no economy runaway
-
-The compounding discount **must not snowball past the end-clock**. **The brake (stated plainly): the
-discount applies only to the *ingredient* half of a vendor's cost; the *Buzz* half is never discounted.**
-So even a fully-ramped engine still pays Buzz for every vendor, and Buzz arrives one action at a time
-(+2/Promote). This **caps the courting *rate*** at roughly **1 vendor per 2 turns** even at full ramp
-(1 Promote + 1 Court), versus ~1 per 3–4 turns early — a real, satisfying ramp (≈2×) but **not an
-explosion** (never 1/turn). Supporting brakes:
-- **Diminishing returns:** the vendors you can court fastest at full ramp are the *cheap* ones (T1, 1
-  Prestige) — courting *rate* rises but *VP per court* falls.
-- **Shared Board scarcity:** the rival can **snipe the vendor whose icon you needed** to ramp, capping your
-  discount growth (direct interaction, "outraced not robbed").
-- **The end-timer co-brake:** fast courting fills the Season timer → hurries the end → the leader can't
-  bank unlimited courts; the slower/tall player gets more turns to reach parity.
-- **Buzz income is soft-capped:** only the +1-Buzz perk (one T2 option) and the pass-6 Rep perk raise Buzz
-  income, additively and modestly — Buzz income never compounds freely.
-- **Reserve knobs if the sim flags snowball:** a trailing-player discount (first court each round costs 1
-  less Buzz), a per-player vendor cap, or a Buzz-cost floor increase on the cheapest tier.
-
----
-
-## Market & Events (the sourcing layer)
-
-- Each region has a face-up **Market** (3–4 slots) drawn from a **finite, event-salted supply** (region
-  specialty tokens **+ ~2–3 Event tiles**). **Pantry** is **unlimited** anywhere.
-- **Scarcity:** finite specialty supply ≈ **2× solo demand** — two players can't both max the same
-  specialty; grabbing the last forces a rival **reroute** (free interaction + anti-hoard). The **unlimited
-  pantry** and **always-available Buzz** are the two anti-stuck valves — luck/scarcity costs *tempo or a
-  reroute, never a court*. Supply scales **sub-linearly** with count so contention persists at 3–4p.
-- **Events fire on refill.** After you Stock Up/Travel and refill a Market slot, a flipped **Event** tile
-  resolves immediately (then continue refilling). Take-2 = up to two flips = more exposure (push-your-luck
-  baked in). Boon-skewed **~60/40**, region-thematic, **tax-not-destroy** (hazards delay/reroute, never
-  remove what you hold or a whole turn). Known composition + face-up Market telegraph the odds.
-- **Season is now a pure end-timer** (fires nothing) — the v2 ACTIVE/NEXT queue + milestone-fire machinery
-  is **cut**. The living-island feel now lives *in the Market*.
-
-**Event starter set (~11; secular, boon-skewed; wording via the Taiwanese consultant before lock):**
-1. **芒果季 Mango Season** *(S, boon)* — add **2** extra South specialty tokens to the South Market (a
-   glut both agents can grab).
-2. **蚵仔盛產 Oyster Glut** *(S, boon)* — the drawer takes **1 free** oyster.
-3. **珍奶節 Bubble-Tea Festival** *(C, boon)* — the drawer takes **2 Buzz** (the town's buzzing).
-4. **豐收 Bumper Harvest** *(E, boon)* — the drawer takes **2 free** East specialty tokens.
-5. **觀光季 Tourist Season** *(table-wide, boon)* — every agent's **next Promote** gives **+1 Buzz**.
-6. **快閃排隊 Pop-Up Queue** *(any, boon)* — the drawer may immediately **move 1 region for free** (a lift
-   to the next town).
-7. **食尚報導 Featured in the Guide** *(boon)* — the cheapest face-up **T1 vendor** gains **+1 Prestige**
-   (tempting a court).
-8. **暖心街坊 Word of Mouth** *(warm, boon)* — the drawer gains **+1 Buzz and +1 ingredient** (a kind local
-   sets you up).
-9. **颱風警報 Typhoon Warning** *(coast S/E, hazard)* — **wash out** the affected region's face-up
-   specialty tokens (discard + refill); you lose nothing you hold — the *shelf* resets away from what you
-   wanted (a reroute, not a theft).
-10. **梅雨 Plum Rains** *(C, mild hazard)* — the drawer's **Stock Up this turn yields 1 fewer** (a slow
-    day; tempo tax).
-11. **客滿 Fully Booked** *(any, shake-up)* — clear and refill an entire Market row (can help or hurt).
-
-Warm characters = the "get lucky" beats; **dignified hosts, never a punchline**. The **Gourmand cannot
-benefit from boon events** (their flaw); the **Rookie draws 2 events / resolves 1** in their region (their
-ability). *Reserve knob:* if immediate-fire feels too random in the feel-test, add a one-beat **"brewing"
-telegraph** (event fires at the start of the drawer's next turn) — ~1 rule, restores preview agency.
-
----
-
-## Characters — asymmetry that bends the engine
-
-Five warm, food-obsessed **agent** archetypes (personality/role, **not** ethnic caricature — see
-sensitivity), each **public** (the opponent adapts), each **one ability + one flaw on an opposing lever**.
-Abilities are **flat/bounded — no compounding engine powers** (they must not stack on the vendor ramp).
-Target EV ≈ 2–4 VP or ~1–2 turns of tempo; the flaw costs about the same.
-
-| # | Character | Ability | Flaw | Lever / anti-lever |
-|---|-----------|---------|------|--------------------|
-| 1 | **The Night-Market Auntie 阿姨** | *Regular's Discount* — the first vendor you court in **each of your first two regions** costs **1 fewer ingredient** (she vouches for you). | *Set in her ways* — **no HSR** (N↔S); routes the ring the long way. Loves the scenic local rail, knows every backstreet (**not** a technophobe gag). | discount / anti: mobility |
-| 2 | **The Eager Rookie** | *First-Timer's Luck* — when an **Event** fires in your region, **draw 2 tiles, resolve 1**. | *Bites off too much* — **Larder cap 6**. | events / anti: storage |
-| 3 | **The Retired Conductor 車長** | *Off-Peak Pass* — **Travel arrives with 2** ingredients (a proud, expert retired railwayman). | *Timetable-bound* — **if you took Stock Up on your previous turn, your Stock Up this turn yields only 1** (a run gives 2,1,1…; any other action resets it — the timetable moves on). | mobility / anti: camping |
-| 4 | **The Influencer** | *Going Viral* — your **Promote takes +1 Buzz** (3). | *Chasing clout* — goes **last** in turn order and starts **2 resources behind**. | Buzz engine / anti: tempo |
-| 5 | **The Grizzled Gourmand** | *Connoisseur* — once per turn, treat **1 pantry as any 1 specialty** when courting (courting flexibility). | *Too jaded* — **cannot gain Buzz from boon events** (still gets their other effects). | flexibility / anti: events |
-
-*(6th, held as expansion — hardest to balance:* **The Homesick Local**, +/− tied to a self-picked home
-region.)*
-
-**No dominant character×mission combo (designed, sim-confirmed).** Each ability sits on a *different*
-lever, and each has a flaw that **pulls against the mission it most helps**:
-- Auntie's discount most helps the **breadth/all-4-regions** missions — capped to your **first two
-  regions** so it can't compound with a grand-tour mission (the sim found the uncapped version + no-HSR
-  did NOT self-balance: Auntie×grand-tour hit 82%; the first-two-regions cap fixes it → Auntie ≤53% vs any
-  mission).
-- Influencer's +Buzz most helps the **Buzz-hungry tall / 2-Marquee** mission — but she **starts behind and
-  goes last**, paying tempo up front.
-- Conductor's travel-sourcing most helps **spread/coverage** — but his **back-to-back-Stock-Up-1** flaw
-  stops him camping one market to stockpile a single region (fighting the "3 in the South" mission); a run
-  of Stock Ups yields 2, 1, 1…, so he must keep moving.
-- Gourmand's wild most helps **specific-cuisine** missions — but **no boons** loses the festival tempo the
-  ramp likes.
-- Rookie's event-luck is **generic** (no track it doubles) — the safe baseline.
-The **draw-3-keep-1 pick** further launders this: a broken combo can't be gifted; you choose it and the
-opponent, seeing your character, contests. Latest sim probe (v3.1, against the real re-costed 25-vendor
-deck): the sim-confident **Conductor flaw revision** (*back-to-back Stock Up yields 1*) lands him
-**52.1%**, mid-pack, no new dominant character. The remaining deviations are the **event-coupled**
-characters the sim cannot seat fairly (it abstracts Market events) — Influencer 52.7 / Auntie 55.4 /
-Rookie 56 all near band, **Gourmand 33.8 low** — so those four are **carried to the human FTUE table
-untouched** (see the watch-flags below); hottest char×mission = gourmand×south_3 ~60% (a weak-char mirror
-artifact, not a real synergy).
-
-> **Table watch-flags (the sim's honest limit).** The sim abstracts the Market **events** it can't fully
-> model, so two characters are carried **as-printed pending the human FTUE session**, not tuned off the
-> sim: the **Rookie** (her whole kit rides on event luck) and the **Gourmand** (his pantry-wild flexibility
-> is invisible to the greedy bots — it only pays under human tight-hand pressure). The **Auntie**
-> (first-two-regions) fix is sim-confident; the **Influencer** (2-behind) is a low-risk provisional nudge.
-> Instrument the first playtest to record per-character results and specifically whether Rookie's event-luck
-> and the Gourmand's wild earn their keep.
+**Designing out a dominant track (the tracks pull against each other).** Prestige rewards *few, big*
+vendors; the discount ramp rewards *many, doubled-up in a couple of regions*; Coverage/breadth rewards
+*one in each region*; Rep rewards *steady Bribing*. You cannot max ramp-concentration **and** breadth at
+once. The v4 twist: **the Buzz fight injects opponent-dependence** — the "best line" shifts with where your
+rival commits, so no opening is statically solved. (Sim probe #2.)
 
 ---
 
 ## Randomness
 
-- **Input randomness (the bulk):** the Vendor Board reveal, the Market reveal, the Mission draw
-  (mitigated by **draw-3-keep-1**), the vendor/market deck orders — all telegraphed/face-up; you **adapt**.
-- **A bounded slice of output randomness:** the **event-on-refill** flip resolves *after* you chose to
-  Stock Up. Deliberately bounded to *spice, not decide*: **boon-skewed ~60/40**, **tax-not-destroy**,
-  known deck composition, and the **pantry + Buzz** anti-stuck valves. Take-2 is opted-into push-your-luck.
-- **No dice, no post-court luck.** Suits the warm "nail your trip" tone; keeps the engine's skill legible.
-- **One hidden-information hook only:** your **secret signature mission**. Larder is face-up; the Board,
-  both tours, the VP track and the Rep track are all open. No deduction engine.
+- **Input randomness (the bulk):** the Vendor Board reveal per act, the **face-down market decks**, the
+  Mission draw (mitigated by draw-3-keep-1), the deck orders. The market is now **blind** (v3.1's face-up
+  Market is gone) — a deliberate increase in variance to feed the push-your-luck.
+- **Bounded output randomness (the new spice):** the **Visit** flip resolves *after* you chose to dig.
+  Bounded to *spice, not decide*: you **keep 2 of 3**, hazards are **tax-not-destroy**, deck composition is
+  known, and the **Convenience Store** (safe blind single draw) + **Travel** are the low-variance valves.
+  Digging is opted-into push-your-luck.
+- **The Buzz fight and the Bribe are pure open-information** — no dice, no post-Bribe luck. The skill of
+  the engine stays legible; the luck lives only in what the market decks hand you.
+- **One hidden-information hook only:** your secret signature mission. Larder, both tours, all Buzz on the
+  board, and both tracks are open. No deduction engine.
 
 ---
 
 ## Interaction & tension
 
-**Direct (the spine):**
-- **The Vendor Board race.** Courting a vendor **locks it from the rival** — and, crucially, locks away the
-  **region icon** they may have needed to ramp, or the **marquee** they wanted for Prestige. The race lives
-  in *timing and routing* ("she's one oyster from courting the seafood marquee — I grab it first, or race
-  her South"). Razor-sharp at 2p. **Anti-resentment (carried from v2):** the ingredients + Buzz you spent
-  still bought you Prestige + Rep + a discount + coverage, so a snipe reads as **"outraced, not robbed"** —
-  and thematically the vendor simply **chose the agent who courted them best**, never a place being seized.
-- **Market scarcity.** Taking the last of a contested specialty forces the rival to reroute (free,
-  impersonal, anti-hoard).
-- **The Poach (v3.1) — the same-location swipe.** When you and your rival are nose-to-nose in the same
-  region, you can cheekily grab something they hauled. Detail below.
+**Direct (the new spine — far more interactive than v3.1):**
+- **The Buzz-majority tug-of-war.** The public, escalating, on-site fight over each prize vendor (see *The
+  Buzz-majority system*). This is the Arcs-Court social tension the CD wants: you *see* your rival's Buzz
+  piling on the seafood marquee and must decide to out-commit, race them to the ingredients, or concede and
+  take a different vendor. **Anti-resentment:** a lost fight costs only tempo (your Buzz fizzles, you keep
+  every ingredient) and reads as *the vendor chose them* — **"outraced, not robbed."**
+- **Positional denial.** Being *on-site* gates Promote and Bribe, so simply occupying a contested region
+  and stacking Buzz is a way to pressure a vendor and read your rival's intentions.
+- **Market scarcity.** A region deck running dry (both agents digging the same market) is a natural
+  reroute pressure.
 
-### The Poach (same-location steal — v3.1)
+**Catch-up vs runaway (designed):**
+- **Against runaway:** the **contested Buzz floor** (every win is an undiscounted on-site fight the rival
+  can force you to overpay), **diminishing returns** on cheap vendors, **finite Buzz supply**, and the
+  **act-advance co-brake** (fast winning hurries the end).
+- **For catch-up (gentle):** the **act-advance co-brake** (a tall/slow player gets more turns), the
+  **multi-track structure** (a trailing player always has a live second vector), one **table-wide hazard**
+  with a leader-excluding sop (Typhoon Day gives Buzz to everyone *except* the Prestige leader), and the
+  hidden **+7**.
 
-**Trigger + cost + effect** (as in *Actions*): on your turn, **if a rival's pawn shares your region**, you
-may **Poach** instead of your normal action: take **1 random specialty** from that rival's Larder into
-yours and move your **Reputation down 1** (floored at 0). Pantry is ignored (unlimited — nothing to swipe);
-if the rival holds only pantry, there's nothing to Poach. It touches nothing else (no Market refill, no
-event, no Season tick).
+**Fellowship** is carried by the comedic shared fight over a prize vendor ("you did *not* just out-hype me
+on my noodle guy") + the market drama (table groans at a shared typhoon) — matching `identity.md`'s warm
+rivalry, not mechanical co-op. **Poach is cut** (its banter role is absorbed by the louder, funnier Buzz
+fight).
 
-**What's stolen — and why *random specialty* is the fun, low-feel-bad pick** (the design call):
-- **Not a vendor** (would undo scored Prestige + a discount + coverage — massively swingy, feel-bad, and it
-  *violates the anti-extraction rail*: a vendor **chose** you, you can't steal a blessing). **Not the
-  mission** (the only hidden info — stealing it wrecks the one secret and breaks the no-deduction rule).
-  **Not Buzz** (location-independent — Promote anywhere — so it wouldn't reward *tracking movement*, the
-  whole point).
-- **A random specialty from the face-up Larder** is the sweet spot: it's **material the rival *traveled*
-  for** (so poaching it rewards Change 1's movement and synergises with it — fuller Larders from more
-  travel are juicier targets), it's **bounded** (Larder cap 7; one token ≈ half a Stock Up), and **random
-  (not chosen)** keeps it **cheeky, not surgical** — you can *see* they're holding good stuff (face-up) so
-  the decision to spend Rep is informed, but you can't cherry-pick the single scarce token, so it never
-  becomes a precision engine-kill. Excluding pantry means a Poach that lands always *means* something.
+---
 
-**Why it's a real risk-reward, not a griefy staple:**
-- **It costs your whole turn** — you gave up a Stock Up (+2), a Promote (+2 Buzz), or a Court. A Poach
-  yields **+1 ingredient to you and −1 to them** (a 2-swing on a *contested* token), with **no** refill/
-  event/reposition. So it's **usually worse than Stock Up** — you only Poach when the specific denied token
-  *matters* (the rival is one oyster from the seafood marquee; a scarce specialty you can't easily source
-  yourself). A situational tempo/**denial** play, not an every-turn move.
-- **The Rep cost is a genuine price now** that Rep scores only at your **final** track position (v3
-  end-trigger fix). Each Poach chips Rep, which converts to end-VP (bands at 3/6/9/12) **and** costs
-  milestone perks (passing 3/6/9). Spam three Poaches ≈ pay ~3 Rep ≈ a whole scoring band and maybe a
-  missed perk — a real, compounding tax on the material you're grabbing.
-- **The Rep floor (0) is the early-game guard:** you can only Poach if you have standing to spend, i.e.
-  you've **courted at least one vendor** — so it's never a turn-1 grief tool, and total Poaches are capped
-  by the Rep you can afford to burn.
-- **No spiral (state it plainly for `bg-elegance`/sim):** a "steal war" (A poaches B, B poaches back) is
-  **self-correcting** — both burn a turn *and* a Rep for a net-zero material swing, so neither gains; and
-  it has two free exits — **move away** (break co-location) or **hold a pantry-lean Larder** (nothing to
-  steal). Nobody rationally sustains it. Season is untouched, so Poach is not an end-clock lever either.
+## Characters — asymmetry that bends the engine
 
-**Tone (binds — `identity.md`):** warm agent-vs-agent slapstick — you're both crammed at the same
-night-market corner and you swipe the oysters off their tray / call in a cheeky favour to nab the last of
-something first. Targets **the rival agent only, never a vendor or the place.** The Rep ding = *"word gets
-round that you play a little dirty."* Keyword proposal **"Poach"** (a cooking term *and* a
-poach-a-rival's-client wink) or **"Tip-Off"** — final name is `bg-theme`'s call.
+Five warm, food-obsessed **agent** archetypes, each **public**, each **one ability + one flaw on an
+opposing lever**. Abilities are **flat/bounded — no compounding engine powers**. Target EV ≈ 2–4 VP or
+~1–2 turns of tempo. **v4 changes: the Conductor is re-themed to the Lunch-Box Granny; the Gourmand's
+pantry-wild ability is re-homed (pantry is gone); the Influencer's +Buzz now bites harder (it's the Buzz
+fight).**
 
-**Reserve knobs (if the sim/table flags it):** Rep cost 1→2 if spammed; 1→0 or "free rider once/turn on a
-Travel/Stock Up" if it's a dead rule (see the A/B for the human); a hard "once per turn" is already implied
-(Poach *is* your turn). Do **not** let it steal vendors/missions/Buzz — those break the rails above.
+| # | Character | Ability | Flaw | Lever / anti-lever |
+|---|-----------|---------|------|--------------------|
+| 1 | **The Night-Market Auntie 阿姨** | *Regular's Discount* — the first vendor you Bribe in **each of your first two regions** costs **1 fewer ingredient**. | *Set in her ways* — **no HSR** (routes the ring the long way). | ingredient discount / mobility |
+| 2 | **The Eager Rookie 菜鳥** | *First-Timer's Luck* — when you **Visit the Local Market**, if you reveal a hazard you may **cancel it** (discard, no fire) once per turn. | *Bites off too much* — **Larder cap 6**. | market safety / storage |
+| 3 | **The Lunch-Box Granny 便當阿嬤** *(re-theme of the Conductor)* | *Lunch From Home* — when you **Travel**, draw the top market card of the region you are **LEAVING** (a lunch packed from home) instead of the region you arrive in. | *Packed my own, thanks* — when you **Visit the Local Market** you keep only **1** specialty (not 2). | travel-sourcing / market-sourcing |
+| 4 | **The Influencer 網紅** | *Going Viral* — your **Promote places +1 Buzz** (3 instead of 2) — a sharper edge in the Buzz fight. | *Chasing clout* — go **last** in turn order and start **2 resources behind**. | Buzz fight / tempo |
+| 5 | **The Grizzled Gourmand 老饕** | *Connoisseur* — when you **Visit the Local Market**, reveal **4** cards (keep 2) — you dig deeper and dodge more hazards. | *Too jaded* — **cannot gain Buzz from boon events** (you still get their other effects). | market depth / events |
 
-**Indirect:** the shared Market events (table groans at a typhoon, races to a festival); the **Season**
-timer (a fast courter times the end); **Extract** tempo.
+**Design notes.**
+- **The Rookie's ability is re-pointed** from "draw 2 events resolve 1" (v3.1) to a **hazard-cancel** —
+  cleaner now that events live in the market decks, and (bonus) it's **sim-legible** (the sim can model a
+  cancelled hazard), fixing v3.1's "event-coupled, sim can't judge" flag.
+- **The Gourmand's ability is re-homed** from pantry-wild (pantry gone) to **reveal-4-keep-2**, making him
+  a **market specialist** — and, like the Rookie, now **sim-legible** (deeper draws are measurable),
+  fixing the other v3.1 event-coupled flag. His "no boon Buzz" flaw is milder now that boons are the event
+  minority — watch it isn't *too* mild.
+- **The Lunch-Box Granny is a Travel-sourcer** (a parting ingredient every move) who's **weak at the market
+  haul** — a clean lever/anti-lever, distinct from the Auntie. Her ability is lateral (no raw EV gain, just
+  a timing/flexibility shift), so her flaw is light to match. → `bg-theme` names her + writes the warm
+  lore (granny who packs 便當, not a decline gag).
+- **The Influencer's +Buzz is now much more relevant** (Buzz is the contested spine) — watch she doesn't
+  over-perform in the fight; her go-last/2-behind flaw is the counterweight (may need re-tuning at count).
 
-**Catch-up vs runaway (the make-or-break, designed):**
-- **Against runaway:** the **Buzz floor** caps courting rate; **diminishing returns** on cheap vendors;
-  **shared scarcity** caps ramp; **soft-capped Buzz income** (see *Scoring out risk (b)*).
-- **For catch-up (gentle, not leader-bashing):** the **end-timer co-brake** (fast courting hurries the
-  end; the slower player gets more turns), the **multi-track structure** (a trailing player always has a
-  live second vector — Coverage or the hidden +7 — not a single collapsing race), and the **reserve
-  trailing-discount knob**.
+*(6th, held as expansion:* **The Homesick Local**, +/− tied to a self-picked home region.)*
 
-**Fellowship after cutting co-op:** carried by shared Market drama + warm rivalry over the Board ("you did
-*not* just court my noodle guy") — matching `identity.md`'s definition of Fellowship (warm rivalry + table
-talk), not mechanical co-op.
+**No dominant character×mission combo (re-verify in sim).** Each ability sits on a *different* lever, each
+flaw pulls against the mission it most helps, and draw-3-keep-1 launders the rest. The **two v3.1 table-
+watch flags (Rookie, Gourmand) are now sim-legible** by design — the re-sim should be able to seat all
+five where v3.1 could only carry two to the table. The **Influencer** (Buzz relevance up) is the new one to
+watch.
 
 ---
 
 ## Player counts & scaling
 
-Base = **2p** (the design home). Deltas:
+Base = **2p** (the design home; the Buzz tug-of-war is sharpest as a two-person fight). Deltas:
 
 | Element | 2p | 3p | 4p |
 |---------|----|----|----|
-| **Vendor Board per tier** | 3 | 4 | 4–5 |
-| **Region Market slots** | 3–4 | 4 | 4 |
-| **Specialty supply** | ≈2× solo demand | sub-linear (≈2.6×) | sub-linear (≈3.2×) |
-| **Season final (courts)** | ~16 | ~24 | ~30 |
-| **Reputation top** | 12 | 12 | 12 |
+| **Vendor Board slots** | 5 | 6 | 7 |
+| **Buzz supply** | ~24 | ~32 | ~40 |
+| **Act-advance threshold (wins/act)** | ~5 | ~7 | ~8 |
+| **Market deck size** | base | +1–2 event & specialty each | +2–3 each |
+| **Buzz majority rule** | ≥2 over the rival | **≥2 over the *highest* rival** | ≥2 over the highest rival |
 | **Start positions** | opposite (N & S) | spread on the ring | spread |
-| **Missions** | draw 3 keep 1 | draw 3 keep 1 | draw 3 keep 1 |
 
-Supply scales sub-linearly so contention persists; the Board widens to keep vendors available. Turn order
-matters more at 3–4p (the Influencer's "goes last" flaw is heavier — `bg-architect` to confirm it stays in
-the 45–55% band at count, or soften to "−1 resource only" at 3–4p). Resentment is **lower** at 3–4p (a
-snipe is diffuse); the sharp case to design/sim is **2p**. **Best-at: 2p**; 3–4p is a warmer, longer race.
+At 3–4p the Buzz majority is **≥2 over the highest single rival** on that vendor (not the sum) — so a
+vendor several players are eyeing is genuinely hard to close, and multi-way contests are chaotic-fun but
+harder to balance (→ `bg-architect`; watch the Influencer's Buzz edge at count). Resentment is **lower**
+at 3–4p (a lost fight is diffuse); the sharp balance case is **2p**. **Best-at: 2p**; 3–4p a warmer,
+louder race.
 
 ## Solo mode / Automa
 
-**Medium priority** (near-expected on a mid-weight engine now; still a bonus behind the 2p duel). Sketch —
-a **"Rival Agency" Automa**:
-- A small **Route deck**. On its turn, flip the top card: it **courts** the highest-Prestige Board vendor
-  it can "afford" against running ingredient + Buzz counters (Season +1; locks it from you — so the Board
-  race still bites solo), **or** takes Buzz, **or** rotates the region it "sources" from.
-- Pressure = **tempo + the Board race + the end-timer**: it courts steadily to hurry the Season and snipe
-  your ramp targets. Difficulty = court-aggressiveness (deck ratio) + a target score. Upkeep near-zero
-  (one flip, one lookup). **Defer to `bg-architect`; not in the base MVP.**
+**Medium priority** (near-expected on a mid-weight engine). Sketch — a **"Rival Agency" Automa**:
+- A small **Route deck**. On its turn, flip the top card: it **Promotes** (drops Buzz on the highest-
+  Prestige contested Board vendor in a rotating "focus region"), **Bribes** (if it holds a ≥2 majority on a
+  vendor in its focus region and its running ingredient counter can pay — locks it from you and advances
+  the Act), **sources** (bumps its ingredient counter for the focus region), or **rotates** its focus
+  region. Its Buzz on a vendor is real and contests *your* majority — so the fight still bites solo.
+- Pressure = **the Buzz race + the act clock**. Difficulty = Buzz-aggressiveness + a target score. Upkeep
+  near-zero (one flip, one lookup). **Defer to `bg-architect`; not in the base MVP.**
 
 ## Complexity budget
 
-Target **~2.2–2.4, ceiling 2.5**; `complexity-budget.json` caps (rulebook 1650 words, keywords 15,
-component types 8, aid 22 lines); `bg-elegance` guards.
+Target **~2.4–2.5, ceiling 2.5** (pending the raise decision); `complexity-budget.json` caps (rulebook
+1650 words, keywords 15, component types 8, aid 22 lines); `bg-elegance` guards.
 
-- **The weight call (honest).** The engine is the deliberate spend: **Buzz + Promote** (a real second
-  economy axis), the **compounding discount** (the ramp), the **Reputation track + milestones** and
-  **Coverage** (the multi-vector depth), and **5 characters** (~+0.1–0.15 teach cost). We **bank**: Briefs
-  **cut** (−1 deck, −1 keyword), the **v2 events queue** collapsed to Market tiles (−1 subsystem),
-  Hot-List **merged** into the Board (no separate row). The two-input beat **replaces** (not adds to) the
-  plate-and-score beat. **Net ~2.3–2.4** — in the aim band, off the ceiling.
-- **Actions = 5 core + 1 conditional** (Stock Up / Travel / Promote / Court / Extract, **+ Poach** when
-  co-located). Poach is the only v3.1 weight add: **conditional** (teaches only when two pawns meet),
-  reuses existing pieces (Larder + the Rep track as its cost), no new component — an honest **~+0.05–0.1**.
-  Change 1 is **weight-neutral** (pure re-costing) and arguably *reduces* teach friction: the v3
-  "icon≠named-ingredient" confusion the developer flagged (a South vendor costing North pork) goes away
-  when vendors **anchor in-region**, partly offsetting Poach. Net still **~2.35–2.45**, under the 2.5
-  ceiling but eating headroom — `bg-elegance` guards; if it drifts past 2.5 the first trim (Rep milestones
-  → pure end-VP) recovers ~0.15. *Elegance option held:* fold **Promote into Travel** to hold 4 core
-  actions if the gauge drifts.
-- **Keywords ≈ 12–13** (under 15): Larder · Vendor · **Court** · **Buzz** · **Promote** · region
-  **discount icon** · **Prestige** · **Reputation** · **Coverage** · **Event tile** · signature
-  **Mission** · Extract · **Poach** *(v3.1)*. (Stock Up / Travel / specialty / pantry stay plain-language.)
-- **Trim order if we drift >2.5, in order:** (1) **Reputation milestone perks → pure end-VP** (recovers
-  ~0.15; Rep becomes a clean parallel scorer + endgame trigger); (2) **Coverage → mission-only breadth**
-  (recovers ~0.1); (3) **characters 5→4** (drop the Influencer or Gourmand — hardest to balance); (4)
-  **fold Promote into Travel** (4 actions); (5) **cap the discount** (flat max) if the ramp misbehaves.
-  Depth lives in the *two-input engine under a contested Board + living Market* — protect that, cut around
-  it.
+**The weight call (honest, expanded).** v4 **adds real system**: the **Buzz-majority** (placement rules +
+region-gating + the ≥2 check + the clear-on-win resolution — the biggest single teach), **Acts** (act
+state + board sweeps, more than a linear counter), and the **push-your-luck market** (draw-3-keep-2 +
+the hazard-fire rule). It **banks**: **Extract cut**, **Poach cut**, **pantry folded** into the Convenience
+Store (one fewer ingredient type + simpler costs), **event tiles → market cards** (one fewer component
+type), **Season counter → Act condition**. **Component types drop 7→~6** (cost/BOM *improves* even as
+teach-weight rises — worth flagging to `bg-architect`). Net **teach-weight ~2.5–2.6 pre-trim** — at/over
+the ceiling. The Buzz-majority is the deliberate spend and the CD's headline ask.
+
+**To hold ≤2.5, deploy in order:**
+1. **Region-Coverage → mission-only** (recovers ~0.1; the v4 region-gating already forces breadth, so an
+   explicit Coverage track partly double-pays). **← recommended now.**
+2. **Reputation milestone perks → pure end-VP** (recovers ~0.15; Rep stays a clean parallel scorer).
+3. **Fold Convenience Store's "any region" into a plain wild draw** / or **fold Promote's placement into
+   Travel** (structural, last resorts).
+Depth lives in **the Buzz fight under a push-your-luck market across escalating acts** — protect that, cut
+around it. **If the CD would rather keep all tracks/perks, consciously raise the ceiling to ~2.6**
+(defensible next to Arcs ~3.0 / Splendor Duel+ ~2.3–2.5) and log it.
+
+**Keywords ≈ 12–13** (under 15): Larder · Vendor · **Bribe** · **Buzz** · **Promote** · region **discount
+icon** · **Prestige** · **Reputation** · **Coverage** *(if kept)* · **market deck** · **hazard/event** ·
+signature **Mission** · **Act**. (Visit / Convenience Store / Travel / specialty stay plain-language.)
 
 ## Keywords / glossary
 
-- **Larder** — your sourced ingredients, **face-up** (not a hidden hand). Cap **7** (6 for the Rookie).
-- **Vendor** — a Board card (tiered) you **court** to secure; carries cost (ingredients + Buzz), a region
-  **icon** (discount + coverage), **Prestige**, **Reputation**, and a **perk**.
-- **Court** — the core action: pay a vendor's ingredients (− discount) + Buzz to secure it; it locks from
-  the rival (they were **outraced, not robbed** — the vendor chose you).
-- **Buzz** — the second, fungible currency; you **Promote** to gain it; **never discounted** (the ramp
-  brake). Spent alongside ingredients to court.
-- **Promote** — the action that takes Buzz.
+- **Larder** — your sourced ingredient cards, **face-up**. Cap **7** (6 for the Rookie).
+- **Vendor** — a Board card (tiered by Act) you **Bribe** to secure; carries ingredient cost, a region
+  **icon** (discount + coverage), **Prestige**, **Reputation**, a **perk**, and the **Buzz piled on it**.
+- **Bribe** *(working name; `bg-theme` finalizes)* — the core action: in the vendor's region, holding a ≥2
+  Buzz majority, pay its ingredients (− discount) to win it (the vendor **chose you** — the rival was
+  outraced, not robbed).
+- **Buzz** — the committed, public, contested resource; **Promote** to place it **on vendors in your
+  region**; never discounted; clears to supply on a win. The interactive anti-runaway brake.
+- **Promote** — the action that places 2 Buzz on vendor(s) in your current region.
 - **discount icon** — a vendor's region badge; each held reduces that region's ingredient cost on future
-  vendors by 1 (floored at 0). The compounding engine.
-- **Prestige (VP)** — a vendor's star value; the headline VP vector; live on the VP track.
-- **Reputation** — the parallel track climbed by courting; milestone perks + end-VP; its top ends the game.
-- **Region-Coverage** — end-game breadth bonus for distinct regions among your vendors (2/5/9).
-- **Event tile** — a region-thematic Market tile (festival / hazard / warm local) that fires on
-  refill. Secular only. *(v2's "Condition".)*
+  vendors by 1 (floored at 0). The compounding engine (ingredients only).
+- **Prestige (VP)** — a vendor's star value; the headline VP vector; live on the track.
+- **Reputation** — the parallel track climbed by Bribing; end-VP by position (+ perks, weight-dependent).
+- **Region-Coverage** — end-game breadth bonus (2/5/9). *(Weight decision: may fold to mission-only.)*
+- **market deck** — a region's face-down deck of its 2 specialties + events; **Visit** draws 3 keeps 2
+  (hazards fire); **Convenience Store**/**Travel** draw 1 (whiff, no fire).
+- **hazard / event** — a warm-comedic secular event card inside a market deck; hazards tax-not-destroy.
 - **signature Mission** — your secret **+7** vendor pattern (draw-3-keep-1); the only hidden info.
-- **Extract** — the action that triggers the end-game wind-down ("file the tour / catch the last train").
-- **Poach** *(v3.1)* — the conditional same-location action: when a rival shares your region, take 1 random
-  specialty from their Larder and pay −1 Reputation. Warm agent-vs-agent swipe; targets the rival only.
-
-## Open questions for playtesting (top 3)
-
-**v3.1 adds two probes the re-sim must lead with (before re-confirming the v3 three below):**
-
-- **A. Does movement actually spread? (Change 1's make-or-break.)** The rebalance is *designed* to even
-  out demand, but even demand on paper ≠ travel in play — **anchoring in-region could let a player camp a
-  region and court locally**, so the **cross-link rate (~40%) is the load-bearing knob.** *Attack:* re-cost
-  the sim's vendor model to the target distribution, then measure **per-region sourcing share** (target:
-  each region ≥~18% of ingredient-take actions; South rises from near-zero) and **inter-region moves per
-  game** (should climb), and confirm the **stay-home-North line is no longer a top strategy** (Probe 1
-  re-run — no line >~55%). *Fail fixes:* raise/lower the cross-link rate; nudge the per-specialty targets;
-  strengthen Coverage/marquee pull out of North.
-- **B. Is the Poach a fun risk-reward, or degenerate/griefy? (Change 2's make-or-break.)** *Attack:*
-  **Poach frequency/game** (should be low, situational — not every-turn), **win-rate of a Poach-lean
-  strategy** (≤~55%), **steal-war frequency** (should be ~0 — self-correcting), and **Rep spent on Poach
-  vs Rep-VP forgone** (is the −1 cost real?). *Fail fixes (reserve knobs):* Rep cost 1→2 if spammed; 1→0
-  or a free once/turn rider if it's a dead rule. The *feel* ("cheeky not mean") is a human-only Screentop
-  question. **Bound check:** confirm a 2p duel can't spiral into griefing (the turn-cost + Rep-tax +
-  move-away/lean-Larder exits should hold).
-
-1. **No dominant track or opening? (THE make-or-break.)** Do **tall (Prestige) ≈ rep-climb ≈ breadth**
-   land competitively, and is **ingredient-heavy ≈ Buzz-heavy** as an opening? *Attack:* the sim's
-   dominant-track/opening probe (pass = no line >~55%, ≥3 viable) + a 2p Screentop feel-test (does one path
-   *feel* solved?). *Fail fixes:* rebalance vendor costs / track rewards / discount strength.
-2. **No economy runaway past the end-clock?** Does the **Buzz floor** actually cap the ramp (does a fast
-   first-courter run away, or do the brakes hold)? Is the binding-constraint *shift* (ingredients→Buzz)
-   real and fun? *Attack:* the runaway probe (measure court-rate ceiling, leader VP-gap over time). *Fail
-   fixes:* trailing-discount, vendor cap, discount cap, higher Buzz floor.
-3. **Do the characters seat in 45–55%, with no dominant char×mission combo?** And do the Market events feel
-   *swingy-fun*, not *random*? *Attack:* round-robin 5×5 + mirror control; win-rate per character
-   conditioned on mission; the feel-test for events. *Fail fixes:* re-tune the one offending ability/flaw;
-   exclude a mission from a character's implied pool; add the "brewing" telegraph.
-
-## Handoff notes (guardian sweep — where to look)
-
-**v3.1 — what moved (run `bg-theme` coherence + `bg-elegance` budget on the change):**
-- **The signature twist did NOT move** — the vendor-courting engine is untouched. What moved: (1) **vendor
-  costs re-balanced for movement** (South/Central specialties now demanded; `bg-developer` re-costs
-  `vendors.csv` + `ingredients.csv` supply to the *Movement rebalance* spec); (2) **a new conditional
-  Poach action** (same-location steal, −1 Rep). Neither touches the engine, the tracks, or the Buzz brake.
-- **`bg-theme` check (the load-bearing one):** does the **Poach** read **warm agent-vs-agent slapstick**
-  (a cheeky swipe at your *rival*, never a vendor or place) — the anti-extraction rail must hold; the
-  keyword ("Poach"/"Tip-Off") is theme's call. And do the **re-costed vendors** still keep every dish
-  *real* (the anchor ingredient true; the CD "connections you bring" framing used only for cross-links,
-  routed past the consultant)? — the *never-mangle* rail binds.
-- **`bg-elegance` check:** the honest ledger — Poach is a **conditional 6th action** (~+0.05–0.1, no new
-  component), Change 1 is weight-neutral and may *reduce* teach friction (icon-matches-cost now). Net
-  ~2.35–2.45, headroom thinning; first trim (Rep milestones → pure end-VP) held in reserve.
-- **`bg-theme` events pass (in parallel):** the rebalance needs **no event respec** — it only makes
-  South/Central boon events (Mango Season, Oyster Glut, Bubble-Tea Festival) bite harder (their specialties
-  are now demanded). Keep the events market-compatible; a plus for the "funnier events" work.
-- **`bg-playtest`:** re-cost the sim vendor model to the target distribution + add the Poach action, then
-  run probes **A (movement spread)** and **B (Poach risk-reward)** above before re-confirming the v3 three.
+- **Act** — one of three escalating game phases (Stalls → Eateries → Marquee); advances on N table-wide
+  wins; Act 3's end scores the game.
 
 ---
 
-**The signature twist has moved.** v2's twist was the Hot-List race on the same cards as the secret
-itinerary. **v3's signature twist is: you *court the island's vendors* — paying fresh ingredients + Buzz —
-and each secured vendor is an engine piece (a compounding discount) that also climbs Prestige, Reputation
-and Coverage toward your hidden signature tour; the shared Vendor Board is the rival race.** Trigger
-`bg-theme` (does *courting = the vendor granting their blessing to the agent they like best* read warm and
-anti-extraction? is Buzz-as-promotion coherent? are the 5 characters warm/varied, not caricature? events
-secular?), `bg-elegance` (is the ~2.3–2.4 ledger honest — Buzz + Characters + Event tiles as new types,
-Briefs cut, queue collapsed, Hot-List merged?), and — because component data + theme moved — `bg-access`
-(the busier board: Vendor Board + two tracks + region Markets keep dual-coding) and `bg-infodesign` (is a
-vendor card parseable at a glance — cost / icon / Prestige / Rep / perk?).
+## Riskiest assumptions & the top-3 open questions for playtesting
 
-**Cut mechanics to sweep for stranded names/rules:** **Plate**, **Dish** (now Vendor), **Briefs**, the
-**Conditions queue** (ACTIVE/NEXT), the **Hot-List** as a separate row — check nothing in
+**The single riskiest assumption:** **the Buzz-majority tug-of-war is fun and tense, not a swingy
+slap-fight or a degenerate "never commit, always snipe."** This is new, load-bearing, and untested. The
+re-sim must lead with it.
+
+**Top 3 open questions (in priority order):**
+
+1. **Is the Buzz fight fun/tense and non-degenerate? (THE make-or-break.)** *Attack (sim + table):*
+   **Buzz-war frequency & depth** (do agents escalate sanely, or drain the supply on one vendor?);
+   **"snipe-only" win-rate** (a strategy that never commits early and only closes at the last second —
+   must be ≤~55%, i.e. early commitment must be viable); **loser's-tempo cost** (how many actions does a
+   lost fight burn? is it "outraced not robbed" or feels-bad?); **supply pressure** (is ~24 Buzz right?).
+   *Fail fixes:* tune the ≥2 margin (→≥1 or ≥3), the Buzz-per-Promote (2), the supply size, or partially
+   refund the loser's Buzz to soften.
+2. **No dominant track or opening under the new interaction?** Do **tall ≈ rep-climb ≈ breadth** stay
+   competitive, and does the Buzz fight keep openings from solving (opponent-dependence)? *Attack:* the
+   dominant-track/opening probe (no line >~55%, ≥3 viable). *Fail fixes:* rebalance costs / track rewards.
+3. **Is the push-your-luck market spicy, not punishing — and does movement still spread?** *Attack:*
+   **hazard-hit rate per Visit**, **Visit vs Convenience-Store usage** (is Visit worth the risk?),
+   **per-region sourcing share** (each ≥~18%; South not starved), **inter-region moves/game** (region-
+   gating should *increase* travel). *Fail fixes:* hazard density per deck, the reveal-count, the "brewing"
+   telegraph knob; the cross-link rate for movement.
+
+*(Secondary: per-character 45–55% with the re-homed Rookie/Gourmand + the sharper Influencer; the Acts
+pacing to ~7–8 wins/player in ~40–45 min.)*
+
+---
+
+## OPEN DECISIONS for the Creative Director (A/B/C)
+
+**D1 — Act count & advance-condition.** *(The pacing spine.)*
+- **A. 3 Acts, advance on "N vendors won table-wide per act" (2p N≈5).** *(recommended.)* Cleanest pacing
+  control, scales with player count, and *is* the catch-up co-brake (fast winning hurries the end). ~15
+  wins → ~7–8/player → ~40–45 min.
+- **B. 3 Acts, advance when the act's *vendor deck is exhausted*.** Guarantees each tier is fully used;
+  con: depends on refill/deck size, less direct control, unwon vendors linger.
+- **C. 3 Acts, advance on a *shared Act track* filled by weighted wins (Marquee counts more).** Familiar,
+  very visible; con: it's essentially the Season counter we removed, re-skinned per act.
+> *Recommendation: **A**, with deck-exhaustion (B) as a silent backstop for edge cases.*
+
+**D2 — Buzz-gain method & the loser's-Buzz fate.** *(The heart of the rework.)*
+- **A. Promote places 2 Buzz on in-region vendor(s); on a win, ALL Buzz (winner + loser) clears to the
+  supply.** *(recommended.)* Simplest, symmetric, thematically clean ("hype dissipates once the deal's
+  done"); the loser loses only tempo → "outraced, not robbed." The escalation risk is real → sim probe #1.
+- **B. Same, but the *loser* gets a partial refund** (e.g. keep-half, rounded down, returned to the supply
+  as a "credit" they may re-place next turn). Softer on early committers; adds a bookkeeping rule and a
+  private-ish Buzz notion (against the "no private pool" cleanliness).
+- **C. Buzz is *taken* into a small private pool first (Promote = +2), then *placed* on-site.** Closer to a
+  hybrid of old + new; con: reintroduces the private-pool hoarding the rework is trying to kill.
+> *Recommendation: **A** — ship the clean version, use B's partial-refund only as a sim/table fail-fix if
+> early commitment proves dominated.*
+
+**D3 — Event boon/hazard ratio (in the market decks).**
+- **A. ~55–60% hazard / ~40–45% boon.** *(recommended.)* Hazard-leaning per the CD's "cut the boon skew,"
+  but the boon minority keeps Visits from being pure dread and holds the warm tone.
+- **B. ~50/50.** Safer/warmer; less of the "genuine risk" the CD asked for.
+- **C. Market decks = specialties + *hazards only*; boons delivered separately (e.g. milestone/opt-in).**
+  Maximal push-your-luck dread on every Visit; con: loses the "nice surprise" texture and adds a second
+  event channel.
+> *Recommendation: **A**. Also decide the reserve **"brewing" telegraph** (top card of each deck face-up) —
+> I'd hold it in reserve and add only if blind decks feel too swingy at the table.*
+
+**D4 (bonus, weight) — Poach & Coverage.**
+- **Poach:** **cut** *(recommended)* — the Buzz fight is the co-location interaction now; or **keep,
+  re-scoped** (only when *not* contesting a shared vendor) if the CD loved the swipe.
+- **Coverage:** **fold to mission-only** *(recommended, to hold ≤2.5)* — region-gating already forces
+  breadth; or **keep as a scoring track** and **raise the ceiling to ~2.6**.
+
+---
+
+## Handoff notes (guardian sweep — where to look)
+
+**v4 — what moved (run `bg-theme` coherence + `bg-elegance` budget on the change):**
+- **The signature twist EVOLVED.** Still "win vendors as engine pieces feeding tracks toward a hidden
+  mission on a shared board race," but the **race is now a committed, public, on-site Buzz-majority fight**
+  (the "Bribe"). This is exactly where theme/mechanics can desync — **`bg-theme` load-bearing checks:**
+  (1) does **"Bribe"** read as **warm comedy** (piling hype/goodwill on a vendor to win their favour),
+  **not** real corruption? — the anti-extraction/anti-sleaze rail; the mechanic (public Buzz you both pile
+  on, vendor "chooses" the bigger fan) *supports* a warm read, but the *word* needs care. (2) The **Acts**
+  framing (Stalls → Eateries → Marquee as a "season" arc) — a fiction hook to name. (3) The **Lunch-Box
+  Granny** — name + warm lore (packs 便當 from home; not a decline gag); confirm she's distinct from the
+  Night-Market Auntie. (4) Events now **hazard-leaning** — confirm the warm-comedic/tax-not-destroy tone
+  holds and stays **secular**.
+- **`bg-elegance` check (the honest ledger):** teach-weight up to **~2.5–2.6 pre-trim** (Buzz-majority is
+  the spend), banked by Extract/Poach/pantry cuts + Season→Acts + tiles→cards; **component types 7→~6.**
+  Deploy Coverage→mission-only to hold ≤2.5, or advise the CD's ceiling raise. Guard the rulebook word
+  count (the Buzz-majority section is new prose).
+- **`bg-access` / `bg-infodesign` (component data + board moved):** the board now shows **Buzz piled on
+  vendor cards** (a new at-a-glance read — whose Buzz, how much, the ≥2 gap) + the **Act track** + face-
+  down **market decks**. Keep dual-coding; make the Buzz-majority state parseable without counting.
+- **`bg-developer` data:** re-cost the 25 vendors to **named specialties only** (pantry removed), re-tier
+  into three **Act decks**; build the four **region market decks** (specialties + hazard-leaning events as
+  cards); rebuild `events.csv` (drop the boon skew, re-home into decks); re-home the two **wild_pantry**
+  perks → **wild_specialty**; add the **Buzz-reach** marquee perk; size the **Buzz supply** (~24 @2p);
+  re-theme **Conductor → Lunch-Box Granny** (ability + flaw) and **re-point the Rookie/Gourmand** abilities
+  (hazard-cancel / reveal-4-keep-2); print the **Act track** + Vendor Board Buzz zones.
+- **`bg-playtest`:** rework `sim/travel_agents.py` to model **Buzz-on-vendor majority + the push-your-luck
+  market decks + Acts + board escalation**, then run the three probes above **lead with Riskiest #1 (the
+  Buzz fight)**. The re-homed Rookie/Gourmand are now sim-legible — seat all five.
+
+**Cut mechanics to sweep for stranded names/rules:** **Extract**, **Poach**, **pantry**, **Stock Up**,
+**the Season counter**, **event tiles / the face-up Market**, **the Retired Conductor** — check nothing in
 components/rulebook/sim still references them.
-
-**New rules the fiction must explain:** **Buzz/Promote** ("bring people to the food"), **Court** ("the
-vendor blesses your tour"), the **discount icon** ("regulars vouch for you — the next stall's an easier
-sign"), **Reputation** ("your standing as an agent"), **Region-Coverage** ("the grand tour"), **Events in
-the Market** ("the island living its life"), **Extract** ("catch the last train").
-
-**`bg-developer` data:** vendor cards (cost = named ingredients + Buzz; region icon; Prestige/Rep/perk) by
-tier; the Mission pool (+7 patterns, draw-3-keep-1); the Buzz supply; the Reputation track + milestone
-perks + Coverage bonus printed on the board; region Market supplies with **~2–3 Event tiles each**; 5
-Character mats; add **chicken 雞 + egg 蛋** North tokens; keep vendor region-icons **balanced across
-regions** despite North's 4 specialties.
-
-**`bg-playtest`:** rework `sim/travel_agents.py` to model **court-a-vendor + two inputs + the discount
-ramp + the three tracks**, then run the three probes above (dominant-track/opening, economy-runaway,
-per-character 45–55%) + an early 2p Screentop feel-test for engine satisfaction + event feel.

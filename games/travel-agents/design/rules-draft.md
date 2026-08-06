@@ -1,170 +1,160 @@
-# Travel Agents: Taiwan — Rules Draft (v3, first-pass outline)
+# Travel Agents: Taiwan — Rules Draft (v4, first-pass outline)
 
 > A skeleton for `bg-developer` / `bg-elegance` to flesh into the real rulebook. **Teach-in-play order.**
 > Voice: warm travel-guide / cheerful head-office memo (per `identity.md`). Keep it tight —
-> `complexity-budget.json` caps the rulebook (1650 words). Detail lives in `design-doc.md`.
-> **v3 = the vendor-courting engine.** You *court vendors* (not "plate dishes"); two inputs (ingredients
-> + Buzz); each vendor is an engine piece. Fiction labels follow the CD re-skin (rival travel agents
-> building a Taiwan tour); final names → `bg-theme`.
+> `complexity-budget.json` caps the rulebook (1650 words). Detail lives in `design-doc.md` (v4).
+> **v4 = the Buzz-majority / Acts rework.** You pile **Buzz** onto vendors and win them by out-hyping your
+> rival on-site; the market is a face-down push-your-luck deck; the game runs through escalating **Acts**.
+> Working keyword **"Bribe"** (was Court) → `bg-theme` finalizes; also *Promote / Act / Lunch-Box Granny*.
 
 ---
 
 ## 0. The pitch (read aloud, 20 seconds)
-"You're rival **travel agents** building the best Taiwan food **tour**. Ride the rails, source real
-ingredients from the regions that grow them, and drum up **Buzz**. Spend both to **win over the island's
-vendors** — each one you sign makes the next stall easier to court, and pushes you up your **Prestige**,
-your **Reputation**, and how much of the island your tour **covers**. Chase your own **secret signature
-tour** (+7). Best tour is named **Top Agent**."
+"You're rival **travel agents** building the best Taiwan food **tour**. Ride the rails, dig real
+ingredients out of each region's market (mind the typhoon), and pile up **Buzz** on the vendors you want.
+Win a vendor by **out-hyping your rival, on the spot** — each one you sign makes the next stall cheaper and
+pushes you up your **Prestige**, your **Reputation**, and how much of the island your tour **covers**. The
+season runs through three **Acts**, each with bigger names than the last. Chase your **secret signature
+tour** (+7). Best tour is **Top Agent**."
 
 ## 1. Goal
-Score the most points — from your vendors' **Prestige**, your **Reputation** standing, your
-**Region-Coverage** breadth, and your **secret signature mission** (+7, revealed at the end). Most points
-= **Top Agent**.
+Score the most points — from your vendors' **Prestige**, your **Reputation** standing, your breadth
+(**Coverage** / a mission), and your **secret signature mission** (+7, revealed at the end). Most = **Top
+Agent**.
 
 ## 2. Setup (teach while you set up)
-1. Unfold the **Taiwan map** — four regions in a ring: **North 北 · Central 中 · South 南 · East 東** (the
-   HSR line links North↔South down the west coast). The board also holds the **Season end-timer**, the
-   **Prestige (score) track**, the **Reputation track**, the tiered **Vendor Board** (3 rows), and each
-   region's **Market slots**. Put each agent's **Prestige** and **Reputation** markers at 0.
-2. Stock each region's **Market**: its specialty tokens **+ a couple of Event tiles**, shuffled; draw to
-   fill its face-up slots. Set out the **pantry** pile (convenience store — available anywhere, unlimited)
-   and the **Buzz** pool.
-3. Sort the **Vendor deck** by tier (**Stalls / Eateries / Marquee**); shuffle each; deal **3 per tier**
-   face-up to the Board (more at higher counts).
-4. Each agent: take an **Agent Character** (one ability + one flaw — read them aloud; they're public) and
-   a **pawn** (start on opposite regions at 2p — one North, one South). **Draw 3 Mission cards, secretly
-   keep 1** (your signature tour, +7); return the other 2 face-down. Your Larder starts empty and stays
-   **face-up** — your mission is the only thing you keep hidden.
+1. Unfold the **Taiwan map** — four regions in a ring: **North 北 · Central 中 · South 南 · East 東** (HSR
+   links North↔South). The board holds the **Act track**, the **Prestige track**, the **Reputation track**,
+   the **Vendor Board** slots, and a face-down **market deck** space per region. Put each agent's
+   **Prestige** and **Reputation** markers at 0.
+2. Build the **four region market decks**: each region's **two specialty cards** (several copies) + its
+   **event cards** (mostly hazards), shuffled face-down. Set out the **Buzz** supply.
+3. Sort vendors into three **Act decks** — **Stalls / Eateries / Marquee**; shuffle each. Deal the
+   **Stalls** deck to fill the Vendor Board (2p: **5**). Set the **Act track** to **Act 1**.
+4. Each agent: take an **Agent Character** (ability + flaw — read aloud, public) and a **pawn** (start
+   opposite at 2p — one North, one South). **Draw 3 Mission cards, secretly keep 1** (+7); return 2
+   face-down. Your Larder starts empty and stays **face-up** — your mission is the only hidden thing.
 
 ## 3. How a turn works (the core loop — teach these five, then just play)
-On your turn, do **ONE** action. Then if your Larder (ingredients) is over **7**, discard down to 7.
+On your turn, do **ONE** action. Then if your Larder is over **7** ingredients, discard down to 7.
 
-- **STOCK UP** — take **2 ingredients** where you stand (this region's specialties and/or pantry), then
-  refill the Market slots. *(A flipped Event tile fires now — see §6.)*
-- **TRAVEL** — move to a **neighbouring** region, then take **1 ingredient** there. (North↔South is a
-  neighbour by HSR.)
-- **PROMOTE** — take **2 Buzz** (the promotional currency; always available, never contested).
-- **COURT A VENDOR** — the beat that pays. Pick a Board vendor you can afford, pay its cost, and sign it to
-  your tour (§4–§5).
-- **EXTRACT** — file your finished tour / catch the last train home: trigger the end-game (§7).
-- **POACH** *(only when a rival shares your region)* — a cheeky swipe: take **1 random specialty** from
-  the rival's Larder into yours and move your **Reputation down 1**. See §6½.
+- **VISIT THE LOCAL MARKET** *(where you stand)* — flip the top **3** of this region's market deck. Any
+  **event** flipped happens now (**hazards fire!**), then is discarded. **Keep up to 2** of the
+  **specialty** cards you turned up; discard the rest. *(The gamble: more hazards = more risk.)*
+- **CONVENIENCE STORE** *(anywhere)* — flip the top **1** card of **any** region's market deck. A
+  specialty? Take it. An event? Shrug — the shelf was bare (discard it, nothing happens). *(One safe blind
+  card from any region — no travel needed.)*
+- **TRAVEL** — move to a **neighbouring** region (HSR = North↔South), then flip the top **1** card of the
+  region you **arrive** in (specialty → take it; event → nothing, keep moving).
+- **PROMOTE** *(where you stand)* — place **2 Buzz** from the supply onto **vendor(s) in this region**.
+  Buzz stays on the card for all to see; your rival can pile Buzz on the same vendor too.
+- **BRIBE A VENDOR** *(in its region)* — win a vendor over. See §4–§5.
 
-## 4. Sourcing & Buzz (the two inputs)
-Every vendor wants **two things** to shine on your tour:
-- **Fresh ingredients** — region-specific. You can only take a region's **specialty** while you're **in**
-  that region: beef/pork/chicken/egg in the North, tea & pearls in Central, oysters & milkfish in the
-  South, rice & mountain greens in the East. **Pantry** staples are at the convenience store everywhere.
-  *(That's the travel engine: you go where the food lives.)*
-- **Buzz** — you **promote** the vendor, promising them customers and hype. That's literally your job as a
-  travel agent: you bring people *to* the food. Buzz is fungible and safe — one Promote = 2 Buzz.
+## 4. Buzz — the hype fight (the heart of it)
+Every vendor wants to feel wanted. You show them with **Buzz** — you *promote* them, promising crowds and
+hype (that's literally your job as a travel agent: you bring people *to* the food).
+- Buzz only ever sits **in the supply** or **on a vendor** — you never keep it in hand.
+- To place Buzz on a vendor you must be **standing in its region**.
+- **Both agents can pile Buzz on the same vendor** — that's the fight.
 
-## 5. Courting a vendor (the engine)
-To **court** a Board vendor, pay its printed cost: its **named ingredients** *minus your discounts* (see
-below) **plus its Buzz** (Buzz is never discounted). Take the vendor to your tour and gain, all at once:
+## 5. Bribing a vendor (winning it over)
+To **Bribe** a Board vendor, you must, all at once:
+1. be **in the vendor's region**;
+2. hold **at least 2 more Buzz on it than your rival** (the majority — checked right now);
+3. **pay its ingredients**, *minus your region discounts* (see below).
+Then take the vendor to your tour and gain, at once:
 - its **Prestige** — move your score marker up now;
-- its **Reputation** — move your Rep marker up (milestones give perks — §8);
-- its **perk** — usually a permanent **region discount icon** (see below); higher vendors carry stronger
-  perks (extra Buzz income, a wild, a Rep engine);
-- a **Region-Coverage** tick if it's your first vendor in that region.
-Then **refill** the Board slot from that tier's deck, advance the **Season +1**, and — because the vendor
-has chosen *you* — your rival is **locked out of that vendor**.
+- its **Reputation** — move your Rep marker up;
+- its **perk** — usually a permanent **region discount icon** (bigger vendors carry stronger perks);
+- a **Coverage** tick if it's your first vendor in that region.
+Now **clear ALL Buzz on that vendor** (yours *and* your rival's) back to the supply — the deal's done, the
+hype's spent. **Refill** the Board slot from the current Act deck, and move the **Act track +1**.
 
-> **The ramp (the "aha").** Each vendor carries a **region icon** (North/Central/South/East, or a wild).
-> Every matching icon you already hold makes that region's ingredients **1 cheaper** on future vendors.
-> Sign a couple of Southern stalls and the next Southern vendor barely needs oysters at all. **Buzz is
-> never discounted** — so the more you ramp, the more Buzz (not ingredients) becomes the thing that gates
-> your next signing. Sign smart.
+> **The ramp (the "aha").** Each vendor carries a **region icon**. Every matching icon you already hold
+> makes that region's ingredients **1 cheaper** on future vendors. Sign a couple of Southern stalls and the
+> next Southern vendor barely needs oysters. **Buzz is never discounted** — so as you ramp, the *hype
+> fight* (not the ingredients) becomes the thing that gates your next win.
 
-> **Outraced, not robbed.** When your rival courts a vendor you wanted, the vendor simply chose *them* this
-> time — you keep everything you sourced, and there's a fresh stall on the Board. You out-plan each other;
-> you never seize a place.
+> **Outraced, not robbed.** If your rival out-hypes you and wins a vendor you wanted, your Buzz just
+> fizzles back to the supply — you keep every ingredient you sourced, and a fresh vendor comes out. The
+> vendor simply chose *them* this time. You out-plan each other; you never seize a place.
 
-## 6. The Market & Events (the island doesn't sit still)
-Each region's Market is face-up and **finite** — there's only so much of each specialty, so grabbing the
-last oyster forces your rival to reroute. **Pantry** and **Buzz** are the two always-available fallbacks,
-so you're never truly stuck. When you refill the Market, a flipped **Event** tile fires immediately:
-- **festivals / boons** — a mango glut, a bubble-tea festival that hands you Buzz, a kind local who sets
-  you up (most events are good news);
-- **hazards** — a typhoon washes out a Market shelf (reroute — you lose nothing you hold), plum rains slow
-  a Stock Up (events **tax or delay, never destroy**).
-Boon-skewed, region-thematic, secular. Taking 2 ingredients = up to two flips = a little more risk (that's
-the push-your-luck, opted into).
+## 6. The market decks & events (the island doesn't sit still)
+Each region's market is a **face-down deck** of its two specialties + a few **event** cards (mostly
+hazards). When you **Visit**, flipped events happen immediately:
+- **hazards** *(the majority)* — a typhoon washes a market's next cards, plum rains slow your haul, a
+  "SOLD OUT" sign, scooter gridlock eats your next trip. They **tax or delay — never destroy** what you
+  already hold, never cost a whole turn.
+- **boons** *(the minority)* — a mango glut, a bubble-tea festival that hands out Buzz, a kind auntie who
+  loads you up.
+Warm, secular, region-flavoured. **Only Visiting fires events** — a lone card flipped by Travel or the
+Convenience Store just means "shelf was bare."
 
-## 6½. The Poach (when you're nose-to-nose with your rival)
-If a rival's pawn is in **your** region, you may spend your turn to **Poach** instead of a normal action:
-- Reach into their **Larder** and take **1 random specialty ingredient** (they choose nothing; ignore
-  pantry — the convenience store's always open, so there's nothing to swipe there). If they're holding only
-  pantry, there's nothing to Poach.
-- Pay for the cheek: move your **Reputation marker down 1** (never below 0 — no standing, no Poach).
-- That's your whole turn: Poach doesn't refill the Market, fire an event, or advance the Season.
+## 7. The three Acts (the season escalates)
+The game runs through **three Acts**, and the Vendor Board gets tougher each time:
+- **Act 1 — Stalls:** cheap, easy vendors. Build your discount ramp here.
+- **Act 2 — Eateries:** pricier, cross-region, richer perks.
+- **Act 3 — Marquee:** the big names — expensive, fought-over.
+When **[N] vendors have been won this Act** (2p: about **5**), the Act **turns over**: sweep any unwon
+vendors, deal fresh from the next Act's deck (Buzz on swept vendors returns to the supply), advance the
+**Act track**. *(The faster you all win, the faster the season moves — a built-in catch-up: a slow, tall
+player gets more turns.)*
 
-*It's a swipe at your **rival**, never a vendor or the place — you nab the oysters off their tray before
-they can, and word gets round that you play a little dirty (the Rep ding). Usually you'd rather Stock Up;
-Poach when the exact thing they're holding is the thing you need — or the thing that would let them court
-that marquee first.*
+## 8. Ending the trip
+When the **final Act's** turn-over condition is met, **finish the current round**, play **one more full
+round**, and stop. *(No "wrap it up" action — the Acts pace the game. Reaching the top of Reputation scores
+its reward but does not end the game.)*
 
-## 7. Ending the trip
-The end-game begins the moment **either** happens: a player takes **EXTRACT**, **or** the **Season**
-end-timer fills (it advances +1 each time anyone courts a vendor). Then: **finish the current round**,
-play **one more full round**, and stop. *(Reaching the top of the Reputation track scores its reward but
-does **not** end the game — the Season timer paces the game so the engine has room to build.)*
+## 9. Scoring (reveal signature missions now!)
+Your markers already show two vectors. Total:
+1. **Prestige** — the sum of your vendors' stars (already on your track).
+2. **Reputation** — score the VP for your **final** position **only** (not cumulative): 3–5 → **+2** · 6–8
+   → **+4** · 9–11 → **+6** · 12 → **+9**.
+3. **Coverage** — distinct regions your vendors cover: **2→2 · 3→5 · all 4→9**. *(May be folded into a
+   mission — see the design decision.)*
+4. **Signature mission** — flip it: **+7** if you pulled off its pattern, else 0.
+Most points wins → **Top Agent**. **Ties:** highest Reputation, then most vendors, then most regions.
 
-## 8. Scoring (reveal signature missions now!)
-Your markers already show two vectors live. Total four sources:
-1. **Prestige** — the sum of your vendors' stars (already on your score track).
-2. **Reputation** — score the VP for your **final** position **only** (NOT cumulative): end at 3–5 → **+2**
-   · 6–8 → **+4** · 9–11 → **+6** · 12 → **+9**. *(You also collected one-time perks as you passed 3 / 6 / 9
-   during play. Reaching 12 does **not** end the game — the Season timer does.)*
-3. **Region-Coverage** — distinct regions your vendors cover: **2→2 · 3→5 · all 4→9**.
-4. **Signature mission** — flip it: **+7** if you pulled off its vendor pattern, else 0.
-Add them up. Most points wins → **Top Agent**. **Ties:** highest Reputation, then most vendors, then most
-regions.
-
-## 9. The warm-tone reminders (margin asides, not rules)
-- You're a travel agent **promoting** Taiwan's food — courting a vendor means winning their blessing by
-  helping them (fresh ingredients + customers), never taking from them or the place.
-- Events are the island living its life — festivals, weather, kind locals — never sacred customs played
-  for laughs; local characters are warm, real people, never a punchline.
-- Dish/vendor names stay real (Tâi-lô + 繁體). The comedy is the mission gag and your own gluttony — never
-  the food or the place.
+## 10. The warm-tone reminders (margin asides, not rules)
+- You're a travel agent **promoting** Taiwan's food — winning a vendor means out-hyping your rival to earn
+  their blessing, never taking from them or the place. "Bribe" is the cheeky word; the deed is a warm hard
+  sell, not corruption.
+- Events are the island living its life — festivals, weather, kind locals — never sacred customs for
+  laughs; local characters are warm, real people.
+- Dish/vendor names stay real (Tâi-lô + 繁體). The comedy is the mission gag and your own gluttony.
 
 ---
 
 ## Teaching sequence (FTUE — the order a first game should reveal rules)
-1. **Goal + one Vendor** — "here's a beef-noodle stall; it wants 2 North ingredients + 1 Buzz. Let's court
-   it." (Show the two inputs immediately.)
-2. **Stock Up / Travel / Promote** — source the beef (North), take some Buzz; feel the two axes.
-3. **Court** — pay + sign it: Prestige marker moves, Rep marker moves, point at its **region icon**
-   ("that's your first discount — the next North vendor is cheaper").
-4. **The ramp** — court a second same-region vendor and *watch it cost less ingredients* (the engine
-   "aha"), and note Buzz still costs full.
-5. **The Board race** — "your rival wants that marquee too; the instant one of you courts it, it's theirs.
-   Outraced, not robbed."
-6. **Reputation + Coverage** — point at the two tracks/vectors; "several ways to win — go tall, climb Rep,
-   or spread across the island."
-   - *(introduce **Poach** the first time both pawns land in one region: "you two are elbow-to-elbow — you
-     can swipe a random ingredient off their tray, but it dings your Reputation. Cheeky, situational.")*
-7. **Signature mission** — "your secret +7 tour; keep it face-down."
-8. **Market events** — introduce on the first refill flip; "the island lives — this festival just handed
-   you Buzz."
-9. **Extract / end-game** — introduce once the Season is ~half full.
+1. **Goal + one Vendor** — "here's a beef-noodle stall; it wants 2 North ingredients, and whoever hypes it
+   most (by 2 Buzz) while standing here wins it. Let's go get it."
+2. **Visit / Convenience Store / Travel** — dig the North market for beef; note the hazard risk; grab a
+   safe card; move.
+3. **Promote** — drop Buzz on the stall; "your rival can pile on too — this is the fight."
+4. **Bribe** — in-region, ahead by 2 Buzz, pay the beef → win it: Prestige moves, Rep moves, point at its
+   **region icon** ("your first North discount"). Its Buzz clears.
+5. **The ramp** — win a second North vendor and *watch the ingredients cost less* (Buzz still full).
+6. **The hype fight** — the first time you both stack Buzz on one vendor: "out-commit, race to the
+   ingredients, or concede and take another. Outraced, not robbed."
+7. **Reputation + Coverage** — the two tracks; "several ways to win."
+8. **Signature mission** — "your secret +7 tour; keep it face-down."
+9. **Acts** — introduce when the Board first turns over: "yesterday's stalls are gone; the big names
+   arrive."
 
 ## Still to specify (→ `bg-developer`)
-- The tiered **Vendor deck** (~44–52: T1 Stalls / T2 Eateries / T3 Marquee) as component data (CSV): cost
-  (named ingredients + Buzz), region icon, Prestige, Rep, perk. **v3.1 re-cost (see design-doc *Movement
-  rebalance*):** anchor every vendor's ingredient cost in its **own icon-region**, add cross-region links
-  on ~40% (spread evenly, T2/T3), cap pork ≤5 / rice ≤5, floor every specialty at ≥3 vendors — so all four
-  regions are demanded (South rises from ~2 tokens to ~9). Keep every real dish real (anchor true; CD
-  "connections you bring" framing for cross-links only; consultant-checked).
-- The **Mission pool** (~12–16 vendor patterns, +7; draw-3-keep-1).
-- Region **Market supplies** with **~2–3 Event tiles** each; the **~11 Event** starter set (design-doc).
-- **Buzz** token supply; add **chicken 雞 + egg 蛋** North ingredient tokens; final specialty counts
-  (≈2× solo demand; sub-linear at higher counts).
-- Board printing: **Season end-timer**, **Prestige track**, **Reputation track** (milestones 3/6/9/top +
-  perks), **Coverage** scoring key, the tiered **Vendor Board** rows + region **Market slots**.
-- **5 Character mats** (ability + flaw); keep un-swingy (EV ~2–4 VP), public.
-- Player-aid card (≤22 lines) — the five actions + courting cost & discount + the four scoring vectors +
-  end-triggers.
-- Iconography for ingredients + 4 regions + the vendor-card layout (dual-coded colour **and** emblem —
-  `bg-access` / `bg-infodesign`).
+- Re-cost the **25 vendors** to **named specialties only** (pantry removed), preserving the movement
+  rebalance (anchor in-region + ~40% cross-links + workhorse caps + every specialty ≥3). Re-tier into three
+  **Act decks** (Stalls / Eateries / Marquee).
+- Build the **four region market decks** (specialty cards + event cards, hazard-leaning); rebuild
+  `events.csv` (~14; drop the boon skew; re-home into the decks; ~2 hazards/deck + table-wide ones).
+- Re-home orphaned perks: **wild_pantry → wild_specialty**; add the **Buzz-reach** marquee perk.
+- Size the **Buzz supply** (~24 @2p; +8–10/player). Size the **Act-advance threshold** (~5 wins @2p).
+- Re-theme **Conductor → Lunch-Box Granny** (ability: Travel draws the *leaving* region; flaw: Visit keeps
+  1). **Re-point** the **Rookie** (hazard-cancel once/turn) and **Gourmand** (Visit reveals 4, keep 2).
+  **Influencer** Promote places 3 Buzz.
+- Board printing: **Act track**, Prestige track, Reputation track, Vendor Board slots **with Buzz zones**,
+  four **market-deck** spaces; the Coverage scoring key (if kept).
+- **Player-aid** (≤22 lines): the five actions + the Bribe requirements (region + ≥2 Buzz + ingredients −
+  discount) + the four scoring vectors + the Act-advance rule.
+- Iconography: ingredients + 4 regions + the vendor-card layout (cost / region icon / Prestige / Rep / perk
+  / **Buzz count**), dual-coded (`bg-access` / `bg-infodesign`).
