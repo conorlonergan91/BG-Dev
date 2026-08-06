@@ -18,6 +18,13 @@
 - **Audience:**
 - **Target platform:** <!-- Kickstarter / Gamefound / BackerKit / pitch to publisher -->
 
+## Complexity budget (set at the START — defend it as you iterate)
+- **Target weight:** <!-- BGG 1–5; the ceiling you're designing to -->
+- **Caps:** see `complexity-budget.json` (rulebook words, keywords, exceptions, component types,
+  player-aid lines). Check drift with `python tools/complexity/check_complexity.py --game games/<slug>`
+  and run **`bg-elegance`** each iteration. Over budget → simplify, or consciously log a raise. Never
+  silent creep.
+
 ## Mechanism spine
 <!-- 1–3 mechanism families and the blend; why each part needs the others (see knowledge/archetypes.md). -->
 

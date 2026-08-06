@@ -50,6 +50,15 @@ After the third Night, total up:
 
 Most VP wins. Tie → most **Naval** ships; still tied → shared victory.
 
+## FAQ (kept short — if a question recurs, we fix the rule instead)
+- **Are our hands open?** Yes. Played Signals stay face-up, so you both know which Signals remain — only
+  the Signal you commit *this* round is secret until the reveal.
+- **We played the same Signal — now what?** It's a tie: the Tide doesn't move, and the **First Keeper**
+  picks a ship first. You each still take one of the two.
+- **Why does the *dimmer* light grab the ship?** Your bright beam is busy steering the Tide; the keeper
+  who held their light back is free to guide the nearer ship into port. Bright = position, dim = cargo.
+- **Who's First Keeper on the first Night?** Whoever last saw the sea (or decide randomly).
+
 ## Optional module — Fog (push-your-luck)
 When revealing the Channel, place the top ship **face-down**. The beam winner may take it **sight
 unseen** before the face-up one. *Adds a gamble; test after the base game feels right.*

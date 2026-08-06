@@ -1,0 +1,9 @@
+{
+  "target_weight": 1.8,
+  "max_rulebook_words": 900,
+  "max_keywords": 8,
+  "max_exception_words": 8,
+  "max_component_types": 4,
+  "max_player_aid_lines": 16,
+  "_note": "Set at project start. Beacon is a ~20-min elegant 2p filler; if a change pushes a proxy over, either simplify (bg-elegance) or make a conscious, logged decision to raise the budget."
+}

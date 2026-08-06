@@ -15,6 +15,13 @@ Use **WebSearch / WebFetch** liberally — rankings, awards, prices, and release
 knowledge base is only a baseline. Prioritise BoardGameGeek, publisher sites, Spiel des Jahres,
 crowdfunding platforms, and reputable coverage. **Cite URLs** for anything time-sensitive.
 
+For **hard facts about a specific game** — community **weight** (1–5), player count, playtime,
+mechanisms, rank — prefer the **deterministic** lookup over recall or prose:
+`python tools/bgg/bgg_lookup.py --name "<game>"` (reads BoardGameGeek's XML API). Use it especially to
+ground comparables and to answer "what's the weight of *X*?" precisely. It needs outbound access to
+boardgamegeek.com (blocked by some managed-session egress policies — if so, say so and fall back to
+cited WebSearch).
+
 ## What to investigate
 - **Comparables / competitors** — 5–10 games occupying similar space (same mechanism blend, theme, or
   audience). For each: what it does well, where players complain, its weight/count/price.

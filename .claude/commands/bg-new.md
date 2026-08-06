@@ -11,6 +11,7 @@ Steps:
    - `game-bible.md`  (copy from `templates/game-bible.md`, fill in the title/slug/date)
    - `decision-log.md` (copy from `templates/decision-log.md`)
    - `make.sh` (copy from `templates/make.sh`; edit theme/title/decks — regenerates `build/` and snapshots `exports/`)
+   - `complexity-budget.json` (copy from `templates/complexity-budget.json`; set caps to the game's target weight — this is the "define the target at the start" step)
    - `design/`, `components/`, `playtests/`, `art/`, `marketing/`, `exports/`  (create with a `.gitkeep`)
    - (`build/` is scratch and gitignored — no need to create it; the tools make it.)
 3. Then invoke the `board-game-studio` skill and, as Creative Director, ask the one framing question

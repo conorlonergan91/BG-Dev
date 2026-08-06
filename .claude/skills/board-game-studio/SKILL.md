@@ -57,6 +57,7 @@ independent agents in parallel.
 | Development | `bg-developer` | Turning the spec into component data + rules draft + build scaffolding. |
 | Prototyping | `bg-prototyper` | Turning data into a TTS module / PnP PDF / renders / 3D pieces. |
 | Critique | `bg-critic` | Red-teaming a design before playtests — dominant strategies, dead turns, swinginess, co-op alpha-player leaks. |
+| Elegance | `bg-elegance` | Guarding the complexity budget, finding what to simplify, keeping rulebook + player aid tight, FAQ discipline. |
 | Testing | `bg-playtest` | Planning a playtest, simulating (`tools/sim`), or synthesizing feedback into the next change. |
 | Marketing | `bg-marketing` | There's a stable game to pitch/sell (sell sheet, campaign, positioning). |
 | Publishing | `bg-publishing` | Naming, commissioning art, or planning to sell (IP/compliance IE/UK/US). |
@@ -67,7 +68,11 @@ A/B/C choice, get the call, record it, and move to the next stage.
 ## Starting or resuming
 
 1. **New game:** scaffold `games/<slug>/` from `templates/` (see `/bg-new`). Create `game-bible.md`
-   and `decision-log.md`. Confirm the slug/title with the human.
+   and `decision-log.md`. Confirm the slug/title with the human. **Set the target weight +
+   `complexity-budget.json` now** — the complexity target is defined at the *start* and defended every
+   iteration by `bg-elegance`. Never let weight creep silently past it. To anchor on a real game
+   ("budget it like *Arcs* / *The White Castle*"), seed it deterministically from BoardGameGeek:
+   `python tools/bgg/bgg_lookup.py --name "<game>" --suggest-budget --out games/<slug>/complexity-budget.json`.
 2. **Resume:** read `game-bible.md` + `decision-log.md`, give a 3-line "where we are / what's next"
    recap, then propose the next stage as an A/B/C choice.
 3. If no game exists yet and the human is unsure, offer: **(A)** ideate from a blank slate, **(B)**

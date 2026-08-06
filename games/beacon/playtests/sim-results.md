@@ -1,34 +1,38 @@
 # Beacon — simulation report
 
-1200 games per matchup; win rate averages both seatings (ties = 0.5).
+1000 games per matchup; win rate averages both seatings (ties = 0.5).
 
 ## Overall win rate by strategy
-- **always_high     **  54.5%  ████████████████
-- **hand_smart      **  53.9%  ████████████████
-- **grabber         **  52.6%  ████████████████
-- **tide_racer      **  50.7%  ███████████████
-- **random          **  49.4%  ███████████████
-- **hoarder         **  47.7%  ██████████████
-- **reactive        **  46.1%  ██████████████
-- **always_low      **  45.1%  ██████████████
+- **always_high     **  54.7%  ████████████████
+- **hand_smart      **  54.2%  ████████████████
+- **grabber         **  52.4%  ████████████████
+- **tide_racer      **  51.7%  ████████████████
+- **random          **  48.9%  ███████████████
+- **hoarder         **  47.8%  ██████████████
+- **reactive        **  46.0%  ██████████████
+- **always_low      **  44.3%  █████████████
 
 ## Matchup grid (row as P0 vs column as P1 — row's win rate)
 
 | P0 \ P1 | random | always_hig | always_low | hoarder | reactive | grabber | hand_smart | tide_racer |
 |---|---|---|---|---|---|---|---|---|
-| random |   46% |   42% |   60% |   49% |   57% |   45% |   41% |   52% |
-| always_hig |   60% |   49% |   83% |   49% |   56% |   49% |   39% |   50% |
-| always_low |   42% |   16% |   48% |   60% |   49% |   46% |   46% |   51% |
-| hoarder |   50% |   50% |   41% |   48% |   64% |   33% |   44% |   49% |
-| reactive |   42% |   46% |   49% |   38% |   52% |   67% |   37% |   39% |
-| grabber |   55% |   49% |   51% |   67% |   34% |   52% |   63% |   48% |
-| hand_smart |   56% |   63% |   53% |   54% |   64% |   38% |   51% |   53% |
-| tide_racer |   52% |   50% |   50% |   51% |   56% |   48% |   47% |   49% |
+| random |   47% |   41% |   59% |   51% |   55% |   44% |   45% |   47% |
+| always_hig |   60% |   50% |   84% |   50% |   55% |   51% |   38% |   52% |
+| always_low |   41% |   18% |   50% |   58% |   52% |   50% |   44% |   47% |
+| hoarder |   50% |   50% |   41% |   50% |   63% |   32% |   46% |   50% |
+| reactive |   46% |   43% |   51% |   33% |   51% |   63% |   36% |   43% |
+| grabber |   56% |   50% |   55% |   70% |   32% |   50% |   58% |   48% |
+| hand_smart |   56% |   63% |   56% |   55% |   65% |   38% |   52% |   51% |
+| tide_racer |   52% |   49% |   54% |   50% |   58% |   53% |   50% |   50% |
 
 ## Averaged game metrics
-- margin: 5.999
-- tie: 0.129
-- tide_points_total: 4.582
-- tide_decisive: 0.296
-- round_ties: 4.081
-- nights_tide_centered: 1.551
+- margin: 6.007
+- tie: 0.131
+- tide_points_total: 4.593
+- tide_decisive: 0.298
+- round_ties: 4.077
+- nights_tide_centered: 1.547
+
+## Health read
+- ✓ **no single dominant line** — strategies are intransitive (rock-paper-scissors). A good depth signal.
+- Reminder: identical **deterministic** strategies always mirror-tie in a simultaneous game — that's an artifact, not shallowness. Read depth from *cross-strategy* results and whether the optimal line actually uses the signature mechanic (probe with --matchup).
