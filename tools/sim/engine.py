@@ -117,6 +117,56 @@ def round_robin(game, strategies, n=1000, base_seed=1):
     }
 
 
+def _is_naive(name):
+    n = name.lower()
+    return n.startswith("random") or n.startswith("always") or n in ("min", "max", "first")
+
+
+def health_read(res):
+    """Turn a round-robin into balance signals (the reusable lessons from playtesting).
+    See knowledge/simulation-and-balance.md for how to read these."""
+    names = res["strategies"]
+    grid = res["matchup_grid"]
+    if len(names) < 2:
+        return ["(need ≥2 strategies for a health read)"]
+    # head-to-head win rate, averaged over both seatings
+    def h2h(a, b):
+        return (grid[a][b] + (1 - grid[b][a])) / 2
+    # Condorcet winner = a strategy that beats every other head-to-head
+    condorcet = [a for a in names if all(h2h(a, b) > 0.5 for b in names if b != a)]
+    # intransitive triple (rock-paper-scissors)?
+    intransitive = any(h2h(a, b) > 0.5 and h2h(b, c) > 0.5 and h2h(c, a) > 0.5
+                       for a in names for b in names for c in names
+                       if len({a, b, c}) == 3)
+    top = max(res["overall_win_rate"], key=res["overall_win_rate"].get)
+    top_wr = res["overall_win_rate"][top]
+    out = []
+    if condorcet:
+        c = condorcet[0]
+        worst = min(h2h(c, b) for b in names if b != c)
+        if _is_naive(c):
+            out.append(f"⚠ a **naive** line (`{c}`) beats the whole field (worst h2h {worst*100:.0f}%) "
+                       f"— the interesting decisions may not matter yet. Tune, then re-sim.")
+        elif worst > 0.60:
+            out.append(f"⚠ **possible dominant strategy**: `{c}` beats every other line "
+                       f"(worst h2h {worst*100:.0f}%). Check it isn't a memorizable one-liner before shipping.")
+        else:
+            out.append(f"~ mild edge to `{c}` (beats all, but by ≤{ (worst-0.5)*100:.0f}pt margins) — "
+                       f"no crushing dominance.")
+    if intransitive and not condorcet:
+        out.append("✓ **no single dominant line** — strategies are intransitive "
+                   "(rock-paper-scissors). A good depth signal.")
+    elif intransitive:
+        out.append("• intransitivity present among some lines (a depth signal), alongside the note above.")
+    if not _is_naive(top) and top_wr < 0.60:
+        out.append(f"✓ the field leader `{top}` ({top_wr*100:.0f}%) is a rule-aware line, not a naive "
+                   "baseline — skill is being rewarded.")
+    out.append("Reminder: identical **deterministic** strategies always mirror-tie in a simultaneous "
+               "game — that's an artifact, not shallowness. Read depth from *cross-strategy* results and "
+               "whether the optimal line actually uses the signature mechanic (probe with --matchup).")
+    return out
+
+
 def format_round_robin(res, title="Simulation report"):
     lines = [f"# {title}", "",
              f"{res['n_per_matchup']} games per matchup; win rate averages both seatings "
@@ -135,4 +185,5 @@ def format_round_robin(res, title="Simulation report"):
         lines += ["", "## Averaged game metrics"]
         for k, v in res["metrics"].items():
             lines.append(f"- {k}: {v:.3f}")
+    lines += ["", "## Health read"] + [f"- {s}" for s in health_read(res)]
     return "\n".join(lines)
