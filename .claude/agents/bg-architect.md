@@ -35,10 +35,14 @@ default here, so don't assume a player count or competitive/co-op leaning unless
    budget; **you guard the *cost* budget** (`component-cost-budget.json` via
    `python tools/cost/check_cost.py --game games/<slug>`; see `knowledge/cost-and-manufacturability.md`).
    The biggest cost lever is the **number of unique component *types*** (each is its own tooling/assembly/
-   QC) — merge and reuse before adding a type; keep the box small (cheapest to make, ship, and pitch, and
-   the line tariffs hit hardest). Over budget → cut/merge back under, or consciously (logged) accept a
-   higher price tier. Set the cost budget at project start alongside the complexity budget; the *economics*
-   of which route bears which cost belong to `bg-funding`.
+   QC) — merge and reuse before adding a type; a small box is cheapest to make/ship/pitch. **But the cost
+   budget is a SOFT, fun-first guardrail, not a design constraint:** a fun game beats a cheap one, and most
+   cost is recoverable *later* (crowdfunding, a higher price tier, or swapping deluxe bits for cardboard
+   standees/punchboard) without touching the design. So during design, only push back on cost when it's
+   genuinely **running away** — a component the game *needs* is not a cost problem, it's a production
+   optimisation for later. Over a runaway budget → cut/merge back IF it doesn't cost fun, or consciously
+   (logged) accept a higher tier / thinner margin / a later-savings plan. Set the cost budget at project
+   start alongside the complexity budget; the *economics* of which route bears which cost belong to `bg-funding`.
 4. **Judge each scope separately AND as a whole.** Base alone, each mode, and base+expansion combined
    must all play well and stay balanced (watch power creep and combined complexity).
 
