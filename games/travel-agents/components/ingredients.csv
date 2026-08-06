@@ -1,12 +1,12 @@
 id,name,hanzi,type,region,color,emblem,value,quantity,effect,tags,art_note
-beef,Beef,牛肉,beef,N,#D64545,square,,12,"North specialty. Taipei beef-noodle soul; Tainan dawn beef soup.",north;specialty,Braised beef-shank slice — deep red silhouette
-pork,Pork Belly,豬肉,pork,N,#D64545,hex,,18,"North specialty. THE workhorse protein — bao, braises, wontons, dumplings. Heavily demanded.",north;specialty;high-demand,Cross-section slab of striped pork belly
-chicken,Chicken,雞肉,chicken,N,#D64545,diamond,,12,"North specialty (NEW in v3). Fried cutlets, karaage burgers, Chiayi turkey rice, maqaw soup.",north;specialty;v3-new,Crispy fried chicken thigh
-egg,Egg,雞蛋,egg,N,#D64545,circle,,10,"North specialty (NEW in v3). Egg crepes, oyster omelette, breakfast-shop 加蛋.",north;specialty;v3-new,A cracked egg with a bright yolk
-tea,Tea,茶葉,tea,C,#1F8A7A,hex,,12,"Central specialty. Nantou/Lugu oolong, Sun Moon Lake black tea, the leaf behind bubble tea.",central;specialty,Single furled oolong tea leaf
-pearls,Tapioca Pearls,粉圓,pearls,C,#1F8A7A,circle,,8,"Central specialty. Chewy tapioca born in Taichung tea shops. Thin demand — only bubble tea names it.",central;specialty;low-demand,Cluster of dark round tapioca pearls
-oysters,Oysters,蚵仔,oysters,S,#E6A930,hex,,8,"South specialty. Tainan & Chiayi tidal-flat oyster farms. Thin demand — only oyster omelette names it.",south;specialty;low-demand,Plump shucked oyster on the half shell
-milkfish,Milkfish,虱目魚,milkfish,S,#E6A930,diamond,,8,"South specialty. Tainan's farmed milkfish. Thin demand — only milkfish congee names it.",south;specialty;low-demand,Whole silver milkfish in profile
-rice,Rice,池上米,rice,E,#26324D,circle,,16,"East specialty. Premium Chishang/Guanshan valley rice. Heavily demanded across bentos, congee, mochi.",east;specialty;high-demand,Bowl of glossy short-grain rice with a single ear of grain
-greens,Mountain Greens,山蘇,greens,E,#26324D,triangle,,10,"East specialty. Mountain & Indigenous produce — bird's-nest fern, chayote shoots, maqaw.",east;specialty;indigenous,Bundle of leafy fern and chayote-vine shoots
+beef,Beef,牛肉,beef,N,#D64545,square,,11,"North specialty. Taipei beef-noodle soul; Tainan dawn beef soup. Marquee-held (few, premium vendors).",north;specialty,Braised beef-shank slice — deep red silhouette
+pork,Pork Belly,豬肉,pork,N,#D64545,hex,,12,"North specialty. The comfort-food protein — bao, braises, dumplings. Capped at 5 vendors (was the runaway workhorse).",north;specialty,Cross-section slab of striped pork belly
+chicken,Chicken,雞肉,chicken,N,#D64545,diamond,,11,"North specialty. Fried cutlets, karaage burgers, Chiayi turkey rice, maqaw soup.",north;specialty,Crispy fried chicken thigh
+egg,Egg,雞蛋,egg,N,#D64545,circle,,11,"North specialty. Egg crepes, oyster omelette, breakfast-shop 加蛋.",north;specialty,A cracked egg with a bright yolk
+tea,Tea,茶葉,tea,C,#1F8A7A,hex,,12,"Central specialty. Nantou/Lugu oolong, Sun Moon Lake black tea, the leaf behind bubble tea. Central's workhorse.",central;specialty,Single furled oolong tea leaf
+pearls,Tapioca Pearls,粉圓,pearls,C,#1F8A7A,circle,,11,"Central specialty. Chewy tapioca born in Taichung tea shops. Now demanded across bubble tea, Dongding tea house, ba-wan.",central;specialty,Cluster of dark round tapioca pearls
+oysters,Oysters,蚵仔,oysters,S,#E6A930,hex,,11,"South specialty. Tainan & Chiayi 東石 tidal-flat oyster farms. Now a real destination — 4 vendors.",south;specialty,Plump shucked oyster on the half shell
+milkfish,Milkfish,虱目魚,milkfish,S,#E6A930,diamond,,11,"South specialty. Tainan's farmed milkfish. Now demanded across congee, shrimp roll, beef soup.",south;specialty,Whole silver milkfish in profile
+rice,Rice,池上米,rice,E,#26324D,circle,,12,"East specialty. Premium Chishang/Guanshan valley rice. Capped at 4 vendors (was over-demanded).",east;specialty,Bowl of glossy short-grain rice with a single ear of grain
+greens,Mountain Greens,山蘇,greens,E,#26324D,triangle,,11,"East specialty. Mountain & Indigenous produce — bird's-nest fern, chayote shoots, maqaw.",east;specialty;indigenous,Bundle of leafy fern and chayote-vine shoots
 pantry,Pantry,補給,pantry,Any,#8A8F98,beam,,30,"UNLIMITED open supply — the convenience store, available in every region. Noodles, flour, starch, seasoning, broth abstracted to one flexible token. Never discounted, always in stock (print ~30, restock as needed).",pantry;anywhere;wild;unlimited,Convenience-store rice ball / onigiri silhouette

@@ -1,14 +1,14 @@
 id,name,label,color,qty
-beef,Beef token,牛,#D64545,12
-pork,Pork token,豬,#D64545,18
-chicken,Chicken token,雞,#D64545,12
-egg,Egg token,蛋,#D64545,10
+beef,Beef token,牛,#D64545,11
+pork,Pork token,豬,#D64545,12
+chicken,Chicken token,雞,#D64545,11
+egg,Egg token,蛋,#D64545,11
 tea,Tea token,茶,#1F8A7A,12
-pearls,Pearls token,圓,#1F8A7A,8
-oysters,Oyster token,蚵,#E6A930,8
-milkfish,Milkfish token,魚,#E6A930,8
-rice,Rice token,米,#26324D,16
-greens,Greens token,菜,#26324D,10
+pearls,Pearls token,圓,#1F8A7A,11
+oysters,Oyster token,蚵,#E6A930,11
+milkfish,Milkfish token,魚,#E6A930,11
+rice,Rice token,米,#26324D,12
+greens,Greens token,菜,#26324D,11
 pantry,Pantry token,補,#8A8F98,30
 buzz,Buzz token,讚,#6A4C93,50
 pawnA,Agent pawn A,A,#5B4FB0,1

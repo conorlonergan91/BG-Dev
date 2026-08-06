@@ -110,10 +110,11 @@ the **Reputation track**, the tiered **Vendor Board** (3 rows) and each region's
 **25 Vendor cards** — tiered **T1 Stalls ×11 / T2 Eateries ×8 / T3 Marquee ×6**, one per **real locked
 dish** (Tâi-lô + 繁體), each with cost (named ingredients + Buzz), a **region icon** (discount + coverage),
 **Prestige**, **Reputation**, a **perk**; region-icon balance **N7 · C6 · S6 · E6**; (3) **9 Mission
-cards** (secret +7 vendor patterns, draw-3-keep-1; same card stock); (4) **144 ingredient tokens** — 10
-finite specialties (incl. **chicken 雞 + egg 蛋**, new in the North) + **unlimited pantry**; (5) **50 Buzz
-tokens** (*new type* — the second currency); (6) **11 Event tiles** (Conditions salted into the Market,
-fire on refill; *new type*); (7) **5 Character mats** (*new type* — one ability + one flaw each) + 4 Agent
+cards** (secret +7 vendor patterns, draw-3-keep-1; same card stock); (4) **143 ingredient tokens** — 10
+finite specialties (incl. **chicken 雞 + egg 蛋**, new in the North), flattened to even ~11–12 pools +
+**unlimited pantry**; (5) **50 Buzz tokens** (*new type* — the second currency); (6) **13 Event tiles**
+(Conditions salted into the Market, fire on refill; *new type*; v3.1 comedy rework, ~60/40 boon/hazard);
+(7) **5 Character mats** (*new type* — one ability + one flaw each) + 4 Agent
 pawns + Prestige/Rep/Season markers (board bits). **Cut from v2:** the **Brief** deck; the separate
 **Hot-List** row (merged into the Vendor Board) and the **Conditions queue** (events now in the Market).
 Deck-size note: the vendor deck is **25** (one per locked real dish) — comfortable for a 2p game (~16–18

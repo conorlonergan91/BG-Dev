@@ -10,7 +10,8 @@
         "TRAVEL  —  move to a neighbouring region, then take 1 ingredient there (North<->South by HSR).",
         "PROMOTE  —  take 2 Buzz (the promotional currency; always available, never contested).",
         "COURT A VENDOR  —  pay its cost, sign it to your tour, Season +1, rival locked out of it (see below).",
-        "EXTRACT  —  catch the last train home: trigger the end-game wind-down."
+        "EXTRACT  —  catch the last train home: trigger the end-game wind-down.",
+        "POACH (only if a rival shares your region)  —  take 1 RANDOM specialty from their Larder; pay Reputation -1 (floored at 0). Pantry is safe. Costs your whole turn; no refill/event/Season."
       ]
     },
     {
