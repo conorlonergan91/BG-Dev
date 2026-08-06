@@ -3,7 +3,7 @@
 > The living source of truth for this game's **felt identity**: concept, theme, tone/vibe, story/lore,
 > look & feel, and naming. Owned by `bg-theme`; read alongside `game-bible.md`. Keep it current — and
 > keep it **coherent** while letting it **evolve** with the design.
-> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-06 (bg-theme — **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 (下午→夜市) + spy "Code Red" end-trigger)
+> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-06 (bg-theme — **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 (下午→夜市) + spy "Code Red" end-trigger · v5 sweep: ★ Star / accolade value-swing added, Coverage folded into a Mission)
 
 > **Restraint first.** Match identity depth to what the game *earns*. Leaving story/lore light on purpose
 > is a correct answer, not a gap. Never invent lore to fill a section.
@@ -205,9 +205,26 @@ the fiction.)*
 - **The compounding discount ramp (regulars vouch for you → the next stall's an easier sign)** —
   **integrated.** "Once you're a known, trusted promoter, the next vendor signs on faster" is exactly
   how a promoter's reputation snowballs. On-theme, not a bolted-on Splendor engine.
-- **Prestige / Reputation / Region-Coverage (three vectors)** — **integrated.** Prestige = the star
-  power of your tour; Reputation = your standing as an agent; Coverage = the grand tour across the whole
-  island. All three are travel-agent-native; none needs a stretch.
+- **Prestige / Reputation / the grand tour (scoring vectors)** — **integrated.** Prestige = the star
+  power of your tour; Reputation = your standing as an agent; the **grand tour across the whole island**
+  = breadth. All are travel-agent-native; none needs a stretch. *(v5: **Region-Coverage is no longer a
+  standalone scoring track** — the grand-tour breadth line is **folded onto a signature Mission**. No
+  fiction impact: "the grand tour across the island" survives intact, just re-homed from a track onto a
+  Mission pattern — nothing thematically stranded.)*
+- **★ Star / accolade value-swing (v5 — CD's dynamic value curve) — integrated; reads as WARM
+  celebration, and it's real & secular.** In-world a Star is simply **"this beloved stall finally got its
+  due"** — a genuine, secular Taiwan food accolade (**Michelin / Bib Gourmand street-food nod / a
+  competition win**), and the "vendor gets hot" boon (**摘星了 / 得獎了 / 爆紅**) is the joyful moment an
+  ignored little stall **blows up overnight** and the whole street queues. It **strengthens** the
+  anti-extraction rail: the agents don't seize the star, they **race to be the one who puts the newly-
+  famous auntie on the poster** — a popularity surge everyone's delighted by. Fully on the north-star grin
+  (a stall going viral at dusk is exactly the night-market fantasy). **Three binding rails (→ `bg-developer`
+  / `bg-elegance`, and a light `bg-publishing` consultant note):** (1) accolades stay **real and secular** —
+  no invented awards, no sacred/temple framing; (2) **dish/vendor names stay intact** — never mangled to
+  fit a "starred" gag; (3) **no false accolade claim on a specific real business** — vendors are
+  **dish-typed generic stalls** ("a Michelin-nod-worthy beef-noodle place"), **never a real named
+  restaurant/brand printed with a star it doesn't hold.** Keep vendors dish-typed, not brand-named, and the
+  ★ is celebration, not a fabricated grand claim.
 - **Region↔ingredient web (travel because the food lives *there*)** — **integrated, unchanged from v2.**
   The generic-defeater. Oysters South, tea/pearls Central, rice/greens East, beef/pork/chicken/egg
   North.
@@ -333,8 +350,18 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     last great bite before the last train!"*, an over-caffeinated head-office bark, **never** danger or
     dread (stays on the Tone "warm caper, not a thriller" rail). *Alternatives logged: "Last Orders,"
     "Last Train," "Wheels Up" — but "Code Red" best lands the agent gag and is the CD's pick.*
-  - **Prestige** / **Reputation** / **Region-Coverage** = the three scoring vectors (star power / your
-    standing as an agent / the grand tour). *v3.*
+  - **Prestige** / **Reputation** = the two live scoring vectors (star power / your standing as an agent).
+    *(v5: Region-Coverage is **no longer a scoring track** — the grand-tour breadth line is now a
+    **signature Mission** pattern, not a named vector. "The grand tour across the island" survives as
+    fiction; only the scoring plumbing moved.)*
+  - **★ Star** = the value hook on a **standout** vendor — either **printed** on an apex "Legendary"
+    Marquee (a *standing* accolade — Michelin / Bib Gourmand / competition win, worth the most Prestige) or
+    a dynamic **★ Star token** dropped mid-game by the **"vendor gets hot"** boon (**摘星了 / 得獎了 / 爆紅**)
+    onto an ignored Board vendor (+Prestige/+Rep to whoever wins it). *Flavour = **"this beloved stall got
+    its due" / "the little place that blew up overnight."*** Warm celebration, **real & secular**, dish
+    names intact — the reason a specific vendor is suddenly worth crossing the island and burning Buzz for.
+    **Never** an invented award, sacred framing, or a false star on a real named business (see the ★ Star
+    resonance bullet's three binding rails). *v5 — CD's value-swing.*
   - ~~**Brief / Client Brief / Memo**~~ = **CUT in v3** (directive deck removed; head office survives as
     the rulebook/earpiece *voice* only).
   - **Poach** = the conditional same-location action (when a rival shares your region, take 1 random
@@ -411,7 +438,14 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   rail** (no temple/deity/ghost-month/funerary content as mechanics or gags); (3) **local characters** in
   the events deck — dignified, varied subjects, not caricature or obstacles; (4) any **award/title**
   naming in Chinese/Tâi-lô — native review before it locks.
-- **v3.1 cross-link framing check (→ `bg-publishing` consultant, before art):** 8 vendors carry a
+- **★ accolade framing check (v5 — LIGHT, → `bg-publishing` consultant, before art/print):** the ★ Star
+  swing leans on **real, secular** Taiwan food accolades (**Michelin / Bib Gourmand / competition wins /
+  摘星了・得獎了・爆紅**). Two things keep it a light note, not a flag: **(1)** these accolades genuinely
+  exist in Taiwan and read as **pride/celebration**, not marketing spin; **(2)** vendors are **dish-typed
+  generic stalls**, so a ★ says *"a Michelin-nod-worthy beef-noodle place,"* not a claim about a specific
+  real restaurant. **The one guardrail to hold:** never print a ★ **on a real named business/brand** (that
+  would be a false factual claim) and never invent an award — keep it generic + real. Ask the consultant to
+  confirm the accolade reads as warm pride and the 摘星/得獎/爆紅 wording is natural. 8 vendors carry a
   "connections you bring on your tour" cross-region token that is **not** an ingredient in the dish
   (framed as a regional *leg/pairing*, never claimed to be in the bowl — this is honest as written). Ask
   the consultant to eyeball the **three softest cases**, where the dish's own anchor ingredient is
@@ -554,6 +588,30 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
+- 2026-08-06 (bg-theme, **v5 guardian coherence sweep — the ★ Star / value-swing + end-game finalize**) —
+  **STILL COHERENT; ONE concrete fix (the ★ Star was a new themed element I own, not yet in this doc).**
+  Swept the finalized v5 design-doc + rules-draft against identity. Verdicts on the four moves:
+  **(1) End-game (two Acts on one day-clock; dusk = 6th win / Code Red = 10th @2p):** the numbers are pure
+  `bg-design` plumbing, no fiction impact; **"Code Red" still reads WARM** — cushioned everywhere as a
+  giddy "grab the last great bite / catch the last train," head-office bark, never menace (rules §8 title
+  "Ending the trip — Code Red! (last train home)" holds the grin). **On-register.**
+  **(2) ★ Star / accolade value-swing — the FIX.** The new dynamic value curve (2–3 apex printed-★
+  "Legendary" Marquee + the "vendor gets hot" 摘星了/得獎了/爆紅 boon) was **absent from identity.md** —
+  a themed element I own that landed only in the design doc. **Added it** to Theme↔mechanic resonance
+  (reads as **warm celebration**, real & secular, **strengthens** the anti-extraction rail — you race to
+  put the newly-famous auntie on the poster, never seize the star), to Naming/keywords (★ Star), and to
+  the Sensitivity pass as a **light** consultant note. Bound three rails: real/secular accolades only,
+  dish names intact, and **no false ★ on a real named business** (keep vendors dish-typed, not
+  brand-named). No re-theme — the swing sits cleanly on the north-star grin (a stall going viral at dusk
+  IS the night-market fantasy).
+  **(3) Region-Coverage cut as a track → grand-tour Mission:** no fiction stranded — "the grand tour
+  across the island" survives intact, just re-homed from a scoring track onto a Mission pattern.
+  **Corrected two now-stale "three scoring vectors" lines** (resonance + naming) to two live tracks +
+  the mission-borne grand tour.
+  **(4) 里長伯 + 大哥 next to "Bribe":** the finalized spec did **not** sharpen either read — both stay
+  bound HARD (里長伯 = earned goodwill not graft; 大哥 = affection/respect not fear, warm cinema bluster,
+  secular) and remain the **tied-#1 consultant flags**. Unchanged.
+  Rung **held at evocative** — a new *value hook*, not new lore.
 - 2026-08-06 (bg-theme, **v5 character re-lore + 2-Act / "Code Red" tightening — from CD direction**) —
   **RE-THEME (five character re-skins + a structure re-skin; 3 new mechanic shapes → `bg-design`/sim;
   rung HELD at evocative — no new lore).** Two CD moves folded into one pass.
