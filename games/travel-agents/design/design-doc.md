@@ -88,7 +88,7 @@ Target length: **~30–40 min at 2p**, roughly **18–24 turns per player**.
 | **Stock Up** | your turn | Take **2 ingredients** available at your current region: any mix of this region's **specialty** ingredients and **pantry** supplies. | The workhorse. Frictionless (open supply, no market decks). |
 | **Travel** | your turn | Move your Agent to an **adjacent** region on the ring; on arrival, take **1 ingredient** available there. (HSR: North↔South counts as adjacent — the west-coast shortcut.) | Travel is never a dead turn — you always arrive with something. The "tax" vs Stock Up (1 vs 2) is the time cost of moving. |
 | **Plate** | your turn + spend a recipe from Larder | Choose a **Menu** dish you can afford; return its recipe ingredients to supply; take the Dish card into your **Traveller's Log**; refill the Menu from the deck. Advance the **Grand Dossier +1**. | The scoring engine + the indirect race (a rival can plate the dish you wanted). |
-| **Dead-drop** | your turn + give 1 ingredient | Give **1 ingredient from your Larder to a rival** ("a hot tip on where the good stuff is"). Gain **1 Insider Tip**. Advance the **Grand Dossier +1**. | The cooperation engine. See *Interaction & tension* for why it's rational. At 3–4p a player may **receive at most 1 Dead-drop per round**. |
+| **Dead-drop** | your turn + give 1 ingredient | Give **1 ingredient from your Larder to a rival** ("a hot tip on where the good stuff is"). Gain **1 Insider Tip**, score **+1 VP**, and advance the **Grand Dossier +1**. | The cooperation engine. The **+1 VP** (sim-adopted) is what pays for the turn and makes it rational — see *Interaction & tension*. At 3–4p a player may **receive at most 1 Dead-drop per round**. |
 | **Extract** | your turn | Trigger the end-game wind-down (finish the round + one more full round). Your Assignment stays secret until scoring. | Push-your-luck tempo: end it while you're ahead vs plate one more. |
 | *(free, not an action)* **Spend an Insider Tip** | 1 Insider Tip | Choose one: **(a)** take 1 extra ingredient from your current region now; **(b)** treat 1 recipe ingredient as **any type** when plating (wild); **(c)** when you Travel, move **1 extra** region. | Flexible leverage — this is what makes a Dead-drop worth doing. |
 
@@ -207,10 +207,18 @@ VP-equivalent amortised.
 |--------|----:|------------------|
 | Plated dishes (~8–9 × ~3.3) | 28–30 | **Yes — the main contest** |
 | Assignment (0 or 7) | 0 / 7 | **Yes — the secret swing** |
+| **Dead-drop VP (+1 each; sim-adopted fix)** | ~+3–6 | **Yes — this is what makes cooperating rational (see below)** |
 | Grand Dossier Discovery bonuses — flat base (2+3+4+5) | +14 to *everyone* | No — a rising tide (the warm co-op *feel*) |
 | Grand Dossier **triggerer's pick** (4 milestones × Insider Tip *or* +1 VP) | up to +4 spread across triggerers | **Slightly** — a light race to be the one who crosses a milestone |
 | Insider Tips used | soft ~+2–4 | Slightly — efficiency edge |
-| **Total** | **~48–52** | Winner decided by dishes + Assignment + tip/trigger efficiency |
+| **Total** | **~52–58** | Winner decided by dishes + Assignment + **Dead-drop VP** + tip/trigger efficiency |
+
+> **The +1 VP per Dead-drop is the sim-validated fix (adopted 2026-08-06).** As originally written the
+> Dead-drop paid only an Insider Tip, and simulation showed hoarding *dominated* (Hoarder 66.8% vs
+> Generous 24.0% at 2p) — a full turn spent to arm a rival wasn't worth one Tip. Paying the giver **+1 VP**
+> directly covers the turn cost and flips it to rational (**Generous 47.0% vs Hoarder 41.1%** — the target
+> "G ≥ H by a small margin"). Kept at **exactly +1** (+2 over-corrects) with the **≤1-received-per-round**
+> cap intact. See `playtests/sim-notes.md`.
 
 ---
 
@@ -219,20 +227,23 @@ VP-equivalent amortised.
 At game end, each player totals their **Traveller's Log**:
 1. **Plated dishes** — sum of VP (3 / 4 / 5).
 2. **Assignment** — +7 if completed (revealed now), else 0.
-3. **Grand Dossier Discovery bonuses (payout C — Hybrid, CD call):** each of the **4 milestones** pays a
+3. **Dead-drop VP** — **+1 VP for each Dead-drop you made** (the sim-adopted fix that makes cooperating
+   rational — banked as you go; see the scoring-model note above and `playtests/sim-notes.md`).
+4. **Grand Dossier Discovery bonuses (payout C — Hybrid, CD call):** each of the **4 milestones** pays a
    **flat base to every player** (+2 / +3 / +4 / +5 — the celebratory "we did the tour" rising tide, not a
    ranking lever), **and** the player whose Plate/Dead-drop *crossed* that milestone picks **one small
    reward: an Insider Tip *or* +1 VP.** Bank the +1 VP into your Log immediately; it's the only part of
    the Dossier that moves the ranking.
-4. **Leftover Insider Tips** — 0 VP (they're leverage, spend them). *(Optional variant: 1 VP per 2
+5. **Leftover Insider Tips** — 0 VP (they're leverage, spend them). *(Optional variant: 1 VP per 2
    unused Tips, to remove a "hoard Tips" corner case — flag for sim.)*
 
 Highest total wins. **Tiebreak:** most dishes plated, then furthest-travelled (regions visited).
 
 **Guard against a single dominant strategy:**
 - **"Only big dishes":** blocked by flat VP/turn (small dishes are *more* efficient per turn).
-- **"Ignore the Dossier / never tip":** the top risk — addressed structurally below; the Larder cap +
-  Insider Tip make tipping surplus a near-free gain.
+- **"Ignore the Dossier / never tip":** *was* the top risk, and the sim showed it dominated as originally
+  written — now fixed by the **+1 VP per Dead-drop** (see the scoring-model note): tipping surplus is
+  strictly better than discarding, so hoarding drops from dominant to mid-pack.
 - **"Point-salad":** avoided — only three real scoring avenues (dishes, one Assignment, shared Dossier).
   The Dossier's flat base is equal-to-all (can't be gamed into a runaway); only its small **triggerer's
   pick** (max +4 VP across the whole game, spread across whoever crosses milestones) touches the ranking.
@@ -281,18 +292,22 @@ op or a feint?" tension lives entirely in the hidden **Assignment**, not the vis
 The failure modes to beat: **(1)** "hoard, never tip" dominates → dead co-op sticker; **(2)** kingmaking
 → tips arbitrarily decide the winner. Here is exactly why neither should happen, with the numbers:
 
-**Why tipping is rational (beats "always hoard"):**
-- The **Larder cap of 7** forces surplus. A surplus ingredient you'd otherwise **discard for nothing**
-  can instead be **dead-dropped for +1 Insider Tip + a Grand Dossier step**. Converting dead weight into
-  a flexible ~+1-VP boost is **strictly better than discarding** — the baseline case is a near-free yes.
-- Net for the giver on a **surplus** tip: **+1 Insider Tip (theirs alone) + fractional Dossier push
-  (pays them too) − a soon-dead ingredient ≈ +1.5 to +2 VP-equiv.** For the receiver: **+1 ingredient +
-  same Dossier push ≈ +1.5 VP-equiv.** **Positive-sum, giver-favourable** → the giver comes out slightly
-  ahead *and* the rival smiles (warm). This is the target dynamic.
-- Net for the giver on a **useful** (non-surplus) tip: **+Tip +Dossier − (a needed ingredient, ~1 VP) ≈
-  break-even**, and now the receiver may net more — so a rational player *won't* hand a threatening rival
-  something they need. That's the **interesting** decision (tip a trailing rival for mild goodwill /
-  Dossier timing, don't arm the leader), not a dominant line.
+**Why tipping is rational (beats "always hoard") — corrected by the sim.** The original theory below
+*over-valued* the Insider Tip: it assumed Tip + Dossier ≈ enough to justify the turn. **Simulation
+falsified that** — a Dead-drop costs a *whole turn* plus arms a rival plus speeds the end-clock, and one
+Tip didn't cover it, so hoarding dominated (66.8% vs 24.0%). The **+1 VP per Dead-drop** (adopted) is the
+piece that actually closes the gap:
+- The **Larder cap of 7** forces surplus. A surplus ingredient you'd otherwise **discard for nothing** is
+  now **dead-dropped for +1 VP + 1 Insider Tip + a Grand Dossier step** — **strictly, clearly** better
+  than discarding.
+- Net for the giver on a **surplus** tip: **+1 VP (banked, theirs) + 1 Insider Tip + fractional Dossier
+  push − a soon-dead ingredient.** The **+1 VP is the load-bearing term** — it pays the turn directly.
+  Sim result with the fix: **Generous 47.0% vs Hoarder 41.1%** (rational, no runaway).
+- Net for the giver on a **useful** (non-surplus) tip: **+1 VP +Tip +Dossier − (a needed ingredient) ≈
+  still marginal**, and the receiver may net more — so a rational player still *won't* hand a threatening
+  rival something they need. That stays the **interesting** decision (tip a trailing rival for the VP +
+  goodwill / Dossier timing; don't arm the leader), not a dominant "spam dead-drops" line — though the
+  human session should watch for VP-farming; fallback = restrict the +1 VP to at-cap/surplus drops.
 
 **Why it isn't kingmaking:**
 - **At 2p there is no kingmaking** (one rival). The decision is cleanly "does my Tip + Dossier gain beat
@@ -404,18 +419,22 @@ Target **~1.8**; `complexity-budget.json` caps guarded by `bg-elegance`.
   (an Insider Tip *or* +1 VP — payout C); its final milestone can end the game.
 - **Insider Tip** — a flexible token (extra source / wild ingredient / extra travel hop). Earned by
   Dead-dropping and by triggering Dossier milestones.
-- **Dead-drop** — give a rival 1 ingredient; gain 1 Insider Tip and advance the Grand Dossier. The
-  cooperation engine.
+- **Dead-drop** — give a rival 1 ingredient; **score +1 VP**, gain 1 Insider Tip, and advance the Grand
+  Dossier. The cooperation engine (the +1 VP is the sim-adopted fix that makes it rational).
 - **Extract** — the action that triggers the end-game wind-down.
 
 ---
 
 ## Open questions for playtesting
 
-1. **The knife-edge (top priority).** Is the Dead-drop tuned so cooperation is individually rational
-   without a dominant hoard line or kingmaking? → Hoarder-vs-Tipper sim (target **G ≥ H**) + Kingmaker
-   probe (3p) + a 2p Screentop session watching whether players *feel* like tipping. Knobs: Insider Tip
-   power, a possible +1 VP per dead-drop, the per-round receive cap, the Larder cap.
+1. **The knife-edge — SIM-RESOLVED, now a feel-test.** Is the Dead-drop tuned so cooperation is
+   individually rational without a dominant hoard line or kingmaking? **Sim verdict:** as originally
+   written it FAILED (Hoarder 66.8% vs Generous 24.0%); **+1 VP per Dead-drop** (adopted) flips it to a
+   PASS (Generous 47.0% vs Hoarder 41.1%), with kingmaking bounded (~3pt) and payout-C picks non-decisive
+   (~2.6%). The **only remaining question is the human one the sim can't judge**: does tipping now *feel*
+   worth it, and is "arm my rival?" a live decision? → a 2p Screentop session. Also watch for **VP-farming**
+   (spamming Dead-drops of non-surplus just for the +1 VP); fallback = restrict the +1 VP to at-cap/surplus
+   drops, or cap dead-drops/round.
 2. **Grand Dossier teeth (payout C, CD-chosen).** The Hybrid gives the flat base *plus* a triggerer's
    pick (Insider Tip or +1 VP). Does the pick add a satisfying "tip it over" race without a leader-runaway
    (see the check above)? Watch **milestone-trigger share vs finishing position**. If the pick proves

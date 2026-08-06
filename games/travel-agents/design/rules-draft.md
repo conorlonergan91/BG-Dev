@@ -38,9 +38,9 @@ Then if your Larder is over **7 ingredients**, discard down to 7.
   neighbour by HSR.)
 - **PLATE** — pick a **Menu** dish you can pay for, spend its recipe from your Larder, and lay the Dish
   card in your **Traveller's Log**. Refill the Menu. **Advance the Grand Dossier +1.**
-- **DEAD-DROP** *(the tip-off)* — hand **1 ingredient to a rival** ("you *have* to try this"). Take **1
-  Insider Tip** for yourself and **advance the Grand Dossier +1**. *(3–4p: a player can receive only one
-  Dead-drop per round.)*
+- **DEAD-DROP** *(the tip-off)* — hand **1 ingredient to a rival** ("you *have* to try this"). **Score +1
+  VP**, take **1 Insider Tip** for yourself, and **advance the Grand Dossier +1**. *(3–4p: a player can
+  receive only one Dead-drop per round.)*
 - **EXTRACT** — belly full, wallet empty, you sprint to **catch the last HSR home** before it pulls out of
   the station: declare your trip done and trigger the end-game (see §6). *(The one "spy" word that sounds
   dramatic — it's really just "I'm stuffed, let's go home.")*
@@ -72,7 +72,8 @@ full round**, and stop.
 Add up your **Traveller's Log**:
 1. **Dishes** — 3 VP (2-ingredient) · 4 VP (3-ingredient) · 5 VP (Signature).
 2. **Assignment** — **+7** if you pulled it off (flip it face-up), else 0.
-3. **Grand Dossier** — the flat Discovery bonuses you banked along the way, plus any **+1 VP** you took
+3. **Dead-drops** — **+1 VP for each Dead-drop you made** (that's why sharing pays).
+4. **Grand Dossier** — the flat Discovery bonuses you banked along the way, plus any **+1 VP** you took
    as a triggerer's pick (Insider Tips are leverage — they're worth 0 VP now).
 Most points wins. **Ties:** most dishes, then most regions visited.
 

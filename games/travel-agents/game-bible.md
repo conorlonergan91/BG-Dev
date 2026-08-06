@@ -65,8 +65,8 @@ A **competitive + co-op blend in one box**, built on:
 <!-- The repeated cycle of decisions and rewards, step by step. -->
 Specified in `design/design-doc.md`. **A turn = ONE action:** **Stock Up** (take 2 ingredients where you
 stand) · **Travel** (move one region, arrive with 1) · **Plate** (spend a recipe from your Larder to take
-a Menu dish → VP + Grand Dossier +1) · **Dead-drop** (give a rival 1 ingredient → bank an Insider Tip +
-Grand Dossier +1) · **Extract** (trigger the end-game). You can only take a region's **specialty** while
+a Menu dish → VP + Grand Dossier +1) · **Dead-drop** (give a rival 1 ingredient → score +1 VP + bank an
+Insider Tip + Grand Dossier +1) · **Extract** (trigger the end-game). You can only take a region's **specialty** while
 there (oysters South, tea/pearls Central, rice/greens East, beef/pork North); **pantry** staples are at
 the convenience store anywhere — so you *travel because the ingredient lives there*. Your **Larder sits
 face-up in the open** (no hidden hand — the secret Assignment is the game's *only* hidden info).
@@ -92,8 +92,9 @@ type.) No headroom for a new type — new content reuses these (flag: `bg-elegan
 
 ## Win condition & scoring
 Highest **Traveller's Log** wins. Score = **plated dishes** (3 VP for 2-ingredient · 4 VP for 3-ingredient
-· 5 VP for a 3-region Signature) + **Assignment** (+7 if completed, revealed at scoring) + your banked
-**Grand Dossier** bonuses. Dossier payout = **Hybrid (C, CD call 2026-08-06):** each milestone pays a flat
+· 5 VP for a 3-region Signature) + **Assignment** (+7 if completed, revealed at scoring) + **+1 VP per
+Dead-drop made** (the sim-adopted fix that makes cooperating rational — see decision-log/sim-notes) + your
+banked **Grand Dossier** bonuses. Dossier payout = **Hybrid (C, CD call 2026-08-06):** each milestone pays a flat
 Discovery bonus to *everyone* (+2/+3/+4/+5 — a warm rising tide) **and** the player who triggers it picks
 a small reward — an **Insider Tip or +1 VP**. **Tiebreak:** most dishes, then most regions visited. The
 contested margin is **dishes + Assignment + Insider-Tip/trigger efficiency** (the flat Dossier base is a
@@ -110,10 +111,12 @@ full round → score. **One hidden-info hook only:** the secret Assignment (no d
 - ✅ **Mechanism spine — DECIDED:** A "Rival Agents, Shared Beat" (2026-08-06).
 - ✅ **Is the "secret agent" wink load-bearing? — DECIDED:** yes, in the base (hidden Assignments +
   shared Dossier). Reverses the earlier "flavour-only / held expansion" call (2026-08-06).
-- ⚠️ **TOP RISK (attack first with `tools/sim` + a Screentop session):** is the co-op layer *individually
-  rational* often enough that players actually cooperate — or does it collapse into a dominant
-  "hoard, never tip" line (killing the promised Fellowship) or **kingmaking**? Semi-co-op's knife-edge.
-  Fallback: spine B's explicit co-op mode (cooperation as win condition, not temptation) on the same core.
+- ✅/⚠️ **TOP RISK — SIM-RESOLVED, now a human feel-test.** Is the co-op layer *individually rational*?
+  Sim verdict: as first written it FAILED (hoarding dominated 66.8% vs 24.0%); **+1 VP per Dead-drop**
+  (adopted 2026-08-06) flips it to a PASS (Generous 47.0% vs Hoarder 41.1%), kingmaking bounded, payout-C
+  picks non-decisive. Remaining open question is the one the sim can't judge → **a 2p Screentop session:**
+  does tipping *feel* worth it, is "arm my rival?" live, and does anyone VP-farm Dead-drops (fallback:
+  restrict +1 VP to surplus drops)? Deeper fallback if the feel fails: spine B's explicit co-op mode.
 - Hold weight at **~1.8** — one clean hidden-info hook, not a deduction engine (`bg-elegance` guards).
 - 2p-first, but confirm it scales cleanly to 3–4 (`bg-architect`).
 - **Sensitivity:** the game depicts a **real place & culture (Taiwan)** — flag for `bg-theme` +
