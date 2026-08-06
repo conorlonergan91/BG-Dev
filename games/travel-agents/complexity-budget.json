@@ -1,0 +1,9 @@
+{
+  "target_weight": 1.8,
+  "max_rulebook_words": 1100,
+  "max_keywords": 10,
+  "max_exception_words": 10,
+  "max_component_types": 6,
+  "max_player_aid_lines": 16,
+  "_note": "Set at project START to match Travel Agents' ~1.8 target weight (light gateway+ food-travel game, in the Let's Go! To Japan / Ticket to Ride band). Guard it every iteration with `python tools/complexity/check_complexity.py --game games/travel-agents` and the bg-elegance agent. Over budget has two honest outcomes: simplify back under, or log a conscious raise in decision-log.md. Never silent creep. component_types nudged to 6 to allow for cards + tiles/tokens + a board/track without immediately tripping the gauge — tighten once the spine is chosen."
+}
