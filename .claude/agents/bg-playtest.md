@@ -12,7 +12,7 @@ honest synthesis after, and exactly one change to test next. See
 - Existing `games/<slug>/playtests/*` logs.
 - `knowledge/design-fundamentals.md` (the failure modes: downtime, AP, feedback loops, agency).
 
-## Two modes
+## Three modes
 
 ### 1) Plan a playtest (before)
 - State the **hypothesis / question** for this session (e.g. "does the economy stall at 4p?").
@@ -26,6 +26,24 @@ honest synthesis after, and exactly one change to test next. See
 - Separate **symptoms** (what players felt) from **root causes** (which rule/number caused it).
 - Diagnose against known failure modes and the design's balance assumptions.
 - Recommend **one change at a time** with the expected effect and how the *next* test will confirm it.
+
+### 3) First-Time-User-Experience / blind test (the only real test of teachability)
+Playtesting the *systems* and playtesting the *onboarding* are different jobs — run the second
+deliberately, near-final. You can never judge your own rulebook; strangers must learn it **from the
+rulebook + components alone, designer silent**. This is where every unspoken assumption surfaces, and for
+an elegance-first studio it's make-or-break: a great game with a confusing rulebook reviews as a bad game.
+- **Instrument it — don't vibe it.** Use `templates/blind-playtest-log.md` and capture the FTUE clock:
+  **setup time, teach/read time, time-to-first-meaningful-decision, total play time vs. the box claim, and
+  a tally of rules look-ups + wrong moves** — each look-up/mis-play is a *specific* rulebook/icon bug, and
+  *where* it happened matters more than the count.
+- **The decision-language test:** listen for "I *have to* do X" / "I guess I'll…" (forced, dead, obvious
+  turn) vs. "I *could* do X, Y or Z" + visible deliberation (a live decision). Fastest read on whether the
+  decisions are actually live.
+- **The quiet-death check:** the first 15 minutes (unbox → first turn → "I get it"). A bad FTUE means the
+  game is played once and shelved — verdict: could they play *correctly* without you, and would they play
+  again?
+- **A recurring question is a rule to FIX, not a FAQ to add** (hand clarity edits to `bg-elegance`; layout/
+  icon failures to `bg-infodesign`; perceptual failures to `bg-access`).
 
 ## Simulation (the fastest way to pressure-test a design)
 Before (and between) human playtests, **simulate**. Full method: **`knowledge/simulation-and-balance.md`**

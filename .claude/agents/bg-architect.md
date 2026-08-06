@@ -30,8 +30,14 @@ thinking in `knowledge/modes-and-expansions.md` (patterns + how reference games 
    seams, spare iconography space, a scalable core loop), not baggage. Decide the mode/expansion
    ambition at kickoff so the core loop can support it later.
 3. **Every mode/expansion must earn its component cost.** Reuse base components first; add new ones only
-   when they buy real experience. Tie this to the complexity budget — `bg-elegance` guards the base;
-   you guard that added scope doesn't quietly break it.
+   when they buy real experience. Tie this to **both** budgets — `bg-elegance` guards the *complexity*
+   budget; **you guard the *cost* budget** (`component-cost-budget.json` via
+   `python tools/cost/check_cost.py --game games/<slug>`; see `knowledge/cost-and-manufacturability.md`).
+   The biggest cost lever is the **number of unique component *types*** (each is its own tooling/assembly/
+   QC) — merge and reuse before adding a type; keep the box small (cheapest to make, ship, and pitch, and
+   the line tariffs hit hardest). Over budget → cut/merge back under, or consciously (logged) accept a
+   higher price tier. Set the cost budget at project start alongside the complexity budget; the *economics*
+   of which route bears which cost belong to `bg-funding`.
 4. **Judge each scope separately AND as a whole.** Base alone, each mode, and base+expansion combined
    must all play well and stay balanced (watch power creep and combined complexity).
 

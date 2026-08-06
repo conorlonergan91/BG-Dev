@@ -97,17 +97,32 @@ def render_card_svg(row: dict, theme: dict) -> str:
             f'<text x="{cx}" y="{cy + 16}" font-size="48" fill="{scol}" text-anchor="middle" '
             f'font-family="{tfont}" font-weight="bold">{esc(cost)}</text>'
         )
-    # value as a row of suit emblems + numeral (bottom-left)
+    # value: a large "index" numeral in the top-right of the header (playing-card style — value is what
+    # you compare and blind-commit every round, so it leads the read), plus a pip row + numeral at the
+    # bottom. A blank `value` means the card has no value; value 0 is a REAL value and must render (a
+    # zero-strength Signal is the whole point of Beacon's Dark Lantern — a blank edge would read as a
+    # card back). See games/beacon/design/infodesign-review.md.
+    value_index = ""
     value_row = ""
-    try:
-        vn = int(float(value)) if value else 0
-    except ValueError:
-        vn = 0
-    if vn > 0:
-        pips = "".join(emblem_svg(suit["emblem"], MARGIN + 22 + i * 46, CARD_H - MARGIN - 22, 16, scol)
-                        for i in range(min(vn, 6)))
+    if value:  # non-empty string — note "0" is truthy here and renders, blank does not
+        try:
+            vn = int(float(value))
+        except ValueError:
+            vn = 0
+        # top-right index on the header band — only when no cost badge competes for the corner
+        if not cost:
+            vix, viy = CARD_W - MARGIN - 6, MARGIN + 54
+            value_index = (f'<text x="{vix}" y="{viy}" font-size="62" fill="#ffffff" text-anchor="end" '
+                           f'font-family="{tfont}" font-weight="bold">{esc(value)}</text>')
+        # bottom pip row + numeral; value 0 gets an explicit hollow pip so the edge is never blank
+        if vn > 0:
+            pips = "".join(emblem_svg(suit["emblem"], MARGIN + 22 + i * 46, CARD_H - MARGIN - 22, 16, scol)
+                            for i in range(min(vn, 6)))
+        else:
+            pips = (f'<circle cx="{MARGIN + 22}" cy="{CARD_H - MARGIN - 22}" r="15" fill="none" '
+                    f'stroke="{scol}" stroke-width="4" opacity="0.7"/>')
         value_row = (pips +
-            f'<text x="{CARD_W - MARGIN}" y="{CARD_H - MARGIN - 6}" font-size="46" fill="{scol}" '
+            f'<text x="{CARD_W - MARGIN}" y="{CARD_H - MARGIN - 6}" font-size="52" fill="{scol}" '
             f'text-anchor="end" font-family="{tfont}" font-weight="bold">{vn}</text>')
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
@@ -118,6 +133,7 @@ def render_card_svg(row: dict, theme: dict) -> str:
   <path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{scol}"/>
   <text x="{MARGIN}" y="{MARGIN+44}" font-size="{TITLE_SIZE}" fill="#ffffff" font-family="{tfont}" font-weight="bold">{name}</text>
   {cost_badge}
+  {value_index}
   <!-- type line with emblem -->
   {emblem_svg(suit['emblem'], MARGIN+16, MARGIN+96, 15, scol)}
   <text x="{MARGIN+44}" y="{MARGIN+106}" font-size="{TYPE_SIZE}" fill="{muted}" font-family="{tfont}" font-style="italic" letter-spacing="2">{esc(ctype).upper()}</text>

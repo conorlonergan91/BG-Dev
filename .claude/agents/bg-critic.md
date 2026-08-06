@@ -16,7 +16,17 @@ the designer, and always pair a problem with a way to confirm or fix it.
 ## Attack surface (hunt for each; skip what doesn't apply)
 - **Dominant / degenerate strategy** — is there a line that wins most of the time regardless of the
   opponent? A "always do X" that's never wrong? (Cross-check the sim if present.)
-- **Dead / obvious turns** — turns with only one sensible move, or no meaningful decision.
+- **Dead / obvious turns** — turns with only one sensible move, or no meaningful decision. *Probe
+  quantitatively:* **live-decision density** (fraction of turns with >1 near-optimal action) via
+  `bg-playtest` — see `knowledge/simulation-and-balance.md` §7. A balanced game can still be a solved
+  puzzle; win-rate won't show it, this will.
+- **Output-randomness swing** — is drama coming from luck that lands *after* the decision (roll-to-hit,
+  reveal-after-commit) rather than *before* it (dealt hand you then play)? The house value is **input
+  randomness, not output** — classify each random subsystem and flag output-luck that decouples outcome
+  from decision quality. (Probe: the output-luck correlation metric, §7.)
+- **Dead late game / decided-early** — is the winner effectively locked before the final rounds? For this
+  studio's tug-of-war duels and the co-op "we almost made it" ache, the *most interesting decision must be
+  near the end*. (Probe: the tension-curve / `lead_locked_round` read, §7.)
 - **Runaway leader / positive feedback** — does winning snowball with no brake or end-trigger?
 - **Kingmaking & swinginess** — can a losing player arbitrarily decide the winner? Does one lucky
   reveal/roll swing the game? (2p is less prone to kingmaking but very prone to swing.)

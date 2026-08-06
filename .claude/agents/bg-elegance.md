@@ -47,6 +47,16 @@ must stay ruthlessly short** (one glance). Flag anything a new player would misr
 critic's teachability notes). Regenerate the rulebook/aid after edits (`build_rulebook.py`,
 `build_board.py --type aid`; or `make.sh`).
 
+### 3b. The editorial pass (edit ≠ write)
+Beyond succinctness, run a deliberate **developmental-edit + copyedit** pass — the job the writer is too
+close to do (see `knowledge/elegance-and-clarity.md` → editorial pass). Check: **terminology consistency**
+(one term per concept, Keywords used identically in rules/cards/aid — keep a tiny style sheet);
+**completeness** (every non-obvious rule has a worked example; every real edge case is answered; setup lists
+every component); **order/anchoring** (nothing referenced before defined); and **copyedit/proofread**,
+especially **numbers that must match `components/*`** (counts, costs, scores — cross-check them). Distinct
+from the cut test (removes rules) and the clarity pass (rewrites for brevity): here you catch inconsistency
+and incompleteness. Route layout/icon breaks to `bg-infodesign`, perceptual breaks to `bg-access`.
+
 ### 4. FAQ discipline
 Capture *genuine* ambiguities (deck runs out, ties, simultaneous effects) in a short FAQ appendix so the
 core rules stay lean. **But a recurring or obvious FAQ entry is a signal to FIX THE RULE, not document

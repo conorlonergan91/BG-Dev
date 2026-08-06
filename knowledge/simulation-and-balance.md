@@ -60,6 +60,35 @@ The sim rules out broken math, dominant lines, and dead mechanics. It **cannot**
 - table feel, downtime, social dynamics, the "we almost made it" ache in co-op.
 Those are the human session-1 questions. Simulate to *de-risk and target* playtests, never to replace them.
 
+## 7. Beyond balance: instrument decision quality, randomness & the tension curve
+Win-rates prove *fairness*; they say nothing about whether the decisions are *interesting*. A game can be
+perfectly balanced and perfectly boring (flip a coin). Add these reads via `metrics()` so the sim answers
+"is the fun there?", not just "is it fair?":
+
+- **Live-decision density.** The single best proxy for Sid Meier's "a series of interesting decisions".
+  For each turn, count the actions within X% (say 10%) of the best action's value by the agent's own
+  heuristic. **>1 = a live decision; exactly 1 = a dead/obvious turn.** Report the fraction of turns that
+  are live. A game where most turns have one clearly-best move is a solved puzzle wearing a game's clothes —
+  it fails even at 50% win-rate. (Catches dead turns, false choices, and no-brainers that balance hides.)
+- **Input vs. output randomness classification.** Tag each random subsystem: does the randomness resolve
+  **before** the decision (input — you adapt; preserves agency) or **after** (output — swing, "I played
+  perfectly and lost"). Measure output-luck's bite: correlation between a random draw/roll *after* commit
+  and the game result. High output-luck decoupling outcome from decision quality is a design smell — and
+  it's directly counter to the house value "input randomness, not output". Cheap, high-signal, rarely
+  automated.
+- **Tension curve / late-game decidedness.** Track the leader's win-probability (or score margin) over the
+  course of a game. **Is the winner effectively decided before the final rounds?** For this studio's
+  tug-of-war duels and the co-op "we almost made it" ache, the *most interesting decision should be near
+  the end* and the winner in doubt late. If the sim shows games settled at 60% distance, the back half is
+  dead air — a pacing failure no win-rate reveals. (Metric ideas: `lead_locked_round` = the round after
+  which the eventual winner never trails; `final_margin` distribution; fraction of games decided in the
+  last round.)
+
+These are `bg-critic`'s probes made quantitative — the critic names the risk ("turn 3 is a no-brainer";
+"the reveal is pure output swing"; "it's over by the midpoint") and points here for the metric that
+confirms it. Bots are a **floor**: they can prove a turn is dead or a game is decided early; they can't
+prove a live decision is *fun*. That last step is still the human session.
+
 ## Test every player count & variant (not just the sweet spot)
 A game offered at 2–5 players is really several games. Test them all — in sim and with humans:
 - **Seat balance per count:** `simulate.py --counts "2,3,4,5" --agent <line>` self-plays a strategy at
