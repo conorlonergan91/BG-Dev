@@ -39,8 +39,10 @@ likely **Discovery + Fellowship + Challenge**.)
 - **Player modes:** 2–4. Explore a dedicated **2-player duel** (head-to-head "who has the better trip")
   alongside a 3–4p multiplayer race. Owned by `bg-architect`.
 - **Campaign?** None planned (fine!). Possible light "trip journal" replay hook later.
-- **Expansion ambition:** none for now — but the destination-as-setting structure invites a **series**
-  (other regions/countries) if the base sings. Hold hooks, not baggage.
+- **Expansion ambition:** base = clean travel-food optimiser (agent framing is flavour only). Two held
+  hooks (not baggage): a **"Secret Missions" expansion / campaign mode** that makes the secret-agent
+  framing load-bearing (hidden objectives / bluff-deduction), and a **destination series** (other
+  regions/countries) if the base sings. Owned by `bg-architect`.
 - **Guardrail:** base must be complete & great on its own.
 
 ## Mechanism spine
@@ -68,7 +70,7 @@ likely **Discovery + Fellowship + Challenge**.)
 
 ## Open questions & risks
 - Which single mechanism spine? (route vs draft vs set-collection lead)
-- Is the "secret agent" wink load-bearing, or just flavour on a travel/food game?
+- ~~Is the "secret agent" wink load-bearing?~~ **Decided:** flavour in the base; load-bearing version held as a "Secret Missions" expansion/campaign candidate (2026-08-06).
 - 2p duel vs 3–4p race: one core with a mode toggle, or is 2p the true home?
 - **Sensitivity:** the game depicts a **real place & culture (Taiwan)** — flag for `bg-theme` +
   `bg-publishing` (respectful, well-researched, avoid caricature; "Taiwanese humour" done *with* not *at*).
