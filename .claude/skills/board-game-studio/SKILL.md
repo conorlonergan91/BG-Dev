@@ -101,6 +101,25 @@ For each stage:
 
 Keep each loop short. If the human says "you decide," make the call, note it, and keep going.
 
+### The guardian sweep (auto-run after every design pass)
+
+A design change is where the game quietly drifts. So **after any `bg-design` pass lands (and after
+`bg-developer`, where the design becomes concrete), automatically run the guardians before advancing** —
+you don't wait to be asked:
+
+- **`bg-theme` — the coherence check.** Does the fiction still explain the new/changed mechanics
+  (especially the **signature twist**)? Has a cut stranded a name, or a new rule out-run the theme? It
+  either confirms "still coherent" or proposes a **re-theme** so the identity evolves *with* the design
+  instead of freezing into a restriction or drifting into muddle.
+- **`bg-elegance` — the budget check.** Did the change push weight/keywords/exceptions past the
+  complexity budget?
+
+These are **cheap by default**: if nothing themed or nothing weighty changed, the guardian returns a
+fast "still within" and you move on. They're independent — **dispatch them in parallel.** Only surface a
+guardian's output to the human when it actually flags something (a re-theme worth a call, a budget
+breach); a clean sweep just gets logged and the loop advances. This is the theme analog of the
+long-standing rule that `bg-elegance` guards the budget every iteration.
+
 ## Living documents
 
 - `game-bible.md` — the concept, positioning, core loop, components, rules summary, status. Always current.

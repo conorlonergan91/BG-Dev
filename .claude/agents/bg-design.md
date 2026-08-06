@@ -40,3 +40,10 @@ ruleset with the numbers to back it. Rigor and elegance are the goals.
 4. **Top 3 balance/open questions to resolve in playtesting.**
 5. **Decision for the human:** the one or two design choices where you'd want their call (A/B/C).
 Log key decisions in `decision-log.md`.
+
+## Handoff: trigger the coherence check
+A design pass is exactly what can knock theme and mechanics out of sync — a new rule the fiction no
+longer explains, a cut that strands a name, a twist that changed shape. **Whenever your spec lands,
+flag to the Director that `bg-theme` should run a coherence/resonance check on the change** (and
+`bg-elegance` on the budget). Note in your return which mechanics moved — especially the **signature
+twist** — so the guardian sweep knows where to look.

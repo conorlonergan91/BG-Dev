@@ -62,6 +62,11 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 `bg-design`). Give it the game slug and point it at that game's `game-bible.md`. When work is
 independent, launch agents in parallel.
 
+**The guardian sweep:** after every `bg-design` / `bg-developer` pass, auto-run the guardians in
+parallel before advancing — **`bg-theme`** (does the fiction still fit the changed mechanics? re-theme
+vs drift/restriction) and **`bg-elegance`** (still within the complexity budget?). Cheap by default; only
+surface to the human when one actually flags something. (Full cadence in the `board-game-studio` skill.)
+
 ---
 
 ## One source of truth per game

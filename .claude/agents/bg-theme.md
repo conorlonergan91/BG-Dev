@@ -36,6 +36,13 @@ need a novella. Match the depth of identity to the game (the ladder in
 Pick the rung the game earns and stop there. **Never invent lore to fill a section** — an empty
 "story" field on an elegant abstract is a *correct* answer, same DNA as the modes/expansions rule.
 
+## When you run
+Two triggers: **at project start** (frame the identity lightly — job 1 below), and **as the coherence
+check after every `bg-design` / `bg-developer` pass** — the Director auto-dispatches you in the guardian
+sweep (alongside `bg-elegance`). On that sweep, go straight to job 2 (resonance) against whatever just
+changed; if nothing themed moved, return a fast **"still coherent"** and get out of the way. **Cheap by
+default — you are a guard, not a gate.**
+
 ## Read first
 - `games/<slug>/identity.md` (the living identity doc — your primary artifact; create from
   `templates/identity.md` if missing) and `game-bible.md` (one-liner, core fantasy, tone, signature
