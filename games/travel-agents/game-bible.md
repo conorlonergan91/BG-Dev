@@ -1,7 +1,7 @@
 # 🎲 Travel Agents: Taiwan — Game Bible
 
 > The single living source of truth for this game. Every agent reads and updates this. Keep it current.
-> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Ideation**
+> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design** (spine A locked)
 
 ## One-liner
 <!-- The hook a stranger would repeat. -->
@@ -40,47 +40,71 @@ likely **Discovery + Fellowship + Challenge**.)
 - **Player modes:** 2–4. Explore a dedicated **2-player duel** (head-to-head "who has the better trip")
   alongside a 3–4p multiplayer race. Owned by `bg-architect`.
 - **Campaign?** None planned (fine!). Possible light "trip journal" replay hook later.
-- **Expansion ambition:** base = clean travel-food optimiser (agent framing is flavour only). Two held
-  hooks (not baggage): a **"Secret Missions" expansion / campaign mode** that makes the secret-agent
-  framing load-bearing (hidden objectives / bluff-deduction), and a **destination series** (other
-  regions/countries) if the base sings. Owned by `bg-architect`.
+- **Expansion ambition:** base = travel-food optimiser **with the secret-agent layer load-bearing**
+  (hidden Assignments + a shared Dossier — CD call 2026-08-06, so the hidden-mission content is IN the
+  base, no longer a held expansion). Remaining held hooks (not baggage): explicit **co-op / duel mode
+  split** (spine B — cheap to graft later since it shares this core), a deeper **campaign / "trip
+  journal"** arc, and a **destination series** (other regions/countries) if the base sings. Owned by
+  `bg-architect`.
 - **Guardrail:** base must be complete & great on its own.
 
 ## Mechanism spine
 <!-- 1–3 mechanism families and the blend; why each part needs the others (see knowledge/archetypes.md). -->
-*(To be committed in Exploration/Design.)* Candidate blend from the inspirations: **set collection**
-(food/dishes), **route/network building or push-your-luck travel** (Ticket to Ride DNA), and **open-drafting
-/ card-play** (Let's Go! To Japan, Couture). Agent Avenue suggests a **bluff/deduction** micro-hook.
+**LOCKED — spine A "Rival Agents, Shared Beat"** (CD, 2026-08-06; see `design/explore-agent-layer.md`).
+A **competitive + co-op blend in one box**, built on:
+- **Set collection with a twist — recipes by region.** A dish = a tiny recipe of 2–3 named ingredients;
+  ingredients are sourced from the Taiwan **regions that actually supply them** (oysters coastal, Hakka
+  mountain towns, east-coast Indigenous cuisines…). This is the generic-defeater — the map is shaped by
+  real food geography, not "food + map." (from the Yes! Ginseng / Taiwan Snackbar inspirations)
+- **Region routing / travel** — you move *because* the ingredient you need lives *there*.
+- **The load-bearing agent layer:** a **hidden Assignment** (secret objective you race to plate) + a
+  face-up **Grand Dossier** the whole table advances together + **tip-off / dead-drop** hand-offs that
+  help a rival yet bank *you* a reward. This is what makes "I'm a food spy on a mission" a thing you *do*.
 
 ## Core loop
 <!-- The repeated cycle of decisions and rewards, step by step. -->
-*(To be designed.)*
+*(→ `bg-design` to specify.)* Sketch: travel to a region → source ingredients there → plate dishes
+(toward your **hidden Assignment** and the shared **Grand Dossier**) → optionally **tip off** a rival for
+a personal reward → score. The tension every turn: advance my secret mission, or feed the shared Dossier
+for the Discovery bonus everyone shares?
 
 ## Signature twist
 <!-- The one memorable rule/hook that makes it *this* game. -->
-*(To be found — likely where the "food" and "adventure/agent" fictions fuse into one rule.)*
+**The shared Dossier + tip-offs** — a genuinely cooperative spine running *inside* a competitive race, so
+helping a rival can be the selfish play. Fused with **recipes-by-region**, so the spy-mission fiction and
+the food-geography fiction drive the *same* decisions.
 
 ## Components (summary)
-*(To be defined; detailed manifest in components/manifest.md.)*
+*(→ `bg-design` / `bg-developer`; detailed manifest in `components/manifest.md`.)* Likely: ingredient
+cards (by region), dish/recipe cards, hidden Assignment cards, the shared Grand Dossier track/board, a
+Taiwan region map, player itinerary/log, tip-off/dead-drop tokens.
 
 ## Win condition & scoring
-*(To be designed — likely "best trip": most/most-varied delicious adventures.)*
+*(→ `bg-design`.)* Sketch: most points from your completed **hidden Assignment** + plated dishes + your
+share of **Grand Dossier** Discovery bonuses + tip-off rewards. "Best trip" wins.
 
 ## Rules summary
-*(To be drafted in design/rules-draft.md.)*
+*(To be drafted in `design/rules-draft.md`.)*
 
 ## Open questions & risks
-- Which single mechanism spine? (route vs draft vs set-collection lead)
-- ~~Is the "secret agent" wink load-bearing?~~ **Decided:** flavour in the base; load-bearing version held as a "Secret Missions" expansion/campaign candidate (2026-08-06).
-- 2p duel vs 3–4p race: one core with a mode toggle, or is 2p the true home?
+- ✅ **Mechanism spine — DECIDED:** A "Rival Agents, Shared Beat" (2026-08-06).
+- ✅ **Is the "secret agent" wink load-bearing? — DECIDED:** yes, in the base (hidden Assignments +
+  shared Dossier). Reverses the earlier "flavour-only / held expansion" call (2026-08-06).
+- ⚠️ **TOP RISK (attack first with `tools/sim` + a Screentop session):** is the co-op layer *individually
+  rational* often enough that players actually cooperate — or does it collapse into a dominant
+  "hoard, never tip" line (killing the promised Fellowship) or **kingmaking**? Semi-co-op's knife-edge.
+  Fallback: spine B's explicit co-op mode (cooperation as win condition, not temptation) on the same core.
+- Hold weight at **~1.8** — one clean hidden-info hook, not a deduction engine (`bg-elegance` guards).
+- 2p-first, but confirm it scales cleanly to 3–4 (`bg-architect`).
 - **Sensitivity:** the game depicts a **real place & culture (Taiwan)** — flag for `bg-theme` +
-  `bg-publishing` (respectful, well-researched, avoid caricature; "Taiwanese humour" done *with* not *at*).
+  `bg-publishing` (respectful, well-researched, avoid caricature; "Taiwanese humour" done *with* not *at*;
+  paid Taiwanese cultural + language consultant before art/print).
 
 ## Status by stage
-- [ ] Ideation
-- [ ] Research
-- [ ] Exploration
-- [ ] Design
+- [x] Ideation
+- [x] Research
+- [x] Exploration
+- [ ] Design ← **in progress** (`bg-design` specifying spine A)
 - [ ] Development
 - [ ] Prototype (Screentop.gg / PnP)
 - [ ] Playtesting
