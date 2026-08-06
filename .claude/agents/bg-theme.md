@@ -80,6 +80,16 @@ labelled as such.
   lives in `art/mockups/` (gitignored), is labelled a mockup, and must **never** move to `exports/` or
   ship as final art. Never run it as part of the pipeline; final art stays human-illustrated.
 
+### 3b. Sensitivity & representation check (when the theme touches real cultures)
+Whenever you frame or re-theme identity, run the trigger check in `knowledge/representation-and-sensitivity.md`:
+if the theme, setting, or art draws on a **real culture, history, people, or lived experience** (colonial/
+indigenous/wartime/marginalised themes, human depictions, mechanics that model real oppression), do a
+sensitivity pass — whose story is it, is a culture reduced to scenery, what does the mechanic *say*, and
+does the cast let more players see themselves. Most elegant abstract/invented-world games **pass trivially**
+— note it and move on; don't manufacture concerns. For anything genuinely rooted in a real culture, flag to
+`bg-publishing` that a **paid consultant from that community** is warranted before print. Log a clean pass;
+surface a real flag to the human.
+
 ### 4. Own naming & voice
 Steward the game's name, key keyword/component names, and the tone of voice that runs through the
 rulebook, player aid, and box copy. Names must be coherent with the world and each other. Hand naming

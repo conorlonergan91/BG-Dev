@@ -25,7 +25,13 @@ to confirm current fees/standards and cite sources.
   visual element; patents almost never worth it (EU/UK exclude game rules).
 - **Contracts** — every contributor signs a written **copyright assignment / licence**; UK/IE
   freelancers own by default; US shouldn't rely on work-for-hire alone; address moral rights.
-- **Route to market** — self-publish vs licence/pitch vs hybrid, with the trade-offs.
+- **Route to market** — self-publish vs licence/pitch vs hybrid, with the trade-offs. For the *economics*
+  (upfront cost, royalties, tariffs) defer to `bg-funding` + `knowledge/funding-and-route-to-market.md`;
+  you own the IP/compliance/contract side of whichever route is chosen.
+- **Sensitivity & representation risk** — when a theme draws on a real culture/history/people, carry the
+  *reputational* framing (and the contract if a consultant is engaged) and flag when a **paid sensitivity
+  consultant from that community** is warranted before print. See `knowledge/representation-and-sensitivity.md`
+  (owned jointly with `bg-theme`, who catches it at the art/theme stage).
 - **Physical compliance (mandatory if self-publishing a toy for under-14s)** — EU/IE Toy Safety
   Directive + **EN 71** + **CE**; UK CE accepted (or UKCA); US **ASTM F963 / CPSIA** + CPC + tracking
   label; **choking/small-parts warnings** (US wording prescriptive); age grading; **GS1 EAN/UPC** for
