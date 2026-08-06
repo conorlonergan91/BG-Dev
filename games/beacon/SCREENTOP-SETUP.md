@@ -2,26 +2,19 @@
 
 How to turn the generated sheets into a playable Screentop room for you + a friend.
 
-## 1. Regenerate the decks + cover (if needed)
-```bash
-cd games/beacon
-python3 ../../tools/cards/build_cards.py --csv components/ships.csv   --out build --theme nautical --formats screentop
-python3 ../../tools/cards/build_cards.py --csv components/signals.csv --out build --theme nautical --formats screentop
-python3 ../../tools/cards/build_cover.py --title "Beacon" --subtitle "Two keepers. One coast." \
-    --theme nautical --players 2 --time "20 min" --weight 1.8 --out build/cover.png
-python3 ../../tools/boards/build_board.py --type track --spaces 7 --title "The Tide" \
-    --left-label "Keeper A harbour" --right-label "Keeper B harbour" --theme nautical --out build/tide-track.png
-python3 ../../tools/boards/build_board.py --type tokens --labels "Tide,1st" --shape circle \
-    --theme nautical --out build/tokens.png
-python3 ../../tools/rulebook/build_rulebook.py --md design/rules-draft.md --title "Beacon" \
-    --theme nautical --out build/rulebook.pdf
-```
-Produces (under `build/`, gitignored — regenerated from the CSVs):
-- `sheets/ships_sheet_1.png` — **10 × 3 grid**, 24 ships + back  ·  `sheets/ships_back.png`
-- `sheets/signals_sheet_1.png` — **10 × 2 grid**, 12 signals + back  ·  `sheets/signals_back.png`
-- `cover.png` — themed box/title image (use it as the game's cover/thumbnail in Screentop)
+## 1. The assets
+The ready-to-upload assets are committed in **`games/beacon/exports/`** (viewable on GitHub):
+- `ships_sheet_1.png` — **10 × 3 grid**, 24 ships + back  ·  `ships_back.png`
+- `signals_sheet_1.png` — **10 × 2 grid**, 12 signals + back  ·  `signals_back.png`
+- `cover.png` — themed box/title image (the game's cover/thumbnail in Screentop)
 - `tide-track.png` — the 7-space Tide track  ·  `tokens.png` — Tide marker + First-Keeper token
+- `player-aid.png` — themed quick-reference (drop it on the table so both keepers can glance at it)
 - `rulebook.pdf` — the v0.3 rules, laid out (share it with your friend before you start)
+
+To **regenerate** them after changing the data/rules, just run the game's build script:
+```bash
+cd games/beacon && ./make.sh      # rebuilds build/ from data, refreshes exports/
+```
 
 ## 2. Build the room on Screentop.gg
 1. Sign in (free) → **Create a Game** → name it *Beacon*.

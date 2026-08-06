@@ -65,8 +65,17 @@ Cards aren't the whole game. Render the other 2D bits themed to match the deck:
   (or `--from-csv label[,color][,qty]`) → a token sheet tiled for cutting.
 - **Player mat / board**: `--type mat --spec mat.json` → a titled panel with labelled zones (copy
   `tools/boards/sample_mat.json`).
+- **Player aid / quick-reference**: `--type aid --spec aid.json` → a themed reference sheet (auto-fits
+  height) from `{title, subtitle, sections:[{heading, lines:[...]}]}`. Generate one for every game — a
+  good aid is what makes a filler teachable in one pass.
 All take `--theme` (shared with the cards) and output SVG→PNG/PDF. Upload them into Screentop/TTS as
 image assets/tiles alongside the decks.
+
+## Scratch vs committed renders (build/ vs exports/)
+`build/` is **disposable scratch** (gitignored). Snapshot the **curated, shareable deliverables** (deck
+sheets, cover, rulebook, board, tokens, player aid) into **`games/<slug>/exports/` (committed)** via the
+game's `make.sh` — so the repo has viewable assets that stay fully reproducible from the data. Change
+the data → re-run `make.sh` → commit the refreshed `exports/`.
 
 ## Print specs to bake in (from `knowledge/manufacturing-specs.md`)
 

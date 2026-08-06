@@ -72,14 +72,19 @@ games/<slug>/
 ├── decision-log.md      # every key decision + the rationale (fast to skim)
 ├── design/              # deeper design notes, math/economy spreadsheets, rules drafts
 ├── components/          # component DATA (CSV/JSON) — cards, tiles, tokens (the real source)
-├── build/              # GENERATED output (PDF/PNG/TTS/STL) — gitignored, regenerated from data
+├── build/               # SCRATCH renders (PDF/PNG/TTS/STL) — gitignored, fully regenerated
+├── exports/             # COMMITTED deliverables — curated shareable renders (deck sheets, cover, rulebook)
+├── make.sh              # regenerates build/ from data, then snapshots deliverables into exports/
 ├── playtests/           # playtest logs and feedback synthesis
 ├── art/                 # art briefs, references, and assets
 └── marketing/           # pitch, sell sheet, campaign copy
 ```
 
-Rule: **data is the source; renders are disposable.** Cards/tiles/tokens are defined as data
-(CSV/JSON) and rendered by the 2D/3D tooling. Never hand-edit generated files in `build/`.
+Rule: **data is the source; renders are regenerated.** Cards/tiles/tokens are defined as data
+(CSV/JSON) and rendered by the 2D/3D tooling. Never hand-edit generated files. `build/` is disposable
+scratch (gitignored); the **curated deliverables you want on GitHub / to share** (deck sheets, cover,
+rulebook PDF, board, tokens) are snapshotted into **`exports/` (committed)** by the game's `make.sh`.
+Regenerate anytime — if the data changes, re-run `make.sh` and commit the refreshed `exports/`.
 
 ---
 
