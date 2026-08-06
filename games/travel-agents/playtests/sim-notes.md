@@ -303,3 +303,101 @@ caps at 12 for its +9; it no longer *ends* the game). One clean structural knob.
 **Knobs exposed for re-sim:** `TA_REP_TRIGGER` (end-clock), `TA_SUPPLY` (scarcity), `TA_EVENT_PROB`,
 `TA_BUZZ_FLOOR` (+N Buzz on every vendor — raise the anti-runaway floor), `TA_DISC_CAP` (cap the ramp),
 `TA_CAP` (larder).
+
+---
+
+# v3 — CHARACTER REBALANCE pass (2026-08-06, after the end-clock fix)
+
+**End-clock fix is now the sim DEFAULT** (`REP_TRIGGER=999` → Rep-top no longer ends the game; the Season
+timer paces it; Rep still caps at 12 for its +9). At the correct length (**~8.6 courts/player, ~46 turns**)
+I re-tuned the five characters, **changing as little as possible**, to hit the 45–55% band with no
+character×mission combo >~60%.
+
+## Result — Probe 3 now **PASS** (was FAIL)
+Per-character win-rate (balanced strategy, 5-way round-robin, both seatings; ±~2pt run-to-run):
+
+| Character | before (as-written) | **after rebalance** | in band? |
+|---|---:|---:|:--:|
+| Auntie | 74.8% | **52 – 54%** | ✓ |
+| Conductor | 51.0% | **53 – 55%** | ✓ |
+| Rookie | 35.6% | **51 %** | ✓ |
+| Influencer | 49.8% | **46 – 47%** | ✓ |
+| Gourmand | 38.7% | **45 – 47%** | ✓ |
+
+Worst char×mission (measured correctly — see note) = **rookie × t3_2 ≈ 57%** (<60). The old outlier
+**Auntie × grand_tour (82%)** is gone (Auntie × any mission now ≤53%).
+
+> **Methodology fix (important):** the first char×mission scans were artefacts. Pitting (char c + mission)
+> vs a **neutral, abilityless** opponent inflated *every* combo to ~65% (you were measuring "having an
+> ability at all," not a synergy). The correct probe is a **mirror**: (char c on forced mission m) vs the
+> **same char c** on an aligned pick, both seatings — baseline ~50%, a spike = a real broken synergy. On
+> that fair test all combos sit **53–57%**. The scan in `probe3_characters()` now uses the mirror.
+
+## The changes (with the exact numbers) + confidence
+
+**1. Auntie — NERF. CONFIDENT (sim-robust across regimes).** She was the clear outlier (71–75%).
+- *Regular's Discount* now applies to the **first vendor courted in each of your FIRST TWO regions only**
+  (was: every region), still −1 ingredient. Marquee (T3) **allowed** (excluding T3 as well over-nerfed her
+  to ~43%). Flaw (*no HSR*) unchanged.
+- Sim knobs: `AUNTIE_MAX_REGIONS=2`, `AUNTIE_EXCLUDE_T3=False`. → **52–54%**, and kills the 82% grand-tour
+  synergy (her recurring per-region discount no longer scales with breadth).
+- *Recommended design wording:* "**Regular's Discount** — the first vendor you court in **each of your
+  first two regions** costs 1 fewer ingredient (she vouches for you around town)." Confident because the
+  nerf holds whether the game is truncated or full-length; her flaw was doing almost no work on a
+  4-region ring, so the fix is on the *ability*, not the flaw.
+
+**2. Rookie — BUFF. SIM-PESSIMISTIC (event-coupled; confirm at a table).** She was worst (35.6%).
+- Her whole kit rides on the **event system the sim abstracts** (`EVENT_PROB≈0.24`, tiny payloads), so the
+  sim badly *under-values* "First-Timer's Luck." Relaxing her flaw (Larder cap 6→7) barely moved her; the
+  lever that works in-sim is making her event ability actually pay. Modelled as `ROOKIE_EVENT_MULT=2.2`
+  (events fire ~2× as often in her region and she keeps the boon of the two draws), **flaw kept at cap 6**.
+  → **51%**.
+- *Recommended design action:* **keep the printed kit as-is** (draw 2 / resolve 1, Larder cap 6) — do NOT
+  hard-code a numeric buff off this pessimistic model. The sim only says "as printed she's too weak *if*
+  events are as thin as modelled." **Confirm at the table with the real event tiles.** If she's still weak
+  there, the cheapest real levers are: relax the cap to **7**, or make her ability **draw 3 / resolve 1**
+  (more boon selection). Flagged, not locked.
+
+**3. Gourmand — BUFF. SIM-PESSIMISTIC (his ability is structurally invisible to bots).** He was 38.7%.
+- Diagnostic finding: giving him **2 or even 3** pantry-as-specialty substitutions per turn changed his
+  win-rate by **0.0** — because the greedy sourcing engine *already* supplies the ingredients a vendor
+  needs, so "courting flexibility" is redundant to a bot. **The pantry-wild ability only pays under
+  tight-hand pressure a human feels and a bot never does.** The *only* in-sim lever that moved him was
+  softening his "cannot benefit from boons" flaw.
+- Sim knobs: `GOURMAND_BOONS="half"` (ignores ~half of boons instead of all) + `GOURMAND_WILD_USES=2`
+  (kept, though it does nothing in-sim). → **45–47%** (he caps around there; the sim can't fairly seat him
+  higher).
+- *Recommended design action:* the honest read is **he is probably already close to balanced at a real
+  table** (his ability is worth far more when hands are tight and boons matter). Minimal recommended change:
+  **soften the flaw** from "cannot benefit from *any* boon" to something less absolute — e.g. "cannot gain
+  **Buzz** from boon events" (he still enjoys ingredient/festival boons). Do NOT buff his ability off the
+  sim — it's the most under-modelled thing here. Flagged, needs table confirmation.
+
+**4. Influencer — light nudge. SIM-DRIVEN (watch).** Rose to the top edge (~55%) once Auntie was nerfed.
+- His *Going Viral* (+1 Buzz on Promote) is genuinely **strong in this sim** because **Buzz is the binding
+  late-game constraint** (Probe 2) — +1 Buzz income compounds against the ramp. Nudged his flaw from
+  *starts 1 behind* → **starts 2 behind** (`INFLUENCER_BEHIND=2`) to settle him at **46–47%**.
+- *Recommended design action:* keep *Going Viral* + *goes last*; **try "starts 2 resources behind"** (from
+  1). Flagged as sim-driven: if the real event economy hands out more Buzz (Bubble-Tea Festival, Tourist
+  Season, pass-6 perk), his +1 edge shrinks and **1-behind may suffice** — decide at the table.
+
+**5. Conductor — UNCHANGED.** Stable at 51–55% before and after; leave as printed (*Travel arrives with 2 /
+Stock Up takes 1*).
+
+## Confidence summary (for the CD baking these into the design-doc)
+- **Bake now (confident):** Auntie → *first two regions only*.
+- **Provisional (sim-driven, low-risk to try):** Influencer → *starts 2 behind*.
+- **Do NOT hard-tune off the sim — confirm at the FTUE/feel table (event-coupled):** Rookie and Gourmand.
+  Recommend keeping their printed kits, watching their win-rate + fun in the 2p Screentop session, and
+  applying the cheap levers above (Rookie cap 6→7 or draw-3; Gourmand "no Buzz-boons" instead of "no
+  boons") **only if** the table confirms the weakness the abstracted-event sim is warning about.
+
+## The ONE change to test next (this pass)
+Lock **Auntie = first-two-regions** and **Influencer = starts-2-behind** into the design; carry Rookie &
+Gourmand **as-printed with a table watch-flag**. Then the next real test is the **2p Screentop FTUE
+session**, instrumented to record **per-character win/loss + whether Rookie's event-luck and the
+Gourmand's pantry-wild actually earn their keep** (the two things the sim provably cannot judge).
+
+**Sim knob defaults now baked (see the module header):** `TA_REP_TRIGGER=999` (end-clock decoupled),
+`TA_AUNTIE_REGIONS=2`, `TA_AUNTIE_NO_T3=0`, `TA_ROOKIE_CAP=6`, `TA_ROOKIE_EVT=2.2`,
+`TA_GOURMAND_BOONS=half`, `TA_GOURMAND_WILD=2`, `TA_INFL_BEHIND=2`.

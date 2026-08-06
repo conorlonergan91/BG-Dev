@@ -75,14 +75,26 @@ from collections import Counter
 # ---- sim-only knobs (env vars; do NOT change the printed game rules) ------------------------------
 SEASON_FINAL = {2: 16, 3: 24, 4: 30}                        # courts to fill the Season timer (design-doc)
 REP_TOP = 12                                                # Reputation track top / scoring cap (design-doc)
-REP_TRIGGER = int(os.environ.get("TA_REP_TRIGGER", "12"))   # rep value that ENDS the game (as-written = 12;
-                                                            # rebalance knob: raise out of reach to let the
-                                                            # Season timer do the timing — see sim-notes)
+# END-CLOCK FIX (LOCKED 2026-08-06): the Season timer paces the game; reaching Rep 12 no longer ENDS it
+# (Rep still caps at 12 and pays its +9). Default = decoupled (999 = out of reach). Set TA_REP_TRIGGER=12
+# to reproduce the OLD design where Rep-top ended the game at ~5 courts.
+REP_TRIGGER = int(os.environ.get("TA_REP_TRIGGER", "999"))
 CAP_DEFAULT = int(os.environ.get("TA_CAP", "7"))            # Larder cap (Rookie = 6)
 REGION_SUPPLY = int(os.environ.get("TA_SUPPLY", "13"))      # ASSUMPTION: per-region specialty supply at 2p (~2x solo demand)
 EVENT_PROB = float(os.environ.get("TA_EVENT_PROB", "0.24")) # ASSUMPTION: chance a market refill flips an Event tile
 BUZZ_FLOOR_KNOB = int(os.environ.get("TA_BUZZ_FLOOR", "0")) # rebalance knob: +N Buzz on EVERY vendor (raise the floor)
 DISCOUNT_CAP = int(os.environ.get("TA_DISC_CAP", "99"))     # rebalance knob: max region-icon discount per region
+
+# ---- CHARACTER REBALANCE knobs (LOCKED values 2026-08-06; see sim-notes v3 rebalance) -------------
+# Tuned at the fixed game length (end-clock decoupled). These are the DEFAULTS the design should adopt.
+AUNTIE_MAX_REGIONS = int(os.environ.get("TA_AUNTIE_REGIONS", "2"))  # discount only on her first 2 regions (was: every region)
+AUNTIE_EXCLUDE_T3 = os.environ.get("TA_AUNTIE_NO_T3", "0") == "1"   # discount never applies to Marquee (T3)
+ROOKIE_CAP = int(os.environ.get("TA_ROOKIE_CAP", "6"))             # Larder cap for the Rookie (design: 6)
+ROOKIE_EVENT_MULT = float(os.environ.get("TA_ROOKIE_EVT", "2.2"))  # her event ability strength (draw-2-resolve-1
+                                                                   # -> more events fire in her region, always a boon)
+GOURMAND_BOONS = os.environ.get("TA_GOURMAND_BOONS", "half")       # boon handling: "none"|"half"|"full" (softened flaw)
+GOURMAND_WILD_USES = int(os.environ.get("TA_GOURMAND_WILD", "2"))  # pantry->specialty substitutions per turn (was 1)
+INFLUENCER_BEHIND = int(os.environ.get("TA_INFL_BEHIND", "2"))     # resources the Influencer starts behind (was 1)
 
 # ---- map -------------------------------------------------------------------------------------------
 REGIONS = ("N", "C", "S", "E")
@@ -252,7 +264,7 @@ class TravelAgentsGame:
                 "char": ch,
                 "pos": starts[p],
                 "larder": Counter(),
-                "buzz": (1 if (infl_present and ch != "influencer") else 0),   # Influencer starts 1 behind
+                "buzz": (INFLUENCER_BEHIND if (infl_present and ch != "influencer") else 0),  # Influencer starts behind
                 "vendors": [],
                 "icons": Counter(),
                 "wild": 0,
@@ -264,7 +276,7 @@ class TravelAgentsGame:
                 "pantry_wild_perk": False,
                 "mission": m,
                 "rep_ms": set(),
-                "pantry_wild_used": False,
+                "wild_used": 0,
                 "tourist_boost": False,
                 "acted": 0,
             })
@@ -318,8 +330,12 @@ class TravelAgentsGame:
             pay[r] -= 1
             w -= 1
         pantry = v["cost_pantry"]
-        # Auntie: first vendor she courts in a region new to her tour is 1 ingredient cheaper
-        if pl["char"] == "auntie" and v["region"] not in pl["regions"]:
+        # Auntie: the first vendor she courts in a region new to her tour is 1 ingredient cheaper —
+        # NERFED: only her first AUNTIE_MAX_REGIONS regions, and (optionally) never a Marquee (T3).
+        auntie_ok = (pl["char"] == "auntie" and v["region"] not in pl["regions"]
+                     and len(pl["regions"]) < AUNTIE_MAX_REGIONS
+                     and not (AUNTIE_EXCLUDE_T3 and v["tier"] == 3))
+        if auntie_ok:
             for r in sorted(pay, key=lambda k: -pay[k]):
                 if pay[r] > 0:
                     pay[r] -= 1
@@ -341,12 +357,13 @@ class TravelAgentsGame:
             short += max(0, c - pl["larder"].get(r, 0))
         pantry_have = pl["larder"].get(PANTRY, 0)
         pantry_short = max(0, pantry - pantry_have)
-        # a pantry->specialty substitution (Gourmand / perk): one spare pantry can cover 1 region unit
+        # pantry->specialty substitutions (Gourmand ability + T2 pantry_wild perk): spare pantry covers
+        # region units, up to the remaining per-turn capacity
         subs = 0
-        if (pl["char"] == "gourmand" or pl["pantry_wild_perk"]) and not pl["pantry_wild_used"]:
+        cap = _wild_cap(pl)
+        if cap > pl["wild_used"]:
             spare = pantry_have - pantry
-            if spare > 0:
-                subs = 1
+            subs = min(short, cap - pl["wild_used"], max(0, spare))
         return (short - subs) <= 0 and pantry_short <= 0
 
     # ---- legal actions (coarse; the shared brain computes its own choice) -------------------------
@@ -377,7 +394,7 @@ class TravelAgentsGame:
         s = state
         p = s["cur"]
         pl = s["players"][p]
-        pl["pantry_wild_used"] = False            # reset per-turn ability
+        pl["wild_used"] = 0                       # reset per-turn pantry->specialty substitutions
         act = actions[p]
         kind = act[0]
 
@@ -427,10 +444,9 @@ class TravelAgentsGame:
             pl["larder"][r] -= use
             s["region_ing_spent"] += use
             need -= use
-            if need > 0 and (pl["char"] == "gourmand" or pl["pantry_wild_perk"]) and not pl["pantry_wild_used"] \
-                    and pl["larder"].get(PANTRY, 0) > 0:
+            while need > 0 and pl["wild_used"] < _wild_cap(pl) and pl["larder"].get(PANTRY, 0) > 0:
                 pl["larder"][PANTRY] -= 1
-                pl["pantry_wild_used"] = True
+                pl["wild_used"] += 1
                 need -= 1
         pl["larder"] += Counter()  # drop zeros
         pl["larder"] = +pl["larder"]
@@ -531,16 +547,22 @@ class TravelAgentsGame:
     # ---- Market events on refill ------------------------------------------------------------------
     def _refills(self, s, p, rng, n_flips, plum_stock=False):
         pl = s["players"][p]
+        rookie = pl["char"] == "rookie"
+        prob = min(1.0, EVENT_PROB * ROOKIE_EVENT_MULT) if rookie else EVENT_PROB
         for _ in range(n_flips):
-            if rng.random() >= EVENT_PROB:
+            if rng.random() >= prob:
                 continue
             boon = rng.random() < 0.60
-            # Rookie: draw 2 resolve 1 -> can dodge a hazard (resolve a boon instead)
-            if pl["char"] == "rookie" and not boon:
-                boon = rng.random() < 0.60                    # a second draw, keep the better
+            # Rookie: "draw 2, resolve 1" -> keep the boon of the two draws (dodges the hazard)
+            if rookie and not boon:
+                boon = rng.random() < 0.85                    # strong second-draw boon preference
             if boon:
+                # Gourmand "Too jaded" flaw — SOFTENED: none = no boons; half = ignores 50%; full = normal
                 if pl["char"] == "gourmand":
-                    continue                                  # Too jaded: cannot benefit from boons
+                    if GOURMAND_BOONS == "none":
+                        continue
+                    if GOURMAND_BOONS == "half" and rng.random() < 0.5:
+                        continue
                 kind = rng.choice(("buzz", "buzz", "ingredient", "ingredient", "tourist"))
                 if kind == "buzz":
                     pl["buzz"] += 2
@@ -576,7 +598,7 @@ class TravelAgentsGame:
 
     def _discard_to_cap(self, s, p):
         pl = s["players"][p]
-        cap = 6 if pl["char"] == "rookie" else CAP_DEFAULT
+        cap = ROOKIE_CAP if pl["char"] == "rookie" else CAP_DEFAULT
         total = sum(pl["larder"].values())
         if total <= cap:
             return
@@ -672,6 +694,11 @@ class TravelAgentsGame:
 
 def _is_hsr(a, b):
     return {a, b} == {"N", "S"}
+
+
+def _wild_cap(pl):
+    """Pantry->specialty substitutions available this turn (Gourmand ability + T2 pantry_wild perk)."""
+    return (GOURMAND_WILD_USES if pl["char"] == "gourmand" else 0) + (1 if pl["pantry_wild_perk"] else 0)
 
 
 GAME = TravelAgentsGame()
@@ -812,7 +839,7 @@ def _acquire_toward(state, p, vid, W, flags):
 def _engine_policy(view, p, legal, rng, W, flags):
     state = view
     pl = state["players"][p]
-    cap = 6 if pl["char"] == "rookie" else CAP_DEFAULT
+    cap = ROOKIE_CAP if pl["char"] == "rookie" else CAP_DEFAULT
     near_cap = sum(pl["larder"].values()) >= cap - 1
     ranked = _rank_vendors(state, p, W)          # (tempo_adj, val, et, tier, idx, vid, affordable)
     if not ranked:
@@ -941,7 +968,16 @@ def _series(agents, n, n_players=2, base_seed=1, characters=None, missions=None,
                 fl = (flags or {}).get(p, {})
                 ms.append(_pick_mission(rng, W, fl))
         else:
-            ms = list(missions)
+            # allow per-seat None -> fill with a strategy-aligned pick (so an opponent can hold an
+            # aligned mission while the tested seat is forced onto a specific one)
+            ms = []
+            for p, mm in enumerate(missions):
+                if mm is None:
+                    W = (weights or {}).get(p, _STRATS["balanced"][0])
+                    fl = (flags or {}).get(p, {})
+                    ms.append(_pick_mission(rng, W, fl))
+                else:
+                    ms.append(mm)
         s = GAME.new_state(rng, n_players, characters=characters, missions=ms)
         guard = 0
         while not GAME.is_over(s):
@@ -1058,15 +1094,14 @@ def probe2_runaway(n=2000):
     print("the undiscountable-Buzz floor cap the court-rate at ~1 vendor / 2 turns even fully ramped?")
     print("=" * 90)
     seed = 1
-    print("\n  --- AS-WRITTEN (Rep-top=12 ends the game) ---")
-    m_aw, seed = _probe2_pass("as-written", n, seed)
-    # Sensitivity: let the Season timer time the game (rep-top decoupled) so the ramp fully develops —
-    # this is the only regime where a snowball CAN even happen (as-written ends at ~5 courts).
     ta_rep_save = REP_TRIGGER
-    globals()["REP_TRIGGER"] = 99
-    print("\n  --- SEASON-TIMED sensitivity (TA_REP_TRIGGER=99; the recommended end-clock fix) ---")
-    m_st, seed = _probe2_pass("season-timed", n, seed)
+    globals()["REP_TRIGGER"] = 12
+    print("\n  --- OLD design (Rep-top=12 ends the game — historical) ---")
+    m_aw, seed = _probe2_pass("old-rep12", n, seed)
+    # LOCKED default: the Season timer times the game (rep-top decoupled) so the ramp fully develops.
     globals()["REP_TRIGGER"] = ta_rep_save
+    print(f"\n  --- LOCKED default (Season-timed; TA_REP_TRIGGER={ta_rep_save}) ---")
+    m_st, seed = _probe2_pass("season-timed", n, seed)
     # read the runaway verdict off the regime where the ramp actually develops (season-timed)
     late = m_st["court_interval_late"]
     mid = m_st["mid_leader_won"]
@@ -1105,23 +1140,26 @@ def probe3_characters(n=900):
             cnt[b] += 1
     overall = {c: wr[c] / cnt[c] for c in CHARACTERS}
     print("\n  Per-character win rate (vs the field of the other 4, balanced strategy, both seatings):")
-    worst = 0.5
+    worst = 0.0
     for c, v in sorted(overall.items(), key=lambda kv: -kv[1]):
         flag = "" if 0.45 <= v <= 0.55 else "  <-- OUT OF BAND"
         worst = max(worst, abs(v - 0.5))
         print(f"    {c:12} {v*100:5.1f}%{flag}")
-    # char x mission scan: each character playing a FIXED mission vs a balanced-mission opponent
-    print("\n  Character x mission (char forced onto each mission vs a neutral-character balanced-pick opp):")
+    # char x mission scan (MIRROR): (char c, forced mission m) vs the SAME char c holding an aligned
+    # pick, both seatings averaged. Baseline ~50%; a spike >60% means m is a broken *synergy* for c
+    # (beyond what c already earns) — isolating the combo from the generic "having an ability" edge.
+    print("\n  Character x mission (mirror: char c on forced m vs same char c on aligned pick):")
     worst_combo = 0.0
     worst_name = ""
+    nn = max(250, n // 2)
     for c in CHARACTERS:
         row = []
         for mkey in MISSIONS:
-            r = _series({0: bal, 1: bal}, max(300, n // 2), base_seed=seed,
-                        characters=[c, "neutral"], missions=[mkey, _dominant_mission(seed)],
-                        weights={0: Wb, 1: Wb})
-            seed += max(300, n // 2)
-            wc = r["win"][0] + 0.5 * r["tie"]
+            rA = _series({0: bal, 1: bal}, nn, base_seed=seed, characters=[c, c],
+                         missions=[mkey, None], weights={0: Wb, 1: Wb}); seed += nn
+            rB = _series({0: bal, 1: bal}, nn, base_seed=seed, characters=[c, c],
+                         missions=[None, mkey], weights={0: Wb, 1: Wb}); seed += nn
+            wc = ((rA["win"][0] + 0.5 * rA["tie"]) + (rB["win"][1] + 0.5 * rB["tie"])) / 2
             row.append((mkey, wc))
             if wc > worst_combo:
                 worst_combo, worst_name = wc, f"{c} x {mkey}"
