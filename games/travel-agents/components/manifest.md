@@ -1,70 +1,82 @@
-# Travel Agents: Taiwan — Component Manifest
+# Travel Agents: Taiwan — Component Manifest (v3 · the vendor-courting engine)
 
-Single source of truth for the physical bill of materials. Feeds prototyping (Screentop.gg) and, later,
-manufacturing. **Data is the source; renders in `build/` are disposable** (regenerate with `./make.sh`).
+Full bill of materials. **Data is the source of truth** (`components/*.csv|json`); renders regenerate via
+`make.sh`. Quantities are for the **2-player base game** (3–4p deltas noted where they matter).
 
-Cards are poker size (63.5 × 88.9 mm). Region colours are **first-pass** from `identity.md`
-(`night-market`) and are **not locked** — pending the `bg-access` colour-blind check. Every ingredient
-type is **dual-coded** (colour **and** a non-colour channel: a distinct emblem/icon + a text/繁體 label),
-never colour alone.
+**Component types = 7** (within the raised cap of 8, `complexity-budget.json`):
+board · Vendor cards · Mission cards · ingredient tokens · Buzz tokens · Event tiles · Character mats.
+(Agent pawns + track markers are board bits, not a distinct type.)
 
-## Component types = 6  (exactly at the budget cap — `complexity-budget.json: max_component_types 6`)
+| # | Component | Type | Qty | Size / material | Source file |
+|---|-----------|------|----:|-----------------|-------------|
+| 1 | **Taiwan map board** | board | 1 | ~A2 folded, 2 mm greyboard | `map.json` |
+| 2 | **Vendor cards** | cards | 25 | 63.5×88.9 mm poker, 300 gsm linen | `vendors.csv` |
+| 3 | **Mission cards** | cards | 9 | 63.5×88.9 mm poker (same stock as vendors) | `missions.csv` |
+| 4 | **Ingredient tokens** | tokens | 144 | ~20 mm punchboard discs, dual-coded colour + 繁體 | `ingredients.csv` / `tokens.csv` |
+| 5 | **Buzz tokens** | tokens | 50 | ~16 mm punchboard discs, purple + 讚 | `tokens.csv` |
+| 6 | **Event tiles** | tiles | 11 | ~45 mm square punchboard | `events.csv` |
+| 7 | **Character mats** | mats | 5 | ~120×90 mm mini-mat, 2 mm board | `characters.csv` |
+| — | Agent pawns | board bits | 4 | wooden meeples (1 per player colour) | `tokens.csv` |
+| — | Prestige markers | board bits | 4 | wooden cubes (gold) | `tokens.csv` |
+| — | Reputation markers | board bits | 4 | wooden cubes (teal) | `tokens.csv` |
+| — | Season timer marker | board bits | 1 | wooden disc (vermilion) | `tokens.csv` |
 
-| # | Component type | Qty | Size / material | Data / source | Notes |
-|---|----------------|-----|-----------------|---------------|-------|
-| 1 | **Map board** (Taiwan) | 1 | folding board, ~A3+ | `components/map.json` → `build_board.py --type mat` | 4 regions on a ring + HSR spine; **Grand Dossier** track + shared **score** track printed along the edge. One board absorbs three functions to save a type. |
-| 2 | **Dish cards** | 24 | poker | `components/dishes.csv` → `build_cards.py` | 18 × 2-ingredient (3 VP) · 3 × 3-ingredient (4 VP) · 3 × Signature (5 VP). Recipe + VP + name (romanised **and** 繁體) + region tag. |
-| 3 | **Assignment cards** | 15 | poker | `components/assignments.csv` → `build_cards.py` | Secret "Operation: ___" objectives, +7 VP each on completion. |
-| 4 | **Ingredient tokens** | 120 | ~22 mm punch tokens / wood | `components/ingredients.csv` | **9 types:** 8 region specialties × 12 + **pantry** × 24. Open supply. Colour = region, emblem+label = the specific ingredient. |
-| 5 | **Insider Tip tokens** | 30 | ~20 mm punch tokens | `components/tokens.csv` (`tip`) | The flexible Dead-drop / milestone reward. |
-| 6 | **Agent pawns** | 4 | meeple / standee | `components/tokens.csv` (`pawnA–D`) | One per player, on the map. |
-| — | *Grand Dossier marker + score markers* | 1 + 4 | cubes / discs | rendered on the board tracks | **Not a distinct type** — they ride the map board's printed tracks. |
-| — | *Player aid* | 2 | card / landscape | `components/player-aid.json` → `build_board.py --type aid` | Reuses card stock — **not a new type**. One per player. |
+## Vendor deck (25) — tiered
 
-**Budget status: 6 / 6 — held.** No headroom for a 7th type; new content must reuse these. (Per the CD's
-note in `complexity-budget.json`, a 7th type is *allowed* if the game genuinely needs it, since cost is
-recoverable — but nothing here needs one. Not flagging `bg-elegance`.)
+| Tier | Fiction | Count | Ingredient cost | Buzz | Prestige | Rep | Perk |
+|------|---------|------:|-----------------|-----:|---------:|----:|------|
+| **T1 Stalls 攤** | humble street snacks | 11 | 2 (1 region) | 1 | 1 | +1 | its region discount icon |
+| **T2 Eateries 小吃** | sit-down staples | 8 | 3 (usually 2 regions) | 2 | 3 | +2 | region icon + one of {Promote +1 Buzz · pantry-wild · +1 Rep/court} |
+| **T3 Marquee 名店** | icons & banquets | 6 | 3 (1–2 regions) | 3–4 | 5–6 | +2/+3 | strong: wild icon · double icon · +2 Rep/court |
 
-## Ingredient supply (the region ↔ ingredient web)
+**Region-icon balance (whole deck):** North 7 · Central 6 · South 6 · East 6 — kept near-even despite
+North carrying 4 specialties (design-doc guard #1). One vendor = one **real** locked dish (Tâi-lô primary
++ 繁體; Indigenous/place dishes use their own romanisation, not forced Hokkien). 2p deals **3 per tier**
+face-up; refill from that tier's deck on each Court. (3p: 4/tier · 4p: 4–5/tier — see design-doc scaling.)
 
-| Region | Colour (first-pass) | Specialty 1 | Specialty 2 | Qty each |
-|--------|--------------------|-------------|-------------|----------|
-| North 北  | Lantern vermilion `#D64545` | Beef 牛肉 | Pork belly 五花肉 | 12 |
-| Central 中 | Jade teal `#1F8A7A` | Tea 茶葉 | Tapioca pearls 粉圓 | 12 |
-| South 南  | Golden amber `#E6A930` | Oysters 蚵仔 | Milkfish 虱目魚 | 12 |
-| East 東   | Dusk indigo `#26324D` | Mountain rice 池上米 | Wild greens 野菜 | 12 |
-| Anywhere  | Slate `#8A8F98` | **Pantry 補給** (fungible) | — | 24 |
+## Ingredient tokens (144) — the region↔ingredient web
 
-→ 8 × 12 + 24 = **120 tokens.** (`bg-access` red/green flag: vermilion N vs jade-teal C, with amber S
-between — the emblem + 繁體 label carry the dual-code; expect to nudge hues in the render pass.)
+| Ingredient | 繁體 | Region | Pool | Notes |
+|-----------|------|--------|-----:|-------|
+| Beef | 牛 | North | 12 | 牛肉麵, Tainan beef soup |
+| Pork | 豬 | North | 18 | **workhorse — 10 vendors name it** |
+| Chicken | 雞 | North | 12 | **NEW v3** — cutlet, karaage, turkey rice, maqaw soup |
+| Egg | 蛋 | North | 10 | **NEW v3** — egg crepe, oyster omelette, breakfast 加蛋 |
+| Tea | 茶 | Central | 12 | oolong, black tea, bubble tea |
+| Tapioca pearls | 圓 | Central | 8 | **thin demand — 1 vendor** (bubble tea) |
+| Oysters | 蚵 | South | 8 | **thin demand — 1 vendor** (oyster omelette) |
+| Milkfish | 魚 | South | 8 | **thin demand — 1 vendor** (milkfish congee) |
+| Rice | 米 | East | 16 | 7 vendors name it (bentos, congee, mochi) |
+| Mountain greens | 菜 | East | 10 | fern/chayote/maqaw (Indigenous) |
+| **Pantry** | 補 | Any | **∞** (print ~30) | UNLIMITED convenience store; never discounted |
 
-## Dish deck at a glance (24)
+Finite specialty pools ≈ 2× solo demand (grabbing the last forces a rival reroute). Pantry unlimited +
+Buzz always-available = the two anti-stuck valves. Pools scale sub-linearly at 3–4p.
 
-- **By VP:** 18 × 3 VP (2-ingredient) · 3 × 4 VP (3-ingredient, all cross-region) · 3 × 5 VP (Signature, 3 regions).
-- **Specialty coverage** (appearances across the deck): beef 4 · pork 6 · tea 4 · pearls 3 · oysters 4 ·
-  milkfish 5 · rice 5 · greens 4.  (Pearls sits at 3 — see balance notes.)
-- **Cross-region dishes:** 6 of 24 (~25%) — the 3 value-4 (bento / braised pork / milkfish rice) + 3 Signatures.
-- **Pantry appears in 19 of 24 dishes** (each dish uses at most 1 pantry).
+## Buzz tokens (50)
+The second, fungible currency. Gained via **Promote** (2/action; 3 for the Influencer or a Buzz-income
+perk). Spent alongside ingredients to Court — **never discounted** (the anti-runaway brake). Open supply.
 
-## Screentop.gg build
+## Event tiles (11) — salted into the region Markets, fire on refill
+Boon-skewed (~8 boon / 3 hazard-or-shakeup), region-thematic, secular, tax-not-destroy. Setup: shuffle
+~2–3 tiles into each region's Market supply; the "any/table-wide" tiles go into any region's supply.
+Region tiles: South (Mango Season, Oyster Glut, Typhoon), Central (Bubble-Tea Festival, Plum Rains), East
+(Bumper Harvest), + 5 table/any tiles (Tourist Season, Pop-Up Queue, Featured in the Guide, Word of Mouth,
+Fully Booked). Typhoon salts into **both** coastal supplies (South + East).
 
-Run **`./make.sh`** from `games/travel-agents/` — it regenerates everything into `build/` and snapshots
-deliverables into `exports/`. Individual steps (theme `night-market` **must be added to
-`tools/cards/themes.py` first** — a prototyper task; until then it falls back to the `clean` theme):
+## Mission cards (9) — secret signature tour, +7
+Draw 3, secretly keep 1. Binary at scoring. Machine-target grammar (for the sim/linter; human rule in the
+card's `effect`): `vendors_region:X>=n` · `vendors_all_regions` · `tier1_vendors>=n` · `tier3_vendors>=n`
+· `vendors_total>=n` · `prestige_total>=n` · `marquee_plus_two_stalls`.
 
-- Dishes deck: `build_cards.py --csv components/dishes.csv --out build --theme night-market --formats png screentop`
-- Assignments deck: `build_cards.py --csv components/assignments.csv --out build --theme night-market --formats png screentop`
-- Map board: `build_board.py --type mat --spec components/map.json --theme night-market --out build/map.png`
-- Grand Dossier track (2p, 16 spaces): `build_board.py --type track --spaces 16 --title "Grand Dossier" ...`
-- Ingredient / Tip / pawn token key: `build_board.py --type tokens --from-csv components/tokens.csv ...`
-- Player aid: `build_board.py --type aid --spec components/player-aid.json ...`
-- Cover + rulebook: `build_cover.py` / `build_rulebook.py` (see `make.sh`).
+## Character mats (5) — public asymmetry (1 ability + 1 flaw)
+Night-Market Auntie 阿姨 · Eager Rookie 菜鳥 · Retired Conductor 車長 · The Influencer 網紅 · Grizzled
+Gourmand 老饕. **Table-watch flags** (validate at the human FTUE, not off the sim): Rookie (event-luck)
+and Gourmand (pantry-wild) — both event-coupled kits the sim abstracts.
 
-> `components/ingredients.csv` is authoritative for **per-type supply counts**; `components/tokens.csv` is
-> a one-swatch-per-type **render key** (qty 1 each) for the prototype token sheet — do not read counts from it.
-
-## For manufacture (later)
-
-39 poker cards (24 dishes + 15 assignments) + 2 player aids · 120 ingredient + 30 tip punch tokens ·
-4 pawns · 1 folding board · marker cubes/discs → a small-to-medium box. Add 3 mm bleed and export CMYK per
-`knowledge/manufacturing-specs.md`. Owned onward by `bg-production`.
+## Sensitivity rails honoured
+Real dishes never mangled; **Traditional characters** only; Tâi-lô primary where the dish is Hokkien,
+native romanisation for Indigenous/place dishes (not forced Hokkien). East draws on **distinct** Indigenous
+peoples (Amis 阿美族 bamboo rice, Atayal 泰雅族 maqaw soup) — not a flattened "generic Indigenous". All
+Chinese text + romanisation and Indigenous dish/people names route through the paid Taiwanese consultant +
+native reviewer before art/print (→ `bg-publishing`).

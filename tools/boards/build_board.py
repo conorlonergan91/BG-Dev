@@ -154,7 +154,7 @@ def render_mat(theme, spec):
                      f'fill="none" stroke="{col}" stroke-width="4" stroke-dasharray="10 8"/>')
         if z.get("label"):
             parts.append(f'<text x="{z["x"]+16}" y="{z["y"]+40}" font-size="34" fill="{muted}" '
-                         f'font-family="{theme["body_font"]}" letter-spacing="1">{esc(z["label"]).upper()}</text>')
+                         f'font-family="{theme["body_font"]}" letter-spacing="1">{esc(z["label"].upper())}</text>')
     for t in spec.get("texts", []):
         parts.append(f'<text x="{t["x"]}" y="{t["y"]}" font-size="{t.get("size",30)}" fill="{ink}" '
                      f'font-family="{theme["body_font"]}">{esc(t["text"])}</text>')
@@ -174,7 +174,7 @@ def render_aid(theme, spec):
     y = head_h + 40
     for sec in spec.get("sections", []):
         body.append((f'<text x="{pad}" y="{y}" font-size="34" fill="{accent}" font-family="{tfont}" '
-                     f'font-weight="bold" letter-spacing="1">{esc(sec.get("heading","")).upper()}</text>'))
+                     f'font-weight="bold" letter-spacing="1">{esc(sec.get("heading","").upper())}</text>'))
         y += 20
         for line in sec.get("lines", []):
             for i, seg in enumerate(textwrap.wrap(line, wrap_at) or [""]):

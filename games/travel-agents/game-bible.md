@@ -97,20 +97,21 @@ away past the end-clock. *(v3 — replaces v2's "Plate a Dish + Hot-List" beat: 
 off the travel-agent identity; courting a vendor for their blessing is on-theme and carries the engine.)*
 
 ## Components (summary)
-*(Full table in `design/design-doc.md` v3; quantities being re-firmed by `bg-developer`.)* **~7 component
-types**, within the raised cap of **8**: (1) **Map board** — Taiwan, 4 regions on a ring + HSR spine,
-carrying the **Season end-timer**, the **Prestige (VP) track**, the **Reputation track**, the tiered
-**Vendor Board** (3 rows) and each region's **Market slots**; (2) **~44–52 Vendor cards** — tiered (T1
-Stalls / T2 Eateries / T3 Marquee), each with cost (named ingredients + Buzz), a **region icon** (discount
-+ coverage), **Prestige**, **Reputation**, a **perk**, name (Tâi-lô + 繁體); *reuses/renames v2's
-Dish/Operation card type — the vendor is the old Dish + Hot-List merged into one engine card*; (3)
-**~12–16 Mission cards** (secret +7 vendor patterns, draw-3-keep-1; same card stock); (4) **~150 ingredient
-tokens** (region specialties + unlimited pantry; adding **chicken 雞 + egg 蛋** in the North); (5) **~50
-Buzz tokens** (*new type* — the second currency); (6) **~10–14 Event tiles** (Conditions salted into the
-Market, fire on refill; *new type* — the v2 Condition deck + queue collapse to tiles); (7) **5 Character
-mats** (*new type* — one ability + one flaw each) + 4 Agent pawns + VP/Rep markers (board bits). **Cut
-from v2:** the **Brief** deck; the separate **Hot-List** row (merged into the Vendor Board) and the
-**Conditions queue** (events now in the Market).
+*(Firmed by `bg-developer` 2026-08-06 from the v3 data in `components/`; full BOM in
+`components/manifest.md`.)* **7 component types**, within the raised cap of **8**: (1) **Map board** —
+Taiwan, 4 regions on a ring + HSR spine, carrying the **Season end-timer**, the **Prestige (VP) track**,
+the **Reputation track**, the tiered **Vendor Board** (3 rows) and each region's **Market slots**; (2)
+**25 Vendor cards** — tiered **T1 Stalls ×11 / T2 Eateries ×8 / T3 Marquee ×6**, one per **real locked
+dish** (Tâi-lô + 繁體), each with cost (named ingredients + Buzz), a **region icon** (discount + coverage),
+**Prestige**, **Reputation**, a **perk**; region-icon balance **N7 · C6 · S6 · E6**; (3) **9 Mission
+cards** (secret +7 vendor patterns, draw-3-keep-1; same card stock); (4) **144 ingredient tokens** — 10
+finite specialties (incl. **chicken 雞 + egg 蛋**, new in the North) + **unlimited pantry**; (5) **50 Buzz
+tokens** (*new type* — the second currency); (6) **11 Event tiles** (Conditions salted into the Market,
+fire on refill; *new type*); (7) **5 Character mats** (*new type* — one ability + one flaw each) + 4 Agent
+pawns + Prestige/Rep/Season markers (board bits). **Cut from v2:** the **Brief** deck; the separate
+**Hot-List** row (merged into the Vendor Board) and the **Conditions queue** (events now in the Market).
+Deck-size note: the vendor deck is **25** (one per locked real dish) — comfortable for a 2p game (~16–18
+courts) but tight for headroom / 3–4p; see the CD decision in the handoff.
 
 ## Win condition & scoring
 Hybrid multi-track: tracks **trigger the endgame + a bonus**, but **highest total VP wins** (no

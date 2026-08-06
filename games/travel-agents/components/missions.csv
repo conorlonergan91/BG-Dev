@@ -1,0 +1,10 @@
+id,name,type,value,target,quantity,tags,effect,art_note
+M01,Southern Crawl,mission,7,vendors_region:S>=3,1,region;south,"Court 3 vendors with a South icon. The deep-south seafood-and-rice run.",Passport stamp reading SOUTH over a Tainan oyster-flat motif
+M02,Grand Tour,mission,7,vendors_all_regions,1,breadth;tour,"Court at least one vendor in EACH of the four regions (North, Central, South, East). The full lap.",Passport spread with four regional stamps
+M03,Northern Crawl,mission,7,vendors_region:N>=3,1,region;north,"Court 3 vendors with a North icon. Work the capital and the breakfast shops.",Passport stamp reading NORTH over a Taipei-skyline motif
+M04,Central Circuit,mission,7,vendors_region:C>=3,1,region;central,"Court 3 vendors with a Central icon. Tea hills, night markets and bubble tea.",Passport stamp reading CENTRAL over rolling tea terraces
+M05,Humble Eats,mission,7,tier1_vendors>=3,1,tier;stalls,"Court 3 Stall (Tier-1) vendors. The street-food purist's tour.",Row of three little stall stamps
+M06,Fine Dining,mission,7,tier3_vendors>=2,1,tier;marquee,"Court 2 Marquee (Tier-3) vendors. Go for glory.",Two gold banquet stamps clipped together
+M07,Volume Tour,mission,7,vendors_total>=5,1,volume,"Court 5 vendors in total, of any kind. Just keep signing.",Neon night-market stamp with a wide-awake owl
+M08,Go Tall,mission,7,prestige_total>=18,1,tall;prestige,"Your courted vendors total at least 18 Prestige. Fewer stalls, bigger names.",Single towering gold star stamp
+M09,Marquee & Feeders,mission,7,marquee_plus_two_stalls,1,combo;engine,"Court 1 Marquee vendor AND 2 Stall vendors that share either of that Marquee's cost regions. The signature feast plus its supply chain.",A gold marquee stamp flanked by two small feeder stamps

@@ -1,31 +1,39 @@
 {
-  "_note": "Player aid for build_board.py --type aid. Reuses the card/token component budget (not a new type). Keep <= 18 lines (complexity-budget.json: max_player_aid_lines 18).",
+  "_note": "v3 player aid for build_board.py --type aid. Reuses the card/token component budget (not a new type). Keep <= 22 lines (complexity-budget.json: max_player_aid_lines 22).",
   "title": "Travel Agents: Taiwan",
-  "subtitle": "Your turn = ONE action. Larder caps at 7 (discard down at end of turn).",
+  "subtitle": "Your turn = ONE action. Larder caps at 7 ingredients (discard down at end of turn).",
   "sections": [
     {
-      "heading": "Do one action",
+      "heading": "Do ONE action",
       "lines": [
-        "STOCK UP  —  take 2 ingredients where you stand (this region's specialties and/or pantry).",
+        "STOCK UP  —  take 2 ingredients where you stand (this region's specialties and/or pantry), then refill the Market.",
         "TRAVEL  —  move to a neighbouring region, then take 1 ingredient there (North<->South by HSR).",
-        "PLATE  —  spend a Menu dish's recipe from your Larder; log it for VP; refill Menu; Grand Dossier +1.",
-        "DEAD-DROP  —  give a rival 1 ingredient; score +1 VP, take 1 Insider Tip, Grand Dossier +1.",
+        "PROMOTE  —  take 2 Buzz (the promotional currency; always available, never contested).",
+        "COURT A VENDOR  —  pay its cost, sign it to your tour, Season +1, rival locked out of it (see below).",
         "EXTRACT  —  catch the last train home: trigger the end-game wind-down."
       ]
     },
     {
-      "heading": "Insider Tip (free, anytime) — pick one",
+      "heading": "Courting cost & the ramp",
       "lines": [
-        "Take 1 extra ingredient here  ·  treat 1 recipe ingredient as ANY type  ·  Travel 1 extra region."
+        "Pay:  named ingredients MINUS your matching region discount icons (floored at 0)  +  its Buzz (NEVER discounted).",
+        "Gain all at once:  Prestige (score up)  +  Reputation (marker up)  +  perk (usually a region discount icon)  +  Coverage tick if a new region.",
+        "Each discount icon you hold makes that region's ingredients 1 cheaper on future vendors — the engine. Buzz stays a fixed per-vendor tax."
       ]
     },
     {
-      "heading": "End and score",
+      "heading": "Market events fire on refill",
       "lines": [
-        "End trigger: someone Extracts, OR the Grand Dossier hits its final milestone.",
-        "Then finish the round + play one more full round, then score.",
-        "Dishes 3 / 4 / 5 VP  ·  Assignment +7 (if done)  ·  +1 VP per Dead-drop  ·  banked Dossier bonuses.",
-        "Tiebreak: most dishes, then most regions visited. (Unused Insider Tips = 0 VP.)"
+        "After Stock Up / Travel, a flipped Event tile resolves now — festival boons, a typhoon reroute, a warm local. Boon-skewed; tax, never destroy."
+      ]
+    },
+    {
+      "heading": "End & score (reveal missions!)",
+      "lines": [
+        "End trigger: someone EXTRACTS, OR the Season timer fills. (Reputation-top scores its +9 but does NOT end the game.)",
+        "Then finish the round + one more full round, then score.",
+        "Prestige (vendor stars)  +  Reputation end-VP (3/6/9/top -> +2/+4/+6/+9)  +  Coverage (2/3/4 regions -> 2/5/9)  +  secret Mission +7.",
+        "Most points = TOP AGENT.  Ties: highest Reputation, then most vendors, then most regions."
       ]
     }
   ]
