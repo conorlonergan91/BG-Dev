@@ -392,19 +392,21 @@ Target EV ≈ 2–4 VP or ~1–2 turns of tempo; the flaw costs about the same.
 
 | # | Character | Ability | Flaw | Lever / anti-lever |
 |---|-----------|---------|------|--------------------|
-| 1 | **The Night-Market Auntie 阿姨** | *Regular's Discount* — the **first vendor you court in each region** costs **1 fewer ingredient** (she vouches for you). | *Set in her ways* — **no HSR** (N↔S); routes the ring the long way. | discount / anti: mobility |
+| 1 | **The Night-Market Auntie 阿姨** | *Regular's Discount* — the first vendor you court in **each of your first two regions** costs **1 fewer ingredient** (she vouches for you). | *Set in her ways* — **no HSR** (N↔S); routes the ring the long way. Loves the scenic local rail, knows every backstreet (**not** a technophobe gag). | discount / anti: mobility |
 | 2 | **The Eager Rookie** | *First-Timer's Luck* — when an **Event** fires in your region, **draw 2 tiles, resolve 1**. | *Bites off too much* — **Larder cap 6**. | events / anti: storage |
-| 3 | **The Retired Conductor 車長** | *Off-Peak Pass* — **Travel arrives with 2** ingredients. | *Timetable-bound* — **Stock Up takes 1** (hates standing still). | mobility / anti: camping |
-| 4 | **The Influencer** | *Going Viral* — your **Promote takes +1 Buzz** (3). | *Chasing clout* — goes **last** in turn order and starts **1 resource behind**. | Buzz engine / anti: tempo |
-| 5 | **The Grizzled Gourmand** | *Connoisseur* — once per turn, treat **1 pantry as any 1 specialty** when courting (courting flexibility). | *Too jaded* — **cannot benefit from boon events**. | flexibility / anti: events |
+| 3 | **The Retired Conductor 車長** | *Off-Peak Pass* — **Travel arrives with 2** ingredients (a proud, expert retired railwayman). | *Timetable-bound* — **Stock Up takes 1** (hates standing still). | mobility / anti: camping |
+| 4 | **The Influencer** | *Going Viral* — your **Promote takes +1 Buzz** (3). | *Chasing clout* — goes **last** in turn order and starts **2 resources behind**. | Buzz engine / anti: tempo |
+| 5 | **The Grizzled Gourmand** | *Connoisseur* — once per turn, treat **1 pantry as any 1 specialty** when courting (courting flexibility). | *Too jaded* — **cannot gain Buzz from boon events** (still gets their other effects). | flexibility / anti: events |
 
 *(6th, held as expansion — hardest to balance:* **The Homesick Local**, +/− tied to a self-picked home
 region.)*
 
 **No dominant character×mission combo (designed, sim-confirmed).** Each ability sits on a *different*
 lever, and each has a flaw that **pulls against the mission it most helps**:
-- Auntie's per-region discount most helps the **breadth/all-4-regions** missions — but her **no-HSR** flaw
-  makes spreading across the island *slower*, self-balancing the synergy.
+- Auntie's discount most helps the **breadth/all-4-regions** missions — capped to your **first two
+  regions** so it can't compound with a grand-tour mission (the sim found the uncapped version + no-HSR
+  did NOT self-balance: Auntie×grand-tour hit 82%; the first-two-regions cap fixes it → Auntie ≤53% vs any
+  mission).
 - Influencer's +Buzz most helps the **Buzz-hungry tall / 2-Marquee** mission — but she **starts behind and
   goes last**, paying tempo up front.
 - Conductor's travel-sourcing most helps **spread/coverage** — but his **Stock Up 1** flaw slows any
@@ -413,8 +415,17 @@ lever, and each has a flaw that **pulls against the mission it most helps**:
   ramp likes.
 - Rookie's event-luck is **generic** (no track it doubles) — the safe baseline.
 The **draw-3-keep-1 pick** further launders this: a broken combo can't be gifted; you choose it and the
-opponent, seeing your character, contests. Sim probe #3/#4: every character **45–55%**; no
-character×mission combo **>~60%**.
+opponent, seeing your character, contests. Sim probe #3/#4 (post-rebalance, fixed game length): every
+character **45–55%** (Auntie 52–54 · Conductor 53–55 · Rookie 51 · Influencer 46–47 · Gourmand 45–47); no
+character×mission combo **>~60%** (worst ~57%).
+
+> **Table watch-flags (the sim's honest limit).** The sim abstracts the Market **events** it can't fully
+> model, so two characters are carried **as-printed pending the human FTUE session**, not tuned off the
+> sim: the **Rookie** (her whole kit rides on event luck) and the **Gourmand** (his pantry-wild flexibility
+> is invisible to the greedy bots — it only pays under human tight-hand pressure). The **Auntie**
+> (first-two-regions) fix is sim-confident; the **Influencer** (2-behind) is a low-risk provisional nudge.
+> Instrument the first playtest to record per-character results and specifically whether Rookie's event-luck
+> and the Gourmand's wild earn their keep.
 
 ---
 
