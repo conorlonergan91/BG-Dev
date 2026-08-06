@@ -1,0 +1,10 @@
+{
+  "target_weight": 1.8,
+  "max_acceptable_weight": 2.2,
+  "max_rulebook_words": 1350,
+  "max_keywords": 12,
+  "max_exception_words": 12,
+  "max_component_types": 6,
+  "max_player_aid_lines": 18,
+  "_note": "Aim ~1.8 (lighter is better), but the Creative Director (2026-08-06) set an acceptable ceiling of ~2.2 where gameplay genuinely needs it — do NOT let the budget hamper the fun. Reference band: Ticket to Ride Europe ~1.9, Let's Go! To Japan ~2.25. This is a CONSCIOUS raise from the original ~1.8 caps (rulebook 1100->1350, keywords 10->12, exceptions 10->12, player-aid 16->18), logged in decision-log.md; it also relieves the tight 1071/1100 rulebook proxy so the real rulebook has trimming headroom. component_types is a SOFT cost guardrail (bill of materials), separate from the weight latitude — and cost is also fun-first (CD 2026-08-06): a 7th type is fine if the game genuinely needs it, because cost is recoverable later (crowdfunding, cardboard standees vs deluxe bits). Only resist a new type if cost is *running away*, not because it crosses 6. Keep an eye on it via bg-architect / tools/cost, but don't let it strangle the fun. Guard every iteration with `python tools/complexity/check_complexity.py --game games/travel-agents` + the bg-elegance agent. Lighter is still better: treat 1.8 as the aim and anything up to 2.2 as acceptable, not a target to fill."
+}

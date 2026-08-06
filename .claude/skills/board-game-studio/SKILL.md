@@ -24,29 +24,30 @@ collaboration — not a form to fill in.**
 5. **Make it fun.** Be energetic and collaborative. Name things. Celebrate milestones. Bring genuine
    design opinions — you're a collaborator, not a menu.
 
-## House style (current studio focus)
+## No house style — taste is per-game (or per-group)
 
-**Read `knowledge/designer-profile.md` first, and point every dispatched agent at it** — it's the
-studio's north star (taste, favourite games, design values). In brief:
+**The studio is genre- and style-agnostic. There is NO default design taste.** Approach every game
+generically, on its own terms. Do not privilege any player count, weight, genre, mechanism family, or
+mood unless the game's own brief asks for it.
 
-- **2-player first**, spanning **both co-op and competitive duels** — co-op is a first-class focus.
-- **Co-op signature: constrained communication.** The designer loves co-ops where the *information
-  bottleneck is the fun* (*Hanabi*, *Sky Team*, *SAIL*). Design that bottleneck deliberately — it's
-  also the clean fix for co-op's alpha-player/quarterbacking problem. Give co-ops a system that *pushes
-  back* (timer, escalating threat, automa-like adversary) and design for the "we almost made it" ache.
-- **Duels: tug-of-war / race** with catch-up built in (2p has no "gang up on the leader"). Touchstones:
-  *Splendor Duel*, *LOTR: Duel for Middle-earth*, *Patchwork*, *7 Wonders Duel*, *Jaipur*, *Watergate*.
-- **Elegance over heft** — high depth from low complexity (~1.5–2.5 weight, ~20–40 min); input
-  randomness, not output; low downtime; theme you can feel.
-- **Screentop.gg is the default playtest platform** — free, browser, join-by-link (remote or in
-  person). Get a Screentop-ready build early. TTS/Tabletopia/print-and-play are alternates.
-- **Small, testable, fun.** Favour a tight core that reaches the table this week.
+- **A single game's taste** lives in its **`identity.md` + `game-bible.md`** (set at kickoff, guarded by
+  `bg-theme`). That is what you point agents at — not a repo-wide north star.
+- **A shared taste across games** applies **only when the human explicitly asks for a group/series**;
+  capture it in `series/<name>.md` and apply it to that group only.
+- **No explicit steer?** Stay neutral: ideate broadly, don't lean on any family, and let *this* game's
+  brief (or the human's answers) set the direction. Never import taste from another game.
+- `knowledge/designer-profile.md` holds only **game-independent practical facts** (Ireland / IE-UK-US
+  publishing; **Screentop.gg** as the default *playtest platform*; a 2-player playtest partner is
+  *available* but that is **not** a mandate to design 2p games; a soft preference for a low-cost route).
+  It is context, not a design lens.
+- **Playable early, whatever the game is.** Bias toward a testable build (Screentop by default) fast —
+  that's process, not style.
 
 ## The pipeline (dispatch these agents)
 
 Use the `Agent` tool with the matching `subagent_type`. Give each the game slug and point it at
-`games/<slug>/game-bible.md` **and `knowledge/designer-profile.md`** (the taste north star). Launch
-independent agents in parallel.
+`games/<slug>/game-bible.md` **and `games/<slug>/identity.md`** (the game's own direction — not a
+repo-wide taste). Launch independent agents in parallel.
 
 | Stage | Agent | Dispatch when… |
 |-------|-------|----------------|

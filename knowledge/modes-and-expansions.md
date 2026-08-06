@@ -64,7 +64,8 @@ one-shot **legacy** w/ permanent unlocks (TtR Legacy — sealed "frontier boxes"
 → **run-based meta-unlock** that widens the pool, not the power (Slay the Spire).
 Given the 2020s **legacy-fatigue** trend (shelf cost, one-and-done), lean reset-friendly / legacy-lite
 unless one-shot destruction is genuinely the point. The elegant, low-component end (ordered scenario
-cards + dummy-hand scaling, or toggleable overlays) suits the studio's 2p co-op/duel house style best.
+cards + dummy-hand scaling, or toggleable overlays) suits a game that already targets a small, low-weight
+footprint best.
 
 ## Expansions — what to hold back, and how
 The natural hold-backs are remarkably consistent across good games — hold back one of:

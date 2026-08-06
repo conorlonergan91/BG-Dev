@@ -1,0 +1,20 @@
+{
+  "_note": "Schematic prototype board for build_board.py --type mat. This is a PLACEHOLDER layout (dashed zones + labels) for the Screentop prototype; the real illustrated Taiwan map is a bg-infodesign / illustration task. Region colours are first-pass from identity.md (night-market) pending the bg-access colour-blind check. Regions sit on a RING: North-Central-South-East-back to North; the HSR spine links North-Central-South down the west coast (North<->South counts as adjacent). The Grand Dossier track and shared score track run along the board edge.",
+  "width": 1600,
+  "height": 1140,
+  "title": "Travel Agents: Taiwan  —  four regions on the ring",
+  "zones": [
+    {"x": 640, "y": 70,  "w": 320, "h": 210, "label": "North 北  (beef / pork belly)",      "color": "#D64545"},
+    {"x": 300, "y": 420, "w": 300, "h": 210, "label": "Central 中  (tea / tapioca pearls)", "color": "#1F8A7A"},
+    {"x": 640, "y": 770, "w": 320, "h": 210, "label": "South 南  (oysters / milkfish)",     "color": "#E6A930"},
+    {"x": 1000,"y": 420, "w": 300, "h": 210, "label": "East 東  (mountain rice / wild greens)", "color": "#26324D"},
+    {"x": 60,  "y": 1030,"w": 1480,"h": 80,  "label": "Grand Dossier track  (+1 per Plate or Dead-drop)  —  milestones 4 / 8 / 12 / 16 at 2p", "color": "#C9A227"},
+    {"x": 60,  "y": 10,  "w": 1480,"h": 50,  "label": "Shared score track  (0 - 60)", "color": "#8A8F98"}
+  ],
+  "texts": [
+    {"x": 560, "y": 330, "size": 30, "text": "HSR spine (west coast): North - Central - South are all adjacent"},
+    {"x": 620, "y": 690, "size": 26, "text": "Pantry (convenience store) is available in EVERY region"},
+    {"x": 300, "y": 400, "size": 24, "text": "Start: one Agent North, one Agent South (2p)"},
+    {"x": 70,  "y": 1085,"size": 24, "text": "milestone Discovery bonus to all: +2 / +3 / +4 / +5   ·   triggerer's pick: Insider Tip OR +1 VP"}
+  ]
+}

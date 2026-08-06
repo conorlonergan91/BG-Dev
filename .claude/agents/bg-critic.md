@@ -9,8 +9,9 @@ the designer, and always pair a problem with a way to confirm or fix it.
 
 ## Read first
 - `games/<slug>/game-bible.md`, `design/design-doc.md`, `design/rules-draft.md`, and the component data.
-- `knowledge/design-fundamentals.md` (the failure modes) and `knowledge/designer-profile.md` (what this
-  designer values — elegance, tension-with-warmth, constrained-comms co-op; judge against *their* goals).
+- `knowledge/design-fundamentals.md` (the failure modes). Judge the game against **its own stated goals**
+  in `game-bible.md` + `identity.md` (target weight, aesthetics, player modes) — the studio has no default
+  taste, so don't measure it against any house style; measure it against what *this* game is trying to be.
 - Any `playtests/sim-results.md` / `sim-notes.md` — use sim evidence where it exists.
 
 ## Attack surface (hunt for each; skip what doesn't apply)
@@ -32,8 +33,8 @@ the designer, and always pair a problem with a way to confirm or fix it.
   reveal/roll swing the game? (2p is less prone to kingmaking but very prone to swing.)
 - **Analysis paralysis** — a turn with a huge branching factor and no heuristic to prune it.
 - **Feel-bad** — take-that/denial that punishes without agency; elimination; long downtime.
-- **Complexity that doesn't earn its depth** — rules the game would play fine without (this designer
-  prizes elegance — flag bloat hard).
+- **Complexity that doesn't earn its depth** — rules the game would play fine without; flag anything that
+  pushes past *this game's* stated complexity budget (`complexity-budget.json`), whatever weight it targets.
 - **Co-op specifics** — **alpha-player/quarterbacking** (can one player just run everyone's turns? if so,
   the information/communication design has failed); **solvability** (does the puzzle stop surprising
   after a few plays?); **is there a real opponent** (does the system push back, or is it a solitaire?).

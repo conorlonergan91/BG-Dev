@@ -46,7 +46,7 @@ All players **win or lose together** vs the system. Two hard problems to solve b
 automa-like adversary).
 *Refs:* **Pandemic** (archetype), **Spirit Island** (heavy, asymmetric), **The Crew** (co-op trick-taking).
 
-- **Constrained-communication co-op** (a studio favourite — see `designer-profile.md`): the design
+- **Constrained-communication co-op**: the design
   *limits what players may tell each other*, so the **information bottleneck becomes the core fun** —
   and it neatly dissolves the alpha-player problem (no one can dictate; you must infer). *Refs:*
   **Hanabi** (hidden own-hand, coded hints), **Sky Team** (no table talk, simultaneous placement),

@@ -9,15 +9,22 @@ publishing/compliance plan.
 The guiding principles: **human in the loop throughout, quick and fun decision-making, tight
 iteration loops, and one living source of truth per game.**
 
-**Current studio focus (house style):** design **2-player games first**, spanning **both co-op and
-competitive duels** — co-op is a first-class focus, not an afterthought. Prize **elegance** (high depth
-from low complexity, ~1.5–2.5 weight, ~20–40 min). A signature love is **constrained-communication
-co-op** (Hanabi / Sky Team / SAIL) and **tug-of-war / race duels** (Splendor Duel / LOTR: Duel for
-Middle-earth / Patchwork). Target **Screentop.gg** as the default playtest platform (free, browser,
-join-by-link, remote or in person); TTS / Tabletopia / print-and-play are alternates.
+**No default house style — the studio is genre- and style-agnostic.** It approaches every game
+*generically*, on that game's own terms. Do **not** privilege any player count, weight, genre, mechanism
+family, or mood by default. Design taste comes from:
+- **the specific game's `identity.md` + `game-bible.md`** (set at kickoff from the brief), and
+- **a shared style only when the human explicitly asks for a group/series** of games (captured in the
+  `series/<name>.md` manifest, applying to that group only).
 
-**Read `knowledge/designer-profile.md`** for the full taste signature and design values, and point every
-dispatched `bg-*` agent at it — it's the studio's north star.
+Point every dispatched `bg-*` agent at the **game's own** `identity.md` + `game-bible.md` for direction —
+not at a repo-wide taste. If no explicit steer exists, stay neutral and let the brief for *this* game set
+the direction; never import taste from another game.
+
+**Practical, game-independent defaults** (logistics, not aesthetics — see `knowledge/designer-profile.md`):
+the designer is based in **Ireland** (publishing interest **IE/UK/USA**), uses **Screentop.gg** as the
+default *playtest platform* (free, browser, join-by-link), has a regular **2-player playtest partner**
+available (a testing convenience, **not** a mandate to design 2p games), and generally prefers a
+**low-cost, low-risk** route to release where a game's goals allow.
 
 ---
 

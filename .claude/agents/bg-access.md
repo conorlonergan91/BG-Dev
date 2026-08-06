@@ -10,9 +10,10 @@ fix (at the data/theme stage, before art). Accessibility is a quality lever, not
 that help a colour-blind or low-vision player make the table clearer for *everyone*.
 
 ## Read first
-- `knowledge/accessibility.md` (the Meeple-Centred Design 8 categories + the redundant-encoding rule) and
-  `knowledge/designer-profile.md` (the studio ships suit-coloured Screentop card games and
-  constrained-comms co-op — both sit on accessibility axes).
+- `knowledge/accessibility.md` (the Meeple-Centred Design 8 categories + the redundant-encoding rule).
+- `games/<slug>/identity.md` + `game-bible.md` for *this* game's components, palette, and any
+  communication/dexterity demands — the accessibility axes that matter depend on what the game actually
+  is (colour-coded suits, table-talk limits, small pieces…), not on any house style.
 - `games/<slug>/components/*` (the data — card `type`s/suits, tokens), the chosen render **theme**, and
   `components/player-aid.json`.
 - `design/rules-draft.md` (text density / reading level) and any `design/critique.md` (feel-bad overlaps).

@@ -30,7 +30,7 @@ from pathlib import Path
 
 # themes.py lives with the card pipeline; make it importable regardless of cwd.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "cards"))
-from themes import get_theme, page_gradient, emblem_svg  # noqa: E402
+from themes import get_theme, page_gradient, emblem_svg, pick_text_color, boost_contrast  # noqa: E402
 
 DPI = 300
 
@@ -129,7 +129,10 @@ def render_tokens(theme, tokens, shape, diameter_px, cols):
             parts.append(f'<polygon points="{pts}" fill="{color}" stroke="{ink}" stroke-width="5"/>')
         else:
             parts.append(f'<circle cx="{cx}" cy="{cy}" r="{rad}" fill="{color}" stroke="{ink}" stroke-width="5"/>')
-        parts.append(f'<text x="{cx}" y="{cy+d*0.11}" font-size="{d*0.30}" fill="#ffffff" text-anchor="middle" '
+        # luminance-aware glyph colour: white on dark grounds, dark ink on light ones (WCAG) — so the
+        # 繁體 labels stay legible on amber/gold/slate tokens instead of low-contrast white.
+        tcol = pick_text_color(color, dark=ink, light="#ffffff")
+        parts.append(f'<text x="{cx}" y="{cy+d*0.11}" font-size="{d*0.30}" fill="{tcol}" text-anchor="middle" '
                      f'font-family="{theme["title_font"]}" font-weight="bold">{esc(t.get("label",""))}</text>')
     return _svg(W, H, parts), W, H
 
@@ -176,9 +179,11 @@ def render_aid(theme, spec):
         for line in sec.get("lines", []):
             for i, seg in enumerate(textwrap.wrap(line, wrap_at) or [""]):
                 y += 40
-                bullet = "•  " if i == 0 else "    "
-                body.append(f'<text x="{pad}" y="{y}" font-size="28" fill="{text}" '
-                            f'font-family="{bfont}">{esc(bullet + seg)}</text>')
+                # Drawn bullet (not the "•" glyph — WenQuanYi Zen Hei lacks it and renders tofu □).
+                if i == 0:
+                    body.append(f'<circle cx="{pad+8}" cy="{y-9}" r="6" fill="{accent}"/>')
+                body.append(f'<text x="{pad+30}" y="{y}" font-size="28" fill="{text}" '
+                            f'font-family="{bfont}">{esc(seg)}</text>')
         y += 34
     H = y + pad
     parts = [f'<defs>{page_gradient(theme, "pg")}</defs>',
@@ -188,7 +193,10 @@ def render_aid(theme, spec):
              f'<text x="{pad}" y="76" font-size="56" fill="#fff" font-family="{tfont}" '
              f'font-weight="bold" letter-spacing="1">{esc(spec.get("title",""))}</text>']
     if spec.get("subtitle"):
-        parts.append(f'<text x="{pad}" y="120" font-size="30" fill="{accent}" font-family="{tfont}" '
+        # subtitle sits on the dark `ink` header band — ensure ≥4.5:1 (lightens the accent only if needed,
+        # so themes that already pass are untouched).
+        sub_col = boost_contrast(accent, ink, 4.5)
+        parts.append(f'<text x="{pad}" y="120" font-size="30" fill="{sub_col}" font-family="{tfont}" '
                      f'font-style="italic">{esc(spec["subtitle"])}</text>')
     parts += body
     return _svg(W, H, parts), W, H

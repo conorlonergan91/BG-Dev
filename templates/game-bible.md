@@ -21,7 +21,7 @@
 
 ## Positioning
 - **Weight (BGG 1–5):**
-- **Players:** 2 <!-- studio focus: 2-player first -->
+- **Players:** <!-- set per game — no default; whatever this game calls for -->
 - **Playtime:**
 - **Tone:** <!-- cozy / cutthroat / epic / silly / thinky … -->
 - **Comparable:** <!-- "X meets Y" -->

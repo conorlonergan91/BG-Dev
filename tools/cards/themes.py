@@ -77,6 +77,49 @@ THEMES = {
             "signal":   {"color": "#e0a95b", "emblem": "spark"},
         },
     },
+    "night-market": {  # Travel Agents: Taiwan — a warm Taiwan night market at dusk.
+        # FIRST-PASS palette from identity.md; NOT locked — pending the bg-access colour-blind check.
+        # The identity flags a real red/green (deutan/protan) risk on the region colours (vermilion N
+        # vs jade-teal C, amber S between), so EVERY suit is dual-coded: colour + a distinct emblem,
+        # and the component data also carries a 繁體 + text label. Fonts include a CJK face so the
+        # Traditional-character dish/ingredient labels render (Taiwan uses 繁體, never Simplified).
+        "page": ("#F7F1E3", "#E9DCC2"),          # bao-paper cream, dusk-warmed toward the foot
+        "ink": "#26324D",                         # dusk-indigo night sky — card borders + backs
+        "text": "#2B2B2B",                        # soft ink body text
+        "muted": "#7A6E58",                       # warm taupe for type lines / captions
+        "accent": "#D64545",                      # lantern vermilion — flourishes, back rings
+        # CJK-capable face FIRST: cairosvg's toy text API resolves the first family and does NOT fall
+        # through the comma list, and dish/token text mixes Latin + 繁體 in one element — so the lead
+        # font must carry BOTH scripts or the 繁體 renders as tofu boxes. WenQuanYi Zen Hei (installed
+        # here) covers both; the mac/win faces follow for real-fallback renderers (e.g. browsers).
+        "title_font": "'WenQuanYi Zen Hei', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif",
+        "body_font": "'WenQuanYi Zen Hei', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif",
+        "radius": 40,
+        "suits": {
+            # --- dish deck: suit = REGION (colour) + a distinct emblem (the dual-code) ---
+            "north":      {"color": "#D64545", "emblem": "triangle"},  # Lantern vermilion — beef / pork
+            "central":    {"color": "#1F8A7A", "emblem": "diamond"},   # Jade teal — tea / tapioca pearls
+            "south":      {"color": "#E6A930", "emblem": "circle"},    # Golden amber — oysters / milkfish
+            "east":       {"color": "#26324D", "emblem": "square"},    # Dusk indigo — rice / wild greens
+            "signature":  {"color": "#C9A227", "emblem": "spark"},     # Gold — the cross-region feasts
+            # --- assignment deck: the secret "Operation" dossier cards ---
+            "assignment": {"color": "#26324D", "emblem": "stamp"},     # Dusk indigo + a passport stamp
+            # --- ingredient tokens: colour = region, emblem distinct per specialty within its region.
+            # NB: beef/tea/rice deliberately DON'T reuse their region's own emblem (north=triangle,
+            # central=diamond, east=square) — a same-colour + same-emblem clash reads as two meanings for
+            # one glyph and trips the CVD checker. Canonicalised so nothing renders a conflicting emblem. ---
+            "beef":       {"color": "#D64545", "emblem": "square"},    # (region north = triangle)
+            "pork":       {"color": "#D64545", "emblem": "hex"},
+            "tea":        {"color": "#1F8A7A", "emblem": "hex"},       # (region central = diamond)
+            "pearls":     {"color": "#1F8A7A", "emblem": "circle"},
+            "oysters":    {"color": "#E6A930", "emblem": "hex"},
+            "milkfish":   {"color": "#E6A930", "emblem": "diamond"},
+            "rice":       {"color": "#26324D", "emblem": "circle"},    # (region east = square)
+            "greens":     {"color": "#26324D", "emblem": "triangle"},
+            "pantry":     {"color": "#8A8F98", "emblem": "beam"},      # slate — convenience store, anywhere
+            "_default":   {"color": "#26324D", "emblem": "circle"},
+        },
+    },
 }
 
 
@@ -87,6 +130,52 @@ def get_theme(name: str) -> dict:
 def resolve_suit(theme: dict, type_str: str) -> dict:
     key = (type_str or "").strip().lower()
     return theme["suits"].get(key, theme["suits"]["_default"])
+
+
+# ---------------------------------------------------------------------------
+# Contrast helpers (WCAG) — shared so renderers can pick legible text colours.
+# Pure/additive; safe for every existing caller.
+# ---------------------------------------------------------------------------
+def _rgb01(hex_color: str):
+    h = (hex_color or "#000000").lstrip("#")
+    if len(h) == 3:
+        h = "".join(c * 2 for c in h)
+    return tuple(int(h[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
+
+
+def _lin(c: float) -> float:
+    return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+
+def relative_luminance(hex_color: str) -> float:
+    r, g, b = (_lin(c) for c in _rgb01(hex_color))
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def contrast_ratio(a: str, b: str) -> float:
+    la, lb = relative_luminance(a), relative_luminance(b)
+    hi, lo = max(la, lb), min(la, lb)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def pick_text_color(bg: str, dark: str = "#000000", light: str = "#ffffff") -> str:
+    """Return whichever of `dark`/`light` has the higher WCAG contrast on `bg`."""
+    return dark if contrast_ratio(dark, bg) >= contrast_ratio(light, bg) else light
+
+
+def boost_contrast(fg: str, bg: str, target: float = 4.5) -> str:
+    """Nudge `fg` toward white/black (away from `bg`) until it meets `target` on `bg`.
+    Returns `fg` unchanged when it already passes — so callers that already comply are untouched."""
+    if contrast_ratio(fg, bg) >= target:
+        return fg
+    toward = "#ffffff" if relative_luminance(bg) < 0.5 else "#000000"
+    fr, tr = _rgb01(fg), _rgb01(toward)
+    for step in range(1, 21):
+        t = step / 20
+        cand = "#%02x%02x%02x" % tuple(round((fr[i] + (tr[i] - fr[i]) * t) * 255) for i in range(3))
+        if contrast_ratio(cand, bg) >= target:
+            return cand
+    return toward
 
 
 # ---------------------------------------------------------------------------
@@ -127,5 +216,11 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
         return (f'<circle cx="{cx}" cy="{cy}" r="{r*0.95}" fill="none" stroke="{color}" '
                 f'stroke-width="{max(2, r*0.16)}" opacity="0.5"/>'
                 f'<circle cx="{cx}" cy="{cy}" r="{r*0.5}" fill="{color}"/>')
+    if kind == "stamp":  # an inked passport/dossier seal — a ring around a filled block (for Missions)
+        o, inner = r * 0.95, r * 0.46
+        return (f'<rect x="{cx-o}" y="{cy-o}" width="{2*o}" height="{2*o}" rx="{o*0.28}" fill="none" '
+                f'stroke="{color}" stroke-width="{max(2, r*0.16)}" opacity="0.6"/>'
+                f'<rect x="{cx-inner}" y="{cy-inner}" width="{2*inner}" height="{2*inner}" '
+                f'rx="{inner*0.28}" fill="{color}"/>')
     # fallback
     return f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{color}" {sw}/>'

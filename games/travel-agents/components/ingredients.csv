@@ -1,0 +1,10 @@
+id,name,hanzi,type,region,color,emblem,value,quantity,effect,tags,art_note
+beef,Beef,牛肉,Beef,N,#D64545,ox-slice,,12,"North specialty. Taipei's beef-noodle soul; Hsinchu ranch country.",north;specialty,Braised beef shank slice — deep red silhouette
+pork,Pork Belly,五花肉,Pork,N,#D64545,pork-belly,,12,"North specialty. Layered belly for bao, braises and Hakka stir-fry.",north;specialty,Cross-section slab of striped pork belly
+tea,Tea,茶葉,Tea,C,#1F8A7A,tea-leaf,,12,"Central specialty. Nantou/Lugu oolong; the leaf behind bubble tea.",central;specialty,Single furled oolong tea leaf
+pearls,Tapioca Pearls,粉圓,Pearls,C,#1F8A7A,boba-pearls,,12,"Central specialty. Chewy tapioca born in Taichung tea shops.",central;specialty,Cluster of dark round tapioca pearls
+oysters,Oysters,蚵仔,Oysters,S,#E6A930,oyster-shell,,12,"South specialty. Tainan & Chiayi tidal-flat oyster farms.",south;specialty,Plump shucked oyster on the half shell
+milkfish,Milkfish,虱目魚,Milkfish,S,#E6A930,fish,,12,"South specialty. Tainan's farmed milkfish — porridge, soup, belly.",south;specialty,Whole silver milkfish in profile
+rice,Mountain Rice,池上米,Rice,E,#26324D,rice-bowl,,12,"East specialty. Premium Chishang/Guanshan valley rice.",east;specialty,Bowl of glossy short-grain rice with a single ear of grain
+greens,Wild Greens,野菜,Greens,E,#26324D,mountain-sprout,,12,"East specialty. Mountain & Indigenous produce — ferns, shoots, herbs.",east;specialty;indigenous,Bundle of leafy fern shoots and mountain herbs
+pantry,Pantry,補給,Pantry,Any,#8A8F98,convenience-store,,24,"Available anywhere — the convenience store. Noodles, egg, starch, seasoning, abstracted to one flexible token.",pantry;anywhere;wild,Convenience-store rice ball / onigiri silhouette
