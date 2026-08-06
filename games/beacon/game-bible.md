@@ -27,6 +27,8 @@ theirs — and claim the fat cargo runs while the tide is with you.
 - **Visual theme:** `nautical` (deep sea + brass + sea-foam; see `tools/cards/themes.py`). Shareable
   renders (decks, cover, rulebook, track, tokens) are committed in `exports/` — regenerate with
   `./make.sh`. Cover is a rough placeholder — real art TBD (human-illustrated, no AI).
+- **Creative identity:** north star, tone, theme↔mechanic resonance, art direction & naming live in
+  `identity.md` (owned by `bg-theme`). Rung: *evocative theme* — felt world, no lore by design.
 
 ## Modes & scope (see `design/architecture.md`)
 - **Player modes:** 2-player duel = the complete base. Natural additions (optional, reuse the base):
