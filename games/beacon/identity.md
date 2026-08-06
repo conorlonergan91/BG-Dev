@@ -81,3 +81,7 @@ Beacon's theme is **integrated**, not pasted on — the fiction makes each core 
 - *2026-08-05* — Set at evocative-theme rung from kickoff; fiction chosen mechanism-first (blind-commit
   duel needed a reason two players can't see each other's choice → fog/keepers). Resonance strong on
   first pass; no re-skin needed yet.
+- *2026-08-06* — Regenerated assets to match this identity: Signal cards now render the **lamp/beam**
+  emblem (brass lamp + glow halo, as value pips too) instead of the generic spark — the "keeper's light"
+  motif. Palette/typography unchanged (nautical locked). Ship suit-emblems and cover remain placeholder;
+  full ship/porthole iconography is still **human-illustrated, TBD** per the no-AI-art stance.
