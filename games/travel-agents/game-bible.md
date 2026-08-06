@@ -127,8 +127,9 @@ Drafted in `design/rules-draft.md` v3 (teach-in-play order). Turn = one of **Sto
 Court a Vendor / Extract**; Larder cap 7; courting pays ingredients (− region discounts, floored) + Buzz
 (**never discounted — the ramp brake**); each vendor gives Prestige + Rep + a permanent discount icon +
 coverage, and locks the rival out of it. Events fire on Market refill (Season is a **pure end-timer**,
-+1 per court). End-game triggers on **Extract**, the Season filling, **or** a player topping the Reputation
-track → finish the round + one more full round → reveal missions → score. **One hidden-info hook only:**
++1 per court). End-game triggers on **Extract** or the **Season filling** (Rep-top scores +9 but no longer
+ends the game — sim-fix so the engine has room to ramp) → finish the round + one more full round → reveal
+missions → score. **One hidden-info hook only:**
 the secret signature mission (no deduction engine).
 
 ## Open questions & risks

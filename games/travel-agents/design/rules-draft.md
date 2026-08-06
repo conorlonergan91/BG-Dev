@@ -90,10 +90,10 @@ Boon-skewed, region-thematic, secular. Taking 2 ingredients = up to two flips = 
 the push-your-luck, opted into).
 
 ## 7. Ending the trip
-The end-game begins the moment **any** of these happens: a player takes **EXTRACT**, **or** the **Season**
-end-timer fills (it advances +1 each time anyone courts a vendor), **or** a player reaches the **top of the
-Reputation track** (they score its top reward). Then: **finish the current round**, play **one more full
-round**, and stop.
+The end-game begins the moment **either** happens: a player takes **EXTRACT**, **or** the **Season**
+end-timer fills (it advances +1 each time anyone courts a vendor). Then: **finish the current round**,
+play **one more full round**, and stop. *(Reaching the top of the Reputation track scores its reward but
+does **not** end the game — the Season timer paces the game so the engine has room to build.)*
 
 ## 8. Scoring (reveal signature missions now!)
 Your markers already show two vectors live. Total four sources:

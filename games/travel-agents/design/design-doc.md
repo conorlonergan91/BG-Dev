@@ -87,8 +87,8 @@ to court before my rival locks that vendor (and its discount icon) away?*
    fires on the spot — a region-thematic festival window, a typhoon reroute, a warm local — boon-skewed,
    tax-not-destroy. Taking the last of a scarce specialty forces your rival to reroute.
 5. **Decide when to wrap.** **Extract** ("file the finished tour / catch the last train home") triggers
-   the wind-down; or the **Season** timer fills; or a rival tops the **Reputation** track. Whichever
-   fires first → finish the round + one full round → **reveal missions** → score.
+   the wind-down; or the **Season** timer fills (Rep-top no longer ends the game — see *End-trigger*).
+   Whichever fires first → finish the round + one full round → **reveal missions** → score.
 
 The loop compounds **legibly and with a brake**: each vendor makes a *class* of future vendors cheaper in
 ingredients, so your courting **rate** climbs — but every vendor still costs **Buzz**, which is never
@@ -120,10 +120,16 @@ the reliable half (Buzz) stays a fixed per-vendor tax. That Buzz floor is the pr
 below). Then if your Larder (ingredients) exceeds **7**, discard down to 7. Play passes clockwise (the
 Influencer's flaw = goes last; see *Characters*).
 
-**End-trigger (any of three, whichever first):**
+**End-trigger (either, whichever first):**
 - A player takes the **Extract** action, **or**
-- The **Season** end-timer reaches its final mark (advances +1 per Court by anyone), **or**
-- A player reaches the **top of the Reputation track** (they score its top reward; see *Scoring*).
+- The **Season** end-timer reaches its final mark (advances +1 per Court by anyone).
+
+**Reputation-top does NOT end the game** (sim-fix, 2026-08-06): reaching Rep-top scores its **+9** but is
+**not** an end-trigger. Why: with Rep-top ending the game it fired 100% of games at only ~5 courts/player,
+so the Season timer never paced anything and the *engine never ramped* (an engine game whose engine
+doesn't build). Decoupling it lets the Season timer (final mark ~16 courts at 2p) pace the game →
+**~8–9 courts/player, ~23 turns**, the discount ramp fully develops, and track balance tightens
+(sim-verified: Probe-1 leader 54.7% → 51.9%).
 
 Then: **finish the current round** (equal turns for all), play **one more full round**, then **reveal
 signature missions** and score. A fair, unswingy wind-down; the extra full round guarantees the trailing

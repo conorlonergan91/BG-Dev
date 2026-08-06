@@ -1,212 +1,295 @@
 """
-travel_agents.py — Travel Agents: Taiwan (spine A "Rival Agents, Shared Beat") encoded for the
+travel_agents.py — Travel Agents: Taiwan (v3, the VENDOR-COURTING ENGINE) encoded for the
 simulation harness (see tools/sim/engine.py). Stdlib-only.
 
-Implements the first-pass rules in ../design/design-doc.md so we can attack the design's single
-make-or-break assumption BEFORE any human playtest:
+v3 REWORK (2026-08-06). The obsolete v2 model (plate-a-dish / dead-drop / Hot-List) is GONE.
+This encodes design-doc.md v3: two rival travel agents build a Taiwan food TOUR by *courting
+vendors* — paying region-specific ingredients (discounted by held region icons) + Buzz (never
+discounted) — each vendor an engine piece feeding four scoring vectors: Prestige (VP), a Reputation
+track, Region-Coverage, and a secret +7 signature Mission.
 
-  Q1  Hoarder vs Generous-tipper (2p): is the Dead-drop individually rational, i.e. does cooperating
-      (G) beat hoarding (H)?  PASS = G >= H.   (round-robin + --matchup H:G, and the __main__ report.)
-  Q2  Kingmaker probe (3p): how much does ONE player's dead-drop *recipient* choice move the OTHER
-      two's win rates?  PASS = small swing.    (kingmaker_probe(); printed in __main__.)
-  Q3  Payout-C trigger-share (2p): does the winner sweep a disproportionate share of the 4 milestone
-      picks, and does the +1-VP option ever solely decide a game?  PASS = spread & rarely decisive.
-      (metrics: winner_pick_share, vp_pick_decisive.)
-Plus the standard health read (dominant line? score spread? margin? draw rate?).
+We attack the design's make-or-break assumptions BEFORE building components or spending a human
+session. The four probes (run in __main__ and via the harness):
+
+  PROBE 1  No dominant track/opening. No single strategy/track wins >~55%; >=3 viable in a tight band.
+           (round_robin over the track + opening strategies + naive baselines; health read.)
+  PROBE 2  No economy runaway. Does the discount snowball outrun the end-clock, or does the
+           undiscountable-Buzz floor cap the court-rate at ~1 vendor / 2 turns even fully ramped?
+           (court-interval late-game + max sustained rate + mid-game-leader-wins + VP gap.)
+  PROBE 3  Character balance: each of 5 in 45-55%; no character x mission combo >~60%.
+           (5x5 character round-robin at a fixed strategy; per-character x per-mission scan.)
+  PROBE 4  Anti-hoard / hard-stuck ~= 0. Do the unlimited pantry + always-on Promote prevent stuck
+           turns? (stuck-turn tally + larder-overflow discards = hoarding punished.)
+Plus a standard health read (score spread, avg margin, trap paths).
+
+Run:
+    python tools/sim/simulate.py --module games/travel-agents/sim/travel_agents.py --n 2000 \
+        --out games/travel-agents/playtests/sim-results.md
+    python games/travel-agents/sim/travel_agents.py            # runs all four probes
 
 ------------------------------------------------------------------------------------------------------
-DESIGN FIDELITY / SIMPLIFICATIONS (so we know what the sim does and doesn't cover)
+DESIGN FIDELITY / SIMPLIFICATIONS (bots are a FLOOR on depth, not a ceiling)
 ------------------------------------------------------------------------------------------------------
-Faithfully modelled: the 4-region ring + HSR (N-S) adjacency; Stock Up (+2 here) / Travel (+1 & move) /
-Plate (spend recipe -> VP, Dossier +1, refill Menu) / Dead-drop (give 1 ingredient to a rival -> +1
-Insider Tip, Dossier +1) / Extract; the region<->ingredient web (8 specialties + fungible pantry);
-the shared face-up Menu race; the Larder cap of 7 (auto-discard down at end of turn); the Grand Dossier
-+ payout-C milestones (flat base to all AND a triggerer pick of Insider Tip *or* +1 VP); scaled Dossier
-thresholds [n*2,n*4,n*6,n*8]; the secret Assignment (+7, draw-2-keep-1); the end trigger (Extract OR
-final milestone -> finish the round + one more full round); the 3-4p "receive <=1 Dead-drop per round".
+Faithfully modelled: 4-region ring + HSR(N-S) adjacency; the five actions (Stock Up +2 / Travel move+1 /
+Promote +2 Buzz / Court / Extract); the two-input court cost = named region ingredients MINUS held
+region-icon discounts (floored 0) + Buzz (NEVER discounted); the discount ramp (each vendor's region
+icon cheapens that region's ingredient half of future vendors); the tiered Vendor Board (T1/T2/T3, 3
+face-up per tier at 2p, refill on court, courted vendor locked from rivals); Prestige (1/3/5-6 by tier);
+Reputation track climbed by printed Rep, milestone perks at 3/6/9 + top(12) end-trigger, end-VP
+2/4/6/9; Region-Coverage 2/5/9; the secret +7 Mission (draw-3-keep-1, a strategy-aligned pick); the
+Season end-timer (+1 per court, final ~16 at 2p -> finish round + one more full round); Market events
+firing on refill (boon-skewed ~60/40, tax-not-destroy); finite per-region specialty supply (~2x solo
+demand, unlimited pantry); the Larder cap 7 (6 Rookie); the 5 Characters (ability + flaw).
 
-Simplifications (noted in sim-notes):
-  * SHARED "productive brain": sourcing/plating/routing is one greedy heuristic used by every strategy;
-    strategies differ ONLY in Dead-drop policy (never / aggressive / rational) + recipient choice + the
-    milestone-pick choice. This isolates the make-or-break variable exactly as beacon.py isolates the
-    signal policy. Bots are a FLOOR on depth, not a ceiling — they rule out broken math and dominant/
-    dead lines; they cannot judge whether the tip decision is *fun* (that's the human session).
-  * Insider Tip is modelled through its two load-bearing uses: (a) +1 extra ingredient when you Stock Up,
-    and (b) wild-substitute a recipe ingredient when you Plate. The "+1 travel hop" (c) is folded into
-    routing (reachability). A tip's realised value is thus ~one sourcing step, matching the doc's
-    "~+1 ingredient of flexibility". TIP_TEMPO exposes this as a knob.
-  * Draw-2-keep-1 is approximated as one random Assignment per player (all types are ~equal difficulty by
-    design, so the keep-1 choice mainly de-risks a bad draw; it barely moves balance).
-  * Ingredient supply is unlimited/open (as specified). Dish deck ~24 built from the 14 exemplar recipes
-    with duplicates of night-market staples (~46% cross-region), reshuffle-free (menu just stops
-    refilling if the deck empties — rare).
+Simplifications (LISTED so we know the sim's blind spots):
+  * SHARED "engine brain": every strategy uses ONE greedy courting/sourcing engine; strategies differ
+    only in their VENDOR-VALUE WEIGHTS (how much they prize Prestige / Reputation / Coverage / mission /
+    ramp) and an OPENING flag (buzz-first vs ingredient/ramp-first). This isolates "is a track/opening
+    dominant?" exactly as beacon.py isolates the signal policy.
+  * Ingredients are tracked at REGION granularity (N/C/S/E + Pantry), not per-specialty (beef vs pork
+    both = "N"), because courting discounts are per-REGION. So intra-region specialty scarcity (only so
+    many oysters vs milkfish) is collapsed into one per-region supply pool (~2x solo demand). Scarcity ->
+    reroute is preserved at region level; the pantry valve is exact.
+  * Market events are modelled by their MECHANICAL payload (free Buzz / free ingredient / a tempo tax /
+    a supply wash), fired with a per-refill probability (~EVENT_PROB), boon 60 / hazard 40. The Rookie's
+    "draw 2 resolve 1" = skips hazards; the Gourmand's "no boons" = boons do nothing. Exact tile text is
+    not modelled (that's the feel-test's job).
+  * Draw-3-keep-1 mission = the bot keeps the dealt mission best aligned to its weights (the design's
+    "you steer your own keel"); it does not model reading the opponent's mission.
+  * "Wild region icon" (T3 perk) and the pass-9 free icon are modelled as flexible discount + a coverage
+    filler; a T2 "pantry-as-wild" perk and the Gourmand ability grant one pantry->specialty substitution
+    per turn when courting. Perk allocation choices are greedy, not optimal.
+  * Bots essentially never Extract early (they let the Season/Rep-top trigger end it) — matching the
+    design's "Extract is a tempo option, the timer usually ends the game". The push-your-luck *feel* of
+    Extract is a human-session question, not a sim one.
+  * ASSUMPTIONS where the doc left a value open are tagged `# ASSUMPTION:` inline and collected in
+    sim-notes.md.
 """
 from __future__ import annotations
 
-import copy
 import os
-import random
+import sys
 import statistics
 from collections import Counter
 
 # ---- sim-only knobs (env vars; do NOT change the printed game rules) ------------------------------
-CAP = int(os.environ.get("TA_CAP", "7"))                 # Larder cap
-TIP_TEMPO = float(os.environ.get("TA_TIP_TEMPO", "0.7")) # value of 1 Insider Tip in "ingredient" units
-DEADDROP_VP = float(os.environ.get("TA_DEADDROP_VP", "0"))  # optional +VP per dead-drop (knob to test)
+SEASON_FINAL = {2: 16, 3: 24, 4: 30}                        # courts to fill the Season timer (design-doc)
+REP_TOP = 12                                                # Reputation track top / scoring cap (design-doc)
+REP_TRIGGER = int(os.environ.get("TA_REP_TRIGGER", "12"))   # rep value that ENDS the game (as-written = 12;
+                                                            # rebalance knob: raise out of reach to let the
+                                                            # Season timer do the timing — see sim-notes)
+CAP_DEFAULT = int(os.environ.get("TA_CAP", "7"))            # Larder cap (Rookie = 6)
+REGION_SUPPLY = int(os.environ.get("TA_SUPPLY", "13"))      # ASSUMPTION: per-region specialty supply at 2p (~2x solo demand)
+EVENT_PROB = float(os.environ.get("TA_EVENT_PROB", "0.24")) # ASSUMPTION: chance a market refill flips an Event tile
+BUZZ_FLOOR_KNOB = int(os.environ.get("TA_BUZZ_FLOOR", "0")) # rebalance knob: +N Buzz on EVERY vendor (raise the floor)
+DISCOUNT_CAP = int(os.environ.get("TA_DISC_CAP", "99"))     # rebalance knob: max region-icon discount per region
 
 # ---- map -------------------------------------------------------------------------------------------
 REGIONS = ("N", "C", "S", "E")
 ADJ = {"N": ("C", "E", "S"), "C": ("N", "S"), "S": ("C", "E", "N"), "E": ("S", "N")}  # ring + HSR(N-S)
-SPEC = {"N": ("Beef", "Pork"), "C": ("Tea", "Pearls"), "S": ("Oysters", "Milkfish"), "E": ("Rice", "Greens")}
-ING_REGION = {i: r for r, pair in SPEC.items() for i in pair}   # Pantry has no region
-PANTRY = "Pantry"
+PANTRY = "P"
+
+# ==================================================================================================
+#  VENDOR TABLE (built once at import; decks/board/tours store integer ids -> cheap to copy)
+# ==================================================================================================
+# A vendor: tier, primary region, cost_regions (Counter over N/C/S/E), cost_pantry, buzz, prestige,
+# rep, perk, cuisine. Perk in {None, "buzz_income", "pantry_wild", "rep_on_court", "wild", "rep_plus2",
+# "double_icon"}.
+VENDORS = []
+_CUISINES = ("night_market", "seafood", "teahouse", "banquet", "breakfast")
 
 
-def _avail(region):
-    return set(SPEC[region]) | {PANTRY}
+def _V(tier, region, cost_regions, pantry, buzz, prestige, rep, perk, cuisine):
+    VENDORS.append({
+        "id": len(VENDORS), "tier": tier, "region": region,
+        "cost_regions": dict(cost_regions), "cost_pantry": pantry, "buzz": buzz,
+        "prestige": prestige, "rep": rep, "perk": perk, "cuisine": cuisine,
+    })
 
 
-def _dish(name, vp, *recipe):
-    rec = Counter(recipe)
-    regions = frozenset(ING_REGION[i] for i in rec if i in ING_REGION)
-    return {"name": name, "vp": vp, "recipe": rec, "regions": regions, "size": sum(rec.values())}
+def _build_vendor_table():
+    VENDORS.clear()
+    # ---- T1 Stalls (20): 5 per region. cost = 2 of its region. Buzz 1. Prestige 1. Rep 1. Icon = region.
+    for r in REGIONS:
+        for k in range(5):
+            _V(1, r, {r: 2}, 0, 1, 1, 1, None, _CUISINES[k % len(_CUISINES)])
+    # ---- T2 Eateries (16): 4 per region. cost 3 = 2 of region + (1 of a neighbour OR 1 pantry).
+    #      Buzz 2. Prestige 3. Rep 2. Icon = region. Perk rotates.
+    t2_perks = ("buzz_income", "pantry_wild", "rep_on_court", "buzz_income")
+    for r in REGIONS:
+        for k in range(4):
+            r2 = REGIONS[(REGIONS.index(r) + 1 + k) % 4]
+            if k % 2 == 0:
+                cost, pantry = {r: 2, r2: 1}, 0
+            else:
+                cost, pantry = {r: 2}, 1
+            _V(2, r, cost, pantry, 2, 3, 2, t2_perks[k], _CUISINES[(k + 1) % len(_CUISINES)])
+    # ---- T3 Marquee (10): cost 3-4 across 2-3 regions. Buzz 3. Prestige 5-6. Rep 2-3. Strong perk.
+    #      ASSUMPTION: concrete spread of the doc's "3-4 (2-3 regions)" band below.
+    t3 = [
+        ("N", {"N": 1, "S": 1, "E": 1}, 0, 3, 6, 3, "wild", "banquet"),       # Banquet Master (round-island)
+        ("S", {"S": 2, "E": 1}, 0, 3, 5, 2, "rep_plus2", "seafood"),
+        ("C", {"C": 2, "N": 1}, 0, 3, 5, 2, "double_icon", "teahouse"),
+        ("E", {"E": 2, "S": 1}, 0, 3, 5, 2, "wild", "banquet"),
+        ("N", {"N": 2, "C": 1, "S": 1}, 0, 4, 6, 3, "rep_plus2", "night_market"),
+        ("S", {"S": 1, "N": 1, "C": 1}, 0, 3, 5, 2, "double_icon", "seafood"),
+        ("C", {"C": 2, "E": 1}, 0, 3, 5, 2, "wild", "teahouse"),
+        ("E", {"E": 2, "N": 1, "C": 1}, 0, 4, 6, 3, "rep_plus2", "banquet"),
+        ("N", {"N": 2, "E": 1}, 0, 3, 5, 2, "double_icon", "breakfast"),
+        ("S", {"S": 2, "C": 1, "E": 1}, 0, 4, 6, 3, "wild", "seafood"),
+    ]
+    for region, cost, pantry, buzz, prestige, rep, perk, cuisine in t3:
+        _V(3, region, cost, pantry, buzz, prestige, rep, perk, cuisine)
 
 
-# 14 exemplar recipes (design-doc). VP: 2-ingredient=3, 3-ingredient=4, Signature(3 regions)=5.
-_BASE_DISHES = [
-    _dish("Beef noodle soup", 3, "Beef", PANTRY),
-    _dish("Gua bao", 3, "Pork", PANTRY),
-    _dish("Bubble tea", 3, "Tea", "Pearls"),
-    _dish("Tea egg", 3, "Tea", PANTRY),
-    _dish("Oyster omelette", 3, "Oysters", PANTRY),
-    _dish("Oyster vermicelli", 3, "Oysters", PANTRY),
-    _dish("Bamboo-tube rice", 3, "Rice", "Greens"),
-    _dish("Milkfish porridge", 3, "Milkfish", "Rice"),
-    _dish("Chishang bento", 4, "Rice", "Pork", PANTRY),
-    _dish("East-coast platter", 4, "Greens", "Milkfish", PANTRY),
-    _dish("Hakka stir-fry", 4, "Pork", "Tea", PANTRY),
-    _dish("Braised-pork rice", 4, "Pork", "Rice", PANTRY),
-    _dish("Banquet platter", 5, "Oysters", "Beef", "Greens"),      # Signature
-    _dish("Round-island feast", 5, "Beef", "Tea", "Milkfish"),     # Signature
-]
-# ~24-card deck: 14 distinct + duplicates of staples (keeps ~46% cross-region, each specialty in 5-6).
-_DUPES = ["Beef noodle soup", "Gua bao", "Bubble tea", "Tea egg", "Oyster omelette", "Bamboo-tube rice",
-          "Chishang bento", "Hakka stir-fry", "Milkfish porridge", "Braised-pork rice"]
-_BY_NAME = {d["name"]: d for d in _BASE_DISHES}
+_build_vendor_table()
+_BY_TIER = {t: [v["id"] for v in VENDORS if v["tier"] == t] for t in (1, 2, 3)}
 
 
-def _new_deck():
-    deck = [dict(d) for d in _BASE_DISHES] + [dict(_BY_NAME[n]) for n in _DUPES]
-    return deck
-
-
-# ---- assignments (the one hidden hook; +7 VP, binary) ----------------------------------------------
-SOUTHERN = {"Oysters", "Milkfish"}
-_ASSIGN_TYPES = ["south_crawl", "variety", "signature_obsession", "big_eater", "night_market"]
-
-
-def _make_assignment(rng):
-    t = rng.choice(_ASSIGN_TYPES)
-    a = {"type": t}
-    if t == "signature_obsession":
-        names = [d["name"] for d in _BASE_DISHES]
-        a["targets"] = tuple(rng.sample(names, 2))
-    return a
-
-
-def _assign_state(a, log):
-    """(done, needed) progress counters for an assignment given the player's plated log."""
-    t = a["type"]
-    if t == "south_crawl":
-        return sum(1 for d in log if d["recipe"] & Counter(SOUTHERN)), 3
-    if t == "variety":
-        regions = set()
-        for d in log:
-            regions |= d["regions"]
-        return len(regions & set(REGIONS)), 4
-    if t == "signature_obsession":
-        got = set(d["name"] for d in log)
-        return sum(1 for n in a["targets"] if n in got), 2
-    if t == "big_eater":
-        return sum(1 for d in log if d["size"] >= 3), 2
-    if t == "night_market":
-        return len(log), 4
+# ==================================================================================================
+#  MISSIONS (secret +7; draw-3-keep-1 -> bot keeps the one aligned to its weights)
+# ==================================================================================================
+def _mission_progress(key, vids):
+    """(done, needed) toward a mission, given the player's courted vendor ids."""
+    vs = [VENDORS[i] for i in vids]
+    if key == "south_3":
+        return sum(1 for v in vs if v["region"] == "S"), 3
+    if key == "grand_tour":
+        return len(set(v["region"] for v in vs)), 4
+    if key == "t1_3":
+        return sum(1 for v in vs if v["tier"] == 1), 3
+    if key == "t3_2":
+        return sum(1 for v in vs if v["tier"] == 3), 2
+    if key == "cuisines_3":
+        return len(set(v["cuisine"] for v in vs)), 3
+    if key == "tall_18":
+        return sum(v["prestige"] for v in vs), 18
+    if key == "volume_5":
+        return len(vs), 5
+    if key == "marquee_feeders":                     # a Marquee + >=2 Stalls (approx of "+ its 2 feeders")
+        return min(sum(1 for v in vs if v["tier"] == 3), 1) + \
+               min(sum(1 for v in vs if v["tier"] == 1), 2), 3
     return 0, 1
 
 
-def _assign_complete(a, log):
-    done, needed = _assign_state(a, log)
-    return done >= needed
+MISSIONS = ("south_3", "grand_tour", "t1_3", "t3_2", "cuisines_3", "tall_18", "volume_5", "marquee_feeders")
 
 
-def _assign_marginal(a, log, dish):
-    """Does plating `dish` advance the assignment counter? Returns (increment, completes)."""
-    done, needed = _assign_state(a, log)
-    if done >= needed:
-        return 0, False
-    t = a["type"]
-    inc = 0
-    if t == "south_crawl":
-        inc = 1 if (dish["recipe"] & Counter(SOUTHERN)) else 0
-    elif t == "variety":
-        cur = set()
-        for d in log:
-            cur |= d["regions"]
-        inc = 1 if (dish["regions"] - cur) else 0
-    elif t == "signature_obsession":
-        got = set(d["name"] for d in log)
-        inc = 1 if (dish["name"] in a["targets"] and dish["name"] not in got) else 0
-    elif t == "big_eater":
-        inc = 1 if dish["size"] >= 3 else 0
-    elif t == "night_market":
-        inc = 1
-    return inc, (done + inc >= needed and inc > 0)
+def _mission_done(key, vids):
+    d, n = _mission_progress(key, vids)
+    return d >= n
 
 
-# ---- heuristic weights -----------------------------------------------------------------------------
-ASSIGN_STEP = 1.8      # value of one step of assignment progress (steers routing)
-COMPLETE_BONUS = 7.0   # the Assignment payoff (+7 VP)
+def _mission_helps(key, vid, cur_vids):
+    """Does courting `vid` advance the mission counter?"""
+    before, need = _mission_progress(key, cur_vids)
+    if before >= need:
+        return False
+    after, _ = _mission_progress(key, cur_vids + [vid])
+    return after > before
 
 
-def _want(dish, assignment, log):
-    inc, completes = _assign_marginal(assignment, log, dish)
-    return dish["vp"] + (ASSIGN_STEP if inc > 0 else 0.0) + (COMPLETE_BONUS if completes else 0.0)
+# ==================================================================================================
+#  CHARACTERS (ability + flaw). "neutral" = symmetric (used in the strategy round-robin).
+# ==================================================================================================
+CHARACTERS = ("auntie", "rookie", "conductor", "influencer", "gourmand")
+
+
+# ==================================================================================================
+#  SCORING helpers
+# ==================================================================================================
+def _rep_end_vp(rep):
+    if rep >= 12:
+        return 9
+    if rep >= 9:
+        return 6
+    if rep >= 6:
+        return 4
+    if rep >= 3:
+        return 2
+    return 0
+
+
+def _coverage_vp(n_regions):
+    return {0: 0, 1: 0, 2: 2, 3: 5, 4: 9}[min(4, n_regions)]
+
+
+def _coverage_count(pl):
+    # wild icons can fill a missing region at scoring
+    base = set(pl["regions"])
+    return min(4, len(base) + pl["wild"] if len(base) < 4 else len(base))
 
 
 # ==================================================================================================
 #  GAME
 # ==================================================================================================
 class TravelAgentsGame:
-    def new_state(self, rng, n_players=2):
-        deck = _new_deck()
-        rng.shuffle(deck)
-        menu_size = {2: 4, 3: 5, 4: 6}[n_players]
-        menu = [deck.pop() for _ in range(menu_size)]
+    def new_state(self, rng, n_players=2, characters=None, missions=None, strategies_meta=None):
+        chars = characters or ["neutral"] * n_players
+        # decks per tier (ids), shuffled
+        decks = {}
+        for t in (1, 2, 3):
+            d = list(_BY_TIER[t])
+            rng.shuffle(d)
+            decks[t] = d
+        board_w = {2: 3, 3: 4, 4: 5}[n_players]
+        board = {t: [decks[t].pop() for _ in range(min(board_w, len(decks[t])))] for t in (1, 2, 3)}
+        supply_scale = {2: 1.0, 3: 1.3, 4: 1.6}[n_players]   # sub-linear supply growth
         starts = {2: ["N", "S"], 3: ["N", "S", "C"], 4: ["N", "S", "C", "E"]}[n_players]
-        thresholds = [n_players * 2, n_players * 4, n_players * 6, n_players * 8]
+        players = []
+        infl_present = "influencer" in chars
+        for p in range(n_players):
+            ch = chars[p]
+            # missions: explicit per-seat if given, else deal a random one (draw-3-keep-1 with no
+            # strategy to steer the pick -> a neutral random keep). The probe runner overrides this
+            # with a strategy-aligned pick; the harness round-robin relies on this default so the +7
+            # Mission vector is actually exercised in sim-results.md.
+            if missions is not None:
+                m = missions[p]
+            else:
+                m = rng.choice(MISSIONS)
+            players.append({
+                "char": ch,
+                "pos": starts[p],
+                "larder": Counter(),
+                "buzz": (1 if (infl_present and ch != "influencer") else 0),   # Influencer starts 1 behind
+                "vendors": [],
+                "icons": Counter(),
+                "wild": 0,
+                "prestige": 0,
+                "rep": 0,
+                "regions": set(),
+                "promote_bonus": (1 if ch == "influencer" else 0),             # Going Viral: Promote +1
+                "rep_per_court_bonus": 0,
+                "pantry_wild_perk": False,
+                "mission": m,
+                "rep_ms": set(),
+                "pantry_wild_used": False,
+                "tourist_boost": False,
+                "acted": 0,
+            })
         return {
             "n": n_players,
-            "menu_size": menu_size,
-            "deck": deck,
-            "menu": menu,
-            "pos": {p: starts[p] for p in range(n_players)},
-            "larder": {p: Counter() for p in range(n_players)},
-            "tips": {p: 0 for p in range(n_players)},
-            "log": {p: [] for p in range(n_players)},
-            "assignment": {p: _make_assignment(rng) for p in range(n_players)},
-            "dossier": 0,
-            "thresholds": thresholds,
-            "next_ms": 0,                         # index into thresholds
-            "flat_base": [2, 3, 4, 5],            # payout-C flat base per milestone (equal to all)
-            "flat_awarded": {p: 0 for p in range(n_players)},
-            "bonus_vp": {p: 0 for p in range(n_players)},   # +1-VP milestone picks banked
-            "picks": {p: [] for p in range(n_players)},     # list of "vp"/"tip" per triggered milestone
-            "received": {p: 0 for p in range(n_players)},   # dead-drops received this round (3-4p cap)
-            "turn": 0,                            # global turn counter (player-turns taken)
-            "cur": 0,                             # whose turn
-            "end_turn": None,                     # set when end-trigger fires
-            "deaddrops": 0,                       # diagnostic
+            "decks": decks,
+            "board": board,
+            "board_w": board_w,
+            "supply": {r: int(round(REGION_SUPPLY * supply_scale)) for r in REGIONS},
+            "players": players,
+            "season": 0,                      # courts taken (any player)
+            "season_final": SEASON_FINAL[n_players],
+            "turn": 0,
+            "cur": 0,
+            "end_turn": None,
+            "end_cause": None,
             "done": False,
+            # diagnostics
+            "courts_at": {p: [] for p in range(n_players)},   # global turn indices of each player's courts
+            "stuck_turns": 0,
+            "overflow_discards": 0,
+            "buzz_spent": 0,
+            "region_ing_spent": 0,
+            "mid_scores": None,               # snapshot when season hits half
+            "strat_meta": strategies_meta,    # optional {p: weights} for mission pick (set by runner)
         }
 
     def players(self, state):
@@ -215,175 +298,306 @@ class TravelAgentsGame:
     def actors(self, state):
         return [state["cur"]]
 
-    # ---- legal (fully-resolved) actions -----------------------------------------------------------
+    # ---- cost / affordability --------------------------------------------------------------------
+    def _pay_plan(self, state, p, vid):
+        """Return (region_pay dict, pantry_pay, buzz, pantry_wild_needed) — the minimal cost after
+        discounts, wild icons, Auntie, floored at 0. pantry_wild_needed = region units we'd cover by a
+        pantry->specialty substitution (Gourmand / pantry_wild perk)."""
+        pl = state["players"][p]
+        v = VENDORS[vid]
+        pay = {}
+        for r, c in v["cost_regions"].items():
+            disc = min(DISCOUNT_CAP, pl["icons"].get(r, 0))
+            pay[r] = max(0, c - disc)
+        # wild icons reduce the largest remaining region requirement(s)
+        w = pl["wild"]
+        while w > 0 and any(x > 0 for x in pay.values()):
+            r = max(pay, key=lambda k: pay[k])
+            if pay[r] <= 0:
+                break
+            pay[r] -= 1
+            w -= 1
+        pantry = v["cost_pantry"]
+        # Auntie: first vendor she courts in a region new to her tour is 1 ingredient cheaper
+        if pl["char"] == "auntie" and v["region"] not in pl["regions"]:
+            for r in sorted(pay, key=lambda k: -pay[k]):
+                if pay[r] > 0:
+                    pay[r] -= 1
+                    break
+            else:
+                if pantry > 0:
+                    pantry -= 1
+        buzz = v["buzz"] + BUZZ_FLOOR_KNOB
+        return pay, pantry, buzz
+
+    def _affordable(self, state, p, vid):
+        pl = state["players"][p]
+        pay, pantry, buzz = self._pay_plan(state, p, vid)
+        if pl["buzz"] < buzz:
+            return False
+        # region shortfalls
+        short = 0
+        for r, c in pay.items():
+            short += max(0, c - pl["larder"].get(r, 0))
+        pantry_have = pl["larder"].get(PANTRY, 0)
+        pantry_short = max(0, pantry - pantry_have)
+        # a pantry->specialty substitution (Gourmand / perk): one spare pantry can cover 1 region unit
+        subs = 0
+        if (pl["char"] == "gourmand" or pl["pantry_wild_perk"]) and not pl["pantry_wild_used"]:
+            spare = pantry_have - pantry
+            if spare > 0:
+                subs = 1
+        return (short - subs) <= 0 and pantry_short <= 0
+
+    # ---- legal actions (coarse; the shared brain computes its own choice) -------------------------
     def legal_actions(self, state, player):
-        acts = []
         p = player
-        pos = state["pos"][p]
-        larder = state["larder"][p]
-        tips = state["tips"][p]
-        # Plate: any menu dish affordable with 0..k wilds (k = tips), minimal wilds
-        for i, dish in enumerate(state["menu"]):
-            missing = 0
-            for ing, cnt in dish["recipe"].items():
-                have = larder.get(ing, 0)
-                if have < cnt:
-                    missing += cnt - have
-            if missing <= tips:
-                acts.append(("plate", i, missing))
-        # Stock Up: 2 ingredients available here (with repetition). Optionally a 3rd via a tip.
-        avail = sorted(_avail(pos))
-        pairs = set()
-        for a in avail:
-            for b in avail:
-                pairs.add(tuple(sorted((a, b))))
-        for pr in pairs:
-            acts.append(("stock", pos, pr, 0))
-            if tips >= 1:
-                for c in avail:
-                    acts.append(("stock", pos, tuple(sorted(pr + (c,))), 1))
-        # Travel: to an adjacent region, arrive with 1 available ingredient
-        for dest in ADJ[pos]:
-            for ing in sorted(_avail(dest)):
-                acts.append(("travel", dest, ing))
-        # Dead-drop: give 1 larder ingredient to a rival (respect 3-4p receive cap)
-        recips = [q for q in range(state["n"]) if q != p and
-                  (state["n"] == 2 or state["received"][q] < 1)]
-        for ing in sorted(larder):
-            if larder[ing] > 0:
-                for q in recips:
-                    acts.append(("deaddrop", ing, q))
-        # Extract
+        pl = state["players"][p]
+        acts = []
+        for t in (1, 2, 3):
+            for idx, vid in enumerate(state["board"][t]):
+                if self._affordable(state, p, vid):
+                    acts.append(("court", t, idx))
+        pos = pl["pos"]
+        have_spec = state["supply"][pos] > 0
+        r = pos if have_spec else PANTRY
+        acts.append(("stock", (r, r)))
+        acts.append(("stock", (r, PANTRY)))
+        acts.append(("stock", (PANTRY, PANTRY)))
+        dests = [d for d in ADJ[pos] if not (pl["char"] == "auntie" and _is_hsr(pos, d))]
+        for d in dests:
+            acts.append(("travel", d, d if state["supply"][d] > 0 else PANTRY))
+            acts.append(("travel", d, PANTRY))
+        acts.append(("promote",))
         acts.append(("extract",))
         return acts
 
-    # ---- transition -------------------------------------------------------------------------------
+    # ---- transition (mutates in place — the harness keeps no history) ------------------------------
     def step(self, state, actions, rng):
-        s = copy.deepcopy(state)
+        s = state
         p = s["cur"]
+        pl = s["players"][p]
+        pl["pantry_wild_used"] = False            # reset per-turn ability
         act = actions[p]
         kind = act[0]
 
-        if kind == "plate":
-            _, idx, n_wild = act
-            dish = s["menu"][idx]
-            # pay recipe from larder; wilds cover the shortfall
-            need = dict(dish["recipe"])
-            for ing, cnt in need.items():
-                take = min(cnt, s["larder"][p].get(ing, 0))
-                s["larder"][p][ing] -= take
-                if s["larder"][p][ing] <= 0:
-                    del s["larder"][p][ing]
-            s["tips"][p] -= n_wild
-            s["log"][p].append(dish)
-            # refill menu
-            if s["deck"]:
-                s["menu"][idx] = s["deck"].pop()
-            else:
-                s["menu"].pop(idx)
-            self._dossier_advance(s, p)
-
+        if kind == "court":
+            self._do_court(s, p, act, rng)
         elif kind == "stock":
-            _, region, ings, n_tip = act
-            for ing in ings:
-                s["larder"][p][ing] += 1
-            s["tips"][p] -= n_tip
-
+            self._do_stock(s, p, act, rng)
         elif kind == "travel":
-            _, dest, ing = act
-            s["pos"][p] = dest
-            s["larder"][p][ing] += 1
-
-        elif kind == "deaddrop":
-            _, ing, q = act
-            s["larder"][p][ing] -= 1
-            if s["larder"][p][ing] <= 0:
-                del s["larder"][p][ing]
-            s["larder"][q][ing] += 1
-            s["tips"][p] += 1
-            s["received"][q] += 1
-            s["deaddrops"] += 1
-            s["bonus_vp"][p] += 0  # placeholder for DEADDROP_VP knob applied below
-            if DEADDROP_VP:
-                s["bonus_vp"][p] += DEADDROP_VP
-            self._dossier_advance(s, p)
-
+            self._do_travel(s, p, act, rng)
+        elif kind == "promote":
+            gain = 2 + pl["promote_bonus"] + (1 if pl["tourist_boost"] else 0)
+            pl["tourist_boost"] = False
+            pl["buzz"] += gain
         elif kind == "extract":
-            self._trigger_end(s)
+            self._trigger_end(s, "extract")
 
-        # end-of-turn: discard down to CAP (auto, for free)
-        self._discard_to_cap(s, p, rng)
+        # end-of-turn: Larder cap
+        self._discard_to_cap(s, p)
+        pl["acted"] += 1
 
-        # advance turn / round bookkeeping
+        # advance turn
         s["turn"] += 1
         s["cur"] = s["turn"] % s["n"]
-        if s["cur"] == 0:                       # a full round just completed
-            s["received"] = {q: 0 for q in range(s["n"])}
-        # end?
         if s["end_turn"] is not None and s["turn"] >= s["end_turn"]:
             s["done"] = True
-        if s["turn"] > 600:                      # hard guard
+        if s["turn"] > 4000:
             s["done"] = True
         return s
 
-    def _dossier_advance(self, s, p):
-        s["dossier"] += 1
-        # cross milestones (can cross at most one per action given +1 steps)
-        while s["next_ms"] < len(s["thresholds"]) and s["dossier"] >= s["thresholds"][s["next_ms"]]:
-            ms = s["next_ms"]
-            base = s["flat_base"][ms]
-            for q in range(s["n"]):
-                s["flat_awarded"][q] += base           # flat base to everyone (ranking-neutral)
-            # triggerer pick: +1 VP or an Insider Tip
-            pick = self._milestone_pick(s, p)
-            s["picks"][p].append(pick)
-            if pick == "vp":
-                s["bonus_vp"][p] += 1
+    def _do_court(self, s, p, act, rng):
+        _, t, idx = act
+        pl = s["players"][p]
+        vid = s["board"][t][idx]
+        v = VENDORS[vid]
+        pay, pantry, buzz = self._pay_plan(s, p, vid)
+        # pay buzz
+        pl["buzz"] -= buzz
+        s["buzz_spent"] += buzz
+        # pay pantry
+        take = min(pantry, pl["larder"].get(PANTRY, 0))
+        pl["larder"][PANTRY] -= take
+        # pay region ingredients (using a pantry->specialty sub if short by 1)
+        for r, c in pay.items():
+            need = c
+            have = pl["larder"].get(r, 0)
+            use = min(need, have)
+            pl["larder"][r] -= use
+            s["region_ing_spent"] += use
+            need -= use
+            if need > 0 and (pl["char"] == "gourmand" or pl["pantry_wild_perk"]) and not pl["pantry_wild_used"] \
+                    and pl["larder"].get(PANTRY, 0) > 0:
+                pl["larder"][PANTRY] -= 1
+                pl["pantry_wild_used"] = True
+                need -= 1
+        pl["larder"] += Counter()  # drop zeros
+        pl["larder"] = +pl["larder"]
+        # gain rewards
+        pl["vendors"].append(vid)
+        pl["prestige"] += v["prestige"]
+        rep_gain = v["rep"] + pl["rep_per_court_bonus"]
+        self._rep_up(s, p, rep_gain)
+        pl["regions"].add(v["region"])
+        # perk
+        self._apply_perk(pl, v)
+        # base icon
+        pl["icons"][v["region"]] += 1
+        # board bookkeeping: refill, Season +1, lock from rivals (removed from shared board)
+        deck = s["decks"][t]
+        if deck:
+            s["board"][t][idx] = deck.pop()
+        else:
+            s["board"][t].pop(idx)
+        s["season"] += 1
+        s["courts_at"][p].append(s["turn"])
+        # mid-game snapshot (for runaway probe)
+        if s["mid_scores"] is None and s["season"] >= s["season_final"] // 2:
+            s["mid_scores"] = self.scores(s)
+        # triggers
+        if s["season"] >= s["season_final"]:
+            self._trigger_end(s, "season")
+
+    def _apply_perk(self, pl, v):
+        perk = v["perk"]
+        if perk == "buzz_income":
+            pl["promote_bonus"] += 1
+        elif perk == "pantry_wild":
+            pl["pantry_wild_perk"] = True
+        elif perk == "rep_on_court":
+            pl["rep_per_court_bonus"] += 1
+        elif perk == "rep_plus2":
+            pl["rep_per_court_bonus"] += 2
+        elif perk == "wild":
+            pl["wild"] += 1
+        elif perk == "double_icon":
+            pl["icons"][v["region"]] += 1   # counts as an extra icon of its region (on top of the base)
+
+    def _rep_up(self, s, p, amount):
+        pl = s["players"][p]
+        before = pl["rep"]
+        pl["rep"] = min(REP_TOP, pl["rep"] + amount)
+        for ms in (3, 6, 9):
+            if before < ms <= pl["rep"] and ms not in pl["rep_ms"]:
+                pl["rep_ms"].add(ms)
+                if ms == 3:
+                    pl["larder"][PANTRY] += 2                 # "take 2 wild ingredients" (modelled as flexible pantry)
+                elif ms == 6:
+                    pl["promote_bonus"] += 1                  # Promote permanently +1 Buzz
+                elif ms == 9:
+                    # +1 permanent discount icon of choice -> the region the player leans on most
+                    r = max(REGIONS, key=lambda x: pl["icons"].get(x, 0))
+                    pl["icons"][r] += 1
+        if before < REP_TRIGGER <= pl["rep"]:
+            self._trigger_end(s, "rep")                       # reaching the top ends the game
+
+    def _do_stock(self, s, p, act, rng):
+        _, ings = act
+        pl = s["players"][p]
+        n_take = 2
+        if pl["char"] == "conductor":
+            n_take = 1                                        # Timetable-bound: Stock Up takes 1
+        taken = 0
+        for ing in ings:
+            if taken >= n_take:
+                break
+            if ing == PANTRY:
+                pl["larder"][PANTRY] += 1
             else:
-                s["tips"][p] += 1
-            s["next_ms"] += 1
-            if s["next_ms"] >= len(s["thresholds"]):   # final milestone -> end trigger
-                self._trigger_end(s)
+                if s["supply"][ing] > 0:
+                    s["supply"][ing] -= 1
+                    pl["larder"][ing] += 1
+                else:
+                    pl["larder"][PANTRY] += 1                 # scarcity -> fall back to pantry (a reroute cost)
+            taken += 1
+        self._refills(s, p, rng, n_flips=2, plum_stock=True)
 
-    def _milestone_pick(self, s, p):
-        """Triggerer chooses +1 VP or a tip. Take a tip early when it has a use; else bank +1 VP."""
-        near_end = s["end_turn"] is not None
-        can_use_tip = any(True for _ in s["menu"])  # there are dishes to accelerate toward
-        if (not near_end) and s["tips"][p] < 2 and can_use_tip:
-            return "tip"
-        return "vp"
+    def _do_travel(self, s, p, act, rng):
+        _, dest, ing = act
+        pl = s["players"][p]
+        pl["pos"] = dest
+        n_take = 2 if pl["char"] == "conductor" else 1       # Off-Peak Pass: Travel arrives with 2
+        for _ in range(n_take):
+            if ing == PANTRY:
+                pl["larder"][PANTRY] += 1
+            elif s["supply"][dest] > 0:
+                s["supply"][dest] -= 1
+                pl["larder"][dest] += 1
+            else:
+                pl["larder"][PANTRY] += 1
+        self._refills(s, p, rng, n_flips=1)
 
-    def _trigger_end(self, s):
+    # ---- Market events on refill ------------------------------------------------------------------
+    def _refills(self, s, p, rng, n_flips, plum_stock=False):
+        pl = s["players"][p]
+        for _ in range(n_flips):
+            if rng.random() >= EVENT_PROB:
+                continue
+            boon = rng.random() < 0.60
+            # Rookie: draw 2 resolve 1 -> can dodge a hazard (resolve a boon instead)
+            if pl["char"] == "rookie" and not boon:
+                boon = rng.random() < 0.60                    # a second draw, keep the better
+            if boon:
+                if pl["char"] == "gourmand":
+                    continue                                  # Too jaded: cannot benefit from boons
+                kind = rng.choice(("buzz", "buzz", "ingredient", "ingredient", "tourist"))
+                if kind == "buzz":
+                    pl["buzz"] += 2
+                elif kind == "ingredient":
+                    r = pl["pos"]
+                    if s["supply"][r] > 0:
+                        s["supply"][r] -= 1
+                        pl["larder"][r] += 1
+                    else:
+                        pl["larder"][PANTRY] += 1
+                elif kind == "tourist":
+                    pl["tourist_boost"] = True
+            else:
+                kind = rng.choice(("plum", "typhoon"))
+                if kind == "plum" and plum_stock:
+                    # this Stock Up yields 1 fewer: remove 1 just-taken ingredient if any
+                    if sum(pl["larder"].values()) > 0:
+                        r = max(pl["larder"], key=lambda k: pl["larder"][k])
+                        pl["larder"][r] -= 1
+                        if pl["larder"][r] <= 0:
+                            del pl["larder"][r]
+                elif kind == "typhoon":
+                    r = rng.choice(("S", "E"))
+                    s["supply"][r] = max(0, s["supply"][r] - 3)   # wash the shelf (reroute, not theft)
+
+    def _trigger_end(self, s, cause="?"):
         if s["end_turn"] is not None:
             return
-        # finish the current round, then one more full round
+        s["end_cause"] = cause
         n = s["n"]
-        turns_done = s["turn"] + 1   # this action's turn increments after; count it as done
-        end = ((turns_done + n - 1) // n) * n + n
-        s["end_turn"] = end
+        turns_done = s["turn"] + 1
+        s["end_turn"] = ((turns_done + n - 1) // n) * n + n    # finish this round + one more full round
 
-    def _discard_to_cap(self, s, p, rng):
-        larder = s["larder"][p]
-        total = sum(larder.values())
-        if total <= CAP:
+    def _discard_to_cap(self, s, p):
+        pl = s["players"][p]
+        cap = 6 if pl["char"] == "rookie" else CAP_DEFAULT
+        total = sum(pl["larder"].values())
+        if total <= cap:
             return
-        # discard the least-useful ingredients: prefer dumping what no menu dish needs; pantry last-ish
-        menu_need = Counter()
-        for d in s["menu"]:
-            menu_need |= d["recipe"]
-        excess = total - CAP
-        # build a discard-priority list (most dumpable first)
+        excess = total - cap
+        # what do the board vendors want? keep useful region ingredients; dump the most over-held
+        want = Counter()
+        for t in (1, 2, 3):
+            for vid in s["board"][t]:
+                for r, c in VENDORS[vid]["cost_regions"].items():
+                    want[r] += 1
         pool = []
-        for ing, c in larder.items():
-            # usefulness = appears in menu? pantry is generically useful (keep)
-            use = menu_need.get(ing, 0) + (2 if ing == PANTRY else 0)
+        for ing, c in pl["larder"].items():
+            use = want.get(ing, 0) + (1 if ing == PANTRY else 0)   # pantry is generically useful
             pool.extend([(use, ing)] * c)
         pool.sort(key=lambda x: x[0])
         for _ in range(excess):
             _, ing = pool.pop(0)
-            larder[ing] -= 1
-            if larder[ing] <= 0:
-                del larder[ing]
+            pl["larder"][ing] -= 1
+            if pl["larder"][ing] <= 0:
+                del pl["larder"][ing]
+            s["overflow_discards"] += 1
 
     def is_over(self, state):
         return state["done"]
@@ -392,340 +606,343 @@ class TravelAgentsGame:
     def scores(self, state):
         out = {}
         for p in range(state["n"]):
-            dish_vp = sum(d["vp"] for d in state["log"][p])
-            assign = 7 if _assign_complete(state["assignment"][p], state["log"][p]) else 0
-            out[p] = dish_vp + assign + state["flat_awarded"][p] + state["bonus_vp"][p]
+            pl = state["players"][p]
+            prestige = pl["prestige"]
+            rep = _rep_end_vp(pl["rep"])
+            cov = _coverage_vp(_coverage_count(pl))
+            mission = 7 if (pl["mission"] and _mission_done(pl["mission"], pl["vendors"])) else 0
+            out[p] = prestige + rep + cov + mission
         return out
 
     def metrics(self, state):
-        sc = self.scores(state)
+        s = state
+        sc = self.scores(s)
         vals = sorted(sc.values(), reverse=True)
         margin = vals[0] - vals[1] if len(vals) > 1 else 0.0
         winners = [p for p, v in sc.items() if v == vals[0]]
         tie = 1.0 if len(winners) > 1 else 0.0
         winner = winners[0]
-        # payout-C: pick-share of the winner + is a +1-VP pick solely decisive?
-        total_picks = sum(len(state["picks"][p]) for p in range(state["n"]))
-        win_picks = len(state["picks"][winner])
-        win_vp_picks = state["picks"][winner].count("vp")
-        pick_share = (win_picks / total_picks) if total_picks else 0.0
-        # decisive if removing the winner's +1-VP picks would tie/flip the game
-        vp_pick_decisive = 1.0 if (not tie and margin <= win_vp_picks and win_vp_picks > 0) else 0.0
-        plates = statistics.mean(len(state["log"][p]) for p in range(state["n"]))
+        # court cadence
+        total_courts = sum(len(s["courts_at"][p]) for p in range(s["n"]))
+        turns = s["turn"]
+        court_interval = (turns / total_courts) if total_courts else float(turns)
+        # late-game court interval (2nd half of turns) + max sustained rate (min gap between one player's courts)
+        half = turns / 2
+        late_courts = sum(1 for p in range(s["n"]) for tt in s["courts_at"][p] if tt >= half)
+        court_interval_late = ((turns - half) / late_courts) if late_courts else float("nan")
+        min_gap = float("inf")
+        for p in range(s["n"]):
+            cs = s["courts_at"][p]
+            for a, b in zip(cs, cs[1:]):
+                min_gap = min(min_gap, b - a)
+        min_gap = 0.0 if min_gap == float("inf") else float(min_gap)
+        # did the mid-game leader win? (runaway signal)
+        mid_leader_won = float("nan")
+        if s["mid_scores"] is not None and not tie:
+            mvals = s["mid_scores"]
+            mbest = max(mvals.values())
+            mid_leaders = [p for p, v in mvals.items() if v == mbest]
+            if len(mid_leaders) == 1:
+                mid_leader_won = 1.0 if mid_leaders[0] == winner else 0.0
+        # winning vector breakdown (which track carried the winner)
+        wp = state["players"][winner]
         return {
             "margin": float(margin),
             "tie": tie,
-            "deaddrops_per_game": float(state["deaddrops"]),
-            "plates_per_player": float(plates),
-            "turns": float(state["turn"]),
-            "dossier_end": float(state["dossier"]),
-            "winner_pick_share": float(pick_share),
-            "milestone_picks_total": float(total_picks),
-            "vp_pick_decisive": vp_pick_decisive,
-            "assign_done_rate": statistics.mean(
-                1.0 if _assign_complete(state["assignment"][p], state["log"][p]) else 0.0
-                for p in range(state["n"])),
+            "turns": float(turns),
+            "total_courts": float(total_courts),
+            "courts_per_player": float(total_courts / s["n"]),
+            "court_interval": float(court_interval),
+            "court_interval_late": float(court_interval_late) if court_interval_late == court_interval_late else 0.0,
+            "min_court_gap": min_gap,
+            "mid_leader_won": mid_leader_won if mid_leader_won == mid_leader_won else 0.5,
+            "stuck_turns": float(s["stuck_turns"]),
+            "overflow_discards": float(s["overflow_discards"]),
+            "buzz_spent": float(s["buzz_spent"]),
+            "region_ing_spent": float(s["region_ing_spent"]),
+            "win_prestige": float(wp["prestige"]),
+            "win_rep_vp": float(_rep_end_vp(wp["rep"])),
+            "win_cov_vp": float(_coverage_vp(_coverage_count(wp))),
+            "win_mission": 1.0 if (wp["mission"] and _mission_done(wp["mission"], wp["vendors"])) else 0.0,
+            "end_by_rep": 1.0 if s["end_cause"] == "rep" else 0.0,
+            "end_by_season": 1.0 if s["end_cause"] == "season" else 0.0,
+            "end_by_extract": 1.0 if s["end_cause"] == "extract" else 0.0,
         }
 
 
+def _is_hsr(a, b):
+    return {a, b} == {"N", "S"}
+
+
 GAME = TravelAgentsGame()
-TITLE = "Travel Agents: Taiwan"
+TITLE = "Travel Agents: Taiwan (v3 vendor-courting engine)"
 
 
 # ==================================================================================================
-#  SHARED "productive brain" — sourcing / plating / routing (used by every strategy)
+#  SHARED ENGINE BRAIN  (sourcing / courting / routing) — every strategy uses this; strategies differ
+#  ONLY in their vendor-value WEIGHTS + an opening flag. Isolates "is a track/opening dominant?".
 # ==================================================================================================
-def _menu(view):
-    return view["menu"]
+TEMPO = 1.35          # VP-value of a turn (penalises slow-to-afford vendors)
+HOLD_GAP = 2.0        # only skip an affordable court to build a strictly-better, near-affordable target
+HORIZON = 3.5         # a target is "reachable soon" if est_turns <= HORIZON (keeps bots from starving
+                      # for a far marquee they can never juggle under the Larder cap)
 
 
-def _best_target(view, p):
-    """The menu dish the player most wants (affordable or not) — the aspiration to route toward.
-    Returns ((idx, dish), want) or (None, -1) if the Menu is empty (deck exhausted)."""
-    log = view["log"][p]
-    a = view["assignment"][p]
-    best, bw = None, -1
-    for i, d in enumerate(view["menu"]):
-        w = _want(d, a, log)
-        if w > bw:
-            best, bw = (i, d), w
-    return best, bw
+def _ramp_value(pl, v, w_ramp):
+    """Value of the vendor's icon = expected future discount. Rewards concentration (stacking a region)."""
+    if v["perk"] == "wild":
+        return w_ramp * 1.3
+    held = pl["icons"].get(v["region"], 0)
+    return w_ramp * (0.5 + 0.35 * held)      # more valuable the more you've already stacked that region
 
 
-def _affordable(view, p):
-    """List of (menu_index, dish, wilds_needed, want) the player can plate now (wilds<=tips)."""
-    larder = view["larder"][p]
-    tips = view["tips"][p]
-    log = view["log"][p]
-    a = view["assignment"][p]
-    out = []
-    for i, d in enumerate(view["menu"]):
-        missing = sum(max(0, c - larder.get(ing, 0)) for ing, c in d["recipe"].items())
-        if missing <= tips:
-            out.append((i, d, missing, _want(d, a, log)))
-    return out
+def _coverage_marginal(pl, v, w_cov):
+    if v["region"] in pl["regions"]:
+        return 0.0
+    now = _coverage_vp(min(4, len(pl["regions"])))
+    then = _coverage_vp(min(4, len(pl["regions"]) + 1))
+    return w_cov * (then - now)
 
 
-def _productive_action(view, p, legal, rng):
-    """Best Plate / Stock / Travel (never Dead-drop / Extract). Greedy, shared by all strategies."""
-    larder = view["larder"][p]
-    pos = view["pos"][p]
-    if not view["menu"]:                 # deck exhausted, nothing left to plate — wind the trip down
-        return ("extract",)
-    aff = _affordable(view, p)
-    (ti, target), tw = _best_target(view, p)
+def _rep_marginal(pl, v, w_rep):
+    now = _rep_end_vp(pl["rep"])
+    then = _rep_end_vp(min(REP_TOP, pl["rep"] + v["rep"] + pl["rep_per_court_bonus"]))
+    # value both the end-VP jump and steady progress toward the next tier
+    return w_rep * (0.6 * (v["rep"] + pl["rep_per_court_bonus"]) + (then - now))
 
-    # 1) Plate if we have a strong affordable dish.
-    if aff:
-        # prefer plating without wilds; among those, the highest want
-        zero = [x for x in aff if x[2] == 0]
-        pool = zero if zero else aff
-        pool.sort(key=lambda x: (x[3], -x[2]), reverse=True)
-        best_i, best_d, best_w, best_want = pool[0]
-        # hold only if the aspiration is much better AND close (<=2 missing) — else bank VP now
-        target_missing = sum(max(0, c - larder.get(ing, 0)) for ing, c in target["recipe"].items())
-        hold = (tw - best_want >= 3.0) and (target_missing <= 2) and (target["name"] != best_d["name"])
-        if not hold:
-            return ("plate", best_i, best_w)
 
-    # 2) Source toward the aspiration target. What's missing?
-    missing = Counter()
-    for ing, c in target["recipe"].items():
-        short = c - larder.get(ing, 0)
+def _mission_marginal(pl, v, w_m):
+    if not pl["mission"]:
+        return 0.0
+    if _mission_helps(pl["mission"], v["id"], pl["vendors"]):
+        after = _mission_done(pl["mission"], pl["vendors"] + [v["id"]])
+        return w_m * (7.0 if after else 1.6)
+    return 0.0
+
+
+def _est_turns(state, p, vid):
+    pl = state["players"][p]
+    pay, pantry, buzz = GAME._pay_plan(state, p, vid)
+    region_short = sum(max(0, c - pl["larder"].get(r, 0)) for r, c in pay.items())
+    pantry_short = max(0, pantry - pl["larder"].get(PANTRY, 0))
+    buzz_short = max(0, buzz - pl["buzz"])
+    promote_yield = 2 + pl["promote_bonus"]
+    # ingredients ~0.55 turn each (stock-2), buzz per-promote batch, +1 for the court itself
+    return 1.0 + 0.55 * (region_short + pantry_short) + (buzz_short / promote_yield) * 1.0
+
+
+def _vendor_value(state, p, vid, W):
+    pl = state["players"][p]
+    v = VENDORS[vid]
+    val = (W["p"] * v["prestige"]
+           + _rep_marginal(pl, v, W["r"])
+           + _coverage_marginal(pl, v, W["c"])
+           + _mission_marginal(pl, v, W["m"])
+           + _ramp_value(pl, v, W["ramp"]))
+    return val
+
+
+def _rank_vendors(state, p, W):
+    ranked = []
+    for t in (1, 2, 3):
+        for idx, vid in enumerate(state["board"][t]):
+            val = _vendor_value(state, p, vid, W)
+            et = _est_turns(state, p, vid)
+            ranked.append((val - TEMPO * (et - 1.0), val, et, t, idx, vid,
+                           GAME._affordable(state, p, vid)))
+    ranked.sort(key=lambda x: x[0], reverse=True)
+    return ranked
+
+
+def _needed(state, p, vid):
+    """(region_need Counter, pantry_need, buzz_need) still short for this vendor."""
+    pl = state["players"][p]
+    pay, pantry, buzz = GAME._pay_plan(state, p, vid)
+    reg = Counter()
+    for r, c in pay.items():
+        short = c - pl["larder"].get(r, 0)
         if short > 0:
-            missing[ing] += short
-    # generic usefulness: how many *wanted* menu dishes each ingredient could still serve for us
-    a = view["assignment"][p]
-    log = view["log"][p]
-    useful = Counter()
-    for d in view["menu"]:
-        w = _want(d, a, log)
-        for ing, c in d["recipe"].items():
-            if larder.get(ing, 0) < c:          # only count toward dishes we don't yet have covered
-                useful[ing] += 1
-
-    here = _avail(pos)
-    here_missing = [ing for ing in missing if ing in here]
-
-    # Stock Up ONLY if standing where a *missing* target ingredient (or a broadly useful one) sits.
-    if here_missing:
-        picks = []
-        # fill the missing target ingredients we can take here (respect their shortfall)
-        for ing in sorted(here_missing, key=lambda i: -missing[i]):
-            while len(picks) < 2 and picks.count(ing) < missing[ing]:
-                picks.append(ing)
-        # top up the 2nd slot with the most generally-useful thing here (a needed specialty > pantry)
-        if len(picks) < 2:
-            extras = sorted(here, key=lambda i: (-(useful.get(i, 0)), 0 if i != PANTRY else 1))
-            for e in extras:
-                if len(picks) < 2:
-                    picks.append(e)
-        return ("stock", pos, tuple(sorted(picks[:2])), 0)
-
-    # 3) Otherwise Travel toward the region that supplies a missing target ingredient.
-    if missing:
-        best_dest, best_ing, best_score = None, None, -1e9
-        for dest in ADJ[pos]:
-            da = _avail(dest)
-            for ing in da:
-                sc = missing.get(ing, 0) * 5 + useful.get(ing, 0)
-                if sc > best_score:
-                    best_dest, best_ing, best_score = dest, ing, sc
-        if best_dest is not None:
-            return ("travel", best_dest, best_ing)
-
-    # 4) Target fully covered but no affordable dish (needs a menu refresh / we're flush):
-    #    take the most useful thing here, else travel to broaden options.
-    if useful and any(i in here for i in useful):
-        best = max((i for i in here), key=lambda i: useful.get(i, 0))
-        return ("stock", pos, tuple(sorted([best, best if useful.get(best, 0) > 1 else PANTRY])), 0)
-    # nothing useful here — hop to a fresh region
-    dest = ADJ[pos][0]
-    return ("travel", dest, sorted(_avail(dest))[0])
+            reg[r] = short
+    pantry_short = max(0, pantry - pl["larder"].get(PANTRY, 0))
+    buzz_short = max(0, buzz - pl["buzz"])
+    return reg, pantry_short, buzz_short
 
 
-# ---- dead-drop helpers -----------------------------------------------------------------------------
-def _surplus_ingredient(view, p):
-    """A larder ingredient the player can most spare (not needed for the aspiration target; pantry last).
-    Returns ing or None."""
-    larder = view["larder"][p]
-    if not larder:
-        return None
-    bt, _ = _best_target(view, p)
-    need = bt[1]["recipe"] if bt is not None else Counter()   # empty Menu -> everything is surplus
-    # score each held ingredient by how little we need it (higher = more sparable)
-    def sparable(ing):
-        needed_here = need.get(ing, 0)
-        held = larder[ing]
-        surplus = held - needed_here
-        # pantry is flexible (useful for us) -> less sparable; specialties we overhold -> more sparable
-        return surplus - (1 if ing == PANTRY else 0)
-    best = max(larder, key=sparable)
-    return best if larder[best] > 0 else None
+def _acquire_toward(state, p, vid, W, flags):
+    """Choose Stock/Travel/Promote to get closer to affording `vid`."""
+    pl = state["players"][p]
+    pos = pl["pos"]
+    reg_need, pantry_need, buzz_need = _needed(state, p, vid)
+
+    # Opening bias: buzz-first banks Buzz early; ramp/ingredient-first fills ingredients early.
+    early = pl["acted"] < 6
+    if flags.get("buzz_open") and early and pl["buzz"] < 5:
+        return ("promote",)
+
+    # If Buzz is the binding constraint and ingredients are basically handled -> Promote.
+    if buzz_need > 0 and sum(reg_need.values()) + pantry_need <= 1:
+        return ("promote",)
+    # Otherwise chase the ingredient half first (the ramp / contested axis), then Buzz.
+    if reg_need:
+        # standing where a needed region ingredient is available?
+        if pos in reg_need and state["supply"][pos] > 0:
+            second = pos if (reg_need[pos] > 1 or pantry_need == 0) else PANTRY
+            return ("stock", (pos, second))
+        # travel toward a needed region (adjacent first)
+        target_regions = list(reg_need.keys())
+        for d in ADJ[pos]:
+            if pl["char"] == "auntie" and _is_hsr(pos, d):
+                continue
+            if d in target_regions:
+                return ("travel", d, d if state["supply"][d] > 0 else PANTRY)
+        # not adjacent — hop toward it (pick an adjacent that neighbours a target)
+        for d in ADJ[pos]:
+            if pl["char"] == "auntie" and _is_hsr(pos, d):
+                continue
+            if any(tr in ADJ[d] for tr in target_regions):
+                return ("travel", d, d if state["supply"][d] > 0 else PANTRY)
+    if pantry_need > 0:
+        return ("stock", (PANTRY, PANTRY))
+    if buzz_need > 0:
+        return ("promote",)
+    # Fully afforded but we chose to wait — bank Buzz (never a dead turn).
+    return ("promote",)
 
 
-def _recipient_least_useful(view, p, ing):
-    """2p/default: the rival who can least use `ing` right now (fewest menu dishes it advances for them)."""
-    opps = [q for q in view["log"].keys() if q != p]
-    if len(opps) == 1:
-        return opps[0]
-    def usefulness_to(q):
-        larder = view["larder"][q]
-        score = 0
-        for d in view["menu"]:
-            if ing in d["recipe"] and larder.get(ing, 0) < d["recipe"][ing]:
-                score += 1
-        return score
-    return min(opps, key=usefulness_to)
+def _engine_policy(view, p, legal, rng, W, flags):
+    state = view
+    pl = state["players"][p]
+    cap = 6 if pl["char"] == "rookie" else CAP_DEFAULT
+    near_cap = sum(pl["larder"].values()) >= cap - 1
+    ranked = _rank_vendors(state, p, W)          # (tempo_adj, val, et, tier, idx, vid, affordable)
+    if not ranked:
+        return ("promote",)
+    affordable = [r for r in ranked if r[6] and r[1] > 0]
+    # the goal to build toward = best tempo-adjusted target reachable soon (else the nearest one)
+    near = [r for r in ranked if r[2] <= HORIZON]
+    goal = near[0] if near else min(ranked, key=lambda r: r[2])
+    if affordable:
+        best_aff = affordable[0]
+        # skip an affordable court only to build a strictly-better, near-affordable target — and never
+        # while about to overflow the Larder (hoarding is a losing trade; court and ramp instead).
+        better_soon = (not goal[6] and goal[5] != best_aff[5]
+                       and goal[0] > best_aff[0] + HOLD_GAP and goal[2] <= 1.8)
+        if better_soon and not near_cap:
+            return _acquire_toward(state, p, goal[5], W, flags)
+        return ("court", best_aff[3], best_aff[4])
+    # nothing affordable yet — build toward the near-horizon goal (ramps via cheap wins first)
+    return _acquire_toward(state, p, goal[5], W, flags)
 
 
-def _would_cross_milestone(view):
-    """True if one more Dossier step crosses the next milestone (grab the pick)."""
-    nm = view["next_ms"]
-    if nm >= len(view["thresholds"]):
-        return False
-    return view["dossier"] + 1 >= view["thresholds"][nm]
+# ---- strategy weight table -------------------------------------------------------------------------
+def _mk(w_p=1.0, w_r=1.0, w_c=1.0, w_m=1.0, w_ramp=0.7, **flags):
+    W = {"p": w_p, "r": w_r, "c": w_c, "m": w_m, "ramp": w_ramp}
+    return W, flags
 
 
-def _jammed(view, p):
-    """No zero-wild plate available AND larder near the cap — the classic dead-drop trigger."""
-    aff = _affordable(view, p)
-    zero = [x for x in aff if x[2] == 0]
-    near_cap = sum(view["larder"][p].values()) >= CAP - 1
-    return (not zero) and near_cap
+_STRATS = {
+    "balanced":        _mk(),
+    "prestige_rush":   _mk(w_p=1.5, w_r=0.6, w_c=0.3, w_ramp=0.55),
+    "reputation_climb": _mk(w_p=0.7, w_r=1.7, w_c=0.4, w_ramp=0.6),
+    "coverage_spread": _mk(w_p=0.7, w_r=0.6, w_c=1.9, w_ramp=0.15),
+    "buzz_heavy":      _mk(w_p=1.0, w_r=1.0, w_c=0.6, w_ramp=0.55, buzz_open=True),
+    "ingredient_heavy": _mk(w_p=1.0, w_r=0.8, w_c=0.4, w_ramp=1.25),
+    "mission_focus":   _mk(w_p=0.9, w_r=0.8, w_c=0.7, w_m=2.1),
+}
 
 
-# ==================================================================================================
-#  STRATEGIES  (differ only in Dead-drop policy + recipient + extract)
-# ==================================================================================================
-def _maybe_extract(view, p):
-    """Extract only when clearly ahead and the game is mature (rarely fires; Dossier usually ends it)."""
-    if view["end_turn"] is not None:
-        return False
-    sc = {q: sum(d["vp"] for d in view["log"][q]) + view["bonus_vp"][q] for q in view["log"]}
-    my = sc[p]
-    lead = my - max(v for q, v in sc.items() if q != p)
-    return view["dossier"] >= view["thresholds"][-1] - 2 and lead >= 4
+def _make_agent(name):
+    W, flags = _STRATS[name]
 
-
-def s_hoarder(view, p, legal, rng):
-    """H: NEVER dead-drops. Hoards; the engine auto-discards surplus over the cap for nothing."""
-    if _maybe_extract(view, p):
-        return ("extract",)
-    return _productive_action(view, p, legal, rng)
-
-
-def _deaddrop_action(view, p, legal, recipient_policy="least_useful", rng=None):
-    ing = _surplus_ingredient(view, p)
-    if ing is None:
-        return None
-    if recipient_policy == "least_useful":
-        q = _recipient_least_useful(view, p, ing)
-    elif recipient_policy == "leader":
-        q = max((x for x in view["log"] if x != p),
-                key=lambda x: sum(d["vp"] for d in view["log"][x]) + view["bonus_vp"][x])
-    elif recipient_policy == "trailer":
-        q = min((x for x in view["log"] if x != p),
-                key=lambda x: sum(d["vp"] for d in view["log"][x]) + view["bonus_vp"][x])
-    elif recipient_policy == "random":
-        opps = [x for x in view["log"] if x != p]
-        q = rng.choice(opps)
-    else:
-        q = _recipient_least_useful(view, p, ing)
-    act = ("deaddrop", ing, q)
-    return act if act in legal else None
-
-
-def s_generous(view, p, legal, rng):
-    """G: dead-drops surplus aggressively — whenever near the cap with no free plate, OR to grab a
-    milestone pick. (Blunt cooperation; the caricature the doc names.)"""
-    if _maybe_extract(view, p):
-        return ("extract",)
-    trigger = _jammed(view, p) or (_would_cross_milestone(view) and
-                                   sum(view["larder"][p].values()) >= 2)
-    if trigger:
-        dd = _deaddrop_action(view, p, legal, "least_useful", rng)
-        if dd is not None:
-            return dd
-    return _productive_action(view, p, legal, rng)
-
-
-def s_balanced(view, p, legal, rng):
-    """Rational line: dead-drop ONLY when truly jammed (a wasted turn otherwise) or when a spare
-    ingredient can grab a milestone pick. Otherwise pure productive play."""
-    if _maybe_extract(view, p):
-        return ("extract",)
-    # only tip if productive play this turn would be wasted (jammed) or free milestone pick
-    if _jammed(view, p):
-        dd = _deaddrop_action(view, p, legal, "least_useful", rng)
-        if dd is not None:
-            return dd
-    if _would_cross_milestone(view):
-        # only if we have a genuinely surplus ingredient (larder above what target needs)
-        ing = _surplus_ingredient(view, p)
-        if ing is not None and sum(view["larder"][p].values()) >= 4:
-            dd = _deaddrop_action(view, p, legal, "least_useful", rng)
-            if dd is not None:
-                return dd
-    return _productive_action(view, p, legal, rng)
-
-
-def s_assignment(view, p, legal, rng):
-    """Assignment-focused: same brain (which already weights the Assignment heavily) but never wastes a
-    turn tipping unless jammed — a variant baseline to check the +7 hook isn't dominating oddly."""
-    if _maybe_extract(view, p):
-        return ("extract",)
-    if _jammed(view, p):
-        dd = _deaddrop_action(view, p, legal, "least_useful", rng)
-        if dd is not None:
-            return dd
-    return _productive_action(view, p, legal, rng)
-
-
-def s_dossier_greedy(view, p, legal, rng):
-    """Dossier-trigger-greedy: races to be the one who crosses milestones (dead-drops to grab picks
-    even when not jammed, if it has any sparable ingredient)."""
-    if _maybe_extract(view, p):
-        return ("extract",)
-    if _would_cross_milestone(view):
-        dd = _deaddrop_action(view, p, legal, "least_useful", rng)
-        if dd is not None:
-            return dd
-    if _jammed(view, p):
-        dd = _deaddrop_action(view, p, legal, "least_useful", rng)
-        if dd is not None:
-            return dd
-    return _productive_action(view, p, legal, rng)
+    def agent(view, p, legal, rng):
+        return _engine_policy(view, p, legal, rng, W, flags)
+    return agent
 
 
 def s_random(view, p, legal, rng):
-    """Naive baseline: random legal action. Every real line should crush this."""
     return rng.choice(legal)
+
+
+def s_greedy_cheap(view, p, legal, rng):
+    """Naive baseline: court the cheapest affordable vendor now; else Promote/Stock generically."""
+    state = view
+    pl = state["players"][p]
+    best = None
+    for t in (1, 2, 3):
+        for idx, vid in enumerate(state["board"][t]):
+            if GAME._affordable(state, p, vid):
+                _, _, buzz = GAME._pay_plan(state, p, vid)
+                key = (VENDORS[vid]["tier"], buzz)
+                if best is None or key < best[0]:
+                    best = (key, t, idx)
+    if best:
+        return ("court", best[1], best[2])
+    if pl["buzz"] < 3:
+        return ("promote",)
+    pos = pl["pos"]
+    return ("stock", (pos if state["supply"][pos] > 0 else PANTRY, PANTRY))
 
 
 STRATEGIES = {
     "random": s_random,
-    "hoarder": s_hoarder,           # H
-    "generous": s_generous,         # G
-    "balanced": s_balanced,         # rational tipper
-    "assignment": s_assignment,
-    "dossier_greedy": s_dossier_greedy,
+    "greedy_cheap": s_greedy_cheap,
+    "balanced": _make_agent("balanced"),
+    "prestige_rush": _make_agent("prestige_rush"),
+    "reputation_climb": _make_agent("reputation_climb"),
+    "coverage_spread": _make_agent("coverage_spread"),
+    "buzz_heavy": _make_agent("buzz_heavy"),
+    "ingredient_heavy": _make_agent("ingredient_heavy"),
+    "mission_focus": _make_agent("mission_focus"),
 }
 
 
 # ==================================================================================================
-#  Custom probes (run in __main__): Q1 head-to-head, Q2 kingmaker (3p), Q3 payout-C
+#  PROBE HARNESS (local runner that can assign characters + missions per seat)
 # ==================================================================================================
-def _run(agents, n, base_seed=1, n_players=2):
-    from importlib import import_module  # noqa
-    import statistics as st
+import random  # noqa: E402
+
+# make engine importable when this file is run directly
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_SIM = os.path.abspath(os.path.join(_HERE, "..", "..", "..", "tools", "sim"))
+if _SIM not in sys.path:
+    sys.path.insert(0, _SIM)
+try:
+    from engine import round_robin, format_round_robin, health_read  # noqa: E402
+except Exception:
+    round_robin = format_round_robin = health_read = None
+
+
+def _pick_mission(rng, W, flags):
+    """draw-3-keep-1: keep the dealt mission best aligned to the strategy's weights."""
+    dealt = rng.sample(MISSIONS, 3)
+    align = {
+        "south_3": W["ramp"] + W["m"], "grand_tour": 2 * W["c"] + W["m"],
+        "t1_3": W["ramp"] + W["m"] * 0.8, "t3_2": 1.5 * W["p"] + W["m"],
+        "cuisines_3": W["c"] + W["m"], "tall_18": 1.6 * W["p"] + W["m"],
+        "volume_5": W["r"] + W["m"] * 0.9, "marquee_feeders": W["p"] + W["m"],
+    }
+    return max(dealt, key=lambda k: align.get(k, 0.0))
+
+
+def _series(agents, n, n_players=2, base_seed=1, characters=None, missions=None, weights=None,
+            flags=None):
+    """Play n games; agents = {seat: callable}. Optional fixed characters / missions per seat.
+    If missions is None, each seat picks a strategy-aligned mission per game (weights/flags supply W)."""
     wins = {p: 0 for p in range(n_players)}
     ties = 0
     scores = {p: [] for p in range(n_players)}
     macc = {}
     for i in range(n):
         rng = random.Random(base_seed + i)
-        s = GAME.new_state(rng, n_players)
+        if missions is None:
+            ms = []
+            for p in range(n_players):
+                W = (weights or {}).get(p, _STRATS["balanced"][0])
+                fl = (flags or {}).get(p, {})
+                ms.append(_pick_mission(rng, W, fl))
+        else:
+            ms = list(missions)
+        s = GAME.new_state(rng, n_players, characters=characters, missions=ms)
         guard = 0
         while not GAME.is_over(s):
             acts = {}
@@ -733,7 +950,7 @@ def _run(agents, n, base_seed=1, n_players=2):
                 acts[pl] = agents[pl](s, pl, GAME.legal_actions(s, pl), rng)
             s = GAME.step(s, acts, rng)
             guard += 1
-            if guard > 5000:
+            if guard > 6000:
                 break
         sc = GAME.scores(s)
         best = max(sc.values())
@@ -749,81 +966,218 @@ def _run(agents, n, base_seed=1, n_players=2):
     return {
         "win": {p: wins[p] / n for p in range(n_players)},
         "tie": ties / n,
-        "score_mean": {p: st.mean(scores[p]) for p in range(n_players)},
-        "metrics": {k: st.mean(v) for k, v in macc.items()},
+        "score_mean": {p: statistics.mean(scores[p]) for p in range(n_players)},
+        "metrics": {k: statistics.mean(v) for k, v in macc.items()},
     }
 
 
-def q1_head_to_head(n=4000):
-    print("== Q1: Hoarder (H) vs Generous-tipper (G), 2p ==")
-    r = _run({0: s_hoarder, 1: s_generous}, n)
-    r2 = _run({0: s_generous, 1: s_hoarder}, n)   # swap seats
-    h = (r["win"][0] + r2["win"][1]) / 2
-    g = (r["win"][1] + r2["win"][0]) / 2
-    tie = (r["tie"] + r2["tie"]) / 2
-    print(f"  H win={h*100:.1f}%   G win={g*100:.1f}%   tie={tie*100:.1f}%   (n={n} each seating)")
-    print(f"  score mean  H={ (r['score_mean'][0]+r2['score_mean'][1])/2:.1f}"
-          f"   G={ (r['score_mean'][1]+r2['score_mean'][0])/2:.1f}")
-    print(f"  deaddrops/game (H-vs-G runs)={r['metrics']['deaddrops_per_game']:.2f}"
-          f"   plates/player={r['metrics']['plates_per_player']:.2f}"
-          f"   turns={r['metrics']['turns']:.1f}")
-    verdict = "PASS (G >= H)" if g >= h - 0.005 else "FAIL (H dominates -> co-op is a trap)"
-    print(f"  --> {verdict}\n")
-    return g, h, tie
+def _agent_for(name):
+    return STRATEGIES[name]
 
 
-def q2_kingmaker(n=3000):
-    print("== Q2: Kingmaker probe, 3p (player 0 varies ONLY its dead-drop recipient) ==")
-    # players 1 & 2 always balanced; player 0 = generous tipper with a fixed recipient policy
-    def make_p0(policy):
-        def agent(view, p, legal, rng):
-            if _maybe_extract(view, p):
-                return ("extract",)
-            if _jammed(view, p) or (_would_cross_milestone(view) and sum(view["larder"][p].values()) >= 2):
-                dd = _deaddrop_action(view, p, legal, policy, rng)
-                if dd is not None:
-                    return dd
-            return _productive_action(view, p, legal, rng)
-        return agent
-    results = {}
-    for policy in ("leader", "trailer", "random", "least_useful"):
-        r = _run({0: make_p0(policy), 1: s_balanced, 2: s_balanced}, n, n_players=3)
-        results[policy] = r
-        print(f"  p0 feeds {policy:12} ->  win p1={r['win'][1]*100:4.1f}%  p2={r['win'][2]*100:4.1f}%"
-              f"  (p0={r['win'][0]*100:4.1f}%, tie={r['tie']*100:.1f}%)")
-    swing1 = abs(results["leader"]["win"][1] - results["trailer"]["win"][1])
-    swing2 = abs(results["leader"]["win"][2] - results["trailer"]["win"][2])
-    swing = max(swing1, swing2)
-    print(f"  max swing in a rival's win-rate between feed-leader vs feed-trailer = {swing*100:.1f}pt")
-    verdict = "PASS (targeting barely moves who wins)" if swing < 0.10 else \
-              ("SOFT (swing 10-18pt)" if swing < 0.18 else "FAIL (kingmaking: tighten receive cap / tip value)")
-    print(f"  --> {verdict}\n")
-    return swing
+def _weights_for(name):
+    if name in _STRATS:
+        return _STRATS[name][0], _STRATS[name][1]
+    return _STRATS["balanced"][0], {}
 
 
-def q3_payout_c(n=4000):
-    print("== Q3: Payout-C trigger-share & decisiveness, 2p (balanced mirror + cross) ==")
-    for label, agents in (("balanced vs balanced", {0: s_balanced, 1: s_balanced}),
-                          ("balanced vs dossier_greedy", {0: s_balanced, 1: s_dossier_greedy})):
-        r = _run(agents, n)
+# ---- PROBE 1: no dominant track/opening ------------------------------------------------------------
+def probe1_tracks(n=1500):
+    print("=" * 90)
+    print("PROBE 1 — No dominant track/opening (2p). PASS: no line >~55%, >=3 viable in a tight band.")
+    print("=" * 90)
+    track_lines = ["balanced", "prestige_rush", "reputation_climb", "coverage_spread",
+                   "buzz_heavy", "ingredient_heavy", "mission_focus"]
+    # round-robin among the real lines only (exclude naive) for the viability band
+    wr = {a: 0.0 for a in track_lines}
+    cnt = {a: 0 for a in track_lines}
+    seed = 1
+    grid = {a: {} for a in track_lines}
+    for a in track_lines:
+        for b in track_lines:
+            Wa, fa = _weights_for(a)
+            Wb, fb = _weights_for(b)
+            r = _series({0: _agent_for(a), 1: _agent_for(b)}, n, base_seed=seed,
+                        weights={0: Wa, 1: Wb}, flags={0: fa, 1: fb})
+            seed += n
+            wa = r["win"][0] + 0.5 * r["tie"]
+            grid[a][b] = wa
+            wr[a] += wa
+            cnt[a] += 1
+            wr[b] += (1 - wa)
+            cnt[b] += 1
+    overall = {a: wr[a] / cnt[a] for a in track_lines}
+    print("\n  Overall win rate (real lines only, both seatings; naive excluded):")
+    for a, v in sorted(overall.items(), key=lambda kv: -kv[1]):
+        print(f"    {a:18} {v*100:5.1f}%  {'#'*round(v*40)}")
+    top = max(overall, key=overall.get)
+    band = [a for a in track_lines if overall[a] >= 0.45]
+    print(f"\n  field leader = {top} @ {overall[top]*100:.1f}%   |   lines in the 45%+ viable band: {len(band)}")
+    # vs naive floor
+    for naive in ("greedy_cheap", "random"):
+        r = _series({0: _agent_for("balanced"), 1: _agent_for(naive)}, n, base_seed=seed,
+                    weights={0: _STRATS["balanced"][0], 1: _STRATS["balanced"][0]})
+        seed += n
+        print(f"  floor check: balanced vs {naive:13} -> balanced {(r['win'][0]+0.5*r['tie'])*100:.1f}%")
+    verdict = ("PASS" if overall[top] <= 0.56 and len(band) >= 3 else
+               ("SOFT" if overall[top] <= 0.60 else "FAIL"))
+    print(f"\n  --> PROBE 1: {verdict}  (leader {overall[top]*100:.1f}%, {len(band)} viable)\n")
+    return overall, grid, verdict
+
+
+# ---- PROBE 2: no economy runaway -------------------------------------------------------------------
+def _probe2_pass(label, n, seed):
+    lines = [("ingredient_heavy mirror", "ingredient_heavy", "ingredient_heavy"),
+             ("ramp vs prestige", "ingredient_heavy", "prestige_rush"),
+             ("balanced mirror", "balanced", "balanced")]
+    headline = None
+    for lab, a, b in lines:
+        Wa, fa = _weights_for(a)
+        Wb, fb = _weights_for(b)
+        r = _series({0: _agent_for(a), 1: _agent_for(b)}, n, base_seed=seed,
+                    weights={0: Wa, 1: Wb}, flags={0: fa, 1: fb})
+        seed += n
         m = r["metrics"]
-        print(f"  [{label}]  winner_pick_share={m['winner_pick_share']*100:.1f}%"
-              f"  picks/game={m['milestone_picks_total']:.2f}"
-              f"  vp_pick_decisive={m['vp_pick_decisive']*100:.1f}%"
-              f"  margin={m['margin']:.1f}")
-    # fair share of picks for the winner at 2p with 4 milestones is ~50%
-    r = _run({0: s_balanced, 1: s_balanced}, n)
-    share = r["metrics"]["winner_pick_share"]
-    dec = r["metrics"]["vp_pick_decisive"]
-    verdict = ("PASS (picks spread ~fair, rarely solely decisive)"
-               if share < 0.70 and dec < 0.15 else
-               "WATCH (winner sweeps picks or +1VP often decisive -> cap picks / drop +1VP option)")
-    print(f"  --> {verdict}\n")
-    return share, dec
+        print(f"\n  [{label} | {lab}]")
+        print(f"    courts/player={m['courts_per_player']:.1f}  turns={m['turns']:.1f}  "
+              f"court-interval={m['court_interval']:.2f} t/court  LATE={m['court_interval_late']:.2f}  "
+              f"min-gap(1 player)={m['min_court_gap']:.2f}")
+        print(f"    end by: rep={m['end_by_rep']*100:.0f}% season={m['end_by_season']*100:.0f}% "
+              f"extract={m['end_by_extract']*100:.0f}%")
+        print(f"    mid-game leader won = {m['mid_leader_won']*100:.0f}%   avg margin = {m['margin']:.1f} VP")
+        print(f"    Buzz spent/game={m['buzz_spent']:.1f}  region-ing spent/game={m['region_ing_spent']:.1f}"
+              f"  (B:I ratio = {m['buzz_spent']/max(1,m['region_ing_spent']):.2f})")
+        if lab == "ingredient_heavy mirror":
+            headline = m
+    return headline, seed
+
+
+def probe2_runaway(n=2000):
+    print("=" * 90)
+    print("PROBE 2 — No economy runaway (2p). Does the discount snowball outrun the end-clock, or does")
+    print("the undiscountable-Buzz floor cap the court-rate at ~1 vendor / 2 turns even fully ramped?")
+    print("=" * 90)
+    seed = 1
+    print("\n  --- AS-WRITTEN (Rep-top=12 ends the game) ---")
+    m_aw, seed = _probe2_pass("as-written", n, seed)
+    # Sensitivity: let the Season timer time the game (rep-top decoupled) so the ramp fully develops —
+    # this is the only regime where a snowball CAN even happen (as-written ends at ~5 courts).
+    ta_rep_save = REP_TRIGGER
+    globals()["REP_TRIGGER"] = 99
+    print("\n  --- SEASON-TIMED sensitivity (TA_REP_TRIGGER=99; the recommended end-clock fix) ---")
+    m_st, seed = _probe2_pass("season-timed", n, seed)
+    globals()["REP_TRIGGER"] = ta_rep_save
+    # read the runaway verdict off the regime where the ramp actually develops (season-timed)
+    late = m_st["court_interval_late"]
+    mid = m_st["mid_leader_won"]
+    rate_ok = late >= 1.9                          # ~1 court / 2 turns even fully ramped
+    no_snowball = mid <= 0.82                       # first-mover doesn't win ~always
+    verdict = "PASS" if (rate_ok and no_snowball) else ("SOFT" if (late >= 1.7 and mid <= 0.88) else "FAIL")
+    print(f"\n  --> PROBE 2: {verdict}  (season-timed late court-interval {late:.2f} t/court "
+          f"[Buzz-floor target ~2.0], mid-leader-wins {mid*100:.0f}% [runaway if ~100%])")
+    print(f"      NOTE: as-written ends by Rep-top in ~{m_aw['end_by_rep']*100:.0f}% of games at "
+          f"{m_aw['courts_per_player']:.1f} courts/player — the ramp barely develops before the game ends.\n")
+    return verdict
+
+
+# ---- PROBE 3: character balance --------------------------------------------------------------------
+def probe3_characters(n=900):
+    print("=" * 90)
+    print("PROBE 3 — Character balance (2p). PASS: each of 5 in 45-55%; no char x mission combo >~60%.")
+    print("=" * 90)
+    bal = _agent_for("balanced")
+    Wb = _STRATS["balanced"][0]
+    # 5x5 round-robin (fixed balanced strategy for both seats), both seatings averaged
+    wr = {c: 0.0 for c in CHARACTERS}
+    cnt = {c: 0 for c in CHARACTERS}
+    seed = 1
+    for a in CHARACTERS:
+        for b in CHARACTERS:
+            if a == b:
+                continue
+            r = _series({0: bal, 1: bal}, n, base_seed=seed, characters=[a, b],
+                        weights={0: Wb, 1: Wb})
+            seed += n
+            wa = r["win"][0] + 0.5 * r["tie"]
+            wr[a] += wa
+            cnt[a] += 1
+            wr[b] += (1 - wa)
+            cnt[b] += 1
+    overall = {c: wr[c] / cnt[c] for c in CHARACTERS}
+    print("\n  Per-character win rate (vs the field of the other 4, balanced strategy, both seatings):")
+    worst = 0.5
+    for c, v in sorted(overall.items(), key=lambda kv: -kv[1]):
+        flag = "" if 0.45 <= v <= 0.55 else "  <-- OUT OF BAND"
+        worst = max(worst, abs(v - 0.5))
+        print(f"    {c:12} {v*100:5.1f}%{flag}")
+    # char x mission scan: each character playing a FIXED mission vs a balanced-mission opponent
+    print("\n  Character x mission (char forced onto each mission vs a neutral-character balanced-pick opp):")
+    worst_combo = 0.0
+    worst_name = ""
+    for c in CHARACTERS:
+        row = []
+        for mkey in MISSIONS:
+            r = _series({0: bal, 1: bal}, max(300, n // 2), base_seed=seed,
+                        characters=[c, "neutral"], missions=[mkey, _dominant_mission(seed)],
+                        weights={0: Wb, 1: Wb})
+            seed += max(300, n // 2)
+            wc = r["win"][0] + 0.5 * r["tie"]
+            row.append((mkey, wc))
+            if wc > worst_combo:
+                worst_combo, worst_name = wc, f"{c} x {mkey}"
+        hot = max(row, key=lambda x: x[1])
+        print(f"    {c:12} hottest combo: {hot[0]:16} {hot[1]*100:5.1f}%")
+    band_ok = all(0.45 <= v <= 0.55 for v in overall.values())
+    combo_ok = worst_combo <= 0.60
+    verdict = "PASS" if (band_ok and combo_ok) else ("SOFT" if (worst <= 0.08 and worst_combo <= 0.63) else "FAIL")
+    print(f"\n  --> PROBE 3: {verdict}  (widest char deviation {worst*100:.1f}pt from 50%; "
+          f"hottest char x mission = {worst_name} @ {worst_combo*100:.1f}%)\n")
+    return overall, verdict
+
+
+def _dominant_mission(seed):
+    # a fixed reasonable opponent mission for the char x mission scan
+    return "tall_18"
+
+
+# ---- PROBE 4: anti-hoard / hard-stuck --------------------------------------------------------------
+def probe4_stuck(n=2500):
+    print("=" * 90)
+    print("PROBE 4 — Anti-hoard / hard-stuck ~= 0 (2p). Do the unlimited pantry + always-on Promote")
+    print("prevent stuck turns? And does the Larder cap punish hoarding (overflow discards)?")
+    print("=" * 90)
+    Wb = _STRATS["balanced"][0]
+    r = _series({0: _agent_for("balanced"), 1: _agent_for("ingredient_heavy")}, n, base_seed=1,
+                weights={0: Wb, 1: _STRATS["ingredient_heavy"][0]},
+                flags={0: {}, 1: _STRATS["ingredient_heavy"][1]})
+    m = r["metrics"]
+    print(f"\n  hard-stuck turns / game     = {m['stuck_turns']:.3f}   (target ~0)")
+    print(f"  larder-overflow discards/gm = {m['overflow_discards']:.2f}   (hoarding is taxed, not free)")
+    print(f"  turns / game                = {m['turns']:.1f}")
+    verdict = "PASS" if m["stuck_turns"] < 0.05 else "FAIL"
+    print(f"\n  --> PROBE 4: {verdict}  (stuck {m['stuck_turns']:.3f}/game; pantry+Promote valves hold)\n")
+    return verdict
+
+
+# ---- health read (via engine round-robin) ----------------------------------------------------------
+def health(n=1200):
+    print("=" * 90)
+    print("HEALTH READ — full round-robin incl. naive baselines (engine health_read)")
+    print("=" * 90)
+    if round_robin is None:
+        print("  (engine not importable; skipping)")
+        return
+    res = round_robin(GAME, STRATEGIES, n=n)
+    print()
+    print(format_round_robin(res, title="Travel Agents v3 — health read"))
+    print()
 
 
 if __name__ == "__main__":
-    print(f"[knobs] CAP={CAP}  TIP_TEMPO={TIP_TEMPO}  DEADDROP_VP={DEADDROP_VP}\n")
-    q1_head_to_head(n=3000)
-    q2_kingmaker(n=2000)
-    q3_payout_c(n=3000)
+    print(f"[knobs] SEASON_FINAL(2p)={SEASON_FINAL[2]}  REGION_SUPPLY={REGION_SUPPLY}  "
+          f"EVENT_PROB={EVENT_PROB}  BUZZ_FLOOR_KNOB={BUZZ_FLOOR_KNOB}  DISCOUNT_CAP={DISCOUNT_CAP}\n")
+    v1 = probe1_tracks(n=400)
+    v2 = probe2_runaway(n=1500)
+    v3 = probe3_characters(n=400)
+    v4 = probe4_stuck(n=1500)
+    health(n=250)
