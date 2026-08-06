@@ -73,7 +73,7 @@ that's the gag. Kinds of fun (**locked**): **Discovery** (lead) + **Fellowship**
   re-costs `vendors.csv`/`ingredients.csv` to the design-doc target distribution.
 - **Region routing / travel** — you move *because* the ingredient a vendor needs lives *there*.
 - **The rival race + living Market (model C, evolved):** the **Vendor Board** is the public race (courting
-  a vendor locks the rival out of it — the ex-Hot-List, merged in); **events ("Conditions")** are salted
+  a vendor locks the rival out of it — the ex-Hot-List, merged in); **Event tiles** are salted
   into the face-up ingredient **Market** and fire on refill (festival / typhoon / warm local); the
   **Season** is now a **pure end-timer**.
 
@@ -113,10 +113,10 @@ dish** (Tâi-lô + 繁體), each with cost (named ingredients + Buzz), a **regio
 cards** (secret +7 vendor patterns, draw-3-keep-1; same card stock); (4) **143 ingredient tokens** — 10
 finite specialties (incl. **chicken 雞 + egg 蛋**, new in the North), flattened to even ~11–12 pools +
 **unlimited pantry**; (5) **50 Buzz tokens** (*new type* — the second currency); (6) **13 Event tiles**
-(Conditions salted into the Market, fire on refill; *new type*; v3.1 comedy rework, ~60/40 boon/hazard);
+(salted into the Market, fire on refill; *new type*; v3.1 comedy rework, ~60/40 boon/hazard);
 (7) **5 Character mats** (*new type* — one ability + one flaw each) + 4 Agent
 pawns + Prestige/Rep/Season markers (board bits). **Cut from v2:** the **Brief** deck; the separate
-**Hot-List** row (merged into the Vendor Board) and the **Conditions queue** (events now in the Market).
+**Hot-List** row (merged into the Vendor Board) and the **v2 events queue** (events now in the Market).
 Deck-size note: the vendor deck is **25** (one per locked real dish) — comfortable for a 2p game (~16–18
 courts) but tight for headroom / 3–4p; see the CD decision in the handoff. **v3.1 (no new components):**
 the 25 vendor **costs** are re-balanced for movement and the ingredient token **supply** is re-flattened to
