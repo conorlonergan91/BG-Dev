@@ -233,18 +233,20 @@ the fiction.)*
   needed, the cap stands on the fresh-food logic alone.)
 - **The Acts end-game → *"a day's food arc, ending at the night market"*** *(v5 — CD tightened to a
   **≤30-min, TWO-Act** arc; replaces the Extract action + the Season vendor-counter).* The tour escalates
-  through **two acts of a single glorious eating day** — **Act I Afternoon Crawl 下午 → Act II Night
-  Market 夜市** — and the Vendor Board **escalates with it** (the easy afternoon stalls give way to the big
-  night-market names, harder to win as the day peaks). This is **inevitable, not bolted-on**: it maps the
-  tier climb onto the real Taiwan food day and makes the game **end on the north-star image** (dusk/neon at
-  the night market). **The end-trigger = a spy-themed "Code Red"** *(v5 — bg-theme owns the flavour; the
+  through a **two-beat day arc** — **Act I The Breakfast Run 早餐 (早餐店) → Act II Night Market 夜市
+  (夜市攤)** *(v5 venue rename — see Naming; Act I renamed from "Afternoon Crawl" since it now opens on
+  morning breakfast shops; 飲料店 drinks run all-day alongside, OFF the clock, as the easy-points fork)* —
+  and the Vendor Board **escalates with it** (the morning shops give way to the big night-market names,
+  harder to win as the day peaks). This is **inevitable, not bolted-on**: it maps the arc onto the real
+  Taiwan food day (**breakfast → night market**) and makes the game **end on the north-star image**
+  (dusk/neon at the night market). **The end-trigger = a spy-themed "Code Red"** *(v5 — bg-theme owns the flavour; the
   exact firing condition is `bg-design`'s call):* **head office calls a Code Red — mission's wrapping,
   everyone back to base, catch the last train home.** It **re-homes the old Extract / "last train home"
   gag** as the **secret-agent climax** and stays **warm/comedic** — a giddy *"the tour's almost over, grab
   the last great bite!"*, never menace. *(Full act + Code-Red framing in Naming.)*
 - **Re-skin test:** PASSES — the vendor/region web is Taiwan-specific food geography and the Acts are the
-  Taiwan food *day* (下午 afternoon crawl → 夜市 night market); rename the setting and both the recipes and
-  the day-arc break. Not generic "engine + map."
+  Taiwan food *day* (早餐店 → 夜市攤 — breakfast → night market, with 飲料店 drinks all-day alongside);
+  rename the setting and both the recipes and the day-arc break. Not generic "engine + map."
 
 ## Look & feel / art direction
 **Render theme name:** `night-market` (to add to `tools/cards/themes.py` — palette + per-suit
@@ -331,16 +333,47 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     is bigger."* The ≥2-Buzz majority reads as *your agency is clearly driving the bigger crowd, so the
     vendor throws in with you.* (If the CD wants a more concrete on-vendor noun than "Buzz," **"the Queue"**
     or **"Crowd"** is the fallback — but Buzz is coherent as-is.)
-  - **The Acts** = the end-game structure — **a single glorious eating day, tightened to TWO acts** *(v5 —
-    the CD's ≤30-min target)*, the tour escalating as the day peaks. ***RECOMMENDED names — the CD's "a
-    day's arc":*** **Act I · Afternoon Crawl 下午** (tea houses, snack stalls & eateries — the queue
-    builds) → **Act II · Night Market 夜市** (neon, crowds, the marquee names — the climax). Fiction for
-    "the act advances when its condition is met" = *the sun drops and the crowds build* as the tours gain
-    steam; "board escalates" = *the easy afternoon stalls close and the big night-market names open up
-    (harder to win — everyone's chasing them).* This lands the game **on the north-star image** (dusk at
-    the night market) and celebrates a food-day arc locals recognise. *Alternative framing (if a
-    day-vs-night read is wanted): "Day → Night Market."* → `bg-design` owns the exact act-advance trigger;
-    these are the fiction skins.
+  - **Vendor venue types** *(v5 — CD rename; **replaces the generic "Stall / Eatery / Marquee" tiers** with
+    real Taiwanese venues → `bg-design` for the structural remap in design-doc/rules-draft, which still say
+    Stall/Eatery/Marquee).* Three real, local, **secular** venue types — **two on the day-clock, one
+    off it.** The day-clock is a **two-beat arc, morning → night: 早餐店 → 夜市攤**; the beverage shop runs
+    **all day alongside** as the easy-points fork:
+    - **早餐店 breakfast shop** *(Mandarin **zǎocān-diàn**; Taiwanese ≈ **tsá-tǹg-tiàm** — native reviewer
+      picks Mandarin-signage 早餐店 vs Tâi-lô)* — **the opening / transition band** (was "Stall"; **Act I**
+      on the clock). 蛋餅 egg crêpe, 飯糰 rice roll, 燒餅油條, 豆漿 soy milk, fried-chicken burger — the
+      cheap morning start where the discount ramp begins.
+    - **夜市攤 night-market stall** *(**yèshì-tān**; Tâi-lô **iā-tshī**)* — **the climax band** (was
+      "Marquee"; **Act II** on the clock): the big fought-over names — 蚵仔煎 oyster omelette, 雞排
+      fried-chicken cutlet, 臭豆腐, 大腸包小腸. **The tier name and the Act setting align on purpose** —
+      night-market stalls *in* the Night Market (夜市攤 in the 夜市): a reinforcement, not a clash.
+    - **飲料店 / 手搖飲 beverage shop** *(**yǐnliào-diàn** / **shǒuyáo-yǐn**, "hand-shaken drinks" — the
+      very-Taiwan modern term)* — **OFF the day-clock: the all-day, anytime easy-points fork** (was
+      "Eatery", now re-roled). A persistent, always-available parallel option — **low value, low conflict,
+      no contest to travel for** — that a player can build up instead of pushing the breakfast→night-market
+      ladder. Pairs with the low-travel **Convenience Store** action (the casual grab-and-go lane). 珍珠奶茶
+      bubble tea, 冬瓜茶, 青茶. ***Fiction fit is a strength, not a stretch:*** Taiwan's 手搖飲 shops genuinely
+      **are on every corner and open all day** — grabbing a drink is the easy, unhurried move you never fight
+      over, so "off-clock / always-there / uncontested" is the *authentic* read, not a mechanical fudge.
+    **Framing (binds — keeps it warm):** the day-clock arc is **time of day** (morning breakfast building to
+    the night-market climax), **NOT** a hierarchy of which food is "posher" — and drinks sit *outside* that
+    arc entirely as the anytime option, so nothing implies bubble tea is "lesser" food, only a lower-stakes
+    play. The **★ accolade still lets a humble 早餐店 hit apex value**, so venue type = flavour + base-value
+    band / clock-role, **never a hard ceiling.** **Real & secular, dish names intact, no invented venue
+    types.** → native reviewer confirms the three names + romanisation (esp. Mandarin-vs-Tâi-lô per term).
+    *(The structural/economy rework — ingredient costs, the drinks easy-points value, the Convenience-Store
+    synergy — is `bg-design`'s; bg-theme owns only the fiction fit above.)*
+  - **The Acts** = the end-game structure — **a single glorious eating day, a TWO-BEAT arc** *(v5 — the CD's
+    ≤30-min target)*, **morning breakfast → night-market climax.** With the venue rename the on-clock arc is
+    **早餐店 → 夜市攤** (drinks run all-day alongside, off the clock). ***Act I · The Breakfast Run 早餐***
+    *(RECOMMENDED rename — was "Afternoon Crawl 下午", which now clashes since Act I is the **morning
+    breakfast** opening; alts = **The Day Crawl** / **Daytime 白天**)* — the cheap morning start, the ramp
+    builds → ***Act II · Night Market 夜市*** (neon, crowds, the 夜市攤 names — the climax). Fiction for "the
+    act advances" = *the day rolls from breakfast toward dusk* as the tours gain steam; "board escalates" =
+    *the morning shops give way to the big night-market names (harder to win — everyone's chasing them).*
+    Lands the game **on the north-star image** (dusk at the night market) and celebrates a food-day arc
+    locals recognise. **→ `bg-design` owns the Act label** (these are fiction skins); the **Breakfast-Run /
+    Daytime rename is the one coherence ask from this pass** (an "Afternoon" act that opens at breakfast is
+    the only clash the venue rename introduces).
   - **"Code Red"** = the end-game trigger *(v5 — the spy-themed climax; bg-theme owns the flavour/name,
     the exact firing condition is `bg-design`'s call).* When Act II's condition is met, **head office
     calls a Code Red**: *mission's wrapping — everyone back to base, catch the last train home.* It
@@ -355,7 +388,8 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     **signature Mission** pattern, not a named vector. "The grand tour across the island" survives as
     fiction; only the scoring plumbing moved.)*
   - **★ Star** = the value hook on a **standout** vendor — either **printed** on an apex "Legendary"
-    Marquee (a *standing* accolade — Michelin / Bib Gourmand / competition win, worth the most Prestige) or
+    night-market stall 夜市攤 (a *standing* accolade — Michelin / Bib Gourmand / competition win, worth the
+    most Prestige) or
     a dynamic **★ Star token** dropped mid-game by the **"vendor gets hot"** boon (**摘星了 / 得獎了 / 爆紅**)
     onto an ignored Board vendor (+Prestige/+Rep to whoever wins it). *Flavour = **"this beloved stall got
     its due" / "the little place that blew up overnight."*** Warm celebration, **real & secular**, dish
@@ -364,23 +398,21 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     resonance bullet's three binding rails). *v5 — CD's value-swing.*
   - ~~**Brief / Client Brief / Memo**~~ = **CUT in v3** (directive deck removed; head office survives as
     the rulebook/earpiece *voice* only).
-  - **Poach** = the conditional same-location action (when a rival shares your region, take 1 random
-    specialty from their Larder, −1 Reputation). *v3.1 spine word — LOCKED (bg-theme).* Chosen over
-    "Tip-Off": "Poach" is a **double pun** (a cooking verb *and* the literal travel-agency term for
-    poaching a rival's clients) **and** it maps to physically *taking* a token, where a "tip-off" is
-    information passed and wouldn't fit grabbing an ingredient off their tray. *Flavour:* "You're both
-    jammed at the same night-market corner — you swipe the good stuff off their tray before they can.
-    Word gets round you play a little dirty (−1 Rep)." Targets **the rival agent only**, never a vendor
-    or the place.
+  - ~~**Poach**~~ = **CUT in v4/v5** (the conditional same-location "take a rival's specialty" action was
+    removed when the design went to five actions — design-doc §Actions "Poach and Extract are cut"). The
+    v3.1 double-pun name is retired with the mechanic; **no stranded reference should remain** in
+    components/rulebook/sim. *(Stranding caught in the v5 sweep — the naming bullet had still read as a live
+    "LOCKED" action. If the "grab off a shared corner" beat ever returns, the Poach name is here to revive.)*
   - **Conditions** / **Events** (or **Word on the Street** / **Sitrep** in the head-office voice) = the
     region-event **tiles** salted into the Market (fire on refill; no queue). *Kept, re-homed.*
   - **best-tour title** = the season's prize you're both racing for — the compete-engine's payoff. A
     cutesy award *name* (a "Golden Boarding-Pass"-type gag) is **fluid** — hold it light; route any
     Chinese/Tâi-lô coinage through the native reviewer before it locks.
-  - Read the v4 set aloud together (travel agency / head office / signature Mission / **Bribe a Vendor** /
-    **Buzz → the Queue** / Vendor Board / **Act I Afternoon Crawl · Act II Night
-    Market · Code Red** / **Prestige · Reputation · Coverage** / Events / best-tour title / Stamps) — one warm travel-
-    agent-playing-spy voice, no clashes. **"Bribe"** is the spiciest word in the set, so it *depends* on its
+  - Read the v5 set aloud together (travel agency / head office / signature Mission / **Bribe a Vendor** /
+    **Buzz → the Queue** / Vendor Board / **早餐店 · 飲料店 · 夜市攤** / **Act I The Day Crawl · Act II Night
+    Market 夜市 · Code Red** / **Prestige · Reputation** / Events / best-tour title / Stamps) — one warm
+    travel-agent-playing-spy voice, no clashes. *(Venue set reads warm together: 早餐店 → 夜市攤 is the
+    morning→night clock, 飲料店 the all-day drinks fork alongside.)* **"Bribe"** is the spiciest word in the set, so it *depends* on its
     neighbours to stay warm: *"the queue you drummed up,"* *"marketing opportunity,"* *"put her on the
     poster,"* and *"night market"* all point the same way (a crowd + the neon climax + a delighted vendor) —
     which is exactly what cushions "Bribe" into cheeky-agent-comedy rather than corruption. Kill any that
@@ -611,7 +643,23 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   **(4) 里長伯 + 大哥 next to "Bribe":** the finalized spec did **not** sharpen either read — both stay
   bound HARD (里長伯 = earned goodwill not graft; 大哥 = affection/respect not fear, warm cinema bluster,
   secular) and remain the **tied-#1 consultant flags**. Unchanged.
-  Rung **held at evocative** — a new *value hook*, not new lore.
+  **(5) Vendor tier RENAME (CD directive, folded into this sweep) — "Stall / Eatery / Marquee" → real
+  Taiwanese venues.** The generic hotel-restaurant tier words are replaced with **早餐店 breakfast shop**
+  (cheap opening band, was Stall) → **飲料店 / 手搖飲 beverage shop** (mid band, was Eatery) → **夜市攤
+  night-market stall** (climax band, was Marquee). Confirmed the CD's mapping — it's **stronger** than the
+  old naming: the tier now doubles as **time of day**, turning the day-clock arc into **breakfast →
+  afternoon drinks → night market**, and the Act I deck order (breakfast on top → drinks beneath) now maps
+  to real morning→afternoon time. **夜市攤 = Act II 夜市** aligns (stalls in the market — reinforcement,
+  not clash). Bound the value band as **time-of-day, not a food class ladder** (a 手搖飲 isn't "posher"
+  than breakfast; the ★ lets a humble 早餐店 hit apex). Real, secular, dish names intact, no invented
+  venues. **One coherence ask → `bg-design`:** rename **Act I "Afternoon Crawl 下午" → "The Day Crawl"
+  (alt "Daytime 白天")** — an "Afternoon" act that now OPENS on breakfast is the only clash the rename
+  introduces. Romanisation (Mandarin-signage vs Tâi-lô per term) → native reviewer. Structural remap of
+  design-doc/rules-draft (still Stall/Eatery/Marquee) → `bg-design`.
+  **(6) Stranded-name catch (bonus):** the **Poach** action was cut to five actions in v4/v5 (design-doc
+  §Actions) but the Naming bullet still read it as a live "LOCKED" action — **struck it** (marked CUT,
+  matching the Brief pattern). Sweep components/rulebook/sim for any lingering Poach reference.
+  Rung **held at evocative** — a value hook + real venue names, not new lore.
 - 2026-08-06 (bg-theme, **v5 character re-lore + 2-Act / "Code Red" tightening — from CD direction**) —
   **RE-THEME (five character re-skins + a structure re-skin; 3 new mechanic shapes → `bg-design`/sim;
   rung HELD at evocative — no new lore).** Two CD moves folded into one pass.
