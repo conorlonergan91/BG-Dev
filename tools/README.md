@@ -109,6 +109,44 @@ Reads `games/<slug>/complexity-budget.json` (set at project start; copy `templat
 and reports rulebook words, glossary keyword count, exception density, component types, and player-aid
 length. Owned by the `bg-elegance` agent; see `knowledge/elegance-and-clarity.md`.
 
+## `access/` — accessibility linter (stdlib-only)
+
+Colour-blind safety and contrast are cheapest to fix at the data/theme stage, before art.
+
+```bash
+python access/check_access.py --game games/beacon --theme nautical
+```
+Simulates protanopia/deuteranopia/tritanopia on the theme's suit palette (Machado 2009 matrices, CIELAB
+ΔE) and flags any two **suits the game uses** that collapse under a colour-vision deficiency — as an ERROR
+only when they *also* share an emblem (colour is the only channel); dual-coded pairs pass. Also checks WCAG
+text/background contrast. Owned by `bg-access`; see `knowledge/accessibility.md`.
+
+## `cost/` — cost-of-goods gauge (stdlib-only)
+
+The cost analog of the complexity gauge — component footprint drives what's affordable to make, ship, and
+pitch.
+
+```bash
+python cost/check_cost.py --game games/beacon           # report
+python cost/check_cost.py --game games/beacon --strict  # exit 1 if over budget
+```
+Estimates the bill of materials from `components/*.csv` (or a precise `components/cost-manifest.json`),
+costs it against `component-cost-budget.json` (copy `templates/`), and reports component types, pieces,
+unique cards, and COGS as a % of retail. Owned by `bg-architect` (+ `bg-funding`); see
+`knowledge/cost-and-manufacturability.md`.
+
+## `preflight/` — print-readiness pre-flight (stdlib-only; optional Pillow)
+
+Catches the permanent, expensive print mistakes at the file stage, before a physical run.
+
+```bash
+python preflight/check_print.py --game games/beacon
+```
+Validates a game's `print-spec.json` (bleed ≥3 mm, safe margin, 300 DPI, CMYK, standard card size, min
+body font) against manufacturing norms; with Pillow it spot-checks rendered PNG resolution. Degrades to a
+"declare your intent" note when no spec exists (Screentop-only / licensed games don't need one). Owned by
+`bg-production`; see `knowledge/manufacturing-and-fulfillment.md`.
+
 ## `rulebook/` — rules markdown → themed rulebook
 
 ```bash

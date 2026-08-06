@@ -58,11 +58,15 @@ independent agents in parallel.
 | Architecture | `bg-architect` | Deciding player modes (solo/duel/multi/party), campaign, and base-vs-expansion scope; component reuse. |
 | Development | `bg-developer` | Turning the spec into component data + rules draft + build scaffolding. |
 | Prototyping | `bg-prototyper` | Turning data into a TTS module / PnP PDF / renders / 3D pieces. |
+| Information design | `bg-infodesign` | Designing/auditing the icon system, visual hierarchy, and at-a-glance layout so components parse without the rulebook. |
+| Accessibility | `bg-access` | **Guardian.** Colour-blind/contrast/legibility, cognitive/motor/communication load, price — who can actually play (runs `tools/access/check_access.py`). |
 | Critique | `bg-critic` | Red-teaming a design before playtests — dominant strategies, dead turns, swinginess, co-op alpha-player leaks. |
-| Elegance | `bg-elegance` | Guarding the complexity budget, finding what to simplify, keeping rulebook + player aid tight, FAQ discipline. |
-| Testing | `bg-playtest` | Planning a playtest, simulating (`tools/sim`), or synthesizing feedback into the next change. |
-| Marketing | `bg-marketing` | There's a stable game to pitch/sell (sell sheet, campaign, positioning). |
-| Publishing | `bg-publishing` | Naming, commissioning art, or planning to sell (IP/compliance IE/UK/US). |
+| Elegance | `bg-elegance` | Guarding the complexity budget, finding what to simplify, keeping rulebook + player aid tight (incl. the editorial pass), FAQ discipline. |
+| Testing | `bg-playtest` | Planning a playtest (incl. FTUE/blind-test), simulating (`tools/sim`), or synthesizing feedback into the next change. |
+| Funding / route | `bg-funding` | How to release it (free / POD / pitch / crowdfund), ranked by upfront cost & risk — the money decision *before* marketing copy. |
+| Marketing | `bg-marketing` | There's a stable game to pitch/sell (sell sheet, campaign, positioning) — for the route `bg-funding` chose. |
+| Publishing | `bg-publishing` | Naming, commissioning art, or planning to sell (IP/compliance IE/UK/US; sensitivity-risk flag). |
+| Production | `bg-production` | Making & shipping a physical run (manufacturing, freight/tariffs, fulfilment) — deferred; skip if licensed. |
 
 **Each agent returns a "Decision for the human."** Your job is to surface that decision as a crisp
 A/B/C choice, get the call, record it, and move to the next stage.
@@ -75,6 +79,9 @@ A/B/C choice, get the call, record it, and move to the next stage.
    iteration by `bg-elegance`. Never let weight creep silently past it. To anchor on a real game
    ("budget it like *Arcs* / *The White Castle*"), seed it deterministically from BoardGameGeek:
    `python tools/bgg/bgg_lookup.py --name "<game>" --suggest-budget --out games/<slug>/complexity-budget.json`.
+   **Set the cost budget too** — copy `templates/component-cost-budget.json` and pick a target price/box
+   tier (owned by `bg-architect`; guarded with `tools/cost/check_cost.py`). Cheap-to-make is cheap-to-release
+   by every route, and it's easiest to hold from the start (see `knowledge/cost-and-manufacturability.md`).
    **Frame the creative identity now — lightly.** Create `identity.md` (from `templates/identity.md`)
    and run `bg-theme` to set the north star, target aesthetics, and tone. Restraint first: pick the
    identity rung the game earns (an elegant abstract wants a vibe + clean look, not lore) and leave the
@@ -113,12 +120,17 @@ you don't wait to be asked:
   instead of freezing into a restriction or drifting into muddle.
 - **`bg-elegance` — the budget check.** Did the change push weight/keywords/exceptions past the
   complexity budget?
+- **`bg-access` — the accessibility floor** *(when the pass touched component data or the theme)*. Does a
+  colour-only suit collision, a contrast/legibility drop, or a new motor/communication load creep in? Runs
+  `tools/access/check_access.py`.
+- **`bg-infodesign` — the parse check** *(when component data or layout changed)*. Is the component still
+  readable at a glance, or did a new field/icon muddy the hierarchy?
 
-These are **cheap by default**: if nothing themed or nothing weighty changed, the guardian returns a
+These are **cheap by default**: if nothing themed/weighty/visual changed, the guardian returns a
 fast "still within" and you move on. They're independent — **dispatch them in parallel.** Only surface a
 guardian's output to the human when it actually flags something (a re-theme worth a call, a budget
-breach); a clean sweep just gets logged and the loop advances. This is the theme analog of the
-long-standing rule that `bg-elegance` guards the budget every iteration.
+breach, a colour-blind collision); a clean sweep just gets logged and the loop advances. This is the
+theme analog of the long-standing rule that `bg-elegance` guards the budget every iteration.
 
 ## Living documents
 

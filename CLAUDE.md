@@ -52,11 +52,15 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 | Architecture | `bg-architect` | Player modes (solo/duel/multi/party), campaigns, and base-vs-expansion scope; component reuse; plays well separately & combined. |
 | Development | `bg-developer` | Turns design into concrete artifacts: card/component data, rules spec, build code. |
 | Prototyping | `bg-prototyper` | Produces playable outputs: **Screentop.gg** deck (default) / TTS module, print-and-play PDF, 3D pieces. |
+| Information design | `bg-infodesign` | Functional graphic design — icon system, visual hierarchy, at-a-glance readability so players parse components without the rulebook (distinct from `bg-theme`'s felt identity). |
+| Accessibility | `bg-access` | **Guardian.** Colour-blind safety (redundant encoding), contrast/legibility, cognitive/motor/communication load, price — who can actually play. Runs `tools/access/check_access.py`. |
 | Critique | `bg-critic` | Adversarial red-team: hunts dominant strategies, dead turns, swinginess, co-op alpha-player leaks — before you spend playtests. |
-| Elegance | `bg-elegance` | Guards the complexity budget (set at start), hunts what to cut/merge, keeps the rulebook + player aid succinct/clear/fun, disciplined FAQ. |
-| Testing | `bg-playtest` | Playtest plans, session logging, feedback synthesis, balance analysis, and simulation (`tools/sim`). |
-| Marketing | `bg-marketing` | Pitch, elevator, box copy, sell sheet, crowdfunding page, audience strategy. |
-| Publishing | `bg-publishing` | IP / copyright / trademark / compliance for **Ireland, UK, USA**; self-publish vs pitch. |
+| Elegance | `bg-elegance` | Guards the complexity budget (set at start), hunts what to cut/merge, keeps the rulebook + player aid succinct/clear/fun (incl. the editorial pass), disciplined FAQ. |
+| Testing | `bg-playtest` | Playtest plans (incl. FTUE/blind-test), session logging, feedback synthesis, balance analysis, and simulation (`tools/sim`). |
+| Funding / route | `bg-funding` | **How the game is released** — free / POD / pitch-to-publisher / crowdfunding, ranked by upfront cost & risk. Defaults to minimal out-of-pocket. Owns the money decision before marketing copy. |
+| Marketing | `bg-marketing` | Pitch, elevator, box copy, sell sheet, crowdfunding page, audience strategy — for the route `bg-funding` chose. |
+| Publishing | `bg-publishing` | IP / copyright / trademark / compliance for **Ireland, UK, USA**; contracts; sensitivity-risk flag. |
+| Production | `bg-production` | Physical make & ship — manufacturing, component engineering, sourcing, freight/tariffs, fulfilment, pledge-manager ops. Runs print pre-flight. Deferred until a physical run (skip if licensed). |
 
 **How to invoke an agent:** use the `Agent` tool with the matching `subagent_type` (e.g.
 `bg-design`). Give it the game slug and point it at that game's `game-bible.md`. When work is
@@ -64,8 +68,10 @@ independent, launch agents in parallel.
 
 **The guardian sweep:** after every `bg-design` / `bg-developer` pass, auto-run the guardians in
 parallel before advancing — **`bg-theme`** (does the fiction still fit the changed mechanics? re-theme
-vs drift/restriction) and **`bg-elegance`** (still within the complexity budget?). Cheap by default; only
-surface to the human when one actually flags something. (Full cadence in the `board-game-studio` skill.)
+vs drift/restriction), **`bg-elegance`** (still within the complexity budget?), and — when the pass
+touched **component data / the theme** — **`bg-access`** (colour-blind/contrast/legibility floor still
+met?) and **`bg-infodesign`** (still parseable at a glance?). Cheap by default; only surface to the human
+when one actually flags something. (Full cadence in the `board-game-studio` skill.)
 
 ---
 
@@ -152,7 +158,7 @@ community **weight** (1–5), player count, playtime, mechanisms, rank — for g
 like *Arcs*"). Needs egress to boardgamegeek.com (some managed sessions block it — fall back to cited
 WebSearch). Offline-testable via `--thing-xml`.
 
-### Guardrails (`tools/lint/`, `tools/rulebook/`)
+### Guardrails (`tools/lint/`, `tools/rulebook/`, `tools/access/`, `tools/cost/`, `tools/preflight/`)
 
 - **Linter** — `python tools/lint/check_game.py --game games/<slug> --theme <name>`: validates card data
   (unique ids, numeric fields, quantities, theme suit coverage) and that sim modules still import.
@@ -163,6 +169,15 @@ WebSearch). Offline-testable via `--thing-xml`.
 - **Complexity gauge** — `python tools/complexity/check_complexity.py --game games/<slug>`: objective
   drift proxies (rulebook words, keywords, exceptions, component types, player-aid length) vs the
   game's `complexity-budget.json`. Owned by `bg-elegance`; set the budget at project start and guard it.
+- **Accessibility linter** — `python tools/access/check_access.py --game games/<slug> --theme <name>`:
+  simulates protanopia/deuteranopia/tritanopia on the theme palette (Machado matrices, CIELAB ΔE) and flags
+  colour-only suit collisions (dual-coding by emblem aware); checks WCAG text contrast. Owned by `bg-access`.
+- **Cost gauge** — `python tools/cost/check_cost.py --game games/<slug>`: estimates the bill of materials
+  and COGS vs `component-cost-budget.json` (component types, pieces, unique cards, COGS % of retail). The
+  cost analog of the complexity gauge. Owned by `bg-architect` (+ `bg-funding`).
+- **Print pre-flight** — `python tools/preflight/check_print.py --game games/<slug>`: validates a game's
+  `print-spec.json` (bleed, safe margin, DPI, CMYK, card size, min font) before a physical run. Owned by
+  `bg-production`; skipped for Screentop-only / licensed games.
 
 ### Recommended free installs (macOS)
 
@@ -182,7 +197,15 @@ WebSearch). Offline-testable via `--thing-xml`.
 - `reference-games.md` — landmark designs and what each is known for; award context.
 - `design-fundamentals.md` — MDA, core loop, agency, randomness, feedback, weight, solo/Automa.
 - `theme-and-identity.md` — the felt identity: concept/theme/tone/lore/look&feel/naming, the kinds of fun, theme↔mechanic resonance, the restraint ladder (owned by `bg-theme`).
-- `process-and-playtesting.md` — the indie pipeline and rules-writing + blind-testing best practice.
+- `information-design.md` — functional graphic design: icon systems, visual hierarchy, at-a-glance readability (owned by `bg-infodesign`).
+- `accessibility.md` — the Meeple-Centred Design categories + redundant-encoding rule; colour-blind/contrast/cognitive/motor/communication (owned by `bg-access`).
+- `representation-and-sensitivity.md` — when a theme touches real cultures: the trigger + checklist (owned by `bg-theme` + `bg-publishing`).
+- `process-and-playtesting.md` — the indie pipeline, rules-writing, blind-testing + FTUE instrumentation.
+- `simulation-and-balance.md` — pressure-testing balance *and* fun (decision density, randomness, tension curve) with `tools/sim`.
+- `elegance-and-clarity.md` — the complexity budget, the cut test, rulebook/aid clarity + the editorial pass.
+- `cost-and-manufacturability.md` — design for cheap: component-type/box/size levers, COGS budget, tariffs (owned by `bg-architect`).
+- `funding-and-route-to-market.md` — free / POD / pitch / crowdfunding, ranked by upfront cost & risk (owned by `bg-funding`).
+- `manufacturing-and-fulfillment.md` — making & shipping a physical run: sourcing, freight/tariffs, 3PL, pledge manager (owned by `bg-production`).
 - `trends-2026.md` — what's current (cozy games, solo, crowdfunding shift, market pressures).
 - `manufacturing-specs.md` — card sizes, bleed, DPI, POD specs, TTS export limits.
 - `publishing-ip.md` — IP/copyright/trademark/compliance for IE/UK/US (general info, not legal advice).
