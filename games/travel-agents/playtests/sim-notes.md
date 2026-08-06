@@ -401,3 +401,290 @@ Gourmand's pantry-wild actually earn their keep** (the two things the sim provab
 **Sim knob defaults now baked (see the module header):** `TA_REP_TRIGGER=999` (end-clock decoupled),
 `TA_AUNTIE_REGIONS=2`, `TA_AUNTIE_NO_T3=0`, `TA_ROOKIE_CAP=6`, `TA_ROOKIE_EVT=2.2`,
 `TA_GOURMAND_BOONS=half`, `TA_GOURMAND_WILD=2`, `TA_INFL_BEHIND=2`.
+
+---
+
+# v3.1 — MOVEMENT REBALANCE + THE POACH — re-sim (2026-08-06)
+
+Sim module reworked for v3.1. **Two changes under test; engine otherwise unchanged.** The biggest
+fidelity gain over v3: the vendor deck is now **loaded from the real re-costed `components/vendors.csv`
+(25 vendors)** at region granularity, so the sim finally sees the *anchor + cross-link* structure the
+rebalance is entirely about — a vendor's **cost regions** (its named specialties = where you must stand
+to source) are now **separate from its discount ICON region**, and they **differ on the 8 cross-link
+vendors**. The old synthetic table collapsed cost≈icon and was blind to this. Plus **The Poach** is
+modelled as a real conditional action + two strategies.
+
+**Headline (6 probes):** the **two v3.1 changes PASS their make-or-break** — **Probe A (movement)
+SOFT-PASS** (South fixed, camping dead; only East is slightly light) and **Probe B (Poach) PASS** (safe,
+non-griefy, self-correcting). Of the re-confirms: **Probe 2 (runaway) PASS, Probe 4 (stuck) PASS,
+Probe 1 (track) SOFT** (mild ramp skew from the re-cost), and **Probe 3 (characters) FAIL — a re-cost
+knock-on** (the Conductor collapsed to 26.5% because the anchored deck made his Stock-Up-1 flaw brutal).
+
+## Probe-by-probe (2p; n as noted; ±~2pt run-to-run)
+
+### PROBE A — MOVEMENT SPREAD → **SOFT-PASS** (the make-or-break for this iteration)
+Field-average per-region **sourcing share** (all 7 real lines, both seatings, n≈800):
+
+| Region | v3 (lopsided) | **v3.1 sourcing share** | vs ~18% floor |
+|---|---|---:|:--:|
+| North  | ~20 tokens (dominant) | **38.6%** | (richest, as designed — 4 specialties) |
+| Central| ~5  | **22.0%** | ✓ |
+| South  | ~2 (**~6%** ghost town) | **23.8%** | ✓ **the headline fix** |
+| East   | ~9  | **15.6%** | ✗ **just under the floor** |
+
+- **Inter-region moves ≈ 7.5 / game** (~3.7 per player over ~23 turns) — real routing, not camping.
+- **STAY-HOME control (`camp_home`, never-travels) wins 0.0%** vs balanced / coverage / ingredient
+  lines (courts only ~4 of its 6 home-sourceable North vendors; scores ~18 VP vs ~55+). Camping is
+  **thoroughly non-viable.**
+- **CROSS-LINK-SUFFICIENCY VERDICT: 32% (6/8 North-bound) is ENOUGH — do NOT nudge the rate up.** The
+  anchor+cross-link web makes every region a mandatory sourcing stop (a South-icon vendor like 蚵仔煎/
+  火雞肉飯/牛肉湯 still needs a North token; coverage + regional-crawl missions punish concentration), and
+  a pure stay-home line loses every game. The remaining gap is **not** a camping problem — it is
+  **East-specific**.
+- **Why SOFT not clean PASS: East sourcing is 15.6%, ~2.4pt under the ~18% floor.** Root cause: East
+  T1s (竹筒飯/山蘇/麻糬) are cheap single-token + pantry, easily pantry-substituted, and only **2** of the 8
+  cross-links import an East/South token (6 of 8 pull North), so nothing *drags* players into East the
+  way North is pulled. **Knob (a data tweak for `bg-developer`, not a rules change):** add **~+1 East
+  demand** — e.g. one more `greens`/`rice` naming, or **re-point one North-bound cross-link to East**
+  (making it ~5/8 North + 1 East) — then re-run Probe A. Minor; the real East **boon events** (Bumper
+  Harvest) that the sim abstracts may already lift East at a table, so this is a *watch*, not a blocker.
+
+### PROBE B — THE POACH → **PASS** (a fun risk-reward, not degenerate/griefy)
+| Test (n≈800) | Result | Read |
+|---|---:|---|
+| Situational-poacher win-rate vs balanced | **48.5%** | usable, **not** dominant |
+| Situational Poach frequency | **0.11 / game** | low/situational (a **bot floor** — see caveat) |
+| Aggressive poach-lean (griefer) win-rate | **33.5%** | **spamming Poach LOSES** |
+| RATIONAL steal-war freq (situational mirror) | **0.03 / game** | **self-correcting — no griefy spiral** |
+| Rep spent on Poach (griefer field) | ~2.3 / game | the **−1 Rep is a real, compounding tax** |
+
+- The whole-turn cost + the undiscountable-Rep tax + the "no Rep, no Poach" floor make Poach a **losing
+  staple** and a **non-spiralling** one: a rational mirror never wars (0.03/game), and forcing *both*
+  bots to grief-max is a tautological arms race that still scores low and beats nothing (reported as an
+  adversarial-stress note, not a verdict driver).
+- **Caveat (bot-blindness, flag for the human table):** the greedy bots value Poach only as
+  *self-sourcing when they can't take the token locally*, so they poach only **0.11/game** — they are
+  **blind to the denial/tempo value** ("she's one oyster from the seafood marquee — swipe it") that is
+  the human reason to Poach. So the **frequency is a floor**; the *fun* and the true rate are the
+  Screentop question. The safety results (not dominant, no spiral, real cost) are robust regardless.
+
+### PROBE 1 — No dominant track/opening → **SOFT** (mild ramp skew, new in v3.1)
+7 real lines, both seatings, n≈350; naive excluded from the band:
+
+| Line | v3.1 overall | | Line | v3.1 overall |
+|---|---:|---|---|---:|
+| ingredient_heavy | **58.2%** (leader) | | mission_focus | 47.3% |
+| prestige_rush | 54.8% | | balanced | 43.6% |
+| buzz_heavy | 52.6% | | coverage_spread | 42.8% |
+| reputation_climb | 50.7% | | | |
+
+- **5 of 7 in the 45%+ band**, every real line **crushes naive** (balanced beats greedy_cheap 99%,
+  random 88%). No solved opening (buzz ≈ ingredient early). **But the band widened vs v3** (was
+  46.9–51.9%): the **anchor-in-region re-cost genuinely buffed the ramp line** — each region's discount
+  now saves on *that region's own* vendors, so `ingredient_heavy` (ramp-weighted) leads at 58.2% while
+  spread/balanced lines sag to ~43%. Not a solved line (<60%, naive crushed), but a **real mild skew the
+  re-cost introduced** — watch whether the ramp *feels* like the obvious line at the table.
+
+### PROBE 2 — No economy runaway → **PASS** (Buzz floor holds)
+Season-timed (the locked default): **8.6 courts/player, ~48 turns**; late court-interval **2.35–2.85
+t/court** (≈1 vendor / 2+ turns even fully ramped — the Buzz floor caps the rate); B:I spend ratio
+climbs **~2.5 → ~3.7–4.5** (binding constraint shifts to Buzz late, as designed); mid-game leader wins
+**73–74%** (a real first-mover edge, **not** a ~100% runaway); avg margin ~6–8 VP.
+
+### PROBE 3 — Character balance → **FAIL** (a re-cost knock-on; needs a fresh pass)
+5×5 round-robin, balanced strategy, both seatings, n≈300:
+
+| Character | v3 (synthetic deck) | **v3.1 (real deck)** | in band? |
+|---|---:|---:|:--:|
+| **Rookie** | 51% | **63.1%** | ✗ hot |
+| **Influencer** | 46–47% | **61.3%** | ✗ hot |
+| **Auntie** | 52–54% | **58.8%** | ✗ hot |
+| **Gourmand** | 45–47% | **40.4%** | ✗ soft |
+| **Conductor** | 53–55% | **26.5%** | ✗ **collapsed** |
+
+Hottest char×mission (fair mirror): **Influencer × north_3 63.9%**, Gourmand × south_3 61.5% (both
+>60%). **Root cause = the character knobs (`ROOKIE_EVT`, `INFL_BEHIND`, `AUNTIE_REGIONS`,
+`GOURMAND_BOONS`) were tuned against the v3 *synthetic* deck and are now mis-calibrated to the real 25.**
+The load-bearing new finding is the **Conductor**: on the anchored deck, single-region **2-of-one-region
+costs are common → Stock-Up-2 is the core sourcing move**, so his **"Stock Up takes 1" flaw is now
+crippling** (he courts ~7.6 vendors vs opponents' ~9.4). His **"Travel +2" ability can't compensate**
+because you rarely need 2 *different* region tokens on one anchored vendor. This is **not** a bug and
+**not** event-coupled — it is a direct, trustworthy consequence of the movement re-cost.
+
+### PROBE 4 — Anti-hoard / hard-stuck → **PASS**
+`hard-stuck = 0.000/game`, overflow discards `0.05/game` — pantry + Promote valves hold; hoarding taxed.
+
+## The single biggest remaining issue + the knob
+**Character balance regressed against the real deck — the Conductor at 26.5% is the largest single
+deviation (23.5pt).** **Knob:** soften the Conductor's flaw (the anchored deck over-punishes "Stock Up
+takes 1" — e.g. "Stock Up takes 1 *only on a turn he also Travelled*", or drop the flaw and re-tune the
+ability), and re-seat the three hot chars (Rookie/Influencer/Auntie) — a **fresh character pass against
+the v3.1 deck**. This is a *knock-on of the re-cost*, and it interacts with both the East fix and the
+real event tiles (Rookie/Gourmand are event-coupled), so it should be one clean pass **after** the deck
+settles — not stacked onto this change.
+
+## The ONE recommended next action — decision for the CD (A/B/C)
+- **A — Proceed to the instrumented 2p Screentop FTUE session (RECOMMENDED).** The two v3.1 changes
+  **pass their make-or-break** (movement spreads, camping is dead → cross-links sufficient; Poach is
+  safe, non-griefy, real-cost). The residuals — East slightly light, the mild ramp skew, and the
+  character imbalance — are all **re-cost knock-ons best co-judged with humans + the real event tiles**
+  (which the sim abstracts and which specifically feed East/Rookie/Gourmand), and the Poach's *fun/true
+  frequency* is a human-only question. Instrument the session for per-region visit feel, whether the
+  ramp *feels* solved, per-character results, and Poach frequency/feel. **Carry the Conductor
+  imbalance as an explicit watch-flag** (or seat symmetric characters for the first teach).
+- **B — One sim pass first: re-tune the characters to the real deck** (fix the Conductor flaw + re-seat
+  the hot three), re-sim Probe 3, *then* the human session. Choose this if the CD wants a competitively
+  fair 5-character lineup in the very session meant to judge characters. Risk: the deck may shift again
+  after the East tweak / human feedback, so the tune may need redoing.
+- **C — One data tweak first: lift East** (+1 East demand or re-point one North-bound cross-link to
+  East), re-sim Probe A to clear the 18% floor, then the human session. Choose this only if the CD wants
+  a clean movement PASS on paper before the table; otherwise East is a cheap watch-flag for the session.
+
+**Recommendation: A.** Ship the changes to a human table — they work; the leftovers are exactly the
+feel/event-coupled questions the FTUE exists to answer. Fold the Conductor fix + character re-tune (B)
+and the East nudge (C) into a single follow-up re-cost-cleanup pass once the table has weighed in.
+
+## Encoding simplifications (v3.1 — the sim's blind spots)
+1. **Vendors loaded from the real CSV at REGION granularity** (a fidelity *gain*: cost regions vs icon
+   region now distinct, cross-links faithful). Still collapses **intra-region** specialty scarcity
+   (oysters vs milkfish both = "S"), because discounts are per-region. So Probe A measures **region**
+   sourcing spread, not oyster-vs-milkfish spread.
+2. **The Poach** models co-location (pawn position), a **random region-token** steal (not a specific
+   oyster-vs-milkfish — fine at region granularity), Rep −1 floored, and no refill/event/Season.
+   **Greedy bots under-value Poach's denial/tempo use** → the 0.11/game situational rate is a **floor**;
+   the human rate/feel is unmodelled.
+3. **`camp_home` control never travels at all** — a deliberate lower bound on camping. Its 0% win is
+   partly inflated by a passive camper dragging the game long (letting the opponent run up score); the
+   qualitative conclusion (camping non-viable) is robust, the exact 0% is not a precise VP claim.
+4. **Character knobs carried over from the v3 synthetic-deck tuning** (`TA_ROOKIE_EVT=2.2`,
+   `TA_INFL_BEHIND=2`, `TA_AUNTIE_REGIONS=2`, `TA_GOURMAND_BOONS=half`) — now **mis-calibrated to the
+   real deck**; Probe 3 is the real-deck retest showing they need re-tuning (Conductor esp.).
+5. **Market events** still modelled by mechanical payload at `EVENT_PROB≈0.24`, boon 60/40 — the
+   least-faithful system; still matters most for Rookie/Gourmand and for the East boons (Bumper Harvest)
+   that may lift East sourcing at a table.
+6. **Absolute VP totals run high (~50–56 vs the design's 35–42 target)** on the real deck at region
+   granularity (vendors slightly easier to afford; missions/coverage/rep all stack) — read **relative**
+   balance as trustworthy, treat absolute totals as indicative only. (A supply/discount-tightness knob,
+   or per-specialty scarcity, would pull totals down — a later tuning question, not a v3.1 blocker.)
+7. Missions updated to the **real 9-mission deck** (adds north_3 / central_3 crawls; the v3 sim's
+   invented `cuisines_3` is gone — no cuisine mission exists in `missions.csv`).
+
+**Knobs exposed for re-sim:** `TA_POACH_REP` / `TA_POACH_FLOOR` (Poach cost/floor), plus the v3 set
+(`TA_REP_TRIGGER`, `TA_SUPPLY`, `TA_EVENT_PROB`, `TA_BUZZ_FLOOR`, `TA_DISC_CAP`, `TA_CAP`, and the
+character knobs). New strategies: `camp_home` (Probe A control), `poach_situational`, `poacher`.
+
+---
+
+# v3.1 — TWO SIM-CONFIDENT FIXES (Conductor + East), post-CD-decision (2026-08-06)
+
+CD decision after the re-sim above: **fix the two sim-confident issues now, carry the event-coupled
+characters (Rookie/Influencer/Auntie/Gourmand) to the human table untouched.** Both fixes are now the
+**sim defaults** (`TA_CONDUCTOR_FLAW=stock1_if_double`, `TA_EAST_FIX=2`). Recommended values for
+`bg-developer` to bake, with post-fix numbers, below.
+
+## FIX 1 — The Conductor: **26.5% → 52.1%** (in band, no new dominant character)
+**Root cause (restated):** the anchor-in-region re-cost made single-region **2-of-one-region** vendor
+costs common → **Stock-Up-2 became the core sourcing move**, so the old flaw "Stock Up **always** takes
+1" was crippling (he courted ~7.6 vendors vs ~9.4). Tuning showed the sim **under-values his Travel+2
+mobility** (a routing blind spot), so *heavy* flaws over-punish him in-sim: start-2-behind → 37%,
+Larder-cap-6 → 41%, even the milder "full only right after a Travel" → 30% (bots double-stock anchored
+costs). The lever that lands him **in band without touching the core first Stock Up** is penalising only
+**back-to-back** Stock Ups.
+
+**RECOMMENDED FINAL CONDUCTOR (for `characters.csv` + design-doc):**
+- **Ability (UNCHANGED):** *Off-Peak Pass* — your **Travel** action arrives with **2** ingredients
+  (instead of 1). *(The proud retired railwayman sources as he rides.)*
+- **Flaw (REVISED):** *Timetable-bound* — **you can't work the same stall twice in a row: if you took
+  the Stock Up action on your previous turn, your Stock Up this turn yields only 1 (instead of 2).**
+  *(He can't linger — the timetable moves on.)* A run of Stock Ups yields 2, 1, 1, …; a Travel (or any
+  other action) between them resets it to a full 2.
+- **Post-fix win-rate:** **52.1%** in the 5-way round-robin (48.7% in the heads-up-vs-field tuning) —
+  **in band, mid-pack, did NOT become a new dominant character.** Keeps his travel-first identity and
+  actively discourages camping one market.
+- **Confidence:** the *direction* (the old flaw was over-harsh) is sim-solid; the *exact* seat is
+  slightly sim-pessimistic because his mobility ability is under-valued in-sim, so if anything he may run
+  a touch higher at a real table — fine, still in band. Flag alongside the event-coupled chars for the
+  FTUE per-character tally.
+
+**Bonus effect — the field de-inflated.** The old 26.5% Conductor was a punching bag every other char
+farmed; fixing him pulled the others down toward band **without touching them**:
+
+| Character | before Conductor fix | **after Conductor fix** | note |
+|---|---:|---:|---|
+| Conductor | 26.5% | **52.1%** | FIXED |
+| Influencer | 61.3% | **52.7%** | now **in band** (untouched) |
+| Auntie | 58.8% | **55.4%** | edge (untouched; carry to table) |
+| Rookie | 63.1% | **56.0%** | edge (untouched; event-coupled → table) |
+| Gourmand | 40.4% | **33.8%** | still low (event-coupled → table, per CD) |
+
+So Probe 3 still prints **FAIL** on the strict all-5-in-45–55 rule, **but the residual is now driven
+almost entirely by the Gourmand (33.8%) — the event-coupled character the CD is deliberately carrying to
+the table** (his pantry-wild ability is invisible to greedy bots; the sim cannot seat him fairly), plus
+Rookie/Auntie a hair over 55. Hottest char×mission = gourmand×south_3 60.4% (a weak-char mirror artifact,
+not a real synergy). **No sim-confident character remains broken.**
+
+## FIX 2 — Lift East: **15.6% → 17.9%** (≈ the ~18% floor; N/C/S spread held)
+A single cross-link re-point was **insufficient** — East under-performs its *demand* not from lack of
+demand but because its cheapest cards (the East T1 stalls) are **1 East + 1 pantry**, so bots
+**pantry-substitute** the East token away, and East is a **leaf** on the ring (visited less). Level-by-
+level (field-average sourcing share):
+
+| East fix | East share | Probe-1 leader (ramp line) |
+|---|---:|---:|
+| none | 15.9% | ingredient_heavy 59.5% |
+| **V12 swap only** | 16.5% | 59.6% |
+| **V12 swap + de-pantry 3 East T1s (RECOMMENDED)** | **17.9%** | 59.1% |
+
+Key control read: **the ramp-line dominance (~59%) is invariant across East levels — the East fix does
+NOT feed it** (that skew is a separate pre-existing re-cost effect; see remaining issue).
+
+**RECOMMENDED FINAL EAST RE-COST (for `vendors.csv` + design-doc), 4 vendor edits:**
+1. **V12 蚵仔煎 (Oyster Omelette), icon S:** `oysters;egg;pantry` → **`oysters;greens;pantry`**
+   (egg N → **greens** E). Keeps the South oyster anchor; turns a 6th North-bound cross into an East
+   import. **Authentic** — oyster omelette carries 茼蒿 crown-daisy greens. *Floor knock-on:* egg drops
+   3→2 vendors (still on 蛋餅/V15 + 卡拉雞腿堡/V16); accept egg@2 or restore a 3rd egg naming elsewhere.
+2. **V21 竹筒飯 (Bamboo-Tube Rice), icon E:** `rice;pantry` → **`rice;rice`**.
+3. **V22 山蘇/龍鬚菜 (Mountain Greens), icon E:** `greens;pantry` → **`greens;greens`**.
+4. **V23 麻糬 (Mochi), icon E:** `rice;pantry` → **`rice;rice`**.
+   *(De-pantrying the East T1 stalls to a pure 2-East cost — the lever that actually moves the needle;
+   all three are honest single-ingredient dishes, and 2-of-one-region matches the T1 "cost 2 (1 region)"
+   spec better than the current 1+pantry.)*
+- **Post-fix sourcing share (field avg):** **N 37.2 · C 21.4–22.2 · S 23.5 · E 17.9%** — East clears
+  ~18%, North eases from ~38.6 to ~37.2, C/S steady, **camp line still 0%**. South stays the headline
+  fix (~24%, up from v3 ~6%).
+- **Caveat to flag for bg-developer/consultant:** this leaves East T1s at **2-East** while N/C/S T1s stay
+  **1-spec + pantry** — a mild asymmetry (East T1s slightly harder/worse-value). It did **not** hurt
+  Probe 1 or the coverage line in sim, but it's a content call. **Lighter fallback = Level 1 (V12 swap
+  only):** keeps T1 symmetry but East only reaches ~16.5% (meaningful, just under the floor).
+
+## Post-fix probe matrix (defaults: `stock1_if_double` + East level 2)
+| Probe | Verdict | Key numbers |
+|---|---|---|
+| A — Movement | **SOFT-PASS** | N37.2/C22.2/S23.5/**E17.9**; moves ~7.6/gm; **camp 0%** |
+| B — The Poach | **PASS** | situational 47% / griefer 36% win; rational steal-wars 0.08/gm |
+| 1 — Track/opening | **SOFT** | ingredient_heavy **~59%** (pre-existing re-cost skew — see below) |
+| 2 — Runaway | **PASS** | late interval 2.23 t/court; mid-leader 68–76% (not runaway) |
+| 3 — Characters | **Conductor FIXED (52.1%)** | residual FAIL = Gourmand 33.8% (event-coupled → table) |
+| 4 — Anti-hoard | **PASS** | stuck 0.000/gm; overflow 0.05/gm |
+
+**Confirmed: neither fix created a new dominant line or character.** The Conductor lands mid-pack; the
+East fix is ramp-line-neutral.
+
+## The one remaining sim-visible issue (NOT in this task's scope) + the knob
+**Probe 1 mild ramp skew: `ingredient_heavy` sits at ~58–60%** (borderline SOFT/FAIL), **East-level-
+invariant and independent of both fixes** — it is a **pre-existing v3.1 knock-on of the anchor-in-region
+re-cost** (each region's discount now saves on *that region's own* vendors, so the ramp/ingredient line
+is the strongest; balanced/coverage sag to ~43%). **Knob:** cap or soften the discount ramp
+(`TA_DISC_CAP`, or reduce the per-icon discount / raise the Buzz floor), or trim the ingredient line's
+edge — but **validate at the table first** (does the ramp *feel* like the obvious line, or is 58–60% a
+comfortable "slight edge to the engine-builder"?). This is a **separate one-variable pass** to run
+**after** the human session weighs in, not something to stack now.
+
+## New encoding simplifications (this fix pass)
+- **Conductor flaw** modelled as `n_take=1` when the previous action was Stock Up (`last_kind=="stock"`),
+  full 2 otherwise. Faithful to the recommended "back-to-back" rule. His Travel+2 ability is still
+  **under-valued by greedy bots** (routing blind spot) → his 52.1% is if anything a floor.
+- **East fix** applied as a post-load patch to the real CSV (`TA_EAST_FIX` level 0/1/2) so the CSV itself
+  is untouched (bg-developer bakes the recommended values). Level 2 = the recommended package.
+- The **East T1 de-pantry asymmetry** (East T1s 2-East vs others 1+pantry) is modelled exactly; its
+  human *feel* (are East stalls now slightly unrewarding?) is a table question the sim can't judge.

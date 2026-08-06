@@ -30,8 +30,8 @@ python3 $T/boards/build_board.py --type scoretrack --max 50 --per-row 13 \
     --theme "$theme" --out build/prestige-track.png
 python3 $T/boards/build_board.py --type scoretrack --max 12 --per-row 13 \
     --title "Reputation track" --start-label "START" \
-    --milestones "3:+2 VP · perk;6:+4 VP · perk;9:+6 VP · perk;12:+9 VP · ENDS" \
-    --note "Climb by courting (each vendor's printed Rep). Passing 3 / 6 / 9 grants a one-time perk; the top (12) pays +9 VP and is an end-game trigger." \
+    --milestones "3:+2 VP;6:+4 VP;9:+6 VP;12:+9 VP" \
+    --note "Climb by courting (each vendor's printed Rep). Passing 3 / 6 / 9 grants a one-time perk. At GAME END score the VP bonus for your FINAL position only (not cumulative). Rep does NOT end the game — the Season timer does." \
     --theme "$theme" --out build/reputation-track.png
 python3 $T/boards/build_board.py --type scoretrack --max 16 --per-row 17 \
     --title "Season end-timer" --start-label "START" \

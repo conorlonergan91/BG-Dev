@@ -1,25 +1,29 @@
 """
-travel_agents.py — Travel Agents: Taiwan (v3, the VENDOR-COURTING ENGINE) encoded for the
+travel_agents.py — Travel Agents: Taiwan (v3.1 — MOVEMENT REBALANCE + THE POACH) encoded for the
 simulation harness (see tools/sim/engine.py). Stdlib-only.
 
-v3 REWORK (2026-08-06). The obsolete v2 model (plate-a-dish / dead-drop / Hot-List) is GONE.
-This encodes design-doc.md v3: two rival travel agents build a Taiwan food TOUR by *courting
-vendors* — paying region-specific ingredients (discounted by held region icons) + Buzz (never
-discounted) — each vendor an engine piece feeding four scoring vectors: Prestige (VP), a Reputation
-track, Region-Coverage, and a secret +7 signature Mission.
+v3.1 REWORK (2026-08-06). Builds on the v3 vendor-courting ENGINE. Two playtest-driven changes are
+now under test, engine otherwise unchanged:
+  * MOVEMENT REBALANCE (Change 1): the vendor deck is now LOADED FROM THE REAL, re-costed
+    components/vendors.csv (25 vendors) at region granularity. Cost = the regions of a vendor's NAMED
+    specialties (the sourcing regions); the discount ICON is the vendor's icon region — and in v3.1
+    these DIFFER on the 8 (32%) cross-link vendors (6 North-bound). This anchor+cross-link structure is
+    the whole point of the rebalance, and the old synthetic table could not represent it.
+  * THE POACH (Change 2): a conditional 6th action — when a rival shares your region you may take 1
+    random specialty from their open Larder and pay Reputation -1 (floored at 0; pantry not stealable;
+    no refill/event/Season). Modelled as a real action + two strategies (situational + aggressive).
 
-We attack the design's make-or-break assumptions BEFORE building components or spending a human
-session. The four probes (run in __main__ and via the harness):
+We attack the design's make-or-break assumptions BEFORE the human session. Probes (run in __main__):
 
+  PROBE A  (v3.1 LEAD) MOVEMENT SPREAD. Per-region sourcing share (each >=~18%; South up from ~6%);
+           inter-region moves/game; and — the key question — is a STAY-HOME (camp) line competitive?
+           (If camping wins, the 32% North-bound cross-link rate is too low and must be nudged up.)
+  PROBE B  (v3.1 LEAD) THE POACH. Frequency/game (low/situational); a Poach-lean line's win-rate
+           (<=~55%, not dominant); RATIONAL steal-war frequency (~0, self-correcting); the -1 Rep cost.
   PROBE 1  No dominant track/opening. No single strategy/track wins >~55%; >=3 viable in a tight band.
-           (round_robin over the track + opening strategies + naive baselines; health read.)
-  PROBE 2  No economy runaway. Does the discount snowball outrun the end-clock, or does the
-           undiscountable-Buzz floor cap the court-rate at ~1 vendor / 2 turns even fully ramped?
-           (court-interval late-game + max sustained rate + mid-game-leader-wins + VP gap.)
+  PROBE 2  No economy runaway. Does the undiscountable-Buzz floor cap the court-rate at ~1/2 turns?
   PROBE 3  Character balance: each of 5 in 45-55%; no character x mission combo >~60%.
-           (5x5 character round-robin at a fixed strategy; per-character x per-mission scan.)
-  PROBE 4  Anti-hoard / hard-stuck ~= 0. Do the unlimited pantry + always-on Promote prevent stuck
-           turns? (stuck-turn tally + larder-overflow discards = hoarding punished.)
+  PROBE 4  Anti-hoard / hard-stuck ~= 0 (unlimited pantry + always-on Promote valves).
 Plus a standard health read (score spread, avg margin, trap paths).
 
 Run:
@@ -84,6 +88,9 @@ REGION_SUPPLY = int(os.environ.get("TA_SUPPLY", "13"))      # ASSUMPTION: per-re
 EVENT_PROB = float(os.environ.get("TA_EVENT_PROB", "0.24")) # ASSUMPTION: chance a market refill flips an Event tile
 BUZZ_FLOOR_KNOB = int(os.environ.get("TA_BUZZ_FLOOR", "0")) # rebalance knob: +N Buzz on EVERY vendor (raise the floor)
 DISCOUNT_CAP = int(os.environ.get("TA_DISC_CAP", "99"))     # rebalance knob: max region-icon discount per region
+# ---- v3.1 POACH knobs -----------------------------------------------------------------------------
+POACH_REP_COST = int(os.environ.get("TA_POACH_REP", "1"))   # Rep paid per Poach (design = 1; reserve knob 2)
+POACH_REP_FLOOR = int(os.environ.get("TA_POACH_FLOOR", "1"))# min Rep required to Poach ("no Rep, no Poach")
 
 # ---- CHARACTER REBALANCE knobs (LOCKED values 2026-08-06; see sim-notes v3 rebalance) -------------
 # Tuned at the fixed game length (end-clock decoupled). These are the DEFAULTS the design should adopt.
@@ -95,6 +102,26 @@ ROOKIE_EVENT_MULT = float(os.environ.get("TA_ROOKIE_EVT", "2.2"))  # her event a
 GOURMAND_BOONS = os.environ.get("TA_GOURMAND_BOONS", "half")       # boon handling: "none"|"half"|"full" (softened flaw)
 GOURMAND_WILD_USES = int(os.environ.get("TA_GOURMAND_WILD", "2"))  # pantry->specialty substitutions per turn (was 1)
 INFLUENCER_BEHIND = int(os.environ.get("TA_INFL_BEHIND", "2"))     # resources the Influencer starts behind (was 1)
+# CONDUCTOR flaw (v3.1 fix, LOCKED default "stock1_if_double" -> 48.7% in-band): the old "Stock Up
+# always takes 1" ("stock1") collapsed him to ~26% once the anchored real deck made Stock-Up-2 the core
+# sourcing move. "stock1_if_double" = the second of two BACK-TO-BACK Stock Ups takes only 1 (can't camp
+# one market 2+2; the first is always full) — a light, thematic flaw that keeps his travel identity and
+# lands him at 45-55%. Other options: "stock1_if_stayed" (30%, too harsh — bots double-stock anchored
+# costs), "none" (50%, but a character needs a flaw). NB: the sim UNDER-values his Travel+2 mobility
+# ability (routing blind spot), so any heavier flaw reads too costly in-sim (start-2-behind 37%, cap-6 41%).
+CONDUCTOR_FLAW = os.environ.get("TA_CONDUCTOR_FLAW", "stock1_if_double")
+CONDUCTOR_BEHIND = int(os.environ.get("TA_CONDUCTOR_BEHIND", "0"))  # light tempo flaw: opponents start +N Buzz
+CONDUCTOR_CAP = int(os.environ.get("TA_CONDUCTOR_CAP", "7"))        # light storage flaw: his Larder cap (7 = none)
+# EAST FIX (v3.1): lift East sourcing (~15.6%) toward the ~18% floor. Levels:
+#   0 = none.
+#   1 = re-point 蚵仔煎/V12's non-hero North cross token egg(N) -> greens(E) (authentic: omelette茼蒿).
+#       (Tested insufficient alone: +0.6pt — one T2 courted ~once/game.)
+#   2 = level 1 PLUS de-pantry the three East T1 stalls so they cost 2 East (not 1 East + pantry):
+#       竹筒飯/V21 & 麻糬/V23 rice;pantry -> rice;rice; 山蘇/V22 greens;pantry -> greens;greens.
+#       (All three are honestly single-ingredient dishes — bamboo rice, mochi, stir-fried greens.)
+#       This kills the pantry-substitution that was diluting East's real demand on its cheapest cards.
+EAST_FIX_LEVEL = int(os.environ.get("TA_EAST_FIX", "2"))
+EAST_FIX = EAST_FIX_LEVEL >= 1   # back-compat flag
 
 # ---- map -------------------------------------------------------------------------------------------
 REGIONS = ("N", "C", "S", "E")
@@ -102,59 +129,105 @@ ADJ = {"N": ("C", "E", "S"), "C": ("N", "S"), "S": ("C", "E", "N"), "E": ("S", "
 PANTRY = "P"
 
 # ==================================================================================================
-#  VENDOR TABLE (built once at import; decks/board/tours store integer ids -> cheap to copy)
+#  VENDOR TABLE  (v3.1 — LOADED FROM THE REAL components/vendors.csv; decks/board store integer ids)
 # ==================================================================================================
-# A vendor: tier, primary region, cost_regions (Counter over N/C/S/E), cost_pantry, buzz, prestige,
-# rep, perk, cuisine. Perk in {None, "buzz_income", "pantry_wild", "rep_on_court", "wild", "rep_plus2",
-# "double_icon"}.
+# A vendor: tier, region (= ICON region for discount/coverage), cost_regions (Counter over N/C/S/E from
+# the vendor's *named specialties*, NOT its icon), cost_pantry, buzz, prestige, rep, perk, cuisine.
+# Perk in {None, "buzz_income", "pantry_wild", "rep_on_court", "wild", "rep_plus2", "double_icon"}.
+#
+# v3.1 KEY FIDELITY GAIN over the v3 synthetic table: the discount ramp works on the region of the
+# vendor's *named ingredients* (the sourcing regions), while the ICON gained on courting is the vendor's
+# icon region. In v3.1 these can DIFFER (a South-icon vendor whose recipe names a North token = the
+# "cross-region link" that forces travel). The old synthetic table collapsed cost≈icon, so it could not
+# see the anchor/cross-link structure the movement rebalance is entirely about. We now read the true 25.
 VENDORS = []
-_CUISINES = ("night_market", "seafood", "teahouse", "banquet", "breakfast")
+_SPEC_REGION = {"beef": "N", "pork": "N", "chicken": "N", "egg": "N",
+                "tea": "C", "pearls": "C", "oysters": "S", "milkfish": "S",
+                "rice": "E", "greens": "E"}
+_PERK_MAP = {
+    "double_icon": "double_icon",   # counts as 2 icons of its region
+    "wild_icon": "wild",            # wild region icon (any region for discount + coverage)
+    "rep_engine": "rep_plus2",      # +2 Rep on every future court
+    "rep_court": "rep_on_court",    # +1 Rep on every future court
+    "buzz_income": "buzz_income",   # Promote +1 Buzz (permanent)
+    "wild_pantry": "pantry_wild",   # once/turn treat 1 pantry as any specialty when courting
+    "icon": None,                   # plain T1 region icon
+}
+_VENDOR_CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "..", "components", "vendors.csv")
 
 
-def _V(tier, region, cost_regions, pantry, buzz, prestige, rep, perk, cuisine):
-    VENDORS.append({
-        "id": len(VENDORS), "tier": tier, "region": region,
-        "cost_regions": dict(cost_regions), "cost_pantry": pantry, "buzz": buzz,
-        "prestige": prestige, "rep": rep, "perk": perk, "cuisine": cuisine,
-    })
-
-
-def _build_vendor_table():
+def _load_vendor_table():
+    """Parse the real re-costed vendors.csv into the sim's vendor table (region-granularity cost)."""
+    import csv
     VENDORS.clear()
-    # ---- T1 Stalls (20): 5 per region. cost = 2 of its region. Buzz 1. Prestige 1. Rep 1. Icon = region.
-    for r in REGIONS:
-        for k in range(5):
-            _V(1, r, {r: 2}, 0, 1, 1, 1, None, _CUISINES[k % len(_CUISINES)])
-    # ---- T2 Eateries (16): 4 per region. cost 3 = 2 of region + (1 of a neighbour OR 1 pantry).
-    #      Buzz 2. Prestige 3. Rep 2. Icon = region. Perk rotates.
-    t2_perks = ("buzz_income", "pantry_wild", "rep_on_court", "buzz_income")
-    for r in REGIONS:
-        for k in range(4):
-            r2 = REGIONS[(REGIONS.index(r) + 1 + k) % 4]
-            if k % 2 == 0:
-                cost, pantry = {r: 2, r2: 1}, 0
-            else:
-                cost, pantry = {r: 2}, 1
-            _V(2, r, cost, pantry, 2, 3, 2, t2_perks[k], _CUISINES[(k + 1) % len(_CUISINES)])
-    # ---- T3 Marquee (10): cost 3-4 across 2-3 regions. Buzz 3. Prestige 5-6. Rep 2-3. Strong perk.
-    #      ASSUMPTION: concrete spread of the doc's "3-4 (2-3 regions)" band below.
-    t3 = [
-        ("N", {"N": 1, "S": 1, "E": 1}, 0, 3, 6, 3, "wild", "banquet"),       # Banquet Master (round-island)
-        ("S", {"S": 2, "E": 1}, 0, 3, 5, 2, "rep_plus2", "seafood"),
-        ("C", {"C": 2, "N": 1}, 0, 3, 5, 2, "double_icon", "teahouse"),
-        ("E", {"E": 2, "S": 1}, 0, 3, 5, 2, "wild", "banquet"),
-        ("N", {"N": 2, "C": 1, "S": 1}, 0, 4, 6, 3, "rep_plus2", "night_market"),
-        ("S", {"S": 1, "N": 1, "C": 1}, 0, 3, 5, 2, "double_icon", "seafood"),
-        ("C", {"C": 2, "E": 1}, 0, 3, 5, 2, "wild", "teahouse"),
-        ("E", {"E": 2, "N": 1, "C": 1}, 0, 4, 6, 3, "rep_plus2", "banquet"),
-        ("N", {"N": 2, "E": 1}, 0, 3, 5, 2, "double_icon", "breakfast"),
-        ("S", {"S": 2, "C": 1, "E": 1}, 0, 4, 6, 3, "wild", "seafood"),
-    ]
-    for region, cost, pantry, buzz, prestige, rep, perk, cuisine in t3:
-        _V(3, region, cost, pantry, buzz, prestige, rep, perk, cuisine)
+    with open(_VENDOR_CSV, newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    for row in rows:
+        icon = row["region"].strip()
+        tier = int(row["tier"])
+        buzz = int(row["buzz_cost"])
+        prestige = int(row["value"])
+        rep = int(row["rep"])
+        cost_regions = Counter()
+        pantry = 0
+        for tok in row["recipe"].split(";"):
+            tok = tok.strip()
+            if tok == "pantry":
+                pantry += 1
+            elif tok in _SPEC_REGION:
+                cost_regions[_SPEC_REGION[tok]] += 1
+            elif tok:
+                raise ValueError(f"unknown ingredient {tok!r} in {row['id']}")
+        perk_code = row.get("perk_code", "").strip()
+        perk = _PERK_MAP.get(perk_code.split(":")[0], None) if perk_code else None
+        VENDORS.append({
+            "id": len(VENDORS), "tier": tier, "region": icon,
+            "cost_regions": dict(cost_regions), "cost_pantry": pantry, "buzz": buzz,
+            "prestige": prestige, "rep": rep, "perk": perk,
+            "cuisine": icon,            # cuisine unused by v3.1 missions; kept for the dict shape
+            "csv_id": row["id"],
+        })
 
 
-_build_vendor_table()
+_load_vendor_table()
+
+
+def _vendor_by_csv(cid):
+    for v in VENDORS:
+        if v.get("csv_id") == cid:
+            return v
+    return None
+
+
+def _apply_east_fix():
+    """v3.1 East lift (see EAST_FIX_LEVEL doc above)."""
+    if EAST_FIX_LEVEL < 1:
+        return
+    # Level 1: 蚵仔煎 V12 egg(N) -> greens(E). oysters;egg;pantry -> oysters;greens;pantry.
+    v = _vendor_by_csv("V12")
+    if v:
+        cr = Counter(v["cost_regions"])
+        if cr.get("N", 0) > 0:
+            cr["N"] -= 1
+            if cr["N"] <= 0:
+                del cr["N"]
+            cr["E"] = cr.get("E", 0) + 1
+            v["cost_regions"] = dict(cr)
+    if EAST_FIX_LEVEL < 2:
+        return
+    # Level 2: de-pantry the East T1 stalls (1 East + pantry -> 2 East), killing pantry-dilution.
+    for cid in ("V21", "V22", "V23"):
+        v = _vendor_by_csv(cid)
+        if v and v["cost_pantry"] > 0:
+            reg = "E"                       # all three are East single-ingredient stalls
+            cr = Counter(v["cost_regions"])
+            cr[reg] = cr.get(reg, 0) + 1
+            v["cost_regions"] = dict(cr)
+            v["cost_pantry"] -= 1
+
+
+_apply_east_fix()
 _BY_TIER = {t: [v["id"] for v in VENDORS if v["tier"] == t] for t in (1, 2, 3)}
 
 
@@ -166,14 +239,16 @@ def _mission_progress(key, vids):
     vs = [VENDORS[i] for i in vids]
     if key == "south_3":
         return sum(1 for v in vs if v["region"] == "S"), 3
+    if key == "north_3":
+        return sum(1 for v in vs if v["region"] == "N"), 3
+    if key == "central_3":
+        return sum(1 for v in vs if v["region"] == "C"), 3
     if key == "grand_tour":
         return len(set(v["region"] for v in vs)), 4
     if key == "t1_3":
         return sum(1 for v in vs if v["tier"] == 1), 3
     if key == "t3_2":
         return sum(1 for v in vs if v["tier"] == 3), 2
-    if key == "cuisines_3":
-        return len(set(v["cuisine"] for v in vs)), 3
     if key == "tall_18":
         return sum(v["prestige"] for v in vs), 18
     if key == "volume_5":
@@ -184,7 +259,10 @@ def _mission_progress(key, vids):
     return 0, 1
 
 
-MISSIONS = ("south_3", "grand_tour", "t1_3", "t3_2", "cuisines_3", "tall_18", "volume_5", "marquee_feeders")
+# v3.1: the real 9-mission deck (components/missions.csv). Regional crawls for N/C/S; grand tour;
+# humble eats (T1); fine dining (T3); volume; go tall; marquee+feeders. (No cuisine mission exists.)
+MISSIONS = ("south_3", "north_3", "central_3", "grand_tour", "t1_3", "t3_2",
+            "tall_18", "volume_5", "marquee_feeders")
 
 
 def _mission_done(key, vids):
@@ -250,6 +328,7 @@ class TravelAgentsGame:
         starts = {2: ["N", "S"], 3: ["N", "S", "C"], 4: ["N", "S", "C", "E"]}[n_players]
         players = []
         infl_present = "influencer" in chars
+        cond_present = "conductor" in chars
         for p in range(n_players):
             ch = chars[p]
             # missions: explicit per-seat if given, else deal a random one (draw-3-keep-1 with no
@@ -263,8 +342,11 @@ class TravelAgentsGame:
             players.append({
                 "char": ch,
                 "pos": starts[p],
+                "home": starts[p],           # camp line stays here; also the "stay-home" region under test
                 "larder": Counter(),
-                "buzz": (INFLUENCER_BEHIND if (infl_present and ch != "influencer") else 0),  # Influencer starts behind
+                # tempo deficits: opponents start with extra Buzz when a behind-flaw character is present
+                "buzz": ((INFLUENCER_BEHIND if (infl_present and ch != "influencer") else 0)
+                         + (CONDUCTOR_BEHIND if (cond_present and ch != "conductor") else 0)),
                 "vendors": [],
                 "icons": Counter(),
                 "wild": 0,
@@ -279,6 +361,7 @@ class TravelAgentsGame:
                 "wild_used": 0,
                 "tourist_boost": False,
                 "acted": 0,
+                "moved_last": False,          # did this player Travel on their previous turn? (Conductor flaw)
             })
         return {
             "n": n_players,
@@ -300,6 +383,15 @@ class TravelAgentsGame:
             "overflow_discards": 0,
             "buzz_spent": 0,
             "region_ing_spent": 0,
+            # v3.1 MOVEMENT diagnostics (Probe A)
+            "source_by_region": {r: 0 for r in REGIONS},      # specialty tokens taken from each region's Market
+            "travels": 0,                                      # Travel actions taken (inter-region moves)
+            # v3.1 POACH diagnostics (Probe B)
+            "poaches": {p: 0 for p in range(n_players)},       # Poach actions per player
+            "poach_events": [],                                # (turn, poacher, victim) — for steal-war detection
+            "steal_wars": 0,                                   # reciprocal poach within one round (a poached rival poaches back)
+            "rep_spent_poach": {p: 0 for p in range(n_players)},
+            "poach_gained": {p: 0 for p in range(n_players)},  # specialty tokens gained via Poach
             "mid_scores": None,               # snapshot when season hits half
             "strat_meta": strategies_meta,    # optional {p: weights} for mission pick (set by runner)
         }
@@ -387,7 +479,27 @@ class TravelAgentsGame:
             acts.append(("travel", d, PANTRY))
         acts.append(("promote",))
         acts.append(("extract",))
+        # v3.1 conditional sixth action: Poach — only if a rival shares your region, holds a stealable
+        # specialty, and you have the Reputation to spend ("no Rep, no Poach").
+        if self._poach_victim(state, p) is not None:
+            acts.append(("poach",))
         return acts
+
+    def _poach_victim(self, state, p):
+        """Return a co-located rival id that holds >=1 stealable specialty (pantry excluded), or None.
+        Requires the poacher to have >= POACH_REP_FLOOR Reputation to spend."""
+        pl = state["players"][p]
+        if pl["rep"] < POACH_REP_FLOOR:
+            return None
+        for q in range(state["n"]):
+            if q == p:
+                continue
+            rv = state["players"][q]
+            if rv["pos"] != pl["pos"]:
+                continue
+            if any(r in _SPEC_REGION.values() and rv["larder"].get(r, 0) > 0 for r in REGIONS):
+                return q
+        return None
 
     # ---- transition (mutates in place — the harness keeps no history) ------------------------------
     def step(self, state, actions, rng):
@@ -410,10 +522,14 @@ class TravelAgentsGame:
             pl["buzz"] += gain
         elif kind == "extract":
             self._trigger_end(s, "extract")
+        elif kind == "poach":
+            self._do_poach(s, p, rng)
 
         # end-of-turn: Larder cap
         self._discard_to_cap(s, p)
         pl["acted"] += 1
+        pl["moved_last"] = (kind == "travel")     # for the Conductor's "stock1_if_stayed" flaw next turn
+        pl["last_kind"] = kind                    # for the Conductor's "stock1_if_double" flaw next turn
 
         # advance turn
         s["turn"] += 1
@@ -512,8 +628,14 @@ class TravelAgentsGame:
         _, ings = act
         pl = s["players"][p]
         n_take = 2
-        if pl["char"] == "conductor":
-            n_take = 1                                        # Timetable-bound: Stock Up takes 1
+        if pl["char"] == "conductor":                         # Timetable-bound flaw (v3.1 softened)
+            if CONDUCTOR_FLAW == "stock1":
+                n_take = 1                                     # old: always 1 (collapsed him to ~26%)
+            elif CONDUCTOR_FLAW == "stock1_if_stayed":
+                n_take = 2 if pl["moved_last"] else 1          # full 2 right after a Travel; 1 if he stayed put
+            elif CONDUCTOR_FLAW == "stock1_if_double":
+                n_take = 1 if pl.get("last_kind") == "stock" else 2   # can't camp one market (2+2); first is full
+            # else "none": no Stock flaw (n_take stays 2)
         taken = 0
         for ing in ings:
             if taken >= n_take:
@@ -524,6 +646,7 @@ class TravelAgentsGame:
                 if s["supply"][ing] > 0:
                     s["supply"][ing] -= 1
                     pl["larder"][ing] += 1
+                    s["source_by_region"][ing] += 1           # Probe A: a specialty sourced from this region
                 else:
                     pl["larder"][PANTRY] += 1                 # scarcity -> fall back to pantry (a reroute cost)
             taken += 1
@@ -533,6 +656,7 @@ class TravelAgentsGame:
         _, dest, ing = act
         pl = s["players"][p]
         pl["pos"] = dest
+        s["travels"] += 1                                     # Probe A: an inter-region move
         n_take = 2 if pl["char"] == "conductor" else 1       # Off-Peak Pass: Travel arrives with 2
         for _ in range(n_take):
             if ing == PANTRY:
@@ -540,9 +664,43 @@ class TravelAgentsGame:
             elif s["supply"][dest] > 0:
                 s["supply"][dest] -= 1
                 pl["larder"][dest] += 1
+                s["source_by_region"][dest] += 1
             else:
                 pl["larder"][PANTRY] += 1
         self._refills(s, p, rng, n_flips=1)
+
+    def _do_poach(self, s, p, rng):
+        """v3.1 Poach: take 1 RANDOM specialty from a co-located rival's open Larder; pay Rep -1
+        (floored at 0). No Market refill, no event, no Season tick — it costs the whole turn."""
+        q = self._poach_victim(s, p)
+        if q is None:                                         # opportunity vanished (shouldn't happen)
+            pl = s["players"][p]
+            pl["buzz"] += 0
+            return
+        pl, rv = s["players"][p], s["players"][q]
+        # weighted-random specialty from the victim's larder (pantry excluded — nothing to swipe there)
+        pool = []
+        for r in REGIONS:
+            pool.extend([r] * rv["larder"].get(r, 0))
+        stolen = rng.choice(pool)
+        rv["larder"][stolen] -= 1
+        if rv["larder"][stolen] <= 0:
+            del rv["larder"][stolen]
+        pl["larder"][stolen] += 1
+        # Rep -1 (floored at 0)
+        paid = min(POACH_REP_COST, pl["rep"])
+        pl["rep"] = max(0, pl["rep"] - POACH_REP_COST)
+        s["rep_spent_poach"][p] += paid
+        s["poaches"][p] += 1
+        s["poach_gained"][p] += 1
+        # steal-war detection: did the victim poach THIS player within the last round (n turns)?
+        for (tt, poacher, victim) in reversed(s["poach_events"]):
+            if s["turn"] - tt > s["n"]:
+                break
+            if poacher == q and victim == p:
+                s["steal_wars"] += 1
+                break
+        s["poach_events"].append((s["turn"], p, q))
 
     # ---- Market events on refill ------------------------------------------------------------------
     def _refills(self, s, p, rng, n_flips, plum_stock=False):
@@ -598,7 +756,8 @@ class TravelAgentsGame:
 
     def _discard_to_cap(self, s, p):
         pl = s["players"][p]
-        cap = ROOKIE_CAP if pl["char"] == "rookie" else CAP_DEFAULT
+        cap = (ROOKIE_CAP if pl["char"] == "rookie"
+               else CONDUCTOR_CAP if pl["char"] == "conductor" else CAP_DEFAULT)
         total = sum(pl["larder"].values())
         if total <= cap:
             return
@@ -668,10 +827,29 @@ class TravelAgentsGame:
                 mid_leader_won = 1.0 if mid_leaders[0] == winner else 0.0
         # winning vector breakdown (which track carried the winner)
         wp = state["players"][winner]
+        # v3.1 movement diagnostics
+        src = s["source_by_region"]
+        src_tot = sum(src.values())
+        src_share = {r: (src[r] / src_tot if src_tot else 0.0) for r in REGIONS}
+        total_poaches = sum(s["poaches"].values())
+        # winner's Rep spent on Poach vs the Rep-VP they finished on (is -1 Rep a real cost?)
+        win_rep_spent_poach = float(s["rep_spent_poach"][winner])
         return {
             "margin": float(margin),
             "tie": tie,
             "turns": float(turns),
+            # movement (Probe A)
+            "src_share_N": float(src_share["N"]),
+            "src_share_C": float(src_share["C"]),
+            "src_share_S": float(src_share["S"]),
+            "src_share_E": float(src_share["E"]),
+            "travels_per_game": float(s["travels"]),
+            # poach (Probe B)
+            "poaches_per_game": float(total_poaches),
+            "poaches_per_player": float(total_poaches / s["n"]),
+            "steal_wars_per_game": float(s["steal_wars"]),
+            "rep_spent_poach_per_game": float(sum(s["rep_spent_poach"].values())),
+            "win_rep_spent_poach": win_rep_spent_poach,
             "total_courts": float(total_courts),
             "courts_per_player": float(total_courts / s["n"]),
             "court_interval": float(court_interval),
@@ -702,7 +880,7 @@ def _wild_cap(pl):
 
 
 GAME = TravelAgentsGame()
-TITLE = "Travel Agents: Taiwan (v3 vendor-courting engine)"
+TITLE = "Travel Agents: Taiwan (v3.1 — movement rebalance + The Poach)"
 
 
 # ==================================================================================================
@@ -758,7 +936,7 @@ def _est_turns(state, p, vid):
     return 1.0 + 0.55 * (region_short + pantry_short) + (buzz_short / promote_yield) * 1.0
 
 
-def _vendor_value(state, p, vid, W):
+def _vendor_value(state, p, vid, W, flags=None):
     pl = state["players"][p]
     v = VENDORS[vid]
     val = (W["p"] * v["prestige"]
@@ -766,14 +944,20 @@ def _vendor_value(state, p, vid, W):
            + _coverage_marginal(pl, v, W["c"])
            + _mission_marginal(pl, v, W["m"])
            + _ramp_value(pl, v, W["ramp"]))
+    # camp flag (Probe A control line): a stay-home player only values vendors it can source without
+    # leaving its home region — anything naming a token from another region is effectively off-limits.
+    if (flags or {}).get("camp"):
+        home = pl["home"]
+        if any(r != home for r in v["cost_regions"]):
+            val -= 100.0
     return val
 
 
-def _rank_vendors(state, p, W):
+def _rank_vendors(state, p, W, flags=None):
     ranked = []
     for t in (1, 2, 3):
         for idx, vid in enumerate(state["board"][t]):
-            val = _vendor_value(state, p, vid, W)
+            val = _vendor_value(state, p, vid, W, flags)
             et = _est_turns(state, p, vid)
             ranked.append((val - TEMPO * (et - 1.0), val, et, t, idx, vid,
                            GAME._affordable(state, p, vid)))
@@ -806,6 +990,18 @@ def _acquire_toward(state, p, vid, W, flags):
     if flags.get("buzz_open") and early and pl["buzz"] < 5:
         return ("promote",)
 
+    # SITUATIONAL POACH (v3.1): if a co-located rival is holding a specialty this vendor needs, and I
+    # can't just take it locally (I'm not standing where it's freely available), swiping it both fills my
+    # need AND denies the rival — worth the Rep. Only when it advances the goal (never a random grief) and
+    # only if I can spare the Rep (floor + a 1-band buffer so I don't gut my own scoring).
+    if (flags.get("poach") or flags.get("poach_lean")) and reg_need and pl["rep"] >= POACH_REP_FLOOR + 1:
+        q, held = _poach_target_region(state, p)
+        if q is not None:
+            useful = [r for r in reg_need if r in held]
+            local_ok = pos in reg_need and state["supply"].get(pos, 0) > 0
+            if useful and not local_ok:
+                return ("poach",)
+
     # If Buzz is the binding constraint and ingredients are basically handled -> Promote.
     if buzz_need > 0 and sum(reg_need.values()) + pantry_need <= 1:
         return ("promote",)
@@ -815,6 +1011,13 @@ def _acquire_toward(state, p, vid, W, flags):
         if pos in reg_need and state["supply"][pos] > 0:
             second = pos if (reg_need[pos] > 1 or pantry_need == 0) else PANTRY
             return ("stock", (pos, second))
+        # camp line: refuse to leave home — source locally / pantry / bank Buzz instead of travelling.
+        if flags.get("camp"):
+            if pantry_need > 0:
+                return ("stock", (PANTRY, PANTRY))
+            if buzz_need > 0:
+                return ("promote",)
+            return ("stock", (pos if state["supply"].get(pos, 0) > 0 else PANTRY, PANTRY))
         # travel toward a needed region (adjacent first)
         target_regions = list(reg_need.keys())
         for d in ADJ[pos]:
@@ -836,12 +1039,33 @@ def _acquire_toward(state, p, vid, W, flags):
     return ("promote",)
 
 
+def _poach_target_region(state, p):
+    """If a co-located rival can be poached, return the set of specialty regions the rival is holding."""
+    q = GAME._poach_victim(state, p)
+    if q is None:
+        return None, set()
+    rv = state["players"][q]
+    held = {r for r in REGIONS if rv["larder"].get(r, 0) > 0}
+    return q, held
+
+
 def _engine_policy(view, p, legal, rng, W, flags):
     state = view
     pl = state["players"][p]
-    cap = ROOKIE_CAP if pl["char"] == "rookie" else CAP_DEFAULT
+    cap = (ROOKIE_CAP if pl["char"] == "rookie"
+           else CONDUCTOR_CAP if pl["char"] == "conductor" else CAP_DEFAULT)
     near_cap = sum(pl["larder"].values()) >= cap - 1
-    ranked = _rank_vendors(state, p, W)          # (tempo_adj, val, et, tier, idx, vid, affordable)
+
+    # ---- POACH decisions (v3.1) ----------------------------------------------------------------
+    # poach_lean = the griefer worst-case: swipe from any co-located rival holding a specialty, as long
+    # as Rep can be spent. Tests whether spamming Poach is dominant / spawns a steal-war.
+    if flags.get("poach_lean"):
+        q, held = _poach_target_region(state, p)
+        if q is not None and held and pl["rep"] >= max(POACH_REP_FLOOR, 2):
+            # don't grief away Rep the player still needs for a scoring band it's about to cross
+            return ("poach",)
+
+    ranked = _rank_vendors(state, p, W, flags)   # (tempo_adj, val, et, tier, idx, vid, affordable)
     if not ranked:
         return ("promote",)
     affordable = [r for r in ranked if r[6] and r[1] > 0]
@@ -875,6 +1099,10 @@ _STRATS = {
     "buzz_heavy":      _mk(w_p=1.0, w_r=1.0, w_c=0.6, w_ramp=0.55, buzz_open=True),
     "ingredient_heavy": _mk(w_p=1.0, w_r=0.8, w_c=0.4, w_ramp=1.25),
     "mission_focus":   _mk(w_p=0.9, w_r=0.8, w_c=0.7, w_m=2.1),
+    # v3.1 control/probe lines:
+    "camp_home":       _mk(w_p=1.0, w_r=1.0, w_c=1.0, w_ramp=1.1, camp=True),   # Probe A: stay-home (no travel)
+    "poach_situational": _mk(poach=True),                                       # Probe B: situational swipe
+    "poacher":         _mk(poach_lean=True),                                    # Probe B: aggressive griefer
 }
 
 
@@ -920,6 +1148,9 @@ STRATEGIES = {
     "buzz_heavy": _make_agent("buzz_heavy"),
     "ingredient_heavy": _make_agent("ingredient_heavy"),
     "mission_focus": _make_agent("mission_focus"),
+    "camp_home": _make_agent("camp_home"),
+    "poach_situational": _make_agent("poach_situational"),
+    "poacher": _make_agent("poacher"),
 }
 
 
@@ -943,9 +1174,10 @@ def _pick_mission(rng, W, flags):
     """draw-3-keep-1: keep the dealt mission best aligned to the strategy's weights."""
     dealt = rng.sample(MISSIONS, 3)
     align = {
-        "south_3": W["ramp"] + W["m"], "grand_tour": 2 * W["c"] + W["m"],
+        "south_3": W["ramp"] + W["m"], "north_3": W["ramp"] + W["m"],
+        "central_3": W["ramp"] + W["m"], "grand_tour": 2 * W["c"] + W["m"],
         "t1_3": W["ramp"] + W["m"] * 0.8, "t3_2": 1.5 * W["p"] + W["m"],
-        "cuisines_3": W["c"] + W["m"], "tall_18": 1.6 * W["p"] + W["m"],
+        "tall_18": 1.6 * W["p"] + W["m"],
         "volume_5": W["r"] + W["m"] * 0.9, "marquee_feeders": W["p"] + W["m"],
     }
     return max(dealt, key=lambda k: align.get(k, 0.0))
@@ -1017,11 +1249,137 @@ def _weights_for(name):
     return _STRATS["balanced"][0], {}
 
 
+# ---- PROBE A (v3.1): MOVEMENT — does the rebalance actually spread sourcing? ----------------------
+def probeA_movement(n=2000):
+    print("=" * 90)
+    print("PROBE A (v3.1) — MOVEMENT SPREAD (2p). The make-or-break for this iteration.")
+    print("  PASS: each region >=~18% of ingredient-take actions, South clearly up from ~zero; travel")
+    print("  happens; and a stay-home line is NOT competitive (the 32% North-bound cross-link works).")
+    print("=" * 90)
+    # Average per-region sourcing share + travel over a representative field (all real track lines,
+    # both seatings) so the read isn't an artefact of one strategy's routing.
+    lines = ["balanced", "prestige_rush", "reputation_climb", "coverage_spread",
+             "buzz_heavy", "ingredient_heavy", "mission_focus"]
+    acc = {r: [] for r in REGIONS}
+    trav = []
+    seed = 1
+    for a in lines:
+        for b in lines:
+            Wa, fa = _weights_for(a)
+            Wb, fb = _weights_for(b)
+            r = _series({0: _agent_for(a), 1: _agent_for(b)}, max(120, n // len(lines)),
+                        base_seed=seed, weights={0: Wa, 1: Wb}, flags={0: fa, 1: fb})
+            seed += n
+            m = r["metrics"]
+            for reg in REGIONS:
+                acc[reg].append(m["src_share_" + reg])
+            trav.append(m["travels_per_game"])
+    share = {reg: statistics.mean(acc[reg]) for reg in REGIONS}
+    travels = statistics.mean(trav)
+    print("\n  Per-region sourcing share (field average, both seatings):")
+    for reg in REGIONS:
+        flag = "" if share[reg] >= 0.17 else "  <-- BELOW ~18% FLOOR"
+        print(f"    {reg}: {share[reg]*100:5.1f}%   {'#'*round(share[reg]*80)}{flag}")
+    print(f"\n  inter-region moves / game = {travels:.1f}  (~{travels/2:.1f} per player over ~{'23'} turns each)")
+    print(f"  South sourcing = {share['S']*100:.1f}%  (design headline: up from the v3 ~6% ghost-town)")
+    # the decisive control: is a stay-home line competitive? camp_home vs the traveling field.
+    seed += n
+    camp_wr = []
+    for opp in ["balanced", "coverage_spread", "ingredient_heavy"]:
+        Wc, fc = _weights_for("camp_home")
+        Wo, fo = _weights_for(opp)
+        rA = _series({0: _agent_for("camp_home"), 1: _agent_for(opp)}, n, base_seed=seed,
+                     weights={0: Wc, 1: Wo}, flags={0: fc, 1: fo}); seed += n
+        rB = _series({0: _agent_for(opp), 1: _agent_for("camp_home")}, n, base_seed=seed,
+                     weights={0: Wo, 1: Wc}, flags={0: fo, 1: fc}); seed += n
+        w = ((rA["win"][0] + 0.5 * rA["tie"]) + (rB["win"][1] + 0.5 * rB["tie"])) / 2
+        camp_wr.append((opp, w))
+        print(f"  stay-home (camp_home) vs {opp:16} -> camp {w*100:5.1f}%")
+    camp_avg = statistics.mean(w for _, w in camp_wr)
+    floor_ok = all(share[reg] >= 0.165 for reg in REGIONS)
+    south_ok = share["S"] >= 0.18
+    camp_dead = camp_avg <= 0.47
+    verdict = ("PASS" if (floor_ok and south_ok and camp_dead) else
+               ("SOFT" if (min(share.values()) >= 0.14 and camp_avg <= 0.52) else "FAIL"))
+    print(f"\n  --> PROBE A: {verdict}  (min region {min(share.values())*100:.1f}%, "
+          f"South {share['S']*100:.1f}%, stay-home {camp_avg*100:.1f}% [want <~47%])")
+    print(f"      CROSS-LINK SUFFICIENCY: 32% cross-link rate (6/8 North-bound) is "
+          f"{'ENOUGH — camping is not competitive' if camp_dead else 'MARGINAL — consider nudging the rate up'}.\n")
+    return share, travels, camp_avg, verdict
+
+
+# ---- PROBE B (v3.1): THE POACH — fun risk-reward, or degenerate/griefy? ---------------------------
+def probeB_poach(n=2000):
+    print("=" * 90)
+    print("PROBE B (v3.1) — THE POACH (2p). PASS: low/situational frequency; a Poach-lean line is NOT")
+    print("  dominant (<=~55%); steal-wars ~0 (self-correcting); and the -1 Rep is a real cost.")
+    print("=" * 90)
+    seed = 1
+    Wb, fb = _weights_for("balanced")
+    # 1) SITUATIONAL poacher vs balanced — the "uses it well" line: frequency + win-rate.
+    Ws, fs = _weights_for("poach_situational")
+    rA = _series({0: _agent_for("poach_situational"), 1: _agent_for("balanced")}, n, base_seed=seed,
+                 weights={0: Ws, 1: Wb}, flags={0: fs, 1: fb}); seed += n
+    rB = _series({0: _agent_for("balanced"), 1: _agent_for("poach_situational")}, n, base_seed=seed,
+                 weights={0: Wb, 1: Ws}, flags={0: fb, 1: fs}); seed += n
+    sit_wr = ((rA["win"][0] + 0.5 * rA["tie"]) + (rB["win"][1] + 0.5 * rB["tie"])) / 2
+    sit_freq = (rA["metrics"]["poaches_per_game"] + rB["metrics"]["poaches_per_game"]) / 2
+    print(f"\n  [situational Poacher vs balanced]")
+    print(f"    poaches / game        = {sit_freq:.2f}   (target: low / situational, not spammed)")
+    print(f"    situational win-rate  = {sit_wr*100:.1f}%  (want ~50%: usable, not dominant)")
+    # 2) AGGRESSIVE poach-lean (griefer) vs balanced — worst case: dominance + grief spiral.
+    Wp, fp = _weights_for("poacher")
+    rA = _series({0: _agent_for("poacher"), 1: _agent_for("balanced")}, n, base_seed=seed,
+                 weights={0: Wp, 1: Wb}, flags={0: fp, 1: fb}); seed += n
+    rB = _series({0: _agent_for("balanced"), 1: _agent_for("poacher")}, n, base_seed=seed,
+                 weights={0: Wb, 1: Wp}, flags={0: fb, 1: fp}); seed += n
+    lean_wr = ((rA["win"][0] + 0.5 * rA["tie"]) + (rB["win"][1] + 0.5 * rB["tie"])) / 2
+    lean_freq = (rA["metrics"]["poaches_per_game"] + rB["metrics"]["poaches_per_game"]) / 2
+    print(f"\n  [aggressive poach-lean (griefer) vs balanced]")
+    print(f"    poaches / game        = {lean_freq:.2f}")
+    print(f"    poach-lean win-rate   = {lean_wr*100:.1f}%  (PASS if <=~55%: spamming Poach is not a winning line)")
+    # 3) RATIONAL steal-war test: MIRROR of the SITUATIONAL line (both CAN poach, but only when it helps).
+    #    This is the meaningful "do rational players spiral into a grief war?" question — as opposed to
+    #    the griefer mirror below, where both bots are HARD-CODED to grief-max (a tautological war, not a
+    #    balance signal). A rational mirror should show steal-wars ~0.
+    rS = _series({0: _agent_for("poach_situational"), 1: _agent_for("poach_situational")}, n,
+                 base_seed=seed, weights={0: Ws, 1: Ws}, flags={0: fs, 1: fs}); seed += n
+    sm = rS["metrics"]
+    wars = sm["steal_wars_per_game"]
+    sit_mir_freq = sm["poaches_per_game"]
+    print(f"\n  [RATIONAL steal-war test — situational-poacher MIRROR]")
+    print(f"    poaches / game        = {sit_mir_freq:.2f}")
+    print(f"    steal-wars / game     = {wars:.3f}   (reciprocal poach within a round; target ~0 = self-correcting)")
+    # 3b) adversarial stress: force BOTH to grief-max — shows the arms race is self-defeating, not a win.
+    rM = _series({0: _agent_for("poacher"), 1: _agent_for("poacher")}, max(300, n // 2),
+                 base_seed=seed, weights={0: Wp, 1: Wp}, flags={0: fp, 1: fp}); seed += n
+    mm = rM["metrics"]
+    print(f"\n  [adversarial stress — forced griefer MIRROR (both hard-coded to grief-max)]")
+    print(f"    poaches / game={mm['poaches_per_game']:.1f}  steal-wars/game={mm['steal_wars_per_game']:.1f}  "
+          f"margin={mm['margin']:.1f}VP  (a tautological war; the point is it's a LOSING line vs balanced above)")
+    # 4) is the -1 Rep a real cost? Rep spent on Poach vs Rep-VP the poacher finishes on.
+    rep_spent = (rA["metrics"]["rep_spent_poach_per_game"] + rB["metrics"]["rep_spent_poach_per_game"]) / 2
+    print(f"\n  [is -1 Rep a real cost?]  Rep spent on Poach / game (griefer-vs-balanced field) = {rep_spent:.2f}")
+    print(f"    Each Rep ~= 0.5-0.75 end-VP (band at 3/6/9/12) + a possibly-missed milestone perk — so")
+    print(f"    ~{rep_spent:.1f} Rep burned is a genuine tax; the Rep floor also HARD-caps total Poaches.")
+    freq_ok = sit_freq <= 4.0
+    not_dominant = lean_wr <= 0.55 and sit_wr <= 0.55
+    no_spiral = wars <= 0.15
+    verdict = ("PASS" if (freq_ok and not_dominant and no_spiral) else
+               ("SOFT" if (lean_wr <= 0.58 and wars <= 0.30) else "FAIL"))
+    print(f"\n  --> PROBE B: {verdict}  (situational {sit_wr*100:.0f}% / lean {lean_wr*100:.0f}% win, "
+          f"{sit_freq:.2f} poaches/gm rational, {wars:.2f} rational steal-wars/gm)\n")
+    return sit_wr, lean_wr, sit_freq, wars, verdict
+
+
 # ---- PROBE 1: no dominant track/opening ------------------------------------------------------------
 def probe1_tracks(n=1500):
     print("=" * 90)
     print("PROBE 1 — No dominant track/opening (2p). PASS: no line >~55%, >=3 viable in a tight band.")
     print("=" * 90)
+    # NOTE: the 7 real competitive lines ONLY. The camp_home control is a deliberate ~0-6% loser; adding
+    # it to this round-robin would inflate every real line's average by ~6pt (all beat the punching bag)
+    # and mis-calibrate the 55% threshold. Camp viability is judged separately in Probe A.
     track_lines = ["balanced", "prestige_rush", "reputation_climb", "coverage_spread",
                    "buzz_heavy", "ingredient_heavy", "mission_focus"]
     # round-robin among the real lines only (exclude naive) for the viability band
@@ -1049,6 +1407,7 @@ def probe1_tracks(n=1500):
     top = max(overall, key=overall.get)
     band = [a for a in track_lines if overall[a] >= 0.45]
     print(f"\n  field leader = {top} @ {overall[top]*100:.1f}%   |   lines in the 45%+ viable band: {len(band)}")
+    print("  (stay-home camp_home line judged separately in Probe A — it wins ~0-6%, non-viable)")
     # vs naive floor
     for naive in ("greedy_cheap", "random"):
         r = _series({0: _agent_for("balanced"), 1: _agent_for(naive)}, n, base_seed=seed,
@@ -1213,9 +1572,20 @@ def health(n=1200):
 
 if __name__ == "__main__":
     print(f"[knobs] SEASON_FINAL(2p)={SEASON_FINAL[2]}  REGION_SUPPLY={REGION_SUPPLY}  "
-          f"EVENT_PROB={EVENT_PROB}  BUZZ_FLOOR_KNOB={BUZZ_FLOOR_KNOB}  DISCOUNT_CAP={DISCOUNT_CAP}\n")
-    v1 = probe1_tracks(n=400)
-    v2 = probe2_runaway(n=1500)
-    v3 = probe3_characters(n=400)
-    v4 = probe4_stuck(n=1500)
+          f"EVENT_PROB={EVENT_PROB}  POACH_REP={POACH_REP_COST}  CONDUCTOR_FLAW={CONDUCTOR_FLAW}  "
+          f"EAST_FIX_LEVEL={EAST_FIX_LEVEL}  DISCOUNT_CAP={DISCOUNT_CAP}\n")
+    # NOTE: a full run is a few minutes (the char x mission mirror scan in Probe 3 dominates). The
+    # n-values below are those used for the committed v3.1 sim-notes read (2026-08-06).
+    print("### v3.1 LEAD PROBES (the two changes under test) ###\n")
+    vA = probeA_movement(n=800)
+    vB = probeB_poach(n=800)
+    print("### RE-CONFIRM the v3 probes still hold ###\n")
+    v1 = probe1_tracks(n=350)
+    v2 = probe2_runaway(n=600)
+    v3 = probe3_characters(n=300)
+    v4 = probe4_stuck(n=1000)
     health(n=250)
+    print("\n" + "=" * 90)
+    print("SUMMARY:  A(movement)=%s  B(poach)=%s  1(track)=%s  2(runaway)=%s  3(chars)=%s  4(stuck)=%s"
+          % (vA[-1], vB[-1], v1[-1], v2, v3[-1], v4))
+    print("=" * 90)

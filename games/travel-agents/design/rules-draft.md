@@ -47,6 +47,8 @@ On your turn, do **ONE** action. Then if your Larder (ingredients) is over **7**
 - **COURT A VENDOR** — the beat that pays. Pick a Board vendor you can afford, pay its cost, and sign it to
   your tour (§4–§5).
 - **EXTRACT** — file your finished tour / catch the last train home: trigger the end-game (§7).
+- **POACH** *(only when a rival shares your region)* — a cheeky swipe: take **1 random specialty** from
+  the rival's Larder into yours and move your **Reputation down 1**. See §6½.
 
 ## 4. Sourcing & Buzz (the two inputs)
 Every vendor wants **two things** to shine on your tour:
@@ -89,6 +91,19 @@ so you're never truly stuck. When you refill the Market, a flipped **Event** til
 Boon-skewed, region-thematic, secular. Taking 2 ingredients = up to two flips = a little more risk (that's
 the push-your-luck, opted into).
 
+## 6½. The Poach (when you're nose-to-nose with your rival)
+If a rival's pawn is in **your** region, you may spend your turn to **Poach** instead of a normal action:
+- Reach into their **Larder** and take **1 random specialty ingredient** (they choose nothing; ignore
+  pantry — the convenience store's always open, so there's nothing to swipe there). If they're holding only
+  pantry, there's nothing to Poach.
+- Pay for the cheek: move your **Reputation marker down 1** (never below 0 — no standing, no Poach).
+- That's your whole turn: Poach doesn't refill the Market, fire an event, or advance the Season.
+
+*It's a swipe at your **rival**, never a vendor or the place — you nab the oysters off their tray before
+they can, and word gets round that you play a little dirty (the Rep ding). Usually you'd rather Stock Up;
+Poach when the exact thing they're holding is the thing you need — or the thing that would let them court
+that marquee first.*
+
 ## 7. Ending the trip
 The end-game begins the moment **either** happens: a player takes **EXTRACT**, **or** the **Season**
 end-timer fills (it advances +1 each time anyone courts a vendor). Then: **finish the current round**,
@@ -98,8 +113,9 @@ does **not** end the game — the Season timer paces the game so the engine has 
 ## 8. Scoring (reveal signature missions now!)
 Your markers already show two vectors live. Total four sources:
 1. **Prestige** — the sum of your vendors' stars (already on your score track).
-2. **Reputation** — end-VP by where your Rep marker sits (3→+2 · 6→+4 · 9→+6 · top→+9). *(You also
-   collected one-time perks as you passed 3 / 6 / 9.)*
+2. **Reputation** — score the VP for your **final** position **only** (NOT cumulative): end at 3–5 → **+2**
+   · 6–8 → **+4** · 9–11 → **+6** · 12 → **+9**. *(You also collected one-time perks as you passed 3 / 6 / 9
+   during play. Reaching 12 does **not** end the game — the Season timer does.)*
 3. **Region-Coverage** — distinct regions your vendors cover: **2→2 · 3→5 · all 4→9**.
 4. **Signature mission** — flip it: **+7** if you pulled off its vendor pattern, else 0.
 Add them up. Most points wins → **Top Agent**. **Ties:** highest Reputation, then most vendors, then most
@@ -127,6 +143,8 @@ regions.
    Outraced, not robbed."
 6. **Reputation + Coverage** — point at the two tracks/vectors; "several ways to win — go tall, climb Rep,
    or spread across the island."
+   - *(introduce **Poach** the first time both pawns land in one region: "you two are elbow-to-elbow — you
+     can swipe a random ingredient off their tray, but it dings your Reputation. Cheeky, situational.")*
 7. **Signature mission** — "your secret +7 tour; keep it face-down."
 8. **Market events** — introduce on the first refill flip; "the island lives — this festival just handed
    you Buzz."
@@ -134,7 +152,11 @@ regions.
 
 ## Still to specify (→ `bg-developer`)
 - The tiered **Vendor deck** (~44–52: T1 Stalls / T2 Eateries / T3 Marquee) as component data (CSV): cost
-  (named ingredients + Buzz), region icon, Prestige, Rep, perk.
+  (named ingredients + Buzz), region icon, Prestige, Rep, perk. **v3.1 re-cost (see design-doc *Movement
+  rebalance*):** anchor every vendor's ingredient cost in its **own icon-region**, add cross-region links
+  on ~40% (spread evenly, T2/T3), cap pork ≤5 / rice ≤5, floor every specialty at ≥3 vendors — so all four
+  regions are demanded (South rises from ~2 tokens to ~9). Keep every real dish real (anchor true; CD
+  "connections you bring" framing for cross-links only; consultant-checked).
 - The **Mission pool** (~12–16 vendor patterns, +7; draw-3-keep-1).
 - Region **Market supplies** with **~2–3 Event tiles** each; the **~11 Event** starter set (design-doc).
 - **Buzz** token supply; add **chicken 雞 + egg 蛋** North ingredient tokens; final specialty counts

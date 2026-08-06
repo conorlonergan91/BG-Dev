@@ -256,6 +256,14 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     standing as an agent / the grand tour). *v3.*
   - ~~**Brief / Client Brief / Memo**~~ = **CUT in v3** (directive deck removed; head office survives as
     the rulebook/earpiece *voice* only).
+  - **Poach** = the conditional same-location action (when a rival shares your region, take 1 random
+    specialty from their Larder, −1 Reputation). *v3.1 spine word — LOCKED (bg-theme).* Chosen over
+    "Tip-Off": "Poach" is a **double pun** (a cooking verb *and* the literal travel-agency term for
+    poaching a rival's clients) **and** it maps to physically *taking* a token, where a "tip-off" is
+    information passed and wouldn't fit grabbing an ingredient off their tray. *Flavour:* "You're both
+    jammed at the same night-market corner — you swipe the good stuff off their tray before they can.
+    Word gets round you play a little dirty (−1 Rep)." Targets **the rival agent only**, never a vendor
+    or the place.
   - **Conditions** / **Events** (or **Word on the Street** / **Sitrep** in the head-office voice) = the
     region-event **tiles** salted into the Market (fire on refill; no queue). *Kept, re-homed.*
   - **best-tour title** = the season's prize you're both racing for — the compete-engine's payoff. A
@@ -307,6 +315,17 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   rail** (no temple/deity/ghost-month/funerary content as mechanics or gags); (3) **local characters** in
   the events deck — dignified, varied subjects, not caricature or obstacles; (4) any **award/title**
   naming in Chinese/Tâi-lô — native review before it locks.
+- **v3.1 cross-link framing check (→ `bg-publishing` consultant, before art):** 8 vendors carry a
+  "connections you bring on your tour" cross-region token that is **not** an ingredient in the dish
+  (framed as a regional *leg/pairing*, never claimed to be in the bowl — this is honest as written). Ask
+  the consultant to eyeball the **three softest cases**, where the dish's own anchor ingredient is
+  dropped or the token's name conflicts with the dish name: **花蓮扁食** (a pork wonton costed as
+  greens + oysters — its real pork anchor isn't named); **蝦捲** (literally "shrimp roll", costed as
+  **milkfish** — a name/token mismatch, since the system has no shrimp token); **擔仔麵** (shrimp-broth
+  bowl costed as **oysters**). All three are genuinely Tainan/East seafood-or-region dishes so the
+  seafood/region framing is *true*, not invented — this is a "confirm the abstraction reads as connection,
+  not error" glance, not a flag. (V09 火雞肉飯→oysters framed as the **Chiayi 東石** oyster coast is
+  geographically real and a model for the rest.)
 - **People with dignity:** vendors, cooks, the aunties/uncles (阿姨/阿伯) are **subjects** — warm,
   specific, varied in age/look — not exotic scenery or obstacles. Let players see a range of faces.
 - **The 5 playable Agent Characters (v3) — dignified archetypes, and they HELP the anti-extraction
@@ -355,6 +374,22 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
+- 2026-08-06 (bg-theme, **v3.1 — The Poach + movement re-cost — CHEAP guardian sweep**) — **STILL
+  COHERENT, NO re-theme needed; two names/notes firmed.** The signature twist didn't move. Checked
+  design-doc v3.1 + the re-costed `vendors.csv`. **(1) The Poach:** reads as **warm agent-vs-agent
+  slapstick** — the design-doc bakes in "targets the rival only, never a vendor or place; a vendor
+  *chose* you and can't be stolen", so the anti-extraction rail HOLDS. **Firmed the keyword to "Poach"**
+  (over "Tip-Off"): double pun (cooking verb + poach-a-rival's-client) *and* it maps to physically taking
+  a token — a "tip-off" is info passed, wrong fit. Flavour set (see Naming). **(2) Re-costed vendors —
+  dishes still real, not mangled:** the "connections you bring" cross-link token is always framed as a
+  regional *leg/pairing*, **never claimed to be an ingredient in the dish** — honest as written. V09
+  火雞肉飯→oysters via the real **Chiayi 東石** oyster coast is a model case. The two pork→seafood
+  reframes (擔仔麵→oysters, 蝦捲→milkfish) are genuinely Tainan seafood dishes, so the seafood framing is
+  *true*. **Routed the 3 softest cases** (花蓮扁食 pork wonton with no pork token; 蝦捲 name/token
+  mismatch; 擔仔麵→oysters) **to the paid consultant** as a "confirm-the-abstraction" glance, not a flag.
+  **(3) No stranded cut names / register intact:** vendors.csv is clean v3 tags (no Plate/Dish/Briefs/
+  Hot-List/Conditions-queue refs); the Poach flavour ("word gets round you play a little dirty") stays in
+  the warm caper register, not menace. Rung **held at evocative**.
 - 2026-08-06 (bg-theme, **v3 vendor-courting engine — guardian coherence sweep**) — **STILL COHERENT,
   NO re-theme needed; identity firmed to v3.** Checked design-doc v3 (Plate-a-Dish + Hot-List → **court
   Vendors on a shared tiered Board**, paying **ingredients + Buzz**, each an engine piece feeding
