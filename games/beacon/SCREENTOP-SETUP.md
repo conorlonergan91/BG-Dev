@@ -8,6 +8,7 @@ The ready-to-upload assets are committed in **`games/beacon/exports/`** (viewabl
 - `signals_sheet_1.png` — **10 × 2 grid**, 12 signals + back  ·  `signals_back.png`
 - `cover.png` — themed box/title image (the game's cover/thumbnail in Screentop)
 - `tide-track.png` — the 7-space Tide track  ·  `tokens.png` — Tide marker + First-Keeper token
+- `player-aid.png` — themed quick-reference (drop it on the table so both keepers can glance at it)
 - `rulebook.pdf` — the v0.3 rules, laid out (share it with your friend before you start)
 
 To **regenerate** them after changing the data/rules, just run the game's build script:

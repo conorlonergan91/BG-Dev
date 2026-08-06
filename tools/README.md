@@ -42,6 +42,9 @@ python boards/build_board.py --type tokens --labels "Tide,1st" --shape circle --
 
 # a player mat / board from a JSON spec (copy boards/sample_mat.json):
 python boards/build_board.py --type mat --spec boards/sample_mat.json --theme nautical --out out/mat.png
+
+# a player-aid / quick-reference sheet from a JSON spec (title + sections):
+python boards/build_board.py --type aid --spec <game>/components/player-aid.json --theme nautical --out out/aid.png
 ```
 
 ## `lint/` — consistency linter (stdlib-only)

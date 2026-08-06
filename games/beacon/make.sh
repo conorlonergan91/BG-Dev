@@ -14,6 +14,7 @@ python3 $T/cards/build_cards.py  --csv components/signals.csv --out build --them
 python3 $T/boards/build_board.py --type track --spaces 7 --title "The Tide" \
     --left-label "Keeper A harbour" --right-label "Keeper B harbour" --theme "$theme" --out build/tide-track.png
 python3 $T/boards/build_board.py --type tokens --labels "Tide,1st" --shape circle --theme "$theme" --out build/tokens.png
+python3 $T/boards/build_board.py --type aid --spec components/player-aid.json --theme "$theme" --out build/player-aid.png
 python3 $T/cards/build_cover.py  --title "Beacon" --subtitle "Two keepers. One coast." \
     --theme "$theme" --players 2 --time "20 min" --weight 1.8 --out build/cover.png
 python3 $T/rulebook/build_rulebook.py --md design/rules-draft.md --title "Beacon" --theme "$theme" --out build/rulebook.pdf
@@ -27,5 +28,6 @@ cp build/sheets/signals_sheet_1.png exports/signals_sheet_1.png
 cp build/sheets/signals_back.png    exports/signals_back.png
 cp build/tide-track.png             exports/tide-track.png
 cp build/tokens.png                 exports/tokens.png
+cp build/player-aid.png             exports/player-aid.png
 cp build/rulebook.pdf               exports/rulebook.pdf
 echo "✓ exports/ refreshed — commit these."

@@ -22,15 +22,18 @@ MCP servers (see below).
 
 | Path | What it is |
 |------|------------|
-| `.claude/agents/` | The composable pipeline — 9 specialist subagents (`bg-ideation` … `bg-publishing`). |
+| `.claude/agents/` | The composable pipeline — 10 specialist subagents (`bg-ideation` … `bg-critic` … `bg-publishing`). |
 | `.claude/skills/board-game-studio/` | The **Creative Director** orchestrator (human-in-the-loop protocol). |
-| `.claude/skills/bg-2d-components/` | Cards / boards / tiles / tokens: **data → SVG/HTML → PDF / PNG / TTS**. |
+| `.claude/skills/bg-2d-components/` | Cards / boards / tracks / tokens / player aids: **data → SVG → PNG / PDF / Screentop**, themed. |
 | `.claude/skills/bg-3d-components/` | Miniatures / dice / inserts / boxes via **Blender / FreeCAD / OpenSCAD MCP**. |
 | `.claude/commands/` | Quick slash commands: `/bg`, `/bg-new`, `/bg-status`, `/bg-decide`. |
-| `knowledge/` | Up-to-date knowledge base: archetypes, reference games, fundamentals, trends, manufacturing, IP. |
-| `templates/` | Game bible, design doc, playtest log, decision log, sell sheet, example card data. |
-| `tools/cards/` | A working starter 2D pipeline (Python → SVG → PDF/PNG). |
-| `games/` | Your games live here, one folder each. |
+| `knowledge/` | Up-to-date knowledge base + `designer-profile.md` (the studio's taste north star). |
+| `templates/` | Game bible, design doc, playtest log, decision log, sell sheet, `make.sh`, example data. |
+| `tools/cards/` | 2D pipeline: data → themed SVG → PNG/PDF, deck sheets, **covers** (`themes.py`). |
+| `tools/boards/` | Themed **tracks, tokens, mats, player aids**. |
+| `tools/sim/` | **Playtest simulator** — play a game thousands of times to expose dominant strategies & balance. |
+| `tools/lint/`, `tools/rulebook/` | Consistency **linter** + **rulebook** generator (markdown → themed A5 PDF). |
+| `games/` | Your games live here — data + docs committed; `build/` is scratch, `exports/` holds committed deliverables. |
 
 ## Optional integrations
 

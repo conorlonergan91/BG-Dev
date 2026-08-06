@@ -25,6 +25,7 @@ import html
 import json
 import math
 import sys
+import textwrap
 from pathlib import Path
 
 # themes.py lives with the card pipeline; make it importable regardless of cwd.
@@ -157,6 +158,42 @@ def render_mat(theme, spec):
     return _svg(W, H, parts), W, H
 
 
+def render_aid(theme, spec):
+    """A themed player-aid / quick-reference sheet. Height auto-fits the content.
+    spec: {title, subtitle?, sections:[{heading, lines:[...]}], width?}"""
+    W = spec.get("width", 1600)
+    pad = 56
+    ink, accent, text, muted = theme["ink"], theme["accent"], theme["text"], theme["muted"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    wrap_at = max(24, int((W - 2 * pad) / 15))     # ~char width at the body size
+    head_h = 150
+    body = []
+    y = head_h + 40
+    for sec in spec.get("sections", []):
+        body.append((f'<text x="{pad}" y="{y}" font-size="34" fill="{accent}" font-family="{tfont}" '
+                     f'font-weight="bold" letter-spacing="1">{esc(sec.get("heading","")).upper()}</text>'))
+        y += 20
+        for line in sec.get("lines", []):
+            for i, seg in enumerate(textwrap.wrap(line, wrap_at) or [""]):
+                y += 40
+                bullet = "•  " if i == 0 else "    "
+                body.append(f'<text x="{pad}" y="{y}" font-size="28" fill="{text}" '
+                            f'font-family="{bfont}">{esc(bullet + seg)}</text>')
+        y += 34
+    H = y + pad
+    parts = [f'<defs>{page_gradient(theme, "pg")}</defs>',
+             f'<rect width="{W}" height="{H}" rx="28" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>',
+             f'<rect x="0" y="0" width="{W}" height="{head_h}" fill="{ink}"/>',
+             f'<rect x="0" y="{head_h}" width="{W}" height="6" fill="{accent}"/>',
+             f'<text x="{pad}" y="76" font-size="56" fill="#fff" font-family="{tfont}" '
+             f'font-weight="bold" letter-spacing="1">{esc(spec.get("title",""))}</text>']
+    if spec.get("subtitle"):
+        parts.append(f'<text x="{pad}" y="120" font-size="30" fill="{accent}" font-family="{tfont}" '
+                     f'font-style="italic">{esc(spec["subtitle"])}</text>')
+    parts += body
+    return _svg(W, H, parts), W, H
+
+
 def _svg(W, H, parts):
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">'
             + "".join(parts) + "</svg>")
@@ -164,7 +201,7 @@ def _svg(W, H, parts):
 
 def main():
     ap = argparse.ArgumentParser(description="Render themed boards, tracks, and tokens.")
-    ap.add_argument("--type", required=True, choices=["track", "tokens", "mat"])
+    ap.add_argument("--type", required=True, choices=["track", "tokens", "mat", "aid"])
     ap.add_argument("--theme", default="clean")
     ap.add_argument("--out", type=Path, default=Path("build/board.png"))
     # track
@@ -198,11 +235,16 @@ def main():
         else:
             tokens = [{"label": l, "qty": 1} for l in labels] or [{"label": "?", "qty": 1}]
         svg, W, H = render_tokens(theme, tokens, args.shape, mm(args.diameter_mm), args.cols)
-    else:  # mat
+    elif args.type == "mat":
         if not args.spec:
             ap.error("--type mat requires --spec <file.json>")
         spec = json.loads(args.spec.read_text(encoding="utf-8"))
         svg, W, H = render_mat(theme, spec)
+    else:  # aid
+        if not args.spec:
+            ap.error("--type aid requires --spec <file.json>")
+        spec = json.loads(args.spec.read_text(encoding="utf-8"))
+        svg, W, H = render_aid(theme, spec)
 
     _save(svg, args.out, W, H)
     return 0

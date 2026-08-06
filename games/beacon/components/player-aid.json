@@ -1,0 +1,39 @@
+{
+  "title": "BEACON — Player Aid",
+  "subtitle": "Two keepers. One coast. 3 Nights. (v0.3)",
+  "width": 1600,
+  "sections": [
+    {
+      "heading": "Each round",
+      "lines": [
+        "Channel shows 2 ships. Both keepers secretly pick 1 Signal (0–5) and reveal together.",
+        "HIGHER Signal wins the beam: move the Tide 1 space toward you.",
+        "But the LOWER Signal picks a ship first (bright light steers the Tide; a dim light grabs the cargo). The beam winner takes the other ship.",
+        "Tie: Tide stays; the First Keeper picks first. Then refill the Channel to 2."
+      ]
+    },
+    {
+      "heading": "Each Night (4 rounds)",
+      "lines": [
+        "You hold 6 Signals and commit 4 — choose which 2 to hold back.",
+        "Night end: the Tide side scores 2 points per space from centre (max 6).",
+        "The tide turns: the keeper who LOST the Tide takes the First-Keeper token. Reset the Tide to centre; take all Signals back."
+      ]
+    },
+    {
+      "heading": "Scoring (after Night 3)",
+      "lines": [
+        "Ship values in your Harbour.",
+        "Convoy: +2 for each set of Cargo + Passenger + Naval.",
+        "Run: +2 for each 3 consecutive values in one suit.",
+        "Plus your Tide bonuses. Most points wins — tie: most Naval."
+      ]
+    },
+    {
+      "heading": "The question every round",
+      "lines": [
+        "Grab the cargo in front of you (bid low) — or push the Tide for the end-of-Night bonus (bid high)?"
+      ]
+    }
+  ]
+}

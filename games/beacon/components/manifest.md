@@ -10,7 +10,8 @@ Feeds prototyping (Screentop.gg) and, later, manufacturing. Cards are poker size
 | Tide marker | 1 | token | `build_board.py --type tokens` | starts centre |
 | First-Keeper token | 1 | token | `build_board.py --type tokens` | initiative marker |
 | Harbour zones | 2 | play-area label | `build_board.py --type mat` (optional) | one per player; can be printed mats or just table space |
-| Rules sheet + player aid | 1 | A5 / card | `design/rules-draft.md` | teach-in-play-order |
+| Rulebook | 1 | A5 | `design/rules-draft.md` → `build_rulebook.py` | teach-in-play-order |
+| Player aid | 1 | card/landscape | `components/player-aid.json` → `build_board.py --type aid` | quick-reference, both keepers |
 
 ## Screentop.gg build
 - Ships → one deck (24 cards) + shared back.
@@ -22,6 +23,8 @@ Feeds prototyping (Screentop.gg) and, later, manufacturing. Cards are poker size
 - Cover image: `python ../../tools/cards/build_cover.py --title "Beacon" --subtitle "Two keepers. One coast." --theme nautical --players 2 --time "20 min" --weight 1.8 --out build/cover.png`
 - Tide track: `python ../../tools/boards/build_board.py --type track --spaces 7 --title "The Tide" --left-label "Keeper A harbour" --right-label "Keeper B harbour" --theme nautical --out build/tide-track.png`
 - Tokens: `python ../../tools/boards/build_board.py --type tokens --labels "Tide,1st" --shape circle --theme nautical --out build/tokens.png`
+- Player aid: `python ../../tools/boards/build_board.py --type aid --spec components/player-aid.json --theme nautical --out build/player-aid.png`
+- **Or just run `./make.sh`** — regenerates all of the above into `build/` and refreshes `exports/`.
 
 ## For manufacture (later)
 36 poker cards total → a small-box card game. Add bleed (3 mm) and export CMYK per
