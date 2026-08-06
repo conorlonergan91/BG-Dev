@@ -78,9 +78,28 @@ games/<slug>/
 ├── exports/             # COMMITTED deliverables — curated shareable renders (deck sheets, cover, rulebook)
 ├── make.sh              # regenerates build/ from data, then snapshots deliverables into exports/
 ├── playtests/           # playtest logs and feedback synthesis
+├── builds/              # frozen build snapshots (build-N/) + BUILDS.md ledger — see "Scaling" below
 ├── art/                 # art briefs, references, and assets
 └── marketing/           # pitch, sell sheet, campaign copy
 ```
+
+### Scaling a project: products, modules, series & builds
+
+Start flat (above) — a focused game needs nothing more. **Grow only as scope demands** (restraint):
+- **Expansion or a distinct mode** → add a self-contained module folder: `games/<slug>/expansions/<exp>/`
+  or `games/<slug>/modes/<mode>/`, each with its own `…-bible.md`, `design/`, `components/`, `sim/`,
+  `playtests/`, `exports/`, and a combined-with-base `complexity-budget.json`. Iterate a module
+  independently; `make.sh` builds base + modules.
+- **Whole-product oversight** → once a game has ≥1 module, add **`product.md`** (from
+  `templates/product.md`): base + every module at a glance, the combined component/complexity view, and
+  the *plays-well separately & combined* status. Owned by `bg-architect`.
+- **Series** (several standalone products sharing IP/theme) → keep each as its own `games/<slug>/`,
+  linked by a `series/<name>.md` manifest (shared assets + member list); each `product.md` notes its series.
+- **Builds (versioning)** → `builds/build-N/` are **frozen snapshots** + a `BUILDS.md` ledger, managed by
+  `python tools/version/build_snapshot.py {cut|list|restore}`. **Cut a build at each known-good / fun
+  state.** If a direction stops being fun, `restore` build N onto a fresh git branch and continue —
+  independently or as part of the whole. Snapshots are self-contained (source + exports; `--source-only`
+  skips regenerable renders). Snapshots exclude `build/` and `builds/` themselves.
 
 Rule: **data is the source; renders are regenerated.** Cards/tiles/tokens are defined as data
 (CSV/JSON) and rendered by the 2D/3D tooling. Never hand-edit generated files. `build/` is disposable

@@ -55,6 +55,17 @@ the *minimum* new components. Recommend dropping a mode that doesn't earn its ke
 - Plan **state persistence** (what carries between sessions), **onboarding/teaching** across the arc, and
   how the campaign *transforms* the base without breaking standalone play.
 
+## You also own the repo architecture & builds
+- **Promote the layout only as scope grows** (restraint): a focused game stays flat; add
+  `expansions/<slug>/` or `modes/<slug>/` module folders and a top-level **`product.md`** (whole-product
+  view) *when* a real expansion/mode/series appears — never pre-emptively. See `CLAUDE.md` → "Scaling".
+- Keep the **combined view current** in `product.md` (base + every module; component reuse; combined
+  complexity vs budget; plays-well separately & combined).
+- **Cut a build snapshot at each known-good / fun state**:
+  `python tools/version/build_snapshot.py cut --game games/<slug> --note "…"`. This lets the human revert
+  to a build and branch from it if a direction stops being fun. Recommend cutting a build after a
+  successful playtest or before a risky redesign.
+
 ## Output contract (return to the Director)
 Write `games/<slug>/design/architecture.md` with:
 1. **Mode plan** — which modes (incl. solo/campaign) the game will support and why each fits; what makes

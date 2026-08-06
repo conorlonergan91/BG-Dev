@@ -58,6 +58,18 @@ Checks: unique card ids, numeric value/cost, positive integer quantities, recomm
 `type`s that a theme actually colours, and that any `sim/*.py` still imports and exposes GAME +
 STRATEGIES. Non-zero exit on errors — good as a pre-commit sanity check.
 
+## `version/` — build snapshots (stdlib-only)
+
+Freeze / list / restore whole-product "builds" so you can revert to a known-good state and branch off it.
+
+```bash
+python version/build_snapshot.py cut     --game games/beacon --note "v0.3, balanced & fun"
+python version/build_snapshot.py list    --game games/beacon
+python version/build_snapshot.py restore --game games/beacon --build 3 --yes   # onto a fresh branch
+```
+A build = a self-contained snapshot in `games/<slug>/builds/build-N/` + a `BUILDS.md` ledger. Excludes
+`build/`/`builds/`; `--source-only` also skips regenerable `exports/`. Owned by `bg-architect`.
+
 ## `bgg/` — BoardGameGeek reference lookups (stdlib-only)
 
 Deterministic facts (community **weight** 1–5, players, playtime, mechanisms, rank) for grounding

@@ -35,7 +35,8 @@ MCP servers (see below).
 | `tools/lint/`, `tools/rulebook/` | Consistency **linter** + **rulebook** generator (markdown → themed A5 PDF). |
 | `tools/complexity/` | **Complexity gauge** — proxies vs the game's budget, so weight doesn't creep as you iterate. |
 | `tools/bgg/` | **BoardGameGeek lookups** — deterministic weight/players/mechanisms/rank; seed a budget "like *Arcs*". |
-| `games/` | Your games live here — data + docs committed; `build/` is scratch, `exports/` holds committed deliverables. |
+| `tools/version/` | **Build snapshots** — freeze/list/restore whole-product builds; revert to "build 3" and branch off it. |
+| `games/` | Your games live here — data + docs committed; `build/` is scratch, `exports/` holds deliverables, `builds/` holds frozen build snapshots. Structure grows into `expansions/`, `modes/`, `product.md` only as scope demands. |
 
 ## Optional integrations
 
