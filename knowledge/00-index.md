@@ -13,6 +13,7 @@ change** — re-verify live (via `bg-research` / `bg-publishing`) when precision
 | [`process-and-playtesting.md`](./process-and-playtesting.md) | The indie design pipeline, playtesting (esp. blind), and rules-writing best practice. |
 | [`simulation-and-balance.md`](./simulation-and-balance.md) | Using `tools/sim` to pressure-test balance: metrics, strategy libraries, health signals, mirror probes, and the design→sim→tune loop. |
 | [`elegance-and-clarity.md`](./elegance-and-clarity.md) | Keeping games at target weight and rules a joy to read: the complexity budget, the cut test, rulebook/player-aid clarity, and FAQ discipline. |
+| [`modes-and-expansions.md`](./modes-and-expansions.md) | Player modes (solo/duel/multi/party), campaigns, and base-vs-expansion architecture — component reuse, playing well separately & combined, and how reference games do it. |
 | [`trends-2026.md`](./trends-2026.md) | Current trends (cozy games, solo, digital prototyping, crowdfunding shift, market pressures). |
 | [`manufacturing-specs.md`](./manufacturing-specs.md) | Card sizes, bleed, DPI, print-on-demand specs, Tabletop Simulator export limits. |
 | [`publishing-ip.md`](./publishing-ip.md) | IP / copyright / trademark / product-safety compliance for Ireland, UK, USA. |

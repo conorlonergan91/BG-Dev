@@ -72,7 +72,7 @@ count, neutral/"dummy" players at low counts, count-specific rules. The "best at
 A dedicated single-player mode, usually an **Automa** — a rules/card system simulating an opponent
 without full AI (popularized by Automa Factory for Scythe, Viticulture, Wingspan, Terraforming Mars).
 Now a near-mandatory feature and a major growth segment. Good Automa = low-upkeep, real pressure,
-scalable difficulty.
+scalable difficulty. *(Designing modes/campaigns/expansions as a whole → `modes-and-expansions.md`.)*
 
 ## Table presence
 The visual/tactile draw on the table — insert trays, 3-D pieces, art, component quality. Drives shelf
