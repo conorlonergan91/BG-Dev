@@ -60,5 +60,24 @@ turn structure / flow of play → detailed action reference → end-game & scori
 4. **Synthesize** — one insight per finding, ranked by severity.
 5. Propose **one change at a time**; record it in `decision-log.md`; re-test.
 
+## First-Time-User-Experience (FTUE) — instrument the onboarding, don't vibe it
+
+Blind testing (above) is the *method*; FTUE is *what you measure* while you run it. Borrowed from software
+UX, because the designer never experiences their own game for the first time — so the first play is the one
+thing you can't feel and must record. Use `templates/blind-playtest-log.md`. The instruments:
+
+- **The FTUE clock:** setup time · **teach/read time** (start → first turn) · **time to first meaningful
+  decision** (front-loaded-rules proxy) · total play time **vs. the box claim** · a tally of **rules
+  look-ups + wrong moves** (each is a specific rulebook/icon bug; *where* it happened is the fix pointer).
+- **The decision-language test:** "I *have to* do X" / "I guess I'll…" (forced/dead/obvious turn) vs.
+  "I *could* do X, Y or Z" + visible deliberation (a live decision). The fastest read on decision quality.
+- **The quiet-death check:** the first 15 minutes (unbox → first turn → "I get it"). A bad FTUE means the
+  game gets played once and shelved — the silent failure that no balance pass catches.
+
+Route what breaks: clarity/wording → `bg-elegance`; icon/layout → `bg-infodesign`; perceptual (contrast/
+colour/legibility) → `bg-access`. **A recurring question is a rule to FIX, not a FAQ to add.**
+
 Cross-reference: [`design-fundamentals.md`](./design-fundamentals.md) for the levers you'll be tuning,
-[`trends-2026.md`](./trends-2026.md) for platform/crowdfunding context.
+[`simulation-and-balance.md`](./simulation-and-balance.md) for what to de-risk *before* spending a blind
+test, [`funding-and-route-to-market.md`](./funding-and-route-to-market.md) for the path-to-market detail
+(step 9 above), and [`trends-2026.md`](./trends-2026.md) for platform/crowdfunding context.
