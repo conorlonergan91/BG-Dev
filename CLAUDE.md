@@ -48,6 +48,7 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 | Research | `bg-research` | Market/competitive research — comparable games, gaps, audience, what's been done. |
 | Explore / Brainstorm | `bg-explore` | Divergent exploration of the design space; mechanism blends, twists, "what ifs". |
 | Design | `bg-design` | Systems design — core loop, components, rules architecture, economy/math, balance. |
+| Architecture | `bg-architect` | Player modes (solo/duel/multi/party), campaigns, and base-vs-expansion scope; component reuse; plays well separately & combined. |
 | Development | `bg-developer` | Turns design into concrete artifacts: card/component data, rules spec, build code. |
 | Prototyping | `bg-prototyper` | Produces playable outputs: **Screentop.gg** deck (default) / TTS module, print-and-play PDF, 3D pieces. |
 | Critique | `bg-critic` | Adversarial red-team: hunts dominant strategies, dead turns, swinginess, co-op alpha-player leaks — before you spend playtests. |

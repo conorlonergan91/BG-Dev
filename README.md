@@ -22,7 +22,7 @@ MCP servers (see below).
 
 | Path | What it is |
 |------|------------|
-| `.claude/agents/` | The composable pipeline — 11 specialist subagents (`bg-ideation` … `bg-critic` … `bg-elegance` … `bg-publishing`). |
+| `.claude/agents/` | The composable pipeline — 12 specialist subagents (`bg-ideation` … `bg-architect` … `bg-critic` … `bg-elegance` … `bg-publishing`). |
 | `.claude/skills/board-game-studio/` | The **Creative Director** orchestrator (human-in-the-loop protocol). |
 | `.claude/skills/bg-2d-components/` | Cards / boards / tracks / tokens / player aids: **data → SVG → PNG / PDF / Screentop**, themed. |
 | `.claude/skills/bg-3d-components/` | Miniatures / dice / inserts / boxes via **Blender / FreeCAD / OpenSCAD MCP**. |

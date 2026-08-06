@@ -25,6 +25,13 @@
   and run **`bg-elegance`** each iteration. Over budget → simplify, or consciously log a raise. Never
   silent creep.
 
+## Modes & scope (decide the ambition at the START — see knowledge/modes-and-expansions.md)
+- **Player modes:** <!-- which of solo/automa · 2p/duel · multiplayer · party · co-op/competitive; and the sweet spot -->
+- **Campaign?** <!-- none / replayable campaign / one-shot legacy — and: in the base box, or an expansion? -->
+- **Expansion ambition:** <!-- what the base deliberately holds complete, and what's imagined for later -->
+- **Guardrail:** the base must be complete & great on its own; leave *hooks* for the future, not baggage.
+  Owned by `bg-architect`; keep new components per mode/expansion minimal (reuse the base).
+
 ## Mechanism spine
 <!-- 1–3 mechanism families and the blend; why each part needs the others (see knowledge/archetypes.md). -->
 
