@@ -14,6 +14,20 @@ it (unless the human deliberately steers elsewhere). Update it whenever taste/sc
 - **Both co-op *and* competitive duel** are in scope — co-op is a genuine love, not an afterthought.
 - Prefers **elegant** designs: high depth from low complexity (~1.5–2.5 weight), **~20–40 min**.
 
+## Business constraints (how it gets released)
+- **Minimise upfront cost & financial risk.** A near-zero out-of-pocket path to release is strongly
+  preferred over one that needs the designer to front art, inventory, or ad spend. This is a first-class
+  constraint, not an afterthought — every relevant agent should bias toward it (owned by `bg-funding`; see
+  `funding-and-route-to-market.md`).
+- **Default route: prove it free (Screentop) → pitch/licence to a publisher**, where the publisher fronts
+  all cost and tariff risk for a royalty. POD for a cheap real copy; self-run crowdfunding only later, with
+  a warm list. (Ranked ladder in `funding-and-route-to-market.md`.)
+- **This aligns with the taste, not against it.** The elegance signature — small box, low component count,
+  ~1.5–2.5 weight — is also **the cheapest to make and release by every route** and fits publishers' sub-$20
+  small-box slots. Design cheap is design elegant (see `cost-and-manufacturability.md`).
+- **Accessible & inclusive by default.** Suit/faction info dual-coded (colour + shape), legible, low-text —
+  which is also cheaper to localise and to pitch (`accessibility.md`, `information-design.md`).
+
 ## Favourite games together (the taste signature)
 | Game | What it is | What it signals about the taste |
 |------|-----------|--------------------------------|

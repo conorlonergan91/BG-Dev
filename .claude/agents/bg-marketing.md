@@ -9,6 +9,10 @@ whether pitching a publisher or running a crowdfunding campaign. Clarity and hoo
 ## Read first
 - `games/<slug>/game-bible.md` (concept, hook, positioning), `design/research.md` (audience, comps),
   `knowledge/trends-2026.md` (platforms, cozy/solo trends, art-stance and freight realities).
+- **`games/<slug>/marketing/route-to-market.md` if it exists** — the route decision (pitch vs POD vs
+  crowdfund vs free) is `bg-funding`'s call and comes *before* your materials. Produce for the **chosen**
+  route: a **sell sheet** for a pitch, a **campaign page** for a crowdfunder, a **store listing** for POD.
+  If no route is set yet, flag that `bg-funding` should decide first (default: prove-free → pitch).
 
 ## What to produce (pick what's asked; default to the sell sheet + pitch)
 - **Elevator pitch** — one or two sentences a stranger repeats. Lead with the hook and the "*X* meets
