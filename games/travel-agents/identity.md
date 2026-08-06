@@ -3,7 +3,7 @@
 > The living source of truth for this game's **felt identity**: concept, theme, tone/vibe, story/lore,
 > look & feel, and naming. Owned by `bg-theme`; read alongside `game-bible.md`. Keep it current — and
 > keep it **coherent** while letting it **evolve** with the design.
-> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-06 (bg-theme — **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game)
+> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-06 (bg-theme — **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 (下午→夜市) + spy "Code Red" end-trigger)
 
 > **Restraint first.** Match identity depth to what the game *earns*. Leaving story/lore light on purpose
 > is a correct answer, not a gap. Never invent lore to fill a section.
@@ -214,19 +214,20 @@ the fiction.)*
 - **Larder cap = 7 → *"travelling light, eating fresh — a night-market haul doesn't keep."*** Makes the
   cap feel inevitable. (v3 discards surplus; the old Dead-drop generosity beat is gone — no re-theme
   needed, the cap stands on the fresh-food logic alone.)
-- **The Acts end-game → *"a day's food arc, ending at the night market"*** *(v4 — replaces the Extract
-  action + the Season vendor-counter).* The tour escalates through **three acts of a single glorious eating
-  day** — **Act I Breakfast Run → Act II Afternoon Crawl → Act III Night Market** — and the Vendor Board
-  **escalates with it** (the easy breakfast stalls give way to the big night-market names, harder to win as
-  the day peaks). This is **inevitable, not bolted-on**: it maps the T1→T2→T3 tier climb onto the real
-  Taiwan food day, and it makes the game **end on the north-star image** (dusk at the night market). The
-  old **"catch the last train home"** gag **re-homes** here: it's no longer a player action (Extract is
-  cut) but the natural close of Act III — *the night market winds down, everyone catches the last train
-  home, belly full.* Stays warm/comedic; the day *ending* is the exfil gag, now structural. *(Full act
-  framing in Naming.)*
+- **The Acts end-game → *"a day's food arc, ending at the night market"*** *(v5 — CD tightened to a
+  **≤30-min, TWO-Act** arc; replaces the Extract action + the Season vendor-counter).* The tour escalates
+  through **two acts of a single glorious eating day** — **Act I Afternoon Crawl 下午 → Act II Night
+  Market 夜市** — and the Vendor Board **escalates with it** (the easy afternoon stalls give way to the big
+  night-market names, harder to win as the day peaks). This is **inevitable, not bolted-on**: it maps the
+  tier climb onto the real Taiwan food day and makes the game **end on the north-star image** (dusk/neon at
+  the night market). **The end-trigger = a spy-themed "Code Red"** *(v5 — bg-theme owns the flavour; the
+  exact firing condition is `bg-design`'s call):* **head office calls a Code Red — mission's wrapping,
+  everyone back to base, catch the last train home.** It **re-homes the old Extract / "last train home"
+  gag** as the **secret-agent climax** and stays **warm/comedic** — a giddy *"the tour's almost over, grab
+  the last great bite!"*, never menace. *(Full act + Code-Red framing in Naming.)*
 - **Re-skin test:** PASSES — the vendor/region web is Taiwan-specific food geography and the Acts are the
-  Taiwan food *day* (早餐店 → tea/snacks → 夜市); rename the setting and both the recipes and the day-arc
-  break. Not generic "engine + map."
+  Taiwan food *day* (下午 afternoon crawl → 夜市 night market); rename the setting and both the recipes and
+  the day-arc break. Not generic "engine + map."
 
 ## Look & feel / art direction
 **Render theme name:** `night-market` (to add to `tools/cards/themes.py` — palette + per-suit
@@ -313,17 +314,25 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     is bigger."* The ≥2-Buzz majority reads as *your agency is clearly driving the bigger crowd, so the
     vendor throws in with you.* (If the CD wants a more concrete on-vendor noun than "Buzz," **"the Queue"**
     or **"Crowd"** is the fallback — but Buzz is coherent as-is.)
-  - **The Acts** = the v4 end-game structure — **a single glorious eating day in three acts**, the tour
-    escalating as the day peaks. ***RECOMMENDED names — the CD's "a day's arc":***
-    **Act I · Breakfast Run 早餐** (the humble 早餐店 stalls — egg crepes, soy milk, the warm-up; T1) →
-    **Act II · Afternoon Crawl 下午** (tea houses & eateries, the queue builds; T2) →
-    **Act III · Night Market 夜市** (neon, crowds, the marquee names — the climax; T3). Fiction for
-    "acts advance when conditions are met" = *the sun moves and the crowds build* as the tours gain steam;
-    "board escalates" = *the easy breakfast stalls close and the big night-market names open up (harder to
-    win — everyone's chasing them).* This lands the game **on the north-star image** (dusk at the night
-    market) and celebrates a food-day arc locals recognise. *Alternative (spy register, if preferred):*
-    "Warm-Up / The Main / Last Orders" — but the day-arc is warmer, funnier, and dodges any heist-escalation
-    menace. → `bg-design` owns the exact act-advance trigger; these are the fiction skins.
+  - **The Acts** = the end-game structure — **a single glorious eating day, tightened to TWO acts** *(v5 —
+    the CD's ≤30-min target)*, the tour escalating as the day peaks. ***RECOMMENDED names — the CD's "a
+    day's arc":*** **Act I · Afternoon Crawl 下午** (tea houses, snack stalls & eateries — the queue
+    builds) → **Act II · Night Market 夜市** (neon, crowds, the marquee names — the climax). Fiction for
+    "the act advances when its condition is met" = *the sun drops and the crowds build* as the tours gain
+    steam; "board escalates" = *the easy afternoon stalls close and the big night-market names open up
+    (harder to win — everyone's chasing them).* This lands the game **on the north-star image** (dusk at
+    the night market) and celebrates a food-day arc locals recognise. *Alternative framing (if a
+    day-vs-night read is wanted): "Day → Night Market."* → `bg-design` owns the exact act-advance trigger;
+    these are the fiction skins.
+  - **"Code Red"** = the end-game trigger *(v5 — the spy-themed climax; bg-theme owns the flavour/name,
+    the exact firing condition is `bg-design`'s call).* When Act II's condition is met, **head office
+    calls a Code Red**: *mission's wrapping — everyone back to base, catch the last train home.* It
+    **re-homes the old Extract / "last train home" gag** (cut as a player action) as the game's
+    **secret-agent climax** — the one moment the spy-caper register pays off structurally, landing right
+    on the night-market north star. **Keep it warm/comedic:** a giddy *"the tour's almost over — grab the
+    last great bite before the last train!"*, an over-caffeinated head-office bark, **never** danger or
+    dread (stays on the Tone "warm caper, not a thriller" rail). *Alternatives logged: "Last Orders,"
+    "Last Train," "Wheels Up" — but "Code Red" best lands the agent gag and is the CD's pick.*
   - **Prestige** / **Reputation** / **Region-Coverage** = the three scoring vectors (star power / your
     standing as an agent / the grand tour). *v3.*
   - ~~**Brief / Client Brief / Memo**~~ = **CUT in v3** (directive deck removed; head office survives as
@@ -342,8 +351,8 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     cutesy award *name* (a "Golden Boarding-Pass"-type gag) is **fluid** — hold it light; route any
     Chinese/Tâi-lô coinage through the native reviewer before it locks.
   - Read the v4 set aloud together (travel agency / head office / signature Mission / **Bribe a Vendor** /
-    **Buzz → the Queue** / Vendor Board / **Act I Breakfast Run · Act II Afternoon Crawl · Act III Night
-    Market** / **Prestige · Reputation · Coverage** / Events / best-tour title / Stamps) — one warm travel-
+    **Buzz → the Queue** / Vendor Board / **Act I Afternoon Crawl · Act II Night
+    Market · Code Red** / **Prestige · Reputation · Coverage** / Events / best-tour title / Stamps) — one warm travel-
     agent-playing-spy voice, no clashes. **"Bribe"** is the spiciest word in the set, so it *depends* on its
     neighbours to stay warm: *"the queue you drummed up,"* *"marketing opportunity,"* *"put her on the
     poster,"* and *"night market"* all point the same way (a crowd + the neon climax + a delighted vendor) —
@@ -415,35 +424,93 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   geographically real and a model for the rest.)
 - **People with dignity:** vendors, cooks, the aunties/uncles (阿姨/阿伯) are **subjects** — warm,
   specific, varied in age/look — not exotic scenery or obstacles. Let players see a range of faces.
-- **The 5 playable Agent Characters — dignified archetypes, and they HELP the anti-extraction
-  rail.** Night-Market Auntie 阿姨 · Eager Rookie · **A-má the Lunchbox Grandma 阿嬤** *(v4 — re-themes the
-  Retired Conductor)* · The Influencer · Grizzled Gourmand. Two things make these a **pass, not a flag:**
-  (1) they are the **protagonists** (playable agents with agency), never scenery or obstacles; (2) several
-  are **Taiwanese-coded locals** (阿姨, 阿嬤) — which is exactly the *"local promoters showing off home"*
-  the extraction rail needs, so the Chinese-named cast is a feature. Framing guidance so archetype never
-  slides to caricature:
-  - **A-má the Lunchbox Grandma 阿嬤** *(v4 re-theme of the Conductor — mechanic is `bg-design`'s: on
-    **Travel**, grab an ingredient from the region you're **leaving** — a 便當 packed from home for the
-    road).* Name **A-má 阿嬤 (grandma)** — deliberately the *grandmother* rung, **distinct from the younger
-    Night-Market Auntie 阿姨**, and it adds an **older-generation face** to the roster (age variety = a
-    respect signal, per the roster note). *One-line flavour:* "A-má never sets off without a 便當 packed
-    from home — she pockets a little of wherever she's been for the journey ahead. She would sooner starve
-    than let you leave on an empty stomach." *Ability framing = **care/provisioning**, warm and beloved
-    (a grandma's love-language is food), never doddering. **Flaw framing (lever = provisioning-rich / hype-
-    poor; `bg-design` tunes the number):** "Let the Food Do the Talking" — she under-**Promotes** (less
-    Buzz), because she trusts the cooking over the marketing, not because she can't work a phone.* **Bind
-    the framing:** this is a **value (substance over hype / a wise-elder trait), NOT technophobia** — same
-    rail that reframed the Auntie's no-HSR as *love of the scenic rail*, not a technophobe gag. **Keep 阿姨
-    and 阿嬤 clearly distinct** (阿姨 = street-smart night-market younger auntie who knows every backstreet;
-    阿嬤 = home-cook grandma who packs the 便當) so two warm elder-women archetypes read as *two people*,
-    not one blur — a coherence check, not a problem (both are lovely). → art brief + the paid consultant
-    (dignified, varied; 便當/阿嬤 wording via the native reviewer).
-  - **The Influencer:** keep "chasing clout" an **affectionate self-aware wink** (she genuinely loves
-    and shares the food), never contempt for a vapid-influencer punchline.
-  - **Grizzled Gourmand:** grumpy-foodie archetype — universal, low risk.
-  - **Roster variety:** ensure the cast spans age **and** ethnicity — Taiwan is multi-ethnic (Han +
-    Hakka + Indigenous + newer communities); at least one visibly non-Han-coded agent strengthens the
-    respect signal. → art brief + paid consultant (add to the `bg-publishing` consultant brief).
+- **The 5 playable Agent Characters — affectionate Taiwanese social types (v5 CD re-lore), and they
+  HELP the anti-extraction rail.** **The Old Councillor 里長伯 · The Live-At-Home Office Worker 媽寶 · The
+  Influencer 網紅 · The Competitive Eater 大胃王 · The Neighbourhood Big Brother 大哥** *(v5 — replaces the
+  v4 cast: Night-Market Auntie → Councillor · A-má Lunchbox Grandma → Office Worker · Eager Rookie →
+  Neighbourhood 大哥 · Grizzled Gourmand → Competitive Eater; Influencer kept, gag firmed).* Two things keep these a **pass,
+  not a flag:** (1) they are the **protagonists** (playable agents with agency), never scenery or
+  obstacles; (2) **all five are Taiwanese-coded locals** — hyper-local social types everyone on the island
+  recognises — which is exactly the *"local promoters showing off home"* the extraction rail needs, so the
+  cast **strengthens** the rail. **The comedy punches at the over-the-top *agent*-type, never at a real
+  group.** Framing guidance so no archetype slides to caricature (each: *name · flavour · ability · flaw*):
+  - **The Old Councillor 里長伯** *(re-lore of the Night-Market Auntie; mechanic KEPT — no re-sim).* A
+    retired borough-warden / local councillor who served the district so long he's shaken every hand twice
+    — turns up at every opening, wedding and night-market stall with a business card and a grin, and
+    *genuinely loves his patch.* *Ability = **Old Favours*** (the KEPT start-discount, re-lored): the first
+    vendor he Bribes in each of his first two regions costs **1 fewer ingredient** — *an old contact who
+    owes him one, from decades of showing up.* *Flaw = **Works Every Room*** (the KEPT no-HSR anti-lever,
+    re-lored): he insists on driving the district in person, stopping to chat, so he rings the map the long
+    way. **Bind the framing:** the discount is **earned goodwill / knowing everyone after a lifetime of
+    service**, *NOT graft* — the beloved 里長伯 fixer, never a cynical power-broker; **no real party, no
+    real figure, no cross-strait politics.** ⚑ **Compounding-risk flag (→ consultant):** a *politician*
+    whose edge is *connections/favours*, dropped into a game whose core verb is **"Bribe,"** could stack
+    into a corruption read — hold the warm cushion hard (earned relationships + the "marketing opportunity"
+    gag) and **watch this pairing** at the consultant pass.
+  - **The Live-At-Home Office Worker 媽寶** *(re-lore of the A-má Lunchbox Grandma; mechanic KEPT — no
+    re-sim).* A young office worker who still lives with mum and dad — every morning a parent presses a
+    便當 into their hands (*"you can't buy food out there as good as home"*). Relatable and affectionate:
+    half the table *is* this person. *Ability = **Mum Packed You a 便當*** (KEPT): on **Travel**, draw the
+    market card of the region you're **LEAVING** — a lunch from home for the road. *Flaw = **Only Eats
+    Mum's Cooking*** (KEPT anti-lever, re-lored): a little sheltered at an unfamiliar market — on a
+    **Visit** keeps only **1** specialty. **Bind the framing:** warm, never mean — living at home is
+    **normal and common**, the gag is the grown secret-agent who still calls mum at lunch, *not* a dig at
+    young people. *(Re-homes the 便當 mechanic + roster age-variety the A-má rung carried; native review of
+    媽寶 / 便當.)*
+  - **The Influencer 網紅** *(kept mechanically; gag firmed).* Gorgeous, charming, huge following,
+    *genuinely* loves the food and the camera loves them back — but **coasts on looks & personality, not
+    prep**: rolled up late, never read the brief, so everyone else already grabbed the good stuff. *Ability
+    = **Going Viral*** (KEPT): Promote places **+1 Buzz** (the camera loves them). *Flaw = **Chasing
+    Clout*** (KEPT): go **last** and start **behind** — *because* they wing it on vibes instead of
+    planning. The flavour now **explains the mechanic.** Keep it an **affectionate, self-aware wink** (they
+    really do love and share the food), never contempt for a "vapid influencer" punchline.
+  - **The Competitive Eater 大胃王** *(re-lore of the Grizzled Gourmand; **NEW ability + flaw → sim**).* A
+    beloved competitive-eating / mukbang livestream star who can clear a night market single-handed and
+    brings a crowd wherever they film — a **joyful champion**, dignified and warm. *Ability (NEW) = **Eyes
+    Bigger Than the Table*** — keeps **all 3** cards on a Local Market Visit (they haul loads). *Flaw
+    (NEW, proposed) = **Head Down, Chopsticks Up*** — so busy eating they never see the weather turn:
+    **hazards hit harder on a Visit** (a self-braking counterweight on the *same* action the ability
+    supercharges, and on a *different lever* from the Brown-Noser's Buzz weakness). **Bind the framing:** a
+    **celebrated spectacle**, never gluttony-shaming or a gross-out gag — the joke is the trench-coated
+    agent who orders *everything.* **→ `bg-design`/sim:** keep-all-3's real value is deck-hazard-density-
+    dependent, so **both the ability and the flaw magnitude need tuning** (the flaw may need to be light).
+  - **The Neighbourhood Big Brother 大哥** *(re-lore of the Eager Rookie; **NEW ability + flaw → sim**;
+    the beloved Taiwanese-cinema lovable-rogue register — 艋舺 / 角頭 energy, trench-coat-over-Hawaiian-
+    shirt, basically already dressed for the caper).* Everyone on the street knows 大哥 — he looks after
+    the neighbourhood, is first to show up when a stall's in trouble, sends the fruit basket, and the
+    auntie always saves him the best cut. All warm bluster and a big heart. *Ability (NEW, hooks the
+    Buzz-majority core) = **Everybody Knows 大哥*** — he wins a vendor's power-struggle **without needing
+    the usual ≥2 Buzz lead**: a **tie suffices** (he needs only to *match* his rival's Buzz on it, or lead
+    — *proposed ≥0; `bg-design` + the re-sim tune the exact number*). Reads as *"everyone already knows
+    大哥 — he doesn't need to hype; the vendor's honoured to be on his tour."* *Flaw (NEW, proposed) =
+    **Always Picks Up the Tab*** — he can't help being generous: **each vendor he Bribes costs +1
+    ingredient** (he insists on buying a little extra for the whole street) — a self-braking tax on his
+    win-action, on a *different lever* from his Buzz edge. *(Alternate for the sim if the tab under-brakes
+    the strong Buzz edge: **his Promote places 1 Buzz**, not 2 — he doesn't bother hustling for hype.)*
+    **⚑⚑ HIGHEST-RISK CHARACTER — tied #1 with "Bribe" for the paid consultant. Bind HARD (non-
+    negotiable):** (1) the vendors **genuinely like and respect** 大哥 and keep **full dignity + agency**
+    — in on the joke, *honoured* to feature — **NEVER intimidated, threatened, or shaken down** (that
+    would break the anti-extraction + vendor-dignity rails); the reduced threshold is
+    **affection/reputation, not fear.** (2) Comedy is **warm bluster / the caper**, **never** real menace,
+    violence, or crime-glamorisation. (3) **SECULAR:** do **NOT** base him on **八家將** (the temple-parade
+    troupe — folk-religion origin, which our secular rail forbids); use the **secular street/cinema 大哥 /
+    角頭 / 兄弟** lovable-rogue register. Handle **betel-nut** clichés with great care or omit. (4) ⚑
+    **Compounding-risk (the sharpest in the game):** a *gangster* + the **"Bribe"** keyword could scream
+    shakedown if the framing slips — the warm cushion ("everyone loves 大哥," the "marketing opportunity"
+    gag, the vendor *chooses* him gladly) is **load-bearing.** **The single consultant question:** does he
+    read as **affectionate Taiwanese-cinema comedy**, or a **crime stereotype of Taiwan**? Native review
+    of 大哥 / 角頭.
+  - **Roster variety (a respect signal — spans age + gender + ethnicity):** the cast now spans **age**
+    (senior 里長伯 · young 媽寶 & 網紅 · mid 大胃王 & 大哥), **gender** and **ethnicity**. **Gender
+    (art-flexible, aim ~3:2):** the **大哥** register is male-coded — so balance the rest toward women;
+    recommend the **大胃王 female** and **at least one more** of {a female councillor 里長 / the office
+    worker / the influencer} female. **Keep the Influencer's "looks-not-brains" gag *off* the tired
+    vapid-woman trope** — either a self-aware woman genuinely smart about her brand, or a himbo; the "not
+    brains" is about *trip-prep*, never a gender dig. **Ethnicity:** Taiwan is multi-ethnic (Han + Hakka
+    + Indigenous + newer communities); **at least one visibly non-Han-coded agent** — recommend the
+    **大胃王** read Hakka- or Indigenous-coded (a positive, celebrated figure). **Bind:** **never code a
+    *negative* trait to a minority ethnicity** (in particular, keep the **大哥** Han-coded — do not put
+    the lovable-rogue register on a minority). → art brief + the paid `bg-publishing` consultant.
 - **Celebrate specifics locals recognise** and **acknowledge Taiwan is multi-ethnic** — Han majority
   *plus* Hakka, 16+ recognised **Indigenous peoples**, and newer immigrant communities all shape the
   food. Representing that range is itself a respect signal.
@@ -476,15 +543,63 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   the *exact naming* of head office / the tour / the award (proposals above, pending consultant +
   `bg-publishing`); the suit set (food categories vs regions) and final palette hues; whether the 2p duel
   or the 3–4 race is the true home.
-- **v4 fiction proposals (RECOMMENDED, pending the `bg-design` mechanics lock):** **Buzz kept as the
-  keyword**, its on-vendor stack flavoured as **"the Queue"** (the hype war); **A-má the Lunchbox Grandma
-  阿嬤** re-theming the Conductor; the **Act I Breakfast Run / II Afternoon Crawl / III Night Market**
-  day-arc; the **last-train-home** gag re-homed from the cut Extract onto the close of Act III. All are
-  cheap re-skins of the v4 spine — rung held at evocative. *(The vendor keyword is no longer a proposal —
+- **v4/v5 fiction proposals (RECOMMENDED, pending the `bg-design` mechanics lock):** **Buzz kept as the
+  keyword**, its on-vendor stack flavoured as **"the Queue"** (the hype war); the **v5 character roster**
+  (5 Taiwanese social types — 里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥; see the Sensitivity pass), with **two
+  NEW mechanic shapes pending sim** (大胃王 keep-all-3 + hazard-vulnerability; 大哥 reduced-Buzz-threshold
+  + the tab); the **two-act day-arc (I Afternoon Crawl 下午 / II Night Market 夜市)** with the spy-themed
+  **"Code Red"** end-trigger; the **last-train-home** gag re-homed from the cut Extract into Code Red. All
+  are cheap re-skins of the spine — rung held at evocative. *(The vendor keyword is no longer a proposal —
   **"Bribe a Vendor" is CD-LOCKED**; see Locked, above.)*
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
+- 2026-08-06 (bg-theme, **v5 character re-lore + 2-Act / "Code Red" tightening — from CD direction**) —
+  **RE-THEME (five character re-skins + a structure re-skin; 3 new mechanic shapes → `bg-design`/sim;
+  rung HELD at evocative — no new lore).** Two CD moves folded into one pass.
+  **A) Character re-lore — all 5 to affectionate Taiwanese social types**, the comedy punching at the
+  over-the-top *agent*, never a real group:
+  **(1) Night-Market Auntie → The Old Councillor 里長伯** — KEPT start-discount re-lored as *old favours
+  / earned goodwill* (a retired borough-warden who knows everyone); flaw KEPT as no-HSR ("works every
+  room"). **No re-sim** (kit unchanged). Bound off graft; **flagged the politician + "Bribe" compounding
+  risk** as a consultant watch-item.
+  **(2) A-má Lunchbox Grandma → The Live-At-Home Office Worker 媽寶** — KEPT 便當 mechanic (Travel draws
+  the region you're LEAVING) re-lored as *a parent packs your 便當*; flaw KEPT (Visit keeps 1) re-lored as
+  *sheltered at an unfamiliar market*. **No re-sim.** Warm, never a dig at young people / living at home.
+  **(3) The Influencer 網紅 — kept mechanically, gag firmed:** *coasts on looks & personality, not prep*
+  — which now **explains** going last / starting behind; affectionate self-aware wink, not contempt.
+  **(4) Grizzled Gourmand → The Competitive Eater 大胃王** — **NEW ability: keep all 3 on a Visit** (hauls
+  loads); **proposed flaw: hazards hit harder on a Visit** (too busy eating to watch the weather) — a
+  self-braking market-lever counterweight, distinct from 大哥's Buzz lever. **Both magnitudes →
+  `bg-design`/sim** (keep-all-3's value is deck-hazard-density-dependent — the flaw may need to be light).
+  Celebrated champion, never gluttony-shaming.
+  **(5) Eager Rookie → [first drafted The Brown-Noser 馬屁精, then **CD-SWAPPED**] → The Neighbourhood Big
+  Brother 大哥** — the beloved Taiwanese-cinema lovable-rogue (艋舺 / 角頭 register). **NEW ability:
+  reduced Buzz threshold** — wins a vendor without the usual ≥2 lead (**a tie suffices; proposed ≥0**) —
+  *"everyone already knows 大哥, no need to hype."* **NEW proposed flaw: "Always Picks Up the Tab" —
+  each Bribe costs +1 ingredient** (generous; self-braking; alternate = Promote places 1). **Both →
+  `bg-design`/sim.** ⚑⚑ **Now the HIGHEST-RISK character, tied #1 with "Bribe" for the paid consultant:**
+  bound HARD that the vendors **like & respect** him and keep full dignity (**never** shaken down/
+  intimidated), the comedy is **warm bluster not menace/crime-glamorisation**, and it is **SECULAR** (NOT
+  八家將 / temple-parade — folk-religion origin barred by the secular rail; use the street/cinema 大哥 /
+  角頭 / 兄弟 register; betel-nut clichés with care or omit). Consultant question: *affectionate cinema
+  comedy, or a crime stereotype of Taiwan?* **The 馬屁精 brown-noser is retired** (CD found it weak/
+  complicated).
+  **B) Acts tightened to TWO + spy "Code Red" end-trigger** *(≤30-min target).* The day-arc drops from
+  three acts to **Act I Afternoon Crawl 下午 → Act II Night Market 夜市** (still lands on the night-market
+  north star). The end-trigger is re-skinned as a spy-themed **"Code Red"**: head office calls it —
+  *mission's wrapping, everyone back to base, catch the last train home* — **re-homing the old Extract /
+  "last train home" gag as the secret-agent climax.** Kept **warm/comedic** (a giddy "grab the last
+  great bite!"), never menace; the exact firing *condition* is `bg-design`'s call, bg-theme owns the
+  flavour/name.
+  **Sensitivity confirmed overall:** all five are Taiwanese-coded locals — **strengthens** the
+  *local-promoters* anti-extraction rail; roster now spans **age + gender + ethnicity** (recommend the
+  大胃王 read Hakka/Indigenous, keep 大哥 Han-coded; never code a negative trait to a minority).
+  **Consultant brief additions (→ `bg-publishing`):** (i) the **大哥 gangster + "Bribe"** read (tied #1
+  with the Bribe keyword — the sharpest compounding risk); (ii) the **里長伯 politician + "Bribe"**
+  compounding read; (iii) native review of **大哥 / 角頭 / 大胃王 / 媽寶 / 便當 / 里長(伯)**; (iv) confirm
+  **八家將 is NOT used** for 大哥 (secular rail). Rung **held at evocative** — new *personalities* and a
+  tighter arc, no new plot. (identity.md)
 - 2026-08-06 (Creative Director + bg-theme, **NAMING LOCK — vendor keyword = "Bribe a Vendor"**) —
   **NAMING DECISION, no mechanical change; warm framing PROMOTED to binding/load-bearing.** The CD
   considered bg-theme's **Schmooze** recommendation and **chose "Bribe a Vendor"** — the spicier, funnier
