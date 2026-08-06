@@ -77,6 +77,46 @@ THEMES = {
             "signal":   {"color": "#e0a95b", "emblem": "spark"},
         },
     },
+    "night-market": {  # Travel Agents: Taiwan — a warm Taiwan night market at dusk.
+        # FIRST-PASS palette from identity.md; NOT locked — pending the bg-access colour-blind check.
+        # The identity flags a real red/green (deutan/protan) risk on the region colours (vermilion N
+        # vs jade-teal C, amber S between), so EVERY suit is dual-coded: colour + a distinct emblem,
+        # and the component data also carries a 繁體 + text label. Fonts include a CJK face so the
+        # Traditional-character dish/ingredient labels render (Taiwan uses 繁體, never Simplified).
+        "page": ("#F7F1E3", "#E9DCC2"),          # bao-paper cream, dusk-warmed toward the foot
+        "ink": "#26324D",                         # dusk-indigo night sky — card borders + backs
+        "text": "#2B2B2B",                        # soft ink body text
+        "muted": "#7A6E58",                       # warm taupe for type lines / captions
+        "accent": "#D64545",                      # lantern vermilion — flourishes, back rings
+        # CJK-capable face FIRST: cairosvg's toy text API resolves the first family and does NOT fall
+        # through the comma list, and dish/token text mixes Latin + 繁體 in one element — so the lead
+        # font must carry BOTH scripts or the 繁體 renders as tofu boxes. WenQuanYi Zen Hei (installed
+        # here) covers both; the mac/win faces follow for real-fallback renderers (e.g. browsers).
+        "title_font": "'WenQuanYi Zen Hei', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif",
+        "body_font": "'WenQuanYi Zen Hei', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif",
+        "radius": 40,
+        "suits": {
+            # --- dish deck: suit = REGION (colour) + a distinct emblem (the dual-code) ---
+            "north":      {"color": "#D64545", "emblem": "triangle"},  # Lantern vermilion — beef / pork
+            "central":    {"color": "#1F8A7A", "emblem": "diamond"},   # Jade teal — tea / tapioca pearls
+            "south":      {"color": "#E6A930", "emblem": "circle"},    # Golden amber — oysters / milkfish
+            "east":       {"color": "#26324D", "emblem": "square"},    # Dusk indigo — rice / wild greens
+            "signature":  {"color": "#C9A227", "emblem": "spark"},     # Gold — the cross-region feasts
+            # --- assignment deck: the secret "Operation" dossier cards ---
+            "assignment": {"color": "#26324D", "emblem": "stamp"},     # Dusk indigo + a passport stamp
+            # --- ingredient tokens: colour = region, emblem distinct per specialty within its region ---
+            "beef":       {"color": "#D64545", "emblem": "triangle"},
+            "pork":       {"color": "#D64545", "emblem": "hex"},
+            "tea":        {"color": "#1F8A7A", "emblem": "diamond"},
+            "pearls":     {"color": "#1F8A7A", "emblem": "circle"},
+            "oysters":    {"color": "#E6A930", "emblem": "hex"},
+            "milkfish":   {"color": "#E6A930", "emblem": "diamond"},
+            "rice":       {"color": "#26324D", "emblem": "square"},
+            "greens":     {"color": "#26324D", "emblem": "triangle"},
+            "pantry":     {"color": "#8A8F98", "emblem": "beam"},      # slate — convenience store, anywhere
+            "_default":   {"color": "#26324D", "emblem": "circle"},
+        },
+    },
 }
 
 
@@ -127,5 +167,11 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
         return (f'<circle cx="{cx}" cy="{cy}" r="{r*0.95}" fill="none" stroke="{color}" '
                 f'stroke-width="{max(2, r*0.16)}" opacity="0.5"/>'
                 f'<circle cx="{cx}" cy="{cy}" r="{r*0.5}" fill="{color}"/>')
+    if kind == "stamp":  # an inked passport/dossier seal — a ring around a filled block (for Missions)
+        o, inner = r * 0.95, r * 0.46
+        return (f'<rect x="{cx-o}" y="{cy-o}" width="{2*o}" height="{2*o}" rx="{o*0.28}" fill="none" '
+                f'stroke="{color}" stroke-width="{max(2, r*0.16)}" opacity="0.6"/>'
+                f'<rect x="{cx-inner}" y="{cy-inner}" width="{2*inner}" height="{2*inner}" '
+                f'rx="{inner*0.28}" fill="{color}"/>')
     # fallback
     return f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{color}" {sw}/>'
