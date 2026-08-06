@@ -3,9 +3,9 @@
 Designing so the game is **cheap to make and cheap to move** — which, for a designer minimising upfront
 cost, decides more than almost anything else. Component footprint is a *budget*, like complexity: set it at
 project start (`component-cost-budget.json`), guard it with `tools/cost/check_cost.py`, and don't let it
-creep. **The good news for this studio: the elegance house style (small box, low weight) is already the
-cheapest to release by every route** — so this discipline is mostly about not *losing* that advantage as
-scope grows. Owned by **`bg-architect`** (component scope) with **`bg-funding`** (route-to-market economics).
+creep. **Worth knowing: if a game targets a small box and low weight, that's already the cheapest to
+release by every route** — so when a game does head that way, this discipline is mostly about not *losing*
+that advantage as scope grows. Owned by **`bg-architect`** (component scope) with **`bg-funding`** (route-to-market economics).
 
 ## The cost levers, in order of impact
 1. **Number of *unique component types*** — the biggest lever by far. Each distinct type (cards, tokens,

@@ -1,7 +1,7 @@
 # Funding & Route to Market
 
 How a game actually gets *released* — and, for this studio, how to do it with **minimal money out of the
-designer's pocket and minimal financial risk** (a first-class studio constraint; see
+designer's pocket and minimal financial risk** (a first-class business constraint; see
 `designer-profile.md`). This is a *strategy* decision that comes **before** campaign copy or a sell sheet:
 which route, given the goal and the capital you're willing to risk. Owned by **`bg-funding`**;
 `bg-marketing` then produces the materials for the chosen route, and `bg-publishing` handles its IP/
@@ -36,8 +36,8 @@ route — **the default recommendation for a risk-averse hobbyist whose goal is 
 - **How signing actually happens:** convention **pitch appointments** (book **6–8 weeks ahead** — slots
   fill fast; ~10–15 min: explain, play a sample round, Q&A), **Protospiel**-type events, and *targeted*
   cold submissions (check they're open, personalise, lead with the sell sheet + video, follow their form).
-  **Match the publisher's tier** — many only take **small-box games under $20**, which is exactly this
-  studio's lane.
+  **Match the publisher's tier** — many only take **small-box games under $20**, so a small-box design
+  has more open doors.
 
 ### 3. Print-on-demand (POD) — near-zero upfront, thin margin
 Platforms print/ship each copy on order — no inventory, no minimum. *Storefront POD* (The Game Crafter
@@ -81,15 +81,15 @@ Don't pick one; **sequence** so each stage is paid for by traction, not your wal
 A **small-box, low-component, few-component-*type*** game is cheaper to POD, cheaper to crowdfund-fulfil,
 and easier to pitch (fits sub-$20 slots). Concretely: **minimise unique component types**, use **standard
 63×88 mm cards**, keep the **box small and light** (freight + tariff exposure), use **double-sided/multi-use**
-components, and **keep text minimal** (lower reading-level *and* cheaper to localise). **This is already the
-elegance house style** — so the studio's aesthetic *is* its cheapest-to-release strategy. Cross-ref
+components, and **keep text minimal** (lower reading-level *and* cheaper to localise). **When a game does
+target a small, low-component footprint, its design and its cheapest-to-release strategy line up.** Cross-ref
 `cost-and-manufacturability.md`.
 
 ## The recommendation framework (for minimal upfront cost)
 1. **Always start free** (Screentop/P&P) — €0, produces proof-of-fun + a list.
 2. **Default to pitching/licensing** if the goal is a real, distributed game with no financial risk — trade
    control/upside for the publisher fronting 100% of cost and all tariff risk. Best odds with a small-box
-   sub-$20 design (this studio's lane).
+   sub-$20 design.
 3. **POD in parallel** for a buyable copy + trickle; a proving ground, not income.
 4. **Stage it** — free → (POD) → pitch *or* crowdfund once demand is proven. The actual recommended path.
 5. **Self-crowdfund last**, only with a warm list and an appetite for the upside, control, marketing work,

@@ -1,66 +1,58 @@
-# Designer Profile — taste & focus
+# Designer & Studio Context
 
-The studio's north star for *this* designer. **Every agent should read this** and bias its work toward
-it (unless the human deliberately steers elsewhere). Update it whenever taste/scope changes.
+> **This is context, NOT a design-style bias.** The studio has **no default house style**. It is
+> **genre- and style-agnostic** and approaches every game *generically*, on that game's own terms.
+> Nothing here tells an agent to prefer a player count, weight, genre, mechanism family, or mood.
 
-## Who & where
-- Based in **Ireland**; publishing intent for **Ireland, UK, USA** (see `publishing-ip.md`).
-- Designs with a regular **2-player partner** — games are made to be played *together*.
-- Experience: some hobby prototypes. Wants a fast, fun, collaborative human+AI process.
-- Platform: **Screentop.gg** first (free, browser, join-by-link — works remote or in person).
+## Where design taste actually comes from
 
-## Focus (current)
-- **Two players, first and foremost.**
-- **Both co-op *and* competitive duel** are in scope — co-op is a genuine love, not an afterthought.
-- Prefers **elegant** designs: high depth from low complexity (~1.5–2.5 weight), **~20–40 min**.
+- **Per game** → the game's own **`identity.md`** + **`game-bible.md`** (set at kickoff from the brief,
+  guarded by `bg-theme`). This is the *only* place a single game's taste/genre/weight/player-count lives.
+- **Per group** → a **series/collection** may share a taste, but **only when the human explicitly asks
+  for a group of games with a shared style**. Capture that shared taste in the series manifest
+  (`series/<name>.md`), and it applies to that group only — never repo-wide.
+- **Absent an explicit steer** → stay neutral. Ideate broadly, don't privilege any family, and let the
+  brief for *this* game (or the human's answers) set the direction. Never import taste from another game.
 
-## Business constraints (how it gets released)
-- **Minimise upfront cost & financial risk.** A near-zero out-of-pocket path to release is strongly
-  preferred over one that needs the designer to front art, inventory, or ad spend. This is a first-class
-  constraint, not an afterthought — every relevant agent should bias toward it (owned by `bg-funding`; see
-  `funding-and-route-to-market.md`).
-- **Default route: prove it free (Screentop) → pitch/licence to a publisher**, where the publisher fronts
-  all cost and tariff risk for a royalty. POD for a cheap real copy; self-run crowdfunding only later, with
-  a warm list. (Ranked ladder in `funding-and-route-to-market.md`.)
-- **This aligns with the taste, not against it.** The elegance signature — small box, low component count,
-  ~1.5–2.5 weight — is also **the cheapest to make and release by every route** and fits publishers' sub-$20
-  small-box slots. Design cheap is design elegant (see `cost-and-manufacturability.md`).
-- **Accessible & inclusive by default.** Suit/faction info dual-coded (colour + shape), legible, low-text —
-  which is also cheaper to localise and to pitch (`accessibility.md`, `information-design.md`).
+**Every dispatched agent should be pointed at the specific game's `identity.md` + `game-bible.md`, not
+at this file, for design direction.** This file exists only for the practical, game-independent facts
+below.
 
-## Favourite games together (the taste signature)
-| Game | What it is | What it signals about the taste |
-|------|-----------|--------------------------------|
-| **Hanabi** | Co-op, hidden-hand, **limited communication** | Loves *communication-constraint* co-op — the bottleneck is the fun |
-| **Sky Team** | 2p co-op, simultaneous dice placement, **no table talk**, cockpit theme | Tense, atmospheric, silent-coordination co-op; strong theme, clean rules |
-| **SAIL** | 2p co-op, **no talking**, sailing/hand management | Same DNA: constrained-comms co-op, cozy-tense, evocative |
-| **Slay the Spire: The Board Game** | Co-op **deckbuilder** with a campaign | Appetite for co-op engine/deckbuilding + progression/campaign |
-| **Splendor Duel** | 2p engine/gem **race**, shared board tug | Elegant, tight duel; multiple paths to win; input randomness |
-| **The Lord of the Rings: Duel for Middle-earth** | 2p **tug-of-war** (Knizia/Repos, 7WD lineage) | Tense asymmetric-ish duel; tracks pulling both ways |
-| **Patchwork** | 2p **spatial** + time track | Cozy, puzzly, tactile; clean two-player economy |
+## Practical facts (game-independent)
 
-## Design values (distilled)
-1. **Elegance over heft** — few rules, deep decisions. If a rule doesn't earn its place, cut it.
-2. **Constrained-communication co-op is a signature** — design the *information bottleneck* as the
-   central fun (limited signals, hidden hands, no/So-restricted table talk). This is also the clean
-   solution to co-op's **alpha-player / quarterbacking** problem — lean into it deliberately.
-3. **Tension with warmth** — cozy, atmospheric themes wrapped around genuinely tense decisions.
-4. **Tug-of-war / race duels** for the competitive side — shared tracks that pull both ways, multiple
-   viable paths, catch-up built in (2p has no "gang up on the leader").
-5. **Input randomness, not output** — puzzle the situation you're dealt; minimal post-decision luck.
-6. **Low downtime, short-to-medium** — simultaneous/near-simultaneous play, ~20–40 min, high replay.
-7. **Theme you can feel** — a cockpit, a boat, a coast; tactile table presence even in a small box.
+These are logistics about the human and how the studio runs — they are constraints/resources, not a
+design aesthetic:
 
-## Co-op design watch-list (for `bg-design` / `bg-playtest`)
-- **Alpha player** → solve with hidden info + communication limits (their favourites all do this).
-- **Solvability / "the puzzle runs out"** → variable setup, escalating pressure, a light legacy/campaign
-  arc (Slay the Spire), or a rules-driven "adversary" that varies.
-- **A compelling opponent from rules alone** → the system needs to *push back* (a timer, an escalating
-  threat deck, an automa-like antagonist).
-- **The "we almost made it" moment** → design for near-misses; that ache is why these games get replayed.
+- **Location / markets:** based in **Ireland**; publishing interest in **Ireland, UK, USA** (drives
+  `bg-publishing` compliance scope — see `publishing-ip.md`).
+- **Playtest platform default:** **Screentop.gg** first — free, browser, join-by-link, works remote or
+  in person. This is a *tooling* default (how prototypes get to a table quickly), **not** a statement
+  about what kind of game to make. TTS / Tabletopia / print-and-play are alternates.
+- **Testing resource:** the human has a regular **2-player playtest partner** available. This makes 2p
+  testing convenient — it is **not** an instruction to design 2-player games. Design for whatever player
+  count the specific game calls for.
+- **Process:** wants a **fast, fun, collaborative human+AI** loop — playable early, tight iterations,
+  decisions logged. (This is *how* the studio works, applies to any game.)
+- **Release preference (soft):** the human has indicated a general preference for **low upfront cost and
+  financial risk** where a game's own goals allow it (owned by `bg-funding`; see
+  `funding-and-route-to-market.md`). Treat as a default to *offer*, not a constraint to force onto a
+  design.
 
-## Reference shortcuts
-- 2p duel touchstones: 7 Wonders Duel, Splendor Duel, LOTR: Duel for Middle-earth, Patchwork, Jaipur,
-  Watergate, Fox in the Forest.
-- 2p / small co-op touchstones: Hanabi, Sky Team, SAIL, The Crew, Pandemic, Spirit Island (heavier),
-  Slay the Spire: TBG.
+## Reference only — games the human has mentioned enjoying
+
+Listed purely as **context**, so a conversation about a comparable can be grounded. **These are NOT a
+lens the studio applies by default** and must not bias ideation, exploration, or design unless the
+specific game's brief deliberately heads that way:
+
+- *Hanabi*, *Sky Team*, *SAIL*, *Slay the Spire: The Board Game*, *Splendor Duel*,
+  *The Lord of the Rings: Duel for Middle-earth*, *Patchwork*.
+
+If a new game's brief points somewhere completely different (heavy, multiplayer, party, ameritrash,
+sandbox, real-time, whatever), follow the brief — this list is irrelevant to it.
+
+## How to keep this honest
+
+- If you catch yourself defaulting to "2p", "co-op", "elegant/low-weight", "tug-of-war", or any other
+  flavour **without the current game's brief asking for it**, stop — that's the old baked-in bias, and
+  it's gone. Re-derive the direction from *this* game's `identity.md` / `game-bible.md` or ask the human.
+- Update this file only for genuinely game-independent facts. **Never** add a design-style default here.

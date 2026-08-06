@@ -2,8 +2,8 @@
 
 The playbook for a game's **felt identity**: concept, theme, tone/vibe, story/lore, look & feel, and
 naming — and, above all, keeping them **coherent** while letting them **evolve**. Owned by
-`bg-theme` (the Creative Identity Keeper); every agent should bias toward it, the way they bias toward
-`designer-profile.md`.
+`bg-theme` (the Creative Identity Keeper); every agent should bias toward it — the taste it expresses
+comes from the game's own `identity.md`, not a repo-wide default.
 
 This is the studio's home for the **A** in **MDA** — *Aesthetics*, the experience the game creates.
 `design-fundamentals.md` teaches MDA as a whole and the Mechanics/Dynamics legs; this file owns the
@@ -56,7 +56,7 @@ challenge*; a tug-of-war duel is *challenge + a dash of fantasy*. Chasing all ei
 - **Pure abstract**: the game *is* its geometry (chess, *Azul*-adjacent). Then "identity" is tone +
   look, not story — and that's complete. **Don't apologise for it; don't bolt on lore.**
 
-The studio's north star cuts across all three: **theme you can feel**, even when light. A great light
+One craft principle cuts across all three: **theme you can feel**, even when a game is light. A great light
 game has a *point of view*, not a paragraph of backstory.
 
 ---

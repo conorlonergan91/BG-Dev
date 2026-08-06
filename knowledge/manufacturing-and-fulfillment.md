@@ -1,7 +1,7 @@
 # Manufacturing & Fulfillment
 
 Turning a finished design into a **well-made physical object and getting it into hands** — the cluster the
-studio's prototype-first, Screentop-first house style **legitimately defers** until a specific game commits
+studio's prototype-first, Screentop-first default process **legitimately defers** until a specific game commits
 to a physical run (a crowdfunder or a self-published POD/retail push). If the game is **licensed to a
 publisher, this whole file is the publisher's job** — you keep the sell sheet and the prototype. Owned by
 **`bg-production`**; costs the design against this belong to `bg-funding` + `cost-and-manufacturability.md`;

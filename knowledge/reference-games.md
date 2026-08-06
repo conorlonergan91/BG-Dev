@@ -37,7 +37,9 @@ concept ("it's *Wingspan* meets *Root*") and for studying how respected designs 
 - **Dixit** — Jean-Louis Roubira, 2008 — evocative-art storytelling. SdJ 2010.
 - **The Crew** — Thomas Sing, 2019 — cooperative trick-taking. Kennerspiel 2020.
 
-## Two-player & co-op touchstones (studio focus — see `designer-profile.md`)
+## Two-player & co-op touchstones
+
+*(Neutral reference examples for when a specific game's brief heads this way — not a default the studio starts from.)*
 
 - **Splendor Duel** — Marc André / Bruno Cathala, 2022 — 2p engine/gem **race** on a shared board with a
   tug-of-war pull; multiple win paths. Elegant duel.
