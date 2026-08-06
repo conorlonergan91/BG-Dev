@@ -14,12 +14,20 @@ strategies is the signal policy — isolating Q1. Run it with:
 from __future__ import annotations
 
 import copy
+import os
 
 SUITS = ("C", "P", "N")            # Cargo, Passenger, Naval
 NIGHTS = 3
 ROUNDS_PER_NIGHT = 4
 CHANNEL = 2
 TIDE_MULT = 2                      # v0.3: Night Tide bonus = TIDE_MULT * |tide position| (was flat 3)
+
+# --- sim-only A/B knobs (env vars; do NOT change the printed game rules) ---
+# BEACON_RUN_BONUS=0 turns off the run set-bonus (tests the elegance "cut runs?" candidate).
+# BEACON_PICK=value makes ship-picking ignore set-completion (tests whether steering for convoys/runs
+# is a real decision the earlier sim couldn't see). Default "convoy" = the greedy set-aware picker.
+RUN_BONUS = os.environ.get("BEACON_RUN_BONUS", "1") == "1"
+PICK_MODE = os.environ.get("BEACON_PICK", "convoy")   # convoy | value
 
 
 def _new_deck():
@@ -38,9 +46,13 @@ def _suit_counts(harbor):
 
 
 def _pick(harbor, options):
-    """Greedy: take the most valuable ship; tie-break toward the suit you have fewest of (convoys)."""
+    """Greedy: take the most valuable ship. In 'convoy' mode, tie-break toward the suit you have fewest
+    of (steer for set bonuses); in 'value' mode, ignore set-completion entirely."""
     counts = _suit_counts(harbor)
-    best = max(options, key=lambda sh: (sh[1] * 10) + (3 - counts[sh[0]]))
+    if PICK_MODE == "value":
+        best = max(options, key=lambda sh: sh[1])
+    else:
+        best = max(options, key=lambda sh: (sh[1] * 10) + (3 - counts[sh[0]]))
     other = [o for o in options if o is not best]
     return best, (other[0] if other else None)
 
@@ -55,7 +67,7 @@ def _score_ships(harbor):
         for lo in (1, 2):                             # windows {1,2,3},{2,3,4}
             if {lo, lo + 1, lo + 2} <= vals:
                 runs += 1
-    return base + 2 * convoys + 2 * runs
+    return base + 2 * convoys + (2 * runs if RUN_BONUS else 0)
 
 
 class BeaconGame:

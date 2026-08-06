@@ -11,6 +11,23 @@ Hand-written reading of the auto-generated `sim-results.md` (3000 games/matchup,
 | **v0.2** | **loser of the beam picks the ship first** (winner still steers the Tide) | **No dominant line** — field within ~13–16 pts of 50%; margin ↓ to ~6; Tide decides ~26%; a rule-aware **`grabber`** (bid low to grab ships) **leads at 58.7%**. Critic re-check found the *successor* issue: `grabber` is a one-liner and the **Tide goes dormant** in skilled mirror play (see below). |
 | **v0.3** | **Tide bonus scales with how far you push it** (`2 × |position|`, was flat 3) | Top four lines now within **3 pts** across *different* approaches (contest-Tide `always_high` 54%, `hand_smart` 54%, `grabber` 53%, `tide_racer` 51%); pure grabbing (`always_low`) falls to 45%. In grab-vs-contest the **Tide is decisive in ~56%** of games, margins ~3 (very close). The Tide is finally part of optimal play. New watch-item: draw rate rose (~21% in that matchup). |
 
+## Re-run A/B (post-system-upgrade) — runs, set-steering & the Tide
+Re-ran the loop with the upgraded system + two sim-only knobs (`BEACON_RUN_BONUS`, `BEACON_PICK`),
+n=1000/matchup. New, data-backed findings:
+- **The Run bonus is input-luck noise that *compresses* skill.** Turning runs **off** widens the field
+  from ~10pt spread to ~35pt (hand_smart 54→**68%**, grabber 52→**60%**, reactive 46→33). So runs were
+  dragging good and bad lines toward the middle — random scoring masking skill. **Cut runs** (elegance's
+  candidate) — but note it then nudges `hand_smart` toward dominance, so watch it after cutting.
+- **Set-steering barely matters.** Picking for convoys vs pure value (`BEACON_PICK=value`) changes almost
+  nothing (hand_smart 54.9 vs 54.2; margin 6.04 vs 6.0). So the set-collection layer is **largely
+  decoration, not a decision** in the current model → supports simplifying it (cut runs; reconsider how
+  much convoys should be worth / whether they're a real choice).
+- **The Tide may have over-corrected.** v0.3 made it decisive in ~56% of grab-vs-contest games (up to
+  6 VP/Night) — a signature flipping >half of games risks making ships/sets decoration; pairs with a
+  high **draw rate** (~13% field-wide, ~21% in grab-vs-contest — a feel-bad for a filler with a weak
+  tiebreak). Candidate: dial `TIDE_MULT` 2→~1.5 or cap the bonus, and add a cleaner tiebreak. *Test with
+  humans before tuning further — the sim can't judge the feel.*
+
 ## What v0.2's diagnostic (iteration 2) proved
 The critic asked us to measure before changing rules. It was right:
 - **No cleverer line beat `grabber`** (57.7%); `hand_smart` 53.8%, `tide_racer` 48.8% — the optimum was a memorizable one-liner.
