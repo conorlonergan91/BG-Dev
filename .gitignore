@@ -12,6 +12,8 @@ node_modules/
 # NOTE: games/<slug>/exports/ IS committed — it holds the curated, shareable deliverables
 # (deck sheets, cover, rulebook PDF, track, tokens). Only build/ (scratch) is ignored.
 games/**/build/
+# AI-art MOCKUPS — exploration only, never shipped/committed (see tools/art/mockup.py):
+games/**/art/mockups/
 tools/**/out/
 *.tmp
 

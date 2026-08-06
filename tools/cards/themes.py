@@ -37,7 +37,7 @@ THEMES = {
             "cargo":     {"color": "#b5651d", "emblem": "hex"},       # copper
             "passenger": {"color": "#2a7f8f", "emblem": "diamond"},   # teal
             "naval":     {"color": "#7a2e3b", "emblem": "triangle"},  # deep red
-            "signal":    {"color": "#c68a2b", "emblem": "spark"},     # brass beam
+            "signal":    {"color": "#c68a2b", "emblem": "beam"},      # brass lamp/beam — the keeper's light
             "_default":  {"color": "#123244", "emblem": "circle"},
         },
     },
@@ -123,5 +123,9 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
         a = f"{cx},{cy-r} {cx+r*0.32},{cy} {cx},{cy+r} {cx-r*0.32},{cy}"
         b = f"{cx-r},{cy} {cx},{cy+r*0.32} {cx+r},{cy} {cx},{cy-r*0.32}"
         return f'<polygon points="{a}" fill="{color}"/><polygon points="{b}" fill="{color}"/>'
+    if kind == "beam":  # a lamp with a glow halo — the lighthouse light (for Signals)
+        return (f'<circle cx="{cx}" cy="{cy}" r="{r*0.95}" fill="none" stroke="{color}" '
+                f'stroke-width="{max(2, r*0.16)}" opacity="0.5"/>'
+                f'<circle cx="{cx}" cy="{cy}" r="{r*0.5}" fill="{color}"/>')
     # fallback
     return f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{color}" {sw}/>'

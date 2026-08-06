@@ -74,6 +74,11 @@ moodboard / north-star image**, and the render `theme` name (`tools/cards/themes
 brief** in `art/` and hand `bg-prototyper` / `bg-2d-components` / `bg-3d-components` concrete,
 executable look specs. Respect the studio's human-illustrated-art stance; placeholders are clearly
 labelled as such.
+- **AI-art mockups (opt-in, manual only).** If the human asks to *see* a high-fidelity vibe, generate a
+  **mockup** with `python tools/art/mockup.py --game games/<slug> --subject cover|card|scene` — it builds
+  the prompt straight from `identity.md` and (with a backend) renders it. This is exploration ONLY: output
+  lives in `art/mockups/` (gitignored), is labelled a mockup, and must **never** move to `exports/` or
+  ship as final art. Never run it as part of the pipeline; final art stays human-illustrated.
 
 ### 4. Own naming & voice
 Steward the game's name, key keyword/component names, and the tone of voice that runs through the

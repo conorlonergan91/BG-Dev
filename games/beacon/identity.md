@@ -62,7 +62,9 @@ Beacon's theme is **integrated**, not pasted on — the fiction makes each core 
 - **Moodboard / references:** see `art/` (to populate) — foggy coastlines, brass lanterns, admiralty
   charts, *The Fox in the Forest*'s warmth.
 - **Art production:** **human-illustrated — no AI art** (studio stance, `designer-profile.md`). Current
-  `exports/cover` is a clearly-labelled placeholder; real art TBD.
+  `exports/cover` is a clearly-labelled placeholder; real art TBD. To *explore* a high-fidelity vibe you
+  can generate an opt-in **AI mockup** (`python tools/art/mockup.py --game games/beacon --subject cover`)
+  — mockups are exploration only, live in `art/mockups/` (gitignored), and never ship as final art.
 
 ## Naming & voice
 - **Game name:** *Beacon* — evocative, sayable, ownable (clear via `bg-publishing` before committing).
@@ -81,3 +83,7 @@ Beacon's theme is **integrated**, not pasted on — the fiction makes each core 
 - *2026-08-05* — Set at evocative-theme rung from kickoff; fiction chosen mechanism-first (blind-commit
   duel needed a reason two players can't see each other's choice → fog/keepers). Resonance strong on
   first pass; no re-skin needed yet.
+- *2026-08-06* — Regenerated assets to match this identity: Signal cards now render the **lamp/beam**
+  emblem (brass lamp + glow halo, as value pips too) instead of the generic spark — the "keeper's light"
+  motif. Palette/typography unchanged (nautical locked). Ship suit-emblems and cover remain placeholder;
+  full ship/porthole iconography is still **human-illustrated, TBD** per the no-AI-art stance.
