@@ -43,13 +43,27 @@ import os
 import sys
 from pathlib import Path
 
-from themes import get_theme, resolve_suit, emblem_svg, page_gradient
+from themes import get_theme, resolve_suit, emblem_svg, page_gradient, pick_text_color
 
 # ---- Card geometry (poker, trimmed, 300 DPI) --------------------------------
 CARD_W, CARD_H = 750, 1050          # px @ 300 DPI
 MARGIN = 54                         # ~4.5 mm safe margin
 TITLE_SIZE, TYPE_SIZE, BODY_SIZE = 50, 28, 34
 LINE_H = 44
+TITLE_WRAP = 22                     # chars/line before the title wraps (header grows to fit)
+TITLE_LINE_H = 56
+
+
+def format_target(target: str) -> str:
+    """Reformat a machine-readable `target` (e.g. 'region_src:S>=3') into a scannable requirement line.
+    Cosmetic ONLY — punctuation/case, never changes meaning (the full prose stays in the effect text)."""
+    t = str(target or "").strip()
+    if not t:
+        return ""
+    for a, b in ((">=", " ≥ "), ("<=", " ≤ "), ("==", " = "), (">", " > "), ("<", " < ")):
+        t = t.replace(a, b)
+    t = t.replace(":", " · ").replace(";", ", ").replace("_", " ")
+    return " ".join(t.split()).upper()
 
 
 def esc(s: str) -> str:
@@ -71,23 +85,28 @@ def wrap(text: str, max_chars: int) -> list[str]:
     return out
 
 
-def render_card_svg(row: dict, theme: dict) -> str:
+def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> str:
     ctype = (row.get("type") or "").strip()
     suit = resolve_suit(theme, ctype)
     scol = suit["color"]
     ink, text, muted, accent, radius = theme["ink"], theme["text"], theme["muted"], theme["accent"], theme["radius"]
     tfont, bfont = theme["title_font"], theme["body_font"]
-    name = esc(row.get("name", ""))
     cost = str(row.get("cost", "")).strip()
     value = str(row.get("value", "")).strip()
+    recipe = (row.get("recipe") or "").strip()          # dishes: semicolon-separated ingredient ids
+    target = (row.get("target") or "").strip()          # assignments: machine-readable win condition
+    is_objective = bool(target)                          # assignment-style: value is a completion bonus
 
-    body_lines = wrap(row.get("effect", ""), max_chars=32)
-    body_tspans = "".join(
-        f'<tspan x="{MARGIN}" dy="{0 if i == 0 else LINE_H}">{esc(l)}</tspan>'
-        for i, l in enumerate(body_lines)
+    # --- title: wraps; the header band GROWS to fit, so single-line titles are pixel-unchanged ---
+    title_lines = wrap(row.get("name", ""), max_chars=TITLE_WRAP) or [""]
+    extra = (len(title_lines) - 1) * TITLE_LINE_H
+    header_h = 104 + extra
+    header_end = 26 + header_h
+    title_tspans = "".join(
+        f'<tspan x="{MARGIN}" y="{MARGIN + 44 + i * TITLE_LINE_H}">{esc(l)}</tspan>'
+        for i, l in enumerate(title_lines)
     )
 
-    header_h = 104
     # cost badge (top-right, on the header band)
     cost_badge = ""
     if cost:
@@ -97,48 +116,102 @@ def render_card_svg(row: dict, theme: dict) -> str:
             f'<text x="{cx}" y="{cy + 16}" font-size="48" fill="{scol}" text-anchor="middle" '
             f'font-family="{tfont}" font-weight="bold">{esc(cost)}</text>'
         )
-    # value: a large "index" numeral in the top-right of the header (playing-card style — value is what
-    # you compare and blind-commit every round, so it leads the read), plus a pip row + numeral at the
-    # bottom. A blank `value` means the card has no value; value 0 is a REAL value and must render (a
-    # zero-strength Signal is the whole point of Beacon's Dark Lantern — a blank edge would read as a
-    # card back). See games/beacon/design/infodesign-review.md.
+    # value: a large top-right "index" numeral (playing-card style — value leads the read), plus a pip
+    # row + numeral at the bottom. Blank `value` => no value; value 0 is REAL and must render (a
+    # zero-strength Signal is Beacon's Dark Lantern). OBJECTIVE cards (assignments) instead demote the
+    # bonus to a "+N VP" footer chip so the win-condition — not a constant number — leads.
     value_index = ""
     value_row = ""
-    if value:  # non-empty string — note "0" is truthy here and renders, blank does not
+    if value:
         try:
             vn = int(float(value))
         except ValueError:
             vn = 0
-        # top-right index on the header band — only when no cost badge competes for the corner
-        if not cost:
-            vix, viy = CARD_W - MARGIN - 6, MARGIN + 54
-            value_index = (f'<text x="{vix}" y="{viy}" font-size="62" fill="#ffffff" text-anchor="end" '
-                           f'font-family="{tfont}" font-weight="bold">{esc(value)}</text>')
-        # bottom pip row + numeral; value 0 gets an explicit hollow pip so the edge is never blank
-        if vn > 0:
-            pips = "".join(emblem_svg(suit["emblem"], MARGIN + 22 + i * 46, CARD_H - MARGIN - 22, 16, scol)
-                            for i in range(min(vn, 6)))
+        if is_objective:
+            # +N VP footer chip (bottom-left), no top index, no pip row
+            chw, chh = 168, 60
+            cx0, cy0 = MARGIN, CARD_H - MARGIN - 60
+            value_row = (
+                f'<rect x="{cx0}" y="{cy0}" width="{chw}" height="{chh}" rx="{chh/2}" fill="{scol}"/>'
+                f'<text x="{cx0 + chw/2}" y="{cy0 + chh*0.68}" font-size="40" fill="#ffffff" '
+                f'text-anchor="middle" font-family="{tfont}" font-weight="bold">+{esc(value)} VP</text>')
         else:
-            pips = (f'<circle cx="{MARGIN + 22}" cy="{CARD_H - MARGIN - 22}" r="15" fill="none" '
-                    f'stroke="{scol}" stroke-width="4" opacity="0.7"/>')
-        value_row = (pips +
-            f'<text x="{CARD_W - MARGIN}" y="{CARD_H - MARGIN - 6}" font-size="52" fill="{scol}" '
-            f'text-anchor="end" font-family="{tfont}" font-weight="bold">{vn}</text>')
+            # top-right index — only when no cost badge and a single-line title share the corner cleanly
+            if not cost and len(title_lines) == 1:
+                vix, viy = CARD_W - MARGIN - 6, MARGIN + 54
+                value_index = (f'<text x="{vix}" y="{viy}" font-size="62" fill="#ffffff" text-anchor="end" '
+                               f'font-family="{tfont}" font-weight="bold">{esc(value)}</text>')
+            if vn > 0:
+                pips = "".join(emblem_svg(suit["emblem"], MARGIN + 22 + i * 46, CARD_H - MARGIN - 22, 16, scol)
+                                for i in range(min(vn, 6)))
+            else:
+                pips = (f'<circle cx="{MARGIN + 22}" cy="{CARD_H - MARGIN - 22}" r="15" fill="none" '
+                        f'stroke="{scol}" stroke-width="4" opacity="0.7"/>')
+            value_row = (pips +
+                f'<text x="{CARD_W - MARGIN}" y="{CARD_H - MARGIN - 6}" font-size="52" fill="{scol}" '
+                f'text-anchor="end" font-family="{tfont}" font-weight="bold">{vn}</text>')
+
+    # --- type line with emblem (rides just below the header band) ---
+    type_emblem_cy = header_end + 20
+    type_text_y = header_end + 30
+    type_block = (
+        emblem_svg(suit['emblem'], MARGIN + 16, type_emblem_cy, 15, scol) +
+        f'<text x="{MARGIN+44}" y="{type_text_y}" font-size="{TYPE_SIZE}" fill="{muted}" '
+        f'font-family="{tfont}" font-style="italic" letter-spacing="2">{esc(ctype).upper()}</text>')
+
+    # --- recipe chip-row (dishes only): one disc per ingredient = region colour + 繁體 glyph, matching
+    # the tokens exactly. The bridge from a token in hand to the dish that needs it. Needs a `recipe`
+    # column AND a glyph map (else skipped — so assignments and Beacon are unaffected). ---
+    chips = ""
+    chip_h = 0
+    if recipe and glyph_map:
+        ids = [s.strip() for s in recipe.split(";") if s.strip()]
+        chip_cy = type_text_y + 54
+        r = 26
+        x = MARGIN
+        for iid in ids:
+            g = glyph_map.get(iid, {})
+            gcol = resolve_suit(theme, iid)["color"] if iid in theme["suits"] else (g.get("color") or muted)
+            gtxt = pick_text_color(gcol, dark=ink, light="#ffffff")
+            chips += (
+                f'<circle cx="{x + r}" cy="{chip_cy}" r="{r}" fill="{gcol}" stroke="{ink}" stroke-width="3"/>'
+                f'<text x="{x + r}" y="{chip_cy + r*0.36}" font-size="30" fill="{gtxt}" text-anchor="middle" '
+                f'font-family="{bfont}" font-weight="bold">{esc(g.get("label", ""))}</text>')
+            x += 84
+        chip_h = 84
+
+    # --- body: for objectives a bold requirement line leads, then the flavour effect ---
+    body_y = type_text_y + 104 + chip_h
+    if is_objective:
+        req_lines = wrap(format_target(target), max_chars=28)
+        req_tspans = "".join(f'<tspan x="{MARGIN}" dy="{0 if i == 0 else LINE_H}">{esc(l)}</tspan>'
+                             for i, l in enumerate(req_lines))
+        req_block = (f'<text x="{MARGIN}" y="{body_y}" font-size="{BODY_SIZE}" fill="{ink}" '
+                     f'font-family="{bfont}" font-weight="bold">{req_tspans}</text>')
+        eff_y = body_y + max(1, len(req_lines)) * LINE_H + 26
+        eff_tspans = "".join(f'<tspan x="{MARGIN}" dy="{0 if i == 0 else LINE_H}">{esc(l)}</tspan>'
+                             for i, l in enumerate(wrap(row.get("effect", ""), max_chars=34)))
+        body = (req_block +
+                f'<text x="{MARGIN}" y="{eff_y}" font-size="{BODY_SIZE-4}" fill="{text}" '
+                f'font-family="{bfont}">{eff_tspans}</text>')
+    else:
+        body_tspans = "".join(f'<tspan x="{MARGIN}" dy="{0 if i == 0 else LINE_H}">{esc(l)}</tspan>'
+                             for i, l in enumerate(wrap(row.get("effect", ""), max_chars=32)))
+        body = (f'<text x="{MARGIN}" y="{body_y}" font-size="{BODY_SIZE}" fill="{text}" '
+                f'font-family="{bfont}">{body_tspans}</text>')
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
   <defs>{page_gradient(theme, 'pg')}</defs>
   <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>
   <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{scol}" stroke-width="2" opacity="0.5"/>
-  <!-- header band in the suit colour -->
+  <!-- header band in the suit colour (grows with a wrapped title) -->
   <path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{scol}"/>
-  <text x="{MARGIN}" y="{MARGIN+44}" font-size="{TITLE_SIZE}" fill="#ffffff" font-family="{tfont}" font-weight="bold">{name}</text>
+  <text font-size="{TITLE_SIZE}" fill="#ffffff" font-family="{tfont}" font-weight="bold">{title_tspans}</text>
   {cost_badge}
   {value_index}
-  <!-- type line with emblem -->
-  {emblem_svg(suit['emblem'], MARGIN+16, MARGIN+96, 15, scol)}
-  <text x="{MARGIN+44}" y="{MARGIN+106}" font-size="{TYPE_SIZE}" fill="{muted}" font-family="{tfont}" font-style="italic" letter-spacing="2">{esc(ctype).upper()}</text>
-  <!-- body -->
-  <text x="{MARGIN}" y="{MARGIN+210}" font-size="{BODY_SIZE}" fill="{text}" font-family="{bfont}">{body_tspans}</text>
+  {type_block}
+  {chips}
+  {body}
   <!-- footer flourish -->
   <line x1="{MARGIN}" y1="{CARD_H-MARGIN-70}" x2="{CARD_W-MARGIN}" y2="{CARD_H-MARGIN-70}" stroke="{accent}" stroke-width="2" opacity="0.5"/>
   {value_row}
@@ -177,6 +250,9 @@ def main() -> int:
                     choices=["svg", "png", "pdf", "tts", "screentop"])
     ap.add_argument("--theme", default="clean",
                     help="visual theme (see themes.py): clean, nautical, ember, parchment, cozy")
+    ap.add_argument("--tokens-csv", type=Path, default=None,
+                    help="optional token key (columns id,label[,color]) — enables the dish recipe "
+                         "chip-row, mapping each recipe ingredient id to its 繁體 glyph + colour")
     args = ap.parse_args()
 
     theme = get_theme(args.theme)
@@ -186,6 +262,18 @@ def main() -> int:
         print(f"No rows in {args.csv}", file=sys.stderr)
         return 1
 
+    # Optional glyph map for recipe chips: id -> {label, color}. Absent => chips are simply not drawn,
+    # so decks without a `recipe` column (assignments, Beacon) are unaffected.
+    glyph_map = None
+    if args.tokens_csv and args.tokens_csv.exists():
+        glyph_map = {}
+        for r in load_rows(args.tokens_csv):
+            rid = (r.get("id") or "").strip()
+            if rid:
+                glyph_map[rid] = {"label": (r.get("label") or "").strip(),
+                                  "color": (r.get("color") or "").strip()}
+        print(f"[glyphs] loaded {len(glyph_map)} token glyphs from {args.tokens_csv}")
+
     (args.out / "svg").mkdir(parents=True, exist_ok=True)
 
     # 1) Always render per-card SVGs (no dependencies).
@@ -193,7 +281,7 @@ def main() -> int:
     for row in rows:
         cid = (row.get("id") or row.get("name") or f"card{len(svg_paths)}").strip()
         p = args.out / "svg" / f"{cid}.svg"
-        p.write_text(render_card_svg(row, theme), encoding="utf-8")
+        p.write_text(render_card_svg(row, theme, glyph_map), encoding="utf-8")
         svg_paths.append((cid, p, int(row.get("quantity") or 1)))
     back_svg = render_back_svg(slug, theme)
     (args.out / "svg" / "_back.svg").write_text(back_svg, encoding="utf-8")

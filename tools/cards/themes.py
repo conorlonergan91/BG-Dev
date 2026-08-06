@@ -104,14 +104,17 @@ THEMES = {
             "signature":  {"color": "#C9A227", "emblem": "spark"},     # Gold — the cross-region feasts
             # --- assignment deck: the secret "Operation" dossier cards ---
             "assignment": {"color": "#26324D", "emblem": "stamp"},     # Dusk indigo + a passport stamp
-            # --- ingredient tokens: colour = region, emblem distinct per specialty within its region ---
-            "beef":       {"color": "#D64545", "emblem": "triangle"},
+            # --- ingredient tokens: colour = region, emblem distinct per specialty within its region.
+            # NB: beef/tea/rice deliberately DON'T reuse their region's own emblem (north=triangle,
+            # central=diamond, east=square) — a same-colour + same-emblem clash reads as two meanings for
+            # one glyph and trips the CVD checker. Canonicalised so nothing renders a conflicting emblem. ---
+            "beef":       {"color": "#D64545", "emblem": "square"},    # (region north = triangle)
             "pork":       {"color": "#D64545", "emblem": "hex"},
-            "tea":        {"color": "#1F8A7A", "emblem": "diamond"},
+            "tea":        {"color": "#1F8A7A", "emblem": "hex"},       # (region central = diamond)
             "pearls":     {"color": "#1F8A7A", "emblem": "circle"},
             "oysters":    {"color": "#E6A930", "emblem": "hex"},
             "milkfish":   {"color": "#E6A930", "emblem": "diamond"},
-            "rice":       {"color": "#26324D", "emblem": "square"},
+            "rice":       {"color": "#26324D", "emblem": "circle"},    # (region east = square)
             "greens":     {"color": "#26324D", "emblem": "triangle"},
             "pantry":     {"color": "#8A8F98", "emblem": "beam"},      # slate — convenience store, anywhere
             "_default":   {"color": "#26324D", "emblem": "circle"},
@@ -127,6 +130,52 @@ def get_theme(name: str) -> dict:
 def resolve_suit(theme: dict, type_str: str) -> dict:
     key = (type_str or "").strip().lower()
     return theme["suits"].get(key, theme["suits"]["_default"])
+
+
+# ---------------------------------------------------------------------------
+# Contrast helpers (WCAG) — shared so renderers can pick legible text colours.
+# Pure/additive; safe for every existing caller.
+# ---------------------------------------------------------------------------
+def _rgb01(hex_color: str):
+    h = (hex_color or "#000000").lstrip("#")
+    if len(h) == 3:
+        h = "".join(c * 2 for c in h)
+    return tuple(int(h[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
+
+
+def _lin(c: float) -> float:
+    return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+
+def relative_luminance(hex_color: str) -> float:
+    r, g, b = (_lin(c) for c in _rgb01(hex_color))
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def contrast_ratio(a: str, b: str) -> float:
+    la, lb = relative_luminance(a), relative_luminance(b)
+    hi, lo = max(la, lb), min(la, lb)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def pick_text_color(bg: str, dark: str = "#000000", light: str = "#ffffff") -> str:
+    """Return whichever of `dark`/`light` has the higher WCAG contrast on `bg`."""
+    return dark if contrast_ratio(dark, bg) >= contrast_ratio(light, bg) else light
+
+
+def boost_contrast(fg: str, bg: str, target: float = 4.5) -> str:
+    """Nudge `fg` toward white/black (away from `bg`) until it meets `target` on `bg`.
+    Returns `fg` unchanged when it already passes — so callers that already comply are untouched."""
+    if contrast_ratio(fg, bg) >= target:
+        return fg
+    toward = "#ffffff" if relative_luminance(bg) < 0.5 else "#000000"
+    fr, tr = _rgb01(fg), _rgb01(toward)
+    for step in range(1, 21):
+        t = step / 20
+        cand = "#%02x%02x%02x" % tuple(round((fr[i] + (tr[i] - fr[i]) * t) * 255) for i in range(3))
+        if contrast_ratio(cand, bg) >= target:
+            return cand
+    return toward
 
 
 # ---------------------------------------------------------------------------

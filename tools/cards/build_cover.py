@@ -126,7 +126,7 @@ def build_cover_svg(title, subtitle, theme_name, players, time, weight, W, H):
   <rect x="0" y="{banner_y}" width="{W}" height="{H*0.14}" fill="{ink}" opacity="0.82"/>
   <rect x="0" y="{banner_y-4}" width="{W}" height="6" fill="{accent}"/>
   <rect x="0" y="{banner_y+H*0.14-2}" width="{W}" height="6" fill="{accent}"/>
-  <text x="{W/2}" y="{banner_y+H*0.092}" font-size="{W*0.11}" fill="#ffffff" text-anchor="middle"
+  <text x="{W/2}" y="{banner_y+H*0.092}" font-size="{_fit_title_size(title, W)}" fill="#ffffff" text-anchor="middle"
         font-family="{theme['title_font']}" font-weight="bold" letter-spacing="2">{_esc(title)}</text>
   <text x="{W/2}" y="{banner_y+H*0.135}" font-size="{W*0.032}" fill="{lighten(accent,0.2)}"
         text-anchor="middle" font-family="{theme['title_font']}" font-style="italic">{_esc(subtitle or '')}</text>
@@ -138,6 +138,16 @@ def build_cover_svg(title, subtitle, theme_name, players, time, weight, W, H):
 def _esc(s):
     import html
     return html.escape(str(s or ""), quote=True)
+
+
+def _fit_title_size(title, W):
+    """Shrink the title so it fits the banner width. Caps at the original W*0.11, so short titles
+    (e.g. 'Beacon') are unchanged; long ones ('Travel Agents: Taiwan') scale down instead of clipping."""
+    base = W * 0.11
+    n = max(1, len(str(title or "")))
+    # ~0.60*fontsize advance per glyph for a bold sans w/ letter-spacing; keep within 88% of the width.
+    fit = (W * 0.88) / (n * 0.60)
+    return round(min(base, fit), 1)
 
 
 def main():

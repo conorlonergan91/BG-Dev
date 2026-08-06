@@ -14,7 +14,7 @@ title="Travel Agents: Taiwan"
 
 echo "→ regenerating into build/ (scratch)"
 # Decks (data → cards)
-python3 $T/cards/build_cards.py --csv components/dishes.csv      --out build --theme "$theme" --formats png screentop
+python3 $T/cards/build_cards.py --csv components/dishes.csv      --out build --theme "$theme" --formats png screentop --tokens-csv components/tokens.csv
 python3 $T/cards/build_cards.py --csv components/assignments.csv --out build --theme "$theme" --formats png screentop
 
 # Board + tracks + tokens + aid
