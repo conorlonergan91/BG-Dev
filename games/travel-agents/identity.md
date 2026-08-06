@@ -3,7 +3,7 @@
 > The living source of truth for this game's **felt identity**: concept, theme, tone/vibe, story/lore,
 > look & feel, and naming. Owned by `bg-theme`; read alongside `game-bible.md`. Keep it current — and
 > keep it **coherent** while letting it **evolve** with the design.
-> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-06 (bg-theme — command-centre re-frame, post-prototype CD feedback)
+> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-06 (bg-theme — v3 vendor-courting engine coherence pass)
 
 > **Restraint first.** Match identity depth to what the game *earns*. Leaving story/lore light on purpose
 > is a correct answer, not a gap. Never invent lore to fill a section.
@@ -59,12 +59,17 @@ voice are *scaffolding* — a setup you grasp in one sentence and a boss to narr
 plot to memorise**. No canon, no metaplot, no named characters to track. More agent *personality and
 gameplay*, still **not** more agent *story*. We hold firmly at the evocative rung.
 
-## The head office & the living island — the fiction hooks for the new interaction layer
-*(A parallel `bg-explore` pass is designing region **events** + **command-centre orders**. `bg-explore`
-owns the rules; **`bg-theme` owns the fiction they hang on** — named here so the two stay coherent and
-so neither drifts into the forbidden gaze. The names below are the *fiction*; final mechanical keywords
-are `bg-explore`'s call. Every slot is a cheap re-skin of the locked spine — same mechanics, travel-
-agency dressing.)*
+## The head office & the living island — the fiction hooks for the interaction layer
+> **v3 UPDATE (2026-08-06).** The **Briefs / command-centre-orders deck described below was CUT** in
+> design-doc v3 — its flexible-resource job is re-homed onto **Buzz + Promote** (the second currency).
+> **head office survives as the rulebook/earpiece VOICE**, not a card deck. The **Hot-List of dishes**
+> below is **merged into the shared Vendor Board** (you court *vendors*, not a separate dish row).
+> **Conditions/events survive** — now **Event tiles salted into the region Market**, firing on refill
+> (no ACTIVE/NEXT queue). The fiction below still frames the *voice* and the *living-island* hooks
+> correctly; read "briefs" as "head-office flavour voice" and "hot-list of dishes" as "the Vendor Board."
+
+*(The names below are the *fiction*; final mechanical keywords are `bg-design`'s call. Every slot is a
+cheap re-skin of the locked spine — same mechanics, travel-agency dressing.)*
 
 **(a) The command centre = head office (your agency boss).** WHO dispatches: your agency's **head
 office** — the boss on the phone/earpiece who set you loose on the island. In-world they hand you your
@@ -157,32 +162,36 @@ scaffolding; the real story is the trip *you* take and the log you fill. Leaving
 correct answer for this rung.
 
 ## Theme ↔ mechanic resonance
-*(Spine A **"Rival Agents, Shared Beat"** LOCKED 2026-08-06 — checked against the concrete ruleset in
-`design/design-doc.md`. Aim: a player could half-guess the rules from the fiction.)*
-- **collect ingredients → plate dishes = eating** · **travel because the ingredient lives *there* =
-  the island grand tour** · **the Traveller's Log = your trip** — **integrated**, inevitable. The
-  region↔ingredient web (oysters South, tea Central, rice/greens East, beef/pork North) makes *place*
-  do real work — passes the re-skin test.
-- **Dead-drop (give a rival an ingredient → bank an Insider Tip)** — **integrated & warm.** The fiction
-  is *sharing a hot tip* ("you HAVE to try that stall") — an act of **generosity**, the exact opposite
-  of extraction. This is the Fellowship mechanic; it reads guest-and-fan, not outsider-harvests. Good.
-- **Grand Dossier (shared track, rising tide, pays all equally)** — **integrated** as the collective
-  "we did the tour together" trip-log. **One word to watch:** *Dossier* is the spine-word that leans
-  closest to the forbidden **cataloguing gaze** — but its **shared, celebratory, equal-to-all** framing
-  pulls it firmly back to fellowship (a private hoard would tip the other way; this is the opposite).
-  Coherent as-is; keep the rulebook voice framing it as a **shared travel journal / group stamp-book**,
-  never one agent's file *on* a place. (Fallback if a playtester ever feels the extractive tug:
-  rename to **"the Grand Tour" / "the Logbook"** — cheap, keeps the loop.)
-- **Larder cap = 7 → thematic justification:** *"You're travelling light and eating fresh — a
-  night-market haul doesn't keep. Pass the surplus on as a tip before it spoils."* This makes the cap
-  feel inevitable **and** motivates the Dead-drop (spoilage → generosity, not waste). Strong fit.
-- **Extract (end-game trigger) → thematic justification:** *"Catch the last HSR home"* — the agent
-  "exfiltrates," comedically, belly full and bag of souvenirs in hand. **Stays warm/comedic, not
-  menacing,** *provided* the flavour text nails it to the last-train-home gag (trench-coat-over-a-
-  Hawaiian-shirt register), not "extraction under fire." Note to `bg-elegance`/rulebook voice: land
-  the joke explicitly so the spy word reads silly, not tense.
-- **Re-skin test:** PASSES — the dish/region web is Taiwan-specific food geography; rename the setting
-  and the recipes break. Not generic "food + map."
+*(**v3 vendor-courting engine** — checked against `design/design-doc.md` v3, 2026-08-06. Supersedes the
+v1/v2 resonance (Plate-a-Dish · Dead-drop · Grand Dossier), whose mechanics no longer exist. Aim: a
+player could half-guess the rules from the fiction.)*
+- **Court a Vendor (pay ingredients + Buzz → the vendor features on your tour)** — **integrated & anti-
+  extraction; this is the load-bearing check and it HOLDS.** The fiction: you *win a vendor's blessing*
+  by promoting them and sourcing what their dish needs. A rival's lock-out reads as *the vendor chose
+  the agent who courted them best* — **"outraced, not robbed,"** never a place seized or monopolised.
+  Keep the rulebook voice on **win over / feature / showcase / champion**, never *acquire / control /
+  own / claim* a vendor or a place.
+- **Buzz + Promote (promise customers, drum up hype)** — **integrated.** Promoting *brings people **to**
+  the food* — the travel agent's literal job and the structural anti-extraction linchpin (courting =
+  helping/showcasing, never taking). Buzz-as-promotional-currency is fully coherent, and its
+  never-discounted cost reads naturally as *"the hype legwork never comes for free."*
+- **The compounding discount ramp (regulars vouch for you → the next stall's an easier sign)** —
+  **integrated.** "Once you're a known, trusted promoter, the next vendor signs on faster" is exactly
+  how a promoter's reputation snowballs. On-theme, not a bolted-on Splendor engine.
+- **Prestige / Reputation / Region-Coverage (three vectors)** — **integrated.** Prestige = the star
+  power of your tour; Reputation = your standing as an agent; Coverage = the grand tour across the whole
+  island. All three are travel-agent-native; none needs a stretch.
+- **Region↔ingredient web (travel because the food lives *there*)** — **integrated, unchanged from v2.**
+  The generic-defeater. Oysters South, tea/pearls Central, rice/greens East, beef/pork/chicken/egg
+  North.
+- **Larder cap = 7 → *"travelling light, eating fresh — a night-market haul doesn't keep."*** Makes the
+  cap feel inevitable. (v3 discards surplus; the old Dead-drop generosity beat is gone — no re-theme
+  needed, the cap stands on the fresh-food logic alone.)
+- **Extract (end-game trigger) → *"catch the last train home"*** — the agent "exfiltrates" comedically,
+  belly full. Stays warm/comedic **provided** the flavour nails the last-train gag (trench-coat-over-a-
+  Hawaiian-shirt register), not "extraction under fire." Note to `bg-elegance`/rulebook voice.
+- **Re-skin test:** PASSES — the vendor/region web is Taiwan-specific food geography; rename the setting
+  and the recipes break. Not generic "engine + map."
 
 ## Look & feel / art direction
 **Render theme name:** `night-market` (to add to `tools/cards/themes.py` — palette + per-suit
@@ -235,19 +244,28 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
 - **New proper nouns from the re-frame (proposed — coherent with the above):**
   - **your travel agency** = who you are (you *run* it); your rival runs a competing agency.
   - **head office** = your dispatcher/boss on the phone/earpiece (and the voice of the rulebook).
-  - **signature itinerary** = your secret star tour (re-skins the *Operation*/Assignment — the one
-    hidden hook). Individual ones can keep the *"Operation: ___"* code-name gag as the agency's internal
+  - **signature itinerary / signature Mission** = your secret star tour (the +7 hidden hook, draw-3-
+    keep-1). Individual ones can keep the *"Operation: ___"* code-name gag as the agency's internal
     project name for the tour ("Operation: Beef Noodle") — the wordplay survives.
-  - **Brief / Client Brief / Memo** = head office's directive deck (the new command-centre-orders mechanic).
-  - **the Hot-List** (or **Must-Visit board**) = the shared face-up dishes every agency races to lock in.
-  - **Conditions** (or **Word on the Street** / **Sitrep** in the head-office voice) = the region-events
-    deck (the living island).
+  - **Vendor** + **Court** = the stall/cook you win over, and the action of doing so (pay ingredients +
+    Buzz → they feature on your tour). *v3 spine word.* The shared tiered **Vendor Board** is the public
+    race — it **absorbs the old "Hot-List of dishes"**, which is no longer a separate row.
+  - **Buzz** + **Promote** = the second currency and the action that earns it (promise customers / drum
+    up hype). *v3 — re-homes the cut Brief deck's flexible-resource job.*
+  - **Prestige** / **Reputation** / **Region-Coverage** = the three scoring vectors (star power / your
+    standing as an agent / the grand tour). *v3.*
+  - ~~**Brief / Client Brief / Memo**~~ = **CUT in v3** (directive deck removed; head office survives as
+    the rulebook/earpiece *voice* only).
+  - **Conditions** / **Events** (or **Word on the Street** / **Sitrep** in the head-office voice) = the
+    region-event **tiles** salted into the Market (fire on refill; no queue). *Kept, re-homed.*
   - **best-tour title** = the season's prize you're both racing for — the compete-engine's payoff. A
     cutesy award *name* (a "Golden Boarding-Pass"-type gag) is **fluid** — hold it light; route any
     Chinese/Tâi-lô coinage through the native reviewer before it locks.
-  - Read the whole set aloud together (travel agency / head office / signature itinerary / Brief /
-    Hot-List / Conditions / best-tour title / Traveller's Log / Stamps) — one warm travel-agent-playing-
-    spy voice, no clashes. Kill any that drift toward menace.
+  - Read the v3 set aloud together (travel agency / head office / signature Mission / **Court a Vendor** /
+    **Buzz + Promote** / Vendor Board / **Prestige · Reputation · Coverage** / Conditions / best-tour
+    title / Stamps) — one warm travel-agent-playing-spy voice, no clashes. Kill any that drift toward
+    menace. *(Note: the objectives = **Missions** register above stays; "Traveller's Log" is now just
+    flavour for the tour, not a scoring keyword — v3 scores via the three named tracks.)*
 - **→ `bg-publishing` clearance flags (before art/print):** the **"Travel Agents" mark itself** is
   descriptive/crowded — the literal-title re-frame *strengthens* the descriptive read, so lean harder on
   the distinctive full lockup + logo (flagged already). Clear any award/title name. (Naming *clearance*
@@ -291,6 +309,21 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   naming in Chinese/Tâi-lô — native review before it locks.
 - **People with dignity:** vendors, cooks, the aunties/uncles (阿姨/阿伯) are **subjects** — warm,
   specific, varied in age/look — not exotic scenery or obstacles. Let players see a range of faces.
+- **The 5 playable Agent Characters (v3) — dignified archetypes, and they HELP the anti-extraction
+  rail.** Night-Market Auntie 阿姨 · Eager Rookie · Retired Conductor 車長 · The Influencer · Grizzled
+  Gourmand. Two things make these a **pass, not a flag:** (1) they are the **protagonists** (playable
+  agents with agency), never scenery or obstacles; (2) several are **Taiwanese-coded locals** (阿姨,
+  車長) — which is exactly the *"local promoters showing off home"* the extraction rail needs, so the
+  Chinese-named cast is a feature. Framing guidance so archetype never slides to caricature:
+  - **阿姨 / 車長:** frame their flaws as *loyalty/preference*, not decline. Auntie's "no HSR" = she
+    **loves the scenic local rail and knows every backstreet**, NOT a doddering-technophobe gag. The
+    Conductor is a **proud retired railwayman**, warm and expert. Both dignified.
+  - **The Influencer:** keep "chasing clout" an **affectionate self-aware wink** (she genuinely loves
+    and shares the food), never contempt for a vapid-influencer punchline.
+  - **Grizzled Gourmand:** grumpy-foodie archetype — universal, low risk.
+  - **Roster variety:** ensure the cast spans age **and** ethnicity — Taiwan is multi-ethnic (Han +
+    Hakka + Indigenous + newer communities); at least one visibly non-Han-coded agent strengthens the
+    respect signal. → art brief + paid consultant (add to the `bg-publishing` consultant brief).
 - **Celebrate specifics locals recognise** and **acknowledge Taiwan is multi-ethnic** — Han majority
   *plus* Hakka, 16+ recognised **Indigenous peoples**, and newer immigrant communities all shape the
   food. Representing that range is itself a respect signal.
@@ -322,6 +355,22 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
+- 2026-08-06 (bg-theme, **v3 vendor-courting engine — guardian coherence sweep**) — **STILL COHERENT,
+  NO re-theme needed; identity firmed to v3.** Checked design-doc v3 (Plate-a-Dish + Hot-List → **court
+  Vendors on a shared tiered Board**, paying **ingredients + Buzz**, each an engine piece feeding
+  **Prestige / Reputation / Coverage**). Verdicts: **(1)** *courting = the vendor granting their
+  blessing to the agent they like best* reads **warm & anti-extraction** — the design-doc bakes in
+  "outraced, not robbed" + "the vendor chose you," never a place seized; HOLDS. **(2) Buzz** (promote /
+  promise customers) is **coherent and reinforces the rail** — promotion *brings people to the food*,
+  the agent's literal job. **(3)** the 5 playable Agent Characters are **dignified archetypes, not
+  caricature** — and the Taiwanese-coded cast (阿姨/車長) actively supports the *local-promoter* rail;
+  added framing guidance (flaws = loyalty not decline; roster ethnic variety → consultant). **(4)**
+  events **secular** — the ~11-tile starter set (fruit seasons / weather / crowds / media / warm locals)
+  carries no temple/deity/ghost-month/funerary content; HOLDS. **(5) Fixed STRANDED v1/v2 names** in
+  this doc: the **Theme↔mechanic resonance** section (was Plate-a-Dish · Dead-drop · Grand Dossier —
+  none exist in v3) rewritten to the vendor-courting engine; **Briefs** marked CUT (head office = voice
+  only); **Hot-List of dishes** noted as merged into the Vendor Board; added the v3 keywords (Court ·
+  Vendor · Buzz · Promote · Prestige · Reputation · Coverage). Rung **held at evocative**.
 - 2026-08-06 (bg-theme, **travel-agency re-skin — SUPERSEDES the Bureau skin below**) — **RE-THEME
   (skin swap over the same slots; the mechanical re-frame + north-star fusion below all stand).** CD
   refined the premise: the players are **rival travel agents** (competing agencies) racing to assemble
