@@ -9,93 +9,103 @@
 > is a correct answer, not a gap. Never invent lore to fill a section.
 
 ## North star
-**Image:** *Dusk at the night market. Two rival agents — trench coats thrown over Hawaiian shirts —
-hunch over one shared table, steam rising, secret **"Operation"** dossiers tucked in beside the bowls.
-An earpiece crackles: **the Chief**, back at HQ — "the oysters just hit the grill in Tainan. GO." They
-lock eyes, both grinning, chopsticks already moving. The mission was always just to eat this well — and
-to beat your friend to the next great bite.*
-**Phrase:** *The mission is the meal — race your rival across the island for the best bite before the
+**Image:** *Dusk at the night market. Two rival **travel agents** — trench coats thrown over Hawaiian
+shirts — hunch over one shared table, steam rising, each guarding a secret **itinerary** folder from
+the other's eyes. A phone buzzes in an earpiece: the **head office** — "the oysters just hit the grill
+in Tainan. Lock it into the tour. GO." They lock eyes, both grinning, chopsticks already moving. The
+whole "covert op" is really just this: planning the perfect Taiwan food tour — and beating your rival
+to the best stop.*
+**Phrase:** *The mission is the meal — race your rival to build the island's best food tour before the
 last train home.*
 
 Every choice serves this picture. When a decision is unclear, ask: *does it make the table feel like
-two food-obsessed friends on a "top-secret" race through the night market?* Note what's fused here that
-the old star lacked: the **mission and the meal are the same picture**, the **rivalry is in the frame**
-(two agents, one table, both grinning), and the **clock is ticking** (the last train). The excitement
-lives in the chase; the warmth lives in the grin.
+two food-obsessed travel agents on a "top-secret" race through the night market?* Note what's fused
+here: the **mission and the meal are the same picture**, the **rivalry is in the frame** (two agents,
+one table, both grinning), the **clock is ticking** (the last train) — and the whole spy act is a
+**joke on a wholesome day-job**: they're *travel agents*, the "secret agent" is pure behavioural
+wordplay. The excitement lives in the chase; the warmth lives in the grin.
 
 ## Concept & premise
-A lighthearted travel-and-food game set in **Taiwan**. You belong to a gleefully unofficial secret
-society of Taiwanese food fanatics — **the Bureau of Culinary Affairs** — a nationwide fan club so
-devoted to eating well that it runs itself like a spy agency, because honestly, tracking down the
-island's best bowl of 牛肉麵 *feels* like a covert op. You are one of its field **agents**. Your handler
-is **the Chief** — a legendary retired night-market auntie (a proper 食神) who dispatches you from HQ
-over a crackling earpiece and slips you your secret **Operation**.
+A lighthearted travel-and-food game set in **Taiwan**. You run a **travel agency** — and so does your
+rival — and you're both racing to assemble the single best **Taiwan foodie tour** on the island. Here's
+the joke: you take it *so* seriously that you **behave like a covert secret agent** about it — trench
+coat over the Hawaiian shirt, guarding your dossier, muttering into an earpiece, sneaking a look at
+what the competition is booking. But your actual job is the wholesome, real one: **a travel agent
+showing off the best of the island.** "Secret agent" is pure behavioural wordplay on **travel agent** —
+the title is literal, and that's the gag.
 
-**Why you're rivals (the compete-engine, and it's affectionate).** Every year the Bureau names its
-**Top Agent** — the one who runs the single best trip. So you and your rival are dispatched across the
-island *at the same time*, each clutching a different secret Operation, racing to plate the best eats
-while you both add to the Bureau's ever-growing **record of great island food** (the shared Grand
-Dossier the whole society celebrates). There is **one** title and you both want it. It's a **bake-off
-between friends, not a heist** — you'd never sabotage the *island*, only out-time and out-eat *each
-other*.
+**Why you're rivals (the compete-engine, and it's affectionate).** One agency wins the season's
+**best-tour title**. **Head office** briefs you and your rival at the same time; you each quietly build
+a secret **signature itinerary** (the star tour you're assembling) and race to **lock the island's
+must-visit stalls** into it before the other agency can. There is **one** title and you both want it —
+a **friendly showdown between rival agencies, not a heist**. You'd never sabotage the *island*; you
+just out-plan and out-book *each other*.
 
-**Where the excitement + risk-reward come from — the island doesn't wait for you.** A festival makes a
-region's specialty perfect *right this minute*; a typhoon can shut the coast road before you get there;
-the Chief crackles in with a **high-risk order** that pays big *if* you commit to it now. So every turn
-is a live gamble: chase the detour for the perfect oyster before the window slams shut, or lock in your
-lead and **catch the last train home**? The tension is timing and nerve, never menace.
+**Where the excitement + risk-reward come from — the island doesn't wait for you.** A festival throws a
+food window wide open *right this minute*; a typhoon or a landslide can shut a road before your tour can
+reach it; head office rings with a **risky brief** that pays big *if* you commit to it now. So every
+turn is a live gamble: chase the detour to lock in the perfect stop before the window slams shut, or
+secure your lead and **catch the last train home**? The tension is timing and nerve, never menace.
 
 **The comedy is warm and celebratory** of Taiwanese food culture — done *with*, never *at*. The
-secret-agent framing stays a **warm comedic wink** (trench-coat-over-a-Hawaiian-shirt, mission-dossier
+secret-agent behaviour stays a **warm comedic wink** (trench-coat-over-a-Hawaiian-shirt, mission-dossier
 voice, code-name gags), never a spy thriller — **and it is a first-class part of the game, not just
 paint** (CD, 2026-08-06): the earlier draft read as a generic "food + map" game *because* the agent gag
-had been demoted to flavour, so the fix is that the mission fantasy **earns real rules** (secret
-Operations, the Chief's Orders, hand-off tip-offs) — kept small enough to hold the ~1.8–2.2 weight.
+had been demoted to flavour, so the fix is that the wordplay **earns real rules** (your secret
+itinerary, head-office briefs, hand-off tip-offs) — kept small enough to hold the ~1.8–2.2 weight.
 
-**Restraint note (this stays evocative, not lore).** The Bureau and the Chief are *voice and
-scaffolding* — a premise you grasp in one sentence and a handler to narrate the wink — **not a plot to
-memorise**. There is no canon to track, no metaplot, no named factions. More agent *personality and
+**Restraint note (this stays evocative, not lore).** The rival-agencies premise and the head-office
+voice are *scaffolding* — a setup you grasp in one sentence and a boss to narrate the wink — **not a
+plot to memorise**. No canon, no metaplot, no named characters to track. More agent *personality and
 gameplay*, still **not** more agent *story*. We hold firmly at the evocative rung.
 
-## The command centre & the living island — two fiction hooks for the new interaction layer
+## The head office & the living island — the fiction hooks for the new interaction layer
 *(A parallel `bg-explore` pass is designing region **events** + **command-centre orders**. `bg-explore`
 owns the rules; **`bg-theme` owns the fiction they hang on** — named here so the two stay coherent and
 so neither drifts into the forbidden gaze. The names below are the *fiction*; final mechanical keywords
-are `bg-explore`'s call.)*
+are `bg-explore`'s call. Every slot is a cheap re-skin of the locked spine — same mechanics, travel-
+agency dressing.)*
 
-**(a) The command centre = the Chief, at HQ.** WHO dispatches: **the Chief** — the beloved retired
-food-obsessed elder (an auntie / 食神) who runs the Bureau's field desk over an earpiece/radio. In-world
-she hands you your secret **Operation** (the existing Assignment) *and* feeds you **Orders** (the new
-directive deck): a safe boost ("free sample at the next stall"), a **high-risk order** ("commit now,
-skip your next bite, and I'll make it worth double"), or a cheeky **keep-your-rival-honest** nudge
-("tell your cousin the good stall's already sold out" — a playful sibling prank, never sabotage).
-*Fiction keyword proposal:* **Orders** / **Field Orders** (from HQ). Voice = the mission-dossier /
-over-caffeinated-handler register already locked below — **the Chief *is* that voice**, so this is free
-coherence.
-- **The sensitivity linchpin (read this before touching Orders).** The orders come from **within** —
-  Taiwan's own food-lovers helping and ribbing each other. The Chief is an **insider and a fan**, not an
-  outside power directing the extraction of Taiwan. That single fact is what keeps "a command centre
-  issuing orders about Taiwan's food" from tipping into the colonial/extracting gaze the sensitivity pass
-  forbids. If the Orders ever start to read as *outsiders being told to harvest the island*, that's a
-  re-theme flag — keep them as **your own society cheering you on and pranking your friend**.
+**(a) The command centre = head office (your agency boss).** WHO dispatches: your agency's **head
+office** — the boss on the phone/earpiece who set you loose on the island. In-world they hand you your
+secret **signature itinerary** (the existing Assignment — the star tour you're quietly assembling) *and*
+feed you **briefs** (the new directive deck): a safe boost ("comp voucher — free tasting at the next
+stop"), a **risky brief** ("book it blind now, skip your next stop, and it's worth double if it lands"),
+or a cheeky **keep-your-rival-honest** nudge ("tip: their spot's fully booked — let them find out the
+hard way" — a playful competitive prank, never sabotage of the island). *Fiction keyword proposal:*
+**Brief** / **Client Brief** / **Memo** (from head office). Voice = the mission-dossier /
+over-caffeinated-handler register already locked below — **head office *is* that voice**, free coherence.
+- **The public hot-list (the shared board of dishes).** The face-up row of available dishes = the
+  season's **hot-list of must-visit spots/stalls** every agency is scrambling to lock into its tour.
+  This is the open race (a rival can grab the stall you were routing toward). *Fiction keyword proposal:*
+  **the Hot-List** (or **Must-Visit board**).
+- **The sensitivity linchpin (read this before touching briefs).** A travel agent's job is to
+  **promote and showcase** the island — to bring people *to* the food, not take it away. That flips the
+  worry the Bureau skin carried: the frame is now **celebration, not extraction** by construction. Hold
+  one nuance, though: "building a tour *for visitors*" can slide toward an *outsider-packages-Taiwan*
+  gaze **if the agents read as foreigners.** Keep the agents **passionate fans — ideally local
+  promoters showing off the best of home** (a love letter to the island), and briefs stay warm boosterism,
+  never harvesting. If a brief ever reads as *outsiders being told to extract/package the island for
+  outsiders*, that's a re-theme flag.
 
-**(b) The living island = the source of region events.** The island itself acts on everyone: **secular**
-festivals (a mango-season fair, a night-market anniversary, market-day crowds), weather (typhoon season,
-the plum rains 梅雨), the road (a landslide shuts a mountain pass), and warm **local characters** (the
-uncle who knows the *one* stall, the scooter-delivery kid, the queue that's suddenly forty deep). These
-open windows and throw hazards — the risk-reward *timing* pressure the CD wants. *Fiction keyword
-proposal:* **Happenings** (warm) or, if delivered in the Chief's spy-voice over the radio, **Sitrep**.
+**(b) The living island = the source of region conditions/events.** The island itself acts on everyone:
+**secular** festivals (a mango-season fair, a night-market anniversary, market-day crowds), weather
+(typhoon season, the plum rains 梅雨), the road (a landslide shuts a mountain pass), and warm **local
+characters** (the uncle who knows the *one* stall, the scooter-delivery kid, the queue that's suddenly
+forty deep). These are the **real-time conditions** that open windows and throw hazards at the tour —
+the risk-reward *timing* pressure the CD wants. *Fiction keyword proposal:* **Conditions** (warm/plain)
+or **Word on the Street** / **Sitrep** if delivered in the head-office spy-voice.
 - **Sensitivity — the island is a *subject*, not scenery to harvest.** Frame events as the island
-  *acting on the agents equally* — the island is in charge, the players scramble to adapt. That framing
-  is itself anti-extraction: Taiwan isn't passive exotica to be catalogued and taken, it pushes *you*
-  around. **Two hard rails for `bg-explore`:** (1) **keep events secular** — do **NOT** build mechanics
-  on temple festivals, deities, ghost-month, or funerary customs (the pass forbids sacred motifs as
-  decoration or gags); lean modern/secular — food fairs, fruit seasons, weather, roads, crowds,
-  characters. (2) Local characters are **people with dignity** (warm, specific, varied), never obstacles
-  or exotic punchlines.
-- **Keep sources distinct on purpose:** **Orders come from the Chief (your own people)**; **events come
-  from the island (it happens *to* you).** Blurring them into "HQ controls the island" is exactly the
-  extraction read to avoid.
+  *acting on the agents equally* — the island is in charge, the players scramble to adapt their tours.
+  That framing is itself anti-extraction: Taiwan isn't passive exotica to be catalogued and taken, it
+  pushes *you* around. **Two hard rails for `bg-explore`:** (1) **keep events secular** — do **NOT**
+  build mechanics on temple festivals, deities, ghost-month, or funerary customs (the pass forbids
+  sacred motifs as decoration or gags); lean modern/secular — food fairs, fruit seasons, weather, roads,
+  crowds, characters. (2) Local characters are **people with dignity** (warm, specific, varied), never
+  obstacles or exotic punchlines.
+- **Keep sources distinct on purpose:** **briefs come from head office (your own agency)**; **conditions
+  come from the island (they happen *to* you).** Blurring them into "head office controls the island" is
+  exactly the extraction read to avoid.
 
 ## Target aesthetics (the kinds of fun) — **locked: 3**
 1. **Discovery** *(lead)* — uncovering the island: which stall, which region, what's around the next
@@ -125,14 +135,14 @@ genuinely, ridiculously obsessed with Taiwan showing you around.
   **no cataloguing/extracting "outsider harvests the exotic East" gaze** (see sensitivity pass) — the
   spy fantasy is a *silly holiday game*, not a heist.
 - **The excitement register = a warm caper, not a thriller.** The re-frame adds *stakes and a clock*
-  (an annual title, festival windows, the last train) — the fizz of a game-show or a friendly bake-off,
-  **never** danger or dread. A typhoon is a *comic inconvenience the Chief groans about on the radio*,
-  not peril; the "high-risk order" is a cheerful dare, not a threat. If a beat ever feels *tense or
-  mean* instead of *fun and warm*, it's off-register — dial it back to the grin.
-- **The agency is an insider, not an outsider.** The Bureau is **Taiwan's own** food-lovers, the Chief
-  is a local elder, the agents are fans and family. That warmth is not decoration — it's the structural
-  reason the whole spy conceit reads as celebration, not extraction (see the fiction hooks + sensitivity
-  pass).
+  (the best-tour title, festival windows, the last train) — the fizz of a game-show or a friendly
+  bake-off, **never** danger or dread. A typhoon is a *comic inconvenience head office groans about on
+  the phone*, not peril; the "risky brief" is a cheerful dare, not a threat. If a beat ever feels *tense
+  or mean* instead of *fun and warm*, it's off-register — dial it back to the grin.
+- **The agents showcase the island — they don't extract it.** They're **travel agents** whose whole job
+  is *promoting* Taiwan and bringing people *to* its food — passionate fans, ideally **local promoters
+  showing off the best of home.** That's not decoration — it's the structural reason the spy-behaviour
+  gag reads as celebration, not extraction (see the fiction hooks + sensitivity pass).
 
 ## Restraint rung — **Evocative theme** (studio sweet spot)
 A felt world you could describe in a sentence; **light-to-no narrative**. The *setting* does the heavy
@@ -223,19 +233,25 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   scoring = the **Traveller's Log**, places visited = **Stamps**. Read them aloud together; kill any
   that clash.
 - **New proper nouns from the re-frame (proposed — coherent with the above):**
-  - **The Bureau (of Culinary Affairs)** = HQ / the food-fanatic secret society you belong to.
-  - **the Chief** = your handler, the retired-auntie/食神 who dispatches you (and voices the rulebook).
-  - **Orders / Field Orders** = the Chief's directive deck (the new command-centre-orders mechanic).
-  - **Happenings** (or **Sitrep** in the Chief's radio-voice) = the region-events deck (the living island).
-  - **Top Agent (of the Year)** = the annual title you're both racing for — the compete-engine's prize.
-    An award *name* (e.g. a "Golden Chopsticks"-type gag) is **fluid** — hold it light and route any
+  - **your travel agency** = who you are (you *run* it); your rival runs a competing agency.
+  - **head office** = your dispatcher/boss on the phone/earpiece (and the voice of the rulebook).
+  - **signature itinerary** = your secret star tour (re-skins the *Operation*/Assignment — the one
+    hidden hook). Individual ones can keep the *"Operation: ___"* code-name gag as the agency's internal
+    project name for the tour ("Operation: Beef Noodle") — the wordplay survives.
+  - **Brief / Client Brief / Memo** = head office's directive deck (the new command-centre-orders mechanic).
+  - **the Hot-List** (or **Must-Visit board**) = the shared face-up dishes every agency races to lock in.
+  - **Conditions** (or **Word on the Street** / **Sitrep** in the head-office voice) = the region-events
+    deck (the living island).
+  - **best-tour title** = the season's prize you're both racing for — the compete-engine's payoff. A
+    cutesy award *name* (a "Golden Boarding-Pass"-type gag) is **fluid** — hold it light; route any
     Chinese/Tâi-lô coinage through the native reviewer before it locks.
-  - Read the whole set aloud together (Bureau / Chief / Operation / Orders / Happenings / Top Agent /
-    Traveller's Log / Stamps) — one warm spy-caper voice, no clashes. Kill any that drift toward menace.
-- **→ `bg-publishing` clearance flags (before art/print):** "**Bureau of Culinary Affairs**" is a
-  coined institution — check tone + trademark clearance alongside the "Travel Agents" mark; and clear any
-  award/title name. (Naming *clearance* is `bg-publishing`; *selling copy* is `bg-marketing` — identity
-  only feeds them.)
+  - Read the whole set aloud together (travel agency / head office / signature itinerary / Brief /
+    Hot-List / Conditions / best-tour title / Traveller's Log / Stamps) — one warm travel-agent-playing-
+    spy voice, no clashes. Kill any that drift toward menace.
+- **→ `bg-publishing` clearance flags (before art/print):** the **"Travel Agents" mark itself** is
+  descriptive/crowded — the literal-title re-frame *strengthens* the descriptive read, so lean harder on
+  the distinctive full lockup + logo (flagged already). Clear any award/title name. (Naming *clearance*
+  is `bg-publishing`; *selling copy* is `bg-marketing` — identity only feeds them.)
 - **Voice:** rulebook & aid as a warm **mission-dossier / field-guide** from an over-caffeinated
   handler-slash-tour-guide — second person, short, funny margin asides. `bg-elegance` keeps it tight.
   **Dish names stay authentic** (romanised + 繁體) — never invented or parodied; the comedy is in the
@@ -254,23 +270,25 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   colonial/orientalist "outsider extracts the exotic East" gaze. The traveller is a **guest and fan**,
   not a spy exploiting or a coloniser cataloguing. "Discovery" is discovery-*for-the-visitor*, framed
   with humility — people already live there.
-- **Command-centre re-frame — how it STAYS guest-and-fan (the reconciliation, binding):** the CD's
-  ask for a "command centre issuing orders to agents competing over Taiwan's food" is *exactly* the
-  shape that could tip into the forbidden extraction gaze — so the re-frame answers it structurally, not
-  cosmetically. **The Bureau is Taiwan's OWN** food-lovers' society; **the Chief is a local elder**;
-  the **agents are insiders/fans/family**, not foreign operatives; the rivalry is an **affectionate
-  annual title** (a bake-off), not a heist; and the **island is an active subject** that acts on the
-  agents (events), never passive exotica to be harvested. Orders come from *within the culture*; events
-  come from *the island itself*. Keep those two facts true and the conceit reads as **celebration by
-  insiders**, not extraction by outsiders. This is the load-bearing sensitivity move of the whole
-  re-frame — if playtest/consultant feedback finds it still reads extractive, that's a re-theme flag,
-  not a paint job.
+- **Travel-agency re-frame — how it STAYS celebration, not extraction (the reconciliation, binding):**
+  the CD refined the premise so the players are **rival travel agents** assembling the best Taiwan food
+  *tour*. A travel agent's job is to **promote and showcase** the island and bring people *to* its food —
+  so the frame is **celebration by construction**, and it resolves the extraction worry more cleanly than
+  any "secret society" skin (it also makes the title *literal*: they really are travel agents; the "secret
+  agent" is pure behavioural wordplay). **The one nuance that keeps it honest:** "building a tour *for
+  visitors*" can slide toward an *outsider-packages-the-exotic-East* gaze **if the agents read as
+  foreigners.** So keep the agents **passionate fans — ideally local promoters showing off the best of
+  home**, and the tour a **love letter to the island.** Briefs come from *your own agency*; conditions
+  come from *the island itself* (it acts on you). Keep those true and the conceit reads as **showcasing,
+  not consuming.** If playtest/consultant feedback finds it still reads extractive, that's a re-theme
+  flag, not a paint job.
 - **New consultant items from the re-frame (→ `bg-publishing`, add to the existing paid-consultant
-  brief):** (1) does a light-hearted **"eating secret society / Bureau of Culinary Affairs"** read as
-  affectionate fun to Taiwanese players, or does it trivialise? (2) which **festivals/weather/characters**
-  are appropriate as event content — **confirm the secular-only rail** (no temple/deity/ghost-month/
-  funerary content as mechanics or gags); (3) the **Chief** character (retired-auntie/食神) — warm homage,
-  not caricature? (4) any **award/title/Bureau** naming in Chinese/Tâi-lô — native review before it locks.
+  brief):** (1) do the **rival travel agents read as local/passionate promoters** (celebration) rather
+  than **foreigners packaging Taiwan for outsiders** (extraction)? — the load-bearing check; (2) which
+  **festivals/weather/characters** are appropriate as event/condition content — **confirm the secular-only
+  rail** (no temple/deity/ghost-month/funerary content as mechanics or gags); (3) **local characters** in
+  the events deck — dignified, varied subjects, not caricature or obstacles; (4) any **award/title**
+  naming in Chinese/Tâi-lô — native review before it locks.
 - **People with dignity:** vendors, cooks, the aunties/uncles (阿姨/阿伯) are **subjects** — warm,
   specific, varied in age/look — not exotic scenery or obstacles. Let players see a range of faces.
 - **Celebrate specifics locals recognise** and **acknowledge Taiwan is multi-ethnic** — Han majority
@@ -293,17 +311,39 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   over-enthusiastic-travel-buddy register above; **aesthetics** = Discovery + Fellowship + Challenge;
   **rung** = evocative theme; **agent framing = a present, mechanically-earning layer** (kept
   warm/comedic — CD call); human-illustrated art; the sensitivity guardrails above. **New (this
-  re-frame):** the **north star** above; the **warm-insider-institution frame** (the Bureau & the Chief
-  are Taiwan's *own* — the structural anti-extraction move); the **island-as-active-subject** framing of
-  events; the **affectionate-rivalry / annual-title** compete-engine.
-- **Fluid:** the mechanism spine details and **exactly how the new Orders + Happenings layers earn
-  rules** (→ `bg-explore`); the *exact naming* of the Bureau / the Chief / the annual award (proposals
-  above, pending consultant + `bg-publishing`); the suit set (food categories vs regions) and final
-  palette hues; whether the 2p duel or the 3–4 race is the true home.
+  re-frame):** the **north star** above; the **rival-travel-agencies frame** (players are travel agents
+  who *behave* like spies — the literal-title, celebration-not-extraction move); the **agents as
+  local/passionate promoters** (the anti-extraction nuance); the **island-as-active-subject** framing of
+  conditions; the **friendly best-tour-title** compete-engine.
+- **Fluid:** the mechanism spine details and **exactly how the new Brief + Conditions layers earn
+  rules** (→ `bg-explore`); the *exact naming* of head office / the tour / the award (proposals above,
+  pending consultant + `bg-publishing`); the suit set (food categories vs regions) and final palette
+  hues; whether the 2p duel or the 3–4 race is the true home.
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
-- 2026-08-06 (bg-theme, **command-centre re-frame** after CD's post-prototype feedback) — **RE-THEME
+- 2026-08-06 (bg-theme, **travel-agency re-skin — SUPERSEDES the Bureau skin below**) — **RE-THEME
+  (skin swap over the same slots; the mechanical re-frame + north-star fusion below all stand).** CD
+  refined the premise: the players are **rival travel agents** (competing agencies) racing to assemble
+  the best Taiwan **foodie tour**; the comedy is that they *behave* like covert secret agents (trench
+  coats, dossiers, earpieces, sneaking about) while their actual job is the wholesome real profession of
+  a travel agent — "secret agent" is pure behavioural wordplay on **travel agent**. **Why this skin is
+  better than the Bureau/spy-society skin it replaces:** (1) it **resolves the extraction worry
+  properly** — travel agents *promote and showcase* Taiwan and bring visitors *to* the food, so the
+  frame is **celebration, not extraction**, by construction; (2) it makes the **title literal** (they
+  really are travel agents); (3) it **keeps the secret-agent comedic wink** the CD loves. **Slot swaps
+  (cheap re-skin, mechanics unchanged):** the Chief/HQ → **head office** (agency boss on the phone);
+  secret Operation → your agency's secret **signature itinerary**; the shared dishes board → the
+  **Hot-List** of must-visit stalls; the Chief's Orders → head-office **briefs** (safe boost / risky
+  gamble / cheeky "their spot's fully booked" nudge); the living-island events → real-time
+  **Conditions** (weather, festival windows, road/landslide closures). **Sensitivity nuance carried
+  forward:** "building a tour for visitors" could slide back toward *outsider-packages-Taiwan* **if the
+  agents read as foreigners** — so keep them **passionate fans / ideally local promoters** and the tour
+  a **love letter to the island**; noted for the paid consultant as the load-bearing check. Rung held at
+  **evocative** (premise + head-office voice are scaffolding, not lore).
+- 2026-08-06 (bg-theme, **command-centre re-frame** after CD's post-prototype feedback — *the Bureau/
+  spy-society skin was superseded by the travel-agency skin above; the north-star fusion, compete-engine,
+  risk-reward, and two fiction hooks all carry over unchanged*) — **RE-THEME
   (not a drift-fix — a deliberate deepening of the premise).** CD's calls: the north star was too loose
   and not tied to the agent mission; the backstory too bland; it needed **excitement, risk-reward, and a
   genuine reason the agents compete.** Moves made: **(1) rewrote the north star** to fuse mission +
