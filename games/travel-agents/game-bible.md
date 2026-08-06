@@ -68,7 +68,9 @@ stand) · **Travel** (move one region, arrive with 1) · **Plate** (spend a reci
 a Menu dish → VP + Grand Dossier +1) · **Dead-drop** (give a rival 1 ingredient → bank an Insider Tip +
 Grand Dossier +1) · **Extract** (trigger the end-game). You can only take a region's **specialty** while
 there (oysters South, tea/pearls Central, rice/greens East, beef/pork North); **pantry** staples are at
-the convenience store anywhere — so you *travel because the ingredient lives there*. **Larder caps at 7**,
+the convenience store anywhere — so you *travel because the ingredient lives there*. Your **Larder sits
+face-up in the open** (no hidden hand — the secret Assignment is the game's *only* hidden info).
+**Larder caps at 7**,
 so surplus is common → dead-dropping surplus (for an Insider Tip) beats discarding it: that's what makes
 cooperation individually rational. The tension every turn: advance my secret **Assignment**, race a dish
 off the shared **Menu**, or convert surplus into leverage — all while the shared **Grand Dossier** rises.
@@ -91,10 +93,12 @@ type.) No headroom for a new type — new content reuses these (flag: `bg-elegan
 ## Win condition & scoring
 Highest **Traveller's Log** wins. Score = **plated dishes** (3 VP for 2-ingredient · 4 VP for 3-ingredient
 · 5 VP for a 3-region Signature) + **Assignment** (+7 if completed, revealed at scoring) + your banked
-**Grand Dossier** Discovery bonuses (flat, equal to all — the warm rising tide). **Tiebreak:** most dishes,
-then most regions visited. The contested margin is **dishes + Assignment + Insider-Tip efficiency** (the
-Dossier bonus is a rising tide, so it doesn't decide ranking). Expected 2p total ~48–52 VP. Detail +
-balance model in `design/design-doc.md`.
+**Grand Dossier** bonuses. Dossier payout = **Hybrid (C, CD call 2026-08-06):** each milestone pays a flat
+Discovery bonus to *everyone* (+2/+3/+4/+5 — a warm rising tide) **and** the player who triggers it picks
+a small reward — an **Insider Tip or +1 VP**. **Tiebreak:** most dishes, then most regions visited. The
+contested margin is **dishes + Assignment + Insider-Tip/trigger efficiency** (the flat Dossier base is a
+rising tide that doesn't decide ranking; only the ≤+4 VP of triggerer-picks touches it). Expected 2p total
+~48–52 VP. Detail + balance model in `design/design-doc.md`.
 
 ## Rules summary
 Drafted in `design/rules-draft.md` (teach-in-play order). Turn = one of **Stock Up / Travel / Plate /
