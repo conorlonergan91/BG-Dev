@@ -28,19 +28,24 @@ honest synthesis after, and exactly one change to test next. See
 - Recommend **one change at a time** with the expected effect and how the *next* test will confirm it.
 
 ## Simulation (the fastest way to pressure-test a design)
-Before (and between) human playtests, **simulate**. Use the harness in `tools/sim/` (stdlib-only):
+Before (and between) human playtests, **simulate**. Full method: **`knowledge/simulation-and-balance.md`**
+(the playbook, distilled from Beacon). In short:
 - Encode the rules once as `games/<slug>/sim/<slug>.py` exposing `GAME` (the Game protocol) and
-  `STRATEGIES` (named signal/action policies). See `tools/sim/README.md` and the worked example
-  `games/beacon/sim/beacon.py`.
-- Put the design's open questions into `metrics()` (e.g. Beacon reports how often the Tide bonus flips
-  the winner), then run:
-  `python tools/sim/simulate.py --module games/<slug>/sim/<slug>.py --n 3000 --out games/<slug>/playtests/sim-results.md`
-- **Read it right:** a strategy at ~100% win rate is a red flag (dominant line); a tight
-  rock-paper-scissors among good strategies is a green flag. Fixed bots are a **floor on depth, not a
-  ceiling** — they catch degenerate lines and imbalance but can't model human reads/bluffing.
-- Write your **interpretation** (findings + one change to test) in `playtests/sim-notes.md` (hand-authored;
-  keep it separate from the auto-generated `sim-results.md`). For quick probability/EV checks a throwaway
-  script under `games/<slug>/playtests/sims/` is fine — report the finding, not just the code.
+  `STRATEGIES`. See `tools/sim/README.md` and the worked example `games/beacon/sim/beacon.py`.
+- **Instrument the design's open questions as `metrics()`** (Beacon: `tide_decisive`, `round_ties`,
+  `nights_tide_centered`) so the sim answers them directly.
+- **Build a strategy library:** naive baselines (`random`, `always_min/max`) *and* rule-aware lines.
+  Healthy = rule-aware beats naive, but no single line beats everything.
+- Run `python tools/sim/simulate.py --module … --n 3000 --out games/<slug>/playtests/sim-results.md`.
+  The report ends with an auto **Health read** (dominant line? naive winner? intransitive depth?).
+- **Probe targeted matchups, not just field averages** — `--matchup A:B`, especially the **mirror** of
+  the strongest line (where a design collapses if it will). Field averages are inflated by weak bots.
+- **Deterministic-mirror caveat:** identical scripted strategies always mirror-tie — an artifact, not
+  shallowness. Read depth from cross-strategy results + whether the optimal line uses the signature
+  mechanic. Bots are a **floor on depth, not a ceiling**; they can't judge whether the read is *fun*.
+- Write the **interpretation** (findings + the one change to test) in `playtests/sim-notes.md`
+  (hand-authored; separate from the auto-generated `sim-results.md`). Quick EV/probability checks can be
+  throwaway scripts under `games/<slug>/playtests/sims/` — report the finding, not just the code.
 
 ## Rules of the game
 - Change **one variable at a time** and log it — resist shotgun fixes.

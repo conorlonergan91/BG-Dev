@@ -111,8 +111,10 @@ want 3D pieces (Blender) or collaborative visual layout (Figma).
 ### Playtest simulator (`tools/sim/`)
 
 Encode a game's rules once as `games/<slug>/sim/<slug>.py` and play it thousands of times to expose
-dominant strategies, balance, and score spreads **before** human playtesting (stdlib-only). Owned by
-`bg-playtest`; see `tools/sim/README.md` and the worked example `games/beacon/sim/beacon.py`.
+dominant strategies, balance, and score spreads **before** human playtesting (stdlib-only). Every run
+ends with an auto **Health read** (dominant line? intransitive depth?). Owned by `bg-playtest`; see the
+playbook `knowledge/simulation-and-balance.md`, `tools/sim/README.md`, and the worked example
+`games/beacon/sim/beacon.py`.
 
 ### Guardrails (`tools/lint/`, `tools/rulebook/`)
 

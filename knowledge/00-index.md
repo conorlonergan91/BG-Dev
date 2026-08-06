@@ -11,6 +11,7 @@ change** — re-verify live (via `bg-research` / `bg-publishing`) when precision
 | [`reference-games.md`](./reference-games.md) | Landmark designs and what each is known for; award & ranking context. |
 | [`design-fundamentals.md`](./design-fundamentals.md) | Core loop, agency, interaction, randomness, feedback loops, MDA, weight, solo/Automa. |
 | [`process-and-playtesting.md`](./process-and-playtesting.md) | The indie design pipeline, playtesting (esp. blind), and rules-writing best practice. |
+| [`simulation-and-balance.md`](./simulation-and-balance.md) | Using `tools/sim` to pressure-test balance: metrics, strategy libraries, health signals, mirror probes, and the design→sim→tune loop. |
 | [`trends-2026.md`](./trends-2026.md) | Current trends (cozy games, solo, digital prototyping, crowdfunding shift, market pressures). |
 | [`manufacturing-specs.md`](./manufacturing-specs.md) | Card sizes, bleed, DPI, print-on-demand specs, Tabletop Simulator export limits. |
 | [`publishing-ip.md`](./publishing-ip.md) | IP / copyright / trademark / product-safety compliance for Ireland, UK, USA. |

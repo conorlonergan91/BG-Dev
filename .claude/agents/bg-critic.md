@@ -35,7 +35,8 @@ the designer, and always pair a problem with a way to confirm or fix it.
 ## Rules of engagement
 - **Rank by severity × likelihood.** Lead with the one thing most likely to sink the game.
 - **Every finding gets a probe**: the fastest way to confirm it — often "simulate this with `bg-playtest`"
-  (give the metric to watch), or a targeted playtest question, or a math check.
+  (name the exact metric and/or the `--matchup` to run — see `knowledge/simulation-and-balance.md`), or a
+  targeted playtest question, or a math check. Prefer mirror/targeted matchups over field averages.
 - **Propose the smallest fix**, and note what it might cost (fun, elegance, components).
 - **Protect the fun.** A change that "fixes balance" but kills a fun spike is a bad trade — say so.
 - Be honest about what you *can't* know on paper; don't manufacture problems to look thorough. If the

@@ -30,3 +30,9 @@ questions (e.g. Beacon reports `tide_decisive` — how often the Tide bonus flip
 Fixed/scripted strategies are a **floor on depth, not a ceiling** — they catch degenerate lines and
 gross imbalance but can't model human reads/bluffing. Use the sim to *rule things out* and target
 human playtests, not to declare a game "balanced". `bg-playtest` owns this loop.
+
+- The round-robin report ends with an auto **Health read** (dominant line? naive winner? intransitive
+  = depth?). Don't stop at raw win rates.
+- **Probe targeted matchups** with `--matchup A:B`, especially the strongest line's **mirror** — field
+  averages are inflated by weak bots.
+- **Full method + how to read every signal:** `knowledge/simulation-and-balance.md`.
