@@ -68,20 +68,32 @@ scaffolding; the real story is the trip *you* take and the log you fill. Leaving
 correct answer for this rung.
 
 ## Theme ↔ mechanic resonance
-*(Spine not yet locked — revisit each iteration. Aim: a player could half-guess the rules from the
-fiction.)*
-- **collect dishes = eating** · **build routes / ride the rail = travelling** · **the "log" = your trip**
-  — these read as inevitable, good.
-- **The agent layer now earns rules (Creative Director's call, 2026-08-06).** It is no longer
-  honest-to-demote dressing — the base game should make the *secret-mission* fantasy do mechanical work.
-  Most natural fit: **hidden objectives / secret "Assignments"** (score if you pull it off), possibly a
-  dash of covert selection or a small bluff, so "I'm a food spy on a mission" is something you *do*, not
-  just read. Keep it to **one clean hidden-info hook** (~1.8), not a deduction engine. **→ design driver
-  for `bg-explore` / `bg-ideation`**; and the former "held hidden-mission expansion" now moves at least
-  partly into the base (**→ `bg-architect` re-scopes**).
-- **Re-skin test:** if the whole game renames to any other food-travel setting with zero loss, the
-  *place* (Taiwan) isn't doing work. It should: dish/region specifics should shape which sets and routes
-  exist. Push design toward Taiwan-specific structure, not generic "food + map."
+*(Spine A **"Rival Agents, Shared Beat"** LOCKED 2026-08-06 — checked against the concrete ruleset in
+`design/design-doc.md`. Aim: a player could half-guess the rules from the fiction.)*
+- **collect ingredients → plate dishes = eating** · **travel because the ingredient lives *there* =
+  the island grand tour** · **the Traveller's Log = your trip** — **integrated**, inevitable. The
+  region↔ingredient web (oysters South, tea Central, rice/greens East, beef/pork North) makes *place*
+  do real work — passes the re-skin test.
+- **Dead-drop (give a rival an ingredient → bank an Insider Tip)** — **integrated & warm.** The fiction
+  is *sharing a hot tip* ("you HAVE to try that stall") — an act of **generosity**, the exact opposite
+  of extraction. This is the Fellowship mechanic; it reads guest-and-fan, not outsider-harvests. Good.
+- **Grand Dossier (shared track, rising tide, pays all equally)** — **integrated** as the collective
+  "we did the tour together" trip-log. **One word to watch:** *Dossier* is the spine-word that leans
+  closest to the forbidden **cataloguing gaze** — but its **shared, celebratory, equal-to-all** framing
+  pulls it firmly back to fellowship (a private hoard would tip the other way; this is the opposite).
+  Coherent as-is; keep the rulebook voice framing it as a **shared travel journal / group stamp-book**,
+  never one agent's file *on* a place. (Fallback if a playtester ever feels the extractive tug:
+  rename to **"the Grand Tour" / "the Logbook"** — cheap, keeps the loop.)
+- **Larder cap = 7 → thematic justification:** *"You're travelling light and eating fresh — a
+  night-market haul doesn't keep. Pass the surplus on as a tip before it spoils."* This makes the cap
+  feel inevitable **and** motivates the Dead-drop (spoilage → generosity, not waste). Strong fit.
+- **Extract (end-game trigger) → thematic justification:** *"Catch the last HSR home"* — the agent
+  "exfiltrates," comedically, belly full and bag of souvenirs in hand. **Stays warm/comedic, not
+  menacing,** *provided* the flavour text nails it to the last-train-home gag (trench-coat-over-a-
+  Hawaiian-shirt register), not "extraction under fire." Note to `bg-elegance`/rulebook voice: land
+  the joke explicitly so the spy word reads silly, not tense.
+- **Re-skin test:** PASSES — the dish/region web is Taiwan-specific food geography; rename the setting
+  and the recipes break. Not generic "food + map."
 
 ## Look & feel / art direction
 **Render theme name:** `night-market` (to add to `tools/cards/themes.py` — palette + per-suit
@@ -190,3 +202,16 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   the personality of the game *is* the food-spy pun, so make it do work rather than renaming around it.
   Design driver handed to `bg-explore` / `bg-ideation` (find the one light hidden-mission hook) and
   `bg-architect` (re-scope: hidden-mission content moves toward the base, not a held expansion).
+- 2026-08-06 (bg-theme, guardian sweep after `bg-design` locked spine A) — **STILL COHERENT, no
+  re-theme needed.** Checked the concrete loop (Larder-cap → Dead-drop → Insider Tip → shared Grand
+  Dossier; Extract end-game) against the warm, guest-not-extractor guardrail. Verdict: the loop reads as
+  *shared generosity + a group grand tour*, not cataloguing/extraction — Dead-drop is literally giving a
+  rec away. **Firmed the resonance section to the locked spine** and added the two missing thematic
+  justifications: **Larder cap** = travelling light / fresh food spoils (also motivates the Dead-drop),
+  **Extract** = catch the last train home. **One watch-item (not a flag):** the word *"Grand Dossier"* is
+  the closest lean toward the forbidden cataloguing gaze; its shared/equal framing keeps it warm, but if a
+  playtester ever feels the extractive tug, rename to *"the Grand Tour / Logbook"* (cheap). **Sensitivity:
+  Indigenous (East) + Hakka (North) cuisines** are handled as real, specific dishes, not scenery — the
+  binding note in the design doc stands; the **paid Taiwanese cultural consultant flag still stands** to
+  confirm the "generic label" (mountain rice / wild greens) reads as respect, not flattening of 16+
+  distinct Indigenous peoples, before art/print (→ `bg-publishing`).
