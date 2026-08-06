@@ -53,6 +53,27 @@ rules stay lean. But:
   not a patch pile.
 - Keep it minimal; every entry is a small admission the core text could be clearer.
 
+## The editorial pass (editing ≠ writing)
+Writing the rulebook and *editing* it are different jobs — and the writer is always too close to their
+own text to do the second. Run a deliberate editorial pass as if you were a stranger with a red pen and a
+style guide (this is the developmental-edit + copyedit discipline that separates a clever draft from a
+shippable rulebook):
+- **Terminology consistency** — one term per concept, everywhere. No "card / tile / piece" for the same
+  object; capitalised Keywords used identically in rules, cards, and aid. Build a tiny style sheet and
+  enforce it. Inconsistent terms generate months of rules-questions threads.
+- **Completeness** — every non-obvious rule has a worked example; every genuine edge case (deck-out, ties,
+  simultaneous effects) is answered *somewhere*; setup lists every component and starting state.
+- **Order & anchoring** — goal before detail; nothing referenced before it's defined; teach in play order.
+- **Copyedit/proofread** — grammar, number agreement, and especially **numbers that must match the data**
+  (card counts, costs, scores) — cross-check against `components/*`. A typo on a physical component is
+  permanent and erodes trust.
+- **Cross-check the render** — after edits, regenerate (`build_rulebook.py`, `--type aid`) and read the
+  laid-out version, not just the markdown; layout changes what's clear.
+This pass is distinct from the *cut* test (which removes rules) and the *clarity* pass (which rewrites for
+succinctness) — here you're catching inconsistency and incompleteness, not trimming. What breaks that's
+really a *layout/icon* problem goes to `bg-infodesign`; a *perceptual* problem (contrast/size) to
+`bg-access`.
+
 ## Signals you're bloating (from the complexity gauge + judgment)
 - Rulebook word count climbing each iteration; exception-words ("except/unless/instead") rising.
 - New keywords/components added without removing any; the player aid spilling past one card.
