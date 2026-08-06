@@ -47,6 +47,21 @@ Before (and between) human playtests, **simulate**. Full method: **`knowledge/si
   (hand-authored; separate from the auto-generated `sim-results.md`). Quick EV/probability checks can be
   throwaway scripts under `games/<slug>/playtests/sims/` — report the finding, not just the code.
 
+## Cover the whole game: every count, every variant, and the clock
+- **Test at each recommended player count** (and each active mode/variant), in sim and in human sessions
+  — not just the sweet spot. Report a **per-count verdict**. Use the sim's seat-balance read
+  (`seat_balance` / per-count runs — see `tools/sim` + `knowledge/simulation-and-balance.md`): a count is
+  suspect if one seat/turn-order wins far more than its fair share, or scores blow out.
+- **It doesn't need to be perfect at every count — but it must not be garbage at any offered count.** If a
+  count is weak but fixable, propose the fix. **If a count is irredeemably bad and can't be fixed without
+  wrecking the core, recommend capping the player-count bounds** (e.g. "make it 2–3, not 2–5") or
+  reworking the offending part. A smaller range done well beats a wide range done badly. The goal is the
+  **best game it can be**, not the widest count list.
+- **Measure playtime and downtime** every session (per count), and check them against the game's
+  **target audience/playtime** (a filler that runs long, or async downtime that kills energy, is a real
+  finding). Note the **social dynamics** too: is the *intended* social/quiet experience actually
+  happening (cross-ref `bg-critic`'s social read and `knowledge/design-fundamentals.md`)?
+
 ## Rules of the game
 - Change **one variable at a time** and log it — resist shotgun fixes.
 - Don't over-tune on paper; some questions only playtesting answers. Say which.

@@ -35,4 +35,7 @@ human playtests, not to declare a game "balanced". `bg-playtest` owns this loop.
   = depth?). Don't stop at raw win rates.
 - **Probe targeted matchups** with `--matchup A:B`, especially the strongest line's **mirror** — field
   averages are inflated by weak bots.
+- **Seat balance per player count** with `--counts "2,3,4" --agent <line>` — flags any count where a
+  seat/turn-order wins far more than its fair share. No offered count should be garbage; if one is
+  unfixable, cap the range (see `knowledge/simulation-and-balance.md`).
 - **Full method + how to read every signal:** `knowledge/simulation-and-balance.md`.

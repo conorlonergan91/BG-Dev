@@ -27,6 +27,26 @@ turns, parallel personal boards (roll-and-writes), interrupts/reactions, and red
 - **Indirect:** competing for shared but impersonal resources — markets, worker spaces, turn order, area
   majorities (classic Euro). Too little interaction of either kind → "multiplayer solitaire".
 
+## Social axis, synchronicity & playtime
+Be explicit about **where the fun lives**, because it changes everything downstream.
+- **Social vs systemic (both valid).** Some games are essentially **non-social** — a quiet optimization
+  puzzle you happen to do near others (much of the heavy-Euro "multiplayer solitaire" space; solo). That
+  is completely fine. Other games are **only** fun *because* of the social layer — negotiation, bluffing,
+  reads, table talk, social deduction, party laughter — the interaction **is** the game. Decide which you
+  are and design to it: don't let a game that's *meant* to be social be solvable silently, and don't bolt
+  forced "interaction" onto a game whose joy is the quiet puzzle.
+- **Synchronous vs asynchronous play.** *Synchronous* (simultaneous/real-time — blind commits, live
+  negotiation, dexterity) keeps everyone engaged, raises social energy, and caps playtime. *Asynchronous*
+  (sequential turns) enables deep individual decisions and remote/play-by-app, but risks **downtime** and
+  stretches playtime as player count rises. The choice strongly shapes the social feel *and* the clock.
+- **Playtime & audience.** Sync/async **and** player count together drive playtime — an important fit
+  factor. A café/party crowd wants a fast social game; a heavy-hobbyist group tolerates a long async
+  think. A "party" game that runs 90 minutes, or a filler that balloons at 4p, has missed its audience.
+  Target a playtime, then let synchronicity/count/decision-depth serve it.
+`bg-critic` red-teams whether the *intended* social experience actually happens and whether playtime fits
+the audience; `bg-playtest` measures playtime and social dynamics across counts. Cross-ref
+`modes-and-expansions.md` (per-count design) and `process-and-playtesting.md`.
+
 ## Asymmetry
 Players start with different powers/factions/positions — from mild (variable powers in Terraforming Mars)
 to extreme (Root, Spirit Island, Vast). Boosts replayability and theme; multiplies balancing and
