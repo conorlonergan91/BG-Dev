@@ -1437,3 +1437,154 @@ sign-off on the scoring redesign, then take it to the FTUE table. Do **not** pur
 (`CENTRAL_TEA_FIX`, 牛肉麵 →C) **confirmed applied**; Central still the lightest region (claim ~20% under the
 expanded deck, up from ~15% baseline — the expanded Central tickets pull it up) — residual is a
 bg-developer data knob, not a sim blocker.
+
+---
+
+# v6.3 — CHARACTER RE-PASS (tickets-only baseline, 2026-08-07)
+
+The CD-approved balance follow-on to the **tickets-only lock** (v6.3-FIX option A, CD-signed-off). This
+pass makes the CD-locked shape the **run default** (`SCORING=tickets_only · TICKETS=expanded ·
+MS_MODE=perplayer` — the three flags flipped in the module) and re-tunes the two character kits that
+drifted under it. **The Reach economy, tickets-only scoring, and the expanded 44-ticket deck are held
+FIXED (all sim-validated); this pass touches the KITS + a Draw-band check only.** One kit at a time,
+re-simmed to confirm. Char win-rates are char-vs-**neutral**, both seatings (so kit changes don't
+interact — each is isolated); the playstyle band is character-neutral (so kits don't move it).
+
+## Baseline drift confirmed (n=800, tickets-only, kits at the old v6.3 lock)
+| Character | win% | |
+|---|---:|---|
+| 里長伯 councillor | **62.5%** | HOT — cheaper claiming scales harder when claiming IS the game |
+| 網紅 influencer | **39.0%** | COLD — Buzz-heavy kit + full lost-turn flaw over-taxed |
+| 媽寶 office | 43.7% | mildly cold (a tickets-only drift; see below) |
+| 大胃王 dagushi | 53.2% | ✓ |
+| 大哥 dage | 50.1% | ✓ |
+Exactly the drift the CD flagged: 里長伯 hot, 網紅 cold; 大哥/大胃王 hold; 媽寶 a hair light.
+
+## Change 1 — 網紅 influencer: RETIRE "Late to the Party" (one variable)
+The Reach cap already throttles Promote-3 early (you can't over-commit Buzz past your Reach), so the
+lost-turn flaw was **redundant double-punishment**. Dropping it (`INFL_FLAW=none`), keeping Promote-3 +
+the goes-last seat tiebreak:
+
+| Kit | n=800 | n=1200 | n=2000 |
+|---|---:|---:|---:|
+| "Late to the Party" (old lock) | 39.0% | — | — |
+| **flaw RETIRED (default)** | **51.4%** | 50.7% | **48.7%** |
+
+**→ RECOMMENDED FINAL 網紅: drop "Late to the Party"; keep Going-Viral (Promote places 3) + goes-last.**
+Lands **~49%**, dead in band. Note the sim under-counts goes-last (a greedy bot doesn't feel reacting
+last), so ~49% is if anything a slight ceiling — a real table sits a touch lower, still comfortably in
+band. Protects the fun: the kit keeps its whole Buzz-forward identity, just sheds a punitive tax.
+
+## Change 2 — 里長伯 councillor: Old-Favours discount → your FIRST region only (one variable)
+New knob `TA_COUNCILLOR_REGIONS` (was hard-coded 2). Each region of discount is worth ~7.5pt:
+
+| Old-Favours covers | n=800 | n=1500 | n=2000 | read |
+|---|---:|---:|---:|---|
+| 2 regions (old lock) | 62.5% | — | — | HOT |
+| **1 region (RE-PASS default)** | 56.0% | 56.5% | **56.3%** | top-of-band (see caveat) |
+| 0 regions | 47.5% | — | — | **guts the hook — rejected** |
+
+**→ RECOMMENDED FINAL 里長伯: Old-Favours applies in your FIRST region only** (still −1 ingredient on the
+first vendor you court there). Lightest touch, one number, **preserves the "regular's discount in your
+home patch" hook** (arguably *more* thematic — a 里長伯 has clout in his own borough, not island-wide).
+Lands **56%** in-sim = ~top-of-band; the sim **under-counts his no-HSR flaw** (a 4-region ring barely
+feels it — a documented blind spot since v3.1), so a real table sits lower. Do **NOT** go to 0 regions
+(47.5% but guts the hook — exactly the over-nerf the brief warns against).
+
+**CD option B (if you want it dead-centre in-sim + an explicit ability+flaw silhouette):** pair REGIONS=1
+with a thin-island-name flaw — **start at Reach 1** (`TA_COUNCILLOR_REACH=1`). Deep *local* favours,
+limited *island-wide* reach — one coherent "hyper-local" identity.
+
+| 里長伯 config | n=1500 |
+|---|---:|
+| REGIONS=1 (option A, default) | 56.5% |
+| REGIONS=2 + start Reach 1 | 56.7% (start-Reach alone barely bites — Travel refuels it fast) |
+| **REGIONS=1 + start Reach 1 (option B)** | **50.7%** (dead centre) |
+| REGIONS=2 + start Reach 0 | 54.1% |
+
+Trade-off: **A** is lighter (pure number-shrink, elegance-first) but leans on the no-HSR under-count to
+call 56% "in band"; **B** is demonstrably mid-band in-sim and gives a clean flaw, at the cost of one
+extra rule (a per-character start-Reach). Recommend **A**; **B** is a fair alternative if the CD prefers a
+provable in-sim seat.
+
+## Holds — 大哥 / 大胃王 / 媽寶 (final config, n=2000)
+| Character | win% | verdict |
+|---|---:|---|
+| 大胃王 dagushi | 52.9% | ✓ holds (kit UNCHANGED — H1 hazards-twice) |
+| 大哥 dage | 48.8% | ✓ holds (kit UNCHANGED — lead-by-1, no flaw) |
+| 媽寶 office | **42.2%** | mildly cold — a **tickets-only drift, NOT caused by this pass** |
+Both 大哥 and 大胃王 stay in band as the other two were tuned (as expected — the changes are isolated).
+
+**媽寶 (office) — a borderline-cold WATCH, not a blocker.** It was already 43.7% in the untouched
+baseline, so this is a tickets-only scoring drift, independent of the two kit changes. Its ability
+("Travel draws the region you *left*") is a **routing-flexibility tool the greedy one-step bot
+under-uses** (the same blind-spot family as the Gourmand pantry-wild / Poach denial / no-HSR) — bots
+often draw the "wrong" (already-sourced) token, so **42% is a floor**; a human who wields the flexibility
+deliberately sits higher. **Carry to the FTUE table with a watch-flag.** Do not shotgun a third kit
+change on the sim number — if the table confirms weakness, the cheapest lever is a light non-Visit buff
+(office kit already carries keep-2; a small start-ingredient or +1 Reach would lift it without touching
+the Visit). NOT changed this pass.
+
+## Draw-band check — no dead vendors; bands left AS-IS
+Per-vendor claim frequency over 1500 balanced-mirror games (2p). "Draw" = the vendor value attribute
+(the sim's `bookings`), now an ENGINE attribute (ramp + ticket-enabler + referenced by the 3 Draw-sum
+tickets), not points.
+
+- **No dead buys.** The lowest any vendor sees is **0.08 claims/game** — occasional, not dead.
+- **Every Draw tier sees play, and the cheap end is *heavily* claimed:** Draw-1 day stalls run
+  **0.39–0.76/game** — they're courted as **ramp icons + cheap ticket-enablers**, exactly the tickets-only
+  logic (a vendor's worth is its engine/enabler role, not its Draw number). So low Draw ≠ dead.
+- **The ★ apex stays special:** the Draw-8 apex (石板烤肉, E night, cross+★) is the standout at
+  **0.55/game** — the most-claimed night vendor; the Draw-7 ★ trophies sit 0.45–0.69.
+- **The cold cards are explained, and are NOT Draw-value problems:** the coldest are the intentionally
+  **cheap drinks** (冬瓜茶 0.11 / 洛神花茶 0.08 / 珍奶 0.17 — low-stakes opportunistic stalls the greedy
+  bots under-use, a documented blind spot; warm by design per identity) and the **known East/Central
+  under-pull** (e.g. 竹筒飯 0.12 — the pricier of two same-Draw East day foods). Both are the existing
+  **bg-developer region-data question**, not a Draw miscalibration.
+
+**→ No Draw-band change.** Every vendor is a worthwhile claim and the ★ apex is meaningfully special.
+
+## Top-line health carried (playstyle band, n=700, tickets-only default, character-neutral)
+| Line | avg vs 5-playstyle field |
+|---|---:|
+| mix | 53.4% |
+| balanced | 53.1% |
+| opportunistic | 51.8% |
+| disruptive | 47.9% |
+| endgame | 42.8% |
+| *ignore_obj* (naive) | *33.4%* (beaten 66%+ h2h) |
+| *pure_drinks* vs balanced | *1.1%* (dies) |
+
+Inter-playstyle band **~10.6pt** (42.8–53.4), **objective-aware lines on top**, **no crusher**, both
+naive/degenerate controls clearly beaten, every real line crushes random. `contested_frac` **3.0%**
+(the known concession-heuristic floor — a human-table fun question, not chased here), margin **7.7**
+(tighter than the "both" baseline's 10), ~24.7 turns/player, ~5.2 vendors/player. **endgame (~43%) is
+the softest of the five** — a pre-existing property of the tickets-only/expanded config (not this pass's
+scope: kits + Draw), still viable and not a trap; flagged for a watch, not a blocker.
+
+## Final five-character band (RECOMMENDED FINAL kits)
+| Character | recommended kit | win% (n=2000) | note |
+|---|---|---:|---|
+| 網紅 influencer | Promote-3 + goes-last, **flaw retired** | **48.7%** | ✓ (goes-last under-counted → real a touch lower) |
+| 里長伯 councillor | **Old-Favours = first region only** (opt A) | **56.3%** | top-of-band; no-HSR under-counted → real lower · opt B → 50.7% |
+| 大胃王 dagushi | UNCHANGED | 52.9% | ✓ |
+| 大哥 dage | UNCHANGED | 48.8% | ✓ |
+| 媽寶 office | UNCHANGED | 42.2% | watch (floor; flexibility ability under-counted) |
+
+## Verdict + the decision for the CD
+**v6.3 is balance-clean and ready for the data rebuild + FTUE** — with **one CD call** (an A/B, not a
+blocker):
+
+- **A/B — 里長伯's brake.** **A (recommended):** Old-Favours = your first region only — lightest, one
+  number, keeps the hook; 56% in-sim ≈ top-of-band once the under-counted no-HSR flaw is credited.
+  **B:** the same, *plus* "starts with Reach 1" — dead-centre in-sim (51%) and an explicit ability+flaw
+  silhouette, at the cost of one extra rule.
+- **Carry to FTUE as watch-flags (none blocking):** 媽寶 42% (flexibility ability the sim can't see →
+  likely a floor); 網紅 / 里長伯 both a touch lower at a real table than in-sim (goes-last / no-HSR both
+  under-counted); endgame the softest playstyle (~43%); the ~3% contested Buzz fight (whether it's *fun*
+  when it fires is the table's question, not a knob).
+
+**Surfaced for the bible/mats rebuild (recommendations only — design docs + CSVs NOT edited):** 網紅 loses
+"Late to the Party" (keeps Going-Viral + goes-last); 里長伯's Old-Favours applies in one region (option A)
+or one region + start-Reach-1 (option B). No Draw-value / vendor-data edits. The 媽寶 watch + the East/
+Central region-data pull stay open bg-developer/table items from prior passes.

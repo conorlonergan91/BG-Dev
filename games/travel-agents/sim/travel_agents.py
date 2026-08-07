@@ -79,12 +79,30 @@ from collections import Counter, deque
 # ==================================================================================================
 #  SIM KNOBS (env vars; the design's open numbers — do NOT alter the printed rules)
 # ==================================================================================================
-# >>> v6.3-FIX RE-SIM (2026-08-07) — the ignore_obj dominance + milestone-runaway fixes. Defaults below
-# still run the v6.3 SHAPE-LOCK (both/base/first) so the committed module = the locked shape. The
-# RECOMMENDED fix (pending CD sign-off) is one env line — see playtests/sim-notes.md §v6.3-fix:
-#     TA_SCORING=tickets_only TA_TICKETS=expanded TA_MS_MODE=perplayer
-# (vendors stop scoring → they're pure engine + ticket-enablers; richer ticket deck; milestone boon
-#  spreads to each player so it can't pump the leader). To LOCK it, flip the three defaults below.
+# >>> TICKETS-ONLY LOCK (CD-signed-off, 2026-08-07) — the defaults below now RUN the CD-locked shape:
+#     SCORING=tickets_only · TICKETS=expanded · MS_MODE=perplayer
+# (vendors stop scoring → they're pure engine + ticket-enablers = the "Draw" attribute; richer ticket
+#  deck; the Rave-Review milestone boon spreads to EACH player so it can't pump the leader.) This was the
+# v6.3-FIX recommendation (option A); it is now the run default. To recover the old v6.3 shape-lock for an
+# A/B: TA_SCORING=both TA_TICKETS=base TA_MS_MODE=first.
+#
+# >>> v6.3 CHARACTER RE-PASS (2026-08-07) — the balance follow-on to the tickets-only lock. Under
+# tickets-only, two kits drifted (playtests/sim-notes.md §v6.3 CHARACTER RE-PASS): 網紅 COLD (~39%) and
+# 里長伯 HOT (~62%). Tuned ONE kit at a time, re-simmed to confirm. The re-pass defaults below:
+#   * 網紅 influencer: "Late to the Party" flaw RETIRED (INFL_FLAW=none) → 49% (was 39%). The Reach cap
+#     already throttles Promote-3 early, so the lost-turn flaw was redundant double-punishment.
+#   * 里長伯 councillor: Old-Favours discount now covers your FIRST region only (COUNCILLOR_REGIONS=1,
+#     was 2) → 56% (was 62%). Keeps the "regular's discount in your home patch" hook; drops the sprawl.
+#     56% is ~top-of-band in-sim; the sim UNDER-counts his no-HSR flaw (a 4-region ring barely feels it),
+#     so a real table sits lower. CD option B for a dead-centre in-sim landing (~51%): also start him at
+#     Reach 1 (TA_COUNCILLOR_REACH=1) — "deep local favours, but his name doesn't carry across the island".
+#   * 大哥 (49%) · 大胃王 (53%) · 媽寶 (42%) held ~in band as the other two were tuned (media/office kit
+#     UNCHANGED). 媽寶's 42% is a tickets-only drift, not caused by this pass — its Travel-flexibility
+#     ability is a documented greedy-bot blind spot, so 42% is a floor; carried to FTUE as a watch-flag.
+#   * Draw bands (the vendor-value attribute) left AS-IS: the dead-vendor scan found no dead buys — every
+#     Draw tier sees play (cheap Draw-1 stalls are heavily claimed as ramp/ticket-enablers) and the ★ apex
+#     (Draw 8) stays the standout. The cold cards are the intentionally-cheap drinks + the known East/
+#     Central under-pull (a bg-developer data question), not a Draw-value miscalibration.
 BUZZ_SUPPLY  = int(os.environ.get("TA_BUZZ_SUPPLY", "24"))     # 2p Buzz supply (+~9/extra player)
 BUZZ_MARGIN  = int(os.environ.get("TA_BUZZ_MARGIN", "2"))      # ≥N Buzz lead to Bribe (design 2)
 LARDER_CAP   = int(os.environ.get("TA_LARDER_CAP", "7"))
@@ -141,7 +159,7 @@ DAY_JUDGE = os.environ.get("TA_DAY_JUDGE", "dusk")             # "dusk" | "end"
 # "tickets_only" = vendors give NO direct points; a vendor is purely the ENGINE (discount ramp + the
 #                  stop you assemble to COMPLETE tickets). Final score = Tour Tickets ONLY. Structurally
 #                  kills "ignore the objectives" — objectives are the only points.
-SCORING = os.environ.get("TA_SCORING", "both")                 # "both" | "tickets_only"
+SCORING = os.environ.get("TA_SCORING", "tickets_only")         # "both" | "tickets_only" (CD-LOCKED default)
 # how heavily the greedy planner still chases raw Bookings when it no longer scores. Under tickets_only a
 # vendor's Bookings value is only an ENGINE-quality proxy (bigger dishes ramp/enable more), so down-weight
 # it and let ticket-completion drive target choice. 1.0 = full weight (the "both" world).
@@ -151,7 +169,7 @@ BOOK_ENGINE_W = float(os.environ.get("TA_BOOK_W", "0.35"))
 # MS_MODE: "first"      = table-wide, first player to cross each mark (v6.3 lock; the runaway source).
 #          "perplayer"  = EACH player earns the boon the first time THEY cross the mark (zero runaway).
 #          "consolation"= first crosser gets the full boon; a later crosser gets a reduced boon.
-MS_MODE = os.environ.get("TA_MS_MODE", "first")
+MS_MODE = os.environ.get("TA_MS_MODE", "perplayer")           # (CD-LOCKED default; was "first")
 # MS_ON: which track the marks sit on. "bookings" = Bookings 7/14 (works even under tickets-only, where
 #        the Bookings track still accrues as an ENGINE meter). "tickets" = count of settled WIN-pile
 #        tickets (a natural home once Bookings stops scoring) at MS_T1 / MS_T2.
@@ -174,8 +192,18 @@ DAGE_THRESH = int(os.environ.get("TA_H2_THRESH", "1"))
 DAGE_FLAW   = os.environ.get("TA_H2_FLAW", "none")            # "none"|"tab"|"promote1"|"nocontest"
 # 媽寶 buff. v6.3 lock = "keep2". "none"|"keep2"|"travel2".
 OFFICE_BUFF = os.environ.get("TA_OFFICE", "keep2")
-# 網紅 flaw. v6.3 lock = "lateparty" (miss the first NIGHT-phase turn). Probe "none" to test retirement.
-INFL_FLAW = os.environ.get("TA_INFL_FLAW", "lateparty")       # "lateparty" | "none"
+# 網紅 flaw. CHARACTER RE-PASS default = "none" (Late-to-the-Party RETIRED — see the re-pass note in the
+# header + playtests/sim-notes.md §v6.3 CHARACTER RE-PASS). Was "lateparty" (miss the first NIGHT turn),
+# which double-taxed the kit once the Reach cap already throttles Promote-3. Probe "lateparty" to compare.
+INFL_FLAW = os.environ.get("TA_INFL_FLAW", "none")            # "none" (RE-PASS default) | "lateparty"
+# 里長伯 Old Favours — how many regions the "first vendor courted here costs 1 fewer" discount covers.
+# v6.2/v6.3 kit = 2; CHARACTER RE-PASS default = 1 (the brake for the tickets-only HOT drift; keeps the
+# "regular's discount in your home patch" hook, drops the sprawl). 0 would gut the hook (do not).
+COUNCILLOR_REGIONS = int(os.environ.get("TA_COUNCILLOR_REGIONS", "1"))
+# 里長伯 optional OFFSETTING FLAW (CD option B): his island-wide name is thin, so he starts with less Reach.
+# Default -1 = OFF (start = REACH_START). Set 1 ("start Reach 1") to pair with REGIONS=1 for a dead-centre
+# in-sim landing (~51%) + an explicit ability+flaw silhouette. See the re-pass note.
+COUNCILLOR_REACH = int(os.environ.get("TA_COUNCILLOR_REACH", "-1"))
 
 # ==================================================================================================
 #  MAP
@@ -344,7 +372,7 @@ def _region_deck(region, phase):
 # v6.3-fix knobs (this re-sim):
 #   TA_TICKETS  = "base" (the v6.3 shape-lock set) | "expanded" (the CD's richer, more varied deck)
 #   TA_TVAL     = ticket value multiplier (the lighter "just raise ticket VALUES" fix, e.g. 1.5)
-TICKET_SET   = os.environ.get("TA_TICKETS", "base")           # "base" | "expanded"
+TICKET_SET   = os.environ.get("TA_TICKETS", "expanded")       # "base" | "expanded" (CD-LOCKED default)
 TICKET_VMULT = float(os.environ.get("TA_TVAL", "1.0"))        # scale all ticket values (lighter fix knob)
 
 
@@ -578,7 +606,8 @@ class TravelAgentsGame:
                 "pos": starts[p % len(starts)],
                 "larder": Counter(), "won": [], "icons": Counter(),
                 "bookings": 0,                                   # the live Bookings (former Prestige)
-                "reach": REACH_START,                            # v6.3: the live Buzz cap
+                # v6.3: the live Buzz cap. 里長伯 option-B flaw = a thinner island-wide name → less start Reach.
+                "reach": (COUNCILLOR_REACH if (ch == "councillor" and COUNCILLOR_REACH >= 0) else REACH_START),
                 "promote_bonus": (1 if ch == "influencer" else 0),
                 "councillor_regions": set(),
                 "tickets": [], "counted_done": set(),
@@ -662,7 +691,7 @@ class TravelAgentsGame:
                 pay[r] = max(0, c - pl["icons"].get(r, 0))
         # 里長伯 Old Favours: first vendor courted in each of the first two regions costs 1 fewer
         if pl["char"] == "councillor" and not v["is_drink"] \
-                and v["region"] not in pl["councillor_regions"] and len(pl["councillor_regions"]) < 2:
+                and v["region"] not in pl["councillor_regions"] and len(pl["councillor_regions"]) < COUNCILLOR_REGIONS:
             for r in sorted(pay, key=lambda k: -pay[k]):
                 if pay[r] > 0:
                     pay[r] -= 1; break
@@ -886,7 +915,7 @@ class TravelAgentsGame:
             if v["icon"]:
                 pl["icons"][v["region"]] += 1
             if pl["char"] == "councillor" and v["region"] not in pl["councillor_regions"] \
-                    and len(pl["councillor_regions"]) < 2:
+                    and len(pl["councillor_regions"]) < COUNCILLOR_REGIONS:
                 pl["councillor_regions"].add(v["region"])
         if starred:
             s["star"].discard(vid); s["star_wins"][p] += 1
@@ -1854,11 +1883,18 @@ if __name__ == "__main__":
         flag = "ok" if 0.45 <= wr <= 0.55 else "<-- OUT"
         print(f"  {ch:12} {wr*100:5.1f}%  {flag}")
 
-    print("\n## 網紅 — Late-to-the-Party flaw ON vs OFF (does the Reach gate let us retire it?)")
-    for lbl, mode in (("lateparty (locked)", "lateparty"), ("none (flaw retired)", "none")):
+    print("\n## 網紅 — Late-to-the-Party flaw ON vs OFF (RE-PASS: retired it — 'none' is now the default)")
+    for lbl, mode in (("none (RE-PASS default)", "none"), ("lateparty (old lock)", "lateparty")):
         globals()["INFL_FLAW"] = mode
         print(f"  {lbl:22} influencer {_char_winrate('influencer', n=N)*100:5.1f}%")
-    globals()["INFL_FLAW"] = "lateparty"
+    globals()["INFL_FLAW"] = "none"
+
+    print("\n## 里長伯 — Old-Favours brake (RE-PASS: REGIONS=1 default; option B adds start-Reach 1)")
+    for lbl, rc, cr in (("REGIONS=1 (default)", 1, -1), ("REGIONS=2 (old lock)", 2, -1),
+                        ("REGIONS=1 + Reach1 (opt B)", 1, 1), ("REGIONS=0 (guts hook)", 0, -1)):
+        globals()["COUNCILLOR_REGIONS"] = rc; globals()["COUNCILLOR_REACH"] = cr
+        print(f"  {lbl:28} councillor {_char_winrate('councillor', n=N)*100:5.1f}%")
+    globals()["COUNCILLOR_REGIONS"] = 1; globals()["COUNCILLOR_REACH"] = -1
 
     print("\n## 大哥 — does he drift? (v6.3 lock = D: lead-by-1, no flaw)")
     for lbl, thr, flaw in (("D lead1+none (lock)", 1, "none"), ("A tie+tab", 0, "tab"),
