@@ -324,23 +324,22 @@ bullets are unchanged and still hold.)*
 - **Larder cap = 7 → *"travelling light, eating fresh — a night-market haul doesn't keep."*** Makes the
   cap feel inevitable. (v3 discards surplus; the old Dead-drop generosity beat is gone — no re-theme
   needed, the cap stands on the fresh-food logic alone.)
-- **The Acts end-game → *"a day's food arc, ending at the night market"*** *(v5 — CD tightened to a
-  **≤30-min, TWO-Act** arc; replaces the Extract action + the Season vendor-counter).* The tour escalates
-  through a **two-beat day arc** — **Act I The Breakfast Run 早餐 (早餐店) → Act II Night Market 夜市
-  (夜市攤)** *(v5 venue rename — see Naming; Act I renamed from "Afternoon Crawl" since it now opens on
-  morning breakfast shops; 飲料店 drinks run all-day alongside, OFF the clock, as the easy-points fork)* —
-  and the Vendor Board **escalates with it** (the morning shops give way to the big night-market names,
-  harder to win as the day peaks). This is **inevitable, not bolted-on**: it maps the arc onto the real
-  Taiwan food day (**breakfast → night market**) and makes the game **end on the north-star image**
-  (dusk/neon at the night market). **The end is the plain Day → Night close** *(v6 — CD dropped the v5
-  spy-alarm "Code Red" label; the firing condition is `bg-design`'s call):* **you play the day into the
-  night, and when the night market winds down the tour's over — catch the last train home.** It keeps the
-  warm **"last train home"** image (re-homed from the old Extract action) as the **natural close of the
-  eating day**, and stays **warm/comedic** — a giddy *"the tour's almost over, grab the last great bite
-  before the last train!"*, never an alarm, never menace. *(Full act framing in Naming.)*
-- **Re-skin test:** PASSES — the vendor/region web is Taiwan-specific food geography and the Acts are the
-  Taiwan food *day* (早餐店 → 夜市攤 — breakfast → night market, with 飲料店 drinks all-day alongside);
-  rename the setting and both the recipes and the day-arc break. Not generic "engine + map."
+- **The Day→Night arc → *"a day's food, ending at the night market — catch the last train home"***
+  *(KEPT from v5/v6; v6.2 re-homes the clock onto Tour-Ticket delivery and onto the region markets' two
+  layers).* The tour still runs the real Taiwan food **day**: **Act I The Breakfast Run 早餐 → dusk →
+  Act II Night Market 夜市.** In v6.2 the arc is carried by the **region vendor markets themselves** — each
+  region's pile is **daytime 早餐店 stacked over nighttime 夜市攤**, and at **dusk the face-up daytime stalls
+  are swept** and the night-market layer starts revealing: the street literally turns over from morning to
+  night in front of you. **The clock is the tours you deliver** (see the Tour-Tickets bullet) — deliver
+  enough and dusk falls, more and it's the **last train home**. **Inevitable, not bolted-on:** it maps onto
+  the real food day and lands the game **on the north-star image** (dusk/neon at the night market). **The
+  end is the plain Day → Night close** — no alarm, no "Code Red": *play the day into the night, and when the
+  night market winds down the tour's over — grab the last great bite before the last train.* Stays
+  **warm/comedic**, a giddy wind-down, never menace. *(Full act framing in Naming.)*
+- **Re-skin test:** PASSES — the region vendor markets are Taiwan-specific food geography (each region its
+  own street), the arc is the Taiwan food *day* (早餐店 → 夜市攤 — breakfast → night market, drinks stalls
+  mixed through both layers), and **Tour Tickets** are a travel agent's booked tours; rename the setting and
+  the recipes, the day-arc, *and* the tours all break. Not generic "engine + map."
 
 ## Look & feel / art direction
 **Render theme name:** `night-market` (to add to `tools/cards/themes.py` — palette + per-suit
@@ -370,6 +369,12 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
 - **Silhouette / shape language:** cards frame as a **passport / boarding-pass / stall menu-board**;
   places visited recorded as **stamps** (passport-stamp motif doubles as the dossier gag and the
   Discovery feel). Rounded corners, warm.
+  - **v6.2 additions to spec (→ `bg-infodesign` / `bg-access`):** a **Tour Ticket** frame — lean into the
+    literal *boarding-pass / tour-voucher* look (value + the day/night/general pool badge + an
+    "Operation: ___" strip for the wink); a clear **region-market** board layout — each region a face-down
+    pile with its **1–2 face-up slots** and a **day/night layer marker** so "morning stacked over night"
+    reads at a glance; and the **scoped-event icons** (⦿ self · ⬢ region · ➤ next-door) already flagged for
+    dual-coding. Drinks stalls need **no** special marker now — they're just cheaper vendors on the shelf.
 - **Moodboard / references to gather in `art/`** (real photo refs for a human illustrator):
   Shilin / Raohe / Liuhe night markets at dusk; hand-painted stall signage & 繁體 hand-lettering; HSR
   and local trains; scooters; convenience-store culture; vintage travel stamps/stickers; and the iconic
@@ -387,15 +392,25 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   - *Rejected: "Operation: Night Market" and "Night Market: Taiwan" — both **demote** the agent gag the
     Creative Director explicitly wants to foreground.*
 - **Component/keyword register (pick ONE, hold it):** playful travel-guide + light dossier garnish —
-  objectives = **Missions/Assignments** (each an *"Operation: ___"*), the trip = your **Itinerary**,
-  scoring = the **Traveller's Log**, places visited = **Stamps**. Read them aloud together; kill any
-  that clash.
+  objectives = **Tour Tickets** *(v6.2 LOCK — the season's tours you book; each may still carry an internal
+  *"Operation: ___"* code-name for the wink)*, the trip = your **Itinerary**, scoring = the **Traveller's
+  Log**, places visited = **Stamps**. Read them aloud together; kill any that clash.
 - **New proper nouns from the re-frame (proposed — coherent with the above):**
   - **your travel agency** = who you are (you *run* it); your rival runs a competing agency.
   - **head office** = your dispatcher/boss on the phone/earpiece (and the voice of the rulebook).
-  - **signature itinerary / signature Mission** = your secret star tour (the +7 hidden hook, draw-3-
-    keep-1). Individual ones can keep the *"Operation: ___"* code-name gag as the agency's internal
-    project name for the tour ("Operation: Beef Noodle") — the wordplay survives.
+  - **Tour Tickets** *(v6.2 — LOCKED; the objective spine, replaces the old single secret "signature
+    Mission" +7 hook).* The season's **tours on offer** sit in a face-up row; **booking one** (claiming it)
+    is a full action, and it scores **retroactively** — **+value** delivered by the last train,
+    **−floor(value/2)** if booked-and-unfilled. Split into **daytime / nighttime / general** pools; a
+    variable **12→5-per-phase** draw keeps each season fresh. **Delivering tours is the day-clock** (enough
+    delivered → dusk → the last train). *Why "Tour Tickets":* it's the travel-agent-native re-skin of
+    Ticket-to-Ride's destination tickets (the CD-named ancestor), it's already the sim/decision-log
+    vocabulary, and the retroactive +/− reads perfectly as *promise a client a tour → paid if you deliver,
+    refund if you don't.* **The secret-agent wink rides on top:** an individual ticket can carry the
+    agency's internal **"Operation: ___"** code-name — so *the mission really is the meal.* *(Register: the
+    row = "the tours on offer" / the Tour Board; the verb = **book a tour** / claim a ticket; the physical
+    card = a **Tour Ticket**.)* → native review of the ticket names (the 繁體 set is idiomatic — bless +
+    confirm).
   - **Vendor** + **Bribe** = the stall/cook you win over, and the action of doing so (pay ingredients +
     hold the Buzz majority → they feature on your tour). ***v4 spine word — replaces "Court." LOCKED by
     the CD (2026-08-06), chosen over bg-theme's "Schmooze" rec for the funnier, spicier word.*** *Flavour
