@@ -121,7 +121,14 @@ THEMES = {
             "milkfish":   {"color": "#E6A930", "emblem": "diamond"},
             "rice":       {"color": "#26324D", "emblem": "circle"},    # (region east = square)
             "greens":     {"color": "#26324D", "emblem": "triangle"},
-            "pantry":     {"color": "#8A8F98", "emblem": "beam"},      # slate — convenience store, anywhere
+            # --- v6.2 5-ingredient palette: pork/tea/rice reuse the region signatures above;
+            # seafood (South) + sugar (the COMMON) are the two new palette glyphs. seafood reuses the
+            # amber-hex of the retired `oysters`; sugar gets its own caramel + beam so the common reads
+            # apart from the four region hues. NB (-> bg-access): these two glyphs are NEW to the theme
+            # and want a CVD re-check (check_access.py) on the next palette pass. ---
+            "seafood":    {"color": "#E6A930", "emblem": "hex"},      # South amber — oysters/milkfish/shrimp
+            "sugar":      {"color": "#B5835A", "emblem": "beam"},     # caramel — the COMMON 糖 (C & S only)
+            "pantry":     {"color": "#8A8F98", "emblem": "beam"},      # slate — convenience store, anywhere (legacy)
             # --- v3 second currency: Buzz (its own colour, off the four region hues + the CVD checker) ---
             "buzz":       {"color": "#6A4C93", "emblem": "spark"},     # violet — promotional Buzz
             "_default":   {"color": "#26324D", "emblem": "circle"},
