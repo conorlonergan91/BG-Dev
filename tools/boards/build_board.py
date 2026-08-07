@@ -24,9 +24,19 @@ import argparse
 import html
 import json
 import math
+import re
 import sys
 import textwrap
 from pathlib import Path
+
+# Scope icons ⦿/⬢/➤ are tofu under cairosvg's toy text API — draw them as SVG shapes inline in the
+# player aid, matching the event-card badges (bg-access FIX A).
+SCOPE_GLYPH_SHAPE = {"⦿": "ring_dot", "⬢": "hex", "➤": "arrow"}
+
+
+def _text_w(s, fs):
+    """Rough rendered width of a Latin+CJK string at font-size fs (CJK glyphs ~full-width)."""
+    return sum((fs if ord(c) > 0x2E7F else fs * 0.52) for c in s)
 
 # themes.py lives with the card pipeline; make it importable regardless of cwd.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "cards"))
@@ -174,17 +184,54 @@ def render_aid(theme, spec):
     body = []
     y = head_h + 40
     for sec in spec.get("sections", []):
+        heading = sec.get("heading", "")
+        if any(g in heading for g in SCOPE_GLYPH_SHAPE):
+            # drop a parenthetical that carries the tofu scope glyphs, then any stray glyphs
+            heading = re.sub(r'\s*\([^)]*[⦿⬢➤][^)]*\)', '', heading)
+            heading = re.sub(r'[⦿⬢➤]', '', heading)
         body.append((f'<text x="{pad}" y="{y}" font-size="34" fill="{accent}" font-family="{tfont}" '
-                     f'font-weight="bold" letter-spacing="1">{esc(sec.get("heading","").upper())}</text>'))
+                     f'font-weight="bold" letter-spacing="1">{esc(heading.upper())}</text>'))
         y += 20
         for line in sec.get("lines", []):
-            for i, seg in enumerate(textwrap.wrap(line, wrap_at) or [""]):
-                y += 40
-                # Drawn bullet (not the "•" glyph — WenQuanYi Zen Hei lacks it and renders tofu □).
-                if i == 0:
-                    body.append(f'<circle cx="{pad+8}" cy="{y-9}" r="6" fill="{accent}"/>')
-                body.append(f'<text x="{pad+30}" y="{y}" font-size="28" fill="{text}" '
-                            f'font-family="{bfont}">{esc(seg)}</text>')
+            if not any(g in line for g in SCOPE_GLYPH_SHAPE):
+                for i, seg in enumerate(textwrap.wrap(line, wrap_at) or [""]):
+                    y += 40
+                    # Drawn bullet (not the "•" glyph — WenQuanYi Zen Hei lacks it and renders tofu □).
+                    if i == 0:
+                        body.append(f'<circle cx="{pad+8}" cy="{y-9}" r="6" fill="{accent}"/>')
+                    body.append(f'<text x="{pad+30}" y="{y}" font-size="28" fill="{text}" '
+                                f'font-family="{bfont}">{esc(seg)}</text>')
+            else:
+                # scope-glyph line: char-budget wrap treating each glyph as a ~2-char token, then emit
+                # text runs interleaved with DRAWN scope shapes (no tofu). (bg-access FIX A)
+                plines, cur, ln = [], [], 0
+                for tok in line.split(" "):
+                    w = 2 if tok in SCOPE_GLYPH_SHAPE else len(tok)
+                    if cur and ln + 1 + w > wrap_at:
+                        plines.append(cur); cur, ln = [], 0
+                    cur.append(tok); ln += (1 if len(cur) > 1 else 0) + w
+                if cur:
+                    plines.append(cur)
+                for i, toks in enumerate(plines):
+                    y += 40
+                    if i == 0:
+                        body.append(f'<circle cx="{pad+8}" cy="{y-9}" r="6" fill="{accent}"/>')
+                    x = pad + 30
+                    j = 0
+                    while j < len(toks):
+                        if toks[j] in SCOPE_GLYPH_SHAPE:
+                            x += 6
+                            body.append(emblem_svg(SCOPE_GLYPH_SHAPE[toks[j]], x + 12, y - 9, 12, accent, stroke=ink))
+                            x += 34
+                            j += 1
+                        else:
+                            run = []
+                            while j < len(toks) and toks[j] not in SCOPE_GLYPH_SHAPE:
+                                run.append(toks[j]); j += 1
+                            seg = " ".join(run)
+                            body.append(f'<text x="{x}" y="{y}" font-size="28" fill="{text}" '
+                                        f'font-family="{bfont}">{esc(seg)}</text>')
+                            x += _text_w(seg + " ", 28)
         y += 34
     H = y + pad
     parts = [f'<defs>{page_gradient(theme, "pg")}</defs>',

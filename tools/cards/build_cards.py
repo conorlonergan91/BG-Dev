@@ -40,10 +40,19 @@ import csv
 import html
 import math
 import os
+import re
 import sys
 from pathlib import Path
 
-from themes import get_theme, resolve_suit, emblem_svg, page_gradient, pick_text_color
+# Scoped-event icons: the ⦿/⬢/➤ glyphs are TOFU under cairosvg's toy text API (no fall-through to a
+# glyph-bearing font), so we DRAW them as SVG shapes keyed off the event `scope` column and keep the
+# word label alongside. (bg-access FIX A.)
+SCOPE_SHAPE = {"self": "ring_dot", "region": "hex", "neighbour": "arrow"}
+SCOPE_WORD = {"self": "YOU 自己", "region": "THIS REGION 全區", "neighbour": "NEXT DOOR 鄰區"}
+_SCOPE_GLYPHS = "⦿⬢➤"
+
+from themes import (get_theme, resolve_suit, emblem_svg, page_gradient, pick_text_color,
+                    phase_style, phase_ribbon_svg)
 
 # ---- Card geometry (poker, trimmed, 300 DPI) --------------------------------
 CARD_W, CARD_H = 750, 1050          # px @ 300 DPI
@@ -133,6 +142,11 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
     region = (row.get("type") or "").strip().lower()
     rsuit = resolve_suit(theme, region)
     rcol, remb = rsuit["color"], rsuit["emblem"]
+    # --- day/night treatment (data-driven off the `phase` column) ---
+    pstyle = phase_style(row.get("phase"))
+    frame_col = pstyle["frame"] if pstyle else ink
+    page_cols = pstyle["page"] if pstyle else None
+    ribbon = phase_ribbon_svg(pstyle, CARD_W, CARD_H, MARGIN, tfont)
     gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
     teal = theme["suits"].get("central", {}).get("color", "#1F8A7A")
     violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
@@ -257,8 +271,9 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
         f'font-family="{bfont}">{perk_tspans}</text>')
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
-  <defs>{page_gradient(theme, 'pg')}</defs>
-  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>
+  <defs>{page_gradient(theme, 'pg', page_cols)}</defs>
+  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{frame_col}" stroke-width="6"/>
+  <rect x="14" y="14" width="{CARD_W-28}" height="{CARD_H-28}" rx="{radius-4}" fill="none" stroke="{frame_col}" stroke-width="2" opacity="0.45"/>
   <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{rcol}" stroke-width="2" opacity="0.5"/>
   <path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{rcol}"/>
   <text font-size="{TITLE_SIZE}" fill="#ffffff" font-family="{tfont}" font-weight="bold">{title_tspans}</text>
@@ -269,6 +284,7 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
   {pay_block}
   {gain_block}
   {perk_block}
+  {ribbon}
 </svg>"""
 
 
@@ -280,6 +296,15 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
     scol = suit["color"]
     ink, text, muted, accent, radius = theme["ink"], theme["text"], theme["muted"], theme["accent"], theme["radius"]
     tfont, bfont = theme["title_font"], theme["body_font"]
+    # --- day/night treatment (data-driven off the `phase` column) ---
+    pstyle = phase_style(row.get("phase"))
+    frame_col = pstyle["frame"] if pstyle else ink
+    page_cols = pstyle["page"] if pstyle else None
+    ribbon = phase_ribbon_svg(pstyle, CARD_W, CARD_H, MARGIN, tfont)
+    # inner phase-frame line only when there IS a phase → phase-less decks (characters, other games)
+    # stay byte-identical to before this recolour.
+    inner_frame = (f'<rect x="14" y="14" width="{CARD_W-28}" height="{CARD_H-28}" rx="{radius-4}" '
+                   f'fill="none" stroke="{frame_col}" stroke-width="2" opacity="0.45"/>') if pstyle else ""
     cost = str(row.get("cost", "")).strip()
     value = str(row.get("value", "")).strip()
     recipe = (row.get("recipe") or "").strip()          # dishes: semicolon-separated ingredient ids
@@ -369,6 +394,22 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
             x += 84
         chip_h = 84
 
+    # --- scoped-event badge (drawn shape + word) — replaces the tofu ⦿/⬢/➤ glyph (bg-access FIX A) ---
+    scope = (row.get("scope") or "").strip().lower()
+    scope_chip = ""
+    eff_text = row.get("effect", "")
+    if scope in SCOPE_SHAPE and not (recipe and glyph_map):
+        sy = type_text_y + 56
+        scope_chip = (
+            emblem_svg(SCOPE_SHAPE[scope], MARGIN + 24, sy - 8, 22, scol, stroke=ink) +
+            f'<text x="{MARGIN + 64}" y="{sy}" font-size="30" fill="{scol}" '
+            f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(SCOPE_WORD[scope])}</text>')
+        # strip the leading "⬢ THIS REGION · " (glyph + its scope words + separator) so the body prose
+        # keeps its meaning without the tofu glyph; fall back to stripping a bare leading glyph.
+        eff_text = re.sub(r'^\s*[' + _SCOPE_GLYPHS + r'][^·]*·\s*', '', eff_text)
+        eff_text = re.sub(r'^\s*[' + _SCOPE_GLYPHS + r']\s*', '', eff_text)
+        chip_h = max(chip_h, 64)
+
     # --- body: for objectives a bold requirement line leads, then the flavour effect ---
     body_y = type_text_y + 104 + chip_h
     if is_objective:
@@ -385,13 +426,14 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
                 f'font-family="{bfont}">{eff_tspans}</text>')
     else:
         body_tspans = "".join(f'<tspan x="{MARGIN}" dy="{0 if i == 0 else LINE_H}">{esc(l)}</tspan>'
-                             for i, l in enumerate(wrap(row.get("effect", ""), max_chars=32)))
+                             for i, l in enumerate(wrap(eff_text, max_chars=32)))
         body = (f'<text x="{MARGIN}" y="{body_y}" font-size="{BODY_SIZE}" fill="{text}" '
                 f'font-family="{bfont}">{body_tspans}</text>')
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
-  <defs>{page_gradient(theme, 'pg')}</defs>
-  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>
+  <defs>{page_gradient(theme, 'pg', page_cols)}</defs>
+  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{frame_col}" stroke-width="6"/>
+  {inner_frame}
   <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{scol}" stroke-width="2" opacity="0.5"/>
   <!-- header band in the suit colour (grows with a wrapped title) -->
   <path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{scol}"/>
@@ -400,10 +442,12 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
   {value_index}
   {type_block}
   {chips}
+  {scope_chip}
   {body}
   <!-- footer flourish -->
   <line x1="{MARGIN}" y1="{CARD_H-MARGIN-70}" x2="{CARD_W-MARGIN}" y2="{CARD_H-MARGIN-70}" stroke="{accent}" stroke-width="2" opacity="0.5"/>
   {value_row}
+  {ribbon}
 </svg>"""
 
 
@@ -442,6 +486,10 @@ def main() -> int:
     ap.add_argument("--tokens-csv", type=Path, default=None,
                     help="optional token key (columns id,label[,color]) — enables the dish recipe "
                          "chip-row, mapping each recipe ingredient id to its 繁體 glyph + colour")
+    ap.add_argument("--tight-grid", action="store_true",
+                    help="pack each deck sheet into the tightest cols×rows grid (fewest blank cells) "
+                         "instead of always maxing at 10 columns — cleaner Screentop imports for small "
+                         "assembled decks. Card cell size is unchanged (409×585).")
     args = ap.parse_args()
 
     theme = get_theme(args.theme)
@@ -528,6 +576,18 @@ def main() -> int:
 
         COLS, ROWS_MAX = 10, 7          # TTS max grid
         per_sheet = COLS * ROWS_MAX - 1  # reserve last cell for the back
+
+        def pick_cols(n_cells: int) -> int:
+            """Fewest-blanks grid within the 10×7 cap; tie-break toward fewer rows (wider)."""
+            best = (10 ** 9, 10 ** 9, COLS)
+            for c in range(1, COLS + 1):
+                r = math.ceil(n_cells / c)
+                if r > ROWS_MAX:
+                    continue
+                key = (c * r - n_cells, r)      # (blank cells, rows)
+                if key < best[:2]:
+                    best = (key[0], key[1], c)
+            return best[2]
         # cell size respecting the 4096 px texture cap
         cell_w = min(CARD_W, 4096 // COLS)
         cell_h = min(CARD_H, 4096 // ROWS_MAX)
@@ -547,7 +607,7 @@ def main() -> int:
         for s in range(sheets):
             chunk = expanded[s * per_sheet:(s + 1) * per_sheet]
             n = len(chunk) + 1                      # + back
-            cols = min(COLS, n)
+            cols = pick_cols(n) if args.tight_grid else min(COLS, n)
             rows_n = math.ceil(n / cols)
             sheet = Image.new("RGBA", (cols * cell_w, rows_n * cell_h), (0, 0, 0, 0))
             for i, (_cid, p) in enumerate(chunk):
