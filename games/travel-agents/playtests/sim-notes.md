@@ -940,43 +940,66 @@ harvest-fix knob exists yet — that's the design call to make, then encode.**
 
 ---
 
-## TOUR TICKETS — a proposed fix under test (2026-08-07, CD-directed) — DIRECTIONAL read; gated run pending
+## TOUR TICKETS — a proposed fix, GATED RUN COMPLETE (2026-08-07, CD-directed & CD-signed-off)
 
 **The proposal (CD-locked shape).** Replace the single hidden +7 mission with **Ticket-to-Ride-style Tour
 Tickets**: hold several; **claim a new one as a full action** (Book; doesn't tick the day-clock); score
 **+value on completion, −floor(value/2) if unfinished**. The deck **leans on MIX tickets** (drinks +
 ladder: "a stand + a night-market", "a stand in 3 regions", "one of each venue") so a *well-timed drink
 pays toward a bonus the greedy planner can SEE* — the exact incentive the flat-2-VP drink lacked. Encoded
-behind `TA_MISSION_MODE` (`tickets` = proposal, default while prototyping; `single` = the committed v6.1
-baseline for a clean A/B). New bots: `ladder_only` (never drinks) as the "ignore drinks" control.
+behind `TA_MISSION_MODE` (`tickets` = proposal; `single` = the committed v6.1 baseline, for a clean A/B).
+New bot `ladder_only` (never drinks) is the "ignore drinks" control.
 
-**Why this is the right lever (and testable).** Unlike a flat drink value (invisible to a value/action
-planner — see Riskiest #2), a ticket payoff is greedy-visible, so the sim CAN give a real read here.
+**Headline: Tour Tickets turn the drinks fork from a ~20% trap into a BALANCED, in-band alternative, and
+make a mix a legitimately competitive line — while pure-drinks still correctly loses.** The intended
+effect landed.
 
-**Directional smoke read (n≈600/cell, ungated exploration — NOT the authoritative gated run):**
+**Authoritative numbers — the caps-aware `_versus`/H5 probes (n=1200; each side's ticket dealing aligned
+to its real road/capability):**
 
-| vs `ladder_only` (never-drinks) | MISSION_MODE=single | MISSION_MODE=tickets |
-|---|---:|---:|
-| `mixed` (responds to the incentive) | 43.6% | **48.5%** |
-| `smart_mix` (hard-coded opportunistic) | 44.9% | 45.0% |
+| Matchup (both seatings) | single | tickets | read |
+|---|---:|---:|---|
+| `drinks_lean` vs `ladder_lean` (the fork balance) | 45.3% | **49.2%** | tickets add ~4pt → **in-band both sides** (was a ~20% trap pre-competence-fix) |
+| `mixed` vs `ladder_only` (mix vs pure-ladder expert) | 50.4% | **51.0%** | a mix is **not worse** than pure ladder; ~coin-flip |
+| `drinks_lean` vs `ladder_only` | 37.1% | 36.8% | leaning drinks still **loses to a pure-ladder expert** (correct: don't punish clean laddering) |
+| `pure_drinks` (field) | — | **~25%** | still a **clear loss** — nobody wins on drinks alone ✓ |
 
-Under tickets the mix bot **books ~1 ticket/game, holds ~2, buys ~1 drink, completes ~1 ticket**, and
-rises **~44% → ~48.5% vs pure ladder** — a clear positive move in the intended direction, landing **near
-parity**. It doesn't cross 50% in *bot* hands for two honest reasons: **(a)** a drink still costs more
-tempo than its points return even with the ticket bonus (the action-cost cap from Riskiest #2 persists);
-**(b)** the greedy bot completes only ~1 of its 2 held tickets — the **"stack a ladder ticket + a cheap
-drinks ticket and finish both"** play is a multi-objective planning layer bots execute poorly, so this
-**UNDER-estimates** the system's value for a thinking player. `ladder_only` still banks slightly more
-ticket value (~1.3 done vs ~1.0) because pure laddering completes ladder tickets efficiently.
+So the two make-or-break bars for Riskiest #2 now PASS: **(i)** pure-drinks clearly loses; **(ii)** the
+drinks *lean* is viable and in-band (≈49/51 vs the ladder lean), no longer a trap. A mix is competitive
+with pure ladder rather than strictly dominant — arguably correct (a clean ladder line shouldn't be
+punished either). **Why it works:** a ticket payoff is greedy-visible where flat drink-value was not, so a
+held mix/drinks ticket makes the bot (and a human) actually pursue a well-timed drink.
 
-**Read:** Tour Tickets **work in the intended direction** — they make a mix competitive with pure ladder
-where flat drink-value could not, and the true effect is likely stronger at a table (the multi-objective
-juggling is a bot blind spot). To push the mix over 50% *in sim*, the complementary lever is **lowering a
-drink's tempo cost** (cheaper common, or a lighter claim on the low-conflict stands so a drink is a
-~1-action grab), pairing the *payoff* fix (tickets) with a *cost* fix.
+**⚠ Methodology caveat — the auto round-robin (`sim-results.md`) is caps-BLIND, do NOT read its field
+ordering as truth.** `simulate.py` calls `new_state(rng)` generically, so it can't pass per-strategy caps;
+`ladder_only`/`pure_drinks` there get *dealt drinks-requiring tickets they will never complete* and eat the
+−half penalties, which **inflates the drinks-inclusive lines** (the RR shows `drinks_lean` 59% > `ladder_only`
+56%, an artifact — the fair `_versus` head-to-head is `drinks_lean` **37%** vs `ladder_only`). Trust the
+`_versus`/H5 table above; the RR is a rough field-shape check only. (Fix if ever needed: thread caps through
+the round-robin harness, or drop the two pure controls from the RR.)
 
-**Status / next:** the full gated probe suite (authoritative H5 A/B + re-check character balance & pacing
-*under tickets* + a fresh round-robin with `ladder_only`/`smart_mix`) is **pending the CD's explicit "go"**
-per the sim gate. Also open for the CD: (a) run as-is; (b) add the cheaper-drink lever first, then run;
-(c) take the ticket system to the 2p table. Nothing here is logged to the design-doc/bible yet — Tour
-Tickets remain a *proposal* until the CD locks them.
+**Character balance under tickets (mildly better, same conclusions):** councillor 49.3 ✓ · 大胃王 52.1 ✓ ·
+網紅 55.4 (borderline, was 60.4) · 大哥 **58.9 (still hot, was 64.0)** · 媽寶 **30.0 (still weak)**. Tickets
+add a shared scoring vector that slightly dilutes ability edges, but **H2 (大哥) is still unresolved** (A
+58.9 / B 84.6 / C 30.4 — none in band; needs a 4th option) and 媽寶 still needs a buff. H1 (大胃王) all ~52%,
+ship A.
+
+**Costs & watch-points (honest):**
+- **Weight.** Tickets are a real subsystem add (claim action + penalty rule + multi-objective tracking) —
+  teachable, but pushes toward the top of the 2.5 budget. `bg-elegance` must weigh it before lock.
+- **The ticket swing is modest** in bot hands: winner nets only **~+2.7** from tickets (holds ~2.1, completes
+  ~1.0, eats a −half penalty on the unfinished one). The penalty bites — which is the intended TtR tension.
+- **Under-modelled upside.** The "stack a ladder ticket + a cheap drinks ticket and finish BOTH" juggling is
+  a multi-objective planning layer the greedy bot executes poorly (completes ~1 of 2 held), so the sim likely
+  **under-estimates** the system's value for a thinking player — a point *for* the design, to confirm at the table.
+- **Pre-existing v6.1 items unchanged by tickets:** East under-sourced (S 35% / E 9%), the Buzz fight rare in
+  bot play (~5% contested → table question), and the drinks-heavy pacing drag.
+
+**Recommendation:** Tour Tickets are a **keeper** — they fix the fork's viability (the session's #1 problem)
+in the exact way the CD intended, cheaply and thematically. Next: **(1)** `bg-elegance` weight check +
+`bg-theme` to lore the tickets as a travel agent's *itinerary/booked stops*; **(2)** if the CD wants the mix
+to more clearly *beat* pure ladder (not just match it), add the complementary **cheaper-drink** lever (lower
+common cost or a lighter claim on the low-conflict stands); **(3)** the real proof is the **2p Screentop
+table** — the multi-objective juggling and the "book another? / can I finish it?" press-your-luck are exactly
+what the sim can't fully judge. Only lock into the design-doc/bible on the CD's word — Tour Tickets remain a
+*proposal* until then.
