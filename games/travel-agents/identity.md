@@ -3,7 +3,7 @@
 > The living source of truth for this game's **felt identity**: concept, theme, tone/vibe, story/lore,
 > look & feel, and naming. Owned by `bg-theme`; read alongside `game-bible.md`. Keep it current — and
 > keep it **coherent** while letting it **evolve** with the design.
-> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-06 (bg-theme — **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 (下午→夜市) + spy "Code Red" end-trigger · v5 sweep: ★ Star / accolade value-swing added, Coverage folded into a Mission, venue rename 早餐店→夜市攤 + 飲料店 all-day)
+> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-07 (bg-theme — v6 guardian sweep: **"Code Red" end-trigger DROPPED** → the plain **Day → Night** close (last train home, no alarm) · **common ingredient named 糖 sugar** (the 手搖飲 + convenience-store staple) · drinks fork confirmed warm + native. Earlier: **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 + a day→night end-game · v5 sweep: ★ Star / accolade value-swing added, Coverage folded into a Mission, venue rename 早餐店→夜市攤 + 飲料店 all-day)
 
 > **Restraint first.** Match identity depth to what the game *earns*. Leaving story/lore light on purpose
 > is a correct answer, not a gap. Never invent lore to fill a section.
@@ -225,9 +225,27 @@ the fiction.)*
   **dish-typed generic stalls** ("a Michelin-nod-worthy beef-noodle place"), **never a real named
   restaurant/brand printed with a star it doesn't hold.** Keep vendors dish-typed, not brand-named, and the
   ★ is celebration, not a fabricated grand claim.
-- **Region↔ingredient web (travel because the food lives *there*)** — **integrated, unchanged from v2.**
-  The generic-defeater. Oysters South, tea/pearls Central, rice/greens East, beef/pork/chicken/egg
-  North.
+- **Region↔ingredient web (travel because the food lives *there*)** — **integrated; tightened for the v6
+  5-ingredient palette.** The generic-defeater still holds: **海鮮 seafood South, 茶 tea Central, 米 rice (or
+  山蘇 greens) East, 豬肉 pork North** — one real **signature per region** (the v6 cut folds the old
+  per-region proteins/produce down to one each; `bg-developer` keeps the dishes real). Rename the setting and
+  the recipes break — still Taiwan-specific food geography, not "engine + map." *(The 5th ingredient, the
+  **common 糖 sugar**, is region-light on purpose — see the drinks-fork bullet + Naming.)*
+- **The drinks fork = *"the drinks stand is always open"* (v6 — the off-clock easy-points road)** —
+  **integrated; reads WARM and native, NOT drinks-as-lesser.** The persistent, region-free **Beverage Row**
+  (飲料店 / 手搖飲, fed off the **Convenience Store** + the common **糖 sugar**) is the low-stakes lane you can
+  always take instead of fighting up the contested breakfast→night-market ladder. **Why it's an authentic
+  fiction fit, not a mechanical fudge:** Taiwan's 手搖飲 shops genuinely *are* on every corner, open all day,
+  and grabbing a drink genuinely *is* the easy, unhurried move no one races or fights over — so
+  "off-clock / always-there / uncontested / region-free" is exactly how a local reads a drinks run. **Why it
+  is NOT "drinks are lesser food":** the low value is a *stakes/contest* level, not a *food-class* judgement
+  — a 珍奶 isn't "worse" than breakfast, it's a calmer play; the venue arc is **time-of-day**, and drinks sit
+  *outside* it entirely (see Naming's framing bind). Keeping the **★ accolade / Buzz-contest OFF drinks is
+  coherent both ways:** thematically a bubble-tea stand "going Michelin" would be off-key, and the fork's
+  whole warm identity is *the calm, reliable, nobody-fights-over-it* road — a contested, high-swing ★ on it
+  would contradict that. The ★ and the fight belong on the ladder; the drinks stay the steady, sunny hedge.
+  **On the north-star grin:** a drink in hand while two trench-coated rivals scrap over an auntie's stall IS
+  the warm night-market picture.
 - **Larder cap = 7 → *"travelling light, eating fresh — a night-market haul doesn't keep."*** Makes the
   cap feel inevitable. (v3 discards surplus; the old Dead-drop generosity beat is gone — no re-theme
   needed, the cap stands on the fresh-food logic alone.)
@@ -239,11 +257,12 @@ the fiction.)*
   and the Vendor Board **escalates with it** (the morning shops give way to the big night-market names,
   harder to win as the day peaks). This is **inevitable, not bolted-on**: it maps the arc onto the real
   Taiwan food day (**breakfast → night market**) and makes the game **end on the north-star image**
-  (dusk/neon at the night market). **The end-trigger = a spy-themed "Code Red"** *(v5 — bg-theme owns the flavour; the
-  exact firing condition is `bg-design`'s call):* **head office calls a Code Red — mission's wrapping,
-  everyone back to base, catch the last train home.** It **re-homes the old Extract / "last train home"
-  gag** as the **secret-agent climax** and stays **warm/comedic** — a giddy *"the tour's almost over, grab
-  the last great bite!"*, never menace. *(Full act + Code-Red framing in Naming.)*
+  (dusk/neon at the night market). **The end is the plain Day → Night close** *(v6 — CD dropped the v5
+  spy-alarm "Code Red" label; the firing condition is `bg-design`'s call):* **you play the day into the
+  night, and when the night market winds down the tour's over — catch the last train home.** It keeps the
+  warm **"last train home"** image (re-homed from the old Extract action) as the **natural close of the
+  eating day**, and stays **warm/comedic** — a giddy *"the tour's almost over, grab the last great bite
+  before the last train!"*, never an alarm, never menace. *(Full act framing in Naming.)*
 - **Re-skin test:** PASSES — the vendor/region web is Taiwan-specific food geography and the Acts are the
   Taiwan food *day* (早餐店 → 夜市攤 — breakfast → night market, with 飲料店 drinks all-day alongside);
   rename the setting and both the recipes and the day-arc break. Not generic "engine + map."
@@ -362,6 +381,25 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     types.** → native reviewer confirms the three names + romanisation (esp. Mandarin-vs-Tâi-lô per term).
     *(The structural/economy rework — ingredient costs, the drinks easy-points value, the Convenience-Store
     synergy — is `bg-design`'s; bg-theme owns only the fiction fit above.)*
+  - **The ingredient palette** *(v6 — the 5-ingredient economy; bg-design owns the mechanics/region-map, and
+    handed bg-theme the naming of the **common** staple).* Four **region signatures** + **one common**:
+    **豬肉 pork** (North 北), **茶 tea** (Central 中), **海鮮 seafood** (South 南), **米 rice** (East 東 —
+    *or* 山蘇 greens, `bg-developer`'s pick to keep the Indigenous-forward East dishes real). The **common
+    ingredient — LOCKED: 糖 sugar** *(Mandarin **táng**; Tâi-lô **thn̂g**)* — the successor to the retired
+    "pantry" wild token. **Why 糖 over bg-design's alternate 鮮奶 milk:** *(1) it is the genuinely universal
+    base of Taiwan's 手搖飲* — the sugar level (**半糖・微糖・全糖・無糖 / 果糖** fructose syrup) is *the* iconic
+    hand-shaken-drink customisation, so "the staple every drinks stand runs on" is literally true; milk is
+    only in the 鮮奶茶 subset, not all drinks. *(2) It has an honest regional home* — Taiwan's historic sugar
+    industry (台糖 / the 南部 refining belt: 台南・高雄・嘉義・雲林) makes "the common lives in the
+    South/Central regions" a *true* geography, not a fudge, which fits the design's "common in 2 of 4
+    regions" call cleanly. *(3) It reads as **both** drink-base **and** a light food-filler* (honest for the
+    design's "common appears as a minor filler in some ladder recipes" note). *(4) Not regionally dishonest*
+    — sugar is a genuine pantry staple across the whole island; that only 2 region *decks* carry it is a
+    game abstraction (to preserve travel value), never a claim it's absent elsewhere. **Bind:** 糖 stays a
+    plain, real staple — never a gag, dish names intact; → native reviewer confirms 糖/táng/thn̂g and eyeballs
+    whether **果糖 fructose syrup** is the more natural token word for the 手搖飲 context (a cheap swap if so).
+    *(Region signatures are `bg-design`'s call — listed here only so the ingredient set reads coherent as one
+    warm, real, Taiwan-specific palette; `bg-developer` locks the East signature.)*
   - **The Acts** = the end-game structure — **a single glorious eating day, a TWO-BEAT arc** *(v5 — the CD's
     ≤30-min target)*, **morning breakfast → night-market climax.** With the venue rename the on-clock arc is
     **早餐店 → 夜市攤** (drinks run all-day alongside, off the clock). ***Act I · The Breakfast Run 早餐***
@@ -374,15 +412,18 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     locals recognise. **→ `bg-design` owns the Act label** (these are fiction skins); the **Breakfast-Run /
     Daytime rename is the one coherence ask from this pass** (an "Afternoon" act that opens at breakfast is
     the only clash the venue rename introduces).
-  - **"Code Red"** = the end-game trigger *(v5 — the spy-themed climax; bg-theme owns the flavour/name,
-    the exact firing condition is `bg-design`'s call).* When Act II's condition is met, **head office
-    calls a Code Red**: *mission's wrapping — everyone back to base, catch the last train home.* It
-    **re-homes the old Extract / "last train home" gag** (cut as a player action) as the game's
-    **secret-agent climax** — the one moment the spy-caper register pays off structurally, landing right
-    on the night-market north star. **Keep it warm/comedic:** a giddy *"the tour's almost over — grab the
-    last great bite before the last train!"*, an over-caffeinated head-office bark, **never** danger or
-    dread (stays on the Tone "warm caper, not a thriller" rail). *Alternatives logged: "Last Orders,"
-    "Last Train," "Wheels Up" — but "Code Red" best lands the agent gag and is the CD's pick.*
+  - **The last train home** = the end-game close *(v6 — CD DROPPED the v5 spy-alarm "Code Red" label; the
+    exact firing condition is `bg-design`'s call).* There is **no named end-trigger and no alarm**: you
+    simply **play the day into the night, and when the night market winds down the tour's done — catch the
+    last train home.** It keeps the warm **"last train home"** image (re-homed from the old Extract action)
+    as the **natural close of one eating day**, landing right on the night-market north star. **Keep it
+    warm/comedic:** a giddy *"the tour's almost over — grab the last great bite before the last train!"*,
+    **never** an alarm, danger, or dread (stays on the Tone "warm caper, not a thriller" rail). *Why the
+    drop reads clean: the day→night arc already IS the escalation and the clock; a spy "alarm" on top was
+    the one beat that leaned toward menace/urgency rather than the warm wind-down, so losing it tightens
+    the tone, not just the ruleset. Nothing thematically stranded — the spy-caper wink still lives in the
+    trench-coats, "Operation: ___" mission names, and the head-office voice.* ~~*Alternatives logged:
+    "Last Orders," "Wheels Up," "Code Red" (v5, now cut).*~~
   - **Prestige** / **Reputation** = the two live scoring vectors (star power / your standing as an agent).
     *(v5: Region-Coverage is **no longer a scoring track** — the grand-tour breadth line is now a
     **signature Mission** pattern, not a named vector. "The grand tour across the island" survives as
@@ -408,9 +449,10 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   - **best-tour title** = the season's prize you're both racing for — the compete-engine's payoff. A
     cutesy award *name* (a "Golden Boarding-Pass"-type gag) is **fluid** — hold it light; route any
     Chinese/Tâi-lô coinage through the native reviewer before it locks.
-  - Read the v5 set aloud together (travel agency / head office / signature Mission / **Bribe a Vendor** /
-    **Buzz → the Queue** / Vendor Board / **早餐店 · 夜市攤 · 飲料店 (all-day)** / **Act I The Breakfast Run
-    早餐 · Act II Night Market 夜市 · Code Red** / **Prestige · Reputation** / Events / best-tour title / Stamps) — one warm
+  - Read the v6 set aloud together (travel agency / head office / signature Mission / **Bribe a Vendor** /
+    **Buzz → the Queue** / Vendor Board / **早餐店 · 夜市攤 · 飲料店 (all-day)** / ingredients: **豬肉 · 茶 ·
+    海鮮 · 米 + 糖 (common)** / **Act I The Breakfast Run 早餐 · Act II Night Market 夜市 · the last train
+    home** / **Prestige · Reputation** / Events / best-tour title / Stamps) — one warm
     travel-agent-playing-spy voice, no clashes. *(Venue set reads warm together: 早餐店 → 夜市攤 is the
     morning→night clock, 飲料店 the all-day drinks fork alongside.)* **"Bribe"** is the spiciest word in the set, so it *depends* on its
     neighbours to stay warm: *"the queue you drummed up,"* *"marketing opportunity,"* *"put her on the
@@ -614,12 +656,48 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   (5 Taiwanese social types — 里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥; see the Sensitivity pass), with **two
   NEW mechanic shapes pending sim** (大胃王 keep-all-3 + hazard-vulnerability; 大哥 reduced-Buzz-threshold
   + the tab); the **two-beat day-arc (I The Breakfast Run 早餐 早餐店 / II Night Market 夜市 夜市攤; 飲料店
-  drinks all-day off-clock)** with the spy-themed **"Code Red"** end-trigger; the **last-train-home** gag
-  re-homed from the cut Extract into Code Red. All are cheap re-skins of the spine — rung held at evocative. *(The vendor keyword is no longer a proposal —
+  drinks all-day off-clock)** closing on the plain **Day → Night** wind-down — the **last-train-home** gag
+  re-homed from the cut Extract as the natural end (v6: the v5 spy-alarm **"Code Red"** label is dropped);
+  the **common ingredient named 糖 sugar** (the 手搖飲 + convenience-store staple the drinks fork runs on).
+  All are cheap re-skins of the spine — rung held at evocative. *(The vendor keyword is no longer a proposal —
   **"Bribe a Vendor" is CD-LOCKED**; see Locked, above.)*
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
+- 2026-08-07 (bg-theme, **v6 guardian coherence sweep — the economy rework: drinks fork + 5-ingredient
+  palette + the "Code Red" drop**) — **STILL COHERENT; two concrete edits made, no re-theme needed.** Swept
+  the v6 design-doc + rules-draft against identity. Verdicts on the four moves:
+  **(1) "Code Red" DROPPED → the plain Day → Night close (concrete edit).** The CD scrapped the v5 spy-alarm
+  end-trigger; the finish is now just *play the day into the night, and when the night market winds down,
+  catch the last train home.* **Stripped every live "Code Red" reference** — the resonance end-game bullet,
+  the Naming end-trigger entry (renamed **"the last train home"**, no alarm), the read-aloud set, the
+  Locked-vs-fluid line, and the header summary. Kept the warm **"last train home"** image intact. **This
+  *tightens* the tone:** the day→night arc already carries the escalation + the clock, so a spy "alarm" on
+  top was the one beat leaning toward menace/urgency rather than the warm wind-down — losing it is a small
+  net gain, not a loss. **Nothing stranded** — the spy-caper wink still lives in the trench-coats,
+  "Operation: ___" mission names, and the head-office voice. (Historical v5 log entries below keep "Code Red"
+  as an accurate record of the-then decision; only the *live* doc state changed.)
+  **(2) Act I rename — CONFIRMED.** "Afternoon Crawl 下午" → **"The Breakfast Run 早餐"** is fully reflected
+  throughout the live doc (was already carried from the v5 sweep's coherence ask; verified against v6
+  design-doc §Acts, which now also names it The Breakfast Run). No clash remains.
+  **(3) The drinks fork — CONFIRMED warm + native honest.** Added a dedicated resonance bullet: the
+  off-clock, region-free, 糖-fed Beverage Row (飲料店 / 手搖飲) reads as the authentic *"the drinks stand is
+  always open"* lane — an honest fiction fit (Taiwan's 手搖飲 really are everywhere/all-day/uncontested), and
+  **NOT drinks-as-lesser-food** (the low value is a stakes/contest level, not a food-class judgement; the
+  arc is time-of-day and drinks sit outside it). Confirmed **keeping the ★ accolade + Buzz-contest OFF
+  drinks is coherent both ways** — a bubble-tea stand "going Michelin" would be off-key, and the fork's warm
+  identity *is* the calm, nobody-fights-over-it road; the swing belongs on the ladder.
+  **(4) The common ingredient — NAMED + LOCKED: 糖 sugar** *(Mandarin táng; Tâi-lô thn̂g).* bg-design handed
+  me the naming of the drinks + Convenience-Store staple (proposed 糖 or 鮮奶 milk). **Picked 糖** — it's the
+  genuinely universal base of Taiwan's 手搖飲 (the sugar-level 半糖/微糖/全糖 customisation is *the* iconic
+  hand-shaken-drink signature; milk is only the 鮮奶茶 subset), it has an **honest regional home** (台糖 / the
+  南部 sugar belt — so "common lives in 2 of 4 regions" is *true* geography, fitting the design's half-the-map
+  call), it reads as **both drink-base and a light food-filler**, and it is **not regionally dishonest** (a
+  real island-wide pantry staple; the 2-deck limit is a travel-value abstraction, not a claim of absence).
+  Locked it in Naming + the resonance region↔ingredient bullet + the read-aloud set. **One native-reviewer
+  note:** confirm 糖/táng/thn̂g and whether **果糖 fructose syrup** is the more natural token word for 手搖飲
+  (a cheap swap if so). Rung **held at evocative** — a named real staple + a warm fork confirmation, no new
+  lore.
 - 2026-08-06 (bg-theme, **v5 guardian coherence sweep — the ★ Star / value-swing + end-game finalize**) —
   **STILL COHERENT; ONE concrete fix (the ★ Star was a new themed element I own, not yet in this doc).**
   Swept the finalized v5 design-doc + rules-draft against identity. Verdicts on the four moves:
