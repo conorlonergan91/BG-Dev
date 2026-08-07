@@ -78,8 +78,10 @@ python3 $T/rulebook/build_rulebook.py --md design/rules-draft.md --title "$title
 
 echo "→ snapshotting deliverables into exports/ (committed)"
 mkdir -p exports
-# stale orphan from a pre-v6 build (make.sh renders clock-track now, not season-track)
-rm -f exports/season-track.png
+# Wipe the top-level deliverables first so orphans from older/renamed builds can't linger
+# (mirrors the `rm -rf exports/screentop` below). exports/ is fully regenerated from data —
+# nothing at the top level is hand-curated, so a clean-then-copy keeps it exactly in sync.
+rm -f exports/*.png exports/*.pdf
 cp build/cover.png                        exports/cover.png 2>/dev/null || true
 cp build/sheets/vendors_sheet_*.png       exports/ 2>/dev/null || true
 cp build/sheets/vendors_back.png          exports/ 2>/dev/null || true
@@ -90,8 +92,6 @@ cp build/sheets/ingredients_back.png      exports/ 2>/dev/null || true
 cp build/sheets/events_sheet_*.png        exports/ 2>/dev/null || true
 cp build/sheets/events_back.png           exports/ 2>/dev/null || true
 cp build/sheets/characters_sheet_*.png    exports/ 2>/dev/null || true
-# stale orphan from the pre-flip single-state board
-rm -f exports/map.png
 cp build/map-day.png                      exports/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/map-night.png 2>/dev/null || true
 cp build/prestige-track.png               exports/prestige-track.png 2>/dev/null || true
