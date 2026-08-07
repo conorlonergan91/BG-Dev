@@ -1188,3 +1188,33 @@ lingering **"Stall / Eatery / Marquee"** or **"~10 ingredients / pantry"** refer
 > **`components/*.csv` and `sim/travel_agents.py`** need the full sweep — Poach, Stall/Eatery/Marquee, the
 > ~10-ingredient/pantry palette, "Code Red" strings, the region-free-beverage model, and the addition of the
 > **event `scope` column + CS-fires-events** logic.
+
+---
+
+## FTUE — Teaching sequence (relocated from `rules-draft.md`, 2026-08-07, bg-elegance)
+
+> **Provenance:** moved out of the standing rulebook (`design/rules-draft.md`) to keep the laid-out
+> word count true against the 1650-word cap — the same editorial relocation applied to earlier
+> appendices. This is a *teaching order* handoff for the eventual FTUE / how-to-teach page, not a rules
+> change: every rule referenced below is defined in `rules-draft.md`. Owned by bg-playtest for the
+> blind-test / FTUE plan.
+
+The order a first game should reveal the rules:
+
+1. **Goal + one Vendor** — "here's a stall in the North; it wants 2 pork, and whoever hypes it most (by 2
+   Buzz) while standing here wins it. Let's go get it."
+2. **Visit / Convenience Store / Travel** — dig the North market for its signature; note that events fire
+   *by their scope* (point at the ⦿/⬢/➤ tag) when you Visit or hit the Convenience Store; grab a card; move.
+3. **Promote** — drop Buzz on the stall; "your rival can pile on too — this is the fight."
+4. **Bribe** — in-region, ahead by 2 Buzz, pay the ingredients → win it: Prestige moves, Rep moves, point at
+   its **region icon** ("your first North discount"). Its Buzz clears; **the day-clock ticks +1**.
+5. **The ramp** — win a second North vendor and *watch the ingredients cost less* (Buzz still full).
+6. **Drinks** — point at a cheap drink: "low value, no icon, no ramp — a quick grab to pad your score or feed
+   a mix ticket, but you can't win on drinks alone. It still ticks the day-clock like any vendor."
+7. **Tour Tickets** — "your itinerary. Book one from the row; finish it before its phase closes or it drops
+   to your lose-pile at half value. Book bold, or play it safe."
+8. **The hype fight** — the first time you both stack Buzz on one vendor: "out-commit, race to the
+   ingredients, or concede and take another. Outraced, not robbed."
+9. **Reputation** — the second live track; "several ways to win — go tall, climb your Rep, chase tickets."
+10. **Dusk → the Night Market** — introduce at the dusk flip: "the day judges your daytime tickets, the
+    street turns over to neon, the big names arrive — and night's coming, so don't miss the last train."
