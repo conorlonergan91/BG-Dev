@@ -688,3 +688,216 @@ comfortable "slight edge to the engine-builder"?). This is a **separate one-vari
   is untouched (bg-developer bakes the recommended values). Level 2 = the recommended package.
 - The **East T1 de-pantry asymmetry** (East T1s 2-East vs others 1+pantry) is modelled exactly; its
   human *feel* (are East stalls now slightly unrewarding?) is a table question the sim can't judge.
+
+---
+
+# v6.1 — THE ECONOMY FORK (region-anchored beverages + scoped events) — simulation notes (2026-08-07)
+
+Sim module reworked from the checkpointed v6 first-pass to the LOCKED **v6.1** design
+(`../design/design-doc.md`). The spine is unchanged; v6.1 folds in the two CD corrections the sim now
+models: **(A)** beverages are **region-anchored** — one persistent stand in *every* region, on-site to
+Promote/Bribe (no more region-free "Beverage Row"); the **Beverage deck (7 @2p)** is the hard cap. **(B)**
+the **Convenience Store fires events by SCOPE** (⦿ self / ⬢ region / ➤ neighbour), resolved relative to
+the flipped region against pawn positions; **Visit** also fires by scope; **Travel** still whiffs.
+Auto tournament report: `sim-results.md`. This file is the **interpretation** — nothing here is logged to
+the design-doc / bible / decision-log; that's the CD's call after reading this.
+
+**Headline (the two make-or-break v6.1 questions):**
+- **Riskiest #2 — the drinks fork "viable but not dominant": FAILS on the *viable* side.** Pure-drinks
+  **clearly loses** to a good ladder line (~1–10% h2h — the ceiling gap the design wanted, PASS), **but a
+  drinks *lean* is a trap, not a live alternative** (~30% h2h vs ladder/mixed). Crucially the weakness is
+  **structural, not a tuning miss**: neither flagged knob moves it — common availability (H3: 20→8→20% for
+  half/every/half-rich) and the CS event-scope ratio (H4: 19.5–19.8% flat) barely register, and the
+  **master beverage-value knob doesn't rescue it either** (value 2→3→4 stays ~30% and *drops* once
+  beverages also give +2 Rep). Root cause below.
+- **Riskiest #1 — the Buzz fight (incl. 大哥): the 大哥 dominance probe FLAGS hard**, and the Buzz fight
+  itself is **near-absent in bot play** (4.3% of ladder wins contested) — so its *fun/tension* is unresolved
+  and is a table question, but 大哥's **tie-win is confirmed too strong** in sim.
+
+Game arc (field, both seatings): winner ~**28.6 VP** (Prestige ~19 · Rep-VP ~5.6 · mission hit 57%) —
+squarely in the design's 22–32 target. Turns run **~19–20/player in competent mixed/ladder play** (a touch
+over the 14–18 target), mostly ending by last-train; see the pacing finding for the drinks-heavy drag.
+
+---
+
+## What the v6.1 sim covers (and its blind spots) — bots are a FLOOR on depth, not a ceiling
+- **Shared "engine brain":** every strategy uses ONE greedy court/source/route planner; strategies differ
+  ONLY in **road weights** (w_ladder / w_bev) + a pure-drinks flag. This isolates the fork question exactly
+  as `beacon.py` isolates signal policy. A **competence fix** was made this pass (validated below): a
+  drinks-leaning bot now sources the common by **Visiting a common region** (3× the CS throughput) and
+  **relocates to camp the common supply** rather than blindly remote-CS'ing at ~25% yield.
+- **Region-anchored beverages** modelled faithfully: one slot per region, on-site presence required to
+  Promote/Bribe, refill from the finite shared deck into the won slot's region, slots go empty when the
+  deck dries, dusk does NOT sweep them.
+- **Scoped events** modelled by mechanical payload: a HAZARD = a bounded, **tax-not-destroy** tempo tax
+  (one fewer sourced ingredient on the target's current Visit or next sourcing — never a held card, never a
+  whole turn); a BOON = a free signature windfall to the targets present, or (a fraction) the dynamic **★**
+  "vendor gets hot" placement. Buzz-boons/festival-Buzz are folded into the ingredient windfall.
+  Scope resolves against real pawn positions, so the **take-that** (a rival standing in a flipped/adjacent
+  region) is emergent; a light deliberate **poke** fallback (CS-flip a rival's region when idle) exercises
+  it too. Exact tile text + the *warmth* of the rival-facing beats are bg-theme's / the table's job.
+- **Buzz war** resolved by a concession heuristic (appetite falls as the rival's committed Buzz rises) →
+  deterministic mirrors rarely fight; the fight's depth/feel is a table question, not a sim one.
+- **Cannot judge:** whether the Buzz tug-of-war is *fun*, whether the scoped take-that lands as **cheeky
+  caper vs spite**, teachability/FTUE, whether the low-travel drinks fantasy *feels* good. Those are the 2p
+  Screentop session.
+
+---
+
+## RISKIEST #2 (the v6.1 make-or-break) — the drinks fork is a TRAP as tuned. Structural, not a knob.
+
+**Field (both seatings, naive-excluded head-to-head):** `mixed` ≈ `ladder_lean` ≈ `greedy_prest` at the
+top (~50–52% among themselves); **`drinks_lean` ~30% h2h** vs each of them; **`pure_drinks` ~1–10%** vs
+every real line (and only 58% in its own mirror). So the *ceiling gap* the design wanted is real — a
+pure-drinks tour can't out-score a good ladder tour — **but the fork's other half fails: leaning drinks is
+a losing choice, not a viable low-conflict alternative.** The design's "two legitimate identities" holds on
+the ladder side only.
+
+**Why raising the obvious knobs doesn't help — the root cause (validated):**
+- Per-player diagnostic (drinks_lean vs ladder_lean, competence-fixed): drinks wins **~3.3 beverages +
+  ~1.4 ladder ≈ 4.7 vendors** in ~23 turns; ladder wins **~5.7** efficiently. The **beverage deck never
+  empties (0% of games)** — drinks is nowhere near its 7-win ceiling.
+- **Bot-competence ruled out:** with the common made *artificially abundant everywhere*, a competent drinks
+  bot **still caps at ~4.75 beverages and ~28%**, and the deck **still** never empties. So common scarcity
+  is a red herring.
+- **The real cap is the deck-split + region-gating.** The 7-card Beverage deck is **seeded 4 (one per
+  region) + 3 reserve**. Refills replenish the *won slot's own region*, so a **low-travel "camp one stand"
+  line can win at most ~4 beverages** (its region's slot + the 3 reserve refills that land there); the other
+  3 seeded slots sit in **other regions that require travel to reach**. So maxing drinks demands touring the
+  island like the ladder — which **contradicts the whole "low-travel via ubiquity" pitch** — and even a full
+  7-beverage tour (~14 Prestige + Rep + the *3-beverage* mission ≈ 27) still loses to a ladder tour (~32–35).
+  Flat value-2 beverages simply have too low a ceiling once region-anchoring taxes the harvest with travel.
+- **The CS event-tax is NOT what's hurting drinks** (contrary to the pre-sim worry): only **~0.74
+  self-scoped CS events fire per game** — a negligible tax — which is exactly why H4 (the scope ratio) is
+  flat on drinks viability. v6.1's CS-risk neither over- nor under-nerfs drinks; it barely touches them.
+
+**Fix direction (a STRUCTURAL call for the CD / bg-design — NOT a value/knob tweak; the sim's knobs
+don't reach it):** to make a low-travel drinks lean viable, change the *harvest structure*, e.g.
+**(a)** seed **fewer** beverage slots from a **larger reserve** (so a camped stand refills many times — the
+common ingredient of the reserve stays local), or **(b)** raise how many beverages are winnable **per
+region**, or **(c)** reconsider region-gating the beverage *Bribe* (keep sourcing on-site but let a stand be
+closed from a hub), or **(d)** accept drinks as a *pure diversifier* (a mission-feeder + a hedge, not a road)
+and re-pitch the identity honestly. Whichever, **beverage point value is the wrong lever** — raising it does
+not move viability. This is the single biggest v6.1 finding.
+
+**Pacing knock-on (Riskiest #2b) — CONFIRMED, but bounded to drinks-heavy fields.** Beverages-off-the-clock
+means a drinks-leaning player doesn't feed the day-clock. In **competent mixed/ladder play the game paces
+fine** (~19–20 turns/player, **85–92% end by last-train**, stall 8–15%). But a **drinks-mirror drags badly
+(27.9 turns/player, 98% end only via the artificial STALL_CAP)** — the deck backstops never fire
+(`end_by_nm_deck 0%`) because nobody works the night-market deck. So the drag risk is real *if* a drinks
+lean were viable; since it isn't, a rational player always ladders enough to pace the game. If the drinks
+fork is later made viable (above), **the last-train / deck backstops must be re-checked** so a viable drinks
+lean can't stall the game.
+
+---
+
+## RISKIEST #1 — the Buzz fight + 大哥 (the carried make-or-break)
+
+**大哥 (the dominance probe) FLAGS.** 大哥 vs neutral, both seatings, at the three H2 options:
+
+| H2 option | 大哥 win% | verdict |
+|---|---:|---|
+| **A** tie-win (≥0) + the +1-ingredient tab *(the doc's rec)* | **64.0%** | **too strong** |
+| **B** tie-win (≥0) + Promote-places-1 | **86.6%** | **much worse** (the weaker Promote can't offset a tie-win; he just needs to *match*) |
+| **C** must-lead-by-1 (≥1) + the tab | **30.7%** | over-corrected (too weak) |
+
+The **tie-win threshold (≥0) is the problem**, not the flaw: winning every *matched* vendor is a large,
+compounding edge that neither proposed flaw contains (B is a trap — reducing his Buzz output barely matters
+when he only needs to tie). C shows the ≥1 threshold over-nerfs him. **Neither A nor B nor C lands in
+band → 大哥 needs a *middle* setting the current three options don't offer:** e.g. **≥1 threshold + a
+*lighter* flaw** (drop the tab), or **≥0 but with a genuinely heavy brake** (e.g. +1 ingredient *and* he
+can't win contested vendors). Recommend the CD treat H2 as **unresolved** and sim a 4th option; do NOT ship
+A. This is exactly Riskiest #1b as flagged.
+
+**Two other characters out of band** (char vs neutral, mixed road, both seatings; target 45–55%):
+
+| Character | win% | read |
+|---|---:|---|
+| 里長伯 councillor | 48.5% | ✓ |
+| 媽寶 office | **30.4%** | **too weak** — "keep only 1 on a Visit" is brutal now that the Visit is the ingredient workhorse; her "draw the region you left on Travel" ability doesn't compensate |
+| 網紅 influencer | **60.4%** | **too strong** — +1 Buzz on Promote over-performs (as the design flagged "load-bearing"); the go-last/start-behind flaw under-counts in sim |
+| 大胃王 dagushi | 50.6% | ✓ |
+| 大哥 dage | **64.0%** | out (see H2) |
+
+**大胃王's flaw (H1) is a non-issue** — all three options sit in band (A hazards-twice 50.6% / B keep-2
+50.6% / C next-fires 51.9%). **Ship A** (simplest) as the doc recommends; it does not over-brake here.
+
+**The Buzz fight is near-absent in bot play** — only **4.3% of ladder wins are contested** and
+`max_buzz_on_vendor ~3.9`, `buzz_supply_min ~16` (the ~24 supply never gets tight). The concession
+heuristic + asymmetric road targeting mean bots rarely pile onto the *same* vendor. So the sim **cannot
+answer "is the tug-of-war fun/tense"** — that is squarely the 2p Screentop question. What the sim *can* say:
+there is **no snipe-degenerate or supply-crunch failure**, and 大哥's tie-win is the one broken knob.
+
+---
+
+## RISKIEST #3 — the dig, movement spread, and the new interaction
+
+- **Movement spread SKEWS to the common-bearing regions.** Field sourcing shares: **N 15.5% · C 24.6% ·
+  S 27.0% · E 9.2%** (+ common 23.7%). Concentrating the common in C&S (H3=half) pulls sourcing there;
+  **East is starved at 9.2%** (well under the ~18% floor) and North is light. A carry-over of the old v3.1
+  "East light" issue, now driven by the *common's* placement rather than East recipe costs. **Knob:** the
+  common's spread (put one of the two common regions in the E/N half of the ring), or lift East demand on
+  night-market recipes — a data tuning for bg-developer, not a rules change.
+- **The v6.1 interaction injection is REAL but LIGHT in sim.** ~**2.4 take-that hazard hits/game** land on a
+  non-actor (mostly Visit region/neighbour scope catching a co-located/adjacent rival); only **~0.46 via the
+  Convenience Store** + **~0.19 deliberate pokes/game**. So the "near-zero interaction" an early read flagged
+  is now non-zero, but the **CS-as-weapon is rare** — bots are sourcing-driven and rarely flip a rival's
+  region on purpose, and a rival is seldom standing in the common region a drinks player flips. Read this as
+  a **floor** (the sim under-models deliberate poking); whether the aim-it-at-a-rival lever is *used and
+  fun* is a table question.
+- **Realized scope ratio skews REGION-heavy: ~29% self / 51% region / 20% neighbour** (vs the proposed
+  40/40/20). The per-kind skew (hazards→region/neigh, boons→self) plus forcing ★-boons to region scope
+  over-weights region and under-floors self. If the CD wants the proposed Self floor (so the CS isn't
+  mostly a region weapon), **soften the hazard region-skew** — but note it barely affects balance (H4 flat),
+  so this is a *feel/identity* tune, not a balance one.
+- **The 5-ingredient dig did not flatten** — events fire ~13/game, Visits (11.3) > CS (8.1) > Travels (9.2)
+  are all well-used, `forced_turn_frac 0.000` (never a dead turn), `avg_legal_actions ~9.8`. The push-your-
+  luck tension survives the smaller palette. The dynamic **★** fires ~1.9/game, winner grabs ~0.84 — a
+  modest, non-decisive swing.
+
+---
+
+## Health read (field round-robin)
+`mixed` tops at 70.1% overall but only by **≤1pt head-to-head** over `ladder_lean`/`greedy_prest` — no
+crushing dominance among the ladder-capable lines, a mild "a mix is best" signal (as designed). Every real
+line crushes `random` (8.6%). The **defect is the fork asymmetry, not a dominant single line**:
+`drinks_lean` (54.6% overall, inflated by beating pure_drinks/random) sits at **~30% h2h vs the ladder
+lines**, and `pure_drinks` (27.5%) is a **near-pure loss** vs anything real. Seat effects mild, not flagged.
+
+---
+
+## The ONE change to test next (this pass) — decision for the CD
+
+**The drinks fork needs a STRUCTURAL rethink before anything else** — it is the v6.1 headline, and it is
+not a value/common/scope tuning problem (all three are sim-flat). Pick a harvest-structure fix (fewer slots
++ bigger reserve so a camped stand refills; or more winnable per region; or de-gate the beverage *Bribe*
+from a hub; or re-pitch drinks as a diversifier), then re-sim the fork *and re-check the last-train/deck
+backstops* so a now-viable drinks lean can't stall the game. **Second, and separable:** treat **H2 (大哥) as
+unresolved** — none of A/B/C is in band; sim a 4th option (≥1 + lighter flaw, or ≥0 + a real brake). Nudge
+**網紅 down** (strengthen the go-last/behind flaw) and **媽寶 up** (soften "keep only 1", e.g. keep 2 when a
+hazard fired, or a small compensating boon). **Ship 大胃王 = H1-A** as-is. Fix **East** via the common's
+spread. Everything about the **Buzz fight's fun** and the **scoped take-that's warmth** is the 2p Screentop
+session — the sim de-risks the numbers, not the feel.
+
+**Knobs exposed for re-sim:** `TA_BEV_VALUE` / `TA_BEV_REP` (beverage value — shown NOT to fix viability),
+`TA_H3` (common availability half/every/half_rich), `TA_SCOPE_SELF|REGION|NEIGH` (H4 scope ratio),
+`TA_H2_THRESH` / `TA_H2_FLAW` (大哥), `TA_H1` (大胃王), `TA_HAZARD` (event hazard frac), `TA_STARBOON`
+(★-boon frac), `TA_BUZZ_SUPPLY` / `TA_BUZZ_MARGIN`, `TA_DUSK` / `TA_LASTTRAIN` (clock marks),
+`TA_STALL_CAP` (the drinks-drag backstop), `TA_POKE` (the deliberate CS poke). **No structural
+harvest-fix knob exists yet — that's the design call to make, then encode.**
+
+## Encoding simplifications (v6.1 — the sim's blind spots)
+1. **Beverages baked (10 templates, sliced to a 7/9/10 deck by count)** at region granularity; the
+   region-anchored slot mechanics (seed 4 + reserve, refill-into-won-region, empty-and-stay-empty) are
+   faithful — and are the *cause* of the drinks cap, so the finding is structural, not an artifact.
+2. **Event payloads abstracted** to tempo-tax (hazard) / free-ingredient or ★ (boon); Buzz/festival boons
+   folded into the ingredient windfall. The *warmth* of rival-facing beats is unmodelled (bg-theme/table).
+3. **The Buzz war is concession-resolved** → contested-win rate (4.3%) is a floor; the fight's fun/tension
+   is unmeasurable in sim by construction.
+4. **The deliberate CS "poke"** fires only as an idle fallback (larder full / no target) → poke frequency
+   (0.19/game) and CS-rival-hits (0.46/game) are floors; a human weaponises the blind flip more.
+5. **STALL_CAP (26 turns/player)** is an artificial backstop to surface the drinks-drag pacing risk
+   (`end_by_stall`); it is NOT a game rule — the real end-triggers are the last-train mark + deck exhaustion.
+6. Component CSVs (`../components/*.csv`) are still on the pre-v6 data model; the sim bakes its own
+   representative v6.1 vendor/event set (as prior passes did). The CSV rebuild is bg-developer's separate,
+   still-gated data task — out of scope for this sim rework.
