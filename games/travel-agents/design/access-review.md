@@ -264,3 +264,38 @@ before the recolour lands.
 **FIX A (scope icons as SVG shapes).** Do this now — it's the only item that ships a broken artifact in the
 current build. FIX B is required but only once the recolour actually lands (block that PR on it). FIX C is
 optional hardening. All three are `themes.py` / renderer edits for bg-prototyper; no data or rules change.
+
+---
+
+## v6.2 — day/night backs + two-state board (comfort check, 2026-08-07)
+
+Guardian comfort-check on the bg-infodesign visual change (distinct day/night card backs + a
+day/night board). Scope: the NEW colour pairings only, not a floor re-audit. `check_access.py
+--theme night-market` still reports **0 errors** (3 dual-coded ΔE warnings, all emblem-separated — unchanged).
+
+**Prior FIX B (pre-emptive) is now DISCHARGED.** The recolour landed with the required non-colour phase
+marker: backs carry a DRAWN sun (disc+rays) vs crescent-moon motif + font-covered 日/夜 char + a
+high-contrast ink word ("DAY · 早" / "NIGHT · 夜市"). A face-down pile sorts by shape + word, never colour.
+
+**PASS**
+- Day-vs-night backs are shape/motif-distinct (sun vs crescent) + char (日/夜) + word. Colour-blind sort holds.
+- Back bottom label uses `panel_txt` (dark ink): DAY 11.6:1, NIGHT ~9.9:1 — the word channel is strong on both.
+- Night back wordmark/motif (violet #B14FD8 on lilac panel): 2.6–3.3:1 — soft but clears large-text on the
+  top stop and the meaning is redundant; acceptable for a decorative wordmark + dual-coded motif.
+- Board, both states: ink text on grounds — day #26324D/#FDF4DB 11.6:1; night on lilac 6.7–8.0:1. Region
+  headers/zone labels and the 日/夜 MARKET tiles read cleanly on both warm-day and neon-night grounds.
+- No collision with region/ingredient language: the back is a whole-card indigo-border + panel + stamp
+  treatment (not a suit chip); night violet is the intentional Buzz/promo hue.
+
+**WATCH → one cheap fix (day back only)**
+- The day back draws its sun motif + 日 char + "TRAVEL AGENTS" wordmark in `stamp` = day frame amber
+  **#E6A930 on the cream panel = 1.6–1.9:1** (below even the 3:1 large-text bar). The floor still holds
+  (the ink WORD label is high-contrast + the shape is distinct), so this is comfort, not a break — but the
+  day back's sort-motif is faint for low-vision players while the night back is crisp.
+- **FIX (themes.py, regenerates):** give the day back a dedicated darker stamp hue, e.g.
+  `PHASE_STYLES["day"]["back_stamp"] = "#A65E12"` (bronze) and have `back_style` prefer `back_stamp` over
+  `frame` for `out["stamp"]`. Gives ~4.5:1 (top) / 3.8:1 (bot) — comfortably above large-text on the full
+  gradient. Leave the day FACE frame + board frame at #E6A930 (those are frame lines, not text — unaffected).
+  Night back needs no change.
+
+**Verdict:** PASS on the floor + board; one WATCH (day-back amber motif contrast) with an exact-hex fix.

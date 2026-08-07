@@ -171,7 +171,10 @@ THEMES = {
 PHASE_STYLES = {
     "day": {   # warm morning — sunrise cream, gold frame
         "page": ("#FDF4DB", "#F6DFAE"),
-        "frame": "#E6A930",        # morning amber
+        "frame": "#E6A930",        # morning amber (FACE frame / board frame — a line, not text)
+        "back_stamp": "#A65E12",   # darker bronze for the BACK stamp roundel + wordmark ink so the
+                                   # day motif/日/wordmark clears large-text contrast on cream
+                                   # (~4.5:1 vs amber's 1.6:1) — bg-access WATCH fix; night needs none
         "glow": "#F4CE7E",
         "tag_fill": "#E6A930",
         "tag_ink": "#3A2A0E",
@@ -231,7 +234,7 @@ def back_style(theme: dict, phase: str | None) -> dict | None:
     bp = BACK_PHASE.get(ph)
     if pstyle and bp:
         out["panel"] = pstyle["page"]      # warm/neon panel ground
-        out["stamp"] = pstyle["frame"]     # phase-tinted stamp roundel + frame
+        out["stamp"] = pstyle.get("back_stamp", pstyle["frame"])  # prefer a contrast-safe back stamp (day bronze); else the phase frame
         out["glow"] = pstyle.get("glow")
         out["emblem"] = bp["emblem"]       # drawn sun / moon / spark
         out["char"] = bp["char"]           # 日 / 夜 / 通  (font-covered, never ☀/☾ tofu)
