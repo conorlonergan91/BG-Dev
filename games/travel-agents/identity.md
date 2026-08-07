@@ -3,7 +3,7 @@
 > The living source of truth for this game's **felt identity**: concept, theme, tone/vibe, story/lore,
 > look & feel, and naming. Owned by `bg-theme`; read alongside `game-bible.md`. Keep it current — and
 > keep it **coherent** while letting it **evolve** with the design.
-> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-07 (bg-theme — **v6.2 direction: board → REGION VENDOR MARKETS** (each region its own face-down daytime-on-nighttime vendor pile, 1–2 face-up, refilled in place — the central Ladder is GONE); **DRINKS → just low-value vendors** mixed into every region's pile (the drinks *fork / two roads / easy-points / region-free / Beverage Row / off-clock beverages* framing all STRIPPED); **strategic identity → FIVE PLAYSTYLES** (character-lean · opportunistic · disruptive · balanced · end-game-driver), not two roads; **objectives → the SPINE, LOCKED name "Tour Tickets"** (a face-up row of tours you book/claim, retroactive +value / −half, day/night/general pools, a day-clock driven by delivering tours, 12→5-per-phase variable setup — Ticket-to-Ride's tickets re-skinned as a travel agent's booked tours). Earlier — v6.1 guardian sweep: beverages now REGION-ANCHORED (a persistent drinks stand in *every* region, not a region-free "Beverage Row"; low-travel now = **ubiquity + easy sourcing**, NOT bribing-at-a-distance) · **Convenience Store events now FIRE via a 3-way SCOPE** (⦿ self / ⬢ region / ➤ next-door — can land a warm island-hazard on a rival's region; bound to the warm/secular island-life rail) · confirmed no live "Code Red" remains. Earlier — v6 guardian sweep: **"Code Red" end-trigger DROPPED** → the plain **Day → Night** close (last train home, no alarm) · **common ingredient named 糖 sugar** (the 手搖飲 + convenience-store staple) · drinks fork confirmed warm + native. Earlier: **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 + a day→night end-game · v5 sweep: ★ Star / accolade value-swing added, Coverage folded into a Mission, venue rename 早餐店→夜市攤 + 飲料店 all-day)
+> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-07 (bg-theme — **v6.2 direction: board → REGION VENDOR MARKETS** (each region its own face-down daytime-on-nighttime vendor pile, 1–2 face-up, refilled in place — the central Ladder is GONE); **DRINKS → just low-value vendors** mixed into every region's pile (the drinks *fork / two roads / easy-points / region-free / Beverage Row / off-clock beverages* framing all STRIPPED); **strategic identity → FIVE PLAYSTYLES** (character-lean · opportunistic · disruptive · balanced · end-game-driver), not two roads; **objectives → the SPINE, LOCKED name "Tour Tickets"** (a face-up row of tours you book/claim, day/night/general pools, 12→5-per-phase variable setup — Ticket-to-Ride's tickets re-skinned as a travel agent's booked tours) — **post-sim v6.2 LOCK corrections folded in (2026-08-07):** the day is now paced by the **VENDOR-CLAIMS clock** (dusk = 5th table-wide vendor claim, last train = 10th @2p), **NOT** by ticket delivery; tickets score via a **WIN pile / LOSE pile** (completed → +value, unfinished → −floor(value/2)) tallied once at game end — an accounting model, not live retroactive ±; the two piles are now **named** (成團 *Published Tours* / 遺珠 *the Ones That Got Away*); and the **網紅 flaw = "Late to the Party"** (misses its first night-phase turn)). Earlier — v6.1 guardian sweep: beverages now REGION-ANCHORED (a persistent drinks stand in *every* region, not a region-free "Beverage Row"; low-travel now = **ubiquity + easy sourcing**, NOT bribing-at-a-distance) · **Convenience Store events now FIRE via a 3-way SCOPE** (⦿ self / ⬢ region / ➤ next-door — can land a warm island-hazard on a rival's region; bound to the warm/secular island-life rail) · confirmed no live "Code Red" remains. Earlier — v6 guardian sweep: **"Code Red" end-trigger DROPPED** → the plain **Day → Night** close (last train home, no alarm) · **common ingredient named 糖 sugar** (the 手搖飲 + convenience-store staple) · drinks fork confirmed warm + native. Earlier: **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 + a day→night end-game · v5 sweep: ★ Star / accolade value-swing added, Coverage folded into a Mission, venue rename 早餐店→夜市攤 + 飲料店 all-day)
 
 > **Restraint first.** Match identity depth to what the game *earns*. Leaving story/lore light on purpose
 > is a correct answer, not a gap. Never invent lore to fill a section.
@@ -64,7 +64,7 @@ gameplay*, still **not** more agent *story*. We hold firmly at the evocative run
 > **v6.2 UPDATE (2026-08-07; supersedes the v3 note).** The **Briefs / directive-orders deck described
 > below is CUT** (a v2-era concept — no such component exists). Its fiction jobs are re-homed onto **v6.2
 > components that actually exist:** the *"book it blind now, worth more if it lands"* gamble is exactly a
-> high-value **Tour Ticket** (the retroactive +/− press-your-luck), and the cheeky *keep-your-rival-honest*
+> high-value **Tour Ticket** (the WIN-pile / LOSE-pile press-your-luck), and the cheeky *keep-your-rival-honest*
 > nudge is a **scoped Convenience-Store event** (the disruptor playstyle — a warm island-hazard on a
 > rival's region). **head office survives as the rulebook/earpiece VOICE only**, not a card deck. The old
 > **Hot-List of dishes** is now the **region vendor markets** (per-region face-up stalls; you court
@@ -142,8 +142,10 @@ some rock-paper-scissors between them). Each is a warm travel-agent fantasy:
    turn. *"I keep my rival honest."*
 4. **The balanced agent** — a bit of everything; the well-rounded tour that's never caught out. *"I stay
    flexible."*
-5. **The end-game driver** — control the clock: claim and *deliver* **Tour Tickets** fast to roll the day
-   toward dusk and the last train on your timing. *"I decide when the night ends."*
+5. **The end-game driver** — control the clock: **claim vendors fast** to roll the day toward dusk and the
+   last train on *your* timing (*each vendor claimed ticks the day forward* — the v6.2 **vendor-claims
+   clock**), and pick up the tickets that pay you for it (早起的鳥兒 / 快閃 / 夜貓子). *"I decide when the
+   night ends."*
 
 These are **paths to victory, not new components** — all five emerge from the same region-market +
 Tour-Ticket + Buzz spine. Keeping the *disruptor* warm is the one sensitivity-load-bearing line here (see
@@ -216,15 +218,20 @@ bullets are unchanged and still hold.)*
   train"* (v6.2 — LOCKED name; objectives promoted from a single secret hook to the game's spine)** —
   **integrated, and now the load-bearing *fun* engine alongside the Buzz fight.** A face-up row of **Tour
   Tickets** (the season's tours on offer) sits open on the table; **claiming one is booking it into your
-  itinerary** (a full action), and it scores **retroactively** — **+its value** if you deliver it by the
-  last train, **−half** if you booked it and didn't. That's the perfect travel-agent read of
-  Ticket-to-Ride's destination tickets: *you promise a client a tour, and you're paid if you deliver and
-  eat a refund/reputation ding if you don't* — a warm, legible press-your-luck. Tickets come in **daytime /
-  nighttime / general** pools (the tours that make sense in the morning, at the night market, or anytime),
-  and a **variable draw (12→5 per phase)** keeps each season fresh. **The day-clock rides on delivery:**
-  *each tour you complete rolls the day forward* — enough delivered and **dusk** falls (the breakfast shops
-  close), more and it's the **last train home**. So the invested, chosen objective layer *is* the clock —
-  you push the day toward its end by doing the very thing you came to do. **The secret-agent wink survives
+  itinerary** (a full action). It is then **judged at the END of its phase** (daytime tickets at dusk,
+  nighttime at the last train) and sorted into one of two piles — **completed → your WIN pile (成團
+  *Published Tours*, worth +its value); unfinished → your LOSE pile (遺珠 *the Ones That Got Away*,
+  −floor(value/2))** — and the whole tally is settled **once, at game end** (an accounting model, not a
+  live retroactive ±). That's the perfect travel-agent read of Ticket-to-Ride's destination tickets: *you
+  promise a client a tour, and you're paid if the tour actually ran, and eat a refund/reputation ding if
+  it didn't* — a warm, legible press-your-luck. Tickets come in **daytime / nighttime / general** pools
+  (the tours that make sense in the morning, at the night market, or anytime), and a **variable draw (12→5
+  per phase)** keeps each season fresh. **The day itself is paced elsewhere — by the VENDOR-CLAIMS clock**
+  (*each vendor an agent claims ticks the day forward: dusk = the 5th table-wide claim, the last train =
+  the 10th @2p*), **not** by ticket delivery. So the fiction stays clean two ways: you *book and race to
+  run* each tour before its phase closes — **finish it before the street turns over, or it's one that got
+  away** — while the day rolls toward dusk on the back of *everyone* courting the island's vendors, the
+  bustle of the season closing in around you, not your itinerary alone. **The secret-agent wink survives
   on top:** an individual Tour Ticket can still carry the agency's internal **"Operation: ___"** code-name
   ("Operation: Beef Noodle"), so *the mission really is the meal.* **→ native review** of the ticket names
   (the 繁體 set 走透透 / 大三元 / 摘星 / 夜市王 … is idiomatic and delightful — bless + confirm).
@@ -333,8 +340,9 @@ bullets are unchanged and still hold.)*
   Act II Night Market 夜市.** In v6.2 the arc is carried by the **region vendor markets themselves** — each
   region's pile is **daytime 早餐店 stacked over nighttime 夜市攤**, and at **dusk the face-up daytime stalls
   are swept** and the night-market layer starts revealing: the street literally turns over from morning to
-  night in front of you. **The clock is the tours you deliver** (see the Tour-Tickets bullet) — deliver
-  enough and dusk falls, more and it's the **last train home**. **Inevitable, not bolted-on:** it maps onto
+  night in front of you. **The clock is the VENDOR-CLAIMS clock** (v6.2 LOCK — see the Tour-Tickets bullet):
+  *each vendor an agent claims ticks the day forward* — enough claimed table-wide and dusk falls (the 5th
+  claim), more and it's the **last train home** (the 10th @2p). **Inevitable, not bolted-on:** it maps onto
   the real food day and lands the game **on the north-star image** (dusk/neon at the night market). **The
   end is the plain Day → Night close** — no alarm, no "Code Red": *play the day into the night, and when the
   night market winds down the tour's over — grab the last great bite before the last train.* Stays
@@ -403,17 +411,38 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   - **head office** = your dispatcher/boss on the phone/earpiece (and the voice of the rulebook).
   - **Tour Tickets** *(v6.2 — LOCKED; the objective spine, replaces the old single secret "signature
     Mission" +7 hook).* The season's **tours on offer** sit in a face-up row; **booking one** (claiming it)
-    is a full action, and it scores **retroactively** — **+value** delivered by the last train,
-    **−floor(value/2)** if booked-and-unfilled. Split into **daytime / nighttime / general** pools; a
-    variable **12→5-per-phase** draw keeps each season fresh. **Delivering tours is the day-clock** (enough
-    delivered → dusk → the last train). *Why "Tour Tickets":* it's the travel-agent-native re-skin of
-    Ticket-to-Ride's destination tickets (the CD-named ancestor), it's already the sim/decision-log
-    vocabulary, and the retroactive +/− reads perfectly as *promise a client a tour → paid if you deliver,
-    refund if you don't.* **The secret-agent wink rides on top:** an individual ticket can carry the
+    is a full action. Each booked ticket is **judged at the end of its phase** (daytime at dusk, nighttime
+    at the last train) into a **WIN pile** (成團 *Published Tours*, +value) or a **LOSE pile** (遺珠 *the
+    Ones That Got Away*, −floor(value/2)), tallied **once at game end** (accounting model, not live ±).
+    Split into **daytime / nighttime / general** pools; a variable **12→5-per-phase** draw keeps each season
+    fresh. **The day is paced by the VENDOR-CLAIMS clock** — each vendor claim ticks the day (dusk = 5th
+    table-wide claim → the last train = 10th @2p) — **not** by ticket delivery. *Why "Tour Tickets":* it's
+    the travel-agent-native re-skin of Ticket-to-Ride's destination tickets (the CD-named ancestor), it's
+    already the sim/decision-log vocabulary, and the win-pile / lose-pile +/− reads perfectly as *promise a
+    client a tour → paid if the tour ran, refund if it didn't.* **The secret-agent wink rides on top:** an individual ticket can carry the
     agency's internal **"Operation: ___"** code-name — so *the mission really is the meal.* *(Register: the
     row = "the tours on offer" / the Tour Board; the verb = **book a tour** / claim a ticket; the physical
     card = a **Tour Ticket**.)* → native review of the ticket names (the 繁體 set is idiomatic — bless +
     confirm).
+  - **The two ticket piles** *(v6.2 LOCK — bg-theme's call, confirming bg-design's candidate; warm skin on
+    the WIN / LOSE accounting model).* A booked tour is judged at the end of its phase into one of two
+    named piles, tallied once at game end:
+    - **WIN pile = "Published Tours" (成團 *chéng-tuán*)** — the tours that **ran**. *成團* is the genuine
+      travel-agency word for a tour that filled and **departed** (vs 不成團, a trip that never left), so the
+      warmth is *native and celebratory*: these are the tours that made it into the brochure, the season's
+      wins. *(Verb-friendly: a completed ticket "**goes to press** / makes the brochure.")*
+    - **LOSE pile = "The Ones That Got Away" (遺珠 *yí-zhū*)** — the tours you booked but couldn't run in
+      time. *遺珠* (from 遺珠之憾, "the overlooked pearl") is a **rueful, affectionate shrug**, never a
+      failure-shaming beat: *"ahh, that one got away"* — the travel agent's wistful glance at the trip that
+      almost was, not a black mark. **Bind (→ `bg-elegance` voice):** keep the lose-pile language warm and
+      wistful (*got away / the one that slipped past / almost-ran*), **never** harsh (*failed / lost /
+      dead*). A −floor(value/2) ticket is a shrug, not a scolding.
+    *Why these two:* they're travel-agent-native (a tour either **departs** or it **doesn't**), they read
+    warm in both languages, and 成團 / 遺珠 give the native reviewer a real idiom to bless rather than a
+    literal coinage. **→ native review** confirms 成團 / chéng-tuán and 遺珠 / yí-zhū read natural and warm;
+    **→ `bg-infodesign`** for the two pile markers (a "departed/brochure" tick vs a soft "got-away" mark —
+    dual-coded, not colour-alone). *(English names are the player-facing lock; the 繁體 rides alongside as
+    the flavour anchor, pending the native bless.)*
   - **Vendor** + **Bribe** = the stall/cook you win over, and the action of doing so (pay ingredients +
     hold the Buzz majority → they feature on your tour). ***v4 spine word — replaces "Court." LOCKED by
     the CD (2026-08-06), chosen over bg-theme's "Schmooze" rec for the funnier, spicier word.*** *Flavour
@@ -503,8 +532,9 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     *(RECOMMENDED rename — was "Afternoon Crawl 下午", which now clashes since Act I is the **morning
     breakfast** opening; alts = **The Day Crawl** / **Daytime 白天**)* — the cheap morning start, the ramp
     builds → ***Act II · Night Market 夜市*** (neon, crowds, the 夜市攤 names — the climax). Fiction for "the
-    act advances" = *the day rolls from breakfast toward dusk **as agents deliver their booked tours*** (v6.2
-    — the day-clock rides on Tour-Ticket delivery); "the markets turn over" = *at dusk each region's daytime
+    act advances" = *the day rolls from breakfast toward dusk **as agents court and claim the island's
+    vendors*** (v6.2 LOCK — the day-clock rides on **vendor claims**: dusk = the 5th table-wide claim, the
+    last train = the 10th @2p; the marks grow with player count); "the markets turn over" = *at dusk each region's daytime
     stalls are swept and the big night-market names reveal (harder to win — everyone's chasing them).*
     Lands the game **on the north-star image** (dusk at the night market) and celebrates a food-day arc
     locals recognise. **→ `bg-design` owns the Act label** (these are fiction skins); the **Breakfast-Run /
@@ -667,13 +697,20 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
     **normal and common**, the gag is the grown secret-agent who still calls mum at lunch, *not* a dig at
     young people. *(Re-homes the 便當 mechanic + roster age-variety the A-má rung carried; native review of
     媽寶 / 便當.)*
-  - **The Influencer 網紅** *(kept mechanically; gag firmed).* Gorgeous, charming, huge following,
+  - **The Influencer 網紅** *(v6.2 kit LOCKED; flaw refined).* Gorgeous, charming, huge following,
     *genuinely* loves the food and the camera loves them back — but **coasts on looks & personality, not
-    prep**: rolled up late, never read the brief, so everyone else already grabbed the good stuff. *Ability
-    = **Going Viral*** (KEPT): Promote places **+1 Buzz** (the camera loves them). *Flaw = **Chasing
-    Clout*** (KEPT): go **last** and start **behind** — *because* they wing it on vibes instead of
-    planning. The flavour now **explains the mechanic.** Keep it an **affectionate, self-aware wink** (they
-    really do love and share the food), never contempt for a "vapid influencer" punchline.
+    prep**. *Ability = **Going Viral*** (LOCKED): your **Promote places 3 Buzz** (+1 — the camera loves
+    them). *Flaw = **Late to the Party*** (v6.2 LOCK — the concrete lost-turn flaw, replacing the vague
+    "goes last / starts behind"): 網紅 **misses its first turn of the NIGHT phase** — *still editing the
+    day's photos when the night market opens, so the good stuff is already being fought over by the time
+    they finally swan in.* (Goes last only as a turn-order tiebreak otherwise — not a second rule.) **The
+    fiction confirms warm + coherent:** the affectionate *coasts-on-looks-not-prep* wink now lands as
+    **fashionably late** — a rueful, self-aware *"ugh, I'm always late"*, mirroring the dusk flip — never a
+    contemptuous "vapid influencer" jab. They really do love and share the food; they're just late to the
+    party. **Balance-watch (not sim-equivalent → the Screentop table):** the lost turn may over-correct
+    below 45% — a KEY table check, with a dial in reserve (heavier = miss both phases' first turns; lighter
+    = revert toward goes-last + a trimmed ability; see `design/v6.2-content-draft.md` §Character kits). The
+    *fiction* holds warm at **any** dial on that ladder.
   - **The Competitive Eater 大胃王** *(re-lore of the Grizzled Gourmand; **NEW ability + flaw → sim**).* A
     beloved competitive-eating / mukbang livestream star who can clear a night market single-handed and
     brings a crowd wherever they film — a **joyful champion**, dignified and warm. *Ability (NEW) = **Eyes
@@ -770,9 +807,13 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   agent, never the vendor/place; the vendor freely chooses the bigger fan) — this warm framing is **locked
   as load-bearing**, not fluid. **New (v6.2, 2026-08-07):** the board = **region vendor markets** (no
   central Ladder); **drinks = plain low-value vendors** (the drinks *fork* is retired); the objective spine
-  = **Tour Tickets** (the LOCKED name — a booked-tour row, retroactive +/−, day/night/general pools,
-  delivery drives the day-clock); and the **five playstyles** (character-lean · opportunistic · disruptive ·
-  balanced · end-game-driver) as the strategic identity the design keeps all-live.
+  = **Tour Tickets** (the LOCKED name — a booked-tour row, day/night/general pools); and the **five
+  playstyles** (character-lean · opportunistic · disruptive · balanced · end-game-driver) as the strategic
+  identity the design keeps all-live. **New (post-sim v6.2 LOCK, 2026-08-07):** the day is paced by the
+  **VENDOR-CLAIMS clock** (dusk = 5th table-wide vendor claim, last train = 10th @2p), **not** by ticket
+  delivery; Tour Tickets score via a **WIN pile / LOSE pile** (completed → +value, unfinished →
+  −floor(value/2), tallied once at game end), the two piles **named "Published Tours" 成團 / "The Ones That
+  Got Away" 遺珠**; and the **網紅 flaw = "Late to the Party"** (misses its first night-phase turn).
 - **Fluid:** the mechanism spine details and how the v4 layers earn rules (→ `bg-design`, parallel pass);
   the *exact naming* of head office / the tour / the award (proposals above, pending consultant +
   `bg-publishing`); the suit set (food categories vs regions) and final palette hues; whether the 2p duel
@@ -791,6 +832,44 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
+- 2026-08-07 (bg-theme, **v6.2 LOCK guardian coherence re-check — post-sim CD locks: the vendor-claims
+  clock + win/lose-pile scoring + the 網紅 flaw**) — **STILL COHERENT; concrete realign edits, NO re-theme.**
+  identity.md had been written to the v6.2 *direction* but predated the post-sim **LOCK** (`design/v6.2-
+  content-draft.md`), so three things were stale. Fixes:
+  **(1) The day-clock moved off ticket delivery onto VENDOR CLAIMS (concrete edit — the signature-twist
+  pacing).** Struck every "delivery / completing tours drives the day-clock" line (header summary, playstyle
+  #5, the Tour-Ticket resonance bullet, the Day→Night arc bullet, the Naming Tour-Tickets + Acts entries,
+  Locked-vs-fluid) and re-pointed the clock to *"each vendor an agent claims ticks the day forward — dusk =
+  the 5th table-wide claim, the last train = the 10th @2p, marks grow with count."* **Fiction reads cleaner,
+  not worse:** the day now closes on the *bustle of everyone courting vendors* (the season crowding in),
+  while tickets are the thing you *race to run before the phase closes* — two distinct, legible pressures
+  instead of one doing double duty. Nothing stranded; the north star (race to the last train) is untouched.
+  **(2) Tour-Ticket scoring → WIN PILE / LOSE PILE (concrete edit).** Replaced the "scores retroactively
+  +value / −half" language everywhere with the accounting model: a booked ticket is **judged at the end of
+  its phase** (daytime at dusk, nighttime at the last train) into a WIN or LOSE pile, **tallied once at game
+  end** (Σ win values − Σ floor(value/2) lose). Same final numbers — the identity edit is a *description*
+  fix, not a mechanics change.
+  **(3) Named the two piles (bg-theme's call, confirming bg-design's candidate — a warm skin).** **WIN =
+  "Published Tours" (成團 chéng-tuán)** — 成團 is the genuine travel-agency term for a tour that *filled and
+  departed*, so the win pile is native + celebratory (the tours that made the brochure). **LOSE = "The Ones
+  That Got Away" (遺珠 yí-zhū)** — from 遺珠之憾, "the overlooked pearl": a **rueful, affectionate shrug**, a
+  travel agent's wistful glance at the trip that almost was, **never** failure-shaming. Bound the lose-pile
+  *voice* warm for `bg-elegance` (got-away / almost-ran, never failed/lost/dead). Locked in Naming; → native
+  review of 成團 / 遺珠 and → `bg-infodesign` for the two dual-coded pile markers.
+  **(4) Confirmed the 網紅 flaw fiction: "Late to the Party."** The new lost-turn flaw (misses its first
+  night-phase turn — *still editing the day's photos, late to the night market*) **reads warm and coherent**:
+  the affectionate coasts-on-looks-not-prep wink lands as *fashionably late*, mirroring the dusk flip, never
+  a "vapid influencer" jab. Slotted into the character section (ability also updated to the locked **Promote
+  = 3 Buzz**). Carried the design's balance-watch note (may over-correct <45% → a table check with dials in
+  reserve; the *fiction* holds at any dial).
+  **KEEP verified intact:** north star, the Day→Night arc, the secret-agent wink, Discovery + Fellowship +
+  Challenge, the Buzz-majority hype-fight, the region vendor markets, drinks-as-low-value-vendors, and **all
+  sensitivity rails** (Bribe = warm marketing-opportunity, 大哥 warmth, the East Indigenous-forward cuisine
+  + 石板烤肉 consultant note, Taiwan as itself, 繁體 + Tâi-lô discipline). **No new sensitive motif** — the
+  clock/scoring moves are mechanics-accounting; the only new player-facing coinages are the two warm pile
+  names (成團 / 遺珠 → native review). **For `bg-infodesign`:** a WIN/LOSE pile marker (departed-brochure tick
+  vs a soft got-away mark, dual-coded not colour-alone) and the **網紅 "Late to the Party" flaw icon** (a
+  late-arrival / still-filming read). Rung **held at evocative** — a realign to the locked spec, no new lore.
 - 2026-08-07 (bg-theme, **v6.2 direction sweep — the board restructure: region vendor markets + Tour-Ticket
   spine + five playstyles + the drinks-fork drop**) — **RE-THEME (a structural re-skin over the same spine +
   a naming LOCK; rung HELD at evocative — no new lore).** Updated identity.md to the CD-directed v6.2 model
