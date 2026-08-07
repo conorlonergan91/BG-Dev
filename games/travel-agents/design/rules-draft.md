@@ -7,7 +7,13 @@ sole score; expanded ~44-ticket deck); Reputation→Reach gates Buzz (a live cap
 longer scores; perk field eliminated; ticket pools 3→2; milestones = perplayer, re-homed on a
 Tours-Completed counter. A vendor keeps a printed "value" ATTRIBUTE (referenced by value-tickets; NOT a
 score). The former "Bookings" score track is retired as a score — rename flagged for bg-theme; working
-label "value" (vendor attribute) + "Tours Completed" (the repurposed milestone track). -->
+label "value" (vendor attribute) + "Tours Completed" (the repurposed milestone track).
+v6.3.1 (four CD changes, 2026-08-07 PM, economy-changing → validated by the NEXT gated re-sim): (1) 里長伯
+reworked — picks a HOME region at setup; −1 discount there only, +1 ingredient away-tax elsewhere; no-HSR
+flaw REMOVED; (2) new table-wide event "Scheduled Maintenance" (HSR down for everyone one round — re-homes
+the no-HSR concept); (3) ALL agents start in Taipei (North hub) — replaces the split N/S 2p start; (4)
+NIGHT vendors cost meaningfully MORE than day vendors (LOTR:Duel-style cost curve — the discount engine
+affords the night marquee but can't zero-out sourcing). Numbers = re-sim knobs. -->
 
 
 ---
@@ -43,8 +49,11 @@ doesn't score either — it's the fuel that lets you make Buzz; see §4.)*
    reveal **3** as the shared **ticket row** (the other 2 form its draw pile). Set the **NIGHT** deck aside
    for dusk (drawn the same way then). A ticket's **deck is its clock**: **DAY tickets are judged at dusk,
    NIGHT tickets at the last train** (§8–§9).
-4. Each agent takes an **Agent Character** (ability + flaw — read aloud, public) and a **pawn** (start
-   opposite at 2p — one North, one South). Your Larder starts empty and stays **face-up** all game.
+4. Each agent takes an **Agent Character** (ability + flaw — read aloud, public) and a **pawn**. **Every
+   agent starts in Taipei (the North hub)** — head office, the capital, the start of the HSR spine. *(If
+   the **里長伯 councillor** is in play, he now names **one home region** at this point — his −1 discount
+   works only there, and he pays +1 ingredient to Bribe anywhere else; see his mat + §5.)* Your Larder
+   starts empty and stays **face-up** all game.
 
 ## 3. How a turn works (the core loop — teach these six, then just play)
 Do **ONE** action. Then if your Larder holds over **7** ingredients, discard down to 7 (to that region's
@@ -104,6 +113,10 @@ To **Bribe** a face-up vendor, all at once:
 1. be **with the vendor, in its region**;
 2. hold **at least 2 more Buzz on it than your rival** (the majority, checked right now);
 3. **pay its ingredients**, minus your region discounts (below).
+> **里長伯's home turf (his mat only).** The councillor's **−1 discount works only in his home region**;
+> when he Bribes a vendor **anywhere else**, he pays **+1 ingredient** (of any one type) — an outsider's
+> tax. His mat carries both icons.
+
 Take the vendor to your tour — it's now a **stop on your tours** and an **engine piece**. If it completes a
 Tour Ticket you hold (its pattern is now met), flip that ticket to its **done** side and **advance your
 Tours Completed counter** (§5, Rave Reviews). Then **clear ALL Buzz on it** (yours *and* your rival's) back
@@ -118,7 +131,9 @@ its own** — points come only from completed Tour Tickets (§9).
 > stalls and the next barely needs oysters (that's the engine). **Drinks and the apex ★ trophies carry no
 > icon** (drinks = cheap low-value filler; ★ = the top-value marquee get, no ramp). **Buzz is never
 > discounted**, so the *hype fight* — gated by your Reputation — not the ingredients, is what gates your
-> next big win.
+> next big win. **Night stalls cost meaningfully more than day stalls** — your discount ramp *helps you
+> afford* the big night names but never zeroes them out: even a strong engine still has to source and
+> travel to land the night-market marquee. Day builds the ramp; night is where it pays off.
 
 > **Outraced, not robbed.** If your rival out-hypes you, your Buzz just fizzles back to the supply — you keep
 > every ingredient you sourced, and a fresh vendor comes out. You never seize a place.
@@ -145,6 +160,13 @@ nothing.**
 > **Convenience Store** you're often elsewhere, so ⬢ hits **whoever stands in the region you flipped** — flip
 > a rival's region and a scoped hazard can land on **them**. Never a personal attack — just the island living
 > its life.
+
+> **排班保養 "Scheduled Maintenance" (a table-wide event — the whole island feels it).** A special
+> **island-wide** event card (its own banner frame — *not* a ⦿/⬢/➤ scoped card): **the HSR is down for
+> everyone.** Place it on the HSR spine as a reminder. Until the **start of your next turn**, North and
+> South are **not** linked — everyone Travels the long way around the ring (N→C→S or N→E→S). Then discard
+> it and the HSR reopens. *"The high-speed rail's down for scheduled maintenance — slow road for everyone,
+> you included."* Warm, not a strike — the island, not a rival, closes the line.
 
 > **★ Star vendors.** Some night-market names carry a **printed ★** (a real Michelin / Bib-Gourmand nod),
 > carry the top **value**, carry **no region icon** (a pure trophy, not an engine piece), and sit one apex

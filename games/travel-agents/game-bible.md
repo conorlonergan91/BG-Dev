@@ -14,9 +14,19 @@
 > **not a score track**; the former "Bookings" score track is retired (rename flagged for bg-theme). v6.3
 > also gives **Reputation→Reach teeth** (a live cap on committed Buzz; earned by Travel + events, not
 > vendors; no longer scores; + Rep sinks), **kills the perk field**, and collapses **ticket pools 3→2**. New
-> tiebreak: **most vendors → most regions → fewest LOSE-pile tickets.** **Next: a gated CHARACTER RE-PASS
-> re-sim** (里長伯 hot ~61% / 網紅 cold ~39% / 大哥 fine ~50% under tickets-only), then the 2p FTUE; the
-> bg-developer data rebuild waits on the character re-pass. Full: `design/v6.3-content-draft.md`.
+> tiebreak: **most vendors → most regions → fewest LOSE-pile tickets.** **★ v6.3.1 — FOUR CD CHANGES folded
+> (2026-08-07 PM, economy-changing → validated by the SAME gated re-sim):** **(CD-1)** 里長伯 reworked to a
+> **home-region** kit (−1 discount in one home region; **+1-ingredient away-tax** elsewhere; no-HSR flaw
+> REMOVED) — supersedes the first-region-only tune (A/B CLOSED); **(CD-2)** new **table-wide** event
+> **排班保養 "Scheduled Maintenance"** (HSR down for everyone one round — re-homes the no-HSR concept; its
+> own island-wide banner, NOT a ⦿/⬢/➤ scope); **(CD-3)** all agents **start in Taipei** (North hub —
+> replaces the split N/S 2p start); **(CD-4)** the **night-cost escalation** (night vendors cost meaningfully
+> more — a day→night cost curve so a ramped discount engine affords the night marquee but can't zero-out
+> sourcing; the LOTR:Duel model — the #1 thing the re-sim validates via a night-half sourcing-rate probe).
+> **Next: a gated CHARACTER RE-PASS re-sim** that now ALSO validates these four (里長伯 re-band 45–55% on the
+> new kit; 網紅 cold ~39%; the night-half sourcing probe; Taipei-start seat balance; the Scheduled
+> Maintenance impact), then the 2p FTUE; the bg-developer data rebuild waits on the re-sim. Full:
+> `design/v6.3-content-draft.md` §"v6.3 → v6.3.1 — FOUR CD CHANGES".
 >
 > _(v6.2 baseline, still the balance reference:)_ v6.2
 > restructures the board into **region vendor markets**, paces the day on the **vendor-claims clock**, and
@@ -172,7 +182,10 @@ live, none >~55%, with some rock-paper-scissors between them**:
 ## Components (summary)
 *(v6.2 target for `bg-developer`, **after CD lock**; BOM regenerates in `components/manifest.md`. Current
 CSVs are still pre-v6 — the data rebuild is gated.)*
-- **Map board** — Taiwan, 4 regions on a ring + HSR spine (N↔S), carrying the **Day→Night clock** (dusk +
+- **Map board** — Taiwan, 4 regions on a ring + HSR spine (N↔S). North's hub = **Taipei**, the **common
+  start** for every agent (v6.3.1 CD-3 — replaces the split N/S 2p start; a start-marker zone + a
+  `"hub":"Taipei"` note is a bg-developer map.json edit). The HSR spine carries an **HSR-closed reminder
+  slot** for the Scheduled Maintenance event. It also carries the **Day→Night clock** (dusk +
   last-train marks), the **Tours-Completed counter** (repurposed from the old VP track — with the two Rave
   Review milestone marks at completed-tour 2 & 4), the **Reputation (Reach) track**, and — **per region** —
   a face-down **vendor-deck** space with **1–2 face-up slots** (North 2, others 1) **and** a face-down
@@ -183,7 +196,11 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
   **region icon** *(food only — the ramp; drinks carry none)*, and a printed **value** attribute *(NOT a
   score — referenced by value-tickets + marks the marquee prizes; perk field + Prestige + Rep numbers all
   GONE)*. **One apex (★) vendor per region in the night set** (top value — the rotating trophy); the dynamic
-  **★ Star token** can make a vendor hot mid-game (+2 value, recyclable).
+  **★ Star token** can make a vendor hot mid-game (+2 value, recyclable). **v6.3.1 CD-4 — NIGHT vendors cost
+  meaningfully MORE than day vendors** (a deliberate day→night cost curve: day = cheap ramp-builders; night
+  "both" ~3–4 + apex ★ ~5–6, biased cross-region) so a ramped discount engine still has to source/travel to
+  afford the night marquee (the discount defrays, never zeroes out — the LOTR:Duel later-ages model). Exact
+  night re-costing = the gated re-sim + bg-developer.
 - **~44 Tour-Ticket cards (the EXPANDED deck — the sole scoring vector)** — **DAY deck ~20 + NIGHT deck ~25**
   (patterns: region pairs, cross-region →X dishes, single-region depth, deeper collections, food-count
   ladders, plus the base coverage/thrift/contest/value patterns — full list in `design/v6.3-content-draft.md`
@@ -193,11 +210,19 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
   That Ran" / infodesign label "Departures"; LOSE = 遺珠 "The Ones That Got Away".)*
 - **ingredient Market cards** — a **day deck + a night deck per region** (5-palette: 4 signatures + the
   common in C & S) **+ scoped event cards** (each tagged ⦿/⬢/➤; hazard-leaning; tax-not-destroy) — the
-  **night decks run event-heavier** (the hectic night-market feel). Recoloured day vs night.
+  **night decks run event-heavier** (the hectic night-market feel). Recoloured day vs night. **Plus one
+  special TABLE-WIDE event — 排班保養 "Scheduled Maintenance" (v6.3.1 CD-2)**: the HSR (N↔S) is down for ALL
+  players for one round of turns (everyone takes the slow road around the ring); its own **island-wide
+  banner frame** (NOT a ⦿/⬢/➤ scoped card — a new event *sub-type*, not a new keyword), seeded in a
+  North/South NIGHT deck (a re-sim knob). Re-homes the retired 里長伯 no-HSR flaw as a warm, symmetric,
+  table-wide friction.
 - **~24 Buzz tokens** (@2p; committed, public, contested — placed on vendors, cleared on a win).
-- **5 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**; kits carried UNCHANGED into
-  the gated character re-pass — ⚠ under tickets-only 里長伯 drifts hot ~61% / 網紅 cold ~39%, to be re-tuned
-  in that re-sim, NOT here) + 4 Agent pawns + **Reach markers + Tours-Completed markers** + the
+- **5 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**; validated by the gated
+  character re-pass re-sim. **里長伯 REWORKED (v6.3.1 CD-1):** picks a **home region** at setup — his −1
+  discount works only there, and he pays a **+1-ingredient away-tax** to Bribe anywhere else; the old
+  no-HSR flaw is **removed** (re-homed as the table-wide "Scheduled Maintenance" event). His mat carries a
+  home-discount marker + an away-tax reminder icon → bg-infodesign. ⚠ 網紅 still cold ~39% under
+  tickets-only, to be re-tuned in the re-sim, NOT here) + 4 Agent pawns + **Reach markers + Tours-Completed markers** + the
   **vendor-claims clock marker** (day-clock track, dusk + last-train marks) + **~4 ★ Star tokens**.
 **Component-load flag (bg-elegance / bg-infodesign):** two face-down piles per region + 5 face-up vendors +
 a 3-ticket row — confirm the table stays parseable.
@@ -280,8 +305,12 @@ engine. Full teach order → `design/rules-draft.md` (v6.3, tickets-only).
 - [x] Exploration
 - [x] Design ← **v6.3 TICKETS-ONLY LOCKED (2026-08-07)** — CD sign-off (option A+C), sim-validated bar the
   pending character re-pass + FTUE. *(v6.2 was the prior sim-validated lock.)*
-- [ ] **Character re-pass re-sim ← NEXT (gated on CD "go")** — re-seat 里長伯 (~61% hot) + 網紅 (~39% cold)
-  under tickets-only; light vendor-value engine-band retune; owned by `bg-playtest`.
+- [ ] **Character re-pass re-sim ← NEXT (gated on CD "go")** — now ALSO validates the four v6.3.1 CD
+  changes: re-band **里長伯 on the new home-region kit** (target 45–55%; supersedes the first-region-only
+  tune), re-seat **網紅** (~39% cold), the **★ night-half sourcing-rate probe** (CD-4 — the #1 validation:
+  night sourcing must stay alive, not collapse, and night marquees stay reachable), the **Taipei-start seat
+  balance**, the **Scheduled Maintenance** event impact, and the night cost-curve knobs; light vendor-value
+  engine-band retune. Owned by `bg-playtest`.
 - [ ] Development (bg-developer: drop vendor scoring, rebuild the 44-ticket deck, wire Tours-Completed +
   perplayer milestones — gated on the character re-pass)
 - [ ] Prototype (Screentop.gg / PnP)
