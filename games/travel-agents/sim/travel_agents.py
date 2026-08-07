@@ -279,30 +279,80 @@ BEV       = [v["id"] for v in VENDORS if v["kind"] == "bev"]
 
 
 # ==================================================================================================
-#  MISSIONS (secret +7; draw-3-keep-1 → bot keeps the one aligned to its road weights)
+#  TOUR TICKETS (v6.1 PROPOSAL under test — CD-locked shape, 2026-08-07)
+#  ------------------------------------------------------------------------------------------------
+#  Ticket-to-Ride-style objectives that REPLACE the single hidden +7 mission when MISSION_MODE
+#  ="tickets": you may hold several; CLAIM a new one as a full action (Book, does NOT tick the
+#  day-clock); score +value on completion and −floor(value/2) if UNFINISHED at scoring (the CD's
+#  "−half its value" call). The deck LEANS on MIX tickets (drinks + ladder) so a well-timed drink pays
+#  toward a bonus a value/action planner can actually SEE — the exact incentive the flat-2-VP drink
+#  lacked. Tickets stay secret (the hidden vector); Booking is a public tell you claimed *something*.
+#  MISSION_MODE="single" restores the committed v6.1 baseline (deal-3-keep-1, one +7 binary, NO penalty,
+#  NO Book) for a clean A/B on "does the ticket system make a well-timed mix beat pure ladder?".
 # ==================================================================================================
-MISSIONS = ("grand_tour", "south_3", "breakfast_3", "beverage_3", "nm_2",
-            "three_regions", "prestige_12", "volume_5")
+MISSION_MODE = os.environ.get("TA_MISSION_MODE", "tickets")   # "tickets" (proposal) | "single" (baseline)
+BOOK_LATE_MARGIN = int(os.environ.get("TA_BOOK_LATE", "1"))    # stop booking within N ladder-wins of the end
+
+# key: (value, needs_bev, needs_ladder) — value = +on completion; −(value//2) if unfinished
+TICKETS = {
+    # --- mix tickets (the tilt: reward drinks + ladder together — the CD's "mostly mix" call) ---
+    "stand_and_nm":  (4, True,  True),    # a beverage stand + a night-market stall
+    "sampler":       (5, True,  True),    # one of each venue: a breakfast + a night-market + a stand
+    "two_stands_nm": (6, True,  True),    # 2 stands + a night-market
+    "stands_3reg":   (6, True,  False),   # a stand in 3 different regions (drinks + light travel)
+    # --- ladder tickets (the spine) ---
+    "grand_tour":    (7, False, True),    # a ladder vendor in all 4 regions
+    "south_3":       (5, False, True),    # 3 ladder vendors in the South
+    "nm_2":          (5, False, True),    # 2 night-market stalls
+    "prestige_12":   (6, False, True),    # vendors totalling >=12 Prestige
+    "breakfast_3":   (4, False, True),    # 3 breakfast shops
+    # --- one modest pure-drinks ticket (kept low per "mostly mix") ---
+    "beverage_3":    (4, True,  False),   # 3 beverage stands
+}
+TICKET_KEYS = tuple(TICKETS)
+SINGLE_MISSION_VALUE = 7
+# rough completability in a ~5-6-win game (a keep-choice proxy — a player keeps tickets they can finish,
+# not just high-value ones). Region-anchored stands make multi-region/multi-stand tickets a touch harder.
+TICKET_EASE = {
+    "stand_and_nm": 0.90, "sampler": 0.80, "two_stands_nm": 0.65, "stands_3reg": 0.50,
+    "grand_tour": 0.35, "south_3": 0.55, "nm_2": 0.70, "prestige_12": 0.55,
+    "breakfast_3": 0.70, "beverage_3": 0.60,
+}
+
+
+def _ticket_value(key):
+    return TICKETS[key][0] if MISSION_MODE == "tickets" else SINGLE_MISSION_VALUE
+
+
+def _bev_regions(won):
+    return set(v["region"] for v in won if v["kind"] == "bev" and v["region"] is not None)
 
 
 def _mission_progress(key, won):
     ladder = [v for v in won if v["kind"] != "bev"]
+    nb = sum(1 for v in won if v["kind"] == "bev")
+    nnm = sum(1 for v in won if v["kind"] == "nm")
+    nbf = sum(1 for v in won if v["kind"] == "breakfast")
     if key == "grand_tour":
         return len(set(v["region"] for v in ladder)), 4
     if key == "south_3":
         return sum(1 for v in ladder if v["region"] == "S"), 3
     if key == "breakfast_3":
-        return sum(1 for v in won if v["kind"] == "breakfast"), 3
+        return nbf, 3
     if key == "beverage_3":
-        return sum(1 for v in won if v["kind"] == "bev"), 3
+        return nb, 3
     if key == "nm_2":
-        return sum(1 for v in won if v["kind"] == "nm"), 2
-    if key == "three_regions":
-        return len(set(v["region"] for v in ladder)), 3
+        return nnm, 2
     if key == "prestige_12":
         return sum(v["prestige"] for v in won), 12
-    if key == "volume_5":
-        return len(won), 5
+    if key == "stand_and_nm":                          # partial-credit AND (monotonic for the planner)
+        return min(nb, 1) + min(nnm, 1), 2
+    if key == "sampler":
+        return min(nbf, 1) + min(nnm, 1) + min(nb, 1), 3
+    if key == "two_stands_nm":
+        return min(nb, 2) + min(nnm, 1), 3
+    if key == "stands_3reg":
+        return min(len(_bev_regions(won)), 3), 3
     return 0, 1
 
 
@@ -319,12 +369,49 @@ def _mission_helps(key, cand, won):
     return a > b
 
 
-def _pick_mission(rng, road):
-    """draw-3-keep-1: deal 3, keep the one best aligned to road (drinks lean → beverage_3)."""
-    deal = rng.sample(MISSIONS, 3)
-    pref = {"beverage_3": 3.0, "volume_5": 1.6} if road == "drinks" else \
-           {"grand_tour": 2.0, "nm_2": 2.0, "prestige_12": 1.8, "south_3": 1.4, "breakfast_3": 1.2}
-    return max(deal, key=lambda m: pref.get(m, 1.0))
+def _ticket_fit(prefs, key):
+    """How completable this ticket is for a bot with these road prefs (a no-drinks bot can't finish the
+    beverage half; a pure-drinks bot can't finish the ladder half)."""
+    _, needs_bev, needs_ladder = TICKETS[key]
+    if prefs.get("no_drinks") and needs_bev:
+        return 0.1
+    if prefs.get("pure_drinks") and needs_ladder:
+        return 0.15
+    road = prefs.get("road", "mixed")
+    if road == "drinks":
+        return 1.3 if needs_bev else 0.7
+    if road == "ladder":
+        return 0.6 if (needs_bev and not needs_ladder) else 1.1
+    return 1.0
+
+
+def _ticket_keep_score(won, key, prefs):
+    d, n = _mission_progress(key, won)
+    prog = (d / n) if n else 0.0
+    # keep the best EXPECTED value: value * completability * road-fit, plus a bonus for progress already made
+    return _ticket_value(key) * TICKET_EASE.get(key, 0.6) * _ticket_fit(prefs, key) + 2.0 * prog
+
+
+def _deal_start_tickets(rng, prefs):
+    """Deal 3, keep the 1 best aligned/most-completable (draw-3-keep-1 opening)."""
+    deal = list(rng.sample(TICKET_KEYS, 3))
+    return [max(deal, key=lambda k: _ticket_keep_score([], k, prefs))]
+
+
+def _book_keep(rng, won, prefs):
+    """The Book action: draw 2, keep the better one (TtR keep-≥1); avoid the un-finishable (penalty)."""
+    deal = list(rng.sample(TICKET_KEYS, 2))
+    return max(deal, key=lambda k: _ticket_keep_score(won, k, prefs))
+
+
+def _ticket_final_score(pl):
+    if MISSION_MODE != "tickets":
+        return SINGLE_MISSION_VALUE if _mission_done(pl["tickets"][0], pl["won"]) else 0
+    tot = 0
+    for key in pl["tickets"]:
+        v = TICKETS[key][0]
+        tot += v if _mission_done(key, pl["won"]) else -(v // 2)   # −half (floored) if unfinished
+    return tot
 
 
 # ==================================================================================================
@@ -350,9 +437,10 @@ CHARACTERS = ("neutral", "councillor", "office", "influencer", "dagushi", "dage"
 # ==================================================================================================
 class TravelAgentsGame:
     # -------- setup --------
-    def new_state(self, rng, n_players=2, characters=None, roads=None):
+    def new_state(self, rng, n_players=2, characters=None, roads=None, caps=None):
         chars = list(characters) if characters else ["neutral"] * n_players
         roads = list(roads) if roads else ["mixed"] * n_players
+        caps = list(caps) if caps else [{} for _ in range(n_players)]
         ladder_w = {2: 4, 3: 5, 4: 6}.get(n_players, LADDER_SLOTS)
         bev_deck_size = {2: 7, 3: 9, 4: 10}.get(n_players, 7)
         dusk = {2: DUSK_MARK, 3: 5, 4: 6}.get(n_players, DUSK_MARK)
@@ -376,12 +464,15 @@ class TravelAgentsGame:
         players = []
         for p in range(n_players):
             ch = chars[p]
+            deal_prefs = {"road": roads[p], **caps[p]}
             players.append({
-                "char": ch, "road": roads[p], "pos": starts[p % len(starts)],
+                "char": ch, "road": roads[p], "caps": dict(caps[p]),
+                "pos": starts[p % len(starts)],
                 "larder": Counter(), "won": [], "icons": Counter(), "wild": 0,
                 "prestige": 0, "rep": 0, "promote_bonus": (1 if ch == "influencer" else 0),
                 "rep_per_court_bonus": 0, "councillor_regions": set(),
-                "mission": _pick_mission(rng, "drinks" if roads[p] == "drinks" else "ladder"),
+                "tickets": _deal_start_tickets(rng, deal_prefs),   # Tour Tickets (or the single mission)
+                "booked": 0,
                 "next_visit_extra_hazard": 0,        # 大胃王 H1=C carryover
                 "tempo_tax": 0,                      # v6.1: pending bounded tax from a scoped hazard
             })
@@ -414,6 +505,8 @@ class TravelAgentsGame:
             "events_fired": 0, "scope_fired": {"self": 0, "region": 0, "neigh": 0},
             "cs_self_events": 0, "cs_rival_hits": 0, "takethat_hits": 0,
             "pokes": 0, "bev_deck_empty_turn": None,
+            # Tour Ticket diagnostics
+            "books": 0,
         }
 
     def _fresh_region_deck(self, r, rng):
@@ -545,6 +638,9 @@ class TravelAgentsGame:
             acts.append(("cstore", r))
         for d in neighbours(pl["pos"], pl["char"]):
             acts.append(("travel", d))
+        if MISSION_MODE == "tickets" and s["day_clock"] < s["last_mark"] - BOOK_LATE_MARGIN \
+                and len(pl["tickets"]) < 4:
+            acts.append(("book",))                     # claim a Tour Ticket (a full action; no clock tick)
         return acts
 
     # -------- transition --------
@@ -567,6 +663,8 @@ class TravelAgentsGame:
             self._do_cstore(s, p, act[1], rng)
         elif kind == "travel":
             self._do_travel(s, p, act[1], rng)
+        elif kind == "book":
+            self._do_book(s, p, rng)
         self._discard_to_cap(pl)
         if s["supply"] < s["supply_min"]:
             s["supply_min"] = s["supply"]
@@ -595,6 +693,13 @@ class TravelAgentsGame:
             if any(s["buzz"][vid][q] > 0 for q in range(s["n"]) if q != p):
                 s["drink_fights"] += 1
 
+    def _do_book(self, s, p, rng):
+        pl = s["players"][p]
+        prefs = {"road": pl["road"], **pl["caps"]}
+        pl["tickets"].append(_book_keep(rng, pl["won"], prefs))   # draw 2, keep the better (a full turn)
+        pl["booked"] += 1
+        s["books"] += 1
+
     def _do_bribe(self, s, p, vid, rng):
         pl = s["players"][p]
         v = VENDORS[vid]
@@ -608,7 +713,10 @@ class TravelAgentsGame:
         rep = v["rep"] + (STAR_BONUS_R if starred else 0) + pl["rep_per_court_bonus"]
         pl["prestige"] += prestige
         pl["rep"] = min(12, pl["rep"] + rep)
-        pl["won"].append({"id": vid, "kind": v["kind"], "region": v["region"], "prestige": prestige})
+        # v6.1: beverage cards are region-agnostic — record the SLOT region on the win so drinks-region
+        # Tour Tickets ("a stand in 3 regions") can read it. Ladder patterns still filter kind != "bev".
+        won_region = v["region"] if v["kind"] != "bev" else self._bev_region(s, vid)
+        pl["won"].append({"id": vid, "kind": v["kind"], "region": won_region, "prestige": prestige})
         if v["region"] is not None:                    # ladder vendor → discount icon + perk
             pl["icons"][v["region"]] += 1
             self._apply_perk(pl, v)
@@ -845,8 +953,7 @@ class TravelAgentsGame:
         out = {}
         for p in range(s["n"]):
             pl = s["players"][p]
-            mission = 7 if _mission_done(pl["mission"], pl["won"]) else 0
-            out[p] = pl["prestige"] + _rep_end_vp(pl["rep"]) + mission
+            out[p] = pl["prestige"] + _rep_end_vp(pl["rep"]) + _ticket_final_score(pl)
         return out
 
     def metrics(self, s):
@@ -905,9 +1012,14 @@ class TravelAgentsGame:
             "cs_rival_hits_per_game": float(s["cs_rival_hits"]),
             "takethat_hits_per_game": float(s["takethat_hits"]),
             "pokes_per_game": float(s["pokes"]),
+            # Tour Ticket diagnostics
+            "books_per_game": float(s["books"]),
+            "tickets_held_winner": float(len(wp["tickets"])),
+            "tickets_done_winner": float(sum(1 for k in wp["tickets"] if _mission_done(k, wp["won"]))),
+            "ticket_net_winner": float(_ticket_final_score(wp)),
             "win_prestige": float(wp["prestige"]),
             "win_rep_vp": float(_rep_end_vp(wp["rep"])),
-            "win_mission": 1.0 if _mission_done(wp["mission"], wp["won"]) else 0.0,
+            "win_ticket_score": float(_ticket_final_score(wp)),
             "win_total": float(best),
         }
 
@@ -958,25 +1070,38 @@ def _rep_marginal(pl, v):
     return 0.5 * (v["rep"] + pl["rep_per_court_bonus"]) + (then - now)
 
 
-def _mission_marginal(pl, v):
-    cand = {"id": v["id"], "kind": v["kind"], "region": v["region"], "prestige": v["prestige"]}
-    if _mission_helps(pl["mission"], cand, pl["won"]):
-        after = _mission_done(pl["mission"], pl["won"] + [cand])
-        return 6.0 if after else 1.4
-    return 0.0
+def _tickets_marginal(view, p, vid):
+    """Value of winning this vendor toward the bot's held (incomplete) Tour Tickets — completing one is
+    worth ~its value (banks the +value AND dodges the −half penalty); progressing one is a fraction. This
+    is what a ticket buys that a flat 2-VP drink never could: a payoff the greedy planner can see."""
+    pl = view["players"][p]
+    v = VENDORS[vid]
+    reg = GAME._vendor_region(view, vid) if v["kind"] == "bev" else v["region"]
+    cand = {"id": v["id"], "kind": v["kind"], "region": reg, "prestige": v["prestige"]}
+    total = 0.0
+    for key in pl["tickets"]:
+        if _mission_done(key, pl["won"]):
+            continue
+        if _mission_helps(key, cand, pl["won"]):
+            after = _mission_done(key, pl["won"] + [cand])
+            val = _ticket_value(key)
+            total += (val * 0.85) if after else (val * 0.2)
+    return total
 
 
 def _road_value(view, p, vid, prefs):
     pl = view["players"][p]
     v = VENDORS[vid]
     prestige = v["prestige"] + (STAR_BONUS_P if vid in view["star"] else 0)
-    base = prestige + _rep_marginal(pl, v) + _mission_marginal(pl, v)
+    core = prestige + _rep_marginal(pl, v)             # the road-flavoured value (prestige/rep/ramp)
     if v["region"] is not None:                        # ladder (beverage cards are region-agnostic)
-        base += _ramp_value(pl, v, 1.0)
-        base *= prefs["w_ladder"]
+        core += _ramp_value(pl, v, 1.0)
+        core *= prefs["w_ladder"]
     else:
-        base *= prefs["w_bev"]
-    return base
+        core *= prefs["w_bev"]
+    # a Tour Ticket payoff is worth its points REGARDLESS of road preference — it must NOT be scaled down
+    # by w_bev, or a ladder/mix bot would never pursue the drink its own mix ticket needs.
+    return core + _tickets_marginal(view, p, vid)
 
 
 def _est_actions(view, p, vid):
@@ -1037,6 +1162,19 @@ def _poke(view, p, legal):
     return None
 
 
+def _should_book(view, p, legal):
+    """Claim a fresh Tour Ticket once you've DELIVERED everything you hold (pure upside) and there's still
+    time — the TtR 'do I book another?' beat. Un-finishable held tickets never clear, so a bot that kept a
+    bad ticket simply won't re-book (and eats that penalty) — the discipline is in the keep, not here."""
+    if ("book",) not in legal:
+        return False
+    pl = view["players"][p]
+    incomplete = [k for k in pl["tickets"] if not _mission_done(k, pl["won"])]
+    # hold up to 2 live tickets at once (stack a cheap drinks/mix ticket alongside a ladder one — the
+    # "complete more than one objective" idea); book early enough that a fresh one is still finishable
+    return len(incomplete) < 2 and view["day_clock"] < view["last_mark"] - 2
+
+
 def _plan(view, p, legal, rng, prefs):
     pl = view["players"][p]
     bribes = [a for a in legal if a[0] == "bribe"
@@ -1044,6 +1182,9 @@ def _plan(view, p, legal, rng, prefs):
               and not (prefs.get("no_drinks") and VENDORS[a[1]]["region"] is None)]
     if bribes:
         return max(bribes, key=lambda a: _road_value(view, p, a[1], prefs))
+
+    if _should_book(view, p, legal):
+        return ("book",)
 
     tgt = _pick_target(view, p, prefs)
     if tgt is None:
@@ -1210,6 +1351,40 @@ def _agent_for(road):
         road, STRATEGIES["mixed"])
 
 
+# capability/road labels so ticket dealing+booking align with each named strategy's real intent
+STRAT_CAPS = {"ladder_only": {"no_drinks": True}, "pure_drinks": {"pure_drinks": True}}
+STRAT_ROAD = {"ladder_only": "ladder", "ladder_lean": "ladder", "drinks_lean": "drinks",
+              "pure_drinks": "drinks", "mixed": "mixed", "smart_mix": "ladder",
+              "greedy_prest": "mixed", "random": "mixed"}
+
+
+def _versus(sa, sb, n=1500, seed=1):
+    """A's win rate vs B, both seatings averaged, with each side's ticket capability/road wired in."""
+    from engine import run_match
+    ca, cb = STRAT_CAPS.get(sa, {}), STRAT_CAPS.get(sb, {})
+    ra, rb = STRAT_ROAD.get(sa, "mixed"), STRAT_ROAD.get(sb, "mixed")
+
+    def series(x, y, cx, cy, rx, ry, seed0):
+        class _G:
+            def new_state(_s, rng):
+                return GAME.new_state(rng, 2, characters=["neutral", "neutral"],
+                                      roads=[rx, ry], caps=[cx, cy])
+
+            def __getattr__(_s, k):
+                return getattr(GAME, k)
+        gg = _G(); w = 0; t = 0
+        for i in range(n):
+            sc, _ = run_match(gg, {0: STRATEGIES[x], 1: STRATEGIES[y]}, seed0 + i)
+            if sc[0] == sc[1]:
+                t += 1
+            elif sc[0] > sc[1]:
+                w += 1
+        return w, t
+    wA, tA = series(sa, sb, ca, cb, ra, rb, seed)
+    wB, tB = series(sb, sa, cb, ca, rb, ra, seed + n)
+    return ((wA + 0.5 * tA) + ((n - wB - tB) + 0.5 * tB)) / (2 * n)
+
+
 def _char_winrate(ch, n=1200, seed=1):
     a0, b0, t0, _, _ = _run([ch, "neutral"], ["mixed", "mixed"], n=n, seed=seed)
     a1, b1, t1, _, _ = _run(["neutral", ch], ["mixed", "mixed"], n=n, seed=seed + n)
@@ -1265,3 +1440,14 @@ if __name__ == "__main__":
         dw = _drinks_winrate(n=N)
         print(f"  {label:22} drinks_lean {dw*100:5.1f}%  (ladder_lean {100-dw*100:5.1f}%)")
     globals()["SCOPE_SELF"] = 0.40; globals()["SCOPE_REGION"] = 0.40; globals()["SCOPE_NEIGH"] = 0.20
+
+    print("\n## H5 — TOUR TICKETS A/B: does a well-timed mix now BEAT pure ladder? (>50% = yes)")
+    print("   (a ticket payoff is greedy-visible, unlike a flat drink — so this is testable)")
+    for mode in ("single", "tickets"):
+        globals()["MISSION_MODE"] = mode
+        sm = _versus("smart_mix", "ladder_only", n=N)
+        mx = _versus("mixed", "ladder_only", n=N)
+        dl = _versus("drinks_lean", "ladder_only", n=N)
+        print(f"  MISSION_MODE={mode:8}  smart_mix {sm*100:5.1f}%  |  mixed {mx*100:5.1f}%  |  "
+              f"drinks_lean {dl*100:5.1f}%   (vs ladder_only)")
+    globals()["MISSION_MODE"] = "tickets"

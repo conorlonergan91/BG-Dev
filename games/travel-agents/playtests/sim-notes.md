@@ -937,3 +937,46 @@ harvest-fix knob exists yet — that's the design call to make, then encode.**
    be a non-progress dig AND a local stand is already affordable. It still fires rarely (0.6/game) and loses
    to `ladder_only` (42–48%) — the greedy planner has almost no genuinely dead beats, so this UNDER-models
    the human "right time." Read (ii) in Riskiest #2 as *unmeasured by the sim*, not *disproven*.
+
+---
+
+## TOUR TICKETS — a proposed fix under test (2026-08-07, CD-directed) — DIRECTIONAL read; gated run pending
+
+**The proposal (CD-locked shape).** Replace the single hidden +7 mission with **Ticket-to-Ride-style Tour
+Tickets**: hold several; **claim a new one as a full action** (Book; doesn't tick the day-clock); score
+**+value on completion, −floor(value/2) if unfinished**. The deck **leans on MIX tickets** (drinks +
+ladder: "a stand + a night-market", "a stand in 3 regions", "one of each venue") so a *well-timed drink
+pays toward a bonus the greedy planner can SEE* — the exact incentive the flat-2-VP drink lacked. Encoded
+behind `TA_MISSION_MODE` (`tickets` = proposal, default while prototyping; `single` = the committed v6.1
+baseline for a clean A/B). New bots: `ladder_only` (never drinks) as the "ignore drinks" control.
+
+**Why this is the right lever (and testable).** Unlike a flat drink value (invisible to a value/action
+planner — see Riskiest #2), a ticket payoff is greedy-visible, so the sim CAN give a real read here.
+
+**Directional smoke read (n≈600/cell, ungated exploration — NOT the authoritative gated run):**
+
+| vs `ladder_only` (never-drinks) | MISSION_MODE=single | MISSION_MODE=tickets |
+|---|---:|---:|
+| `mixed` (responds to the incentive) | 43.6% | **48.5%** |
+| `smart_mix` (hard-coded opportunistic) | 44.9% | 45.0% |
+
+Under tickets the mix bot **books ~1 ticket/game, holds ~2, buys ~1 drink, completes ~1 ticket**, and
+rises **~44% → ~48.5% vs pure ladder** — a clear positive move in the intended direction, landing **near
+parity**. It doesn't cross 50% in *bot* hands for two honest reasons: **(a)** a drink still costs more
+tempo than its points return even with the ticket bonus (the action-cost cap from Riskiest #2 persists);
+**(b)** the greedy bot completes only ~1 of its 2 held tickets — the **"stack a ladder ticket + a cheap
+drinks ticket and finish both"** play is a multi-objective planning layer bots execute poorly, so this
+**UNDER-estimates** the system's value for a thinking player. `ladder_only` still banks slightly more
+ticket value (~1.3 done vs ~1.0) because pure laddering completes ladder tickets efficiently.
+
+**Read:** Tour Tickets **work in the intended direction** — they make a mix competitive with pure ladder
+where flat drink-value could not, and the true effect is likely stronger at a table (the multi-objective
+juggling is a bot blind spot). To push the mix over 50% *in sim*, the complementary lever is **lowering a
+drink's tempo cost** (cheaper common, or a lighter claim on the low-conflict stands so a drink is a
+~1-action grab), pairing the *payoff* fix (tickets) with a *cost* fix.
+
+**Status / next:** the full gated probe suite (authoritative H5 A/B + re-check character balance & pacing
+*under tickets* + a fresh round-robin with `ladder_only`/`smart_mix`) is **pending the CD's explicit "go"**
+per the sim gate. Also open for the CD: (a) run as-is; (b) add the cheaper-drink lever first, then run;
+(c) take the ticket system to the 2p table. Nothing here is logged to the design-doc/bible yet — Tour
+Tickets remain a *proposal* until the CD locks them.
