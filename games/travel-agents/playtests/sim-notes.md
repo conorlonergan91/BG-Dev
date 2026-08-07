@@ -1270,3 +1270,170 @@ low-variance length (sd 3.9) is the cleaner pacing spine.
 `TA_H2_THRESH/H2_FLAW` (大哥), `TA_H1` (大胃王), `TA_OFFICE` (媽寶), `TA_INFL_BEHIND` (網紅), `TA_SIG_SUPPLY`
 (the hoarder/denial supply knob), `TA_K_SUPPLY`, `TA_DAY_EVENT/NIGHT_EVENT` (dusk-flip event density),
 `TA_NIGHT_SPRINT`, `TA_HAZARD`, `TA_STARBOON`, `TA_SCOPE_*`, `TA_BUZZ_SUPPLY/MARGIN`, `TA_STALL_CAP`.
+
+---
+
+# v6.3-FIX — killing the `ignore_obj` dominance (tickets-only vs raise-values) (2026-08-07)
+
+The first v6.3 re-sim (`sim-results.md`) validated the Reach economy but the **shape did not pass**: a
+naive line `ignore_obj` won **77–81%**, crushing every real line ~73% h2h. This pass diagnoses that and
+tests fixes. **One variable at a time; Reach rules held fixed; character kits held locked (drift noted,
+not tuned).** New sim knobs added and parameterised: `TA_SCORING` (both|tickets_only), `TA_TICKETS`
+(base|expanded), `TA_TVAL` (ticket-value multiplier), `TA_BOOK_W` (planner Bookings weight under
+tickets_only), `TA_MS_MODE` (first|perplayer|consolation), `TA_MS_ON` (bookings|tickets), `TA_SLOTS`
+(face-up scarcity lever). Module defaults still run the **v6.3 shape-lock** (both/base/first); the
+recommended fix is a three-flag change (documented in the module header).
+
+## 1) ROOT CAUSE of the `ignore_obj` dominance — the ticket subsystem is net-negative EV
+
+`ignore_obj` = `{no_tickets, no_drinks}`: it never claims a Tour Ticket and never courts a drink — it
+just grinds the highest-**Bookings** food vendors. Diagnosis (matchup `ignore_obj:balanced`, n=1200):
+the winner averages **26.5 Bookings but only 3.4 ticket-score** — the winning line is the pure-Bookings
+grinder. **This IS the "memorizable one-liner" the health read warned about**: *"ignore the whole ticket
+minigame."* Why it's optimal under the v6.3 "both" scoring (Bookings + Tickets):
+
+- Claiming a ticket carries an **opportunity cost** (you steer claims toward a pattern instead of the
+  fattest vendor) **and a downside risk** (a `−floor(v/2)` lose-pile ding if you don't finish it by the
+  phase judging). Grinding Bookings has **neither** — it's pure, safe upside.
+- With Reputation no longer scoring (v6.3 Change 1e), Bookings is a big, reliable, penalty-free vector,
+  so the objective layer is strictly a *worse* way to spend the same claims. **Objective-chasing is
+  under-rewarded relative to its risk — so a rational line skips it entirely.** Not a knob problem; a
+  structural one.
+
+## 2) The two candidate fixes, head-to-head (2p; n=120–260/pair; ±~3pt run-to-run)
+
+Metric convention: "avg win% vs field" is each line vs the other 6 (5 playstyles + the two controls
+`ignore_obj`/`pure_drinks`); it is inflated ~+8–12pt for everyone by beating `pure_drinks` (~2%), so read
+the **inter-playstyle spread** + the **h2h vs `ignore_obj`**, not the absolute top number.
+
+| Config | `ignore_obj` | h2h (mix v ign) | 5-playstyle band | margin | contested | verdict |
+|---|---:|---:|---|---:|---:|---|
+| **A baseline** (both, base) | **80.7% (DOMINANT)** | 26% | 36–60 (endgame 36) | 10.1 | 4.6% | **FAIL** |
+| **B tickets-only, base** | 40.4% | 73% | 47–68 (endgame 47) | 6.3 | 1.8% | kills it; band loose |
+| **C tickets-only, EXPANDED** | 44.7% | 68% | **54–66** | 6.6 | 2.7% | **kills it; tight band** |
+| D both + values ×1.6 | **68.1% (still leads)** | 43% | 45–63 | 17.8 | 4.7% | FAIL (not enough) |
+| E both + values ×2.2 | 61.0% (mid-pack) | 48% | 46–64 | **20.1** | 5.3% | weak — swingy |
+| F both + ×1.6 + **no penalty** | 49.5% | 62% | 52–64 | 12.6 | 4.6% | works, but 2 knobs + swingy |
+| G tickets-only exp, `BOOK_W=1.0` | 48.3% | 62% | 54–64 | 7.2 | 5.6% | **robustness ✓** (≈C) |
+
+**Read:**
+- **Tickets-only (B/C) structurally kills the exploit** — with vendors giving no points, a zero-ticket
+  line scores ~0 and loses 68–73% h2h. **G confirms it's not an artifact of my planner down-weighting**:
+  whether the bots chase Bookings fully (`BOOK_W=1.0`) or lightly (0.35), the band and the `ignore_obj`
+  collapse are the same.
+- **The EXPANDED deck (C) is materially healthier than the base deck (B)**: the base deck leaves
+  `endgame` stranded at 47% (too few finishable speed/collection tickets); the richer deck (region PAIRS,
+  cross-region →X dishes, single-region DEPTH, deeper collections, food-count ladders) pulls `endgame`
+  into band (~54%) and tightens the 5-playstyle spread to **~10pt with no crusher** — real choice in
+  *which* tours to chase. Winner ticket-score rises 10.8 → 12.8 (more objective value actually in play).
+- **The "just raise values" fix is a trap.** Raising `TA_TVAL` scales the **reward and the −½ penalty
+  together**, so ignoring tickets stays a *safe* line: at ×1.6 `ignore_obj` still LEADS (68%); at ×2.2 it
+  only reaches mid-pack (61%, ~coin-flip h2h) while **margins balloon to 20** and the score becomes
+  ticket-dominated (winner Tickets 31 vs Bookings 22) — i.e. it drifts toward tickets-only anyway, but
+  swingier and messier. To make raise-values actually beat `ignore_obj` you must *also* drop the penalty
+  (F: two coupled changes → `ignore_obj` 49.5%, still swingier than C).
+
+## 3) Does claiming vendors stay worth it under tickets-only? (CD concern #2) — YES, in-sim
+
+`claims/gm` **9.3** and `vendors/player` **5.2** are **unchanged** from baseline (9.4 / 5.1); `promotes/gm`
+~12 and the greedy-grab/Reach engine still breathe (grab 2.5/gm, reach-end ~6.9). Mechanically, claiming
+vendors is still the central activity — a vendor is now valued as *the ramp piece + the stop that
+completes a tour* rather than as raw points, and the bots claim just as many. **The sim cannot judge
+whether claiming *feels* like a joyless means-to-an-end** (the CD's real worry) — that is the FTUE table
+question. But there is no in-sim sign of vendors becoming inert.
+
+## 4) Bonus probe — does tickets-only LIFT the contested Buzz fight (#2)? — NO (honest)
+
+`contested_frac` is **2.7%** under tickets-only-expanded vs **4.6%** at baseline — it went *down*, not up
+(`max_committed` 3.5 → 2.8: chasing patterns spreads Buzz thinner than chasing the few fat vendors did).
+**The CD's hypothesis that tickets-only would converge players onto shared prizes is not confirmed in-sim**
+— most tickets are *pattern* objectives (regions/counts/types), not specific-vendor, so they don't force
+collisions. The `TA_SLOTS=1,1,1,1` scarcity lever (4 face-up vendors) nudges it back to **4.7%** and (bonus)
+rebalances regions (Central claim 15→21%, South up), but the fight stays ~3–5% either way. **This 3–5% is
+the sim's known concession-heuristic FLOOR** (bots concede rather than pile on; §blind-spots). *Whether a
+5%-frequency fight is FUN when it happens is a human-table question the sim cannot answer* — flag it there;
+don't over-engineer the board to chase the number.
+
+## 5) Milestone runaway (#3) — `perplayer` (or `consolation`) removes the leader-pump
+
+Baseline: the **same player takes both Rave-Review marks ~67–80%** (`ms_both_same`), and under
+`MS_MODE=first` that player is the *only* one who gets the fuel → it compounds a lead. Fixes tested under
+tickets-only-expanded:
+- **`perplayer`** (each player earns the boon the first time THEY cross): boon-earners rise from **1.0 →
+  ~2.0** per mark — both players get the fuel, so it **cannot pump the leader** (zero runaway). Band
+  unchanged (it's small engine-fuel). **Simplest to teach; recommended.**
+- **`consolation`** (first crosser full boon, later crosser reduced): near-identical in-sim; keeps a
+  faint first-mover carrot. A fine alternative if the CD wants the race to still "mean" something.
+- The boon still fires (`ms_earn` ~2), so the *race feel* survives; whether it's *exciting* is a table
+  question. **Note: whichever mode, the milestone now needs a home once Bookings stops scoring — see
+  ASSUMPTION below.**
+
+## 6) Recommended settings (confirmed, n=260) + verdict
+
+**RECOMMENDED FIX = tickets-only scoring + expanded ticket deck + milestone `perplayer`:**
+`TA_SCORING=tickets_only TA_TICKETS=expanded TA_MS_MODE=perplayer`. Confirmed band (n=260):
+
+| line | avg vs field | | line | avg vs field |
+|---|---:|---|---|---:|
+| balanced | 64.5% | | endgame | 54.7% |
+| mix | 63.3% | | **ignore_obj** | **43.8%** (beaten 68–69% h2h) |
+| opportunistic | 62.3% | | **pure_drinks** | **2.2%** (dies) |
+| disruptive | 59.2% | | | |
+
+5 playstyles in a **~10pt pack, no Condorcet crusher, objective-aware lines on top**; both naive/degenerate
+controls clearly beaten; every real line crushes `random` (~99–100%). margin ~7 (tighter than baseline 10
+and far tighter than raise-values' 18–20). **The v6.3 shape HOLDS with this fix in** — but it is a
+**DESIGN CHANGE, not a number tweak** (dropping Bookings-as-score), so it needs CD sign-off (§decision).
+
+## Fixes: number-tweak vs design-change (for the CD)
+- **#1 (ignore_obj):** **DESIGN CHANGE — needs sign-off.** Vendors stop scoring; Tour Tickets become the
+  sole scoring vector; ticket deck expanded. (The lighter number-only "raise values" alternative was
+  tested and is worse — §2.)
+- **#2 (contested):** unresolved in-sim (sim floor). `TA_SLOTS` is a real but structural lever; recommend
+  carrying it as a **human-table question**, not a locked change.
+- **#3 (milestone runaway):** **small rules change** — `perplayer` eligibility. Cheap, near-number-tweak,
+  robustly removes the leader-pump.
+
+## ⚠ ASSUMPTIONS + knock-ons I could NOT resolve (flag to the CD — design/theme/elegance calls)
+- **Milestone home under tickets-only.** With Bookings no longer scoring, the marks' current home
+  ("Bookings 7/14") is now a threshold on an **engine meter**, not a score track. **My sim placeholder =
+  keep the marks on the Bookings-track count** (`MS_ON=bookings`, still accrues) — it runs fine. A cleaner
+  home once Bookings isn't a "score" is **tickets-completed count** (`MS_ON=tickets`, marks at
+  `MS_T1=2 / MS_T2=4`), which I've parameterised but not defaulted. **CD/bg-theme decide the home + name;
+  the "Bookings" track name itself likely changes** (it's no longer bookings-as-points; it's an
+  engine/ramp meter — maybe "Buzz/Coverage/Ramp"). Not a sim question.
+- **Character kits drift under the new scoring (NOT pre-tweaked, per instruction).** Directional read
+  (char vs neutral, so magnitudes are inflated — read direction only): **里長伯 councillor drifts HOT
+  (~61%)** (cheaper claiming is worth more when claiming = the whole game) and **網紅 influencer drifts
+  COLD (~39%)** (its Buzz-heavy kit + full lost-turn flaw is over-taxed when the fight matters less); 大哥
+  dage sits **in band (~50%)** — the v6.3 "大哥 drifts up" worry does **not** materialise here, and the
+  "can we drop 網紅's flaw?" question flips to "网红's flaw now looks too harsh." **If the CD adopts
+  tickets-only, a fresh character re-pass is needed** (exactly like the v3→v3.1 deck-re-cost knock-on) —
+  flagged, not touched.
+- **Bookings-band retune.** Vendor Bookings values were set to matter as points; as pure engine pieces
+  their *relative* values (ramp vs trophy) may want a light retune so every vendor is a worthwhile engine
+  buy. Not tested here (out of scope); a follow-on if tickets-only is locked.
+
+## The ONE change to test next — decision for the CD (A / B / C)
+- **A — ADOPT tickets-only + expanded deck + milestone `perplayer` (RECOMMENDED).** It's the only fix that
+  *structurally* kills the `ignore_obj` exploit (can't ignore objectives when they're the only points),
+  it's robust (§G), gives the tightest healthy band, keeps vendors mechanically central, and de-swings the
+  game. Cost: it's a genuine design change with the three knock-ons above (milestone home + track name;
+  character re-pass; Bookings-band retune) — all follow-on, none blocking. **Then run the instrumented 2p
+  Screentop FTUE** to answer what the sim can't: does claiming vendors *feel* like a joyless chore, does
+  the expanded ticket choice read as rich-not-fiddly, and is the ~5% Buzz fight *fun* when it fires.
+- **B — Keep "both" scoring, apply raise-values+no-penalty (F).** Only if the CD wants to preserve
+  Bookings-as-a-scoring-vector for thematic reasons. It works but is worse: two coupled knobs, swingier
+  (margin ~13), `ignore_obj` only just beaten (49.5%), and it half-converts to tickets-only anyway.
+- **C — Ship the milestone `perplayer` fix now (cheap, standalone) and defer the scoring decision.** The
+  milestone fix is independent of A/B and safe to lock immediately; #1 is the one that needs the CD's call.
+
+**Recommendation: A + C** — lock milestone `perplayer` now, and adopt tickets-only+expanded pending the CD's
+sign-off on the scoring redesign, then take it to the FTUE table. Do **not** pursue raise-values (B).
+
+**Knobs added this pass:** `TA_SCORING`, `TA_TICKETS`, `TA_TVAL`, `TA_BOOK_W`, `TA_MS_MODE`, `TA_MS_ON`,
+`TA_MS_B1/B2`, `TA_MS_T1/T2`, `TA_SLOTS`. New `metrics()`: `ms7_earn_players`, `ms14_earn_players`. New
+`_wstat` fields: `cross` (→X dishes), `max_region` (deepest single-region stack). Central tea-export fix
+(`CENTRAL_TEA_FIX`, 牛肉麵 →C) **confirmed applied**; Central still the lightest region (claim ~20% under the
+expanded deck, up from ~15% baseline — the expanded Central tickets pull it up) — residual is a
+bg-developer data knob, not a sim blocker.
