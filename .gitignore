@@ -27,3 +27,4 @@ Thumbs.db
 
 # Keep the games directory itself
 !games/.gitkeep
+games/travel-agents/playtests/probe_v62_authoritative.txt

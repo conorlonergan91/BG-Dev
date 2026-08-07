@@ -133,6 +133,23 @@ guardian's output to the human when it actually flags something (a re-theme wort
 breach, a colour-blind collision); a clean sweep just gets logged and the loop advances. This is the
 theme analog of the long-standing rule that `bg-elegance` guards the budget every iteration.
 
+### The simulation gate (CD sign-off REQUIRED before every sim run)
+
+**Simulation is SLOW and must never be auto-run.** Unlike the cheap guardians above, running `tools/sim`
+(via `bg-playtest`) can take many minutes, and it is **wasted effort if the human still has design
+changes queued.** So the sim stage is **gated by the Creative Director's explicit approval**:
+
+1. After a design pass + the (cheap, auto) guardian sweep, **present the current design for sign-off** —
+   summarise what's locked, and **make sure every note the human has queued is folded in first.**
+2. **Do NOT dispatch `bg-playtest` for a simulation run until the human explicitly approves** (e.g. "sim
+   it", "go to sim", "run the sim"). Silence or a general "sounds good" is **not** sim approval — ask.
+3. Only once the human has signed off does the sim run. If the human then adds a change, you're back to
+   step 1 — **re-confirm before re-simming.**
+
+This gate is **only** for simulation (the slow, model-a-thousand-games runs). The cheap guardians, the
+linter/complexity/access checks, and quick probability sanity-checks are not gated. When in doubt about
+whether the human is ready to sim, **ask** — a wasted sim burns real time.
+
 ## Living documents
 
 - `game-bible.md` — the concept, positioning, core loop, components, rules summary, status. Always current.

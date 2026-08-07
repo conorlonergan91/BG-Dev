@@ -1,108 +1,76 @@
-# Travel Agents: Taiwan — Component Manifest (v3.1 · movement-rebalanced + The Poach)
+# Travel Agents: Taiwan — Component Manifest (v6.2)
 
-Full bill of materials. **Data is the source of truth** (`components/*.csv|json`); renders regenerate via
-`make.sh`. Quantities are for the **2-player base game** (3–4p deltas noted where they matter).
+> The physical bill of materials for the **v6.2** Screentop prototype. **Data is the source of truth**
+> (`components/*.csv|json`); renders in `build/` regenerate via `make.sh`. Counts are the 2-player base
+> (the design home); the vendor/ticket/Buzz supply and the clock marks scale up with player count
+> (`bg-architect`). Card sizes/materials feed prototyping + manufacturing (see
+> `knowledge/manufacturing-specs.md`).
 
-**Component types = 7** (within the raised cap of 8, `complexity-budget.json`):
-board · Vendor cards · Mission cards · ingredient tokens · Buzz tokens · Event tiles · Character mats.
-(Agent pawns + track markers are board bits, not a distinct type.)
+## Cards
 
-| # | Component | Type | Qty | Size / material | Source file |
-|---|-----------|------|----:|-----------------|-------------|
-| 1 | **Taiwan map board** | board | 1 | ~A2 folded, 2 mm greyboard | `map.json` |
-| 2 | **Vendor cards** | cards | 25 | 63.5×88.9 mm poker, 300 gsm linen | `vendors.csv` |
-| 3 | **Mission cards** | cards | 9 | 63.5×88.9 mm poker (same stock as vendors) | `missions.csv` |
-| 4 | **Ingredient tokens** | tokens | 143 | ~20 mm punchboard discs, dual-coded colour + 繁體 | `ingredients.csv` / `tokens.csv` |
-| 5 | **Buzz tokens** | tokens | 50 | ~16 mm punchboard discs, purple + 讚 | `tokens.csv` |
-| 6 | **Event tiles** | tiles | 13 | ~45 mm square punchboard | `events.csv` |
-| 7 | **Character mats** | mats | 5 | ~120×90 mm mini-mat, 2 mm board | `characters.csv` |
-| — | Agent pawns | board bits | 4 | wooden meeples (1 per player colour) | `tokens.csv` |
-| — | Prestige markers | board bits | 4 | wooden cubes (gold) | `tokens.csv` |
-| — | Reputation markers | board bits | 4 | wooden cubes (teal) | `tokens.csv` |
-| — | Season timer marker | board bits | 1 | wooden disc (vermilion) | `tokens.csv` |
+| Component | File | Cards (2p) | Size | Notes |
+|---|---|---:|---|---|
+| **Vendor deck** | `vendors.csv` | **24** | poker 63.5×88.9 mm | Per region, split by `phase` into a DAY deck + a NIGHT deck; drinks mixed in as the low-value vendors. Face-up: North 2, others 1. |
+| **Tour Tickets** | `missions.csv` | **27** | poker | 12 daytime + 12 nighttime + 3 general. Variable setup: draw 5 per phase (rest to box); reveal a row of 3. |
+| **Ingredient market** | `ingredients.csv` | **62** | poker (or mini) | The Visit / Convenience Store / Travel draw. 5-palette; 糖 only in C & S. Renewable (discards recycle). See per-deck split below. |
+| **Event cards** | `events.csv` | **20** | poker (or mini) | Scoped ⦿/⬢/➤, hazard-leaning (~60%), tax-not-destroy. Shuffled into the matching region+phase ingredient deck; **night decks event-heavier** (12 night vs 8 day). |
+| **Character mats** | `characters.csv` | **4** | mat (rendered as cards in the prototype) | 里長伯 · 媽寶 · 大胃王 · 網紅, each ability + flaw public. See `character-mats.md` (reserve dials + the 大哥 build-scope flag). |
 
-## Vendor deck (25) — tiered · **v3.1 movement re-cost**
+**Total cards: ~137** (24 + 27 + 62 + 20 + 4).
 
-| Tier | Fiction | Count | Ingredient cost | Buzz | Prestige | Rep | Perk |
-|------|---------|------:|-----------------|-----:|---------:|----:|------|
-| **T1 Stalls 攤** | humble street snacks | 11 | 2 (1 region) | 1 | 1 | +1 | its region discount icon |
-| **T2 Eateries 小吃** | sit-down staples | 8 | 3 (usually 2 regions) | 2 | 3 | +2 | region icon + one of {Promote +1 Buzz · pantry-wild · +1 Rep/court} |
-| **T3 Marquee 名店** | icons & banquets | 6 | 3 (1–2 regions) | 3–4 | 5–6 | +2/+3 | strong: wild icon · double icon · +2 Rep/court |
+### Vendor deck — the day/night split (drinks = the low-value vendors)
+| Region | Face-up | Day vendors | Night vendors | Drinks | Apex ★ |
+|---|:--:|---|---|---|---|
+| North 北 (pork) | **2** | 肉包, 蛋餅, 豆漿(drink) | 胡椒餅, 牛肉麵, ★大香腸, 珍奶(drink) | 豆漿, 珍奶 | 大香腸 (P7) |
+| Central 中 (tea) | 1 | 肉圓, 麵線, 珍珠奶茶(drink) | 大腸包小腸, ★逢甲名物, 冬瓜茶(drink) | 珍珠奶茶, 冬瓜茶 | 逢甲名物 (P6) |
+| South 南 (seafood) | 1 | 虱目魚粥, 碗粿, 木瓜牛奶(drink) | 蚵仔煎, 棺材板, ★擔仔麵 | 木瓜牛奶 | 擔仔麵 (P7) |
+| East 東 (rice) | 1 | 竹筒飯, 米糕 | 麻糬, ★石板烤肉, 洛神花茶(drink) | 洛神花茶 | **石板烤肉 (P8)** |
 
-**Region-icon balance (whole deck):** North 7 · Central 6 · South 6 · East 6 — unchanged. Because **every
-vendor is now anchored in its own icon-region** (v3.1), the icon balance *is* the primary sourcing-demand
-distribution: **N 28% · C 24% · S 24% · E 24%** (South up from ~6%). One vendor = one **real** locked dish
-(Tâi-lô primary + 繁體; Indigenous/place dishes use their own romanisation). 2p deals **3 per tier**
-face-up; refill from that tier's deck on each Court. (3p: 4/tier · 4p: 4–5/tier — see design-doc scaling.)
+Counts: N 7 · C 6 · S 6 · E 5 = **24 vendors** (6 drinks; 4 apex ★, one per region, all night).
 
-**Per-specialty demand (vendors naming each — v3.1, incl. the sim-confirmed East fix):** pork 5 · chicken 4 ·
-beef 2 · egg 2 (N) · tea 5 · pearls 3 (C) · oysters 4 · milkfish 3 (S) · rice 4 · greens 5 (E). Workhorses
-capped (pork/rice ≤5); every specialty ≥3 vendors except **beef 2** and **egg 2** — both deliberate
-sub-floor North specialties (beef marquee-held/premium; egg a minor breakfast add — see the East-fix note
-below; restoring a 3rd egg was declined so as **not** to add demand to already-richest North). ~8 vendors
-(≈32%) carry a **cross-region link** to force inter-region trips. **`connect-flag`** tagged vendors (V08
-爌肉飯, V08b 肉圓, V09 火雞肉飯, V11 花蓮扁食, V17 太陽餅, V19 擔仔麵, V20 蝦捲, V24 牛肉湯) carry an in-region
-token framed as *"the regional leg/connection you bring"* (not a literal added ingredient) — the anchor
-stays true to the dish, only the framed token is the connection → **route the framing wording past the paid
-consultant**.
+### Ingredient market — the per-region DAY / NIGHT decks
+| Deck (`deck` tag) | Signature cards | 糖 Sugar (K) | Event cards | Deck size |
+|---|---:|---:|---:|---:|
+| north-day | 8 pork | — | 3 | 11 |
+| north-night | 6 pork | — | 3 | 9 |
+| central-day | 6 tea | 3 | 2 | 11 |
+| central-night | 5 tea | 3 | 3 | 11 |
+| south-day | 6 seafood | 3 | 3 | 12 |
+| south-night | 5 seafood | 3 | 3 | 11 |
+| east-day | 8 rice | — | 2 | 10 |
+| east-night | 6 rice | — | 3 | 9 |
 
-**Sim-confirmed East fix (v3.1, baked 2026-08-06 — lifts East sourcing 15.6% → 17.9%, clears the ~18%
-floor):** four authentic re-costs — **V12 蚵仔煎** `oysters;egg;pantry` → `oysters;greens;pantry` (its real
-茼蒿 crown-daisy greens; a South→East cross now, not South→North); **V21 竹筒飯** & **V23 麻糬**
-`rice;pantry` → `rice;rice`; **V22 山蘇/龍鬚菜** `greens;pantry` → `greens;greens`. De-pantrying the three
-East T1 stalls to a pure 2-East cost is the lever that moves the needle (bots can no longer pantry-substitute
-the East token away). **Content watch (→ consultant / table):** East T1s are now pure 2-East while N/C/S T1s
-stay 1-spec + pantry — a mild value asymmetry (East T1s slightly harder); it did not hurt Probe 1 / coverage
-in sim, but the *feel* is a table question.
+Ingredient cards total **62**; event cards total **20** (day 8 / night 12). (The prototyper shuffles each
+region+phase's ingredient cards + matching-`deck` events into one face-down pile.)
 
-## Ingredient tokens (143) — the region↔ingredient web
+## Tokens, markers & tracks (`tokens.csv`, board renders)
 
-| Ingredient | 繁體 | Region | Pool | Notes |
-|-----------|------|--------|-----:|-------|
-| Beef | 牛 | North | 11 | 牛肉麵, Tainan beef soup (marquee-held) |
-| Pork | 豬 | North | 12 | comfort-food protein — **capped at 5 vendors** (was 10) |
-| Chicken | 雞 | North | 11 | cutlet, karaage, turkey rice, maqaw soup |
-| Egg | 蛋 | North | 11 | egg crepe (V15), karaage 加蛋 burger (V16) — 2 vendors (V12 dropped egg → greens) |
-| Tea | 茶 | Central | 12 | oolong, black tea, bubble tea — 5 vendors |
-| Tapioca pearls | 圓 | Central | 11 | **now 3 vendors** (bubble tea, Dongding, ba-wan) |
-| Oysters | 蚵 | South | 11 | **now 4 vendors** (Tainan/Chiayi 東石 coast) |
-| Milkfish | 魚 | South | 11 | **now 3 vendors** (congee, shrimp roll, beef soup) |
-| Rice | 米 | East | 12 | **capped at 4 vendors** (was 7) — bento, bamboo rice, mochi |
-| Mountain greens | 菜 | East | 11 | fern/chayote/maqaw (Indigenous) + oyster-omelette 茼蒿 — 5 vendors |
-| **Pantry** | 補 | Any | **∞** (print ~30) | UNLIMITED convenience store; never discounted |
+| Component | File / source | Qty (2p) | Notes |
+|---|---|---:|---|
+| Ingredient tokens (5) | `tokens.csv` | 豬14 · 茶14 · 海14 · 米12 · 糖16 = **70** | The 5-palette. Also the glyph source for vendor recipe chips. (On Screentop the market *cards* carry the ingredient; tokens are the physical Larder currency.) |
+| Buzz tokens | `tokens.csv` | **24** | The promotional currency; only ever in the supply or on a vendor. |
+| ★ Star tokens | `tokens.csv` | **4** | The accolade value-swing boon (+2 Prestige / +1 Rep to whoever wins the vendor). |
+| Agent pawns | `tokens.csv` | 4 (2 used @2p) | One per agent, on the region ring. |
+| Prestige (VP) markers | `tokens.csv` | 4 | One per player on the Prestige track. |
+| Reputation markers | `tokens.csv` | 4 | One per player on the Reputation track. |
+| Vendor-claims clock marker | `tokens.csv` | 1 | Shared, on the clock track. |
+| 成團 / 遺珠 pile markers | `tokens.csv` | 2 + 2 | Win-pile (Published Tours) / lose-pile (Ones That Got Away) area markers, per player. |
+| **Region-ring board** | `map.json` | 1 | 4 regions on the diamond, ring + HSR spine, face-up slot counts. |
+| **Prestige track** | make.sh (scoretrack 0–50) | 1 | |
+| **Reputation track** | make.sh (scoretrack 0–12, milestones 3/6/9/12) | 1 | |
+| **Vendor-claims clock track** | make.sh (scoretrack 0–10, DUSK@5 / LAST TRAIN@10 @2p) | 1 | Marks grow with player count. |
+| Player aid | `player-aid.json` | 1–2 | ≤22 lines (complexity budget). |
 
-Pools **flattened to even scarcity** (v3.1): every specialty now 11–12 tokens (was 8–18), ≈ 2× per-region
-solo demand — no specialty trivially abundant or impossibly scarce. Grabbing the last still forces a rival
-reroute. Pantry unlimited + Buzz always-available = the two anti-stuck valves. Pools scale sub-linearly at 3–4p.
+## Component-type count (complexity budget: max 8)
+Cards (vendors / tickets / ingredients / events — one card type), character mats, region board,
+tracks (Prestige / Reputation / clock), tokens (ingredient / Buzz / star / markers / pawns), pile
+areas. Card *count* is high (~137) but component **types** stay within budget — the v6.2 growth is card
+count + day/night colour, not new physical types. (bg-elegance owns the formal complexity check.)
 
-## Buzz tokens (50)
-The second, fungible currency. Gained via **Promote** (2/action; 3 for the Influencer or a Buzz-income
-perk). Spent alongside ingredients to Court — **never discounted** (the anti-runaway brake). Open supply.
-
-## Event tiles (13) — salted into the region Markets, fire on refill · **v3.1 comedy rework**
-Boon-skewed **~60/40** (8 boon / 4 hazard + 1 shakeup), region-thematic, **secular**, tax-not-destroy.
-Setup: shuffle ~2–3 tiles into each region's Market supply; "any/table-wide" tiles go into any region's
-supply. Region tiles: South (Mango Season), Central (Bubble-Tea Festival, Plum Rains), North (Scooter
-Gridlock), coastal (Typhoon Day → salts into **both** South + East) + 8 any/table tiles (Aunty Insists,
-4 a.m. Convenience Store, Stinky-Tofu Dare, The 3:47 to Zuoying, Queue That Ate the Block, Food Blogger's
-Big Break, Sold Out, Fully Booked). **Two special payloads:** *Stinky-Tofu Dare* (push-your-luck: reveal
-the top supply tile — specialty = free + 1 Buzz, event = resolve it too, decline = 1 Buzz); *Typhoon Day*
-(catch-up: coastal washout-refill + every non-leader on the Prestige track takes 2 Buzz; tie-for-lead → all
-benefit). Reserve swap-ins (not in the 13): Oyster Glut (S boon), Bumper Harvest (E boon).
-
-## Mission cards (9) — secret signature tour, +7
-Draw 3, secretly keep 1. Binary at scoring. Machine-target grammar (for the sim/linter; human rule in the
-card's `effect`): `vendors_region:X>=n` · `vendors_all_regions` · `tier1_vendors>=n` · `tier3_vendors>=n`
-· `vendors_total>=n` · `prestige_total>=n` · `marquee_plus_two_stalls`.
-
-## Character mats (5) — public asymmetry (1 ability + 1 flaw)
-Night-Market Auntie 阿姨 · Eager Rookie 菜鳥 · Retired Conductor 車長 · The Influencer 網紅 · Grizzled
-Gourmand 老饕. **Table-watch flags** (validate at the human FTUE, not off the sim): Rookie (event-luck)
-and Gourmand (pantry-wild) — both event-coupled kits the sim abstracts.
-
-## Sensitivity rails honoured
-Real dishes never mangled; **Traditional characters** only; Tâi-lô primary where the dish is Hokkien,
-native romanisation for Indigenous/place dishes (not forced Hokkien). East draws on **distinct** Indigenous
-peoples (Amis 阿美族 bamboo rice, Atayal 泰雅族 maqaw soup) — not a flattened "generic Indigenous". All
-Chinese text + romanisation and Indigenous dish/people names route through the paid Taiwanese consultant +
-native reviewer before art/print (→ `bg-publishing`).
+## Notes / flags
+- **Central tea-export fix applied:** North's 牛肉麵 (night) now needs Central 茶 (was Seafood), closing
+  the cross-region demand loop N→C→S→E→N so tea is exported and Central stops being a pure importer.
+- **East 石板烤肉 (Indigenous-forward):** #1 pre-art item — **paid Taiwanese/Indigenous consultant
+  sign-off on dish + naming + framing BEFORE art**.
+- **繁體 + Tâi-lô** on every vendor/dish; romanisations are first-pass → native reviewer to bless.
+- **成團 / 遺珠 scoring is a RULE, not per-card data** — tickets carry only value + pattern + phase tag.

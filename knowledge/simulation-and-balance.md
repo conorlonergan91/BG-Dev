@@ -11,6 +11,15 @@ writes probes against it.
 below, apply the smallest fix, re-sim to confirm — then hand the questions the sim *can't* answer to a
 human playtest.
 
+> **The simulation gate — sim only on the CD's explicit go.** A full run is slow (many minutes) and is
+> pure waste if the human still has design notes to fold in. So the sim stage is **gated by the Creative
+> Director's explicit approval**: after a design pass + the cheap guardian sweep, the design is presented
+> for sign-off with every queued note incorporated, and **only an explicit "sim it" starts the run**.
+> Silence or a general "sounds good" is not sim approval. If the human then changes something, re-confirm
+> before re-simming. (Cheap checks — the linter, complexity/access gauges, quick EV/probability
+> sanity-scripts — are *not* gated; only the model-a-thousand-games runs are.) See the "simulation gate"
+> in the `board-game-studio` skill for the full protocol.
+
 ## 1. Instrument the design's questions as metrics
 Don't eyeball win rates — put each open question into the game's `metrics()` so the sim answers it
 directly. On Beacon the open questions became:

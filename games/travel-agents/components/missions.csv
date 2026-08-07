@@ -1,10 +1,28 @@
-id,name,type,value,target,quantity,tags,effect,art_note
-M01,Southern Crawl,mission,7,vendors_region:S>=3,1,region;south,"Court 3 vendors with a South icon. The deep-south seafood-and-rice run.",Passport stamp reading SOUTH over a Tainan oyster-flat motif
-M02,Grand Tour,mission,7,vendors_all_regions,1,breadth;tour,"Court at least one vendor in EACH of the four regions (North, Central, South, East). The full lap.",Passport spread with four regional stamps
-M03,Northern Crawl,mission,7,vendors_region:N>=3,1,region;north,"Court 3 vendors with a North icon. Work the capital and the breakfast shops.",Passport stamp reading NORTH over a Taipei-skyline motif
-M04,Central Circuit,mission,7,vendors_region:C>=3,1,region;central,"Court 3 vendors with a Central icon. Tea hills, night markets and bubble tea.",Passport stamp reading CENTRAL over rolling tea terraces
-M05,Humble Eats,mission,7,tier1_vendors>=3,1,tier;stalls,"Court 3 Stall (Tier-1) vendors. The street-food purist's tour.",Row of three little stall stamps
-M06,Fine Dining,mission,7,tier3_vendors>=2,1,tier;marquee,"Court 2 Marquee (Tier-3) vendors. Go for glory.",Two gold banquet stamps clipped together
-M07,Volume Tour,mission,7,vendors_total>=5,1,volume,"Court 5 vendors in total, of any kind. Just keep signing.",Neon night-market stamp with a wide-awake owl
-M08,Go Tall,mission,7,prestige_total>=18,1,tall;prestige,"Your courted vendors total at least 18 Prestige. Fewer stalls, bigger names.",Single towering gold star stamp
-M09,Marquee & Feeders,mission,7,marquee_plus_two_stalls,1,combo;engine,"Court 1 Marquee vendor AND 2 Stall vendors that share either of that Marquee's cost regions. The signature feast plus its supply chain.",A gold marquee stamp flanked by two small feeder stamps
+id,name,hanzi,type,value,target,phase,quantity,tags,effect,art_note
+D01,Breakfast Fiend,早餐控,mission,4,day_food_vendors>=3,day,1,ticket;day;balanced;v6.2,"Bribe 3 daytime FOOD vendors (drinks don't count). The morning ramp.",Boarding-pass ticket stamped with three little breakfast bowls
+D02,Island Hopper,走透透,mission,5,regions>=3,day,1,ticket;day;travel;v6.2,"Bribe a vendor in 3 DIFFERENT regions. Keep moving.",Ticket with three regional stamps across a map strip
+D03,Southern Run,南部之旅,mission,4,vendors_region:S>=2,day,1,ticket;day;region;v6.2,"Bribe 2 South vendors. The seafood coast.",Ticket stamped SOUTH over a Tainan oyster-flat motif
+D04,North Drift,北漂,mission,4,vendors_region:N>=2,day,1,ticket;day;region;v6.2,"Bribe 2 North vendors. Work the busy capital.",Ticket stamped NORTH over a Taipei-skyline motif
+D05,Hand-Shaken,手搖控,mission,3,drinks>=2,day,1,ticket;day;drink;mix;v6.2,"Bribe 2 drinks vendors. The bubble-tea run.",Ticket with two sweating cups of iced tea
+D06,A Full Table,湊一桌,mission,3,day_food>=1;drink>=1,day,1,ticket;day;mix;v6.2,"Bribe 1 food vendor AND 1 drink. A little of both.",Ticket showing a bowl and a cup side by side
+D07,Early Bird,早起的鳥兒,mission,5,vendors_total>=3,day,1,ticket;day;end-game-driver;v6.2,"Bribe 3 vendors before dusk. Beat the street's turnover.",Ticket with a wide-awake owl over a sunrise market
+D08,Penny Wise,精打細算,mission,4,cheap_vendors>=3,day,1,ticket;day;opportunistic;v6.2,"Bribe 3 vendors each costing 2 ingredients or fewer. The bargain tour.",Ticket with three little coins and a receipt
+D09,Go East,東行,mission,3,vendors_region:E>=1,day,1,ticket;day;travel;east-pull;v6.2,"Bribe 1 East vendor. Ride out to the frontier.",Ticket stamped EAST over a rice-terrace coastline
+D10,Sharp Eye,識貨,mission,4,prestige_total>=8,day,1,ticket;day;opportunistic;v6.2,"Your bribed vendors total at least 8 Prestige by dusk. Spot the good stuff.",Ticket with a magnifying glass over a gold star
+D11,Central Wander,中部漫遊,mission,4,vendors_region:C>=2,day,1,ticket;day;region;v6.2,"Bribe 2 Central vendors. Tea hills and bubble tea.",Ticket stamped CENTRAL over rolling tea terraces
+D12,Hot Ticket,搶手貨,mission,4,contested_wins>=1,day,1,ticket;day;disruptive;contest;v6.2,"Win a CONTESTED vendor (your rival had Buzz on it when you Bribed). Out-hype them.",Ticket with two hands reaching for one glowing stall
+N01,Night-Market King,夜市王,mission,5,night_food_vendors>=2,night,1,ticket;night;balanced;v6.2,"Bribe 2 night-market FOOD vendors. Own the neon.",Ticket with a lantern-lit night-market arch
+N02,Reach for a Star,摘星,mission,5,apex_wins>=1,night,1,ticket;night;opportunistic;v6.2,"Win a ★ apex vendor. The top prize of a region.",Ticket with a hand plucking a gold star from a sign
+N03,Grand Slam,大三元,mission,7,regions>=4,night,1,ticket;night;travel;apex;v6.2,"Bribe a vendor in ALL 4 regions. The full lap.",Ticket with four regional stamps forming a ring
+N04,Surf & Turf,海陸,mission,4,vendors_region:S>=1;vendors_region:N>=1,night,1,ticket;night;cross-region;v6.2,"Bribe a South vendor AND a North vendor. Coast meets capital.",Ticket with a prawn and a pork bun stamped together
+N05,Big Spender,富貴,mission,6,prestige_total>=14,night,1,ticket;night;tall;opportunistic;v6.2,"Your bribed vendors total at least 14 Prestige. Go tall.",Ticket with a towering stack of gold stars
+N06,Night Owl,夜貓子,mission,5,vendors_total>=4,night,1,ticket;night;volume;v6.2,"Bribe 4 vendors in total. Just keep signing.",Ticket with a bright-eyed owl and a fistful of stubs
+N07,Blow the Budget,一擲千金,mission,4,expensive_vendor>=1,night,1,ticket;night;opportunistic;v6.2,"Bribe a vendor costing 3 or more ingredients. Splash out.",Ticket with a fat wallet snapping open over a feast
+N08,Rule the Coast,稱霸東岸,mission,5,vendors_region:E>=2,night,1,ticket;night;travel;east-pull;v6.2,"Bribe 2 East vendors. Command the frontier coast.",Ticket stamped EAST twice over a stone-slab grill
+N09,Crowd Favourite,人氣王,mission,5,contested_wins>=2,night,1,ticket;night;disruptive;contest;v6.2,"Win 2 CONTESTED vendors (rival had Buzz on them). Win the hype fights.",Ticket with a roaring crowd behind a winning agent
+N10,Last Call,快閃,mission,5,final_round_wins>=2,night,1,ticket;night;end-game-driver;v6.2,"Bribe 2 vendors in the final round. Sprint for the last train.",Ticket with a departures board flipping to LAST TRAIN
+N11,Sweet Finish,甜點收尾,mission,4,drinks>=3,night,1,ticket;night;drink;mix;v6.2,"Bribe 3 drinks vendors in total. End on something sweet.",Ticket with three dessert cups in a row
+N12,The Whole Spread,全席,mission,6,day_food>=1;night_food>=1;drink>=1,night,1,ticket;night;mix;sampler;v6.2,"Bribe one breakfast food, one night-market food, and one drink — one of each venue.",Ticket with a bowl, a lantern stall, and a cup in a triptych
+G01,In Full Bloom,遍地開花,mission,5,regions>=3,general,1,ticket;general;travel;v6.2,"Bribe a vendor in 3 regions. Spread out.",Ticket with flowers blooming across a map
+G02,The Collector,收藏家,mission,5,vendors_total>=5,general,1,ticket;general;volume;v6.2,"Bribe 5 vendors in total. Fill the album.",Ticket with a bulging stamp album
+G03,Money to Burn,揮金如土,mission,6,prestige_total>=12,general,1,ticket;general;tall;v6.2,"Your bribed vendors total at least 12 Prestige. Spare no expense.",Ticket with banknotes fluttering over a banquet

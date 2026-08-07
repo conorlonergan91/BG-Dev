@@ -1,40 +1,44 @@
 {
-  "_note": "v3 player aid for build_board.py --type aid. Reuses the card/token component budget (not a new type). Keep <= 22 lines (complexity-budget.json: max_player_aid_lines 22).",
-  "title": "Travel Agents: Taiwan",
-  "subtitle": "Your turn = ONE action. Larder caps at 7 ingredients (discard down at end of turn).",
+  "_note": "v6.2 player aid for build_board.py --type aid. Reuses the card/token component budget (not a new type). Keep <= 22 lines (complexity-budget.json: max_player_aid_lines 22). Rebuilt from the stale pre-v6 aid (Stock Up / Extract / Poach / Season / Coverage are all GONE).",
+  "title": "Travel Agents: Taiwan  ·  v6.2",
+  "subtitle": "Your turn = ONE action. Then if your Larder holds over 7, discard down to 7 (to that region's market discard — it reshuffles in when the deck runs dry).",
   "sections": [
     {
       "heading": "Do ONE action",
       "lines": [
-        "STOCK UP  —  take 2 ingredients where you stand (this region's specialties and/or pantry), then refill the Market.",
-        "TRAVEL  —  move to a neighbouring region, then take 1 ingredient there (North<->South by HSR).",
-        "PROMOTE  —  take 2 Buzz (the promotional currency; always available, never contested).",
-        "COURT A VENDOR  —  pay its cost, sign it to your tour, Season +1, rival locked out of it (see below).",
-        "EXTRACT  —  catch the last train home: trigger the end-game wind-down.",
-        "POACH (only if a rival shares your region)  —  take 1 RANDOM specialty from their Larder; pay Reputation -1 (floored at 0). Pantry is safe. Costs your whole turn; no refill/event/Season."
+        "VISIT the local market (where you stand) — flip top 3 of this region's ingredient deck; any EVENT fires now (by scope); keep up to 2 ingredients.",
+        "CONVENIENCE STORE (anywhere) — flip top 1 of ANY region's ingredient deck: ingredient -> take it; event -> it fires by scope. The reliable way to grab 糖.",
+        "TRAVEL — move to a neighbouring region (HSR = North<->South), then flip top 1 there: ingredient -> take it; event -> nothing, keep moving.",
+        "PROMOTE (with the vendor, in this region) — place 2 Buzz on face-up vendor(s) here. Buzz stays on the card, public; your rival can pile on too.",
+        "BRIBE A VENDOR — win a face-up vendor by out-hyping your rival (below). Moves the day-clock +1.",
+        "CLAIM A TOUR TICKET — take 1 from the face-up row of 3 (this phase's pool); refill the row. Only one you haven't already completed. Scores into your piles later."
       ]
     },
     {
-      "heading": "Courting cost & the ramp",
+      "heading": "Bribe = out-hype, on the spot (one rule for every vendor)",
       "lines": [
-        "Pay:  named ingredients MINUS your matching region discount icons (floored at 0)  +  its Buzz (NEVER discounted).",
-        "Gain all at once:  Prestige (score up)  +  Reputation (marker up)  +  perk (usually a region discount icon)  +  Coverage tick if a new region.",
-        "Each discount icon you hold makes that region's ingredients 1 cheaper on future vendors — the engine. Buzz stays a fixed per-vendor tax."
+        "1) be WITH the vendor, in its region;  2) hold at least 2 MORE Buzz on it than your rival;  3) pay its ingredients minus your matching region discount icons (Buzz is NEVER discounted).",
+        "Gain Prestige (score up) + Reputation (marker up) + its perk. Then clear ALL Buzz on it (yours + rival's), refill the slot, day-clock +1. FOOD carries a region discount icon; DRINKS carry none."
       ]
     },
     {
-      "heading": "Market events fire on refill",
+      "heading": "Events — the island living its life (⦿ / ⬢ / ➤, measured from the drawn region)",
       "lines": [
-        "After Stock Up / Travel, a flipped Event tile resolves now — festival boons, a typhoon reroute, a warm local. Boon-skewed; tax, never destroy."
+        "⦿ YOU (the flipper)  ·  ⬢ THIS REGION (everyone standing there)  ·  ➤ NEXT DOOR (a neighbour). Hazards TAX or delay — never destroy what you hold, never cost a whole turn."
       ]
     },
     {
-      "heading": "End & score (reveal missions!)",
+      "heading": "The day-clock: Day -> Night (every Bribe moves it +1)",
       "lines": [
-        "End trigger: someone EXTRACTS, OR the Season timer fills. (Reputation-top scores its +9 but does NOT end the game.)",
-        "Then finish the round + one more full round, then score.",
-        "Prestige (vendor stars)  +  Reputation end-VP (3/6/9/top -> +2/+4/+6/+9)  +  Coverage (2/3/4 regions -> 2/5/9)  +  secret Mission +7.",
-        "Most points = TOP AGENT.  Ties: highest Reputation, then most vendors, then most regions."
+        "DUSK = the 5th table-wide Bribe (2p): judge every DAYTIME ticket, then clear the ENTIRE day layer island-wide -> night decks (event-heavier), swap the ticket row to night. Keep your Larder.",
+        "LAST TRAIN = the 10th Bribe (2p): judge every NIGHTTIME ticket, then finish the round + one more full round and stop. (Marks grow with player count.)"
+      ]
+    },
+    {
+      "heading": "Score once, at game end",
+      "lines": [
+        "Prestige (sum of your vendors) + Reputation end-VP for your FINAL position (3/6/9/top -> +2/+4/+6/+9) + Tour Tickets.",
+        "Tickets: +printed value for each in your 成團 WIN pile;  -floor(value/2) for each in your 遺珠 LOSE pile.  Most points = TOP AGENT (ties: Reputation, then most vendors, then most regions)."
       ]
     }
   ]

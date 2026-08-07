@@ -46,6 +46,15 @@ an elegance-first studio it's make-or-break: a great game with a confusing ruleb
   icon failures to `bg-infodesign`; perceptual failures to `bg-access`).
 
 ## Simulation (the fastest way to pressure-test a design)
+
+> **⚠ A simulation run is GATED by the Creative Director's explicit sign-off.** A full `tools/sim` run
+> takes many minutes and is wasted effort if the human still has design changes queued. **Do not start a
+> simulation run on your own initiative** — the orchestrator only dispatches you for one *after* the human
+> has explicitly approved the current design for sim (see the "simulation gate" in the `board-game-studio`
+> skill). If you're asked to *plan* a sim, encode the module, or reason about probabilities, that's fine
+> and ungated; but the actual model-a-thousand-games run happens only on an explicit green light. If it's
+> unclear whether the CD has signed off, say so and wait rather than burning the run.
+
 Before (and between) human playtests, **simulate**. Full method: **`knowledge/simulation-and-balance.md`**
 (the playbook, distilled from Beacon). In short:
 - Encode the rules once as `games/<slug>/sim/<slug>.py` exposing `GAME` (the Game protocol) and

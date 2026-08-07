@@ -157,6 +157,12 @@ ends with an auto **Health read** (dominant line? intransitive depth?). Owned by
 playbook `knowledge/simulation-and-balance.md`, `tools/sim/README.md`, and the worked example
 `games/beacon/sim/beacon.py`.
 
+**A simulation run is gated by the Creative Director's explicit sign-off** — it's slow (many minutes) and
+wasted if the human still has design changes queued. Fold in every queued note, present the design for
+sign-off, and **only run the sim on an explicit "go"** (silence ≠ approval). The cheap guardians and the
+linter/complexity/access checks are *not* gated. Full protocol: the "simulation gate" in the
+`board-game-studio` skill.
+
 ### Reference data — BoardGameGeek (`tools/bgg/`)
 
 `python tools/bgg/bgg_lookup.py --name "<game>"` fetches **deterministic** facts from BGG's XML API —

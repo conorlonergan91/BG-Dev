@@ -1,54 +1,80 @@
-# Travel Agents: Taiwan (v3 vendor-courting engine) — simulation report
+# Travel Agents: Taiwan (v6.1 — the economy fork, region-anchored + scoped events) — simulation report
 
-500 games per matchup; win rate averages both seatings (ties = 0.5).
+1000 games per matchup; win rate averages both seatings (ties = 0.5).
 
 ## Overall win rate by strategy
-- **ingredient_heavy**  62.4%  ███████████████████
-- **buzz_heavy      **  61.1%  ██████████████████
-- **reputation_climb**  60.6%  ██████████████████
-- **mission_focus   **  59.9%  ██████████████████
-- **balanced        **  59.3%  ██████████████████
-- **prestige_rush   **  59.0%  ██████████████████
-- **coverage_spread **  56.2%  █████████████████
-- **random          **  19.6%  ██████
-- **greedy_cheap    **  11.9%  ████
+- **mixed           **  67.3%  ████████████████████
+- **greedy_prest    **  66.7%  ████████████████████
+- **smart_mix       **  61.0%  ██████████████████
+- **drinks_lean     **  59.0%  ██████████████████
+- **ladder_lean     **  58.6%  ██████████████████
+- **ladder_only     **  56.1%  █████████████████
+- **pure_drinks     **  24.8%  ███████
+- **random          **   6.5%  ██
 
 ## Matchup grid (row as P0 vs column as P1 — row's win rate)
 
-| P0 \ P1 | random | greedy_che | balanced | prestige_r | reputation | coverage_s | buzz_heavy | ingredient | mission_fo |
-|---|---|---|---|---|---|---|---|---|---|
-| random |   49% |   42% |   11% |   11% |   12% |   11% |   17% |   10% |   11% |
-| greedy_che |   55% |   48% |    0% |    0% |    0% |    0% |    0% |    0% |    0% |
-| balanced |   88% |  100% |   50% |   49% |   51% |   56% |   46% |   48% |   49% |
-| prestige_r |   90% |  100% |   49% |   47% |   53% |   52% |   47% |   48% |   47% |
-| reputation |   89% |  100% |   53% |   56% |   52% |   54% |   48% |   49% |   53% |
-| coverage_s |   89% |  100% |   44% |   48% |   46% |   54% |   40% |   44% |   44% |
-| buzz_heavy |   82% |  100% |   52% |   54% |   50% |   56% |   54% |   47% |   55% |
-| ingredient |   89% |  100% |   59% |   57% |   53% |   60% |   49% |   50% |   53% |
-| mission_fo |   89% |  100% |   53% |   50% |   48% |   55% |   47% |   49% |   53% |
+| P0 \ P1 | random | greedy_pre | ladder_onl | ladder_lea | drinks_lea | pure_drink | mixed | smart_mix |
+|---|---|---|---|---|---|---|---|---|
+| random |   50% |    0% |    0% |    0% |    0% |    0% |    0% |    0% |
+| greedy_pre |  100% |   33% |   54% |   45% |   51% |   82% |   31% |   42% |
+| ladder_onl |  100% |   22% |   37% |   35% |   32% |   99% |   21% |   33% |
+| ladder_lea |  100% |   24% |   40% |   40% |   37% |   97% |   21% |   36% |
+| drinks_lea |   99% |   28% |   52% |   46% |   45% |   76% |   28% |   43% |
+| pure_drink |   99% |    4% |    1% |    1% |   18% |   47% |    6% |    2% |
+| mixed |   99% |   34% |   52% |   49% |   50% |   82% |   33% |   44% |
+| smart_mix |  100% |   25% |   44% |   41% |   42% |   98% |   25% |   38% |
 
 ## Averaged game metrics
-- margin: 21.071
-- tie: 0.083
-- turns: 105.794
-- total_courts: 14.089
-- courts_per_player: 7.044
-- court_interval: 23.177
-- court_interval_late: 2.630
-- min_court_gap: 1.941
-- mid_leader_won: 0.728
-- stuck_turns: 0.000
-- overflow_discards: 128.413
-- buzz_spent: 33.612
-- region_ing_spent: 11.613
-- win_prestige: 33.512
-- win_rep_vp: 7.603
-- win_cov_vp: 7.460
-- win_mission: 0.792
-- end_by_rep: 0.000
-- end_by_season: 0.786
-- end_by_extract: 0.198
+- margin: 17.691
+- tie: 0.022
+- turns: 49.563
+- turns_per_player: 24.781
+- ladder_wins: 5.690
+- bev_wins: 2.812
+- bev_win_share: 0.334
+- wins_per_player: 4.251
+- drink_fights: 0.157
+- contested_ladder_wins: 0.339
+- contested_ladder_frac: 0.052
+- max_buzz_on_vendor: 4.109
+- buzz_supply_min: 15.865
+- star_placed: 1.703
+- star_wins_total: 1.051
+- winner_star_wins: 0.755
+- dusk_turn: 33.707
+- last_turn: 45.842
+- first_nm_win_turn: 39.580
+- end_by_lasttrain: 0.533
+- end_by_nm_deck: 0.000
+- end_by_stall: 0.467
+- travels_per_game: 8.815
+- visits_per_game: 9.831
+- cstores_per_game: 7.925
+- src_share_N: 0.161
+- src_share_C: 0.164
+- src_share_S: 0.351
+- src_share_E: 0.087
+- src_share_common: 0.237
+- avg_legal_actions: 10.765
+- forced_turn_frac: 0.000
+- events_fired_per_game: 11.841
+- scope_self_frac: 0.290
+- scope_region_frac: 0.509
+- scope_neigh_frac: 0.200
+- cs_self_events_per_game: 0.738
+- cs_rival_hits_per_game: 0.485
+- takethat_hits_per_game: 2.253
+- pokes_per_game: 0.262
+- books_per_game: 2.444
+- tickets_held_winner: 2.150
+- tickets_done_winner: 1.034
+- ticket_net_winner: 2.668
+- win_prestige: 18.318
+- win_rep_vp: 5.419
+- win_ticket_score: 2.668
+- win_total: 26.405
 
 ## Health read
-- ~ mild edge to `ingredient_heavy` (beats all, but by ≤1pt margins) — no crushing dominance.
+- ~ mild edge to `mixed` (beats all, but by ≤1pt margins) — no crushing dominance.
 - Reminder: identical **deterministic** strategies always mirror-tie in a simultaneous game — that's an artifact, not shallowness. Read depth from *cross-strategy* results and whether the optimal line actually uses the signature mechanic (probe with --matchup).

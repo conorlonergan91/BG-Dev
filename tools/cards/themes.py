@@ -10,7 +10,12 @@ column (e.g. "Cargo" -> "cargo"); "signal" covers Signal cards; "_default" is th
 """
 from __future__ import annotations
 
+import html
 import math
+
+
+def esc(s: str) -> str:
+    return html.escape(str(s or ""), quote=True)
 
 # ---------------------------------------------------------------------------
 # Themes
@@ -115,19 +120,93 @@ THEMES = {
             "pork":       {"color": "#D64545", "emblem": "hex"},
             "chicken":    {"color": "#D64545", "emblem": "diamond"},   # v3 NEW North specialty
             "egg":        {"color": "#D64545", "emblem": "circle"},    # v3 NEW North specialty
-            "tea":        {"color": "#1F8A7A", "emblem": "hex"},       # (region central = diamond)
+            "tea":        {"color": "#1F8A7A", "emblem": "triangle"},   # (region central = diamond) — v6.2: was hex; shape-distinct from seafood
             "pearls":     {"color": "#1F8A7A", "emblem": "circle"},
             "oysters":    {"color": "#E6A930", "emblem": "hex"},
             "milkfish":   {"color": "#E6A930", "emblem": "diamond"},
             "rice":       {"color": "#26324D", "emblem": "circle"},    # (region east = square)
             "greens":     {"color": "#26324D", "emblem": "triangle"},
-            "pantry":     {"color": "#8A8F98", "emblem": "beam"},      # slate — convenience store, anywhere
+            # --- v6.2 5-ingredient palette: pork/tea/rice reuse the region signatures above;
+            # seafood (South) + sugar (the COMMON) are the two new palette glyphs. seafood reuses the
+            # amber-hex of the retired `oysters`; sugar gets its own caramel + beam so the common reads
+            # apart from the four region hues. NB (-> bg-access): these two glyphs are NEW to the theme
+            # and want a CVD re-check (check_access.py) on the next palette pass. ---
+            "seafood":    {"color": "#E6A930", "emblem": "square"},   # South amber — v6.2: was hex; shape-distinct from tea/pork (bg-access dual-coding)
+            "sugar":      {"color": "#B5835A", "emblem": "beam"},     # caramel — the COMMON 糖 (C & S only)
+            "pantry":     {"color": "#8A8F98", "emblem": "beam"},      # slate — convenience store, anywhere (legacy)
             # --- v3 second currency: Buzz (its own colour, off the four region hues + the CVD checker) ---
             "buzz":       {"color": "#6A4C93", "emblem": "spark"},     # violet — promotional Buzz
             "_default":   {"color": "#26324D", "emblem": "circle"},
         },
     },
 }
+
+
+# ---------------------------------------------------------------------------
+# Phase treatments (day / night) — a data-driven recolour keyed off a card's
+# `phase` column, layered ON TOP of the region/suit palette. The region colour
+# still carries WHERE (header band + emblem); the phase treatment carries WHEN
+# (warm morning vs neon night market) via three cheap, legible signals that never
+# fight the body text: a tinted card ground, a recoloured outer frame, and a slim
+# phase ribbon along the bottom margin. Card interiors stay light so all the CJK +
+# body text keeps its contrast — the day/night read lives in the frame + ground.
+# `phase_style` returns None for phase-less decks (e.g. characters) → unchanged.
+# ---------------------------------------------------------------------------
+PHASE_STYLES = {
+    "day": {   # warm morning — sunrise cream, gold frame
+        "page": ("#FDF4DB", "#F6DFAE"),
+        "frame": "#E6A930",        # morning amber
+        "glow": "#F4CE7E",
+        "tag_fill": "#E6A930",
+        "tag_ink": "#3A2A0E",
+        "label": "日 DAY 早",
+        "emblem": "sun",           # drawn (not the ☀ glyph — cairosvg toy text renders it tofu)
+    },
+    "night": {  # neon night market — dusk ground drifting to lantern-lit lavender, neon frame
+        "page": ("#EDE1CB", "#D7C6E6"),
+        "frame": "#B14FD8",        # neon violet
+        "glow": "#59D6D6",         # neon cyan counter-glow
+        "tag_fill": "#6A4C93",     # deep promo violet (matches the Buzz currency)
+        "tag_ink": "#FFFFFF",
+        "label": "夜 NIGHT 市",
+        "emblem": "moon",          # drawn crescent (not the ☾/🌙 glyph — tofu in this font)
+    },
+    "general": {  # seeds both phases — neutral gold
+        "page": ("#F5EEDD", "#E9DCC2"),
+        "frame": "#C9A227",
+        "glow": "#E4CE8A",
+        "tag_fill": "#C9A227",
+        "tag_ink": "#3A2A0E",
+        "label": "通用 ANY",
+        "emblem": "spark",
+    },
+}
+
+
+def phase_style(phase: str) -> dict | None:
+    """Return the day/night treatment for a card's `phase` value, or None (neutral)."""
+    return PHASE_STYLES.get((phase or "").strip().lower())
+
+
+def phase_ribbon_svg(style: dict, card_w: int, card_h: int, margin: int, tfont: str) -> str:
+    """A slim phase ribbon in the bottom margin — the collision-free at-a-glance day/night signal.
+    Sits below every template's content (perk box / +VP chip / value numeral all end by card_h-margin)."""
+    if not style:
+        return ""
+    h = 36
+    y = card_h - h - 10
+    x0, x1 = 44, card_w - 44
+    w = x1 - x0
+    cy = y + h / 2
+    # drawn day/night badge (a shape, never a glyph) so phase is dual-coded: colour + badge + word
+    badge = emblem_svg(style.get("emblem", "spark"), x0 + 34, cy, 13, style["tag_ink"])
+    return (
+        f'<rect x="{x0}" y="{y}" width="{w}" height="{h}" rx="{h/2}" '
+        f'fill="{style["tag_fill"]}" opacity="0.96"/>'
+        + badge +
+        f'<text x="{card_w/2}" y="{y + h*0.68}" font-size="27" fill="{style["tag_ink"]}" '
+        f'text-anchor="middle" font-family="{tfont}" font-weight="bold" '
+        f'letter-spacing="4">{esc(style["label"])}</text>')
 
 
 def get_theme(name: str) -> dict:
@@ -188,8 +267,8 @@ def boost_contrast(fg: str, bg: str, target: float = 4.5) -> str:
 # ---------------------------------------------------------------------------
 # SVG helpers
 # ---------------------------------------------------------------------------
-def page_gradient(theme: dict, gid: str) -> str:
-    top, bottom = theme["page"]
+def page_gradient(theme: dict, gid: str, colors: tuple | None = None) -> str:
+    top, bottom = colors if colors else theme["page"]
     return (f'<linearGradient id="{gid}" x1="0" y1="0" x2="0" y2="1">'
             f'<stop offset="0" stop-color="{top}"/><stop offset="1" stop-color="{bottom}"/>'
             f'</linearGradient>')
@@ -215,6 +294,28 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
             for a in range(0, 360, 60)
         )
         return f'<polygon points="{pts}" fill="{color}" {sw}/>'
+    if kind == "ring_dot":  # ⦿ scope=SELF — a ring with a filled centre dot
+        return (f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{color}" '
+                f'stroke-width="{max(2, r*0.30)}"/>'
+                f'<circle cx="{cx}" cy="{cy}" r="{r*0.40}" fill="{color}"/>')
+    if kind == "arrow":  # ➤ scope=NEXT DOOR — a right-pointing arrowhead
+        pts = f"{cx-r},{cy-r*0.92} {cx+r},{cy} {cx-r},{cy+r*0.92} {cx-r*0.45},{cy}"
+        return f'<polygon points="{pts}" fill="{color}" {sw}/>'
+    if kind == "sun":  # ☀ phase=DAY — a disc with rays
+        rays = "".join(
+            f'<line x1="{cx + math.cos(math.radians(a))*r*0.78}" '
+            f'y1="{cy + math.sin(math.radians(a))*r*0.78}" '
+            f'x2="{cx + math.cos(math.radians(a))*r*1.20}" '
+            f'y2="{cy + math.sin(math.radians(a))*r*1.20}" '
+            f'stroke="{color}" stroke-width="{max(2, r*0.20)}" stroke-linecap="round"/>'
+            for a in range(0, 360, 45))
+        return rays + f'<circle cx="{cx}" cy="{cy}" r="{r*0.55}" fill="{color}"/>'
+    if kind == "moon":  # ☾ phase=NIGHT — a crescent (outer disc minus an offset disc, evenodd)
+        off = r * 0.52
+        ri = r * 0.92
+        return (f'<path fill-rule="evenodd" fill="{color}" d="'
+                f'M {cx} {cy-r} a {r} {r} 0 1 0 0 {2*r} a {r} {r} 0 1 0 0 {-2*r} Z '
+                f'M {cx+off} {cy-ri} a {ri} {ri} 0 1 0 0 {2*ri} a {ri} {ri} 0 1 0 0 {-2*ri} Z"/>')
     if kind == "spark":  # 4-point sparkle (two crossed diamonds)
         a = f"{cx},{cy-r} {cx+r*0.32},{cy} {cx},{cy+r} {cx-r*0.32},{cy}"
         b = f"{cx-r},{cy} {cx},{cy+r*0.32} {cx+r},{cy} {cx},{cy-r*0.32}"

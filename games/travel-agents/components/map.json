@@ -1,6 +1,6 @@
 {
-  "_note": "v3 region-ring board spec for build_board.py --type regionmap. Rebuilt (bg-prototyper) to replace the overlapping free-text mat the CD flagged: a clean Taiwan 4-region DIAMOND (North 北 top, Central 中 west, South 南 bottom, East 東 east coast) with the ring edges (N-C-S-E-N) and the HSR 高鐵 spine (North<->South) drawn as REAL connectors, not text. Each region shows its specialty ingredients in the shared colour + 繁體 + emblem grammar. The Season timer, Prestige (VP) track, Reputation track, Vendor Board and Market slots render as SEPARATE components (build_board --type scoretrack/track in make.sh) so nothing overlaps. No game values changed vs the previous placeholder: region<->ingredient web, Market slot counts, ring + HSR adjacency, pantry rule and 2p start positions are all preserved; this is a layout/rendering rebuild only. Real illustrated Taiwan map remains a bg-infodesign / illustration task. Region colours: first-pass night-market (identity.md), CVD-checked via check_access.py.",
-  "title": "Travel Agents: Taiwan  —  four regions on the ring",
+  "_note": "v6.2 region-ring board spec for build_board.py --type regionmap. Four regions on a diamond ring (North 北 top, Central 中 west, South 南 bottom, East 東 east coast) with ring edges (N-C-S-E-N) and the HSR 高鐵 spine (North<->South). v6.2 model: each region has its OWN face-down vendor deck (a DAY deck in Act I, a NIGHT deck in Act II, drinks mixed in as the low-value vendors) plus a face-down INGREDIENT market deck. Face-up VENDOR slots: North 2, the others 1 (5 vendors courtable table-wide). Each region shows its ONE signature ingredient in the shared colour + 繁體 + emblem grammar; the COMMON 糖 sugar lives in Central & South only. The vendor-claims CLOCK, Prestige track, Reputation track, token key and the 成團/遺珠 piles render as SEPARATE components (make.sh). Real illustrated Taiwan map is a bg-infodesign task. Region colours: first-pass night-market (identity.md), CVD-checked via check_access.py.",
+  "title": "Travel Agents: Taiwan  —  four regions on the ring (v6.2)",
   "width": 1600,
   "height": 1270,
   "region_w": 330,
@@ -8,36 +8,32 @@
   "regions": [
     {
       "key": "north", "name": "NORTH 北", "color": "#D64545", "emblem": "triangle",
-      "x": 635, "y": 150, "slots": "4 slots",
+      "x": 635, "y": 150, "slots": "2 face-up vendors",
       "specialties": [
-        {"id": "beef", "label": "牛", "en": "Beef"},
-        {"id": "pork", "label": "豬", "en": "Pork"},
-        {"id": "chicken", "label": "雞", "en": "Chicken"},
-        {"id": "egg", "label": "蛋", "en": "Egg"}
+        {"id": "pork", "label": "豬", "en": "Pork — signature"}
       ]
     },
     {
       "key": "central", "name": "CENTRAL 中", "color": "#1F8A7A", "emblem": "diamond",
-      "x": 250, "y": 470, "slots": "3 slots",
+      "x": 250, "y": 470, "slots": "1 face-up  ·  茶 exports",
       "specialties": [
-        {"id": "tea", "label": "茶", "en": "Tea"},
-        {"id": "pearls", "label": "圓", "en": "Pearls"}
+        {"id": "tea", "label": "茶", "en": "Tea — signature"},
+        {"id": "sugar", "label": "糖", "en": "Sugar — common (local)"}
       ]
     },
     {
       "key": "east", "name": "EAST 東", "color": "#26324D", "emblem": "square",
-      "x": 1020, "y": 470, "slots": "3 slots",
+      "x": 1020, "y": 470, "slots": "1 face-up  ·  highest apex",
       "specialties": [
-        {"id": "rice", "label": "米", "en": "Rice"},
-        {"id": "greens", "label": "菜", "en": "Greens"}
+        {"id": "rice", "label": "米", "en": "Rice — signature"}
       ]
     },
     {
       "key": "south", "name": "SOUTH 南", "color": "#E6A930", "emblem": "circle",
-      "x": 635, "y": 790, "slots": "3 slots",
+      "x": 635, "y": 790, "slots": "1 face-up vendor",
       "specialties": [
-        {"id": "oysters", "label": "蚵", "en": "Oysters"},
-        {"id": "milkfish", "label": "魚", "en": "Milkfish"}
+        {"id": "seafood", "label": "海", "en": "Seafood — signature"},
+        {"id": "sugar", "label": "糖", "en": "Sugar — common (local)"}
       ]
     }
   ],
@@ -46,7 +42,9 @@
   "notes": [
     "Ring: North–Central–South–East–North are adjacent — a Travel action moves 1 step along the ring.",
     "HSR 高鐵: North and South also count ADJACENT (the west-coast high-speed spine).",
-    "Pantry 補: the convenience store — available in EVERY region, unlimited (and never discounted).",
+    "The COMMON 糖 sugar lives in Central & South decks only; North & East source it via Convenience Store / Travel.",
+    "Cross-region recipe LOOP (the travel pull): North's 牛肉麵 needs Central 茶 · Central's 逢甲 needs South 海鮮 · South's 棺材板 needs East 米 · East's ★石板烤肉 needs North 豬肉. Every region both exports and imports its signature.",
+    "Convenience Store: draw the top card of ANY region's ingredient deck from anywhere (no travel) — the reliable way to grab the common 糖.",
     "Start (2p): one Agent begins in North 北, the other in South 南 (opposite ends of the ring)."
   ]
 }

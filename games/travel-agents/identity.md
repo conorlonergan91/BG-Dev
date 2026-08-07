@@ -3,7 +3,7 @@
 > The living source of truth for this game's **felt identity**: concept, theme, tone/vibe, story/lore,
 > look & feel, and naming. Owned by `bg-theme`; read alongside `game-bible.md`. Keep it current — and
 > keep it **coherent** while letting it **evolve** with the design.
-> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-06 (bg-theme — v3 vendor-courting engine coherence pass)
+> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-07 (bg-theme — **v6.2 direction: board → REGION VENDOR MARKETS** (each region its own face-down daytime-on-nighttime vendor pile, 1–2 face-up, refilled in place — the central Ladder is GONE); **DRINKS → just low-value vendors** mixed into every region's pile (the drinks *fork / two roads / easy-points / region-free / Beverage Row / off-clock beverages* framing all STRIPPED); **strategic identity → FIVE PLAYSTYLES** (character-lean · opportunistic · disruptive · balanced · end-game-driver), not two roads; **objectives → the SPINE, LOCKED name "Tour Tickets"** (a face-up row of tours you book/claim, day/night/general pools, 12→5-per-phase variable setup — Ticket-to-Ride's tickets re-skinned as a travel agent's booked tours) — **post-sim v6.2 LOCK corrections folded in (2026-08-07):** the day is now paced by the **VENDOR-CLAIMS clock** (dusk = 5th table-wide vendor claim, last train = 10th @2p), **NOT** by ticket delivery; tickets score via a **WIN pile / LOSE pile** (completed → +value, unfinished → −floor(value/2)) tallied once at game end — an accounting model, not live retroactive ±; the two piles are now **named** (成團 *Published Tours* / 遺珠 *the Ones That Got Away*); and the **網紅 flaw = "Late to the Party"** (misses its first night-phase turn)). Earlier — v6.1 guardian sweep: beverages now REGION-ANCHORED (a persistent drinks stand in *every* region, not a region-free "Beverage Row"; low-travel now = **ubiquity + easy sourcing**, NOT bribing-at-a-distance) · **Convenience Store events now FIRE via a 3-way SCOPE** (⦿ self / ⬢ region / ➤ next-door — can land a warm island-hazard on a rival's region; bound to the warm/secular island-life rail) · confirmed no live "Code Red" remains. Earlier — v6 guardian sweep: **"Code Red" end-trigger DROPPED** → the plain **Day → Night** close (last train home, no alarm) · **common ingredient named 糖 sugar** (the 手搖飲 + convenience-store staple) · drinks fork confirmed warm + native. Earlier: **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 + a day→night end-game · v5 sweep: ★ Star / accolade value-swing added, Coverage folded into a Mission, venue rename 早餐店→夜市攤 + 飲料店 all-day)
 
 > **Restraint first.** Match identity depth to what the game *earns*. Leaving story/lore light on purpose
 > is a correct answer, not a gap. Never invent lore to fill a section.
@@ -35,9 +35,10 @@ showing off the best of the island.** "Secret agent" is pure behavioural wordpla
 the title is literal, and that's the gag.
 
 **Why you're rivals (the compete-engine, and it's affectionate).** One agency wins the season's
-**best-tour title**. **Head office** briefs you and your rival at the same time; you each quietly build
-a secret **signature itinerary** (the star tour you're assembling) and race to **lock the island's
-must-visit stalls** into it before the other agency can. There is **one** title and you both want it —
+**best-tour title**. **Head office** briefs you and your rival at the same time; you each race to
+**book the season's best tours** — claiming **Tour Tickets** off a shared on-offer row and **locking
+the island's must-visit stalls** into your itinerary before the other agency can. There is **one**
+title and you both want it —
 a **friendly showdown between rival agencies, not a heist**. You'd never sabotage the *island*; you
 just out-plan and out-book *each other*.
 
@@ -60,38 +61,41 @@ plot to memorise**. No canon, no metaplot, no named characters to track. More ag
 gameplay*, still **not** more agent *story*. We hold firmly at the evocative rung.
 
 ## The head office & the living island — the fiction hooks for the interaction layer
-> **v3 UPDATE (2026-08-06).** The **Briefs / command-centre-orders deck described below was CUT** in
-> design-doc v3 — its flexible-resource job is re-homed onto **Buzz + Promote** (the second currency).
-> **head office survives as the rulebook/earpiece VOICE**, not a card deck. The **Hot-List of dishes**
-> below is **merged into the shared Vendor Board** (you court *vendors*, not a separate dish row).
-> **Conditions/events survive** — now **Event tiles salted into the region Market**, firing on refill
-> (no ACTIVE/NEXT queue). The fiction below still frames the *voice* and the *living-island* hooks
-> correctly; read "briefs" as "head-office flavour voice" and "hot-list of dishes" as "the Vendor Board."
+> **v6.2 UPDATE (2026-08-07; supersedes the v3 note).** The **Briefs / directive-orders deck described
+> below is CUT** (a v2-era concept — no such component exists). Its fiction jobs are re-homed onto **v6.2
+> components that actually exist:** the *"book it blind now, worth more if it lands"* gamble is exactly a
+> high-value **Tour Ticket** (the WIN-pile / LOSE-pile press-your-luck), and the cheeky *keep-your-rival-honest*
+> nudge is a **scoped Convenience-Store event** (the disruptor playstyle — a warm island-hazard on a
+> rival's region). **head office survives as the rulebook/earpiece VOICE only**, not a card deck. The old
+> **Hot-List of dishes** is now the **region vendor markets** (per-region face-up stalls; you court
+> *vendors in their region*, not a central dish row). **Conditions/events survive** as region **Event
+> tiles** (fire on refill / draw, resolved by the ⦿/⬢/➤ scope). Read the fiction below for the *voice* and
+> the *living-island* hooks only; "briefs" = head-office flavour voice, "hot-list" = the region markets,
+> and the "secret signature itinerary" = your open **Tour Tickets** (a face-up row you book — NOT hidden).
 
 *(The names below are the *fiction*; final mechanical keywords are `bg-design`'s call. Every slot is a
 cheap re-skin of the locked spine — same mechanics, travel-agency dressing.)*
 
 **(a) The command centre = head office (your agency boss).** WHO dispatches: your agency's **head
-office** — the boss on the phone/earpiece who set you loose on the island. In-world they hand you your
-secret **signature itinerary** (the existing Assignment — the star tour you're quietly assembling) *and*
-feed you **briefs** (the new directive deck): a safe boost ("comp voucher — free tasting at the next
-stop"), a **risky brief** ("book it blind now, skip your next stop, and it's worth double if it lands"),
-or a cheeky **keep-your-rival-honest** nudge ("tip: their spot's fully booked — let them find out the
-hard way" — a playful competitive prank, never sabotage of the island). *Fiction keyword proposal:*
-**Brief** / **Client Brief** / **Memo** (from head office). Voice = the mission-dossier /
+office** — the boss on the phone/earpiece who set you loose on the island. In-world they brief you on the
+season and point you at the **tours worth booking**; the tours themselves are the **Tour Tickets** on the
+open row — you *book* them into your itinerary as a **public** race, not a secret assignment (anyone can
+see which tours are on offer, and a rival can book the one you were eyeing). *(The old **briefs / directive
+deck** is CUT — see the update note: the risky-book-it gamble is now a **high-value Tour Ticket**, and the
+keep-your-rival-honest nudge is a **scoped Convenience-Store event**.)* Voice = the mission-dossier /
 over-caffeinated-handler register already locked below — **head office *is* that voice**, free coherence.
-- **The public hot-list (the shared board of dishes).** The face-up row of available dishes = the
-  season's **hot-list of must-visit spots/stalls** every agency is scrambling to lock into its tour.
-  This is the open race (a rival can grab the stall you were routing toward). *Fiction keyword proposal:*
-  **the Hot-List** (or **Must-Visit board**).
-- **The sensitivity linchpin (read this before touching briefs).** A travel agent's job is to
+- **The public race = the region vendor markets + the Tour-Ticket row.** The face-up stalls in each
+  region **and** the open row of **Tour Tickets** are the season's must-visit spots and tours every agency
+  is scrambling to lock in. This is the **open** race — a rival can book the tour or court the stall you
+  were routing toward; **nothing here is hidden.** *(Replaces the old "Hot-List of dishes" fiction.)*
+- **The sensitivity linchpin (read this before touching the tours/events).** A travel agent's job is to
   **promote and showcase** the island — to bring people *to* the food, not take it away. That flips the
   worry the Bureau skin carried: the frame is now **celebration, not extraction** by construction. Hold
   one nuance, though: "building a tour *for visitors*" can slide toward an *outsider-packages-Taiwan*
   gaze **if the agents read as foreigners.** Keep the agents **passionate fans — ideally local
-  promoters showing off the best of home** (a love letter to the island), and briefs stay warm boosterism,
-  never harvesting. If a brief ever reads as *outsiders being told to extract/package the island for
-  outsiders*, that's a re-theme flag.
+  promoters showing off the best of home** (a love letter to the island), and the tours you book stay warm
+  boosterism, never harvesting. If a tour or event ever reads as *outsiders being told to extract/package
+  the island for outsiders*, that's a re-theme flag.
 
 **(b) The living island = the source of region conditions/events.** The island itself acts on everyone:
 **secular** festivals (a mango-season fair, a night-market anniversary, market-day crowds), weather
@@ -108,9 +112,9 @@ or **Word on the Street** / **Sitrep** if delivered in the head-office spy-voice
   sacred motifs as decoration or gags); lean modern/secular — food fairs, fruit seasons, weather, roads,
   crowds, characters. (2) Local characters are **people with dignity** (warm, specific, varied), never
   obstacles or exotic punchlines.
-- **Keep sources distinct on purpose:** **briefs come from head office (your own agency)**; **conditions
-  come from the island (they happen *to* you).** Blurring them into "head office controls the island" is
-  exactly the extraction read to avoid.
+- **Keep sources distinct on purpose:** **the tours you book come from your own agency** (Tour Tickets —
+  what *you* choose to promote); **conditions come from the island** (they happen *to* you). Blurring them
+  into "head office controls the island" is exactly the extraction read to avoid.
 
 ## Target aesthetics (the kinds of fun) — **locked: 3**
 1. **Discovery** *(lead)* — uncovering the island: which stall, which region, what's around the next
@@ -122,6 +126,30 @@ or **Word on the Street** / **Sitrep** if delivered in the head-office spy-voice
 
 *Sensation* (lovely food art, tactile bits) is a **supporting texture**, not a core pick — we get it for
 free from good illustration without chasing it. Chasing all eight = chasing none.
+
+## How you win — the five playstyles *(v6.2 — the strategic identity)*
+The felt *strategic* identity, distinct from the kinds of fun above: v6.2 opens **five legible ways to
+chase the best-tour title**, and the design's health bar is that **all five stay live** (none dominant;
+some rock-paper-scissors between them). Each is a warm travel-agent fantasy:
+1. **The character-lean agent** — lean hard into your agent's kit (里長伯's old favours, 大哥's clout,
+   大胃王's haul). *"I play to who I am."*
+2. **The opportunist** — read the board and pounce: snap the newly-hot ★ stall, the cheap easy win, the
+   high-Prestige name the moment it surfaces. *"I grab what's good right now."*
+3. **The disruptor** — work the island *against* your rival: use a scoped **Convenience-Store** event to
+   land a *warm* island-hazard (a typhoon day, a 完售 sold-out sign, a festival crowd) on their region and
+   slow their tour. **BINDING warm rail:** this is the *island* nudging your rival, a cheeky "ooh, bad
+   luck," **never** a mean-spirited take-that — it never destroys what they hold or costs them a whole
+   turn. *"I keep my rival honest."*
+4. **The balanced agent** — a bit of everything; the well-rounded tour that's never caught out. *"I stay
+   flexible."*
+5. **The end-game driver** — control the clock: **claim vendors fast** to roll the day toward dusk and the
+   last train on *your* timing (*each vendor claimed ticks the day forward* — the v6.2 **vendor-claims
+   clock**), and pick up the tickets that pay you for it (早起的鳥兒 / 快閃 / 夜貓子). *"I decide when the
+   night ends."*
+
+These are **paths to victory, not new components** — all five emerge from the same region-market +
+Tour-Ticket + Buzz spine. Keeping the *disruptor* warm is the one sensitivity-load-bearing line here (see
+the event-scope resonance bullet + §Sensitivity).
 
 ## Tone & vibe — **one tone, held everywhere**
 **"An over-enthusiastic travel buddy on a 'top-secret' snack mission — warm, funny, never at anyone's
@@ -152,8 +180,8 @@ genuinely, ridiculously obsessed with Taiwan showing you around.
 ## Restraint rung — **Evocative theme** (studio sweet spot)
 A felt world you could describe in a sentence; **light-to-no narrative**. The *setting* does the heavy
 lifting; humour is the seasoning. Note the distinction now that the agent layer is being leaned into:
-**leaning in mechanically ≠ climbing the lore ladder.** The mission fantasy earns *rules* (light
-hidden-info Missions), but there is still **no plot to track and no deep lore** — we hold firmly at
+**leaning in mechanically ≠ climbing the lore ladder.** The mission fantasy earns *rules* (the light
+**Tour-Ticket** objective layer), but there is still **no plot to track and no deep lore** — we hold firmly at
 evocative theme. More agent *gameplay*, not more agent *story*.
 
 ## Story / world / lore
@@ -162,36 +190,167 @@ scaffolding; the real story is the trip *you* take and the log you fill. Leaving
 correct answer for this rung.
 
 ## Theme ↔ mechanic resonance
-*(**v3 vendor-courting engine** — checked against `design/design-doc.md` v3, 2026-08-06. Supersedes the
-v1/v2 resonance (Plate-a-Dish · Dead-drop · Grand Dossier), whose mechanics no longer exist. Aim: a
-player could half-guess the rules from the fiction.)*
-- **Court a Vendor (pay ingredients + Buzz → the vendor features on your tour)** — **integrated & anti-
-  extraction; this is the load-bearing check and it HOLDS.** The fiction: you *win a vendor's blessing*
-  by promoting them and sourcing what their dish needs. A rival's lock-out reads as *the vendor chose
-  the agent who courted them best* — **"outraced, not robbed,"** never a place seized or monopolised.
-  Keep the rulebook voice on **win over / feature / showcase / champion**, never *acquire / control /
-  own / claim* a vendor or a place.
-- **Buzz + Promote (promise customers, drum up hype)** — **integrated.** Promoting *brings people **to**
-  the food* — the travel agent's literal job and the structural anti-extraction linchpin (courting =
-  helping/showcasing, never taking). Buzz-as-promotional-currency is fully coherent, and its
-  never-discounted cost reads naturally as *"the hype legwork never comes for free."*
+*(**v4 fiction pass** — checked against the CD's v4 direction (`decision-log.md` TOP entry), 2026-08-06,
+with a parallel `bg-design` pass locking the mechanics. Updates the v3 vendor-courting resonance for the
+four v4 moves: **Court→Bribe a Vendor** *(CD lock, over bg-theme's Schmooze rec — warm framing now
+BINDING)*, **Buzz becomes committed/contested ON the vendor**, **Extract removed → Acts end-game**,
+**Conductor→Lunchbox Grandma**. Supersedes v1/v2 resonance. Aim: a player could half-guess the rules from
+the fiction.)*
+
+*(**v6.2 update**, 2026-08-07 — reworked for the board restructure: the central Ladder → **region vendor
+markets**, the drinks *fork* → **drinks as plain low-value vendors**, and objectives promoted to the
+**spine** as **Tour Tickets** with a day-clock. The new/replaced bullets below carry a `v6.2` tag; the
+Bribe / Buzz / discount-ramp / Prestige-Rep / ★ Star / event-scope / region↔ingredient / larder-cap
+bullets are unchanged and still hold.)*
+
+- **Region vendor markets = *"every region runs its own street of stalls, morning stacked over night"*
+  (v6.2 — replaces the central Ladder)** — **integrated.** Each region (北·中·南·東) has its own face-down
+  **vendor pile** — the day's **breakfast shops 早餐店 stacked over the night-market stalls 夜市攤** — with
+  **1–2 stalls face-up** (the dense capital North shows 2, the quieter regions 1), refilled in place.
+  In-world this is just *what a region's food street looks like*: a few stalls open in front of you, more
+  behind them, the line-up turning over from morning to night. **One unified courting rule for every
+  stall** (be on-site + hold the ≥2 Buzz majority + pay the ingredients) reads as *you have to show up in
+  the region and work the crowd* — the same warm rule for a bao cart or a beef-noodle king. **Why it beats
+  the old central Ladder:** the food doesn't live on one abstract track, it lives *in its region*, so
+  travelling *is* the game — you go where the stall is. No fiction stranded; the day-arc + the ★ + the Buzz
+  fight all carry over onto the per-region markets intact.
+- **Tour Tickets = the spine — *"the tours you book for the season, and race to deliver before the last
+  train"* (v6.2 — LOCKED name; objectives promoted from a single secret hook to the game's spine)** —
+  **integrated, and now the load-bearing *fun* engine alongside the Buzz fight.** A face-up row of **Tour
+  Tickets** (the season's tours on offer) sits open on the table; **claiming one is booking it into your
+  itinerary** (a full action). It is then **judged at the END of its phase** (daytime tickets at dusk,
+  nighttime at the last train) and sorted into one of two piles — **completed → your WIN pile (成團
+  *Published Tours*, worth +its value); unfinished → your LOSE pile (遺珠 *the Ones That Got Away*,
+  −floor(value/2))** — and the whole tally is settled **once, at game end** (an accounting model, not a
+  live retroactive ±). That's the perfect travel-agent read of Ticket-to-Ride's destination tickets: *you
+  promise a client a tour, and you're paid if the tour actually ran, and eat a refund/reputation ding if
+  it didn't* — a warm, legible press-your-luck. Tickets come in **daytime / nighttime / general** pools
+  (the tours that make sense in the morning, at the night market, or anytime), and a **variable draw (12→5
+  per phase)** keeps each season fresh. **The day itself is paced elsewhere — by the VENDOR-CLAIMS clock**
+  (*each vendor an agent claims ticks the day forward: dusk = the 5th table-wide claim, the last train =
+  the 10th @2p*), **not** by ticket delivery. So the fiction stays clean two ways: you *book and race to
+  run* each tour before its phase closes — **finish it before the street turns over, or it's one that got
+  away** — while the day rolls toward dusk on the back of *everyone* courting the island's vendors, the
+  bustle of the season closing in around you, not your itinerary alone. **The secret-agent wink survives
+  on top:** an individual Tour Ticket can still carry the agency's internal **"Operation: ___"** code-name
+  ("Operation: Beef Noodle"), so *the mission really is the meal.* **→ native review** of the ticket names
+  (the 繁體 set 走透透 / 大三元 / 摘星 / 夜市王 … is idiomatic and delightful — bless + confirm).
+- **Bribe a Vendor (pay ingredients + out-hype your rival → the vendor features on your tour)** —
+  **integrated; anti-extraction, and this is now the #1 load-bearing check in the whole game.** The
+  fiction: you *win a vendor's blessing* by promoting them harder than your rival and sourcing what their
+  dish needs. A rival's lock-out reads as *the vendor chose the agent who won them over best* — **"out-
+  charmed, not robbed,"** never a place seized or monopolised. **The CD chose "Bribe" over bg-theme's
+  "Schmooze"** for the funnier, spicier word — the *right* comedy call, but it means the warm reframe is no
+  longer optional garnish: it is **binding, load-bearing, and must run through every "Bribe" line**, because
+  the bare word *bribe* otherwise defaults to an outsider-corrupts-a-local reading (the opposite of the
+  rail). **The reframe that makes "Bribe" rail-safe (BINDING — for `bg-elegance` / `bg-developer`, every
+  "Bribe" line carries it):**
+  1. **A "bribe" here is a *marketing opportunity*, not corruption.** The running gag is explicit: the
+     agent, in full spy-caper mode, theatrically slides a "bribe" across the table — *"this isn't a bribe,
+     it's a **marketing opportunity**."* What's actually on offer is **free publicity, a glowing five-star
+     review, and a busload of hungry tourists** — a windfall the vendor *genuinely wants*.
+  2. **The smarm lands on the AGENT — punch at yourself, never the vendor or the place.** The comedy is the
+     over-the-top trench-coated agent playing gangster over a bowl of noodles; the vendor is never the butt,
+     never a mark, never corrupt. Taiwan and its cooks are the *beloved*, not the joke.
+  3. **The vendor still freely *chooses* the bigger fan.** Winning a vendor = they picked the agent driving
+     the bigger crowd. No one is bought against their interest; the "bribe" is a gift they're delighted to
+     accept. **Never** *acquire / control / own / claim / corrupt* a vendor.
+  This binding reframe is what keeps the spicy keyword on the celebration-by-construction rail rather than
+  inverting it — hold it hard and "Bribe" reads as cheeky-agent-comedy; drop it and the word tips extractive.
+  ***→ #1 item for the paid Taiwanese consultant (see Sensitivity) — the one to watch.***
+- **Buzz-on-the-vendor = the hype war (v4: committed, contested majority you pile ON a vendor, Arcs-Court-
+  like)** — **integrated, and it STRENGTHENS the anti-extraction rail.** In-world a Buzz stack on a vendor
+  is **the queue you've drummed up** — the busloads of hungry tourists, the five-star reviews, the "trust
+  me you HAVE to eat here" going out to your mailing list. Both agencies piling Buzz on the same beef-
+  noodle stall = a **hype war over who gets to put the auntie on the poster** — and *she has never been
+  happier* (sold out by noon three days running while two grown adults in trench coats fight over her). The
+  rivalry is **agent-vs-agent**; the vendor enjoys the windfall — **never harassment, the opposite: a
+  popularity surge you caused.** Having to *be in the region* to add Buzz reads naturally as *you have to
+  show up and work the crowd in person*. Committing Buzz early (before you have the ingredients) = *you
+  started the hype campaign before you could close the deal — and a rival can swoop in* — an honest,
+  legible risk.
 - **The compounding discount ramp (regulars vouch for you → the next stall's an easier sign)** —
   **integrated.** "Once you're a known, trusted promoter, the next vendor signs on faster" is exactly
   how a promoter's reputation snowballs. On-theme, not a bolted-on Splendor engine.
-- **Prestige / Reputation / Region-Coverage (three vectors)** — **integrated.** Prestige = the star
-  power of your tour; Reputation = your standing as an agent; Coverage = the grand tour across the whole
-  island. All three are travel-agent-native; none needs a stretch.
-- **Region↔ingredient web (travel because the food lives *there*)** — **integrated, unchanged from v2.**
-  The generic-defeater. Oysters South, tea/pearls Central, rice/greens East, beef/pork/chicken/egg
-  North.
+- **Prestige / Reputation / the grand tour (scoring vectors)** — **integrated.** Prestige = the star
+  power of your tour; Reputation = your standing as an agent; the **grand tour across the whole island**
+  = breadth. All are travel-agent-native; none needs a stretch. *(v5→v6.2: **Region-Coverage is no longer a
+  standalone scoring track** — the grand-tour breadth line is now a **Tour Ticket** (e.g. 走透透 / 大三元 "a
+  vendor in every region"). No fiction impact: "the grand tour across the island" survives intact, just
+  re-homed from a track onto a booked tour — nothing thematically stranded.)*
+- **★ Star / accolade value-swing (v5 — CD's dynamic value curve) — integrated; reads as WARM
+  celebration, and it's real & secular.** In-world a Star is simply **"this beloved stall finally got its
+  due"** — a genuine, secular Taiwan food accolade (**Michelin / Bib Gourmand street-food nod / a
+  competition win**), and the "vendor gets hot" boon (**摘星了 / 得獎了 / 爆紅**) is the joyful moment an
+  ignored little stall **blows up overnight** and the whole street queues. It **strengthens** the
+  anti-extraction rail: the agents don't seize the star, they **race to be the one who puts the newly-
+  famous auntie on the poster** — a popularity surge everyone's delighted by. Fully on the north-star grin
+  (a stall going viral at dusk is exactly the night-market fantasy). **Three binding rails (→ `bg-developer`
+  / `bg-elegance`, and a light `bg-publishing` consultant note):** (1) accolades stay **real and secular** —
+  no invented awards, no sacred/temple framing; (2) **dish/vendor names stay intact** — never mangled to
+  fit a "starred" gag; (3) **no false accolade claim on a specific real business** — vendors are
+  **dish-typed generic stalls** ("a Michelin-nod-worthy beef-noodle place"), **never a real named
+  restaurant/brand printed with a star it doesn't hold.** Keep vendors dish-typed, not brand-named, and the
+  ★ is celebration, not a fabricated grand claim.
+- **Region↔ingredient web (travel because the food lives *there*)** — **integrated; tightened for the v6
+  5-ingredient palette.** The generic-defeater still holds: **海鮮 seafood South, 茶 tea Central, 米 rice (or
+  山蘇 greens) East, 豬肉 pork North** — one real **signature per region** (the v6 cut folds the old
+  per-region proteins/produce down to one each; `bg-developer` keeps the dishes real). Rename the setting and
+  the recipes break — still Taiwan-specific food geography, not "engine + map." *(The 5th ingredient, the
+  **common 糖 sugar**, is region-light on purpose — see the drinks-fork bullet + Naming.)*
+- **Drinks = just the low-value stalls on every street *(v6.2 — the drinks FORK is GONE)*** —
+  **integrated; warm, native, and NOT drinks-as-lesser.** *(v6.2 strips the whole v6/v6.1 "drinks fork /
+  two roads / easy-points / region-free / Beverage Row / off-the-clock beverages" framing — none of it
+  survives.)* A 手搖飲 stand is now simply **one of the cheaper stalls mixed into a region's vendor pile**
+  — 豆漿 soy milk, 珍奶 bubble tea, 冬瓜茶 wintermelon tea, 洛神花茶 roselle — courted by the **same one
+  rule** as any stall (on-site + Buzz majority + pay 糖). **Why this is *more* honest than the old fork:**
+  a drinks stand really is just another stall on the same street, not a separate parallel road — you pass
+  three of them on the way to the beef-noodle king. It stays **warm and never "lesser food":** a 珍奶 is a
+  lower-*stakes* grab (cheap, quick, low-contest), a *calmer* play — not a worse cuisine. The **★ accolade
+  and the big Buzz fights naturally sit on the pricier night-market names**, not because drinks are beneath
+  them but because that's simply where the value (and so the fight) is. The *mix* of a well-timed drink
+  with the big stalls is rewarded through **Tour Tickets** (手搖控 / 甜點收尾 / 全席 "one of each venue") —
+  which is where drinks earn their keep now. **On the north-star grin:** a bubble tea in hand while two
+  trench-coated rivals scrap over an auntie's oyster omelette IS the warm night-market picture.
+- **The event SCOPE = *"the island reaching past your own patch"* (v6.1 — the Convenience Store now FIRES
+  events, resolved by a 3-way scope) — integrated; reads WARM + secular, must stay a caper, never a strike.**
+  In-world, working a market (a **Visit**, or a **Convenience Store** blind grab) means you *reached into*
+  that region and the island **reacts** — and now the reaction can land past your own feet. Every event
+  carries a **scope**, read from the region the card came out of: **⦿ self** (just you — *you got the last
+  portion / you queued an hour*), **⬢ the region** (everyone standing in that place — *a typhoon shuts this
+  region's road, a festival crowd*), **➤ next-door** (it spills into the neighbouring region — *the queue
+  backs up into the next town*). Because a **Convenience Store** draw reaches *any* region, a ⬢/➤ event can
+  now land on a **rival** — flip their region and a warm island-hazard (a **颱風假 typhoon**, a **完售
+  sold-out** sign, a **festival crowd**) lands on *them*. **Why it's on-theme, not bolted-on:** this is the
+  *same* *"the island is a subject, not scenery — it pushes YOU around"* rail the conditions already ran on,
+  now **extended so the island can push your rival around too** — legible, warm, and Taiwan-native (weather,
+  crowds, sold-out signs). **The one binding warmth rail (BINDING → `bg-developer` / `bg-elegance`):** a
+  rival-facing scoped event is **NEVER mean-spirited take-that** — it is always a **warm, secular
+  island-life beat the *island* deals out** (rain shuts a road, a queue forty deep, a 完售 sign), it
+  **never destroys what a rival holds and never costs a whole turn**, and it must read as a **shared groan /
+  cheeky "ooh, bad luck,"** never a spiteful strike. Keep it the *island* doing it, not the *agent* — and it
+  stays squarely on the Tone "warm caper, not a thriller" rail. *(Scope icon set → Naming; dual-coding →
+  `bg-access` / `bg-infodesign`.)*
 - **Larder cap = 7 → *"travelling light, eating fresh — a night-market haul doesn't keep."*** Makes the
   cap feel inevitable. (v3 discards surplus; the old Dead-drop generosity beat is gone — no re-theme
   needed, the cap stands on the fresh-food logic alone.)
-- **Extract (end-game trigger) → *"catch the last train home"*** — the agent "exfiltrates" comedically,
-  belly full. Stays warm/comedic **provided** the flavour nails the last-train gag (trench-coat-over-a-
-  Hawaiian-shirt register), not "extraction under fire." Note to `bg-elegance`/rulebook voice.
-- **Re-skin test:** PASSES — the vendor/region web is Taiwan-specific food geography; rename the setting
-  and the recipes break. Not generic "engine + map."
+- **The Day→Night arc → *"a day's food, ending at the night market — catch the last train home"***
+  *(KEPT from v5/v6; v6.2 re-homes the clock onto Tour-Ticket delivery and onto the region markets' two
+  layers).* The tour still runs the real Taiwan food **day**: **Act I The Breakfast Run 早餐 → dusk →
+  Act II Night Market 夜市.** In v6.2 the arc is carried by the **region vendor markets themselves** — each
+  region's pile is **daytime 早餐店 stacked over nighttime 夜市攤**, and at **dusk the face-up daytime stalls
+  are swept** and the night-market layer starts revealing: the street literally turns over from morning to
+  night in front of you. **The clock is the VENDOR-CLAIMS clock** (v6.2 LOCK — see the Tour-Tickets bullet):
+  *each vendor an agent claims ticks the day forward* — enough claimed table-wide and dusk falls (the 5th
+  claim), more and it's the **last train home** (the 10th @2p). **Inevitable, not bolted-on:** it maps onto
+  the real food day and lands the game **on the north-star image** (dusk/neon at the night market). **The
+  end is the plain Day → Night close** — no alarm, no "Code Red": *play the day into the night, and when the
+  night market winds down the tour's over — grab the last great bite before the last train.* Stays
+  **warm/comedic**, a giddy wind-down, never menace. *(Full act framing in Naming.)*
+- **Re-skin test:** PASSES — the region vendor markets are Taiwan-specific food geography (each region its
+  own street), the arc is the Taiwan food *day* (早餐店 → 夜市攤 — breakfast → night market, drinks stalls
+  mixed through both layers), and **Tour Tickets** are a travel agent's booked tours; rename the setting and
+  the recipes, the day-arc, *and* the tours all break. Not generic "engine + map."
 
 ## Look & feel / art direction
 **Render theme name:** `night-market` (to add to `tools/cards/themes.py` — palette + per-suit
@@ -221,6 +380,12 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
 - **Silhouette / shape language:** cards frame as a **passport / boarding-pass / stall menu-board**;
   places visited recorded as **stamps** (passport-stamp motif doubles as the dossier gag and the
   Discovery feel). Rounded corners, warm.
+  - **v6.2 additions to spec (→ `bg-infodesign` / `bg-access`):** a **Tour Ticket** frame — lean into the
+    literal *boarding-pass / tour-voucher* look (value + the day/night/general pool badge + an
+    "Operation: ___" strip for the wink); a clear **region-market** board layout — each region a face-down
+    pile with its **1–2 face-up slots** and a **day/night layer marker** so "morning stacked over night"
+    reads at a glance; and the **scoped-event icons** (⦿ self · ⬢ region · ➤ next-door) already flagged for
+    dual-coding. Drinks stalls need **no** special marker now — they're just cheaper vendors on the shelf.
 - **Moodboard / references to gather in `art/`** (real photo refs for a human illustrator):
   Shilin / Raohe / Liuhe night markets at dusk; hand-painted stall signage & 繁體 hand-lettering; HSR
   and local trains; scooters; convenience-store culture; vintage travel stamps/stickers; and the iconic
@@ -238,42 +403,196 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   - *Rejected: "Operation: Night Market" and "Night Market: Taiwan" — both **demote** the agent gag the
     Creative Director explicitly wants to foreground.*
 - **Component/keyword register (pick ONE, hold it):** playful travel-guide + light dossier garnish —
-  objectives = **Missions/Assignments** (each an *"Operation: ___"*), the trip = your **Itinerary**,
-  scoring = the **Traveller's Log**, places visited = **Stamps**. Read them aloud together; kill any
-  that clash.
+  objectives = **Tour Tickets** *(v6.2 LOCK — the season's tours you book; each may still carry an internal
+  *"Operation: ___"* code-name for the wink)*, the trip = your **Itinerary**, scoring = the **Traveller's
+  Log**, places visited = **Stamps**. Read them aloud together; kill any that clash.
 - **New proper nouns from the re-frame (proposed — coherent with the above):**
   - **your travel agency** = who you are (you *run* it); your rival runs a competing agency.
   - **head office** = your dispatcher/boss on the phone/earpiece (and the voice of the rulebook).
-  - **signature itinerary / signature Mission** = your secret star tour (the +7 hidden hook, draw-3-
-    keep-1). Individual ones can keep the *"Operation: ___"* code-name gag as the agency's internal
-    project name for the tour ("Operation: Beef Noodle") — the wordplay survives.
-  - **Vendor** + **Court** = the stall/cook you win over, and the action of doing so (pay ingredients +
-    Buzz → they feature on your tour). *v3 spine word.* The shared tiered **Vendor Board** is the public
-    race — it **absorbs the old "Hot-List of dishes"**, which is no longer a separate row.
-  - **Buzz** + **Promote** = the second currency and the action that earns it (promise customers / drum
-    up hype). *v3 — re-homes the cut Brief deck's flexible-resource job.*
-  - **Prestige** / **Reputation** / **Region-Coverage** = the three scoring vectors (star power / your
-    standing as an agent / the grand tour). *v3.*
+  - **Tour Tickets** *(v6.2 — LOCKED; the objective spine, replaces the old single secret "signature
+    Mission" +7 hook).* The season's **tours on offer** sit in a face-up row; **booking one** (claiming it)
+    is a full action. Each booked ticket is **judged at the end of its phase** (daytime at dusk, nighttime
+    at the last train) into a **WIN pile** (成團 *Published Tours*, +value) or a **LOSE pile** (遺珠 *the
+    Ones That Got Away*, −floor(value/2)), tallied **once at game end** (accounting model, not live ±).
+    Split into **daytime / nighttime / general** pools; a variable **12→5-per-phase** draw keeps each season
+    fresh. **The day is paced by the VENDOR-CLAIMS clock** — each vendor claim ticks the day (dusk = 5th
+    table-wide claim → the last train = 10th @2p) — **not** by ticket delivery. *Why "Tour Tickets":* it's
+    the travel-agent-native re-skin of Ticket-to-Ride's destination tickets (the CD-named ancestor), it's
+    already the sim/decision-log vocabulary, and the win-pile / lose-pile +/− reads perfectly as *promise a
+    client a tour → paid if the tour ran, refund if it didn't.* **The secret-agent wink rides on top:** an individual ticket can carry the
+    agency's internal **"Operation: ___"** code-name — so *the mission really is the meal.* *(Register: the
+    row = "the tours on offer" / the Tour Board; the verb = **book a tour** / claim a ticket; the physical
+    card = a **Tour Ticket**.)* → native review of the ticket names (the 繁體 set is idiomatic — bless +
+    confirm).
+  - **The two ticket piles** *(v6.2 LOCK — bg-theme's call, confirming bg-design's candidate; warm skin on
+    the WIN / LOSE accounting model).* A booked tour is judged at the end of its phase into one of two
+    named piles, tallied once at game end:
+    - **WIN pile = "Published Tours" (成團 *chéng-tuán*)** — the tours that **ran**. *成團* is the genuine
+      travel-agency word for a tour that filled and **departed** (vs 不成團, a trip that never left), so the
+      warmth is *native and celebratory*: these are the tours that made it into the brochure, the season's
+      wins. *(Verb-friendly: a completed ticket "**goes to press** / makes the brochure.")*
+    - **LOSE pile = "The Ones That Got Away" (遺珠 *yí-zhū*)** — the tours you booked but couldn't run in
+      time. *遺珠* (from 遺珠之憾, "the overlooked pearl") is a **rueful, affectionate shrug**, never a
+      failure-shaming beat: *"ahh, that one got away"* — the travel agent's wistful glance at the trip that
+      almost was, not a black mark. **Bind (→ `bg-elegance` voice):** keep the lose-pile language warm and
+      wistful (*got away / the one that slipped past / almost-ran*), **never** harsh (*failed / lost /
+      dead*). A −floor(value/2) ticket is a shrug, not a scolding.
+    *Why these two:* they're travel-agent-native (a tour either **departs** or it **doesn't**), they read
+    warm in both languages, and 成團 / 遺珠 give the native reviewer a real idiom to bless rather than a
+    literal coinage. **→ native review** confirms 成團 / chéng-tuán and 遺珠 / yí-zhū read natural and warm;
+    **→ `bg-infodesign`** for the two pile markers (a "departed/brochure" tick vs a soft "got-away" mark —
+    dual-coded, not colour-alone). *(English names are the player-facing lock; the 繁體 rides alongside as
+    the flavour anchor, pending the native bless.)*
+  - **Vendor** + **Bribe** = the stall/cook you win over, and the action of doing so (pay ingredients +
+    hold the Buzz majority → they feature on your tour). ***v4 spine word — replaces "Court." LOCKED by
+    the CD (2026-08-06), chosen over bg-theme's "Schmooze" rec for the funnier, spicier word.*** *Flavour
+    (the load-bearing reframe — carry it on EVERY "Bribe" line):* "You **bribe** a vendor — but this isn't
+    a bribe, it's a **marketing opportunity**: free publicity, a glowing five-star review, and a busload
+    of hungry tourists. The vendor's thrilled; they just pick whichever agent's driving the bigger crowd."
+    **Binding rulebook-voice guidance (→ `bg-elegance` / `bg-developer`):** the smarm lands on the
+    over-the-top **agent** (punch at yourself), **never** the vendor or the place; a "bribe" = a windfall
+    the vendor genuinely wants; the vendor still **freely chooses the bigger fan**. Keep the surrounding
+    voice on **win over / feature / showcase / champion / put on the poster** so the cheeky "bribe" keyword
+    is always cushioned by warmth — **never** *acquire / control / own / claim / corrupt* a vendor. (Full
+    reframe + the three binding rails in Theme↔mechanic resonance.) The **region vendor markets** (v6.2 —
+    per-region face-up stalls, replacing the old single tiered "Vendor Board" / "Hot-List") are the public
+    race — you court vendors *in their region*.
+    - *Rejected: **Schmooze** (bg-theme's rec — safer, cheeky-charm-not-corruption, but the CD wanted the
+      spicier laugh), **Court** (v3, cooler), **Butter Up / Sweet-talk / Woo / Recruit** (logged v4
+      alternatives). The trade the CD accepted: **spicier word, so the warm reframe becomes mandatory
+      rather than optional** — logged as the #1 consultant watch-item.*
+  - **The "marketing opportunity" running gag = now the keyword's built-in cushion, not a separate aside.**
+    Because "Bribe" IS the keyword, the *"this isn't a bribe, it's a marketing opportunity"* gag is no
+    longer an optional margin joke — it's the **primary device that keeps the keyword rail-safe**, so it
+    recurs wherever "Bribe" appears (rulebook, player aid, box copy): the agent theatrically slides a
+    "bribe" across the table that turns out to be a glowing review and a busload of tourists. The joke does
+    double duty — it's funny *and* it's the guardrail.
+  - **Buzz** + **Promote** = the second currency (now **committed & contested ON a vendor** — v4) and the
+    action that earns it. *Flavour of the physical stack:* **the Queue** — a Buzz token = a busload/a wave
+    of your clients you've steered to that stall; the pile of Buzz on a vendor = the queue snaking out their
+    door, half yours half your rival's. **Recommend keeping the keyword "Buzz"** (already means hype, warm,
+    funny, low-churn) and flavouring the on-vendor stack as *"the queue you've drummed up"* / *"whose busload
+    is bigger."* The ≥2-Buzz majority reads as *your agency is clearly driving the bigger crowd, so the
+    vendor throws in with you.* (If the CD wants a more concrete on-vendor noun than "Buzz," **"the Queue"**
+    or **"Crowd"** is the fallback — but Buzz is coherent as-is.)
+  - **Vendor venue types & the region markets** *(v6.2 — the central Ladder / Beverage-Row structure is
+    replaced by **per-region vendor markets**; the venue *names* are kept, the "beverage fork" is retired).*
+    Each region runs its own face-down **vendor pile** = the day's **早餐店 breakfast shops stacked over
+    夜市攤 night-market stalls**, with **drinks stands mixed in as the cheap low-value stalls in both
+    layers** (no special status — see the drinks resonance bullet). **1–2 stalls face-up per region** (North
+    2, the others 1), refilled in place; at **dusk** the daytime layer is swept and the nighttime layer
+    reveals. Real, local, secular venue names, dish names intact:
+    - **早餐店 breakfast shop** *(zǎocān-diàn; Tâi-lô ≈ tsá-tǹg-tiàm)* — **the daytime layer** (Act I).
+      蛋餅 egg crêpe, 肉包 bao, 豆漿 soy milk — the cheap morning start where the discount ramp begins.
+    - **夜市攤 night-market stall** *(yèshì-tān; Tâi-lô iā-tshī)* — **the nighttime layer** (Act II): the big
+      fought-over names — 蚵仔煎 oyster omelette, 牛肉麵 beef noodle, 大香腸 big sausage. **夜市攤 in the
+      夜市** — the tier name and the Act align on purpose.
+    - **手搖飲 / 飲料店 drinks stand** *(shǒuyáo-yǐn "hand-shaken drinks")* — **no longer a separate fork;
+      now just the cheap low-value stalls** salted through both layers (珍奶 bubble tea, 冬瓜茶, 洛神花茶…),
+      courted by the same one rule, costing 糖. Low-*stakes*, not lesser — the mix is rewarded via Tour
+      Tickets.
+    **Framing (binds — keeps it warm):** the day arc is **time of day** (morning building to the
+    night-market climax), **NOT** a "posher food" hierarchy; the **★ accolade still lets a humble 早餐店 hit
+    apex value**, so venue type = flavour + base-value band, **never a hard ceiling.** **Real & secular,
+    dish names intact, no invented venue types.** → native reviewer confirms the venue names + romanisation.
+    *(The structural/economy — face-up counts, costs, the cross-region recipe cycle — is `bg-design`'s;
+    bg-theme owns only the fiction fit above.)*
+  - **The ingredient palette** *(v6 — the 5-ingredient economy; bg-design owns the mechanics/region-map, and
+    handed bg-theme the naming of the **common** staple).* Four **region signatures** + **one common**:
+    **豬肉 pork** (North 北), **茶 tea** (Central 中), **海鮮 seafood** (South 南), **米 rice** (East 東 —
+    *or* 山蘇 greens, `bg-developer`'s pick to keep the Indigenous-forward East dishes real). The **common
+    ingredient — LOCKED: 糖 sugar** *(Mandarin **táng**; Tâi-lô **thn̂g**)* — the successor to the retired
+    "pantry" wild token. **Why 糖 over bg-design's alternate 鮮奶 milk:** *(1) it is the genuinely universal
+    base of Taiwan's 手搖飲* — the sugar level (**半糖・微糖・全糖・無糖 / 果糖** fructose syrup) is *the* iconic
+    hand-shaken-drink customisation, so "the staple every drinks stand runs on" is literally true; milk is
+    only in the 鮮奶茶 subset, not all drinks. *(2) It has an honest regional home* — Taiwan's historic sugar
+    industry (台糖 / the 南部 refining belt: 台南・高雄・嘉義・雲林) makes "the common lives in the
+    South/Central regions" a *true* geography, not a fudge, which fits the design's "common in 2 of 4
+    regions" call cleanly. *(3) It reads as **both** drink-base **and** a light food-filler* (honest for the
+    design's "common appears as a minor filler in some ladder recipes" note). *(4) Not regionally dishonest*
+    — sugar is a genuine pantry staple across the whole island; that only 2 region *decks* carry it is a
+    game abstraction (to preserve travel value), never a claim it's absent elsewhere. **Bind:** 糖 stays a
+    plain, real staple — never a gag, dish names intact; → native reviewer confirms 糖/táng/thn̂g and eyeballs
+    whether **果糖 fructose syrup** is the more natural token word for the 手搖飲 context (a cheap swap if so).
+    *(Region signatures are `bg-design`'s call — listed here only so the ingredient set reads coherent as one
+    warm, real, Taiwan-specific palette; `bg-developer` locks the East signature.)*
+  - **The event scope vocabulary** *(v6.1 — new; the 3-way "who does it hit?" icon set, → `bg-infodesign` to
+    finalise the icons + `bg-access` to dual-code).* Every event card carries **one** small scope icon, read
+    from the region the card came out of: **⦿ self** ("you") · **⬢ region** ("this place") · **➤ next-door**
+    ("next door"). Warm, plain reads — *you queued an hour* (⦿), *a typhoon shuts this region's road* (⬢),
+    *the crowd spills into the next town* (➤). The wording stays **island-life and secular** even when a
+    Convenience-Store draw lands one on a rival (the *island* pushes people around — see the resonance scope
+    bullet + §Sensitivity's warm rail). *Naming is **fluid**: "self / region / next-door" is the plain
+    default; a head-office-voice skin ("local / district / neighbouring", or a sitrep register) is optional
+    if it stays warm and never reads as a targeted attack. **The icons are `bg-infodesign`'s to finalise and
+    `bg-access`'s to dual-code** (redundant to colour: distinct glyph + short label).*
+  - **The Acts** = the end-game structure — **a single glorious eating day, a TWO-BEAT arc** *(v5 — the CD's
+    ≤30-min target)*, **morning breakfast → night-market climax.** With the venue rename the on-clock arc is
+    **早餐店 → 夜市攤** (drinks stalls mixed through both layers — no longer off-clock). ***Act I · The Breakfast Run 早餐***
+    *(RECOMMENDED rename — was "Afternoon Crawl 下午", which now clashes since Act I is the **morning
+    breakfast** opening; alts = **The Day Crawl** / **Daytime 白天**)* — the cheap morning start, the ramp
+    builds → ***Act II · Night Market 夜市*** (neon, crowds, the 夜市攤 names — the climax). Fiction for "the
+    act advances" = *the day rolls from breakfast toward dusk **as agents court and claim the island's
+    vendors*** (v6.2 LOCK — the day-clock rides on **vendor claims**: dusk = the 5th table-wide claim, the
+    last train = the 10th @2p; the marks grow with player count); "the markets turn over" = *at dusk each region's daytime
+    stalls are swept and the big night-market names reveal (harder to win — everyone's chasing them).*
+    Lands the game **on the north-star image** (dusk at the night market) and celebrates a food-day arc
+    locals recognise. **→ `bg-design` owns the Act label** (these are fiction skins); the **Breakfast-Run /
+    Daytime rename is the one coherence ask from this pass** (an "Afternoon" act that opens at breakfast is
+    the only clash the venue rename introduces).
+  - **The last train home** = the end-game close *(v6 — CD DROPPED the v5 spy-alarm "Code Red" label; the
+    exact firing condition is `bg-design`'s call).* There is **no named end-trigger and no alarm**: you
+    simply **play the day into the night, and when the night market winds down the tour's done — catch the
+    last train home.** It keeps the warm **"last train home"** image (re-homed from the old Extract action)
+    as the **natural close of one eating day**, landing right on the night-market north star. **Keep it
+    warm/comedic:** a giddy *"the tour's almost over — grab the last great bite before the last train!"*,
+    **never** an alarm, danger, or dread (stays on the Tone "warm caper, not a thriller" rail). *Why the
+    drop reads clean: the day→night arc already IS the escalation and the clock; a spy "alarm" on top was
+    the one beat that leaned toward menace/urgency rather than the warm wind-down, so losing it tightens
+    the tone, not just the ruleset. Nothing thematically stranded — the spy-caper wink still lives in the
+    trench-coats, "Operation: ___" mission names, and the head-office voice.* ~~*Alternatives logged:
+    "Last Orders," "Wheels Up," "Code Red" (v5, now cut).*~~
+  - **Prestige** / **Reputation** = the two live scoring vectors (star power / your standing as an agent),
+    alongside the **Tour Tickets** (the objective spine — see above). *(v5→v6.2: Region-Coverage is **no
+    longer a scoring track** — the grand-tour breadth line is now a **Tour Ticket** (走透透 / 大三元), not a
+    named vector. "The grand tour across the island" survives as fiction; only the scoring plumbing moved.)*
+  - **★ Star** = the value hook on a **standout** vendor — either **printed** on an apex "Legendary"
+    night-market stall 夜市攤 (a *standing* accolade — Michelin / Bib Gourmand / competition win, worth the
+    most Prestige) or
+    a dynamic **★ Star token** dropped mid-game by the **"vendor gets hot"** boon (**摘星了 / 得獎了 / 爆紅**)
+    onto an ignored Board vendor (+Prestige/+Rep to whoever wins it). *Flavour = **"this beloved stall got
+    its due" / "the little place that blew up overnight."*** Warm celebration, **real & secular**, dish
+    names intact — the reason a specific vendor is suddenly worth crossing the island and burning Buzz for.
+    **Never** an invented award, sacred framing, or a false star on a real named business (see the ★ Star
+    resonance bullet's three binding rails). *v5 — CD's value-swing.*
   - ~~**Brief / Client Brief / Memo**~~ = **CUT in v3** (directive deck removed; head office survives as
-    the rulebook/earpiece *voice* only).
-  - **Poach** = the conditional same-location action (when a rival shares your region, take 1 random
-    specialty from their Larder, −1 Reputation). *v3.1 spine word — LOCKED (bg-theme).* Chosen over
-    "Tip-Off": "Poach" is a **double pun** (a cooking verb *and* the literal travel-agency term for
-    poaching a rival's clients) **and** it maps to physically *taking* a token, where a "tip-off" is
-    information passed and wouldn't fit grabbing an ingredient off their tray. *Flavour:* "You're both
-    jammed at the same night-market corner — you swipe the good stuff off their tray before they can.
-    Word gets round you play a little dirty (−1 Rep)." Targets **the rival agent only**, never a vendor
-    or the place.
+    the rulebook/earpiece *voice* only). *(v6.2: the deck's fiction jobs live on as **Tour Tickets** (the
+    risky-book-it gamble) + **scoped Convenience-Store events** (the keep-your-rival-honest nudge) — no
+    directive-deck component exists.)*
+  - ~~**Poach**~~ = **CUT in v4/v5** (the conditional same-location "take a rival's specialty" action was
+    removed when the design went to five actions — design-doc §Actions "Poach and Extract are cut"). The
+    v3.1 double-pun name is retired with the mechanic; **no stranded reference should remain** in
+    components/rulebook/sim. *(Stranding caught in the v5 sweep — the naming bullet had still read as a live
+    "LOCKED" action. If the "grab off a shared corner" beat ever returns, the Poach name is here to revive.)*
   - **Conditions** / **Events** (or **Word on the Street** / **Sitrep** in the head-office voice) = the
     region-event **tiles** salted into the Market (fire on refill; no queue). *Kept, re-homed.*
   - **best-tour title** = the season's prize you're both racing for — the compete-engine's payoff. A
     cutesy award *name* (a "Golden Boarding-Pass"-type gag) is **fluid** — hold it light; route any
     Chinese/Tâi-lô coinage through the native reviewer before it locks.
-  - Read the v3 set aloud together (travel agency / head office / signature Mission / **Court a Vendor** /
-    **Buzz + Promote** / Vendor Board / **Prestige · Reputation · Coverage** / Conditions / best-tour
-    title / Stamps) — one warm travel-agent-playing-spy voice, no clashes. Kill any that drift toward
-    menace. *(Note: the objectives = **Missions** register above stays; "Traveller's Log" is now just
-    flavour for the tour, not a scoring keyword — v3 scores via the three named tracks.)*
+  - Read the v6.2 set aloud together (travel agency / head office / **Tour Tickets** (book a tour; the
+    *"Operation: ___"* wink) / **Bribe a Vendor** / **Buzz → the Queue** / **region vendor markets** (北·中·南·東,
+    daytime stacked over nighttime) / **早餐店 · 夜市攤 · drinks stalls mixed in** / ingredients:
+    **豬肉 · 茶 · 海鮮 · 米 + 糖 (common)** / **Act I The Breakfast Run 早餐 · Act II Night Market 夜市 · the
+    last train home** / **Prestige · Reputation** / Events (scopes **⦿ self · ⬢ region · ➤ next-door**) /
+    best-tour title / Stamps) — one warm
+    travel-agent-playing-spy voice, no clashes. *(Venue set reads warm together: 早餐店 → 夜市攤 is the
+    morning→night turn of each region's street; drinks stalls sit among both as the cheap grabs.)* **"Bribe"** is the spiciest word in the set, so it *depends* on its
+    neighbours to stay warm: *"the queue you drummed up,"* *"marketing opportunity,"* *"put her on the
+    poster,"* and *"night market"* all point the same way (a crowd + the neon climax + a delighted vendor) —
+    which is exactly what cushions "Bribe" into cheeky-agent-comedy rather than corruption. Kill any that
+    drift toward menace, and make sure no "Bribe" line is left standing *without* its warm cushion. *(Note: the objectives = **Tour Tickets** register above stays;
+    "Traveller's Log" is now just flavour for the tour, not a scoring keyword — score via the two named
+    tracks + the Tour Tickets.)*
 - **→ `bg-publishing` clearance flags (before art/print):** the **"Travel Agents" mark itself** is
   descriptive/crowded — the literal-title re-frame *strengthens* the descriptive read, so lean harder on
   the distinctive full lockup + logo (flagged already). Clear any award/title name. (Naming *clearance*
@@ -308,6 +627,16 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   come from *the island itself* (it acts on you). Keep those true and the conceit reads as **showcasing,
   not consuming.** If playtest/consultant feedback finds it still reads extractive, that's a re-theme
   flag, not a paint job.
+- **⚑ #1 LOAD-BEARING CONSULTANT FLAG — the "Bribe a Vendor" keyword (→ `bg-publishing`, watch this one
+  above all).** The CD locked **"Bribe"** as the vendor-winning keyword (over bg-theme's safer "Schmooze"),
+  for the funnier, spicier laugh. It is deliberately baked in warm — *"this isn't a bribe, it's a marketing
+  opportunity"*: the smarm is on the over-the-top **agent** (punch at yourself), a "bribe" = free publicity
+  + a glowing review + a busload of hungry tourists the vendor genuinely wants, and the vendor still freely
+  **chooses the bigger fan**. **The single question for the paid Taiwanese consultant:** does "Bribe" read
+  as **cheeky-agent-comedy** (the intended cushion holds), or does it tip into an **outsider-corrupts-a-
+  local** frame (extraction)? This is the highest-risk keyword in the game — spicier word = thinner margin —
+  so it is the one to watch. If the consultant finds it tips extractive even *with* the warm framing, the
+  fallback is bg-theme's **"Schmooze"** (or Butter Up / Woo), a cheap keyword swap, not a redesign.
 - **New consultant items from the re-frame (→ `bg-publishing`, add to the existing paid-consultant
   brief):** (1) do the **rival travel agents read as local/passionate promoters** (celebration) rather
   than **foreigners packaging Taiwan for outsiders** (extraction)? — the load-bearing check; (2) which
@@ -315,7 +644,14 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   rail** (no temple/deity/ghost-month/funerary content as mechanics or gags); (3) **local characters** in
   the events deck — dignified, varied subjects, not caricature or obstacles; (4) any **award/title**
   naming in Chinese/Tâi-lô — native review before it locks.
-- **v3.1 cross-link framing check (→ `bg-publishing` consultant, before art):** 8 vendors carry a
+- **★ accolade framing check (v5 — LIGHT, → `bg-publishing` consultant, before art/print):** the ★ Star
+  swing leans on **real, secular** Taiwan food accolades (**Michelin / Bib Gourmand / competition wins /
+  摘星了・得獎了・爆紅**). Two things keep it a light note, not a flag: **(1)** these accolades genuinely
+  exist in Taiwan and read as **pride/celebration**, not marketing spin; **(2)** vendors are **dish-typed
+  generic stalls**, so a ★ says *"a Michelin-nod-worthy beef-noodle place,"* not a claim about a specific
+  real restaurant. **The one guardrail to hold:** never print a ★ **on a real named business/brand** (that
+  would be a false factual claim) and never invent an award — keep it generic + real. Ask the consultant to
+  confirm the accolade reads as warm pride and the 摘星/得獎/爆紅 wording is natural. 8 vendors carry a
   "connections you bring on your tour" cross-region token that is **not** an ingredient in the dish
   (framed as a regional *leg/pairing*, never claimed to be in the bowl — this is honest as written). Ask
   the consultant to eyeball the **three softest cases**, where the dish's own anchor ingredient is
@@ -328,21 +664,120 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   geographically real and a model for the rest.)
 - **People with dignity:** vendors, cooks, the aunties/uncles (阿姨/阿伯) are **subjects** — warm,
   specific, varied in age/look — not exotic scenery or obstacles. Let players see a range of faces.
-- **The 5 playable Agent Characters (v3) — dignified archetypes, and they HELP the anti-extraction
-  rail.** Night-Market Auntie 阿姨 · Eager Rookie · Retired Conductor 車長 · The Influencer · Grizzled
-  Gourmand. Two things make these a **pass, not a flag:** (1) they are the **protagonists** (playable
-  agents with agency), never scenery or obstacles; (2) several are **Taiwanese-coded locals** (阿姨,
-  車長) — which is exactly the *"local promoters showing off home"* the extraction rail needs, so the
-  Chinese-named cast is a feature. Framing guidance so archetype never slides to caricature:
-  - **阿姨 / 車長:** frame their flaws as *loyalty/preference*, not decline. Auntie's "no HSR" = she
-    **loves the scenic local rail and knows every backstreet**, NOT a doddering-technophobe gag. The
-    Conductor is a **proud retired railwayman**, warm and expert. Both dignified.
-  - **The Influencer:** keep "chasing clout" an **affectionate self-aware wink** (she genuinely loves
-    and shares the food), never contempt for a vapid-influencer punchline.
-  - **Grizzled Gourmand:** grumpy-foodie archetype — universal, low risk.
-  - **Roster variety:** ensure the cast spans age **and** ethnicity — Taiwan is multi-ethnic (Han +
-    Hakka + Indigenous + newer communities); at least one visibly non-Han-coded agent strengthens the
-    respect signal. → art brief + paid consultant (add to the `bg-publishing` consultant brief).
+- **The 5 playable Agent Characters — affectionate Taiwanese social types (v5 CD re-lore), and they
+  HELP the anti-extraction rail.** **The Old Councillor 里長伯 · The Live-At-Home Office Worker 媽寶 · The
+  Influencer 網紅 · The Competitive Eater 大胃王 · The Neighbourhood Big Brother 大哥** *(v5 — replaces the
+  v4 cast: Night-Market Auntie → Councillor · A-má Lunchbox Grandma → Office Worker · Eager Rookie →
+  Neighbourhood 大哥 · Grizzled Gourmand → Competitive Eater; Influencer kept, gag firmed).* Two things keep these a **pass,
+  not a flag:** (1) they are the **protagonists** (playable agents with agency), never scenery or
+  obstacles; (2) **all five are Taiwanese-coded locals** — hyper-local social types everyone on the island
+  recognises — which is exactly the *"local promoters showing off home"* the extraction rail needs, so the
+  cast **strengthens** the rail. **The comedy punches at the over-the-top *agent*-type, never at a real
+  group.** Framing guidance so no archetype slides to caricature (each: *name · flavour · ability · flaw*):
+  - **The Old Councillor 里長伯** *(re-lore of the Night-Market Auntie; mechanic KEPT — no re-sim).* A
+    retired borough-warden / local councillor who served the district so long he's shaken every hand twice
+    — turns up at every opening, wedding and night-market stall with a business card and a grin, and
+    *genuinely loves his patch.* *Ability = **Old Favours*** (the KEPT start-discount, re-lored): the first
+    vendor he Bribes in each of his first two regions costs **1 fewer ingredient** — *an old contact who
+    owes him one, from decades of showing up.* *Flaw = **Works Every Room*** (the KEPT no-HSR anti-lever,
+    re-lored): he insists on driving the district in person, stopping to chat, so he rings the map the long
+    way. **Bind the framing:** the discount is **earned goodwill / knowing everyone after a lifetime of
+    service**, *NOT graft* — the beloved 里長伯 fixer, never a cynical power-broker; **no real party, no
+    real figure, no cross-strait politics.** ⚑ **Compounding-risk flag (→ consultant):** a *politician*
+    whose edge is *connections/favours*, dropped into a game whose core verb is **"Bribe,"** could stack
+    into a corruption read — hold the warm cushion hard (earned relationships + the "marketing opportunity"
+    gag) and **watch this pairing** at the consultant pass.
+  - **The Live-At-Home Office Worker 媽寶** *(re-lore of the A-má Lunchbox Grandma; mechanic KEPT — no
+    re-sim).* A young office worker who still lives with mum and dad — every morning a parent presses a
+    便當 into their hands (*"you can't buy food out there as good as home"*). Relatable and affectionate:
+    half the table *is* this person. *Ability = **Mum Packed You a 便當*** (KEPT): on **Travel**, draw the
+    market card of the region you're **LEAVING** — a lunch from home for the road. *Flaw = **Only Eats
+    Mum's Cooking*** (KEPT anti-lever, re-lored): a little sheltered at an unfamiliar market — on a
+    **Visit** keeps only **1** specialty. **Bind the framing:** warm, never mean — living at home is
+    **normal and common**, the gag is the grown secret-agent who still calls mum at lunch, *not* a dig at
+    young people. *(Re-homes the 便當 mechanic + roster age-variety the A-má rung carried; native review of
+    媽寶 / 便當.)*
+  - **The Influencer 網紅** *(v6.2 kit LOCKED; flaw refined).* Gorgeous, charming, huge following,
+    *genuinely* loves the food and the camera loves them back — but **coasts on looks & personality, not
+    prep**. *Ability = **Going Viral*** (LOCKED): your **Promote places 3 Buzz** (+1 — the camera loves
+    them). *Flaw = **Late to the Party*** (v6.2 LOCK — the concrete lost-turn flaw, replacing the vague
+    "goes last / starts behind"): 網紅 **misses its first turn of the NIGHT phase** — *still editing the
+    day's photos when the night market opens, so the good stuff is already being fought over by the time
+    they finally swan in.* (Goes last only as a turn-order tiebreak otherwise — not a second rule.) **The
+    fiction confirms warm + coherent:** the affectionate *coasts-on-looks-not-prep* wink now lands as
+    **fashionably late** — a rueful, self-aware *"ugh, I'm always late"*, mirroring the dusk flip — never a
+    contemptuous "vapid influencer" jab. They really do love and share the food; they're just late to the
+    party. **Balance-watch (not sim-equivalent → the Screentop table):** the lost turn may over-correct
+    below 45% — a KEY table check, with a dial in reserve (heavier = miss both phases' first turns; lighter
+    = revert toward goes-last + a trimmed ability; see `design/v6.2-content-draft.md` §Character kits). The
+    *fiction* holds warm at **any** dial on that ladder.
+  - **The Competitive Eater 大胃王** *(re-lore of the Grizzled Gourmand; **NEW ability + flaw → sim**).* A
+    beloved competitive-eating / mukbang livestream star who can clear a night market single-handed and
+    brings a crowd wherever they film — a **joyful champion**, dignified and warm. *Ability (NEW) = **Eyes
+    Bigger Than the Table*** — keeps **all 3** cards on a Local Market Visit (they haul loads). *Flaw
+    (NEW, proposed) = **Head Down, Chopsticks Up*** — so busy eating they never see the weather turn:
+    **hazards hit harder on a Visit** (a self-braking counterweight on the *same* action the ability
+    supercharges, and on a *different lever* from the Brown-Noser's Buzz weakness). **Bind the framing:** a
+    **celebrated spectacle**, never gluttony-shaming or a gross-out gag — the joke is the trench-coated
+    agent who orders *everything.* **→ `bg-design`/sim:** keep-all-3's real value is deck-hazard-density-
+    dependent, so **both the ability and the flaw magnitude need tuning** (the flaw may need to be light).
+  - **The Neighbourhood Big Brother 大哥** *(re-lore of the Eager Rookie; **NEW ability + flaw → sim**;
+    the beloved Taiwanese-cinema lovable-rogue register — 艋舺 / 角頭 energy, trench-coat-over-Hawaiian-
+    shirt, basically already dressed for the caper).* Everyone on the street knows 大哥 — he looks after
+    the neighbourhood, is first to show up when a stall's in trouble, sends the fruit basket, and the
+    auntie always saves him the best cut. All warm bluster and a big heart. *Ability (NEW, hooks the
+    Buzz-majority core) = **Everybody Knows 大哥*** — he wins a vendor's power-struggle **without needing
+    the usual ≥2 Buzz lead**: a **tie suffices** (he needs only to *match* his rival's Buzz on it, or lead
+    — *proposed ≥0; `bg-design` + the re-sim tune the exact number*). Reads as *"everyone already knows
+    大哥 — he doesn't need to hype; the vendor's honoured to be on his tour."* *Flaw (NEW, proposed) =
+    **Always Picks Up the Tab*** — he can't help being generous: **each vendor he Bribes costs +1
+    ingredient** (he insists on buying a little extra for the whole street) — a self-braking tax on his
+    win-action, on a *different lever* from his Buzz edge. *(Alternate for the sim if the tab under-brakes
+    the strong Buzz edge: **his Promote places 1 Buzz**, not 2 — he doesn't bother hustling for hype.)*
+    **⚑⚑ HIGHEST-RISK CHARACTER — tied #1 with "Bribe" for the paid consultant. Bind HARD (non-
+    negotiable):** (1) the vendors **genuinely like and respect** 大哥 and keep **full dignity + agency**
+    — in on the joke, *honoured* to feature — **NEVER intimidated, threatened, or shaken down** (that
+    would break the anti-extraction + vendor-dignity rails); the reduced threshold is
+    **affection/reputation, not fear.** (2) Comedy is **warm bluster / the caper**, **never** real menace,
+    violence, or crime-glamorisation. (3) **SECULAR:** do **NOT** base him on **八家將** (the temple-parade
+    troupe — folk-religion origin, which our secular rail forbids); use the **secular street/cinema 大哥 /
+    角頭 / 兄弟** lovable-rogue register. Handle **betel-nut** clichés with great care or omit. (4) ⚑
+    **Compounding-risk (the sharpest in the game):** a *gangster* + the **"Bribe"** keyword could scream
+    shakedown if the framing slips — the warm cushion ("everyone loves 大哥," the "marketing opportunity"
+    gag, the vendor *chooses* him gladly) is **load-bearing.** **The single consultant question:** does he
+    read as **affectionate Taiwanese-cinema comedy**, or a **crime stereotype of Taiwan**? Native review
+    of 大哥 / 角頭.
+  - **Roster variety (a respect signal — spans age + gender + ethnicity):** the cast now spans **age**
+    (senior 里長伯 · young 媽寶 & 網紅 · mid 大胃王 & 大哥), **gender** and **ethnicity**. **Gender
+    (art-flexible, aim ~3:2):** the **大哥** register is male-coded — so balance the rest toward women;
+    recommend the **大胃王 female** and **at least one more** of {a female councillor 里長 / the office
+    worker / the influencer} female. **Keep the Influencer's "looks-not-brains" gag *off* the tired
+    vapid-woman trope** — either a self-aware woman genuinely smart about her brand, or a himbo; the "not
+    brains" is about *trip-prep*, never a gender dig. **Ethnicity:** Taiwan is multi-ethnic (Han + Hakka
+    + Indigenous + newer communities); **at least one visibly non-Han-coded agent** — recommend the
+    **大胃王** read Hakka- or Indigenous-coded (a positive, celebrated figure). **Bind:** **never code a
+    *negative* trait to a minority ethnicity** (in particular, keep the **大哥** Han-coded — do not put
+    the lovable-rogue register on a minority). → art brief + the paid `bg-publishing` consultant.
+- **⚑ East region — Indigenous-forward cuisine (v6.2 dish lock → `bg-publishing` consultant, before art).**
+  The v6.2 content draft carries a **placeholder generic "部落風味 Tribal Signature"** as the East apex (P8).
+  **bg-theme's naming call: replace the generic placeholder with a *specific, real, celebrated* Indigenous
+  dish, spread across peoples** — reuse the already-vetted East work rather than one flattened "generic
+  Indigenous" label (the rail forbids collapsing 16+ distinct peoples into one). **Recommended lock
+  (A/B/C — pick A):** **(A) 石板烤肉 stone-slab BBQ** — iconic mountain-Indigenous, genuinely celebrated,
+  and its cross-region {E+N} pork cost is *honest* (an East dish that pulls North's pork); **(B) 馬告雞湯
+  maqaw chicken soup (Atayal 泰雅族)** — already vetted, real, distinctive; **(C) keep a generic label** only
+  if the consultant prefers it. **Bind:** whichever locks, the East line-up (竹筒飯 Amis · 米糕 · 麻糬 · the
+  apex · 洛神花茶) must read as **real dishes across named peoples, respectfully handled — generic labels
+  only where a real named dish would misattribute — and a paid Taiwanese / Indigenous consultant signs off
+  before any art.** The other regions' draft dish names (肉包 · 蛋餅 · 胡椒餅 · 牛肉麵 · 大香腸 · 蚵仔煎 ·
+  擔仔麵 · 逢甲名物 …) read authentic and are **bg-developer's to finalise** with the native reviewer — no
+  mangling, dish names intact.
+- **New v6.2 player-facing terms (→ consultant / dual-coding):** **Tour Tickets** and their 繁體 names
+  (走透透 / 大三元 / 摘星 / 夜市王 / 稱霸東岸 …) — native review that they're idiomatic and warm, not clumsy;
+  the **region-market** board terms; and the **disruptor** playstyle's scoped-event beat — the **one
+  warmth-load-bearing line** (the *island* deals the warm hazard, never a mean take-that; already bound in
+  the event-scope resonance bullet). v6.2 introduces **no new sensitive motif** beyond the East apex above —
+  the drinks-vendor demotion and the market restructure are sensitivity-neutral.
 - **Celebrate specifics locals recognise** and **acknowledge Taiwan is multi-ethnic** — Han majority
   *plus* Hakka, 16+ recognised **Indigenous peoples**, and newer immigrant communities all shape the
   food. Representing that range is itself a respect signal.
@@ -366,14 +801,323 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   re-frame):** the **north star** above; the **rival-travel-agencies frame** (players are travel agents
   who *behave* like spies — the literal-title, celebration-not-extraction move); the **agents as
   local/passionate promoters** (the anti-extraction nuance); the **island-as-active-subject** framing of
-  conditions; the **friendly best-tour-title** compete-engine.
-- **Fluid:** the mechanism spine details and **exactly how the new Brief + Conditions layers earn
-  rules** (→ `bg-explore`); the *exact naming* of head office / the tour / the award (proposals above,
-  pending consultant + `bg-publishing`); the suit set (food categories vs regions) and final palette
-  hues; whether the 2p duel or the 3–4 race is the true home.
+  conditions; the **friendly best-tour-title** compete-engine. **New (CD lock, 2026-08-06):** the
+  vendor-winning keyword = **"Bribe a Vendor"** (chosen over bg-theme's Schmooze), *and* the **binding warm
+  reframe** that keeps it rail-safe (the *"marketing opportunity"* gag on every "Bribe" line; smarm on the
+  agent, never the vendor/place; the vendor freely chooses the bigger fan) — this warm framing is **locked
+  as load-bearing**, not fluid. **New (v6.2, 2026-08-07):** the board = **region vendor markets** (no
+  central Ladder); **drinks = plain low-value vendors** (the drinks *fork* is retired); the objective spine
+  = **Tour Tickets** (the LOCKED name — a booked-tour row, day/night/general pools); and the **five
+  playstyles** (character-lean · opportunistic · disruptive · balanced · end-game-driver) as the strategic
+  identity the design keeps all-live. **New (post-sim v6.2 LOCK, 2026-08-07):** the day is paced by the
+  **VENDOR-CLAIMS clock** (dusk = 5th table-wide vendor claim, last train = 10th @2p), **not** by ticket
+  delivery; Tour Tickets score via a **WIN pile / LOSE pile** (completed → +value, unfinished →
+  −floor(value/2), tallied once at game end), the two piles **named "Published Tours" 成團 / "The Ones That
+  Got Away" 遺珠**; and the **網紅 flaw = "Late to the Party"** (misses its first night-phase turn).
+- **Fluid:** the mechanism spine details and how the v4 layers earn rules (→ `bg-design`, parallel pass);
+  the *exact naming* of head office / the tour / the award (proposals above, pending consultant +
+  `bg-publishing`); the suit set (food categories vs regions) and final palette hues; whether the 2p duel
+  or the 3–4 race is the true home.
+- **v4/v5 fiction proposals (RECOMMENDED, pending the `bg-design` mechanics lock):** **Buzz kept as the
+  keyword**, its on-vendor stack flavoured as **"the Queue"** (the hype war); the **v5 character roster**
+  (5 Taiwanese social types — 里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥; see the Sensitivity pass), with **two
+  NEW mechanic shapes pending sim** (大胃王 keep-all-3 + hazard-vulnerability; 大哥 reduced-Buzz-threshold
+  + the tab); the **two-beat day-arc (I The Breakfast Run 早餐 早餐店 / II Night Market 夜市 夜市攤; drinks
+  stalls now mixed into both layers, v6.2 — the off-clock fork retired)** closing on the plain **Day →
+  Night** wind-down — the **last-train-home** gag re-homed from the cut Extract as the natural end (v6: the
+  v5 spy-alarm **"Code Red"** label is dropped); the **common ingredient named 糖 sugar** (the 手搖飲 +
+  convenience-store staple, now just the drinks stalls' base).
+  All are cheap re-skins of the spine — rung held at evocative. *(The vendor keyword is no longer a proposal —
+  **"Bribe a Vendor" is CD-LOCKED**; see Locked, above.)*
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
+- 2026-08-07 (bg-theme, **v6.2 LOCK guardian coherence re-check — post-sim CD locks: the vendor-claims
+  clock + win/lose-pile scoring + the 網紅 flaw**) — **STILL COHERENT; concrete realign edits, NO re-theme.**
+  identity.md had been written to the v6.2 *direction* but predated the post-sim **LOCK** (`design/v6.2-
+  content-draft.md`), so three things were stale. Fixes:
+  **(1) The day-clock moved off ticket delivery onto VENDOR CLAIMS (concrete edit — the signature-twist
+  pacing).** Struck every "delivery / completing tours drives the day-clock" line (header summary, playstyle
+  #5, the Tour-Ticket resonance bullet, the Day→Night arc bullet, the Naming Tour-Tickets + Acts entries,
+  Locked-vs-fluid) and re-pointed the clock to *"each vendor an agent claims ticks the day forward — dusk =
+  the 5th table-wide claim, the last train = the 10th @2p, marks grow with count."* **Fiction reads cleaner,
+  not worse:** the day now closes on the *bustle of everyone courting vendors* (the season crowding in),
+  while tickets are the thing you *race to run before the phase closes* — two distinct, legible pressures
+  instead of one doing double duty. Nothing stranded; the north star (race to the last train) is untouched.
+  **(2) Tour-Ticket scoring → WIN PILE / LOSE PILE (concrete edit).** Replaced the "scores retroactively
+  +value / −half" language everywhere with the accounting model: a booked ticket is **judged at the end of
+  its phase** (daytime at dusk, nighttime at the last train) into a WIN or LOSE pile, **tallied once at game
+  end** (Σ win values − Σ floor(value/2) lose). Same final numbers — the identity edit is a *description*
+  fix, not a mechanics change.
+  **(3) Named the two piles (bg-theme's call, confirming bg-design's candidate — a warm skin).** **WIN =
+  "Published Tours" (成團 chéng-tuán)** — 成團 is the genuine travel-agency term for a tour that *filled and
+  departed*, so the win pile is native + celebratory (the tours that made the brochure). **LOSE = "The Ones
+  That Got Away" (遺珠 yí-zhū)** — from 遺珠之憾, "the overlooked pearl": a **rueful, affectionate shrug**, a
+  travel agent's wistful glance at the trip that almost was, **never** failure-shaming. Bound the lose-pile
+  *voice* warm for `bg-elegance` (got-away / almost-ran, never failed/lost/dead). Locked in Naming; → native
+  review of 成團 / 遺珠 and → `bg-infodesign` for the two dual-coded pile markers.
+  **(4) Confirmed the 網紅 flaw fiction: "Late to the Party."** The new lost-turn flaw (misses its first
+  night-phase turn — *still editing the day's photos, late to the night market*) **reads warm and coherent**:
+  the affectionate coasts-on-looks-not-prep wink lands as *fashionably late*, mirroring the dusk flip, never
+  a "vapid influencer" jab. Slotted into the character section (ability also updated to the locked **Promote
+  = 3 Buzz**). Carried the design's balance-watch note (may over-correct <45% → a table check with dials in
+  reserve; the *fiction* holds at any dial).
+  **KEEP verified intact:** north star, the Day→Night arc, the secret-agent wink, Discovery + Fellowship +
+  Challenge, the Buzz-majority hype-fight, the region vendor markets, drinks-as-low-value-vendors, and **all
+  sensitivity rails** (Bribe = warm marketing-opportunity, 大哥 warmth, the East Indigenous-forward cuisine
+  + 石板烤肉 consultant note, Taiwan as itself, 繁體 + Tâi-lô discipline). **No new sensitive motif** — the
+  clock/scoring moves are mechanics-accounting; the only new player-facing coinages are the two warm pile
+  names (成團 / 遺珠 → native review). **For `bg-infodesign`:** a WIN/LOSE pile marker (departed-brochure tick
+  vs a soft got-away mark, dual-coded not colour-alone) and the **網紅 "Late to the Party" flaw icon** (a
+  late-arrival / still-filming read). Rung **held at evocative** — a realign to the locked spec, no new lore.
+- 2026-08-07 (bg-theme, **v6.2 direction sweep — the board restructure: region vendor markets + Tour-Ticket
+  spine + five playstyles + the drinks-fork drop**) — **RE-THEME (a structural re-skin over the same spine +
+  a naming LOCK; rung HELD at evocative — no new lore).** Updated identity.md to the CD-directed v6.2 model
+  (design/v6.2-content-draft.md; decision-log top 3). Moves:
+  **(1) The board → region vendor markets (concrete edit).** The central Ladder is gone; each region runs
+  its own face-down **vendor pile** (breakfast 早餐店 stacked over night-market 夜市攤, 1–2 face-up,
+  swept-and-revealed at dusk). Reworked the resonance, venue-naming, read-aloud, and look&feel sections.
+  Reads *more* native (the food lives in its region), no fiction stranded.
+  **(2) Drinks fork STRIPPED.** Removed every "drinks fork / two roads / easy-points / region-free / Beverage
+  Row / off-the-clock beverages" line — drinks are now **plain low-value vendors** mixed into each region's
+  pile, one unified courting rule, the *mix* rewarded via Tour Tickets. Confirmed still warm + not "lesser
+  food" (lower-stakes, not lower-cuisine; the ★ / big Buzz fights sit on the pricier night names because
+  that's simply where the value is).
+  **(3) Objective spine → NAMED + LOCKED: "Tour Tickets."** Promoted objectives from the old single secret
+  +7 "signature Mission" to the game's spine: a face-up row of tours you **book** (claim as an action),
+  retroactive **+value / −half** scoring, **daytime / nighttime / general** pools, a **12→5-per-phase**
+  variable draw, and a **day-clock that rides on delivery** (deliver tours → dusk → the last train). Locked
+  the travel-agent name **Tour Tickets** (Ticket-to-Ride's destination tickets re-skinned as an agent's
+  booked tours; already the sim/decision-log vocabulary; the retroactive +/− reads as
+  promise-a-client-a-tour-then-get-paid-or-refund). **The secret-agent wink survives** — each ticket can
+  carry an internal **"Operation: ___"** code-name, so *the mission really is the meal* (north star intact).
+  **(4) Strategic identity → the FIVE PLAYSTYLES** (character-lean · opportunistic · **disruptive** ·
+  balanced · end-game-driver), added as a "How you win" section. The *disruptor* (scoped Convenience-Store
+  events on a rival) is the one sensitivity-load-bearing playstyle — bound HARD to the existing warm/secular
+  event-scope rail (the *island* deals the warm hazard, a cheeky "bad luck," **never** a mean take-that,
+  never destroys held cards or a whole turn).
+  **(5) "Code Red" — confirmed clean.** No live reference remains (already stripped in v6/v6.1); only dated
+  historical log entries retain it, per this doc's convention.
+  **KEEP verified intact:** north star (*the mission is the meal / race to the last train home*), the
+  Day→Night arc, the secret-agent-over-day-job wink, Discovery + Fellowship + Challenge, the Buzz-majority
+  public hype-fight, and **all sensitivity rails** — the "Bribe = warm marketing-opportunity" reframe, 大哥's
+  warmth (liked/respected, secular street/cinema register), the **East Indigenous-forward cuisine** (added a
+  v6.2 dish-lock note: replace the generic "部落風味 Tribal Signature" placeholder with a *specific real* dish
+  across peoples — rec 石板烤肉; consultant before art), Taiwan as itself, 繁體 + Tâi-lô discipline.
+  **Consultant / dual-coding adds:** the Tour-Ticket 繁體 names + the region-market terms (native review); the
+  region-market board icons + day/night layer marker (→ `bg-infodesign` / `bg-access`). Rung **held at
+  evocative** — a structural re-skin + a name, no new plot. (identity.md)
+- 2026-08-07 (bg-theme, **v6.1 guardian coherence sweep — the CD's two economy corrections: region-anchored
+  beverages + the Convenience-Store event SCOPE**) — **STILL COHERENT; concrete edits made, NO re-theme.**
+  Swept the v6.1 design-doc + rules-draft against identity. Verdicts on the two corrections + the Code Red
+  sweep:
+  **(1) Beverages REGION-ANCHORED, not a region-free "Beverage Row" (concrete edit).** v6 identity wrongly
+  called the drinks fork "region-free" with a central "Beverage Row." Corrected: each region has its **own
+  persistent beverage stand** (a drinks stand in *every* region, all day), and you must be **on-site in the
+  region** to Promote/Bribe it — the **one unified vendor rule**, no beverage exception. The low-travel fork
+  identity now reads as **ubiquity + easy sourcing** (*court the stand where you stand*; 糖 off the
+  Convenience Store from anywhere), **NOT bribing-at-a-distance**. Fixed the resonance drinks-fork bullet,
+  the beverage venue naming entry, the header, and the read-aloud set. **Reads MORE native, not less:** "a
+  手搖飲 on every corner" is *literally* the Taiwan read, so a stand in every region is a truer fiction than a
+  single central Row. No re-theme.
+  **(2) Convenience-Store events now FIRE via a 3-way SCOPE — CONFIRMED warm, fiction LOCKED.** The new scope
+  (⦿ self / ⬢ region / ➤ next-door, read from the region the card was drawn from) lets a Convenience-Store
+  draw land a warm island-hazard on a **rival's** region. **Confirmed the two asks:** (a) the three scope
+  icons/names read cleanly and warmly — "you / this place / next door," plain island-life reads; (b) a
+  **rival-facing scoped hazard stays a warm, secular island-life beat** (typhoon shuts a road, festival
+  crowd, 完售 sold-out) — **bound HARD to the warm/secular rail: NEVER mean-spirited take-that.** The
+  *island* (not the agent) does it; it's a shared groan / cheeky "bad luck," never a spiteful strike, never
+  destroys held cards or a whole turn. This *extends* the existing "the island is a subject that pushes YOU
+  around" rail to "…and can push your rival around too" — fully on-theme, on the "warm caper, not a thriller"
+  tone rail. **Added:** a resonance scope bullet, a Naming scope-vocabulary entry, and the binding warmth
+  rail. **→ `bg-access` + `bg-infodesign`:** the 3 scope icons need **dual-coding** (redundant to colour —
+  distinct glyph + short label) and an at-a-glance read; and the **per-region beverage-slot marker** needs a
+  clear board icon so "a stand in every region" parses instantly.
+  **(3) Code Red sweep — CONFIRMED clean.** bg-design flagged a possible leftover. Swept: **no live "Code
+  Red" mechanic reference remains** — every live instance already describes the *drop* (Day → Night / the
+  last train home), and the only remaining "Code Red" strings are **dated historical re-theme-log entries**
+  (the v5 sweeps) preserved as accurate decision history per this doc's own convention (see the v6 entry's
+  note). Nothing to strip; nothing stranded. Rung **held at evocative** — two corrections realigned, no new
+  lore.
+- 2026-08-07 (bg-theme, **v6 guardian coherence sweep — the economy rework: drinks fork + 5-ingredient
+  palette + the "Code Red" drop**) — **STILL COHERENT; two concrete edits made, no re-theme needed.** Swept
+  the v6 design-doc + rules-draft against identity. Verdicts on the four moves:
+  **(1) "Code Red" DROPPED → the plain Day → Night close (concrete edit).** The CD scrapped the v5 spy-alarm
+  end-trigger; the finish is now just *play the day into the night, and when the night market winds down,
+  catch the last train home.* **Stripped every live "Code Red" reference** — the resonance end-game bullet,
+  the Naming end-trigger entry (renamed **"the last train home"**, no alarm), the read-aloud set, the
+  Locked-vs-fluid line, and the header summary. Kept the warm **"last train home"** image intact. **This
+  *tightens* the tone:** the day→night arc already carries the escalation + the clock, so a spy "alarm" on
+  top was the one beat leaning toward menace/urgency rather than the warm wind-down — losing it is a small
+  net gain, not a loss. **Nothing stranded** — the spy-caper wink still lives in the trench-coats,
+  "Operation: ___" mission names, and the head-office voice. (Historical v5 log entries below keep "Code Red"
+  as an accurate record of the-then decision; only the *live* doc state changed.)
+  **(2) Act I rename — CONFIRMED.** "Afternoon Crawl 下午" → **"The Breakfast Run 早餐"** is fully reflected
+  throughout the live doc (was already carried from the v5 sweep's coherence ask; verified against v6
+  design-doc §Acts, which now also names it The Breakfast Run). No clash remains.
+  **(3) The drinks fork — CONFIRMED warm + native honest.** Added a dedicated resonance bullet: the
+  off-clock, region-free, 糖-fed Beverage Row (飲料店 / 手搖飲) reads as the authentic *"the drinks stand is
+  always open"* lane — an honest fiction fit (Taiwan's 手搖飲 really are everywhere/all-day/uncontested), and
+  **NOT drinks-as-lesser-food** (the low value is a stakes/contest level, not a food-class judgement; the
+  arc is time-of-day and drinks sit outside it). Confirmed **keeping the ★ accolade + Buzz-contest OFF
+  drinks is coherent both ways** — a bubble-tea stand "going Michelin" would be off-key, and the fork's warm
+  identity *is* the calm, nobody-fights-over-it road; the swing belongs on the ladder.
+  **(4) The common ingredient — NAMED + LOCKED: 糖 sugar** *(Mandarin táng; Tâi-lô thn̂g).* bg-design handed
+  me the naming of the drinks + Convenience-Store staple (proposed 糖 or 鮮奶 milk). **Picked 糖** — it's the
+  genuinely universal base of Taiwan's 手搖飲 (the sugar-level 半糖/微糖/全糖 customisation is *the* iconic
+  hand-shaken-drink signature; milk is only the 鮮奶茶 subset), it has an **honest regional home** (台糖 / the
+  南部 sugar belt — so "common lives in 2 of 4 regions" is *true* geography, fitting the design's half-the-map
+  call), it reads as **both drink-base and a light food-filler**, and it is **not regionally dishonest** (a
+  real island-wide pantry staple; the 2-deck limit is a travel-value abstraction, not a claim of absence).
+  Locked it in Naming + the resonance region↔ingredient bullet + the read-aloud set. **One native-reviewer
+  note:** confirm 糖/táng/thn̂g and whether **果糖 fructose syrup** is the more natural token word for 手搖飲
+  (a cheap swap if so). Rung **held at evocative** — a named real staple + a warm fork confirmation, no new
+  lore.
+- 2026-08-06 (bg-theme, **v5 guardian coherence sweep — the ★ Star / value-swing + end-game finalize**) —
+  **STILL COHERENT; ONE concrete fix (the ★ Star was a new themed element I own, not yet in this doc).**
+  Swept the finalized v5 design-doc + rules-draft against identity. Verdicts on the four moves:
+  **(1) End-game (two Acts on one day-clock; dusk = 6th win / Code Red = 10th @2p):** the numbers are pure
+  `bg-design` plumbing, no fiction impact; **"Code Red" still reads WARM** — cushioned everywhere as a
+  giddy "grab the last great bite / catch the last train," head-office bark, never menace (rules §8 title
+  "Ending the trip — Code Red! (last train home)" holds the grin). **On-register.**
+  **(2) ★ Star / accolade value-swing — the FIX.** The new dynamic value curve (2–3 apex printed-★
+  "Legendary" Marquee + the "vendor gets hot" 摘星了/得獎了/爆紅 boon) was **absent from identity.md** —
+  a themed element I own that landed only in the design doc. **Added it** to Theme↔mechanic resonance
+  (reads as **warm celebration**, real & secular, **strengthens** the anti-extraction rail — you race to
+  put the newly-famous auntie on the poster, never seize the star), to Naming/keywords (★ Star), and to
+  the Sensitivity pass as a **light** consultant note. Bound three rails: real/secular accolades only,
+  dish names intact, and **no false ★ on a real named business** (keep vendors dish-typed, not
+  brand-named). No re-theme — the swing sits cleanly on the north-star grin (a stall going viral at dusk
+  IS the night-market fantasy).
+  **(3) Region-Coverage cut as a track → grand-tour Mission:** no fiction stranded — "the grand tour
+  across the island" survives intact, just re-homed from a scoring track onto a Mission pattern.
+  **Corrected two now-stale "three scoring vectors" lines** (resonance + naming) to two live tracks +
+  the mission-borne grand tour.
+  **(4) 里長伯 + 大哥 next to "Bribe":** the finalized spec did **not** sharpen either read — both stay
+  bound HARD (里長伯 = earned goodwill not graft; 大哥 = affection/respect not fear, warm cinema bluster,
+  secular) and remain the **tied-#1 consultant flags**. Unchanged.
+  **(5) Vendor tier RENAME + re-role (CD directive + a mid-pass course-correction, folded into this
+  sweep) — "Stall / Eatery / Marquee" → real Taiwanese venues, and the day-clock cut to TWO beats.** The
+  generic hotel-restaurant tier words are replaced with **早餐店 breakfast shop** (opening/transition, was
+  Stall) and **夜市攤 night-market stall** (climax, was Marquee) — the **two-beat day-clock arc, morning →
+  night: 早餐店 → 夜市攤.** **飲料店 / 手搖飲 beverage shop** (was Eatery) is **re-roled OFF the clock** as
+  the **all-day, anytime easy-points fork** (low value, low conflict, always available; pairs with the
+  low-travel Convenience Store) — *not* a mid-rung of a 3-step ladder. Confirmed the CD's names + this
+  structure — the venue rename is **stronger** than the old naming (real, local, secular; the on-clock
+  tier doubles as **time of day**), and the beverage re-role is an **authentic fiction fit, not a fudge**:
+  Taiwan's 手搖飲 shops really are on every corner and open all day, so "off-clock / uncontested / anytime"
+  is exactly how a local reads them. **夜市攤 = Act II 夜市** aligns (stalls in the market — reinforcement).
+  Bound the value band as **time-of-day, not a food class ladder** (drinks sit *outside* the arc, so
+  nothing implies bubble tea is "lesser" food — only a lower-stakes play; the ★ still lets a humble 早餐店
+  hit apex). Real, secular, dish names intact, no invented venues. **One coherence ask → `bg-design`:**
+  rename **Act I "Afternoon Crawl 下午" → "The Breakfast Run 早餐"** (alts "The Day Crawl" / "Daytime 白天")
+  — an "Afternoon" act that OPENS on morning breakfast is the only clash the rename introduces.
+  Romanisation (Mandarin-signage vs Tâi-lô per term) → native reviewer. Structural/economy remap of
+  design-doc/rules-draft (still 3-tier Stall/Eatery/Marquee; ingredient costs, drinks value,
+  Convenience-Store synergy) → `bg-design`.
+  **(6) Stranded-name catch (bonus):** the **Poach** action was cut to five actions in v4/v5 (design-doc
+  §Actions) but the Naming bullet still read it as a live "LOCKED" action — **struck it** (marked CUT,
+  matching the Brief pattern). Sweep components/rulebook/sim for any lingering Poach reference.
+  Rung **held at evocative** — a value hook + real venue names, not new lore.
+- 2026-08-06 (bg-theme, **v5 character re-lore + 2-Act / "Code Red" tightening — from CD direction**) —
+  **RE-THEME (five character re-skins + a structure re-skin; 3 new mechanic shapes → `bg-design`/sim;
+  rung HELD at evocative — no new lore).** Two CD moves folded into one pass.
+  **A) Character re-lore — all 5 to affectionate Taiwanese social types**, the comedy punching at the
+  over-the-top *agent*, never a real group:
+  **(1) Night-Market Auntie → The Old Councillor 里長伯** — KEPT start-discount re-lored as *old favours
+  / earned goodwill* (a retired borough-warden who knows everyone); flaw KEPT as no-HSR ("works every
+  room"). **No re-sim** (kit unchanged). Bound off graft; **flagged the politician + "Bribe" compounding
+  risk** as a consultant watch-item.
+  **(2) A-má Lunchbox Grandma → The Live-At-Home Office Worker 媽寶** — KEPT 便當 mechanic (Travel draws
+  the region you're LEAVING) re-lored as *a parent packs your 便當*; flaw KEPT (Visit keeps 1) re-lored as
+  *sheltered at an unfamiliar market*. **No re-sim.** Warm, never a dig at young people / living at home.
+  **(3) The Influencer 網紅 — kept mechanically, gag firmed:** *coasts on looks & personality, not prep*
+  — which now **explains** going last / starting behind; affectionate self-aware wink, not contempt.
+  **(4) Grizzled Gourmand → The Competitive Eater 大胃王** — **NEW ability: keep all 3 on a Visit** (hauls
+  loads); **proposed flaw: hazards hit harder on a Visit** (too busy eating to watch the weather) — a
+  self-braking market-lever counterweight, distinct from 大哥's Buzz lever. **Both magnitudes →
+  `bg-design`/sim** (keep-all-3's value is deck-hazard-density-dependent — the flaw may need to be light).
+  Celebrated champion, never gluttony-shaming.
+  **(5) Eager Rookie → [first drafted The Brown-Noser 馬屁精, then **CD-SWAPPED**] → The Neighbourhood Big
+  Brother 大哥** — the beloved Taiwanese-cinema lovable-rogue (艋舺 / 角頭 register). **NEW ability:
+  reduced Buzz threshold** — wins a vendor without the usual ≥2 lead (**a tie suffices; proposed ≥0**) —
+  *"everyone already knows 大哥, no need to hype."* **NEW proposed flaw: "Always Picks Up the Tab" —
+  each Bribe costs +1 ingredient** (generous; self-braking; alternate = Promote places 1). **Both →
+  `bg-design`/sim.** ⚑⚑ **Now the HIGHEST-RISK character, tied #1 with "Bribe" for the paid consultant:**
+  bound HARD that the vendors **like & respect** him and keep full dignity (**never** shaken down/
+  intimidated), the comedy is **warm bluster not menace/crime-glamorisation**, and it is **SECULAR** (NOT
+  八家將 / temple-parade — folk-religion origin barred by the secular rail; use the street/cinema 大哥 /
+  角頭 / 兄弟 register; betel-nut clichés with care or omit). Consultant question: *affectionate cinema
+  comedy, or a crime stereotype of Taiwan?* **The 馬屁精 brown-noser is retired** (CD found it weak/
+  complicated).
+  **B) Acts tightened to TWO + spy "Code Red" end-trigger** *(≤30-min target).* The day-arc drops from
+  three acts to **Act I Afternoon Crawl 下午 → Act II Night Market 夜市** (still lands on the night-market
+  north star). The end-trigger is re-skinned as a spy-themed **"Code Red"**: head office calls it —
+  *mission's wrapping, everyone back to base, catch the last train home* — **re-homing the old Extract /
+  "last train home" gag as the secret-agent climax.** Kept **warm/comedic** (a giddy "grab the last
+  great bite!"), never menace; the exact firing *condition* is `bg-design`'s call, bg-theme owns the
+  flavour/name.
+  **Sensitivity confirmed overall:** all five are Taiwanese-coded locals — **strengthens** the
+  *local-promoters* anti-extraction rail; roster now spans **age + gender + ethnicity** (recommend the
+  大胃王 read Hakka/Indigenous, keep 大哥 Han-coded; never code a negative trait to a minority).
+  **Consultant brief additions (→ `bg-publishing`):** (i) the **大哥 gangster + "Bribe"** read (tied #1
+  with the Bribe keyword — the sharpest compounding risk); (ii) the **里長伯 politician + "Bribe"**
+  compounding read; (iii) native review of **大哥 / 角頭 / 大胃王 / 媽寶 / 便當 / 里長(伯)**; (iv) confirm
+  **八家將 is NOT used** for 大哥 (secular rail). Rung **held at evocative** — new *personalities* and a
+  tighter arc, no new plot. (identity.md)
+- 2026-08-06 (Creative Director + bg-theme, **NAMING LOCK — vendor keyword = "Bribe a Vendor"**) —
+  **NAMING DECISION, no mechanical change; warm framing PROMOTED to binding/load-bearing.** The CD
+  considered bg-theme's **Schmooze** recommendation and **chose "Bribe a Vendor"** — the spicier, funnier
+  word — as the vendor-winning keyword. bg-theme had recommended Schmooze precisely because a bare *bribe*
+  defaults to an outsider-corrupts-a-local reading (inverting the anti-extraction rail's "celebration by
+  construction" principle). The CD's call stands, **with the explicit condition that the warm reframe is
+  now load-bearing, not garnish** — so this entry **bakes it in HARD** so the keyword is as rail-safe as it
+  can be. **The binding reframe (carried on EVERY "Bribe" line — rulebook voice for `bg-elegance` /
+  `bg-developer`):** (1) the running gag *"this isn't a bribe, it's a **marketing opportunity**"* is now the
+  keyword's built-in cushion, not an optional aside; (2) the smarm/comedy lands on the over-the-top **agent**
+  (punch at yourself), **never** the vendor or the place; (3) a "bribe" here = **free publicity, a glowing
+  review, and a busload of hungry tourists** the vendor *genuinely wants*; (4) the vendor still freely
+  **chooses the bigger fan** — no one bought against their interest. Updated: naming register (Bribe locked,
+  Schmooze logged as rejected), the Theme↔mechanic resonance bullet (now the game's #1 load-bearing check),
+  the read-aloud coherence line, Locked-vs-fluid (Bribe + its warm framing → Locked). **Flagged "Bribe" as
+  the ⚑ #1 load-bearing item for the paid Taiwanese consultant (→ `bg-publishing`):** does it read as
+  cheeky-agent-comedy, or tip into outsider-corrupts-a-local? The one to watch — spicier word, thinner
+  margin. Fallback if it tips even with the framing: revert to **Schmooze** (cheap keyword swap, no
+  redesign). Rest of v4 fiction intact (A-má, the Acts day-arc, Buzz = the Queue / hype war). Rung held at
+  evocative.
+- 2026-08-06 (bg-theme, **v4 fiction pass — parallel with `bg-design`'s v4 mechanics rework**) —
+  **RE-THEME (five coherent re-skins over the v4 spine; rung HELD at evocative — no new lore).** Delivered
+  the fiction for the CD's v4 direction (`decision-log.md` TOP entry). **(1) Court → "Schmooze a Vendor"
+  (recommended; the ONE call for the CD).** The CD floated **"Bribe"** — genuinely funny, but as the *core
+  keyword* it makes the outsider-corrupts-a-local reading the DEFAULT and the warm reframe the
+  exception-you-explain, which **inverts the anti-extraction rail's "celebration by construction"
+  principle** (the rail is BINDING). **Schmooze** keeps the funny + cheeky the CD wants while the smarm
+  lands on the over-the-top agent (punch at yourself), the vendor gets a great deal and still **chooses
+  you** — cheeky-not-corrupt by construction. The **"Bribe" gag is preserved as flavour only** ("This isn't
+  a bribe, it's a *marketing opportunity*" — a busload of tourists slid across the table). Alternatives
+  logged (Butter Up / Sweet-talk / Woo / Recruit). **(2) Buzz-on-the-vendor = a hype war.** v4 makes Buzz a
+  committed, contested majority piled ON a vendor (Arcs-Court-like). Framed the stack as **"the Queue"** —
+  the busloads/reviews/hype you've steered to that stall; two agencies stacking Buzz on the same beef-noodle
+  auntie = **a fight over who puts her on the poster, and she's never been happier** (agent-vs-agent
+  rivalry, a popularity *surge* she caused — **never harassment**). Kept the keyword **Buzz** (coherent,
+  low-churn); "the Queue"/"Crowd" is the fallback if a concrete on-vendor noun is wanted. This
+  **strengthens** the anti-extraction rail (promotion = bringing people TO the food). **(3) Conductor →
+  A-má the Lunchbox Grandma 阿嬤.** Mechanic (bg-design): on Travel, grab an ingredient from the region
+  she's *leaving* — a 便當 packed from home. Made her the **grandmother** rung (distinct from the younger
+  阿姨; adds an older-generation face = roster age variety, a respect signal). Ability = warm care/
+  provisioning; flaw framed as a **value** ("Let the Food Do the Talking" — trusts cooking over hype),
+  **NOT technophobia** (same rail that saved the Auntie's no-HSR). **(4) Acts end-game = a day's food arc.**
+  The tour escalates **Breakfast Run 早餐 → Afternoon Crawl 下午 → Night Market 夜市**, the Board escalating
+  with it — **inevitable, not bolted-on** (maps T1→T2→T3 onto the real Taiwan food day) and it lands the
+  game **on the north-star image** (dusk at the night market). The **"catch the last train home"** gag
+  **re-homes** from the cut Extract action onto the close of Act III. **(5) More-negative events =
+  ON-register, with guardrails** (checked against the Tone "warm caper, not a thriller" rail + the
+  Sensitivity Don'ts): hazards stay **comic mishaps to the AGENT**
+  (typhoon day, sold-out heartbreak, scooter gridlock), sourced from the **island-as-active-subject**
+  (anti-extraction-positive), **never mean or at Taiwan's expense** — a bake-off's cheerful chaos, not a
+  thriller. **Consultant items reaffirmed (→ `bg-publishing`):** secular-only rail on all new event content
+  (no ghost-month/temple/funerary mishaps); native reviewer on all new Chinese wording (便當, 阿嬤, act
+  names, event names). Rung **held at evocative** — every move is a re-skin of the spine, no plot to track.
 - 2026-08-06 (bg-theme, **v3.1 — The Poach + movement re-cost — CHEAP guardian sweep**) — **STILL
   COHERENT, NO re-theme needed; two names/notes firmed.** The signature twist didn't move. Checked
   design-doc v3.1 + the re-costed `vendors.csv`. **(1) The Poach:** reads as **warm agent-vs-agent

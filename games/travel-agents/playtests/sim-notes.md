@@ -688,3 +688,585 @@ comfortable "slight edge to the engine-builder"?). This is a **separate one-vari
   is untouched (bg-developer bakes the recommended values). Level 2 = the recommended package.
 - The **East T1 de-pantry asymmetry** (East T1s 2-East vs others 1+pantry) is modelled exactly; its
   human *feel* (are East stalls now slightly unrewarding?) is a table question the sim can't judge.
+
+---
+
+# v6.1 — THE ECONOMY FORK (region-anchored beverages + scoped events) — simulation notes (2026-08-07)
+
+Sim module reworked from the checkpointed v6 first-pass to the LOCKED **v6.1** design
+(`../design/design-doc.md`). The spine is unchanged; v6.1 folds in the two CD corrections the sim now
+models: **(A)** beverages are **region-anchored** — one persistent stand in *every* region, on-site to
+Promote/Bribe (no more region-free "Beverage Row"); the **Beverage deck (7 @2p)** is the hard cap. **(B)**
+the **Convenience Store fires events by SCOPE** (⦿ self / ⬢ region / ➤ neighbour), resolved relative to
+the flipped region against pawn positions; **Visit** also fires by scope; **Travel** still whiffs.
+Auto tournament report: `sim-results.md`. This file is the **interpretation** — nothing here is logged to
+the design-doc / bible / decision-log; that's the CD's call after reading this.
+
+> **CORRECTION (2026-08-07, after CD steer).** The CD clarified the design bar: *nobody should win on
+> drinks alone — but a clever mix of drinks at the right time + night markets should be a good strategy.*
+> That is **not** "drinks-lean ≈ 50%"; it is "**ladder + well-timed drinks beats ignoring drinks.**" My
+> first-pass headline ("drinks is a structural trap") measured the wrong bar. The corrected read is below;
+> the short version: **the sim confirms the parts it can (pure-drinks correctly loses; no drinks runaway),
+> but the CD's actual goal — opportunistic well-timed drinks — is a KNOWN sim blind spot** (greedy one-step
+> bots never hit a genuinely dead beat), so it is a **table question**, not a sim verdict.
+
+**Headline (the two make-or-break v6.1 questions):**
+- **Riskiest #2 — the drinks fork:** what the sim CAN say **PASSES** — a **pure-drinks tour clearly loses**
+  to a good ladder line (~1–10% h2h, the intended ceiling gap) and **drinks are not secretly dominant** (no
+  runaway, no solved drinks line). What the sim CANNOT judge — **whether a well-timed drink at the right
+  moment makes a ladder line better** — is a **greedy-bot blind spot** (same failure mode as the old Poach
+  / Gourmand findings): the bots essentially never bank a drink when playing to win (0.0–0.7/game) because a
+  productive ladder dig is *always* available and scores more per action, so they never experience the
+  "right time." **→ hand to the 2p Screentop table.** (Detail + the value sweep below.)
+- **Riskiest #1 — the Buzz fight (incl. 大哥): the 大哥 dominance probe FLAGS hard**, and the Buzz fight
+  itself is **near-absent in bot play** (4.3% of ladder wins contested) — so its *fun/tension* is unresolved
+  and is a table question, but 大哥's **tie-win is confirmed too strong** in sim.
+
+Game arc (field, both seatings): winner ~**28.6 VP** (Prestige ~19 · Rep-VP ~5.6 · mission hit 57%) —
+squarely in the design's 22–32 target. Turns run **~19–20/player in competent mixed/ladder play** (a touch
+over the 14–18 target), mostly ending by last-train; see the pacing finding for the drinks-heavy drag.
+
+---
+
+## What the v6.1 sim covers (and its blind spots) — bots are a FLOOR on depth, not a ceiling
+- **Shared "engine brain":** every strategy uses ONE greedy court/source/route planner; strategies differ
+  ONLY in **road weights** (w_ladder / w_bev) + a pure-drinks flag. This isolates the fork question exactly
+  as `beacon.py` isolates signal policy. A **competence fix** was made this pass (validated below): a
+  drinks-leaning bot now sources the common by **Visiting a common region** (3× the CS throughput) and
+  **relocates to camp the common supply** rather than blindly remote-CS'ing at ~25% yield.
+- **Region-anchored beverages** modelled faithfully: one slot per region, on-site presence required to
+  Promote/Bribe, refill from the finite shared deck into the won slot's region, slots go empty when the
+  deck dries, dusk does NOT sweep them.
+- **Scoped events** modelled by mechanical payload: a HAZARD = a bounded, **tax-not-destroy** tempo tax
+  (one fewer sourced ingredient on the target's current Visit or next sourcing — never a held card, never a
+  whole turn); a BOON = a free signature windfall to the targets present, or (a fraction) the dynamic **★**
+  "vendor gets hot" placement. Buzz-boons/festival-Buzz are folded into the ingredient windfall.
+  Scope resolves against real pawn positions, so the **take-that** (a rival standing in a flipped/adjacent
+  region) is emergent; a light deliberate **poke** fallback (CS-flip a rival's region when idle) exercises
+  it too. Exact tile text + the *warmth* of the rival-facing beats are bg-theme's / the table's job.
+- **Buzz war** resolved by a concession heuristic (appetite falls as the rival's committed Buzz rises) →
+  deterministic mirrors rarely fight; the fight's depth/feel is a table question, not a sim one.
+- **Cannot judge:** whether the Buzz tug-of-war is *fun*, whether the scoped take-that lands as **cheeky
+  caper vs spite**, teachability/FTUE, whether the low-travel drinks fantasy *feels* good. Those are the 2p
+  Screentop session.
+
+---
+
+## RISKIEST #2 (the v6.1 make-or-break) — re-scoped to the CD's actual bar
+
+**The bar (per the CD):** *nobody wins on drinks alone; but a clever mix — well-timed drinks + night
+markets — should be a good strategy.* So the tests that matter are **(i)** does a pure-drinks tour lose to
+good ladder play? and **(ii)** does adding well-timed drinks make a ladder line *better than ignoring
+drinks*? — NOT "is a drinks-lean ≈ 50%."
+
+**(i) PASSES.** Field (both seatings, naive-excluded h2h): `mixed` ≈ `ladder_lean` ≈ `greedy_prest` at the
+top (~50–52% among themselves); **`pure_drinks` ~1–10%** vs every real line; a drinks-*lean* (an
+over-commit to drinks) sits ~30% h2h. So a drinks-only tour **correctly loses** to a good ladder tour — the
+ceiling gap the design wanted — and there is **no drinks runaway / solved drinks line**. Good.
+
+**(ii) is a SIM BLIND SPOT — hand to the table.** To test the intended "well-timed mix," I added a
+`ladder_only` bot (never touches a stand) and a `smart_mix` bot (ladder-primary, but banks an affordable
+*local* stand on a beat its ladder plan would otherwise waste on a non-progress dig). Result:
+
+| Matchup (both seatings, mixed field) | winner | drinks banked by the mixer |
+|---|---:|---:|
+| `mixed` vs `ladder_only` | mixed **53%** | **0.4/game** |
+| `ladder_lean` vs `ladder_only` | **50.5%** (coin flip) | **0.0/game** |
+| `smart_mix` vs `ladder_only` (value 2) | smart_mix **42%** | 0.6/game |
+| `smart_mix` vs `ladder_only` @ **value 4 + Rep 2** | smart_mix **48%** | 0.7/game |
+
+**The bots essentially never bank a drink when playing to win (0.0–0.7/game), even when explicitly told to
+look for the moment, even at double beverage value.** Reason: a stand costs **an action + common the ladder
+also wants**, and a *productive ladder dig is almost always available*, so a one-step greedy planner never
+faces a genuinely dead beat where an easy 2 VP is the best use of the turn. Forcing the drink in (smart_mix)
+just **spends tempo the ladder wanted → it loses (42–48%)**. This is the **same structural blind spot the
+notes already flag for the Poach ("blind to denial/tempo value") and the Gourmand ("flexibility invisible to
+greedy bots")** — the sim cannot model the human "right time" (larder full of the wrong tokens, waiting on a
+specific ladder slot, having just lost a Buzz race, repositioning), which is exactly when a human banks a
+cheap drink. **So the sim can neither bless nor condemn the intended well-timed mix.**
+
+**What this means for the CD:**
+- **Do NOT read "drinks is a trap" off the sim** (my first-pass headline was measuring the wrong bar). The
+  correct sim read is narrower: *drinks-as-a-standalone-road correctly loses (as intended), and drinks aren't
+  degenerate/dominant.* The value of an **opportunistic** drink is unmeasured, not disproven.
+- **The one concrete, sim-visible lever, IF the table finds drinks feel worthless:** the opportunity cost
+  (an action + contested common vs a flat 2 VP) is high, so **beverage value 2→3–4 and/or a lower common
+  cost** shifts the "is this beat worth a drink?" math at the margin (smart_mix 42% → 48% as value rises
+  2→4). But **don't pre-tune off the sim** — it can't see the payoff; the table can.
+- **Structural note (still true, now correctly contextualised):** the 7-card deck seeded 4-per-region + 3
+  reserve, with refills landing in the won slot's region, means a *low-travel camp* caps at ~4 beverages
+  (the other 3 seeded slots need travel). That's **fine** for "drinks are a supplement, not a road" — it
+  only becomes a lever to revisit *if* the CD ever wants a heavier drinks lean to be a genuine road (it
+  doesn't, per this steer).
+
+**→ The 2p Screentop session is the real test of Riskiest #2.** Instrument: how often a player banks a
+drink, at *what moments* (waiting on ingredients / lost a Buzz fight / repositioning / a stand right where
+they stand), and whether the drink-banker wins more than a drinks-abstainer. That is the exact decision the
+sim's greedy bots cannot make.
+
+**Pacing knock-on (Riskiest #2b) — CONFIRMED, but bounded to drinks-heavy fields.** Beverages-off-the-clock
+means a drinks-leaning player doesn't feed the day-clock. In **competent mixed/ladder play the game paces
+fine** (~19–20 turns/player, **85–92% end by last-train**, stall 8–15%). But a **drinks-mirror drags badly
+(27.9 turns/player, 98% end only via the artificial STALL_CAP)** — the deck backstops never fire
+(`end_by_nm_deck 0%`) because nobody works the night-market deck. So the drag risk is real *if* a drinks
+lean were viable; since it isn't, a rational player always ladders enough to pace the game. If the drinks
+fork is later made viable (above), **the last-train / deck backstops must be re-checked** so a viable drinks
+lean can't stall the game.
+
+---
+
+## RISKIEST #1 — the Buzz fight + 大哥 (the carried make-or-break)
+
+**大哥 (the dominance probe) FLAGS.** 大哥 vs neutral, both seatings, at the three H2 options:
+
+| H2 option | 大哥 win% | verdict |
+|---|---:|---|
+| **A** tie-win (≥0) + the +1-ingredient tab *(the doc's rec)* | **64.0%** | **too strong** |
+| **B** tie-win (≥0) + Promote-places-1 | **86.6%** | **much worse** (the weaker Promote can't offset a tie-win; he just needs to *match*) |
+| **C** must-lead-by-1 (≥1) + the tab | **30.7%** | over-corrected (too weak) |
+
+The **tie-win threshold (≥0) is the problem**, not the flaw: winning every *matched* vendor is a large,
+compounding edge that neither proposed flaw contains (B is a trap — reducing his Buzz output barely matters
+when he only needs to tie). C shows the ≥1 threshold over-nerfs him. **Neither A nor B nor C lands in
+band → 大哥 needs a *middle* setting the current three options don't offer:** e.g. **≥1 threshold + a
+*lighter* flaw** (drop the tab), or **≥0 but with a genuinely heavy brake** (e.g. +1 ingredient *and* he
+can't win contested vendors). Recommend the CD treat H2 as **unresolved** and sim a 4th option; do NOT ship
+A. This is exactly Riskiest #1b as flagged.
+
+**Two other characters out of band** (char vs neutral, mixed road, both seatings; target 45–55%):
+
+| Character | win% | read |
+|---|---:|---|
+| 里長伯 councillor | 48.5% | ✓ |
+| 媽寶 office | **30.4%** | **too weak** — "keep only 1 on a Visit" is brutal now that the Visit is the ingredient workhorse; her "draw the region you left on Travel" ability doesn't compensate |
+| 網紅 influencer | **60.4%** | **too strong** — +1 Buzz on Promote over-performs (as the design flagged "load-bearing"); the go-last/start-behind flaw under-counts in sim |
+| 大胃王 dagushi | 50.6% | ✓ |
+| 大哥 dage | **64.0%** | out (see H2) |
+
+**大胃王's flaw (H1) is a non-issue** — all three options sit in band (A hazards-twice 50.6% / B keep-2
+50.6% / C next-fires 51.9%). **Ship A** (simplest) as the doc recommends; it does not over-brake here.
+
+**The Buzz fight is near-absent in bot play** — only **4.3% of ladder wins are contested** and
+`max_buzz_on_vendor ~3.9`, `buzz_supply_min ~16` (the ~24 supply never gets tight). The concession
+heuristic + asymmetric road targeting mean bots rarely pile onto the *same* vendor. So the sim **cannot
+answer "is the tug-of-war fun/tense"** — that is squarely the 2p Screentop question. What the sim *can* say:
+there is **no snipe-degenerate or supply-crunch failure**, and 大哥's tie-win is the one broken knob.
+
+---
+
+## RISKIEST #3 — the dig, movement spread, and the new interaction
+
+- **Movement spread SKEWS to the common-bearing regions.** Field sourcing shares: **N 15.5% · C 24.6% ·
+  S 27.0% · E 9.2%** (+ common 23.7%). Concentrating the common in C&S (H3=half) pulls sourcing there;
+  **East is starved at 9.2%** (well under the ~18% floor) and North is light. A carry-over of the old v3.1
+  "East light" issue, now driven by the *common's* placement rather than East recipe costs. **Knob:** the
+  common's spread (put one of the two common regions in the E/N half of the ring), or lift East demand on
+  night-market recipes — a data tuning for bg-developer, not a rules change.
+- **The v6.1 interaction injection is REAL but LIGHT in sim.** ~**2.4 take-that hazard hits/game** land on a
+  non-actor (mostly Visit region/neighbour scope catching a co-located/adjacent rival); only **~0.46 via the
+  Convenience Store** + **~0.19 deliberate pokes/game**. So the "near-zero interaction" an early read flagged
+  is now non-zero, but the **CS-as-weapon is rare** — bots are sourcing-driven and rarely flip a rival's
+  region on purpose, and a rival is seldom standing in the common region a drinks player flips. Read this as
+  a **floor** (the sim under-models deliberate poking); whether the aim-it-at-a-rival lever is *used and
+  fun* is a table question.
+- **Realized scope ratio skews REGION-heavy: ~29% self / 51% region / 20% neighbour** (vs the proposed
+  40/40/20). The per-kind skew (hazards→region/neigh, boons→self) plus forcing ★-boons to region scope
+  over-weights region and under-floors self. If the CD wants the proposed Self floor (so the CS isn't
+  mostly a region weapon), **soften the hazard region-skew** — but note it barely affects balance (H4 flat),
+  so this is a *feel/identity* tune, not a balance one.
+- **The 5-ingredient dig did not flatten** — events fire ~13/game, Visits (11.3) > CS (8.1) > Travels (9.2)
+  are all well-used, `forced_turn_frac 0.000` (never a dead turn), `avg_legal_actions ~9.8`. The push-your-
+  luck tension survives the smaller palette. The dynamic **★** fires ~1.9/game, winner grabs ~0.84 — a
+  modest, non-decisive swing.
+
+---
+
+## Health read (field round-robin)
+The ladder-capable lines (`mixed` / `ladder_lean` / `ladder_only` / `greedy_prest` / `smart_mix`) pack
+within ~1–3pt head-to-head — no crushing dominant single line. Every real line crushes `random`. As
+designed, **the ladder is the game and a drinks-only tour loses** (`pure_drinks` a near-pure loss vs
+anything real; `drinks_lean`, an over-commit, ~30% h2h). What the field does NOT resolve — because the
+greedy bots won't bank an opportunistic drink (see Riskiest #2) — is whether *well-timed* drinks beat
+ignoring drinks. `mixed`/`smart_mix` ≈ `ladder_only` here **only because the bots barely use drinks**, not
+because well-timed drinks are proven worthless. Seat effects mild, not flagged.
+
+---
+
+## The ONE thing to test next (this pass)
+**Riskiest #2 goes to the 2p Screentop table, not to a knob.** The sim has done its job on the extremes
+(pure-drinks correctly loses; drinks aren't dominant; no runaway) and confirmed the parts it can. The CD's
+actual goal — *well-timed drinks as a good tactical supplement* — is a **greedy-bot blind spot** (0.0–0.7
+drinks banked/game even when instructed; a productive ladder dig is always the better per-action play), the
+same limitation the notes flag for the Poach and Gourmand. **Instrument the session** for: drink-bank
+frequency, the *moment* each drink is taken (waiting on ingredients / lost a Buzz fight / repositioning), and
+whether a drink-user out-scores a drink-abstainer. **Carry as a cheap, sim-visible lever only if the table
+finds drinks feel worthless:** beverage value 2→3–4 / a lower common cost (smart_mix 42%→48% as value 2→4).
+Do not pre-tune off the sim. **Separately (sim-confident):** treat **H2 (大哥) as unresolved** — none of
+A/B/C is in band; sim a 4th option (≥1 threshold + a lighter flaw, or ≥0 + a real brake). Nudge **網紅 down**
+/ **媽寶 up**; **ship 大胃王 = H1-A**; fix **East** via the common's spread. The Buzz fight's *fun* and the
+scoped take-that's *warmth* are table questions.
+
+---
+
+**Knobs exposed for re-sim:** `TA_BEV_VALUE` / `TA_BEV_REP` (beverage value — a marginal lever on the
+opportunistic mix, 42%→48% as value 2→4; NOT a road-viability fix),
+`TA_H3` (common availability half/every/half_rich), `TA_SCOPE_SELF|REGION|NEIGH` (H4 scope ratio),
+`TA_H2_THRESH` / `TA_H2_FLAW` (大哥), `TA_H1` (大胃王), `TA_HAZARD` (event hazard frac), `TA_STARBOON`
+(★-boon frac), `TA_BUZZ_SUPPLY` / `TA_BUZZ_MARGIN`, `TA_DUSK` / `TA_LASTTRAIN` (clock marks),
+`TA_STALL_CAP` (the drinks-drag backstop), `TA_POKE` (the deliberate CS poke). **No structural
+harvest-fix knob exists yet — that's the design call to make, then encode.**
+
+## Encoding simplifications (v6.1 — the sim's blind spots)
+1. **Beverages baked (10 templates, sliced to a 7/9/10 deck by count)** at region granularity; the
+   region-anchored slot mechanics (seed 4 + reserve, refill-into-won-region, empty-and-stay-empty) are
+   faithful. These cap a low-travel drinks *camp* at ~4 wins — fine given the CD's "drinks are a supplement,
+   not a road" steer; a lever to revisit only if a heavier drinks lean should ever be a genuine road.
+2. **Event payloads abstracted** to tempo-tax (hazard) / free-ingredient or ★ (boon); Buzz/festival boons
+   folded into the ingredient windfall. The *warmth* of rival-facing beats is unmodelled (bg-theme/table).
+3. **The Buzz war is concession-resolved** → contested-win rate (4.3%) is a floor; the fight's fun/tension
+   is unmeasurable in sim by construction.
+4. **The deliberate CS "poke"** fires only as an idle fallback (larder full / no target) → poke frequency
+   (0.19/game) and CS-rival-hits (0.46/game) are floors; a human weaponises the blind flip more.
+5. **STALL_CAP (26 turns/player)** is an artificial backstop to surface the drinks-drag pacing risk
+   (`end_by_stall`); it is NOT a game rule — the real end-triggers are the last-train mark + deck exhaustion.
+6. Component CSVs (`../components/*.csv`) are still on the pre-v6 data model; the sim bakes its own
+   representative v6.1 vendor/event set (as prior passes did). The CSV rebuild is bg-developer's separate,
+   still-gated data task — out of scope for this sim rework.
+7. **The `ladder_only` (never-drinks) and `smart_mix` (ladder + opportunistic local-stand) bots** exist to
+   test the CD's "well-timed mix" bar. `smart_mix` only banks a drink when its ladder plan would otherwise
+   be a non-progress dig AND a local stand is already affordable. It still fires rarely (0.6/game) and loses
+   to `ladder_only` (42–48%) — the greedy planner has almost no genuinely dead beats, so this UNDER-models
+   the human "right time." Read (ii) in Riskiest #2 as *unmeasured by the sim*, not *disproven*.
+
+---
+
+## TOUR TICKETS — a proposed fix, GATED RUN COMPLETE (2026-08-07, CD-directed & CD-signed-off)
+
+**The proposal (CD-locked shape).** Replace the single hidden +7 mission with **Ticket-to-Ride-style Tour
+Tickets**: hold several; **claim a new one as a full action** (Book; doesn't tick the day-clock); score
+**+value on completion, −floor(value/2) if unfinished**. The deck **leans on MIX tickets** (drinks +
+ladder: "a stand + a night-market", "a stand in 3 regions", "one of each venue") so a *well-timed drink
+pays toward a bonus the greedy planner can SEE* — the exact incentive the flat-2-VP drink lacked. Encoded
+behind `TA_MISSION_MODE` (`tickets` = proposal; `single` = the committed v6.1 baseline, for a clean A/B).
+New bot `ladder_only` (never drinks) is the "ignore drinks" control.
+
+**Headline: Tour Tickets turn the drinks fork from a ~20% trap into a BALANCED, in-band alternative, and
+make a mix a legitimately competitive line — while pure-drinks still correctly loses.** The intended
+effect landed.
+
+**Authoritative numbers — the caps-aware `_versus`/H5 probes (n=1200; each side's ticket dealing aligned
+to its real road/capability):**
+
+| Matchup (both seatings) | single | tickets | read |
+|---|---:|---:|---|
+| `drinks_lean` vs `ladder_lean` (the fork balance) | 45.3% | **49.2%** | tickets add ~4pt → **in-band both sides** (was a ~20% trap pre-competence-fix) |
+| `mixed` vs `ladder_only` (mix vs pure-ladder expert) | 50.4% | **51.0%** | a mix is **not worse** than pure ladder; ~coin-flip |
+| `drinks_lean` vs `ladder_only` | 37.1% | 36.8% | leaning drinks still **loses to a pure-ladder expert** (correct: don't punish clean laddering) |
+| `pure_drinks` (field) | — | **~25%** | still a **clear loss** — nobody wins on drinks alone ✓ |
+
+So the two make-or-break bars for Riskiest #2 now PASS: **(i)** pure-drinks clearly loses; **(ii)** the
+drinks *lean* is viable and in-band (≈49/51 vs the ladder lean), no longer a trap. A mix is competitive
+with pure ladder rather than strictly dominant — arguably correct (a clean ladder line shouldn't be
+punished either). **Why it works:** a ticket payoff is greedy-visible where flat drink-value was not, so a
+held mix/drinks ticket makes the bot (and a human) actually pursue a well-timed drink.
+
+**⚠ Methodology caveat — the auto round-robin (`sim-results.md`) is caps-BLIND, do NOT read its field
+ordering as truth.** `simulate.py` calls `new_state(rng)` generically, so it can't pass per-strategy caps;
+`ladder_only`/`pure_drinks` there get *dealt drinks-requiring tickets they will never complete* and eat the
+−half penalties, which **inflates the drinks-inclusive lines** (the RR shows `drinks_lean` 59% > `ladder_only`
+56%, an artifact — the fair `_versus` head-to-head is `drinks_lean` **37%** vs `ladder_only`). Trust the
+`_versus`/H5 table above; the RR is a rough field-shape check only. (Fix if ever needed: thread caps through
+the round-robin harness, or drop the two pure controls from the RR.)
+
+**Character balance under tickets (mildly better, same conclusions):** councillor 49.3 ✓ · 大胃王 52.1 ✓ ·
+網紅 55.4 (borderline, was 60.4) · 大哥 **58.9 (still hot, was 64.0)** · 媽寶 **30.0 (still weak)**. Tickets
+add a shared scoring vector that slightly dilutes ability edges, but **H2 (大哥) is still unresolved** (A
+58.9 / B 84.6 / C 30.4 — none in band; needs a 4th option) and 媽寶 still needs a buff. H1 (大胃王) all ~52%,
+ship A.
+
+**Costs & watch-points (honest):**
+- **Weight.** Tickets are a real subsystem add (claim action + penalty rule + multi-objective tracking) —
+  teachable, but pushes toward the top of the 2.5 budget. `bg-elegance` must weigh it before lock.
+- **The ticket swing is modest** in bot hands: winner nets only **~+2.7** from tickets (holds ~2.1, completes
+  ~1.0, eats a −half penalty on the unfinished one). The penalty bites — which is the intended TtR tension.
+- **Under-modelled upside.** The "stack a ladder ticket + a cheap drinks ticket and finish BOTH" juggling is
+  a multi-objective planning layer the greedy bot executes poorly (completes ~1 of 2 held), so the sim likely
+  **under-estimates** the system's value for a thinking player — a point *for* the design, to confirm at the table.
+- **Pre-existing v6.1 items unchanged by tickets:** East under-sourced (S 35% / E 9%), the Buzz fight rare in
+  bot play (~5% contested → table question), and the drinks-heavy pacing drag.
+
+**Recommendation:** Tour Tickets are a **keeper** — they fix the fork's viability (the session's #1 problem)
+in the exact way the CD intended, cheaply and thematically. Next: **(1)** `bg-elegance` weight check +
+`bg-theme` to lore the tickets as a travel agent's *itinerary/booked stops*; **(2)** if the CD wants the mix
+to more clearly *beat* pure ladder (not just match it), add the complementary **cheaper-drink** lever (lower
+common cost or a lighter claim on the low-conflict stands); **(3)** the real proof is the **2p Screentop
+table** — the multi-objective juggling and the "book another? / can I finish it?" press-your-luck are exactly
+what the sim can't fully judge. Only lock into the design-doc/bible on the CD's word — Tour Tickets remain a
+*proposal* until then.
+
+---
+
+# v6.2 — REGION VENDOR MARKETS + A MISSION CLOCK — simulation notes (2026-08-07)
+
+Sim module reworked from the v6.1 economy fork to the **v6.2 proposal** (`../design/v6.2-content-draft.md`).
+The board is now **four region vendor markets** (per-region day/night decks, 2/1/1/1 face-up, refill-in-
+place, **drinks are the low-value cards in each deck**), the day turns over at a single **DUSK FLIP** (both
+day vendor decks AND day ingredient pools cleared island-wide → night decks, event-heavier; **Larder
+kept**), the day is paced by a **MISSION CLOCK** (with an all-vendor-claims clock behind a knob for the
+A/B), sourcing runs on a **conserved per-region token pool with renewable over-cap discard** (the
+anti-lockout rule), and **Tour Tickets** are a **shared face-up row of 3**, claimed as an action, scored
+retroactively (+value / −floor(v/2)). **Nothing here is logged to the bible/decision-log as LOCKED — the
+CD picks from the A/B/C forks below; this is the interpretation.** Authoritative n = **1000 games/cell**.
+
+**Headline: v6.2 is a strong pass.** All five playstyles are live and none dominates; a well-timed mix
+crushes the ignore-both control while pure-drinks is dead; **East is no longer starved (18% sourcing, up
+from v6.1's 9%)** — the cross-region cycle works; **hoarding is a confirmed trap, not a lockout**; and the
+two open character calls **resolve** (H2 大哥 has an in-band 4th option; 媽寶's buff lands). The residuals
+are all familiar sim blind-spots (the Buzz-fight's *fun*, the disruptor's *teeth*, 網紅's under-counted
+go-last flaw) plus one new data flag (**Central is now the under-pulled region** — tea has no export
+demand) and a pacing caveat (the region markets deliberately add travel, so bot games run **~25 turns/
+player**, over the design's 14–18 estimate).
+
+> **Methodology note.** All win-rates below come from the **caps-aware** `_versus` / `_char_winrate`
+> probes in `__main__` — each side's prefs/capability (no-drinks, no-tickets, hoard region, character kit)
+> is wired into `new_state`. The auto round-robin in `simulate.py` (`sim-results.md`) is **caps-BLIND** (it
+> calls `new_state(rng)` generically and would mis-deal drink/ticket-requiring tickets to the pure
+> controls, inflating them — the same artifact flagged for v6.1); it was **not** used as a source of truth
+> this pass. Trust the probe suite.
+
+## What the v6.2 sim covers (and its blind spots) — bots are a FLOOR on depth
+- **Shared engine brain:** one greedy value/action planner; strategies differ ONLY in prefs
+  (value/ticket/ramp/speed weights + disrupt/opportunistic/hoard flags + drink/ticket controls).
+- **Region markets, the dusk flip, and the conserved ingredient pool** are modelled faithfully (per-region
+  day/night decks, 2/1/1/1 face-up + refill, the island-wide dusk sweep of both layers with the Larder
+  kept, event-heavier night draws, and a conserved token pool whose over-cap discard folds back in when
+  the region runs dry — so denial is temporary and self-taxing).
+- **Blind spots (hand to the table):** the Buzz tug-of-war's *fun/tension* (concession heuristic → bots
+  rarely pile on the same vendor, ~5% contested — a floor); the disruptor's scoped-CS *warmth/teeth* (bots
+  poke rarely and blindly); 網紅's **goes-last** flaw (seat effects are mild for greedy bots); whether the
+  dusk flip *feels* like a turnover; teachability/FTUE. And the −½ penalty's real job — disciplining a
+  human's *speculative* over-claim — is invisible to a bot that only claims finishable tickets.
+
+## Game arc (balanced mirror, mission clock)
+~**25.7 turns/player**, **5.1 vendors/player**, winner ~**34.2 VP** (Prestige ~16.3 · Rep-VP ~5.2 ·
+**Tickets ~12.7**). Dusk ~turn 34, last-train ~turn 48. `forced_turn_frac 0.000` (never a dead turn),
+`avg_legal ~9.6`, `empty_draws ~0.10/game`. **Note the ticket share (~37% of the winner's score)** — Tour
+Tickets are load-bearing for scoring (a point for `bg-elegance`/the table: the spine is doing a lot of the
+scoring work; that's by design, but watch it doesn't eclipse the vendor engine's *felt* payoff).
+
+---
+
+## PROBE 1 — the five playstyles → **PASS (all five live, none dominant)**
+Avg win% vs the field, both seatings, all crush `random` (100%):
+
+| Playstyle | avg vs field | read |
+|---|---:|---|
+| balanced | **53.0%** | generalist, mild top edge (<55) |
+| mix (well-timed drinks + tickets) | **52.3%** | live |
+| opportunistic (★/premium/high-value tickets) | **50.7%** | live |
+| endgame (rush completions) | **50.5%** | live |
+| disruptive (scoped CS at a rival) | **46.7%** | live but the weakest lane (see Probe 9) |
+| *no_drinks (ignore drinks control)* | *43.1%* | ignoring drinks is a real handicap |
+
+Band **43–53%**, no line >~53% (no Condorcet crusher), every real line crushes naive. **The design's
+"several viable ways, none >~55%, some rock-paper-scissors" bar is met.**
+
+## PROBE 2 — is a well-timed MIX good? → **PASS**
+| Matchup | win% | verdict |
+|---|---:|---|
+| `mix` vs `ignore_obj` (ignore objectives AND drinks) | **73.4%** | a mix crushes ignoring both ✓ |
+| `balanced` vs `ignore_obj` | 74.1% | objectives+drinks clearly matter |
+| `pure_drinks` vs `balanced` | **0.5%** | nobody wins on drinks alone ✓ |
+| `pure_drinks` vs `no_drinks` | 0.3% | " |
+**Tour Tickets + drinks-as-low-value-vendors deliver the CD's bar:** a mix is strongly positive, pure
+drinks is dead. (The mix's edge is amplified because tickets are ~37% of score — see the arc note.)
+
+## PROBE 3 — Buzz-fight frequency → **LOW (~5%), a table question — NOT hard-flagged**
+`contested-win frac 5.4%`, `max_buzz_on_vendor ~5.5`. Spreading vendors across region markets did **not**
+make the fight rarer than v6.1 (~4.3%) — it's about the same. It is **not near-zero** (no hard flag), but
+bots rarely collide by construction (concession heuristic + asymmetric targeting), so the *fun/tension* of
+the headline mechanic remains **unmeasurable in sim → the #1 table question** (unchanged from v6.1).
+
+## PROBE 4 — travel spread → **PASS on East; NEW flag on Central**
+Field sourcing / claim share (balanced mirror):
+
+| Region | SRC share | CLAIM share | read |
+|---|---:|---:|---|
+| North | 24% | 36% | dense capital (2 slots), as designed |
+| Central | **13%** | **15%** | ⚠ **the new under-pulled region** (see below) |
+| South | 27% | 32% | the busy cross-hub (everyone imports seafood) |
+| East | **18%** | 17% | ✓ **the headline fix — was 9% in v6.1** |
+**East is no longer starved (18% sourcing, at the ~18% floor)** — the cross-region cycle (S's 棺材板 pulls
+rice out) + the P8 apex + coverage tickets drag traffic east, exactly as the value spread intended.
+`inter_moves ~8.7/game` (real routing, not camping). **NEW flag — Central is now the under-pulled region
+(13% src):** the cycle makes C a pure *importer* (逢甲 needs S), so **tea (C's signature) has no external
+demand** and nobody travels to *source* it. This is the v6.2 analog of v3.1's "East starved." **Fix (a
+data tweak for `bg-developer`, not a rules change):** give tea one export — e.g. re-point one cross-region
+cost to need **C** (make an East or North night dish need a tea/tisane note), so the cycle becomes a true
+loop through all four. Minor; a watch, not a blocker (Central still sees play via K + its own vendors).
+
+## PROBE 5 — CLOCK A/B → **recommend the VENDOR-CLAIMS clock**
+| Clock | turns/player (sd) | vendors/pl | dusk turn | end: LT / stall |
+|---|---:|---:|---:|---:|
+| mission | 25.7 (**4.9**) | 5.1 | **33.8** (late) | 74% / **26%** |
+| vendor-claims | 25.2 (**3.9**) | 5.0 | **21.3** (mid) | 86% / **14%** |
+The **vendor clock is tighter and more reliable**: lower length variance (sd 3.9 vs 4.9), a **crisp
+mid-game dusk** (turn 21 vs 34), **half the stall rate** (14% vs 26%), and it reaches the real last-train
+trigger far more often. The **mission clock's dusk comes late** because completing 3 missions *lags* vendor
+wins — so Act I runs long and Act II is a short tail (a lopsided arc). **Recommend the vendor-claims clock**
+(dusk 5 / last-train 10 @2p). *Caveat:* **both** clocks run **~25 turns/player** — over the design's 14–18
+estimate — because the region markets + cross-region cycle deliberately add travel (v6.1's central ladder
+was ~20). Greedy bots also over-travel/over-promote, so a human table will be tighter; if it drags, lower
+the marks (fewer claims to end). ~25 bot-turns/player ≈ **~30–40 min**; humans likely land nearer the
+25–30 target.
+
+## PROBE 6 — the −½ penalty A/B → **no behavioural difference in sim (lean: safe to cut, with a caveat)**
+| Penalty | mix vs ignore_obj | claims/gm | tickets done/held (winner) | winner VP |
+|---|---:|---:|---:|---:|
+| −floor(v/2) | 73.4% | 6.7 | 3.0 / 3.5 | 34.2 |
+| score-0 | 82.7% | 6.7 | 2.9 / 3.5 | 35.1 |
+**Bots claim and complete identically with or without the penalty** — it changes only the *score* (it
+compresses the gap to the control and shaves ~1 VP). So by the brief's bar ("if behaviour doesn't differ,
+recommend cutting it"), the sim **supports the `bg-elegance` cut**. **BUT** the caveat is load-bearing: the
+penalty's design job is to discipline **speculative** claiming, which the greedy bot never does (it only
+claims finishable tickets), so **the sim can't see what the penalty is for.** This is a genuine A/B/C for
+the CD (below).
+
+## PROBE 7 — the dusk flip + hotter night → **paces cleanly; night-sprint is a feel call**
+No dead reset beat: `forced_turn_frac 0.000` across the flip, no stall spike at dusk, and the night
+ingredient decks are event-heavier (modelled `NIGHT_EVENT_FRAC 0.42` vs day 0.25). The **night-half-sprint**
+question interacts with the clock: the **mission clock already front-loads Act I** (dusk late → a naturally
+short night), while the **vendor clock gives a balanced two-act arc** (dusk mid-game). So if you take the
+vendor clock and *want* a sharper night, a small night sprint (fewer claims to last-train after dusk) is
+the lever — but whether the night should *feel* like a sprint is a table question, not a sim verdict. The
+"event-heavier = hectic-fun not swingy-punishing" judgement is squarely the table's (payloads are
+abstracted).
+
+## PROBE 8 — character balance → **H2 & 媽寶 RESOLVED; 網紅 borderline (watch); ship 大胃王 A**
+Char vs neutral, both seatings, target 45–55%:
+
+| Character | win% | verdict |
+|---|---:|---|
+| 里長伯 councillor | 51.8% | ✓ |
+| 媽寶 office (with keep-2) | **45.6%** | ✓ **fixed** (was 29.4% at keep-1) |
+| 大胃王 dagushi (H1-A) | 52.6% | ✓ **ship A** |
+| 網紅 influencer | 60.5% avg → **55.0% goes-last** | ⚠ borderline (see below) |
+| 大哥 dage | see H2 | resolved via option D |
+
+**H2 (大哥) — RESOLVED. Recommend option D.**
+| Option | win% | |
+|---|---:|---|
+| A tie-win + tab *(doc rec)* | 62.7% | too strong |
+| B tie-win + Promote-1 | 91.4% | far worse |
+| C lead-by-1 + tab | 26.9% | over-nerfed |
+| **D lead-by-1 + NO flaw** | **51.7%** | ✓ **in band** |
+| E tie-win + can't-win-contested + tab | 57.4% | in band-ish, hotter |
+The **tie-win threshold was the whole problem** (winning every *matched* vendor compounds). Option **D**
+drops the tie-win to a **lead-by-1** (still an edge — everyone else needs +2 — and needs no flaw), landing
+**51.7%**. Cleanest to teach ("大哥 only needs a *slim* edge, not a decisive one"). E keeps the tie-win but
+bars contested wins — thematic but hotter (57.4%) and adds a rule.
+
+**媽寶 (office) — FIXED by keep-2.** none/keep-1 **29.4%** → keep-2 **45.6%** → travel2 34.3%. The keep-1
+flaw was simply crippling now that the Visit is the ingredient workhorse. keep-2 removes it and lands her
+in band. *Design shape note:* keep-2 leaves her ability-only (Travel draws the region you left, no flaw);
+if you want to preserve an ability+flaw silhouette, give her a **light thematic flaw that doesn't touch the
+Visit** (a table/design call, not sim-load-bearing).
+
+**大胃王 (dagushi) — ship H1-A.** All three flaws ~in band (A 52.6 / B 52.6 / C 53.5); A (hazards-twice) is
+simplest.
+
+**網紅 (influencer) — borderline, carry with a watch-flag (unchanged from v6.1).** The +1-Buzz-on-Promote
+ability is genuinely strong (Buzz is the binding late constraint). The head-start flaw is **inert** (a flat
+common head-start moves nothing: 60% at behind 1/2/3 — K is low-value). Modelled **honestly as "goes last"
+(fixed second seat)** he lands **55.0%** — top of the band, just in. **The sim under-counts a go-last
+disadvantage** (a greedy bot doesn't feel reacting-last the way a human does), the exact limitation the
+v6.1 notes flagged. **Keep "Going Viral + goes last + starts behind"; carry to the table** with the cheap
+trims in reserve if he's still hot: +1 Buzz only on your **first** Promote each turn, or a small bribe tab.
+
+**Day/night kit lean (design open-Q10):** every kit reaches the band **without any day/night tweak**, so
+**no kit *needs* an explicit day/night ability** for balance — which is the answer to "add one only where
+needed": none needed. The full **two-mode day/night flip stays an expansion** (as reserved), not a base
+requirement.
+
+## PROBE 9 — disruptive viability → **a real but the WEAKEST lane; not a trap, not oppressive**
+`disruptive` sits at **46.7%** avg vs field — clearly viable (crushes naive, in the band), but the softest
+of the five. The scoped-CS take-that is **light in bot hands** (bots poke rarely and blindly — a known
+floor), and the contest tickets (搶手貨 / 人氣王) give the lever a scoring home so it isn't just a spoiler.
+**Read: leaning disruptive is a legitimate lane, neither a trap nor oppressive — but at current teeth it's
+the marginal playstyle.** If the table finds it toothless, the lever with the least feel-bad is *more
+contest-reward* (a slightly higher-value contest ticket, or a small Rep/Buzz kickback for winning a
+contested vendor), NOT nastier CS events (which risk the take-that warmth). This is a table question.
+
+## PROBE 10 — hoarder / ingredient-denial → **CONFIRMED a trap, not a lockout**
+| Hoarder | win% vs balanced | empty_draws/gm (denial) |
+|---|---:|---:|
+| baseline (no hoarder) | — | 0.10 |
+| hoard **East** (rice) | **8.6%** | 0.27 (2.7×) |
+| hoard **South** (seafood) | **15.8%** | 0.61 (6×) |
+A hoarder **loses decisively** (renewable discard + Larder cap + the dusk reset make it self-taxing), yet it
+**does buy real *temporary* denial** — a rival's Visits find the region dry 3–6× more often. Denying
+**South** bites harder (seafood is imported by S's own vendors + N's 牛肉麵 + C's 逢甲) but still loses at
+15.8%. **The per-region signature supply size (SIM `SIG_SUPPLY=10`) keeps denial *spice*, not a
+stranglehold** — the exact tuning the brief asked for. Denial is a flavour of the disruptive lane, correctly
+non-degenerate.
+
+## PROBE 11 — MP light seat-balance smoke → **no catastrophic seat; mild last-seat tax (deferred)**
+| Count | seats | note |
+|---|---|---|
+| 2p | seat0 54% / seat1 43% (tie 3%) | mild first-player edge, within tolerance |
+| 3p | 36 / 35 / **23** (tie 7%) | last seat ~10pt light — a watch |
+| 4p | 29 / **19** / 24 / 24 (tie 5%) | seat1 light — a watch |
+**No seat is broken and none trips the harness "suspect" flag.** There is a **mild last/late-seat
+disadvantage at 3–4p** — flagged for the **deferred dedicated MP pass** (`bg-architect` + `bg-critic`), not
+tuned here (the brief scoped MP to a catastrophic-only smoke; 2p is the design home). No kingmaking test was
+run (deferred with the MP pass).
+
+## PROBE 12 — pacing / anti-runaway → **no runaway**
+The tight playstyle band (Probe 1, all 43–53%) and **`endgame` at 50.5%** (the rush line does not run away)
+are the anti-runaway signal: no line snowballs, the end-game-driver can't slam the door while ahead, and
+`forced_turn_frac 0.000` means a trailing player always has live actions. The vendor clock's crisp,
+low-variance length (sd 3.9) is the cleaner pacing spine.
+
+## PROBE 13 — FAQ ambiguities (NOTE, not simmed)
+- **A region's deck runs out:** face-up slots simply aren't refilled (fewer courtable vendors there) until
+  dusk swaps in the night deck; the day/night backstops end the phase if *all* decks dry island-wide.
+  Rulebook: "if a region's deck is empty, its face-up slot(s) stay as they are — refill only when able."
+- **A simultaneous clock trip** (one claim triggers dusk *and* the last train, or the last day vendor won
+  at dusk): resolve **dusk first, then** the end check. Rulebook needs an explicit order-of-operations line.
+- **Claiming an already-satisfied ticket:** allow it, but it's a *wasted* action (it scores retroactively
+  either way) — OR simplest rule: **you may only claim a ticket you have not yet completed.** Recommend the
+  latter (prevents a confusing free-points-for-an-action edge case).
+
+---
+
+## The decision forks for the CD (A/B/C)
+1. **The clock → recommend the VENDOR-CLAIMS clock** (dusk 5 / last-train 10 @2p): tighter, lower variance,
+   crisp mid-game dusk, half the stalls. (Alt: mission clock — thematic but a lopsided, late-dusk arc.)
+2. **The −½ penalty → CD's call, genuinely.** Sim shows no behavioural difference (supports the elegance
+   cut), but it can't see the human speculation the penalty disciplines. Lean: **keep it (it's the
+   press-your-luck tension), and let the table decide** whether claims feel agonised-over.
+3. **大哥 → recommend option D** (lead-by-1, no flaw; 51.7%).
+4. **媽寶 → keep-2** (45.6%), optionally add a light non-Visit flaw for silhouette.
+5. **網紅 → keep Going-Viral + goes-last** (55.0% honest); carry with a cheap-trim watch-flag.
+6. **Central under-pull → a small data tweak** (give tea one export in the cross-region cycle) — for the
+   `bg-developer` v6.2 rebuild, not a rules change.
+
+## Encoding simplifications (v6.2 — the sim's blind spots)
+1. **Vendors baked** from the content draft (24 vendors, day/night per region, ★ + cross + drinks marked);
+   the CSVs are stale pre-v6 and were NOT used — the v6.2 data rebuild is `bg-developer`'s gated job.
+2. **Ingredient pool** is conserved per region PER PHASE (over-cap discard folds back; spent-on-vendor
+   tokens are consumed; dusk resets to a fresh night pool). Faithful to the renewable-discard rule; the
+   hoarder probe reads it correctly.
+3. **Event payloads abstracted** to tempo-tax (hazard) / free-ingredient or ★ (boon). Warmth/feel unmodelled.
+4. **Buzz war concession-resolved** → the 5.4% contested rate is a floor; the fight's fun is unmeasurable.
+5. **Tickets** claimed from a shared row by a keep-fit heuristic; the multi-objective "juggle two and finish
+   both" is executed poorly by the greedy bot, so the sim likely **under-values** tickets for a thinking
+   player (a point *for* the design).
+6. **網紅's goes-last flaw** is under-counted (mild seat effects for greedy bots) → his 55.0% is if anything
+   a ceiling; a human table feels the flaw more.
+7. **STALL_CAP (30 turns/player)** is an artificial backstop to surface pacing risk, not a game rule.
+
+**Knobs:** `TA_CLOCK` (mission|vendor), `TA_M_DUSK/M_END`, `TA_V_DUSK/V_END`, `TA_PENALTY` (half|zero),
+`TA_H2_THRESH/H2_FLAW` (大哥), `TA_H1` (大胃王), `TA_OFFICE` (媽寶), `TA_INFL_BEHIND` (網紅), `TA_SIG_SUPPLY`
+(the hoarder/denial supply knob), `TA_K_SUPPLY`, `TA_DAY_EVENT/NIGHT_EVENT` (dusk-flip event density),
+`TA_NIGHT_SPRINT`, `TA_HAZARD`, `TA_STARBOON`, `TA_SCOPE_*`, `TA_BUZZ_SUPPLY/MARGIN`, `TA_STALL_CAP`.

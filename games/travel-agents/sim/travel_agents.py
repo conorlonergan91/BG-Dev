@@ -1,1591 +1,1534 @@
 """
-travel_agents.py — Travel Agents: Taiwan (v3.1 — MOVEMENT REBALANCE + THE POACH) encoded for the
-simulation harness (see tools/sim/engine.py). Stdlib-only.
+travel_agents.py — Travel Agents: Taiwan (v6.2 · REGION VENDOR MARKETS + a MISSION CLOCK)
+encoded for the simulation harness (see tools/sim/engine.py). Stdlib-only.
 
-v3.1 REWORK (2026-08-06). Builds on the v3 vendor-courting ENGINE. Two playtest-driven changes are
-now under test, engine otherwise unchanged:
-  * MOVEMENT REBALANCE (Change 1): the vendor deck is now LOADED FROM THE REAL, re-costed
-    components/vendors.csv (25 vendors) at region granularity. Cost = the regions of a vendor's NAMED
-    specialties (the sourcing regions); the discount ICON is the vendor's icon region — and in v3.1
-    these DIFFER on the 8 (32%) cross-link vendors (6 North-bound). This anchor+cross-link structure is
-    the whole point of the rebalance, and the old synthetic table could not represent it.
-  * THE POACH (Change 2): a conditional 6th action — when a rival shares your region you may take 1
-    random specialty from their open Larder and pay Reputation -1 (floored at 0; pantry not stealable;
-    no refill/event/Season). Modelled as a real action + two strategies (situational + aggressive).
+This reworks the v6.1 sim (central Ladder + region-anchored beverage slots + a ladder-only clock) to the
+v6.2 PROPOSAL in design/v6.2-content-draft.md. v6.2 tears out the central Ladder and the beverage-slot
+special-case; the board is now FOUR REGION VENDOR MARKETS, drinks are just the low-value vendors in each
+deck, the day turns over to night at a single DUSK FLIP, and the day is paced by a MISSION CLOCK (with an
+all-vendor-claims clock behind a knob for the A/B). What the spine keeps from v6.1: the Buzz-majority
+public hype-fight, the 5-ingredient palette (4 signatures + 1 common in C&S), the push-your-luck market
+dig with scoped events, the discount ramp on food vendors, Prestige + Rep-end-VP scoring, the dynamic ★,
+and the five characters.
 
-We attack the design's make-or-break assumptions BEFORE the human session. Probes (run in __main__):
+WHAT v6.2 MOVED — and what this rework implements:
 
-  PROBE A  (v3.1 LEAD) MOVEMENT SPREAD. Per-region sourcing share (each >=~18%; South up from ~6%);
-           inter-region moves/game; and — the key question — is a STAY-HOME (camp) line competitive?
-           (If camping wins, the 32% North-bound cross-link rate is too low and must be nudged up.)
-  PROBE B  (v3.1 LEAD) THE POACH. Frequency/game (low/situational); a Poach-lean line's win-rate
-           (<=~55%, not dominant); RATIONAL steal-war frequency (~0, self-correcting); the -1 Rep cost.
-  PROBE 1  No dominant track/opening. No single strategy/track wins >~55%; >=3 viable in a tight band.
-  PROBE 2  No economy runaway. Does the undiscountable-Buzz floor cap the court-rate at ~1/2 turns?
-  PROBE 3  Character balance: each of 5 in 45-55%; no character x mission combo >~60%.
-  PROBE 4  Anti-hoard / hard-stuck ~= 0 (unlimited pantry + always-on Promote valves).
-Plus a standard health read (score spread, avg margin, trap paths).
+  (1) REGION VENDOR MARKETS (no central Ladder). Each of the 4 regions has its OWN face-down vendor deck
+      — a DAY deck in Act I, a NIGHT deck in Act II — with drinks mixed in as the low-value vendors. Each
+      region shows 1-2 face-up (North 2, others 1), refilled in place from that region's current deck. You
+      court whatever is face-up in the region you STAND in (one unified Bribe rule for everything).
 
-Run:
-    python tools/sim/simulate.py --module games/travel-agents/sim/travel_agents.py --n 2000 \
-        --out games/travel-agents/playtests/sim-results.md
-    python games/travel-agents/sim/travel_agents.py            # runs all four probes
+  (2) THE DUSK FLIP. At dusk the ENTIRE day layer is cleared island-wide — BOTH the day vendor decks AND
+      the day ingredient market decks are removed (unclaimed day vendors gone) — and the NIGHT decks are
+      swapped in. Players KEEP their Larder; only the board/supply resets. The night ingredient decks use
+      the SAME 5 palette but are EVENT-HEAVIER (the bustling night market).
+
+  (3) RENEWABLE DISCARD (the anti-lockout rule). Larder cap 7; excess → that region's market discard,
+      which reshuffles back into the deck when it runs dry — ingredients recycle, never removed from the
+      game. Modelled as a CONSERVED per-region token pool (+ a discard that folds back in), so the hoarder
+      probe + per-region signature supply size are faithful. Day discards clear at dusk.
+
+  (4) THE VALUE SPREAD that PULLS travel: one ★ apex per region (E highest), a cross-region recipe cycle
+      N→S→E→N with C feeding S, North dense-not-rich (2 slots), drinks cheap (locally sourceable K) only
+      in C & S. Baked from the content draft.
+
+  (5) TOUR TICKETS as the spine: a face-up shared ROW OF 3, claimed as a full action, scored RETROACTIVELY
+      (+value / −floor(value/2) if unfinished — the penalty is a knob for the A/B), drawn from day/night/
+      general pools (12 per phase in the box, 5 drawn per phase per game).
+
+  (6) BOTH CLOCK MODES behind a knob. MISSION clock (a completed claimed mission advances the day; ~3 →
+      dusk, ~3 more → last train @2p) vs the all-VENDOR-CLAIMS clock. Recommend one from the sim.
 
 ------------------------------------------------------------------------------------------------------
 DESIGN FIDELITY / SIMPLIFICATIONS (bots are a FLOOR on depth, not a ceiling)
 ------------------------------------------------------------------------------------------------------
-Faithfully modelled: 4-region ring + HSR(N-S) adjacency; the five actions (Stock Up +2 / Travel move+1 /
-Promote +2 Buzz / Court / Extract); the two-input court cost = named region ingredients MINUS held
-region-icon discounts (floored 0) + Buzz (NEVER discounted); the discount ramp (each vendor's region
-icon cheapens that region's ingredient half of future vendors); the tiered Vendor Board (T1/T2/T3, 3
-face-up per tier at 2p, refill on court, courted vendor locked from rivals); Prestige (1/3/5-6 by tier);
-Reputation track climbed by printed Rep, milestone perks at 3/6/9 + top(12) end-trigger, end-VP
-2/4/6/9; Region-Coverage 2/5/9; the secret +7 Mission (draw-3-keep-1, a strategy-aligned pick); the
-Season end-timer (+1 per court, final ~16 at 2p -> finish round + one more full round); Market events
-firing on refill (boon-skewed ~60/40, tax-not-destroy); finite per-region specialty supply (~2x solo
-demand, unlimited pantry); the Larder cap 7 (6 Rookie); the 5 Characters (ability + flaw).
+Faithfully modelled: the 4-region ring + HSR(N↔S); the five actions; the 5-ingredient palette + common in
+C&S; per-region day/night vendor decks with 2/1/1/1 face-up + refill-in-place + the dusk sweep; the
+conserved per-region ingredient token pool with renewable over-cap discard; Visit-3-keep-2 with events
+firing by scope; Convenience Store single blind draw firing by scope; Travel drawing the arriving region
+(whiffs on an event); the Buzz-majority Bribe (≥margin lead, presence, pay ingredients −discounts) clearing
+to a finite supply; the discount ramp (food only; drinks carry none); the ★ apex + dynamic ★ boon; Tour
+Tickets from a shared row with retroactive ±scoring; both clock modes; the five characters.
 
-Simplifications (LISTED so we know the sim's blind spots):
-  * SHARED "engine brain": every strategy uses ONE greedy courting/sourcing engine; strategies differ
-    only in their VENDOR-VALUE WEIGHTS (how much they prize Prestige / Reputation / Coverage / mission /
-    ramp) and an OPENING flag (buzz-first vs ingredient/ramp-first). This isolates "is a track/opening
-    dominant?" exactly as beacon.py isolates the signal policy.
-  * Ingredients are tracked at REGION granularity (N/C/S/E + Pantry), not per-specialty (beef vs pork
-    both = "N"), because courting discounts are per-REGION. So intra-region specialty scarcity (only so
-    many oysters vs milkfish) is collapsed into one per-region supply pool (~2x solo demand). Scarcity ->
-    reroute is preserved at region level; the pantry valve is exact.
-  * Market events are modelled by their MECHANICAL payload (free Buzz / free ingredient / a tempo tax /
-    a supply wash), fired with a per-refill probability (~EVENT_PROB), boon 60 / hazard 40. The Rookie's
-    "draw 2 resolve 1" = skips hazards; the Gourmand's "no boons" = boons do nothing. Exact tile text is
-    not modelled (that's the feel-test's job).
-  * Draw-3-keep-1 mission = the bot keeps the dealt mission best aligned to its weights (the design's
-    "you steer your own keel"); it does not model reading the opponent's mission.
-  * "Wild region icon" (T3 perk) and the pass-9 free icon are modelled as flexible discount + a coverage
-    filler; a T2 "pantry-as-wild" perk and the Gourmand ability grant one pantry->specialty substitution
-    per turn when courting. Perk allocation choices are greedy, not optimal.
-  * Bots essentially never Extract early (they let the Season/Rep-top trigger end it) — matching the
-    design's "Extract is a tempo option, the timer usually ends the game". The push-your-luck *feel* of
-    Extract is a human-session question, not a sim one.
-  * ASSUMPTIONS where the doc left a value open are tagged `# ASSUMPTION:` inline and collected in
-    sim-notes.md.
+Simplifications (the sim's blind spots — hand these to the table):
+  * SHARED "engine brain": every strategy scores legal actions with ONE greedy planner; strategies differ
+    only in PREFS (value/ticket/ramp/speed weights + disrupt/opportunistic/hoard flags + drink/ticket
+    controls). Isolates the playstyle questions exactly as beacon.py isolates policy.
+  * Event PAYLOADS abstracted: a HAZARD = a bounded, tax-not-destroy tempo tax (one fewer sourced
+    ingredient); a BOON = a free ingredient windfall or (a fraction) the dynamic ★ placement. Warmth of
+    rival-facing beats is the feel-test's job (bg-theme).
+  * The Buzz war is resolved by a concession heuristic (appetite falls as the rival's committed Buzz
+    rises); the fight's fun/tension is a table question, not a sim one.
+  * ASSUMPTIONS where the draft left a value open are tagged `# ASSUMPTION:` and gathered in sim-notes.md.
+
+Run:
+    python tools/sim/simulate.py --module games/travel-agents/sim/travel_agents.py --n 2000 \
+        --out games/travel-agents/playtests/sim-results.md
+    python games/travel-agents/sim/travel_agents.py            # the full v6.2 probe suite
+    python games/travel-agents/sim/travel_agents.py --counts 2,3,4   # the MP seat-balance smoke
 """
 from __future__ import annotations
 
 import os
 import sys
 import statistics
-from collections import Counter
+from collections import Counter, deque
 
-# ---- sim-only knobs (env vars; do NOT change the printed game rules) ------------------------------
-SEASON_FINAL = {2: 16, 3: 24, 4: 30}                        # courts to fill the Season timer (design-doc)
-REP_TOP = 12                                                # Reputation track top / scoring cap (design-doc)
-# END-CLOCK FIX (LOCKED 2026-08-06): the Season timer paces the game; reaching Rep 12 no longer ENDS it
-# (Rep still caps at 12 and pays its +9). Default = decoupled (999 = out of reach). Set TA_REP_TRIGGER=12
-# to reproduce the OLD design where Rep-top ended the game at ~5 courts.
-REP_TRIGGER = int(os.environ.get("TA_REP_TRIGGER", "999"))
-CAP_DEFAULT = int(os.environ.get("TA_CAP", "7"))            # Larder cap (Rookie = 6)
-REGION_SUPPLY = int(os.environ.get("TA_SUPPLY", "13"))      # ASSUMPTION: per-region specialty supply at 2p (~2x solo demand)
-EVENT_PROB = float(os.environ.get("TA_EVENT_PROB", "0.24")) # ASSUMPTION: chance a market refill flips an Event tile
-BUZZ_FLOOR_KNOB = int(os.environ.get("TA_BUZZ_FLOOR", "0")) # rebalance knob: +N Buzz on EVERY vendor (raise the floor)
-DISCOUNT_CAP = int(os.environ.get("TA_DISC_CAP", "99"))     # rebalance knob: max region-icon discount per region
-# ---- v3.1 POACH knobs -----------------------------------------------------------------------------
-POACH_REP_COST = int(os.environ.get("TA_POACH_REP", "1"))   # Rep paid per Poach (design = 1; reserve knob 2)
-POACH_REP_FLOOR = int(os.environ.get("TA_POACH_FLOOR", "1"))# min Rep required to Poach ("no Rep, no Poach")
+# ==================================================================================================
+#  SIM KNOBS (env vars; the design's open numbers — do NOT alter the printed rules)
+# ==================================================================================================
+BUZZ_SUPPLY  = int(os.environ.get("TA_BUZZ_SUPPLY", "24"))     # 2p Buzz supply (+~9/extra player)
+BUZZ_MARGIN  = int(os.environ.get("TA_BUZZ_MARGIN", "2"))      # ≥N Buzz lead to Bribe (design 2)
+LARDER_CAP   = int(os.environ.get("TA_LARDER_CAP", "7"))
+STAR_BONUS_P = int(os.environ.get("TA_STAR_P", "2"))           # dynamic ★ token +Prestige
+STAR_BONUS_R = int(os.environ.get("TA_STAR_R", "1"))           # dynamic ★ token +Rep
+STALL_CAP    = int(os.environ.get("TA_STALL_CAP", "30"))       # hard per-player turn cap (drag backstop)
 
-# ---- CHARACTER REBALANCE knobs (LOCKED values 2026-08-06; see sim-notes v3 rebalance) -------------
-# Tuned at the fixed game length (end-clock decoupled). These are the DEFAULTS the design should adopt.
-AUNTIE_MAX_REGIONS = int(os.environ.get("TA_AUNTIE_REGIONS", "2"))  # discount only on her first 2 regions (was: every region)
-AUNTIE_EXCLUDE_T3 = os.environ.get("TA_AUNTIE_NO_T3", "0") == "1"   # discount never applies to Marquee (T3)
-ROOKIE_CAP = int(os.environ.get("TA_ROOKIE_CAP", "6"))             # Larder cap for the Rookie (design: 6)
-ROOKIE_EVENT_MULT = float(os.environ.get("TA_ROOKIE_EVT", "2.2"))  # her event ability strength (draw-2-resolve-1
-                                                                   # -> more events fire in her region, always a boon)
-GOURMAND_BOONS = os.environ.get("TA_GOURMAND_BOONS", "half")       # boon handling: "none"|"half"|"full" (softened flaw)
-GOURMAND_WILD_USES = int(os.environ.get("TA_GOURMAND_WILD", "2"))  # pantry->specialty substitutions per turn (was 1)
-INFLUENCER_BEHIND = int(os.environ.get("TA_INFL_BEHIND", "2"))     # resources the Influencer starts behind (was 1)
-# CONDUCTOR flaw (v3.1 fix, LOCKED default "stock1_if_double" -> 48.7% in-band): the old "Stock Up
-# always takes 1" ("stock1") collapsed him to ~26% once the anchored real deck made Stock-Up-2 the core
-# sourcing move. "stock1_if_double" = the second of two BACK-TO-BACK Stock Ups takes only 1 (can't camp
-# one market 2+2; the first is always full) — a light, thematic flaw that keeps his travel identity and
-# lands him at 45-55%. Other options: "stock1_if_stayed" (30%, too harsh — bots double-stock anchored
-# costs), "none" (50%, but a character needs a flaw). NB: the sim UNDER-values his Travel+2 mobility
-# ability (routing blind spot), so any heavier flaw reads too costly in-sim (start-2-behind 37%, cap-6 41%).
-CONDUCTOR_FLAW = os.environ.get("TA_CONDUCTOR_FLAW", "stock1_if_double")
-CONDUCTOR_BEHIND = int(os.environ.get("TA_CONDUCTOR_BEHIND", "0"))  # light tempo flaw: opponents start +N Buzz
-CONDUCTOR_CAP = int(os.environ.get("TA_CONDUCTOR_CAP", "7"))        # light storage flaw: his Larder cap (7 = none)
-# EAST FIX (v3.1): lift East sourcing (~15.6%) toward the ~18% floor. Levels:
-#   0 = none.
-#   1 = re-point 蚵仔煎/V12's non-hero North cross token egg(N) -> greens(E) (authentic: omelette茼蒿).
-#       (Tested insufficient alone: +0.6pt — one T2 courted ~once/game.)
-#   2 = level 1 PLUS de-pantry the three East T1 stalls so they cost 2 East (not 1 East + pantry):
-#       竹筒飯/V21 & 麻糬/V23 rice;pantry -> rice;rice; 山蘇/V22 greens;pantry -> greens;greens.
-#       (All three are honestly single-ingredient dishes — bamboo rice, mochi, stir-fried greens.)
-#       This kills the pantry-substitution that was diluting East's real demand on its cheapest cards.
-EAST_FIX_LEVEL = int(os.environ.get("TA_EAST_FIX", "2"))
-EAST_FIX = EAST_FIX_LEVEL >= 1   # back-compat flag
+# The per-region signature SUPPLY (the hoarder / anti-lockout knob) — conserved tokens per region PER
+# PHASE. Larger = denial is weaker. Common (K) supply in C&S is K_SUPPLY.
+SIG_SUPPLY = int(os.environ.get("TA_SIG_SUPPLY", "10"))
+K_SUPPLY   = int(os.environ.get("TA_K_SUPPLY", "6"))
 
-# ---- map -------------------------------------------------------------------------------------------
+# Event density (the "hotter night" knob): fraction of market draws that are events, day vs night.
+DAY_EVENT_FRAC   = float(os.environ.get("TA_DAY_EVENT", "0.25"))
+NIGHT_EVENT_FRAC = float(os.environ.get("TA_NIGHT_EVENT", "0.42"))
+EVENT_HAZARD_FRAC = float(os.environ.get("TA_HAZARD", "0.58"))  # of events, this frac are hazards
+STAR_BOON_CHANCE  = float(os.environ.get("TA_STARBOON", "0.30"))# of boons, this frac drop a dynamic ★
+
+# Scope ratio (⦿ self / ⬢ region / ➤ neighbour); hazards skew region/neigh, boons skew self.
+SCOPE_SELF   = float(os.environ.get("TA_SCOPE_SELF", "0.40"))
+SCOPE_REGION = float(os.environ.get("TA_SCOPE_REGION", "0.40"))
+SCOPE_NEIGH  = float(os.environ.get("TA_SCOPE_NEIGH", "0.20"))
+
+# --- THE CLOCK (probe #5 A/B) --------------------------------------------------------------------
+CLOCK_MODE = os.environ.get("TA_CLOCK", "mission")             # "mission" | "vendor"
+# mission clock: completed claimed missions → dusk / last train (table-wide @2p; scale with count)
+M_DUSK = int(os.environ.get("TA_M_DUSK", "3"))
+M_END  = int(os.environ.get("TA_M_END",  "5"))
+# vendor-claim clock: total vendor claims → dusk / last train (@2p)
+V_DUSK = int(os.environ.get("TA_V_DUSK", "5"))
+V_END  = int(os.environ.get("TA_V_END",  "10"))
+NIGHT_SPRINT = int(os.environ.get("TA_NIGHT_SPRINT", "0"))     # >0: shorten the night half by this many
+
+MISSION_DRAW = int(os.environ.get("TA_MISSION_DRAW", "5"))     # tickets drawn per phase (2p)
+MROW = int(os.environ.get("TA_MROW", "3"))                     # face-up ticket row width
+
+# --- THE −½ PENALTY (probe #6 A/B) ----------------------------------------------------------------
+PENALTY = os.environ.get("TA_PENALTY", "half")                 # "half" (−floor(v/2)) | "zero" (score 0)
+
+# --- CHARACTER KNOBS ------------------------------------------------------------------------------
+# H1 大胃王 flaw. "twice" (A) | "keep2" (B) | "next" (C).
+H1 = os.environ.get("TA_H1", "twice")
+# H2 大哥 threshold+flaw. THRESH 0 (tie-win) | 1 (must-lead-by-1). FLAW "tab"(+1 ing) | "promote1" |
+# "none" (no flaw) | "nocontest" (tab + can't win a CONTESTED vendor — a real brake at the tie threshold).
+DAGE_THRESH = int(os.environ.get("TA_H2_THRESH", "0"))
+DAGE_FLAW   = os.environ.get("TA_H2_FLAW", "tab")
+# 媽寶 buff (probe #8). "none" (keep-1, v6.1) | "keep2" (keep-2 on Visit) | "travel2" (keep-1 but Travel
+# arrives with 2 from the region you left).
+OFFICE_BUFF = os.environ.get("TA_OFFICE", "keep2")
+# 網紅 flaw = "goes last + starts behind": opponents get INFL_BEHIND head-start signature tokens. NOTE
+# the ingredient head-start is a weak lever (flat ~60% at 1/2/3); the REAL flaw is GOING LAST (seat-1),
+# which lands him ~55% — but the sim under-counts a go-last disadvantage (see sim-notes). Kept at 2.
+INFL_BEHIND = int(os.environ.get("TA_INFL_BEHIND", "2"))
+
+# ==================================================================================================
+#  MAP
+# ==================================================================================================
 REGIONS = ("N", "C", "S", "E")
-ADJ = {"N": ("C", "E", "S"), "C": ("N", "S"), "S": ("C", "E", "N"), "E": ("S", "N")}  # ring + HSR(N-S)
-PANTRY = "P"
+RING = {"N": ["C", "E"], "C": ["N", "S"], "S": ["C", "E"], "E": ["S", "N"]}
+HSR = ("N", "S")
+COMMON = "K"
+COMMON_REGIONS = {"C", "S"}                          # where the common 糖 lives (locally sourceable)
+
+
+def neighbours(pos, char=None):
+    """A pawn's LEGAL travel destinations (character-aware: 里長伯 cannot use HSR)."""
+    ns = list(RING[pos])
+    if char != "councillor" and pos in HSR:
+        other = HSR[1] if pos == HSR[0] else HSR[0]
+        if other not in ns:
+            ns.append(other)
+    return ns
+
+
+def region_neighbours(r):
+    """GEOGRAPHIC adjacency (ring + HSR) — resolves a ➤ neighbour-scoped event's spill."""
+    ns = set(RING[r])
+    if r in HSR:
+        ns.add(HSR[1] if r == HSR[0] else HSR[0])
+    return ns
+
+
+def _dist(pos, dest, char=None):
+    if pos == dest:
+        return 0
+    q = deque([(pos, 0)]); seen = {pos}
+    while q:
+        cur, d = q.popleft()
+        for nb in neighbours(cur, char):
+            if nb in seen:
+                continue
+            if nb == dest:
+                return d + 1
+            seen.add(nb); q.append((nb, d + 1))
+    return 99
+
+
+def _next_hop(pos, dest, char=None):
+    if pos == dest or dest is None:
+        return pos
+    q = deque([(pos, None)]); seen = {pos}
+    while q:
+        cur, first = q.popleft()
+        for nb in neighbours(cur, char):
+            if nb in seen:
+                continue
+            fh = nb if first is None else first
+            if nb == dest:
+                return fh
+            seen.add(nb); q.append((nb, fh))
+    return neighbours(pos, char)[0]
+
 
 # ==================================================================================================
-#  VENDOR TABLE  (v3.1 — LOADED FROM THE REAL components/vendors.csv; decks/board store integer ids)
+#  EVENT CARDS — ("ev", kind, scope, sub); kind hazard|boon; scope self|region|neigh; sub tempo|ingredient|star
 # ==================================================================================================
-# A vendor: tier, region (= ICON region for discount/coverage), cost_regions (Counter over N/C/S/E from
-# the vendor's *named specialties*, NOT its icon), cost_pantry, buzz, prestige, rep, perk, cuisine.
-# Perk in {None, "buzz_income", "pantry_wild", "rep_on_court", "wild", "rep_plus2", "double_icon"}.
-#
-# v3.1 KEY FIDELITY GAIN over the v3 synthetic table: the discount ramp works on the region of the
-# vendor's *named ingredients* (the sourcing regions), while the ICON gained on courting is the vendor's
-# icon region. In v3.1 these can DIFFER (a South-icon vendor whose recipe names a North token = the
-# "cross-region link" that forces travel). The old synthetic table collapsed cost≈icon, so it could not
-# see the anchor/cross-link structure the movement rebalance is entirely about. We now read the true 25.
-VENDORS = []
-_SPEC_REGION = {"beef": "N", "pork": "N", "chicken": "N", "egg": "N",
-                "tea": "C", "pearls": "C", "oysters": "S", "milkfish": "S",
-                "rice": "E", "greens": "E"}
-_PERK_MAP = {
-    "double_icon": "double_icon",   # counts as 2 icons of its region
-    "wild_icon": "wild",            # wild region icon (any region for discount + coverage)
-    "rep_engine": "rep_plus2",      # +2 Rep on every future court
-    "rep_court": "rep_on_court",    # +1 Rep on every future court
-    "buzz_income": "buzz_income",   # Promote +1 Buzz (permanent)
-    "wild_pantry": "pantry_wild",   # once/turn treat 1 pantry as any specialty when courting
-    "icon": None,                   # plain T1 region icon
+def _sample_scope(kind, rng):
+    if kind == "hazard":
+        w = {"self": SCOPE_SELF * 0.50, "region": SCOPE_REGION * 1.25, "neigh": SCOPE_NEIGH * 1.75}
+    else:
+        w = {"self": SCOPE_SELF * 1.55, "region": SCOPE_REGION * 0.95, "neigh": SCOPE_NEIGH * 0.45}
+    tot = sum(w.values()) or 1.0
+    x = rng.random() * tot; acc = 0.0
+    for s in ("self", "region", "neigh"):
+        acc += w[s]
+        if x <= acc:
+            return s
+    return "self"
+
+
+def _make_event(kind, rng):
+    scope = _sample_scope(kind, rng)
+    if kind == "boon":
+        if rng.random() < STAR_BOON_CHANCE:
+            return ("ev", "boon", "region", "star")
+        return ("ev", "boon", scope, "ingredient")
+    return ("ev", "hazard", scope, "tempo")
+
+
+# ==================================================================================================
+#  VENDOR TABLE (baked v6.2 content — the per-region day/night spread from the content draft)
+# ==================================================================================================
+# A vendor: id, region, phase (1 day | 2 night), is_drink, cost (Counter over N/C/S/E/K),
+# prestige, rep, perk ("icon"|"double_icon"|"wild"|"rep_plus2"|None), star.
+def _build_vendors():
+    V = []
+
+    def add(region, phase, is_drink, cost, prestige, rep, perk, star=False):
+        V.append({"id": len(V), "region": region, "phase": phase, "is_drink": is_drink,
+                  "cost": Counter(cost), "prestige": prestige, "rep": rep, "perk": perk,
+                  "star": star, "total_cost": sum(cost.values())})
+
+    # --- North 北 (pork · 2 slots · no local K) ---
+    add("N", 1, False, {"N": 1}, 2, 1, "icon")            # 肉包 Pork Bao
+    add("N", 1, False, {"N": 1}, 1, 1, "icon")            # 蛋餅 Egg Crepe
+    add("N", 1, True,  {"K": 1}, 2, 1, None)              # 豆漿 Soy Milk (drink)
+    add("N", 2, False, {"N": 2}, 4, 2, "double_icon")     # 胡椒餅 Pepper Bun
+    add("N", 2, False, {"N": 2, "S": 1}, 5, 2, "wild")    # 牛肉麵 Beef Noodle →S
+    add("N", 2, False, {"N": 3}, 7, 3, "rep_plus2", True) # ★ 大香腸 Big Sausage
+    add("N", 2, True,  {"K": 1}, 2, 1, None)              # 珍奶 Bubble Tea (drink)
+    # --- Central 中 (tea · 1 slot · local K) ---
+    add("C", 1, False, {"C": 1}, 2, 1, "icon")            # 肉圓 Ba-wan
+    add("C", 1, False, {"C": 1}, 1, 1, "icon")            # 麵線 Misua
+    add("C", 1, True,  {"K": 1}, 2, 1, None)              # 珍珠奶茶 Bubble Tea (drink)
+    add("C", 2, False, {"C": 2}, 4, 2, "double_icon")     # 大腸包小腸 Sausage-in-Sausage
+    add("C", 2, False, {"C": 2, "S": 1}, 6, 3, "wild", True)  # ★ 逢甲名物 →S
+    add("C", 2, True,  {"K": 1}, 2, 1, None)              # 冬瓜茶 Wintermelon Tea (drink)
+    # --- South 南 (seafood · 1 slot · local K) ---
+    add("S", 1, False, {"S": 1}, 2, 1, "icon")            # 虱目魚粥 Milkfish Congee
+    add("S", 1, False, {"S": 1}, 1, 1, "icon")            # 碗粿 Rice Bowl Cake
+    add("S", 1, True,  {"K": 1}, 2, 1, None)              # 木瓜牛奶 Papaya Milk (drink)
+    add("S", 2, False, {"S": 2}, 4, 2, "double_icon")     # 蚵仔煎 Oyster Omelette
+    add("S", 2, False, {"S": 2, "E": 1}, 5, 2, "wild")    # 棺材板 Coffin Bread →E
+    add("S", 2, False, {"S": 3}, 7, 3, "rep_plus2", True) # ★ 擔仔麵 Tan-tsú-mī
+    # --- East 東 (rice · 1 slot · no local K · Indigenous-forward) ---
+    add("E", 1, False, {"E": 2}, 2, 1, "icon")            # 竹筒飯 Bamboo-Tube Rice
+    add("E", 1, False, {"E": 1}, 2, 1, "icon")            # 米糕 Rice Cake
+    add("E", 2, False, {"E": 2}, 4, 2, "double_icon")     # 麻糬 Mochi
+    add("E", 2, False, {"E": 2, "N": 1}, 8, 3, "rep_plus2", True)  # ★ 部落風味 →N (apex, E highest)
+    add("E", 2, True,  {"K": 1}, 2, 1, None)              # 洛神花茶 Roselle Tea (drink)
+    return V
+
+
+VENDORS = _build_vendors()
+
+
+def _region_deck(region, phase):
+    return [v["id"] for v in VENDORS if v["region"] == region and v["phase"] == phase]
+
+
+# ==================================================================================================
+#  TOUR TICKETS (v6.2 — 12 day + 12 night + 3 general; draw MISSION_DRAW per phase; face-up row of MROW)
+# ==================================================================================================
+# key -> (value, phase-tag "d"|"n"|"g"). Progress read from a won-vendor stat block below.
+TICKETS = {
+    # --- Daytime (the ramp / positioning phase) ---
+    "d_breakfast3": (4, "d"), "d_travel3": (5, "d"), "d_south2": (4, "d"), "d_north2": (4, "d"),
+    "d_drinks2": (3, "d"), "d_mix1": (3, "d"), "d_early3": (5, "d"), "d_cheap3": (4, "d"),
+    "d_east1": (3, "d"), "d_prestige8": (4, "d"), "d_central2": (4, "d"), "d_contest1": (4, "d"),
+    # --- Nighttime (the apex / contest phase) ---
+    "n_nmfood2": (5, "n"), "n_star1": (5, "n"), "n_all4": (7, "n"), "n_surfturf": (4, "n"),
+    "n_prestige14": (6, "n"), "n_four": (5, "n"), "n_expensive1": (4, "n"), "n_east2": (5, "n"),
+    "n_contest2": (5, "n"), "n_final2": (5, "n"), "n_drinks3": (4, "n"), "n_allvenue": (6, "n"),
+    # --- General (seeds both phases) ---
+    "g_travel3": (5, "g"), "g_collect5": (5, "g"), "g_prestige12": (6, "g"),
 }
-_VENDOR_CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "components", "vendors.csv")
+DAY_TICKETS = [k for k, (_, ph) in TICKETS.items() if ph == "d"]
+NIGHT_TICKETS = [k for k, (_, ph) in TICKETS.items() if ph == "n"]
+GENERAL_TICKETS = [k for k, (_, ph) in TICKETS.items() if ph == "g"]
 
 
-def _load_vendor_table():
-    """Parse the real re-costed vendors.csv into the sim's vendor table (region-granularity cost)."""
-    import csv
-    VENDORS.clear()
-    with open(_VENDOR_CSV, newline="", encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-    for row in rows:
-        icon = row["region"].strip()
-        tier = int(row["tier"])
-        buzz = int(row["buzz_cost"])
-        prestige = int(row["value"])
-        rep = int(row["rep"])
-        cost_regions = Counter()
-        pantry = 0
-        for tok in row["recipe"].split(";"):
-            tok = tok.strip()
-            if tok == "pantry":
-                pantry += 1
-            elif tok in _SPEC_REGION:
-                cost_regions[_SPEC_REGION[tok]] += 1
-            elif tok:
-                raise ValueError(f"unknown ingredient {tok!r} in {row['id']}")
-        perk_code = row.get("perk_code", "").strip()
-        perk = _PERK_MAP.get(perk_code.split(":")[0], None) if perk_code else None
-        VENDORS.append({
-            "id": len(VENDORS), "tier": tier, "region": icon,
-            "cost_regions": dict(cost_regions), "cost_pantry": pantry, "buzz": buzz,
-            "prestige": prestige, "rep": rep, "perk": perk,
-            "cuisine": icon,            # cuisine unused by v3.1 missions; kept for the dict shape
-            "csv_id": row["id"],
-        })
+def _wstat(won):
+    by = Counter(v["region"] for v in won)
+    return {
+        "n": len(won),
+        "regions": set(by),
+        "by": by,
+        "day_food": sum(1 for v in won if v["phase"] == 1 and not v["is_drink"]),
+        "night_food": sum(1 for v in won if v["phase"] == 2 and not v["is_drink"]),
+        "food": sum(1 for v in won if not v["is_drink"]),
+        "drinks": sum(1 for v in won if v["is_drink"]),
+        "prestige": sum(v["prestige"] for v in won),
+        "prestige_day": sum(v["prestige"] for v in won if v["act_won"] == 1),
+        "contested": sum(1 for v in won if v["contested"]),
+        "stars": sum(1 for v in won if v["starred"]),
+        "cost_le2": sum(1 for v in won if v["total_cost"] <= 2),
+        "cost_ge3": sum(1 for v in won if v["total_cost"] >= 3),
+        "before_dusk": sum(1 for v in won if v["act_won"] == 1),
+        "final_round": sum(1 for v in won if v["final_round"]),
+    }
 
 
-_load_vendor_table()
-
-
-def _vendor_by_csv(cid):
-    for v in VENDORS:
-        if v.get("csv_id") == cid:
-            return v
-    return None
-
-
-def _apply_east_fix():
-    """v3.1 East lift (see EAST_FIX_LEVEL doc above)."""
-    if EAST_FIX_LEVEL < 1:
-        return
-    # Level 1: 蚵仔煎 V12 egg(N) -> greens(E). oysters;egg;pantry -> oysters;greens;pantry.
-    v = _vendor_by_csv("V12")
-    if v:
-        cr = Counter(v["cost_regions"])
-        if cr.get("N", 0) > 0:
-            cr["N"] -= 1
-            if cr["N"] <= 0:
-                del cr["N"]
-            cr["E"] = cr.get("E", 0) + 1
-            v["cost_regions"] = dict(cr)
-    if EAST_FIX_LEVEL < 2:
-        return
-    # Level 2: de-pantry the East T1 stalls (1 East + pantry -> 2 East), killing pantry-dilution.
-    for cid in ("V21", "V22", "V23"):
-        v = _vendor_by_csv(cid)
-        if v and v["cost_pantry"] > 0:
-            reg = "E"                       # all three are East single-ingredient stalls
-            cr = Counter(v["cost_regions"])
-            cr[reg] = cr.get(reg, 0) + 1
-            v["cost_regions"] = dict(cr)
-            v["cost_pantry"] -= 1
-
-
-_apply_east_fix()
-_BY_TIER = {t: [v["id"] for v in VENDORS if v["tier"] == t] for t in (1, 2, 3)}
-
-
-# ==================================================================================================
-#  MISSIONS (secret +7; draw-3-keep-1 -> bot keeps the one aligned to its weights)
-# ==================================================================================================
-def _mission_progress(key, vids):
-    """(done, needed) toward a mission, given the player's courted vendor ids."""
-    vs = [VENDORS[i] for i in vids]
-    if key == "south_3":
-        return sum(1 for v in vs if v["region"] == "S"), 3
-    if key == "north_3":
-        return sum(1 for v in vs if v["region"] == "N"), 3
-    if key == "central_3":
-        return sum(1 for v in vs if v["region"] == "C"), 3
-    if key == "grand_tour":
-        return len(set(v["region"] for v in vs)), 4
-    if key == "t1_3":
-        return sum(1 for v in vs if v["tier"] == 1), 3
-    if key == "t3_2":
-        return sum(1 for v in vs if v["tier"] == 3), 2
-    if key == "tall_18":
-        return sum(v["prestige"] for v in vs), 18
-    if key == "volume_5":
-        return len(vs), 5
-    if key == "marquee_feeders":                     # a Marquee + >=2 Stalls (approx of "+ its 2 feeders")
-        return min(sum(1 for v in vs if v["tier"] == 3), 1) + \
-               min(sum(1 for v in vs if v["tier"] == 1), 2), 3
+def _mprog(key, st):
+    """(done, needed) — monotonic partial credit for the planner."""
+    by = st["by"]
+    if key == "d_breakfast3":  return min(st["day_food"], 3), 3
+    if key == "d_travel3":     return min(len(st["regions"]), 3), 3
+    if key == "d_south2":      return min(by["S"], 2), 2
+    if key == "d_north2":      return min(by["N"], 2), 2
+    if key == "d_drinks2":     return min(st["drinks"], 2), 2
+    if key == "d_mix1":        return min(st["food"], 1) + min(st["drinks"], 1), 2
+    if key == "d_early3":      return min(st["before_dusk"], 3), 3
+    if key == "d_cheap3":      return min(st["cost_le2"], 3), 3
+    if key == "d_east1":       return min(by["E"], 1), 1
+    if key == "d_prestige8":   return min(st["prestige_day"], 8), 8
+    if key == "d_central2":    return min(by["C"], 2), 2
+    if key == "d_contest1":    return min(st["contested"], 1), 1
+    if key == "n_nmfood2":     return min(st["night_food"], 2), 2
+    if key == "n_star1":       return min(st["stars"], 1), 1
+    if key == "n_all4":        return min(len(st["regions"]), 4), 4
+    if key == "n_surfturf":    return min(by["S"], 1) + min(by["N"], 1), 2
+    if key == "n_prestige14":  return min(st["prestige"], 14), 14
+    if key == "n_four":        return min(st["n"], 4), 4
+    if key == "n_expensive1":  return min(st["cost_ge3"], 1), 1
+    if key == "n_east2":       return min(by["E"], 2), 2
+    if key == "n_contest2":    return min(st["contested"], 2), 2
+    if key == "n_final2":      return min(st["final_round"], 2), 2
+    if key == "n_drinks3":     return min(st["drinks"], 3), 3
+    if key == "n_allvenue":    return min(st["day_food"], 1) + min(st["night_food"], 1) + min(st["drinks"], 1), 3
+    if key == "g_travel3":     return min(len(st["regions"]), 3), 3
+    if key == "g_collect5":    return min(st["n"], 5), 5
+    if key == "g_prestige12":  return min(st["prestige"], 12), 12
     return 0, 1
 
 
-# v3.1: the real 9-mission deck (components/missions.csv). Regional crawls for N/C/S; grand tour;
-# humble eats (T1); fine dining (T3); volume; go tall; marquee+feeders. (No cuisine mission exists.)
-MISSIONS = ("south_3", "north_3", "central_3", "grand_tour", "t1_3", "t3_2",
-            "tall_18", "volume_5", "marquee_feeders")
-
-
-def _mission_done(key, vids):
-    d, n = _mission_progress(key, vids)
+def _mdone(key, won):
+    d, n = _mprog(key, _wstat(won))
     return d >= n
 
 
-def _mission_helps(key, vid, cur_vids):
-    """Does courting `vid` advance the mission counter?"""
-    before, need = _mission_progress(key, cur_vids)
-    if before >= need:
+def _mhelps(key, cand, won):
+    st = _wstat(won)
+    b, n = _mprog(key, st)
+    if b >= n:
         return False
-    after, _ = _mission_progress(key, cur_vids + [vid])
-    return after > before
+    a, _ = _mprog(key, _wstat(won + [cand]))
+    return a > b
 
 
-# ==================================================================================================
-#  CHARACTERS (ability + flaw). "neutral" = symmetric (used in the strategy round-robin).
-# ==================================================================================================
-CHARACTERS = ("auntie", "rookie", "conductor", "influencer", "gourmand")
+def _ticket_value(key):
+    return TICKETS[key][0]
+
+
+def _ticket_final_score(pl):
+    tot = 0
+    for key in pl["tickets"]:
+        v = TICKETS[key][0]
+        if _mdone(key, pl["won"]):
+            tot += v
+        elif PENALTY == "half":
+            tot -= (v // 2)
+        # PENALTY == "zero": unfinished scores 0
+    return tot
+
+
+# --- ticket keep-fit (which ticket a bot wants to CLAIM off the face-up row) ---
+# rough completability in a ~5-6-win game; harder ones (all-4, prestige, multi-region) lower.
+TICKET_EASE = {
+    "d_breakfast3": 0.7, "d_travel3": 0.5, "d_south2": 0.7, "d_north2": 0.8, "d_drinks2": 0.6,
+    "d_mix1": 0.9, "d_early3": 0.5, "d_cheap3": 0.7, "d_east1": 0.7, "d_prestige8": 0.6,
+    "d_central2": 0.7, "d_contest1": 0.45,
+    "n_nmfood2": 0.7, "n_star1": 0.55, "n_all4": 0.3, "n_surfturf": 0.7, "n_prestige14": 0.5,
+    "n_four": 0.65, "n_expensive1": 0.7, "n_east2": 0.55, "n_contest2": 0.4, "n_final2": 0.5,
+    "n_drinks3": 0.55, "n_allvenue": 0.6,
+    "g_travel3": 0.55, "g_collect5": 0.6, "g_prestige12": 0.55,
+}
+
+
+def _ticket_fit(prefs, key):
+    """Can this bot realistically finish it, given its controls/leanings?"""
+    needs_drink = key in ("d_drinks2", "n_drinks3", "d_mix1", "n_allvenue")
+    hard_drink = key in ("d_drinks2", "n_drinks3")           # pure-drink counting tickets
+    needs_food = key not in ("d_drinks2", "n_drinks3")
+    if prefs.get("no_drinks") and hard_drink:
+        return 0.05
+    if prefs.get("pure_drinks") and needs_food and not needs_drink:
+        return 0.1
+    fit = 1.0
+    if prefs.get("opportunistic") and key in ("n_star1", "n_prestige14", "g_prestige12", "d_prestige8", "n_expensive1"):
+        fit *= 1.4
+    if prefs.get("disrupt") and key in ("d_contest1", "n_contest2"):
+        fit *= 1.6
+    if prefs.get("speed") and key in ("d_early3", "n_final2", "d_breakfast3", "n_four"):
+        fit *= 1.3
+    return fit
+
+
+def _ticket_keep_score(won, key, prefs):
+    d, n = _mprog(key, _wstat(won))
+    prog = (d / n) if n else 0.0
+    return _ticket_value(key) * TICKET_EASE.get(key, 0.6) * _ticket_fit(prefs, key) + 2.0 * prog
 
 
 # ==================================================================================================
 #  SCORING helpers
 # ==================================================================================================
 def _rep_end_vp(rep):
-    if rep >= 12:
-        return 9
-    if rep >= 9:
-        return 6
-    if rep >= 6:
-        return 4
-    if rep >= 3:
-        return 2
+    if rep >= 12: return 9
+    if rep >= 9:  return 6
+    if rep >= 6:  return 4
+    if rep >= 3:  return 2
     return 0
 
 
-def _coverage_vp(n_regions):
-    return {0: 0, 1: 0, 2: 2, 3: 5, 4: 9}[min(4, n_regions)]
-
-
-def _coverage_count(pl):
-    # wild icons can fill a missing region at scoring
-    base = set(pl["regions"])
-    return min(4, len(base) + pl["wild"] if len(base) < 4 else len(base))
+CHARACTERS = ("neutral", "councillor", "office", "influencer", "dagushi", "dage")
 
 
 # ==================================================================================================
 #  GAME
 # ==================================================================================================
 class TravelAgentsGame:
-    def new_state(self, rng, n_players=2, characters=None, missions=None, strategies_meta=None):
-        chars = characters or ["neutral"] * n_players
-        # decks per tier (ids), shuffled
-        decks = {}
-        for t in (1, 2, 3):
-            d = list(_BY_TIER[t])
-            rng.shuffle(d)
-            decks[t] = d
-        board_w = {2: 3, 3: 4, 4: 5}[n_players]
-        board = {t: [decks[t].pop() for _ in range(min(board_w, len(decks[t])))] for t in (1, 2, 3)}
-        supply_scale = {2: 1.0, 3: 1.3, 4: 1.6}[n_players]   # sub-linear supply growth
-        starts = {2: ["N", "S"], 3: ["N", "S", "C"], 4: ["N", "S", "C", "E"]}[n_players]
+    # -------- setup --------
+    def new_state(self, rng, n_players=2, characters=None, prefs=None):
+        chars = list(characters) if characters else ["neutral"] * n_players
+        prefs = list(prefs) if prefs else [dict(BAL) for _ in range(n_players)]
+        # player-count scaling
+        slots = {"N": 2, "C": 1, "S": 1, "E": 1}
+        if n_players >= 3: slots["C"] = 2
+        if n_players >= 4: slots["S"] = 2
+        supply = int(round(BUZZ_SUPPLY * (1 + 0.375 * (n_players - 2))))
+        mdraw = MISSION_DRAW + (1 if n_players == 3 else 2 if n_players >= 4 else 0)
+        m_dusk = {2: M_DUSK, 3: M_DUSK + 1, 4: M_DUSK + 2}.get(n_players, M_DUSK)
+        m_end  = {2: M_END,  3: M_END + 2,  4: M_END + 4}.get(n_players, M_END)
+        v_dusk = {2: V_DUSK, 3: V_DUSK + 2, 4: V_DUSK + 4}.get(n_players, V_DUSK)
+        v_end  = {2: V_END,  3: V_END + 4,  4: V_END + 8}.get(n_players, V_END)
+        starts = {2: ["N", "S"], 3: ["N", "S", "C"], 4: ["N", "C", "S", "E"]}.get(n_players, ["N", "S"])
+
+        # region vendor decks (day now; night held) + face-up reveal
+        vdeck, faceup, buzz_ids = {}, {}, set()
+        for r in REGIONS:
+            d = _region_deck(r, 1); rng.shuffle(d)
+            up = [d.pop() for _ in range(min(slots[r], len(d)))]
+            vdeck[r] = d; faceup[r] = up
+            buzz_ids |= set(up)
+
+        # per-region conserved ingredient pools (DAY) + empty discards
+        ing_pool, ing_discard = {}, {}
+        for r in REGIONS:
+            pool = Counter({r: SIG_SUPPLY})
+            if r in COMMON_REGIONS:
+                pool[COMMON] += K_SUPPLY
+            ing_pool[r] = pool
+            ing_discard[r] = Counter()
+
+        # tickets: draw MISSION_DRAW for the day phase from DAY + GENERAL; fill the face-up row
+        day_pool = DAY_TICKETS + GENERAL_TICKETS
+        drawn = rng.sample(day_pool, min(mdraw, len(day_pool)))
+        mrow = drawn[:MROW]
+        mreserve = drawn[MROW:]
+
         players = []
-        infl_present = "influencer" in chars
-        cond_present = "conductor" in chars
         for p in range(n_players):
             ch = chars[p]
-            # missions: explicit per-seat if given, else deal a random one (draw-3-keep-1 with no
-            # strategy to steer the pick -> a neutral random keep). The probe runner overrides this
-            # with a strategy-aligned pick; the harness round-robin relies on this default so the +7
-            # Mission vector is actually exercised in sim-results.md.
-            if missions is not None:
-                m = missions[p]
-            else:
-                m = rng.choice(MISSIONS)
             players.append({
-                "char": ch,
-                "pos": starts[p],
-                "home": starts[p],           # camp line stays here; also the "stay-home" region under test
-                "larder": Counter(),
-                # tempo deficits: opponents start with extra Buzz when a behind-flaw character is present
-                "buzz": ((INFLUENCER_BEHIND if (infl_present and ch != "influencer") else 0)
-                         + (CONDUCTOR_BEHIND if (cond_present and ch != "conductor") else 0)),
-                "vendors": [],
-                "icons": Counter(),
-                "wild": 0,
-                "prestige": 0,
-                "rep": 0,
-                "regions": set(),
-                "promote_bonus": (1 if ch == "influencer" else 0),             # Going Viral: Promote +1
-                "rep_per_court_bonus": 0,
-                "pantry_wild_perk": False,
-                "mission": m,
-                "rep_ms": set(),
-                "wild_used": 0,
-                "tourist_boost": False,
-                "acted": 0,
-                "moved_last": False,          # did this player Travel on their previous turn? (Conductor flaw)
+                "char": ch, "prefs": prefs[p],
+                "pos": starts[p % len(starts)],
+                "larder": Counter(), "won": [], "icons": Counter(), "wild": 0,
+                "prestige": 0, "rep": 0,
+                "promote_bonus": (1 if ch == "influencer" else 0),
+                "rep_per_court_bonus": 0, "councillor_regions": set(),
+                "tickets": [], "counted_done": set(),
+                "next_visit_extra_hazard": 0, "tempo_tax": 0,
             })
+        if "influencer" in chars:
+            # 網紅 flaw: coasts on looks not brains → the RIVALS get a head start. Give each rival
+            # INFL_BEHIND tokens of their OWN start-region signature (a USEFUL leg-up they can spend on
+            # a local vendor) — a flat common (K) head start was inert (K is low-value), so this is the
+            # real teeth. Equivalent to "the influencer starts behind."
+            infl = chars.index("influencer")
+            for p in range(n_players):
+                if p != infl:
+                    players[p]["larder"][players[p]["pos"]] += INFL_BEHIND
+
         return {
-            "n": n_players,
-            "decks": decks,
-            "board": board,
-            "board_w": board_w,
-            "supply": {r: int(round(REGION_SUPPLY * supply_scale)) for r in REGIONS},
-            "players": players,
-            "season": 0,                      # courts taken (any player)
-            "season_final": SEASON_FINAL[n_players],
-            "turn": 0,
-            "cur": 0,
-            "end_turn": None,
-            "end_cause": None,
-            "done": False,
+            "n": n_players, "slots": slots,
+            "vdeck": vdeck, "faceup": faceup,
+            "ing_pool": ing_pool, "ing_discard": ing_discard,
+            "buzz": {vid: [0] * n_players for vid in buzz_ids},
+            "star": set(), "supply": supply, "supply_min": supply,
+            "act": 1,
+            "clock_mode": CLOCK_MODE, "completions": 0, "vendor_claims": 0,
+            "m_dusk": m_dusk, "m_end": m_end, "v_dusk": v_dusk, "v_end": v_end,
+            "mrow": mrow, "mreserve": mreserve, "mdraw": mdraw,
+            "players": players, "turn": 0, "cur": 0,
+            "end_turn": None, "end_cause": None, "done": False,
             # diagnostics
-            "courts_at": {p: [] for p in range(n_players)},   # global turn indices of each player's courts
-            "stuck_turns": 0,
-            "overflow_discards": 0,
-            "buzz_spent": 0,
-            "region_ing_spent": 0,
-            # v3.1 MOVEMENT diagnostics (Probe A)
-            "source_by_region": {r: 0 for r in REGIONS},      # specialty tokens taken from each region's Market
-            "travels": 0,                                      # Travel actions taken (inter-region moves)
-            # v3.1 POACH diagnostics (Probe B)
-            "poaches": {p: 0 for p in range(n_players)},       # Poach actions per player
-            "poach_events": [],                                # (turn, poacher, victim) — for steal-war detection
-            "steal_wars": 0,                                   # reciprocal poach within one round (a poached rival poaches back)
-            "rep_spent_poach": {p: 0 for p in range(n_players)},
-            "poach_gained": {p: 0 for p in range(n_players)},  # specialty tokens gained via Poach
-            "mid_scores": None,               # snapshot when season hits half
-            "strat_meta": strategies_meta,    # optional {p: weights} for mission pick (set by runner)
+            "food_wins": 0, "drink_wins": 0, "contested_wins": 0,
+            "star_placed": 0, "star_wins": {p: 0 for p in range(n_players)},
+            "max_buzz_on_vendor": 0,
+            "claim_by_region": {r: 0 for r in REGIONS},
+            "src_by_region": {r: 0 for r in REGIONS}, "src_common": 0,
+            "travels": 0, "visits": 0, "cstores": 0, "promotes": 0, "inter_moves": 0,
+            "dusk_turn": None, "last_turn": None, "first_night_win_turn": None,
+            "legal_counts": [], "forced_turns": 0,
+            "events_fired": 0, "scope_fired": {"self": 0, "region": 0, "neigh": 0},
+            "cs_rival_hits": 0, "takethat_hits": 0, "pokes": 0,
+            "claims": 0, "empty_draws": 0,
         }
 
+    # -------- harness protocol --------
     def players(self, state):
         return list(range(state["n"]))
 
     def actors(self, state):
         return [state["cur"]]
 
-    # ---- cost / affordability --------------------------------------------------------------------
-    def _pay_plan(self, state, p, vid):
-        """Return (region_pay dict, pantry_pay, buzz, pantry_wild_needed) — the minimal cost after
-        discounts, wild icons, Auntie, floored at 0. pantry_wild_needed = region units we'd cover by a
-        pantry->specialty substitution (Gourmand / pantry_wild perk)."""
-        pl = state["players"][p]
+    def view(self, state, player):
+        return state
+
+    def is_over(self, s):
+        return s["done"]
+
+    # -------- board helpers --------
+    def _board(self, s):
+        return [vid for r in REGIONS for vid in s["faceup"][r]]
+
+    def _vendor_region(self, s, vid):
+        return VENDORS[vid]["region"]
+
+    def _present(self, s, p, vid):
+        return s["players"][p]["pos"] == VENDORS[vid]["region"]
+
+    # -------- cost / affordability --------
+    def _pay_plan(self, s, p, vid):
+        pl = s["players"][p]
         v = VENDORS[vid]
         pay = {}
-        for r, c in v["cost_regions"].items():
-            disc = min(DISCOUNT_CAP, pl["icons"].get(r, 0))
-            pay[r] = max(0, c - disc)
-        # wild icons reduce the largest remaining region requirement(s)
+        for r, c in v["cost"].items():
+            if r == COMMON:
+                pay[COMMON] = c                          # common carries no icon → never discounted
+            else:
+                pay[r] = max(0, c - pl["icons"].get(r, 0))
         w = pl["wild"]
-        while w > 0 and any(x > 0 for x in pay.values()):
-            r = max(pay, key=lambda k: pay[k])
+        regs = [r for r in pay if r != COMMON]
+        while w > 0 and any(pay[r] > 0 for r in regs):
+            r = max(regs, key=lambda k: pay[k])
             if pay[r] <= 0:
                 break
-            pay[r] -= 1
-            w -= 1
-        pantry = v["cost_pantry"]
-        # Auntie: the first vendor she courts in a region new to her tour is 1 ingredient cheaper —
-        # NERFED: only her first AUNTIE_MAX_REGIONS regions, and (optionally) never a Marquee (T3).
-        auntie_ok = (pl["char"] == "auntie" and v["region"] not in pl["regions"]
-                     and len(pl["regions"]) < AUNTIE_MAX_REGIONS
-                     and not (AUNTIE_EXCLUDE_T3 and v["tier"] == 3))
-        if auntie_ok:
+            pay[r] -= 1; w -= 1
+        if pl["char"] == "councillor" and not v["is_drink"] \
+                and v["region"] not in pl["councillor_regions"] and len(pl["councillor_regions"]) < 2:
             for r in sorted(pay, key=lambda k: -pay[k]):
                 if pay[r] > 0:
-                    pay[r] -= 1
-                    break
-            else:
-                if pantry > 0:
-                    pantry -= 1
-        buzz = v["buzz"] + BUZZ_FLOOR_KNOB
-        return pay, pantry, buzz
+                    pay[r] -= 1; break
+        if pl["char"] == "dage" and DAGE_FLAW in ("tab", "nocontest"):
+            tgt = COMMON if v["is_drink"] else v["region"]
+            pay[tgt] = pay.get(tgt, 0) + 1
+        return pay
 
-    def _affordable(self, state, p, vid):
-        pl = state["players"][p]
-        pay, pantry, buzz = self._pay_plan(state, p, vid)
-        if pl["buzz"] < buzz:
+    def _margin_for(self, pl):
+        return DAGE_THRESH if pl["char"] == "dage" else BUZZ_MARGIN
+
+    def _buzz_lead(self, s, p, vid):
+        b = s["buzz"][vid]
+        rival = max((b[q] for q in range(s["n"]) if q != p), default=0)
+        return b[p] - rival, rival
+
+    def _can_bribe(self, s, p, vid):
+        if not self._present(s, p, vid):
             return False
-        # region shortfalls
-        short = 0
-        for r, c in pay.items():
-            short += max(0, c - pl["larder"].get(r, 0))
-        pantry_have = pl["larder"].get(PANTRY, 0)
-        pantry_short = max(0, pantry - pantry_have)
-        # pantry->specialty substitutions (Gourmand ability + T2 pantry_wild perk): spare pantry covers
-        # region units, up to the remaining per-turn capacity
-        subs = 0
-        cap = _wild_cap(pl)
-        if cap > pl["wild_used"]:
-            spare = pantry_have - pantry
-            subs = min(short, cap - pl["wild_used"], max(0, spare))
-        return (short - subs) <= 0 and pantry_short <= 0
+        pl = s["players"][p]
+        lead, rival = self._buzz_lead(s, p, vid)
+        if lead < self._margin_for(pl):
+            return False
+        if pl["char"] == "dage" and DAGE_FLAW == "nocontest" and rival > 0:
+            return False                                 # the "real brake": no contested wins at a tie
+        for r, c in self._pay_plan(s, p, vid).items():
+            if pl["larder"].get(r, 0) < c:
+                return False
+        return True
 
-    # ---- legal actions (coarse; the shared brain computes its own choice) -------------------------
-    def legal_actions(self, state, player):
-        p = player
-        pl = state["players"][p]
+    def _promote_yield(self, pl):
+        y = 2 + pl["promote_bonus"]
+        if pl["char"] == "dage" and DAGE_FLAW == "promote1":
+            y = 1
+        return y
+
+    # -------- legal actions --------
+    def legal_actions(self, s, p):
+        pl = s["players"][p]
         acts = []
-        for t in (1, 2, 3):
-            for idx, vid in enumerate(state["board"][t]):
-                if self._affordable(state, p, vid):
-                    acts.append(("court", t, idx))
-        pos = pl["pos"]
-        have_spec = state["supply"][pos] > 0
-        r = pos if have_spec else PANTRY
-        acts.append(("stock", (r, r)))
-        acts.append(("stock", (r, PANTRY)))
-        acts.append(("stock", (PANTRY, PANTRY)))
-        dests = [d for d in ADJ[pos] if not (pl["char"] == "auntie" and _is_hsr(pos, d))]
-        for d in dests:
-            acts.append(("travel", d, d if state["supply"][d] > 0 else PANTRY))
-            acts.append(("travel", d, PANTRY))
-        acts.append(("promote",))
-        acts.append(("extract",))
-        # v3.1 conditional sixth action: Poach — only if a rival shares your region, holds a stealable
-        # specialty, and you have the Reputation to spend ("no Rep, no Poach").
-        if self._poach_victim(state, p) is not None:
-            acts.append(("poach",))
+        board = self._board(s)
+        for vid in board:
+            if self._can_bribe(s, p, vid):
+                acts.append(("bribe", vid))
+        if s["supply"] > 0:
+            for vid in board:
+                if self._present(s, p, vid):
+                    acts.append(("promote", vid))
+        acts.append(("visit",))
+        for r in REGIONS:
+            acts.append(("cstore", r))
+        for d in neighbours(pl["pos"], pl["char"]):
+            acts.append(("travel", d))
+        if s["mrow"] and len(pl["tickets"]) < 4 and not pl["prefs"].get("no_tickets"):
+            acts.append(("claim",))
         return acts
 
-    def _poach_victim(self, state, p):
-        """Return a co-located rival id that holds >=1 stealable specialty (pantry excluded), or None.
-        Requires the poacher to have >= POACH_REP_FLOOR Reputation to spend."""
-        pl = state["players"][p]
-        if pl["rep"] < POACH_REP_FLOOR:
-            return None
-        for q in range(state["n"]):
-            if q == p:
-                continue
-            rv = state["players"][q]
-            if rv["pos"] != pl["pos"]:
-                continue
-            if any(r in _SPEC_REGION.values() and rv["larder"].get(r, 0) > 0 for r in REGIONS):
-                return q
-        return None
-
-    # ---- transition (mutates in place — the harness keeps no history) ------------------------------
-    def step(self, state, actions, rng):
-        s = state
+    # -------- transition --------
+    def step(self, s, actions, rng):
         p = s["cur"]
         pl = s["players"][p]
-        pl["wild_used"] = 0                       # reset per-turn pantry->specialty substitutions
         act = actions[p]
+        legal = self.legal_actions(s, p)
+        s["legal_counts"].append(len(legal))
+        if len(legal) <= 1:
+            s["forced_turns"] += 1
         kind = act[0]
-
-        if kind == "court":
-            self._do_court(s, p, act, rng)
-        elif kind == "stock":
-            self._do_stock(s, p, act, rng)
-        elif kind == "travel":
-            self._do_travel(s, p, act, rng)
+        if kind == "bribe":
+            self._do_bribe(s, p, act[1], rng)
         elif kind == "promote":
-            gain = 2 + pl["promote_bonus"] + (1 if pl["tourist_boost"] else 0)
-            pl["tourist_boost"] = False
-            pl["buzz"] += gain
-        elif kind == "extract":
-            self._trigger_end(s, "extract")
-        elif kind == "poach":
-            self._do_poach(s, p, rng)
+            self._do_promote(s, p, act[1])
+        elif kind == "visit":
+            self._do_visit(s, p, rng)
+        elif kind == "cstore":
+            self._do_cstore(s, p, act[1], rng)
+        elif kind == "travel":
+            self._do_travel(s, p, act[1], rng)
+        elif kind == "claim":
+            self._do_claim(s, p)
+        self._discard_to_cap(s, pl)
+        if s["supply"] < s["supply_min"]:
+            s["supply_min"] = s["supply"]
 
-        # end-of-turn: Larder cap
-        self._discard_to_cap(s, p)
-        pl["acted"] += 1
-        pl["moved_last"] = (kind == "travel")     # for the Conductor's "stock1_if_stayed" flaw next turn
-        pl["last_kind"] = kind                    # for the Conductor's "stock1_if_double" flaw next turn
-
-        # advance turn
         s["turn"] += 1
         s["cur"] = s["turn"] % s["n"]
+        if s["end_turn"] is None and s["turn"] >= STALL_CAP * s["n"]:
+            self._trigger_end(s, "stall")
         if s["end_turn"] is not None and s["turn"] >= s["end_turn"]:
             s["done"] = True
-        if s["turn"] > 4000:
+        if s["turn"] > 8000:
             s["done"] = True
         return s
 
-    def _do_court(self, s, p, act, rng):
-        _, t, idx = act
+    def _do_promote(self, s, p, vid):
         pl = s["players"][p]
-        vid = s["board"][t][idx]
+        y = min(self._promote_yield(pl), s["supply"])
+        s["supply"] -= y
+        s["buzz"][vid][p] += y
+        s["promotes"] += 1
+        s["max_buzz_on_vendor"] = max(s["max_buzz_on_vendor"], max(s["buzz"][vid]))
+
+    def _do_claim(self, s, p):
+        pl = s["players"][p]
+        if not s["mrow"]:
+            return
+        key = max(s["mrow"], key=lambda k: _ticket_keep_score(pl["won"], k, pl["prefs"]))
+        s["mrow"].remove(key)
+        pl["tickets"].append(key)
+        s["claims"] += 1
+        if s["mreserve"]:                                # refill the face-up row
+            s["mrow"].append(s["mreserve"].pop(0))
+
+    def _do_bribe(self, s, p, vid, rng):
+        pl = s["players"][p]
         v = VENDORS[vid]
-        pay, pantry, buzz = self._pay_plan(s, p, vid)
-        # pay buzz
-        pl["buzz"] -= buzz
-        s["buzz_spent"] += buzz
-        # pay pantry
-        take = min(pantry, pl["larder"].get(PANTRY, 0))
-        pl["larder"][PANTRY] -= take
-        # pay region ingredients (using a pantry->specialty sub if short by 1)
-        for r, c in pay.items():
-            need = c
-            have = pl["larder"].get(r, 0)
-            use = min(need, have)
-            pl["larder"][r] -= use
-            s["region_ing_spent"] += use
-            need -= use
-            while need > 0 and pl["wild_used"] < _wild_cap(pl) and pl["larder"].get(PANTRY, 0) > 0:
-                pl["larder"][PANTRY] -= 1
-                pl["wild_used"] += 1
-                need -= 1
-        pl["larder"] += Counter()  # drop zeros
+        for r, c in self._pay_plan(s, p, vid).items():
+            pl["larder"][r] -= c
         pl["larder"] = +pl["larder"]
-        # gain rewards
-        pl["vendors"].append(vid)
-        pl["prestige"] += v["prestige"]
-        rep_gain = v["rep"] + pl["rep_per_court_bonus"]
-        self._rep_up(s, p, rep_gain)
-        pl["regions"].add(v["region"])
-        # perk
-        self._apply_perk(pl, v)
-        # base icon
-        pl["icons"][v["region"]] += 1
-        # board bookkeeping: refill, Season +1, lock from rivals (removed from shared board)
-        deck = s["decks"][t]
-        if deck:
-            s["board"][t][idx] = deck.pop()
+        _, rival_buzz = self._buzz_lead(s, p, vid)
+        contested = rival_buzz > 0
+        starred = vid in s["star"]
+        prestige = v["prestige"] + (STAR_BONUS_P if starred else 0)
+        rep = v["rep"] + (STAR_BONUS_R if starred else 0) + pl["rep_per_court_bonus"]
+        pl["prestige"] += prestige
+        pl["rep"] = min(12, pl["rep"] + rep)
+        pl["won"].append({
+            "id": vid, "region": v["region"], "is_drink": v["is_drink"], "phase": v["phase"],
+            "prestige": prestige, "total_cost": v["total_cost"], "contested": contested,
+            "starred": starred, "act_won": s["act"],
+            "final_round": s["end_turn"] is not None,
+        })
+        if not v["is_drink"]:                            # food → discount icon + perk (drinks carry none)
+            pl["icons"][v["region"]] += 1
+            self._apply_perk(pl, v)
+            if pl["char"] == "councillor" and v["region"] not in pl["councillor_regions"] \
+                    and len(pl["councillor_regions"]) < 2:
+                pl["councillor_regions"].add(v["region"])
+        if starred:
+            s["star"].discard(vid); s["star_wins"][p] += 1
+        s["supply"] += sum(s["buzz"][vid]); s["buzz"][vid] = [0] * s["n"]
+        s["claim_by_region"][v["region"]] += 1
+        if v["is_drink"]:
+            s["drink_wins"] += 1
         else:
-            s["board"][t].pop(idx)
-        s["season"] += 1
-        s["courts_at"][p].append(s["turn"])
-        # mid-game snapshot (for runaway probe)
-        if s["mid_scores"] is None and s["season"] >= s["season_final"] // 2:
-            s["mid_scores"] = self.scores(s)
-        # triggers
-        if s["season"] >= s["season_final"]:
-            self._trigger_end(s, "season")
+            s["food_wins"] += 1
+        if contested:
+            s["contested_wins"] += 1
+        if v["phase"] == 2 and s["first_night_win_turn"] is None:
+            s["first_night_win_turn"] = s["turn"]
+        self._remove_and_refill(s, v["region"], vid)
+        self._on_claim_clock(s, p)
 
     def _apply_perk(self, pl, v):
         perk = v["perk"]
-        if perk == "buzz_income":
-            pl["promote_bonus"] += 1
-        elif perk == "pantry_wild":
-            pl["pantry_wild_perk"] = True
-        elif perk == "rep_on_court":
-            pl["rep_per_court_bonus"] += 1
-        elif perk == "rep_plus2":
-            pl["rep_per_court_bonus"] += 2
+        if perk == "double_icon":
+            pl["icons"][v["region"]] += 1
         elif perk == "wild":
             pl["wild"] += 1
-        elif perk == "double_icon":
-            pl["icons"][v["region"]] += 1   # counts as an extra icon of its region (on top of the base)
+        elif perk == "rep_plus2":
+            pl["rep_per_court_bonus"] += 2
 
-    def _rep_up(self, s, p, amount):
+    def _remove_and_refill(self, s, region, vid):
+        up = s["faceup"][region]
+        if vid in up:
+            up.remove(vid)
+        deck = s["vdeck"][region]
+        if deck:
+            nv = deck.pop()
+            up.append(nv)
+            s["buzz"].setdefault(nv, [0] * s["n"])
+
+    # -------- the clock (mission-driven or vendor-claims) --------
+    def _on_claim_clock(self, s, p):
+        # a vendor claim always counts the vendor-claim clock; and (re)checks mission completions
+        s["vendor_claims"] += 1
+        self._check_mission_completions(s, p)
+        if s["clock_mode"] == "vendor":
+            if s["act"] == 1 and s["vendor_claims"] >= s["v_dusk"]:
+                self._dusk(s)
+            if s["vendor_claims"] >= s["v_end"]:
+                self._trigger_end(s, "lasttrain")
+        # backstops (both modes): day decks island-wide empty → dusk; night decks empty → end
+        if s["act"] == 1 and self._all_day_decks_dry(s) and s["end_turn"] is None:
+            self._dusk(s)
+        if s["act"] == 2 and self._all_night_decks_dry(s) and s["end_turn"] is None:
+            self._trigger_end(s, "deck")
+
+    def _check_mission_completions(self, s, p):
         pl = s["players"][p]
-        before = pl["rep"]
-        pl["rep"] = min(REP_TOP, pl["rep"] + amount)
-        for ms in (3, 6, 9):
-            if before < ms <= pl["rep"] and ms not in pl["rep_ms"]:
-                pl["rep_ms"].add(ms)
-                if ms == 3:
-                    pl["larder"][PANTRY] += 2                 # "take 2 wild ingredients" (modelled as flexible pantry)
-                elif ms == 6:
-                    pl["promote_bonus"] += 1                  # Promote permanently +1 Buzz
-                elif ms == 9:
-                    # +1 permanent discount icon of choice -> the region the player leans on most
-                    r = max(REGIONS, key=lambda x: pl["icons"].get(x, 0))
-                    pl["icons"][r] += 1
-        if before < REP_TRIGGER <= pl["rep"]:
-            self._trigger_end(s, "rep")                       # reaching the top ends the game
-
-    def _do_stock(self, s, p, act, rng):
-        _, ings = act
-        pl = s["players"][p]
-        n_take = 2
-        if pl["char"] == "conductor":                         # Timetable-bound flaw (v3.1 softened)
-            if CONDUCTOR_FLAW == "stock1":
-                n_take = 1                                     # old: always 1 (collapsed him to ~26%)
-            elif CONDUCTOR_FLAW == "stock1_if_stayed":
-                n_take = 2 if pl["moved_last"] else 1          # full 2 right after a Travel; 1 if he stayed put
-            elif CONDUCTOR_FLAW == "stock1_if_double":
-                n_take = 1 if pl.get("last_kind") == "stock" else 2   # can't camp one market (2+2); first is full
-            # else "none": no Stock flaw (n_take stays 2)
-        taken = 0
-        for ing in ings:
-            if taken >= n_take:
-                break
-            if ing == PANTRY:
-                pl["larder"][PANTRY] += 1
-            else:
-                if s["supply"][ing] > 0:
-                    s["supply"][ing] -= 1
-                    pl["larder"][ing] += 1
-                    s["source_by_region"][ing] += 1           # Probe A: a specialty sourced from this region
-                else:
-                    pl["larder"][PANTRY] += 1                 # scarcity -> fall back to pantry (a reroute cost)
-            taken += 1
-        self._refills(s, p, rng, n_flips=2, plum_stock=True)
-
-    def _do_travel(self, s, p, act, rng):
-        _, dest, ing = act
-        pl = s["players"][p]
-        pl["pos"] = dest
-        s["travels"] += 1                                     # Probe A: an inter-region move
-        n_take = 2 if pl["char"] == "conductor" else 1       # Off-Peak Pass: Travel arrives with 2
-        for _ in range(n_take):
-            if ing == PANTRY:
-                pl["larder"][PANTRY] += 1
-            elif s["supply"][dest] > 0:
-                s["supply"][dest] -= 1
-                pl["larder"][dest] += 1
-                s["source_by_region"][dest] += 1
-            else:
-                pl["larder"][PANTRY] += 1
-        self._refills(s, p, rng, n_flips=1)
-
-    def _do_poach(self, s, p, rng):
-        """v3.1 Poach: take 1 RANDOM specialty from a co-located rival's open Larder; pay Rep -1
-        (floored at 0). No Market refill, no event, no Season tick — it costs the whole turn."""
-        q = self._poach_victim(s, p)
-        if q is None:                                         # opportunity vanished (shouldn't happen)
-            pl = s["players"][p]
-            pl["buzz"] += 0
-            return
-        pl, rv = s["players"][p], s["players"][q]
-        # weighted-random specialty from the victim's larder (pantry excluded — nothing to swipe there)
-        pool = []
-        for r in REGIONS:
-            pool.extend([r] * rv["larder"].get(r, 0))
-        stolen = rng.choice(pool)
-        rv["larder"][stolen] -= 1
-        if rv["larder"][stolen] <= 0:
-            del rv["larder"][stolen]
-        pl["larder"][stolen] += 1
-        # Rep -1 (floored at 0)
-        paid = min(POACH_REP_COST, pl["rep"])
-        pl["rep"] = max(0, pl["rep"] - POACH_REP_COST)
-        s["rep_spent_poach"][p] += paid
-        s["poaches"][p] += 1
-        s["poach_gained"][p] += 1
-        # steal-war detection: did the victim poach THIS player within the last round (n turns)?
-        for (tt, poacher, victim) in reversed(s["poach_events"]):
-            if s["turn"] - tt > s["n"]:
-                break
-            if poacher == q and victim == p:
-                s["steal_wars"] += 1
-                break
-        s["poach_events"].append((s["turn"], p, q))
-
-    # ---- Market events on refill ------------------------------------------------------------------
-    def _refills(self, s, p, rng, n_flips, plum_stock=False):
-        pl = s["players"][p]
-        rookie = pl["char"] == "rookie"
-        prob = min(1.0, EVENT_PROB * ROOKIE_EVENT_MULT) if rookie else EVENT_PROB
-        for _ in range(n_flips):
-            if rng.random() >= prob:
+        for key in pl["tickets"]:
+            if key in pl["counted_done"]:
                 continue
-            boon = rng.random() < 0.60
-            # Rookie: "draw 2, resolve 1" -> keep the boon of the two draws (dodges the hazard)
-            if rookie and not boon:
-                boon = rng.random() < 0.85                    # strong second-draw boon preference
-            if boon:
-                # Gourmand "Too jaded" flaw — SOFTENED: none = no boons; half = ignores 50%; full = normal
-                if pl["char"] == "gourmand":
-                    if GOURMAND_BOONS == "none":
-                        continue
-                    if GOURMAND_BOONS == "half" and rng.random() < 0.5:
-                        continue
-                kind = rng.choice(("buzz", "buzz", "ingredient", "ingredient", "tourist"))
-                if kind == "buzz":
-                    pl["buzz"] += 2
-                elif kind == "ingredient":
-                    r = pl["pos"]
-                    if s["supply"][r] > 0:
-                        s["supply"][r] -= 1
-                        pl["larder"][r] += 1
-                    else:
-                        pl["larder"][PANTRY] += 1
-                elif kind == "tourist":
-                    pl["tourist_boost"] = True
-            else:
-                kind = rng.choice(("plum", "typhoon"))
-                if kind == "plum" and plum_stock:
-                    # this Stock Up yields 1 fewer: remove 1 just-taken ingredient if any
-                    if sum(pl["larder"].values()) > 0:
-                        r = max(pl["larder"], key=lambda k: pl["larder"][k])
-                        pl["larder"][r] -= 1
-                        if pl["larder"][r] <= 0:
-                            del pl["larder"][r]
-                elif kind == "typhoon":
-                    r = rng.choice(("S", "E"))
-                    s["supply"][r] = max(0, s["supply"][r] - 3)   # wash the shelf (reroute, not theft)
+            if _mdone(key, pl["won"]):
+                pl["counted_done"].add(key)
+                if s["clock_mode"] == "mission":
+                    s["completions"] += 1
+                    if s["act"] == 1 and s["completions"] >= s["m_dusk"]:
+                        self._dusk(s)
+                    if s["completions"] >= s["m_end"]:
+                        self._trigger_end(s, "lasttrain")
 
-    def _trigger_end(self, s, cause="?"):
+    def _all_day_decks_dry(self, s):
+        return all(not s["vdeck"][r] and not s["faceup"][r] for r in REGIONS)
+
+    def _all_night_decks_dry(self, s):
+        return all(not s["vdeck"][r] and not s["faceup"][r] for r in REGIONS)
+
+    def _dusk(self, s):
+        if s["act"] != 1:
+            return
+        s["act"] = 2
+        s["dusk_turn"] = s["turn"]
+        # sweep the day layer island-wide: unwon day vendors gone, day ingredient pools cleared
+        for r in REGIONS:
+            for vid in list(s["faceup"][r]):
+                s["supply"] += sum(s["buzz"].get(vid, [0] * s["n"]))
+                s["buzz"][vid] = [0] * s["n"]
+                s["star"].discard(vid)
+            # swap in the NIGHT vendor deck + reveal
+            nd = _region_deck(r, 2); import_rng = None
+            self._rng_shuffle(s, nd)
+            up = [nd.pop() for _ in range(min(s["slots"][r], len(nd)))]
+            s["vdeck"][r] = nd; s["faceup"][r] = up
+            for vid in up:
+                s["buzz"].setdefault(vid, [0] * s["n"])
+            # swap in fresh NIGHT ingredient pools (day discards clear with the day layer)
+            pool = Counter({r: SIG_SUPPLY})
+            if r in COMMON_REGIONS:
+                pool[COMMON] += K_SUPPLY
+            s["ing_pool"][r] = pool
+            s["ing_discard"][r] = Counter()
+        # the ticket pool switches to NIGHT: discard the day supply, draw a fresh night row
+        rng = s.get("_rng")
+        night_pool = NIGHT_TICKETS + GENERAL_TICKETS
+        if rng is not None:
+            drawn = rng.sample(night_pool, min(s["mdraw"], len(night_pool)))
+        else:
+            drawn = night_pool[:s["mdraw"]]
+        s["mrow"] = drawn[:MROW]
+        s["mreserve"] = drawn[MROW:]
+        # night sprint: shorten the night half (probe #7)
+        if NIGHT_SPRINT > 0:
+            if s["clock_mode"] == "mission":
+                s["m_end"] = max(s["completions"] + 1, s["m_end"] - NIGHT_SPRINT)
+            else:
+                s["v_end"] = max(s["vendor_claims"] + 1, s["v_end"] - NIGHT_SPRINT)
+
+    def _rng_shuffle(self, s, lst):
+        # the harness rng is threaded via step(); dusk has no rng arg, so use a stashed one
+        rng = s.get("_rng")
+        if rng is not None:
+            rng.shuffle(lst)
+
+    def _trigger_end(self, s, cause):
         if s["end_turn"] is not None:
             return
         s["end_cause"] = cause
+        s["last_turn"] = s["turn"]
         n = s["n"]
-        turns_done = s["turn"] + 1
-        s["end_turn"] = ((turns_done + n - 1) // n) * n + n    # finish this round + one more full round
+        done = s["turn"] + 1
+        s["end_turn"] = ((done + n - 1) // n) * n + n    # finish this round + one more full round
 
-    def _discard_to_cap(self, s, p):
-        pl = s["players"][p]
-        cap = (ROOKIE_CAP if pl["char"] == "rookie"
-               else CONDUCTOR_CAP if pl["char"] == "conductor" else CAP_DEFAULT)
-        total = sum(pl["larder"].values())
-        if total <= cap:
+    # -------- events (fire by scope, resolved relative to the drawn region) --------
+    def _event_frac(self, s):
+        return DAY_EVENT_FRAC if s["act"] == 1 else NIGHT_EVENT_FRAC
+
+    def _draw_market(self, s, r, rng):
+        """One market draw from region r: an event (regenerated) or a conserved token. Returns
+        ("ev", ...) for an event, a token string ("N"/"C"/.../"K") for an ingredient, or None (dry)."""
+        if rng.random() < self._event_frac(s):
+            kind = "hazard" if rng.random() < EVENT_HAZARD_FRAC else "boon"
+            return _make_event(kind, rng)
+        pool = s["ing_pool"][r]
+        if sum(pool.values()) == 0:                      # deck dry → reshuffle the discard back in
+            pool += s["ing_discard"][r]; s["ing_discard"][r] = Counter()
+        if sum(pool.values()) == 0:
+            s["empty_draws"] += 1
+            return None                                  # genuinely nothing here (temporary denial)
+        toks = list(pool.elements())
+        tok = rng.choice(toks)
+        pool[tok] -= 1; pool = +pool; s["ing_pool"][r] = pool
+        return tok
+
+    def _return_token(self, s, tok):
+        """A KEPT token is returned to circulation only via the over-cap discard (renewable). An UNKEPT
+        card from a Visit flip goes back to its region pool immediately (you didn't take it)."""
+        home = tok if tok != COMMON else "C"             # common recycles to a common region
+        s["ing_pool"][home][tok] += 1
+        s["ing_pool"][home] = +s["ing_pool"][home]
+
+    def _event_targets(self, s, actor, drawn_region, scope):
+        if scope == "self":
+            return [actor]
+        if scope == "region":
+            return [q for q in range(s["n"]) if s["players"][q]["pos"] == drawn_region]
+        nbrs = region_neighbours(drawn_region)
+        return [q for q in range(s["n"]) if s["players"][q]["pos"] in nbrs]
+
+    def _fire_event(self, s, actor, drawn_region, ev, rng, during_visit, origin):
+        _, kind, scope, sub = ev
+        s["events_fired"] += 1
+        s["scope_fired"][scope] += 1
+        targets = self._event_targets(s, actor, drawn_region, scope)
+        penalty = 0
+        if kind == "boon" and sub == "star":
+            self._place_star(s)
+            return 0
+        for t in targets:
+            if kind == "hazard":
+                if during_visit and t == actor:
+                    penalty += 1
+                else:
+                    s["players"][t]["tempo_tax"] += 1
+                if t != actor:
+                    s["takethat_hits"] += 1
+                    if origin == "cstore":
+                        s["cs_rival_hits"] += 1
+            else:                                        # boon ingredient windfall (the region's signature)
+                tok = drawn_region if drawn_region in REGIONS else COMMON
+                s["players"][t]["larder"][tok] += 1
+                s["src_by_region"][drawn_region] += 1
+        return penalty
+
+    def _apply_tempo_tax(self, pl, natural_keep):
+        if pl["tempo_tax"] > 0 and natural_keep > 0:
+            pl["tempo_tax"] -= 1
+            return natural_keep - 1
+        return natural_keep
+
+    def _place_star(self, s):
+        cand = [vid for r in REGIONS for vid in s["faceup"][r] if vid not in s["star"]]
+        if not cand:
             return
-        excess = total - cap
-        # what do the board vendors want? keep useful region ingredients; dump the most over-held
-        want = Counter()
-        for t in (1, 2, 3):
-            for vid in s["board"][t]:
-                for r, c in VENDORS[vid]["cost_regions"].items():
-                    want[r] += 1
-        pool = []
-        for ing, c in pl["larder"].items():
-            use = want.get(ing, 0) + (1 if ing == PANTRY else 0)   # pantry is generically useful
-            pool.extend([(use, ing)] * c)
-        pool.sort(key=lambda x: x[0])
-        for _ in range(excess):
-            _, ing = pool.pop(0)
-            pl["larder"][ing] -= 1
-            if pl["larder"][ing] <= 0:
-                del pl["larder"][ing]
-            s["overflow_discards"] += 1
+        tgt = min(cand, key=lambda vid: VENDORS[vid]["prestige"])
+        s["star"].add(tgt); s["star_placed"] += 1
 
-    def is_over(self, state):
-        return state["done"]
+    # -------- sourcing --------
+    def _keep_cap(self, pl):
+        if pl["char"] == "dagushi":
+            return 3
+        if pl["char"] == "office":
+            return 2 if OFFICE_BUFF == "keep2" else 1
+        return 2
 
-    # ---- scoring ----------------------------------------------------------------------------------
-    def scores(self, state):
+    def _do_visit(self, s, p, rng):
+        pl = s["players"][p]
+        r = pl["pos"]
+        s["visits"] += 1
+        cards = [self._draw_market(s, r, rng) for _ in range(3)]
+        toks = [c for c in cards if isinstance(c, str)]
+        events = [c for c in cards if isinstance(c, tuple)]
+        actor_haz = 0
+        for ev in events:
+            actor_haz += self._fire_event(s, p, r, ev, rng, during_visit=True, origin="visit")
+        haz_hits = actor_haz
+        if pl["char"] == "dagushi" and H1 == "twice":
+            haz_hits = actor_haz * 2
+        haz_hits += pl.get("next_visit_extra_hazard", 0)
+        pl["next_visit_extra_hazard"] = 0
+        keep = self._keep_cap(pl)
+        if pl["char"] == "dagushi" and H1 == "keep2" and actor_haz > 0:
+            keep = 2
+        if pl["char"] == "dagushi" and H1 == "next" and actor_haz > 0:
+            pl["next_visit_extra_hazard"] += actor_haz
+        keep = max(0, keep - haz_hits)
+        keep = max(0, self._apply_tempo_tax(pl, keep))
+        kept = toks[:keep]
+        for c in kept:
+            pl["larder"][c] += 1
+            if c == COMMON:
+                s["src_common"] += 1
+            else:
+                s["src_by_region"][c] += 1
+        for c in toks[keep:]:                            # unkept flips return to the region pool
+            self._return_token(s, c)
+
+    def _do_cstore(self, s, p, r, rng):
+        pl = s["players"][p]
+        s["cstores"] += 1
+        c = self._draw_market(s, r, rng)
+        if isinstance(c, str):
+            got = self._apply_tempo_tax(pl, 1)
+            if got > 0:
+                pl["larder"][c] += 1
+                if c == COMMON:
+                    s["src_common"] += 1
+                else:
+                    s["src_by_region"][c] += 1
+            else:
+                self._return_token(s, c)
+        elif isinstance(c, tuple):
+            self._fire_event(s, p, r, c, rng, during_visit=False, origin="cstore")
+
+    def _do_travel(self, s, p, dest, rng):
+        pl = s["players"][p]
+        src = pl["pos"]
+        pl["pos"] = dest
+        s["travels"] += 1
+        s["inter_moves"] += 1
+        draw_region = src if pl["char"] == "office" else dest
+        n_draw = 2 if (pl["char"] == "office" and OFFICE_BUFF == "travel2") else 1
+        for _ in range(n_draw):
+            c = self._draw_market(s, draw_region, rng)
+            if isinstance(c, str):                       # an event on a Travel fly-by whiffs (no fire)
+                got = self._apply_tempo_tax(pl, 1)
+                if got > 0:
+                    pl["larder"][c] += 1
+                    if c == COMMON:
+                        s["src_common"] += 1
+                    else:
+                        s["src_by_region"][draw_region] += 1
+                else:
+                    self._return_token(s, c)
+
+    def _discard_to_cap(self, s, pl):
+        total = sum(pl["larder"].values())
+        if total <= LARDER_CAP:
+            return
+        for _ in range(total - LARDER_CAP):
+            tok = max((k for k in pl["larder"] if pl["larder"][k] > 0),
+                      key=lambda k: pl["larder"][k])
+            pl["larder"][tok] -= 1
+            # renewable: the excess returns to that ingredient's region market discard
+            home = tok if tok != COMMON else "C"
+            s["ing_discard"][home][tok] += 1
+        pl["larder"] = +pl["larder"]
+
+    # -------- scoring --------
+    def scores(self, s):
         out = {}
-        for p in range(state["n"]):
-            pl = state["players"][p]
-            prestige = pl["prestige"]
-            rep = _rep_end_vp(pl["rep"])
-            cov = _coverage_vp(_coverage_count(pl))
-            mission = 7 if (pl["mission"] and _mission_done(pl["mission"], pl["vendors"])) else 0
-            out[p] = prestige + rep + cov + mission
+        for p in range(s["n"]):
+            pl = s["players"][p]
+            out[p] = pl["prestige"] + _rep_end_vp(pl["rep"]) + _ticket_final_score(pl)
         return out
 
-    def metrics(self, state):
-        s = state
+    def metrics(self, s):
         sc = self.scores(s)
         vals = sorted(sc.values(), reverse=True)
         margin = vals[0] - vals[1] if len(vals) > 1 else 0.0
-        winners = [p for p, v in sc.items() if v == vals[0]]
+        best = max(sc.values())
+        winners = [p for p, v in sc.items() if v == best]
         tie = 1.0 if len(winners) > 1 else 0.0
         winner = winners[0]
-        # court cadence
-        total_courts = sum(len(s["courts_at"][p]) for p in range(s["n"]))
-        turns = s["turn"]
-        court_interval = (turns / total_courts) if total_courts else float(turns)
-        # late-game court interval (2nd half of turns) + max sustained rate (min gap between one player's courts)
-        half = turns / 2
-        late_courts = sum(1 for p in range(s["n"]) for tt in s["courts_at"][p] if tt >= half)
-        court_interval_late = ((turns - half) / late_courts) if late_courts else float("nan")
-        min_gap = float("inf")
-        for p in range(s["n"]):
-            cs = s["courts_at"][p]
-            for a, b in zip(cs, cs[1:]):
-                min_gap = min(min_gap, b - a)
-        min_gap = 0.0 if min_gap == float("inf") else float(min_gap)
-        # did the mid-game leader win? (runaway signal)
-        mid_leader_won = float("nan")
-        if s["mid_scores"] is not None and not tie:
-            mvals = s["mid_scores"]
-            mbest = max(mvals.values())
-            mid_leaders = [p for p, v in mvals.items() if v == mbest]
-            if len(mid_leaders) == 1:
-                mid_leader_won = 1.0 if mid_leaders[0] == winner else 0.0
-        # winning vector breakdown (which track carried the winner)
-        wp = state["players"][winner]
-        # v3.1 movement diagnostics
-        src = s["source_by_region"]
-        src_tot = sum(src.values())
-        src_share = {r: (src[r] / src_tot if src_tot else 0.0) for r in REGIONS}
-        total_poaches = sum(s["poaches"].values())
-        # winner's Rep spent on Poach vs the Rep-VP they finished on (is -1 Rep a real cost?)
-        win_rep_spent_poach = float(s["rep_spent_poach"][winner])
+        wp = s["players"][winner]
+        total_wins = s["food_wins"] + s["drink_wins"]
+        src = s["src_by_region"]; src_tot = sum(src.values()) + s["src_common"]
+        claim = s["claim_by_region"]; claim_tot = sum(claim.values()) or 1
+        ev = s["events_fired"] or 1
+
+        def csh(r): return claim[r] / claim_tot
+        def ssh(x): return (x / src_tot) if src_tot else 0.0
         return {
-            "margin": float(margin),
-            "tie": tie,
-            "turns": float(turns),
-            # movement (Probe A)
-            "src_share_N": float(src_share["N"]),
-            "src_share_C": float(src_share["C"]),
-            "src_share_S": float(src_share["S"]),
-            "src_share_E": float(src_share["E"]),
-            "travels_per_game": float(s["travels"]),
-            # poach (Probe B)
-            "poaches_per_game": float(total_poaches),
-            "poaches_per_player": float(total_poaches / s["n"]),
-            "steal_wars_per_game": float(s["steal_wars"]),
-            "rep_spent_poach_per_game": float(sum(s["rep_spent_poach"].values())),
-            "win_rep_spent_poach": win_rep_spent_poach,
-            "total_courts": float(total_courts),
-            "courts_per_player": float(total_courts / s["n"]),
-            "court_interval": float(court_interval),
-            "court_interval_late": float(court_interval_late) if court_interval_late == court_interval_late else 0.0,
-            "min_court_gap": min_gap,
-            "mid_leader_won": mid_leader_won if mid_leader_won == mid_leader_won else 0.5,
-            "stuck_turns": float(s["stuck_turns"]),
-            "overflow_discards": float(s["overflow_discards"]),
-            "buzz_spent": float(s["buzz_spent"]),
-            "region_ing_spent": float(s["region_ing_spent"]),
+            "margin": float(margin), "tie": tie,
+            "turns": float(s["turn"]), "turns_per_player": float(s["turn"] / s["n"]),
+            "food_wins": float(s["food_wins"]), "drink_wins": float(s["drink_wins"]),
+            "wins_per_player": float(total_wins / s["n"]),
+            "drink_win_share": float(s["drink_wins"] / total_wins) if total_wins else 0.0,
+            "contested_wins": float(s["contested_wins"]),
+            "contested_frac": float(s["contested_wins"] / total_wins) if total_wins else 0.0,
+            "max_buzz_on_vendor": float(s["max_buzz_on_vendor"]),
+            "buzz_supply_min": float(s["supply_min"]),
+            "star_placed": float(s["star_placed"]),
+            "star_wins_total": float(sum(s["star_wins"].values())),
+            "dusk_turn": float(s["dusk_turn"]) if s["dusk_turn"] is not None else float(s["turn"]),
+            "last_turn": float(s["last_turn"]) if s["last_turn"] is not None else float(s["turn"]),
+            "first_night_win_turn": float(s["first_night_win_turn"]) if s["first_night_win_turn"] is not None else float(s["turn"]),
+            "end_by_lasttrain": 1.0 if s["end_cause"] == "lasttrain" else 0.0,
+            "end_by_deck": 1.0 if s["end_cause"] == "deck" else 0.0,
+            "end_by_stall": 1.0 if s["end_cause"] == "stall" else 0.0,
+            "travels_per_game": float(s["travels"]), "inter_moves": float(s["inter_moves"]),
+            "visits_per_game": float(s["visits"]), "cstores_per_game": float(s["cstores"]),
+            "claim_share_N": csh("N"), "claim_share_C": csh("C"),
+            "claim_share_S": csh("S"), "claim_share_E": csh("E"),
+            "src_share_N": ssh(src["N"]), "src_share_C": ssh(src["C"]),
+            "src_share_S": ssh(src["S"]), "src_share_E": ssh(src["E"]),
+            "src_share_common": float(s["src_common"] / src_tot) if src_tot else 0.0,
+            "avg_legal_actions": float(statistics.mean(s["legal_counts"])) if s["legal_counts"] else 0.0,
+            "forced_turn_frac": float(s["forced_turns"] / len(s["legal_counts"])) if s["legal_counts"] else 0.0,
+            "events_fired_per_game": float(s["events_fired"]),
+            "scope_self_frac": float(s["scope_fired"]["self"] / ev),
+            "scope_region_frac": float(s["scope_fired"]["region"] / ev),
+            "scope_neigh_frac": float(s["scope_fired"]["neigh"] / ev),
+            "takethat_hits_per_game": float(s["takethat_hits"]),
+            "cs_rival_hits_per_game": float(s["cs_rival_hits"]),
+            "pokes_per_game": float(s["pokes"]),
+            "empty_draws_per_game": float(s["empty_draws"]),
+            "claims_per_game": float(s["claims"]),
+            "completions_per_game": float(s["completions"]),
+            "tickets_held_winner": float(len(wp["tickets"])),
+            "tickets_done_winner": float(sum(1 for k in wp["tickets"] if _mdone(k, wp["won"]))),
+            "ticket_net_winner": float(_ticket_final_score(wp)),
             "win_prestige": float(wp["prestige"]),
             "win_rep_vp": float(_rep_end_vp(wp["rep"])),
-            "win_cov_vp": float(_coverage_vp(_coverage_count(wp))),
-            "win_mission": 1.0 if (wp["mission"] and _mission_done(wp["mission"], wp["vendors"])) else 0.0,
-            "end_by_rep": 1.0 if s["end_cause"] == "rep" else 0.0,
-            "end_by_season": 1.0 if s["end_cause"] == "season" else 0.0,
-            "end_by_extract": 1.0 if s["end_cause"] == "extract" else 0.0,
+            "win_ticket_score": float(_ticket_final_score(wp)),
+            "win_total": float(best),
         }
 
 
-def _is_hsr(a, b):
-    return {a, b} == {"N", "S"}
-
-
-def _wild_cap(pl):
-    """Pantry->specialty substitutions available this turn (Gourmand ability + T2 pantry_wild perk)."""
-    return (GOURMAND_WILD_USES if pl["char"] == "gourmand" else 0) + (1 if pl["pantry_wild_perk"] else 0)
-
-
 GAME = TravelAgentsGame()
-TITLE = "Travel Agents: Taiwan (v3.1 — movement rebalance + The Poach)"
+TITLE = "Travel Agents: Taiwan (v6.2 — region vendor markets + a mission clock)"
 
 
 # ==================================================================================================
-#  SHARED ENGINE BRAIN  (sourcing / courting / routing) — every strategy uses this; strategies differ
-#  ONLY in their vendor-value WEIGHTS + an opening flag. Isolates "is a track/opening dominant?".
+#  SHARED ENGINE BRAIN — one greedy planner; strategies differ ONLY in PREFS.
 # ==================================================================================================
-TEMPO = 1.35          # VP-value of a turn (penalises slow-to-afford vendors)
-HOLD_GAP = 2.0        # only skip an affordable court to build a strictly-better, near-affordable target
-HORIZON = 3.5         # a target is "reachable soon" if est_turns <= HORIZON (keeps bots from starving
-                      # for a far marquee they can never juggle under the Larder cap)
+TEMPO = 1.1
 
 
-def _ramp_value(pl, v, w_ramp):
-    """Value of the vendor's icon = expected future discount. Rewards concentration (stacking a region)."""
-    if v["perk"] == "wild":
-        return w_ramp * 1.3
-    held = pl["icons"].get(v["region"], 0)
-    return w_ramp * (0.5 + 0.35 * held)      # more valuable the more you've already stacked that region
-
-
-def _coverage_marginal(pl, v, w_cov):
-    if v["region"] in pl["regions"]:
-        return 0.0
-    now = _coverage_vp(min(4, len(pl["regions"])))
-    then = _coverage_vp(min(4, len(pl["regions"]) + 1))
-    return w_cov * (then - now)
-
-
-def _rep_marginal(pl, v, w_rep):
-    now = _rep_end_vp(pl["rep"])
-    then = _rep_end_vp(min(REP_TOP, pl["rep"] + v["rep"] + pl["rep_per_court_bonus"]))
-    # value both the end-VP jump and steady progress toward the next tier
-    return w_rep * (0.6 * (v["rep"] + pl["rep_per_court_bonus"]) + (then - now))
-
-
-def _mission_marginal(pl, v, w_m):
-    if not pl["mission"]:
-        return 0.0
-    if _mission_helps(pl["mission"], v["id"], pl["vendors"]):
-        after = _mission_done(pl["mission"], pl["vendors"] + [v["id"]])
-        return w_m * (7.0 if after else 1.6)
-    return 0.0
-
-
-def _est_turns(state, p, vid):
-    pl = state["players"][p]
-    pay, pantry, buzz = GAME._pay_plan(state, p, vid)
-    region_short = sum(max(0, c - pl["larder"].get(r, 0)) for r, c in pay.items())
-    pantry_short = max(0, pantry - pl["larder"].get(PANTRY, 0))
-    buzz_short = max(0, buzz - pl["buzz"])
-    promote_yield = 2 + pl["promote_bonus"]
-    # ingredients ~0.55 turn each (stock-2), buzz per-promote batch, +1 for the court itself
-    return 1.0 + 0.55 * (region_short + pantry_short) + (buzz_short / promote_yield) * 1.0
-
-
-def _vendor_value(state, p, vid, W, flags=None):
-    pl = state["players"][p]
-    v = VENDORS[vid]
-    val = (W["p"] * v["prestige"]
-           + _rep_marginal(pl, v, W["r"])
-           + _coverage_marginal(pl, v, W["c"])
-           + _mission_marginal(pl, v, W["m"])
-           + _ramp_value(pl, v, W["ramp"]))
-    # camp flag (Probe A control line): a stay-home player only values vendors it can source without
-    # leaving its home region — anything naming a token from another region is effectively off-limits.
-    if (flags or {}).get("camp"):
-        home = pl["home"]
-        if any(r != home for r in v["cost_regions"]):
-            val -= 100.0
-    return val
-
-
-def _rank_vendors(state, p, W, flags=None):
-    ranked = []
-    for t in (1, 2, 3):
-        for idx, vid in enumerate(state["board"][t]):
-            val = _vendor_value(state, p, vid, W, flags)
-            et = _est_turns(state, p, vid)
-            ranked.append((val - TEMPO * (et - 1.0), val, et, t, idx, vid,
-                           GAME._affordable(state, p, vid)))
-    ranked.sort(key=lambda x: x[0], reverse=True)
-    return ranked
-
-
-def _needed(state, p, vid):
-    """(region_need Counter, pantry_need, buzz_need) still short for this vendor."""
-    pl = state["players"][p]
-    pay, pantry, buzz = GAME._pay_plan(state, p, vid)
-    reg = Counter()
+def _needs(s, p, vid):
+    pay = GAME._pay_plan(s, p, vid)
+    pl = s["players"][p]
+    need = Counter()
     for r, c in pay.items():
         short = c - pl["larder"].get(r, 0)
         if short > 0:
-            reg[r] = short
-    pantry_short = max(0, pantry - pl["larder"].get(PANTRY, 0))
-    buzz_short = max(0, buzz - pl["buzz"])
-    return reg, pantry_short, buzz_short
+            need[r] = short
+    return need
 
 
-def _acquire_toward(state, p, vid, W, flags):
-    """Choose Stock/Travel/Promote to get closer to affording `vid`."""
-    pl = state["players"][p]
-    pos = pl["pos"]
-    reg_need, pantry_need, buzz_need = _needed(state, p, vid)
-
-    # Opening bias: buzz-first banks Buzz early; ramp/ingredient-first fills ingredients early.
-    early = pl["acted"] < 6
-    if flags.get("buzz_open") and early and pl["buzz"] < 5:
-        return ("promote",)
-
-    # SITUATIONAL POACH (v3.1): if a co-located rival is holding a specialty this vendor needs, and I
-    # can't just take it locally (I'm not standing where it's freely available), swiping it both fills my
-    # need AND denies the rival — worth the Rep. Only when it advances the goal (never a random grief) and
-    # only if I can spare the Rep (floor + a 1-band buffer so I don't gut my own scoring).
-    if (flags.get("poach") or flags.get("poach_lean")) and reg_need and pl["rep"] >= POACH_REP_FLOOR + 1:
-        q, held = _poach_target_region(state, p)
-        if q is not None:
-            useful = [r for r in reg_need if r in held]
-            local_ok = pos in reg_need and state["supply"].get(pos, 0) > 0
-            if useful and not local_ok:
-                return ("poach",)
-
-    # If Buzz is the binding constraint and ingredients are basically handled -> Promote.
-    if buzz_need > 0 and sum(reg_need.values()) + pantry_need <= 1:
-        return ("promote",)
-    # Otherwise chase the ingredient half first (the ramp / contested axis), then Buzz.
-    if reg_need:
-        # standing where a needed region ingredient is available?
-        if pos in reg_need and state["supply"][pos] > 0:
-            second = pos if (reg_need[pos] > 1 or pantry_need == 0) else PANTRY
-            return ("stock", (pos, second))
-        # camp line: refuse to leave home — source locally / pantry / bank Buzz instead of travelling.
-        if flags.get("camp"):
-            if pantry_need > 0:
-                return ("stock", (PANTRY, PANTRY))
-            if buzz_need > 0:
-                return ("promote",)
-            return ("stock", (pos if state["supply"].get(pos, 0) > 0 else PANTRY, PANTRY))
-        # travel toward a needed region (adjacent first)
-        target_regions = list(reg_need.keys())
-        for d in ADJ[pos]:
-            if pl["char"] == "auntie" and _is_hsr(pos, d):
-                continue
-            if d in target_regions:
-                return ("travel", d, d if state["supply"][d] > 0 else PANTRY)
-        # not adjacent — hop toward it (pick an adjacent that neighbours a target)
-        for d in ADJ[pos]:
-            if pl["char"] == "auntie" and _is_hsr(pos, d):
-                continue
-            if any(tr in ADJ[d] for tr in target_regions):
-                return ("travel", d, d if state["supply"][d] > 0 else PANTRY)
-    if pantry_need > 0:
-        return ("stock", (PANTRY, PANTRY))
-    if buzz_need > 0:
-        return ("promote",)
-    # Fully afforded but we chose to wait — bank Buzz (never a dead turn).
-    return ("promote",)
+def _buzz_short_real(s, p, vid, pl):
+    _, rival = GAME._buzz_lead(s, p, vid)
+    margin = GAME._margin_for(pl)
+    raw = max(0, rival + margin - s["buzz"][vid][p])
+    return raw + 0.6 * rival
 
 
-def _poach_target_region(state, p):
-    """If a co-located rival can be poached, return the set of specialty regions the rival is holding."""
-    q = GAME._poach_victim(state, p)
-    if q is None:
-        return None, set()
-    rv = state["players"][q]
-    held = {r for r in REGIONS if rv["larder"].get(r, 0) > 0}
-    return q, held
+def _ramp_value(pl, v, w):
+    if v["perk"] in ("wild", "double_icon"):
+        return w * 1.3
+    if v["perk"] == "icon":
+        held = pl["icons"].get(v["region"], 0)
+        return w * (0.5 + 0.4 * held)
+    return 0.0
 
 
-def _engine_policy(view, p, legal, rng, W, flags):
-    state = view
-    pl = state["players"][p]
-    cap = (ROOKIE_CAP if pl["char"] == "rookie"
-           else CONDUCTOR_CAP if pl["char"] == "conductor" else CAP_DEFAULT)
-    near_cap = sum(pl["larder"].values()) >= cap - 1
-
-    # ---- POACH decisions (v3.1) ----------------------------------------------------------------
-    # poach_lean = the griefer worst-case: swipe from any co-located rival holding a specialty, as long
-    # as Rep can be spent. Tests whether spamming Poach is dominant / spawns a steal-war.
-    if flags.get("poach_lean"):
-        q, held = _poach_target_region(state, p)
-        if q is not None and held and pl["rep"] >= max(POACH_REP_FLOOR, 2):
-            # don't grief away Rep the player still needs for a scoring band it's about to cross
-            return ("poach",)
-
-    ranked = _rank_vendors(state, p, W, flags)   # (tempo_adj, val, et, tier, idx, vid, affordable)
-    if not ranked:
-        return ("promote",)
-    affordable = [r for r in ranked if r[6] and r[1] > 0]
-    # the goal to build toward = best tempo-adjusted target reachable soon (else the nearest one)
-    near = [r for r in ranked if r[2] <= HORIZON]
-    goal = near[0] if near else min(ranked, key=lambda r: r[2])
-    if affordable:
-        best_aff = affordable[0]
-        # skip an affordable court only to build a strictly-better, near-affordable target — and never
-        # while about to overflow the Larder (hoarding is a losing trade; court and ramp instead).
-        better_soon = (not goal[6] and goal[5] != best_aff[5]
-                       and goal[0] > best_aff[0] + HOLD_GAP and goal[2] <= 1.8)
-        if better_soon and not near_cap:
-            return _acquire_toward(state, p, goal[5], W, flags)
-        return ("court", best_aff[3], best_aff[4])
-    # nothing affordable yet — build toward the near-horizon goal (ramps via cheap wins first)
-    return _acquire_toward(state, p, goal[5], W, flags)
+def _rep_marginal(pl, v):
+    now = _rep_end_vp(pl["rep"])
+    then = _rep_end_vp(min(12, pl["rep"] + v["rep"] + pl["rep_per_court_bonus"]))
+    return 0.5 * (v["rep"] + pl["rep_per_court_bonus"]) + (then - now)
 
 
-# ---- strategy weight table -------------------------------------------------------------------------
-def _mk(w_p=1.0, w_r=1.0, w_c=1.0, w_m=1.0, w_ramp=0.7, **flags):
-    W = {"p": w_p, "r": w_r, "c": w_c, "m": w_m, "ramp": w_ramp}
-    return W, flags
+def _tickets_marginal(s, p, vid):
+    pl = s["players"][p]
+    v = VENDORS[vid]
+    cand = {"id": v["id"], "region": v["region"], "is_drink": v["is_drink"], "phase": v["phase"],
+            "prestige": v["prestige"], "total_cost": v["total_cost"],
+            "contested": False, "starred": vid in s["star"], "act_won": s["act"],
+            "final_round": s["end_turn"] is not None}
+    total = 0.0
+    for key in pl["tickets"]:
+        if _mdone(key, pl["won"]):
+            continue
+        if _mhelps(key, cand, pl["won"]):
+            after = _mdone(key, pl["won"] + [cand])
+            val = _ticket_value(key)
+            total += (val * 0.85) if after else (val * 0.22)
+    return total * pl["prefs"].get("w_ticket", 1.0)
 
 
-_STRATS = {
-    "balanced":        _mk(),
-    "prestige_rush":   _mk(w_p=1.5, w_r=0.6, w_c=0.3, w_ramp=0.55),
-    "reputation_climb": _mk(w_p=0.7, w_r=1.7, w_c=0.4, w_ramp=0.6),
-    "coverage_spread": _mk(w_p=0.7, w_r=0.6, w_c=1.9, w_ramp=0.15),
-    "buzz_heavy":      _mk(w_p=1.0, w_r=1.0, w_c=0.6, w_ramp=0.55, buzz_open=True),
-    "ingredient_heavy": _mk(w_p=1.0, w_r=0.8, w_c=0.4, w_ramp=1.25),
-    "mission_focus":   _mk(w_p=0.9, w_r=0.8, w_c=0.7, w_m=2.1),
-    # v3.1 control/probe lines:
-    "camp_home":       _mk(w_p=1.0, w_r=1.0, w_c=1.0, w_ramp=1.1, camp=True),   # Probe A: stay-home (no travel)
-    "poach_situational": _mk(poach=True),                                       # Probe B: situational swipe
-    "poacher":         _mk(poach_lean=True),                                    # Probe B: aggressive griefer
-}
+def _road_value(s, p, vid, prefs):
+    pl = s["players"][p]
+    v = VENDORS[vid]
+    prestige = v["prestige"] + (STAR_BONUS_P if vid in s["star"] else 0)
+    core = prestige + _rep_marginal(pl, v)
+    if not v["is_drink"]:
+        core += _ramp_value(pl, v, prefs.get("w_ramp", 1.0))
+        core *= prefs.get("w_food", 1.0)
+    else:
+        core *= prefs.get("w_drink", 1.0)
+    if prefs.get("opportunistic") and (vid in s["star"] or v["prestige"] >= 6):
+        core *= 1.3
+    return core * prefs.get("w_val", 1.0) + _tickets_marginal(s, p, vid)
 
 
-def _make_agent(name):
-    W, flags = _STRATS[name]
+def _est_actions(s, p, vid):
+    pl = s["players"][p]
+    need = _needs(s, p, vid)
+    ing = sum(need.values())
+    bz = _buzz_short_real(s, p, vid, pl)
+    py = GAME._promote_yield(pl)
+    reg = VENDORS[vid]["region"]
+    travel = 1 if pl["pos"] != reg else 0
+    return 0.7 * ing + (bz / py) + travel + 1.0
 
-    def agent(view, p, legal, rng):
-        return _engine_policy(view, p, legal, rng, W, flags)
+
+def _pick_target(s, p, prefs):
+    board = GAME._board(s)
+    best, bscore = None, -1e9
+    for vid in board:
+        v = VENDORS[vid]
+        if prefs.get("pure_drinks") and not v["is_drink"]:
+            continue
+        if prefs.get("no_drinks") and v["is_drink"]:
+            continue
+        val = _road_value(s, p, vid, prefs)
+        score = val - TEMPO * (_est_actions(s, p, vid) - 1.0)
+        # mild stickiness: a small nudge to finish a vendor you've already committed Buzz to (cuts the
+        # worst target-thrash) — kept light so it doesn't cause fixation on an unwinnable vendor.
+        if s["buzz"][vid][p] > 0:
+            score += 0.4
+        if score > bscore:
+            bscore, best = score, vid
+    return best
+
+
+def _token_source(s, p, tok, legal, prefs):
+    """Best action to source token `tok`. Signatures: Visit/CS the region that holds it. Common: a
+    common region."""
+    pl = s["players"][p]
+    if tok == COMMON:
+        targets = list(COMMON_REGIONS)
+    else:
+        targets = [tok]
+    if pl["pos"] in targets and ("visit",) in legal:
+        return ("visit",)
+    for r in targets:
+        if ("cstore", r) in legal and (tok == COMMON or True):
+            # prefer to travel to a signature region and Visit (3× throughput) if it's a signature we
+            # need a lot of; but a single CS grab is fine for a top-up
+            pass
+    # relocate to a token region to Visit it (better yield than remote CS)
+    dest = min(targets, key=lambda r: _dist(pl["pos"], r, pl["char"]))
+    if pl["pos"] == dest and ("visit",) in legal:
+        return ("visit",)
+    hop = _next_hop(pl["pos"], dest, pl["char"])
+    if ("travel", hop) in legal:
+        return ("travel", hop)
+    for r in targets:
+        if ("cstore", r) in legal:
+            return ("cstore", r)
+    return None
+
+
+def _poke(s, p, legal):
+    rival_regions = {s["players"][q]["pos"] for q in range(s["n"]) if q != p}
+    for r in rival_regions:
+        if ("cstore", r) in legal:
+            return ("cstore", r)
+    return None
+
+
+def _should_claim(s, p, legal, prefs):
+    if ("claim",) not in legal or prefs.get("no_tickets"):
+        return False
+    pl = s["players"][p]
+    incomplete = [k for k in pl["tickets"] if not _mdone(k, pl["won"])]
+    limit = 3 if prefs.get("speed") else 2
+    # don't claim so late that a fresh ticket can't be finished
+    if s["clock_mode"] == "mission":
+        room = s["completions"] < s["m_end"] - 1
+    else:
+        room = s["vendor_claims"] < s["v_end"] - 1
+    return len(incomplete) < limit and room
+
+
+def _plan(s, p, legal, rng, prefs):
+    pl = s["players"][p]
+    # 1) a bribe that fits the road always progresses
+    bribes = [a for a in legal if a[0] == "bribe"
+              and not (prefs.get("pure_drinks") and not VENDORS[a[1]]["is_drink"])
+              and not (prefs.get("no_drinks") and VENDORS[a[1]]["is_drink"])]
+    if bribes:
+        return max(bribes, key=lambda a: _road_value(s, p, a[1], prefs))
+
+    # 2) hoarder overlay: over-source and SIT on a target region's signature to deny
+    hr = prefs.get("hoard_region")
+    if hr and sum(pl["larder"].values()) < LARDER_CAP:
+        act = _token_source(s, p, hr, legal, prefs)
+        if act is not None:
+            return act
+
+    # 3) claim a fresh ticket when it's pure upside
+    if _should_claim(s, p, legal, prefs):
+        return ("claim",)
+
+    tgt = _pick_target(s, p, prefs)
+    if tgt is None:
+        pk = _poke(s, p, legal) if prefs.get("disrupt") else None
+        if pk is not None:
+            s["pokes"] += 1
+            return pk
+        return ("visit",) if ("visit",) in legal else legal[0]
+
+    v = VENDORS[tgt]
+    eff = v["region"]
+    need = _needs(s, p, tgt)
+    lead, _rival = GAME._buzz_lead(s, p, tgt)
+    margin = GAME._margin_for(pl)
+    present = GAME._present(s, p, tgt)
+
+    # 4) get on-site if we're short the local ingredient, else route toward the target
+    if not present:
+        pos = pl["pos"]
+        if need.get(pos, 0) > 0 and ("visit",) in legal:
+            return ("visit",)
+        if need.get(COMMON, 0) > 0 and pos in COMMON_REGIONS and ("cstore", pos) in legal:
+            return ("cstore", pos)
+        hop = _next_hop(pos, eff, pl["char"])
+        if ("travel", hop) in legal:
+            return ("travel", hop)
+
+    # 5) source what the target needs
+    if sum(need.values()) > 0:
+        for tok in list(need):
+            act = _token_source(s, p, tok, legal, prefs)
+            if act is not None:
+                return act
+        if ("visit",) in legal:
+            return ("visit",)
+
+    # 6) win the Buzz fight
+    if lead < margin and present and ("promote", tgt) in legal:
+        return ("promote", tgt)
+    if lead < margin and not present:
+        hop = _next_hop(pl["pos"], eff, pl["char"])
+        if ("travel", hop) in legal:
+            return ("travel", hop)
+
+    # 7) disruptive fallback / idle
+    if prefs.get("disrupt"):
+        pk = _poke(s, p, legal)
+        if pk is not None:
+            s["pokes"] += 1
+            return pk
+    if ("visit",) in legal:
+        return ("visit",)
+    return legal[0]
+
+
+def _make(prefs):
+    def agent(s, p, legal, rng):
+        return _plan(s, p, legal, rng, prefs)
     return agent
 
 
-def s_random(view, p, legal, rng):
+# --- PREFS per playstyle -------------------------------------------------------------------------
+BAL = {"w_val": 1.0, "w_food": 1.0, "w_drink": 1.0, "w_ramp": 1.0, "w_ticket": 1.0}
+OPPORTUNISTIC = {**BAL, "opportunistic": True, "w_ticket": 1.15}
+DISRUPTIVE = {**BAL, "disrupt": True, "w_ticket": 1.1}
+ENDGAME = {**BAL, "speed": True, "w_ticket": 1.2}
+CHARLEAN = {**BAL}                                        # kit-driven; used with a character assigned
+MIXPREFS = {**BAL, "w_drink": 1.1, "w_ticket": 1.15}      # the well-timed mix
+IGNORE_OBJ = {**BAL, "no_tickets": True, "no_drinks": True}  # ignore objectives AND drinks (the control)
+PURE_DRINKS = {"w_val": 1.0, "w_food": 0.0, "w_drink": 1.0, "w_ramp": 0.0, "pure_drinks": True, "w_ticket": 1.0}
+NO_DRINKS = {**BAL, "no_drinks": True}
+
+
+def s_random(s, p, legal, rng):
     return rng.choice(legal)
 
 
-def s_greedy_cheap(view, p, legal, rng):
-    """Naive baseline: court the cheapest affordable vendor now; else Promote/Stock generically."""
-    state = view
-    pl = state["players"][p]
-    best = None
-    for t in (1, 2, 3):
-        for idx, vid in enumerate(state["board"][t]):
-            if GAME._affordable(state, p, vid):
-                _, _, buzz = GAME._pay_plan(state, p, vid)
-                key = (VENDORS[vid]["tier"], buzz)
-                if best is None or key < best[0]:
-                    best = (key, t, idx)
-    if best:
-        return ("court", best[1], best[2])
-    if pl["buzz"] < 3:
-        return ("promote",)
-    pos = pl["pos"]
-    return ("stock", (pos if state["supply"][pos] > 0 else PANTRY, PANTRY))
+def s_greedy_prestige(s, p, legal, rng):
+    bribes = [a for a in legal if a[0] == "bribe"]
+    if bribes:
+        return max(bribes, key=lambda a: VENDORS[a[1]]["prestige"])
+    return _plan(s, p, legal, rng, BAL)
 
 
 STRATEGIES = {
-    "random": s_random,
-    "greedy_cheap": s_greedy_cheap,
-    "balanced": _make_agent("balanced"),
-    "prestige_rush": _make_agent("prestige_rush"),
-    "reputation_climb": _make_agent("reputation_climb"),
-    "coverage_spread": _make_agent("coverage_spread"),
-    "buzz_heavy": _make_agent("buzz_heavy"),
-    "ingredient_heavy": _make_agent("ingredient_heavy"),
-    "mission_focus": _make_agent("mission_focus"),
-    "camp_home": _make_agent("camp_home"),
-    "poach_situational": _make_agent("poach_situational"),
-    "poacher": _make_agent("poacher"),
+    "random":        s_random,
+    "greedy_prest":  s_greedy_prestige,
+    "balanced":      _make(BAL),
+    "opportunistic": _make(OPPORTUNISTIC),
+    "disruptive":    _make(DISRUPTIVE),
+    "endgame":       _make(ENDGAME),
+    "mix":           _make(MIXPREFS),
+    "ignore_obj":    _make(IGNORE_OBJ),
+    "pure_drinks":   _make(PURE_DRINKS),
+    "no_drinks":     _make(NO_DRINKS),
+}
+
+STRAT_PREFS = {
+    "random": BAL, "greedy_prest": BAL, "balanced": BAL, "opportunistic": OPPORTUNISTIC,
+    "disruptive": DISRUPTIVE, "endgame": ENDGAME, "mix": MIXPREFS, "ignore_obj": IGNORE_OBJ,
+    "pure_drinks": PURE_DRINKS, "no_drinks": NO_DRINKS,
 }
 
 
 # ==================================================================================================
-#  PROBE HARNESS (local runner that can assign characters + missions per seat)
+#  A rng-threaded wrapper so dusk() can shuffle the night decks deterministically.
 # ==================================================================================================
-import random  # noqa: E402
+class _Seeded:
+    """Wrap GAME so new_state stashes the match rng into state (dusk needs to shuffle without an rng
+    arg). Also lets the probe runners pass n_players / characters / prefs."""
+    def __init__(self, n=2, characters=None, prefs=None):
+        self.n, self.characters, self.prefs = n, characters, prefs
 
-# make engine importable when this file is run directly
-_HERE = os.path.dirname(os.path.abspath(__file__))
-_SIM = os.path.abspath(os.path.join(_HERE, "..", "..", "..", "tools", "sim"))
-if _SIM not in sys.path:
-    sys.path.insert(0, _SIM)
-try:
-    from engine import round_robin, format_round_robin, health_read  # noqa: E402
-except Exception:
-    round_robin = format_round_robin = health_read = None
+    def new_state(self, rng, n=None):
+        st = GAME.new_state(rng, n or self.n, characters=self.characters, prefs=self.prefs)
+        st["_rng"] = rng
+        return st
 
-
-def _pick_mission(rng, W, flags):
-    """draw-3-keep-1: keep the dealt mission best aligned to the strategy's weights."""
-    dealt = rng.sample(MISSIONS, 3)
-    align = {
-        "south_3": W["ramp"] + W["m"], "north_3": W["ramp"] + W["m"],
-        "central_3": W["ramp"] + W["m"], "grand_tour": 2 * W["c"] + W["m"],
-        "t1_3": W["ramp"] + W["m"] * 0.8, "t3_2": 1.5 * W["p"] + W["m"],
-        "tall_18": 1.6 * W["p"] + W["m"],
-        "volume_5": W["r"] + W["m"] * 0.9, "marquee_feeders": W["p"] + W["m"],
-    }
-    return max(dealt, key=lambda k: align.get(k, 0.0))
+    def __getattr__(self, k):
+        return getattr(GAME, k)
 
 
-def _series(agents, n, n_players=2, base_seed=1, characters=None, missions=None, weights=None,
-            flags=None):
-    """Play n games; agents = {seat: callable}. Optional fixed characters / missions per seat.
-    If missions is None, each seat picks a strategy-aligned mission per game (weights/flags supply W)."""
-    wins = {p: 0 for p in range(n_players)}
-    ties = 0
-    scores = {p: [] for p in range(n_players)}
-    macc = {}
+# ==================================================================================================
+#  __main__ — the v6.2 probe suite (uses the harness directly, like beacon.py)
+# ==================================================================================================
+def _run(agents, n=1500, seed=1, n_players=2, characters=None, prefs=None):
+    from engine import run_match
+    g = _Seeded(n_players, characters, prefs)
+    w = [0] * n_players; t = 0; sums = [0.0] * n_players
+    accum = {}
     for i in range(n):
-        rng = random.Random(base_seed + i)
-        if missions is None:
-            ms = []
-            for p in range(n_players):
-                W = (weights or {}).get(p, _STRATS["balanced"][0])
-                fl = (flags or {}).get(p, {})
-                ms.append(_pick_mission(rng, W, fl))
-        else:
-            # allow per-seat None -> fill with a strategy-aligned pick (so an opponent can hold an
-            # aligned mission while the tested seat is forced onto a specific one)
-            ms = []
-            for p, mm in enumerate(missions):
-                if mm is None:
-                    W = (weights or {}).get(p, _STRATS["balanced"][0])
-                    fl = (flags or {}).get(p, {})
-                    ms.append(_pick_mission(rng, W, fl))
-                else:
-                    ms.append(mm)
-        s = GAME.new_state(rng, n_players, characters=characters, missions=ms)
-        guard = 0
-        while not GAME.is_over(s):
-            acts = {}
-            for pl in GAME.actors(s):
-                acts[pl] = agents[pl](s, pl, GAME.legal_actions(s, pl), rng)
-            s = GAME.step(s, acts, rng)
-            guard += 1
-            if guard > 6000:
-                break
-        sc = GAME.scores(s)
-        best = max(sc.values())
-        w = [p for p, v in sc.items() if v == best]
-        if len(w) == 1:
-            wins[w[0]] += 1
-        else:
-            ties += 1
+        sc, mt = run_match(g, {p: agents[p] for p in range(n_players)}, seed + i)
         for p in range(n_players):
-            scores[p].append(sc[p])
-        for k, v in GAME.metrics(s).items():
-            macc.setdefault(k, []).append(v)
-    return {
-        "win": {p: wins[p] / n for p in range(n_players)},
-        "tie": ties / n,
-        "score_mean": {p: statistics.mean(scores[p]) for p in range(n_players)},
-        "metrics": {k: statistics.mean(v) for k, v in macc.items()},
-    }
+            sums[p] += sc[p]
+        best = max(sc.values()); winners = [p for p, v in sc.items() if v == best]
+        if len(winners) > 1:
+            t += 1
+        else:
+            w[winners[0]] += 1
+        for k, v in mt.items():
+            accum.setdefault(k, []).append(v)
+    metrics = {k: statistics.mean(v) for k, v in accum.items()}
+    return [x / n for x in w], t / n, [x / n for x in sums], metrics
 
 
-def _agent_for(name):
-    return STRATEGIES[name]
+def _versus(sa, sb, n=1500, seed=1):
+    """A's win rate vs B, both seatings averaged, with each side's prefs/capability wired in (the
+    caps-AWARE probe — authoritative over the caps-blind round-robin)."""
+    pa, pb = STRAT_PREFS[sa], STRAT_PREFS[sb]
+    w0, t0, _, _ = _run({0: STRATEGIES[sa], 1: STRATEGIES[sb]}, n=n, seed=seed, prefs=[pa, pb])
+    w1, t1, _, _ = _run({0: STRATEGIES[sb], 1: STRATEGIES[sa]}, n=n, seed=seed + n, prefs=[pb, pa])
+    a_as0 = w0[0] + 0.5 * t0
+    a_as1 = w1[1] + 0.5 * t1
+    return (a_as0 + a_as1) / 2
 
 
-def _weights_for(name):
-    if name in _STRATS:
-        return _STRATS[name][0], _STRATS[name][1]
-    return _STRATS["balanced"][0], {}
+def _char_winrate(ch, n=1200, seed=1, prefs=None):
+    pr = prefs or BAL
+    w0, t0, _, _ = _run({0: STRATEGIES["balanced"], 1: STRATEGIES["balanced"]},
+                        n=n, seed=seed, characters=[ch, "neutral"], prefs=[pr, BAL])
+    w1, t1, _, _ = _run({0: STRATEGIES["balanced"], 1: STRATEGIES["balanced"]},
+                        n=n, seed=seed + n, characters=["neutral", ch], prefs=[BAL, pr])
+    return ((w0[0] + 0.5 * t0) + (w1[1] + 0.5 * t1)) / 2
 
 
-# ---- PROBE A (v3.1): MOVEMENT — does the rebalance actually spread sourcing? ----------------------
-def probeA_movement(n=2000):
-    print("=" * 90)
-    print("PROBE A (v3.1) — MOVEMENT SPREAD (2p). The make-or-break for this iteration.")
-    print("  PASS: each region >=~18% of ingredient-take actions, South clearly up from ~zero; travel")
-    print("  happens; and a stay-home line is NOT competitive (the 32% North-bound cross-link works).")
-    print("=" * 90)
-    # Average per-region sourcing share + travel over a representative field (all real track lines,
-    # both seatings) so the read isn't an artefact of one strategy's routing.
-    lines = ["balanced", "prestige_rush", "reputation_climb", "coverage_spread",
-             "buzz_heavy", "ingredient_heavy", "mission_focus"]
-    acc = {r: [] for r in REGIONS}
-    trav = []
-    seed = 1
-    for a in lines:
-        for b in lines:
-            Wa, fa = _weights_for(a)
-            Wb, fb = _weights_for(b)
-            r = _series({0: _agent_for(a), 1: _agent_for(b)}, max(120, n // len(lines)),
-                        base_seed=seed, weights={0: Wa, 1: Wb}, flags={0: fa, 1: fb})
-            seed += n
-            m = r["metrics"]
-            for reg in REGIONS:
-                acc[reg].append(m["src_share_" + reg])
-            trav.append(m["travels_per_game"])
-    share = {reg: statistics.mean(acc[reg]) for reg in REGIONS}
-    travels = statistics.mean(trav)
-    print("\n  Per-region sourcing share (field average, both seatings):")
-    for reg in REGIONS:
-        flag = "" if share[reg] >= 0.17 else "  <-- BELOW ~18% FLOOR"
-        print(f"    {reg}: {share[reg]*100:5.1f}%   {'#'*round(share[reg]*80)}{flag}")
-    print(f"\n  inter-region moves / game = {travels:.1f}  (~{travels/2:.1f} per player over ~{'23'} turns each)")
-    print(f"  South sourcing = {share['S']*100:.1f}%  (design headline: up from the v3 ~6% ghost-town)")
-    # the decisive control: is a stay-home line competitive? camp_home vs the traveling field.
-    seed += n
-    camp_wr = []
-    for opp in ["balanced", "coverage_spread", "ingredient_heavy"]:
-        Wc, fc = _weights_for("camp_home")
-        Wo, fo = _weights_for(opp)
-        rA = _series({0: _agent_for("camp_home"), 1: _agent_for(opp)}, n, base_seed=seed,
-                     weights={0: Wc, 1: Wo}, flags={0: fc, 1: fo}); seed += n
-        rB = _series({0: _agent_for(opp), 1: _agent_for("camp_home")}, n, base_seed=seed,
-                     weights={0: Wo, 1: Wc}, flags={0: fo, 1: fc}); seed += n
-        w = ((rA["win"][0] + 0.5 * rA["tie"]) + (rB["win"][1] + 0.5 * rB["tie"])) / 2
-        camp_wr.append((opp, w))
-        print(f"  stay-home (camp_home) vs {opp:16} -> camp {w*100:5.1f}%")
-    camp_avg = statistics.mean(w for _, w in camp_wr)
-    floor_ok = all(share[reg] >= 0.165 for reg in REGIONS)
-    south_ok = share["S"] >= 0.18
-    camp_dead = camp_avg <= 0.47
-    verdict = ("PASS" if (floor_ok and south_ok and camp_dead) else
-               ("SOFT" if (min(share.values()) >= 0.14 and camp_avg <= 0.52) else "FAIL"))
-    print(f"\n  --> PROBE A: {verdict}  (min region {min(share.values())*100:.1f}%, "
-          f"South {share['S']*100:.1f}%, stay-home {camp_avg*100:.1f}% [want <~47%])")
-    print(f"      CROSS-LINK SUFFICIENCY: 32% cross-link rate (6/8 North-bound) is "
-          f"{'ENOUGH — camping is not competitive' if camp_dead else 'MARGINAL — consider nudging the rate up'}.\n")
-    return share, travels, camp_avg, verdict
-
-
-# ---- PROBE B (v3.1): THE POACH — fun risk-reward, or degenerate/griefy? ---------------------------
-def probeB_poach(n=2000):
-    print("=" * 90)
-    print("PROBE B (v3.1) — THE POACH (2p). PASS: low/situational frequency; a Poach-lean line is NOT")
-    print("  dominant (<=~55%); steal-wars ~0 (self-correcting); and the -1 Rep is a real cost.")
-    print("=" * 90)
-    seed = 1
-    Wb, fb = _weights_for("balanced")
-    # 1) SITUATIONAL poacher vs balanced — the "uses it well" line: frequency + win-rate.
-    Ws, fs = _weights_for("poach_situational")
-    rA = _series({0: _agent_for("poach_situational"), 1: _agent_for("balanced")}, n, base_seed=seed,
-                 weights={0: Ws, 1: Wb}, flags={0: fs, 1: fb}); seed += n
-    rB = _series({0: _agent_for("balanced"), 1: _agent_for("poach_situational")}, n, base_seed=seed,
-                 weights={0: Wb, 1: Ws}, flags={0: fb, 1: fs}); seed += n
-    sit_wr = ((rA["win"][0] + 0.5 * rA["tie"]) + (rB["win"][1] + 0.5 * rB["tie"])) / 2
-    sit_freq = (rA["metrics"]["poaches_per_game"] + rB["metrics"]["poaches_per_game"]) / 2
-    print(f"\n  [situational Poacher vs balanced]")
-    print(f"    poaches / game        = {sit_freq:.2f}   (target: low / situational, not spammed)")
-    print(f"    situational win-rate  = {sit_wr*100:.1f}%  (want ~50%: usable, not dominant)")
-    # 2) AGGRESSIVE poach-lean (griefer) vs balanced — worst case: dominance + grief spiral.
-    Wp, fp = _weights_for("poacher")
-    rA = _series({0: _agent_for("poacher"), 1: _agent_for("balanced")}, n, base_seed=seed,
-                 weights={0: Wp, 1: Wb}, flags={0: fp, 1: fb}); seed += n
-    rB = _series({0: _agent_for("balanced"), 1: _agent_for("poacher")}, n, base_seed=seed,
-                 weights={0: Wb, 1: Wp}, flags={0: fb, 1: fp}); seed += n
-    lean_wr = ((rA["win"][0] + 0.5 * rA["tie"]) + (rB["win"][1] + 0.5 * rB["tie"])) / 2
-    lean_freq = (rA["metrics"]["poaches_per_game"] + rB["metrics"]["poaches_per_game"]) / 2
-    print(f"\n  [aggressive poach-lean (griefer) vs balanced]")
-    print(f"    poaches / game        = {lean_freq:.2f}")
-    print(f"    poach-lean win-rate   = {lean_wr*100:.1f}%  (PASS if <=~55%: spamming Poach is not a winning line)")
-    # 3) RATIONAL steal-war test: MIRROR of the SITUATIONAL line (both CAN poach, but only when it helps).
-    #    This is the meaningful "do rational players spiral into a grief war?" question — as opposed to
-    #    the griefer mirror below, where both bots are HARD-CODED to grief-max (a tautological war, not a
-    #    balance signal). A rational mirror should show steal-wars ~0.
-    rS = _series({0: _agent_for("poach_situational"), 1: _agent_for("poach_situational")}, n,
-                 base_seed=seed, weights={0: Ws, 1: Ws}, flags={0: fs, 1: fs}); seed += n
-    sm = rS["metrics"]
-    wars = sm["steal_wars_per_game"]
-    sit_mir_freq = sm["poaches_per_game"]
-    print(f"\n  [RATIONAL steal-war test — situational-poacher MIRROR]")
-    print(f"    poaches / game        = {sit_mir_freq:.2f}")
-    print(f"    steal-wars / game     = {wars:.3f}   (reciprocal poach within a round; target ~0 = self-correcting)")
-    # 3b) adversarial stress: force BOTH to grief-max — shows the arms race is self-defeating, not a win.
-    rM = _series({0: _agent_for("poacher"), 1: _agent_for("poacher")}, max(300, n // 2),
-                 base_seed=seed, weights={0: Wp, 1: Wp}, flags={0: fp, 1: fp}); seed += n
-    mm = rM["metrics"]
-    print(f"\n  [adversarial stress — forced griefer MIRROR (both hard-coded to grief-max)]")
-    print(f"    poaches / game={mm['poaches_per_game']:.1f}  steal-wars/game={mm['steal_wars_per_game']:.1f}  "
-          f"margin={mm['margin']:.1f}VP  (a tautological war; the point is it's a LOSING line vs balanced above)")
-    # 4) is the -1 Rep a real cost? Rep spent on Poach vs Rep-VP the poacher finishes on.
-    rep_spent = (rA["metrics"]["rep_spent_poach_per_game"] + rB["metrics"]["rep_spent_poach_per_game"]) / 2
-    print(f"\n  [is -1 Rep a real cost?]  Rep spent on Poach / game (griefer-vs-balanced field) = {rep_spent:.2f}")
-    print(f"    Each Rep ~= 0.5-0.75 end-VP (band at 3/6/9/12) + a possibly-missed milestone perk — so")
-    print(f"    ~{rep_spent:.1f} Rep burned is a genuine tax; the Rep floor also HARD-caps total Poaches.")
-    freq_ok = sit_freq <= 4.0
-    not_dominant = lean_wr <= 0.55 and sit_wr <= 0.55
-    no_spiral = wars <= 0.15
-    verdict = ("PASS" if (freq_ok and not_dominant and no_spiral) else
-               ("SOFT" if (lean_wr <= 0.58 and wars <= 0.30) else "FAIL"))
-    print(f"\n  --> PROBE B: {verdict}  (situational {sit_wr*100:.0f}% / lean {lean_wr*100:.0f}% win, "
-          f"{sit_freq:.2f} poaches/gm rational, {wars:.2f} rational steal-wars/gm)\n")
-    return sit_wr, lean_wr, sit_freq, wars, verdict
-
-
-# ---- PROBE 1: no dominant track/opening ------------------------------------------------------------
-def probe1_tracks(n=1500):
-    print("=" * 90)
-    print("PROBE 1 — No dominant track/opening (2p). PASS: no line >~55%, >=3 viable in a tight band.")
-    print("=" * 90)
-    # NOTE: the 7 real competitive lines ONLY. The camp_home control is a deliberate ~0-6% loser; adding
-    # it to this round-robin would inflate every real line's average by ~6pt (all beat the punching bag)
-    # and mis-calibrate the 55% threshold. Camp viability is judged separately in Probe A.
-    track_lines = ["balanced", "prestige_rush", "reputation_climb", "coverage_spread",
-                   "buzz_heavy", "ingredient_heavy", "mission_focus"]
-    # round-robin among the real lines only (exclude naive) for the viability band
-    wr = {a: 0.0 for a in track_lines}
-    cnt = {a: 0 for a in track_lines}
-    seed = 1
-    grid = {a: {} for a in track_lines}
-    for a in track_lines:
-        for b in track_lines:
-            Wa, fa = _weights_for(a)
-            Wb, fb = _weights_for(b)
-            r = _series({0: _agent_for(a), 1: _agent_for(b)}, n, base_seed=seed,
-                        weights={0: Wa, 1: Wb}, flags={0: fa, 1: fb})
-            seed += n
-            wa = r["win"][0] + 0.5 * r["tie"]
-            grid[a][b] = wa
-            wr[a] += wa
-            cnt[a] += 1
-            wr[b] += (1 - wa)
-            cnt[b] += 1
-    overall = {a: wr[a] / cnt[a] for a in track_lines}
-    print("\n  Overall win rate (real lines only, both seatings; naive excluded):")
-    for a, v in sorted(overall.items(), key=lambda kv: -kv[1]):
-        print(f"    {a:18} {v*100:5.1f}%  {'#'*round(v*40)}")
-    top = max(overall, key=overall.get)
-    band = [a for a in track_lines if overall[a] >= 0.45]
-    print(f"\n  field leader = {top} @ {overall[top]*100:.1f}%   |   lines in the 45%+ viable band: {len(band)}")
-    print("  (stay-home camp_home line judged separately in Probe A — it wins ~0-6%, non-viable)")
-    # vs naive floor
-    for naive in ("greedy_cheap", "random"):
-        r = _series({0: _agent_for("balanced"), 1: _agent_for(naive)}, n, base_seed=seed,
-                    weights={0: _STRATS["balanced"][0], 1: _STRATS["balanced"][0]})
-        seed += n
-        print(f"  floor check: balanced vs {naive:13} -> balanced {(r['win'][0]+0.5*r['tie'])*100:.1f}%")
-    verdict = ("PASS" if overall[top] <= 0.56 and len(band) >= 3 else
-               ("SOFT" if overall[top] <= 0.60 else "FAIL"))
-    print(f"\n  --> PROBE 1: {verdict}  (leader {overall[top]*100:.1f}%, {len(band)} viable)\n")
-    return overall, grid, verdict
-
-
-# ---- PROBE 2: no economy runaway -------------------------------------------------------------------
-def _probe2_pass(label, n, seed):
-    lines = [("ingredient_heavy mirror", "ingredient_heavy", "ingredient_heavy"),
-             ("ramp vs prestige", "ingredient_heavy", "prestige_rush"),
-             ("balanced mirror", "balanced", "balanced")]
-    headline = None
-    for lab, a, b in lines:
-        Wa, fa = _weights_for(a)
-        Wb, fb = _weights_for(b)
-        r = _series({0: _agent_for(a), 1: _agent_for(b)}, n, base_seed=seed,
-                    weights={0: Wa, 1: Wb}, flags={0: fa, 1: fb})
-        seed += n
-        m = r["metrics"]
-        print(f"\n  [{label} | {lab}]")
-        print(f"    courts/player={m['courts_per_player']:.1f}  turns={m['turns']:.1f}  "
-              f"court-interval={m['court_interval']:.2f} t/court  LATE={m['court_interval_late']:.2f}  "
-              f"min-gap(1 player)={m['min_court_gap']:.2f}")
-        print(f"    end by: rep={m['end_by_rep']*100:.0f}% season={m['end_by_season']*100:.0f}% "
-              f"extract={m['end_by_extract']*100:.0f}%")
-        print(f"    mid-game leader won = {m['mid_leader_won']*100:.0f}%   avg margin = {m['margin']:.1f} VP")
-        print(f"    Buzz spent/game={m['buzz_spent']:.1f}  region-ing spent/game={m['region_ing_spent']:.1f}"
-              f"  (B:I ratio = {m['buzz_spent']/max(1,m['region_ing_spent']):.2f})")
-        if lab == "ingredient_heavy mirror":
-            headline = m
-    return headline, seed
-
-
-def probe2_runaway(n=2000):
-    print("=" * 90)
-    print("PROBE 2 — No economy runaway (2p). Does the discount snowball outrun the end-clock, or does")
-    print("the undiscountable-Buzz floor cap the court-rate at ~1 vendor / 2 turns even fully ramped?")
-    print("=" * 90)
-    seed = 1
-    ta_rep_save = REP_TRIGGER
-    globals()["REP_TRIGGER"] = 12
-    print("\n  --- OLD design (Rep-top=12 ends the game — historical) ---")
-    m_aw, seed = _probe2_pass("old-rep12", n, seed)
-    # LOCKED default: the Season timer times the game (rep-top decoupled) so the ramp fully develops.
-    globals()["REP_TRIGGER"] = ta_rep_save
-    print(f"\n  --- LOCKED default (Season-timed; TA_REP_TRIGGER={ta_rep_save}) ---")
-    m_st, seed = _probe2_pass("season-timed", n, seed)
-    # read the runaway verdict off the regime where the ramp actually develops (season-timed)
-    late = m_st["court_interval_late"]
-    mid = m_st["mid_leader_won"]
-    rate_ok = late >= 1.9                          # ~1 court / 2 turns even fully ramped
-    no_snowball = mid <= 0.82                       # first-mover doesn't win ~always
-    verdict = "PASS" if (rate_ok and no_snowball) else ("SOFT" if (late >= 1.7 and mid <= 0.88) else "FAIL")
-    print(f"\n  --> PROBE 2: {verdict}  (season-timed late court-interval {late:.2f} t/court "
-          f"[Buzz-floor target ~2.0], mid-leader-wins {mid*100:.0f}% [runaway if ~100%])")
-    print(f"      NOTE: as-written ends by Rep-top in ~{m_aw['end_by_rep']*100:.0f}% of games at "
-          f"{m_aw['courts_per_player']:.1f} courts/player — the ramp barely develops before the game ends.\n")
-    return verdict
-
-
-# ---- PROBE 3: character balance --------------------------------------------------------------------
-def probe3_characters(n=900):
-    print("=" * 90)
-    print("PROBE 3 — Character balance (2p). PASS: each of 5 in 45-55%; no char x mission combo >~60%.")
-    print("=" * 90)
-    bal = _agent_for("balanced")
-    Wb = _STRATS["balanced"][0]
-    # 5x5 round-robin (fixed balanced strategy for both seats), both seatings averaged
-    wr = {c: 0.0 for c in CHARACTERS}
-    cnt = {c: 0 for c in CHARACTERS}
-    seed = 1
-    for a in CHARACTERS:
-        for b in CHARACTERS:
-            if a == b:
-                continue
-            r = _series({0: bal, 1: bal}, n, base_seed=seed, characters=[a, b],
-                        weights={0: Wb, 1: Wb})
-            seed += n
-            wa = r["win"][0] + 0.5 * r["tie"]
-            wr[a] += wa
-            cnt[a] += 1
-            wr[b] += (1 - wa)
-            cnt[b] += 1
-    overall = {c: wr[c] / cnt[c] for c in CHARACTERS}
-    print("\n  Per-character win rate (vs the field of the other 4, balanced strategy, both seatings):")
-    worst = 0.0
-    for c, v in sorted(overall.items(), key=lambda kv: -kv[1]):
-        flag = "" if 0.45 <= v <= 0.55 else "  <-- OUT OF BAND"
-        worst = max(worst, abs(v - 0.5))
-        print(f"    {c:12} {v*100:5.1f}%{flag}")
-    # char x mission scan (MIRROR): (char c, forced mission m) vs the SAME char c holding an aligned
-    # pick, both seatings averaged. Baseline ~50%; a spike >60% means m is a broken *synergy* for c
-    # (beyond what c already earns) — isolating the combo from the generic "having an ability" edge.
-    print("\n  Character x mission (mirror: char c on forced m vs same char c on aligned pick):")
-    worst_combo = 0.0
-    worst_name = ""
-    nn = max(250, n // 2)
-    for c in CHARACTERS:
-        row = []
-        for mkey in MISSIONS:
-            rA = _series({0: bal, 1: bal}, nn, base_seed=seed, characters=[c, c],
-                         missions=[mkey, None], weights={0: Wb, 1: Wb}); seed += nn
-            rB = _series({0: bal, 1: bal}, nn, base_seed=seed, characters=[c, c],
-                         missions=[None, mkey], weights={0: Wb, 1: Wb}); seed += nn
-            wc = ((rA["win"][0] + 0.5 * rA["tie"]) + (rB["win"][1] + 0.5 * rB["tie"])) / 2
-            row.append((mkey, wc))
-            if wc > worst_combo:
-                worst_combo, worst_name = wc, f"{c} x {mkey}"
-        hot = max(row, key=lambda x: x[1])
-        print(f"    {c:12} hottest combo: {hot[0]:16} {hot[1]*100:5.1f}%")
-    band_ok = all(0.45 <= v <= 0.55 for v in overall.values())
-    combo_ok = worst_combo <= 0.60
-    verdict = "PASS" if (band_ok and combo_ok) else ("SOFT" if (worst <= 0.08 and worst_combo <= 0.63) else "FAIL")
-    print(f"\n  --> PROBE 3: {verdict}  (widest char deviation {worst*100:.1f}pt from 50%; "
-          f"hottest char x mission = {worst_name} @ {worst_combo*100:.1f}%)\n")
-    return overall, verdict
-
-
-def _dominant_mission(seed):
-    # a fixed reasonable opponent mission for the char x mission scan
-    return "tall_18"
-
-
-# ---- PROBE 4: anti-hoard / hard-stuck --------------------------------------------------------------
-def probe4_stuck(n=2500):
-    print("=" * 90)
-    print("PROBE 4 — Anti-hoard / hard-stuck ~= 0 (2p). Do the unlimited pantry + always-on Promote")
-    print("prevent stuck turns? And does the Larder cap punish hoarding (overflow discards)?")
-    print("=" * 90)
-    Wb = _STRATS["balanced"][0]
-    r = _series({0: _agent_for("balanced"), 1: _agent_for("ingredient_heavy")}, n, base_seed=1,
-                weights={0: Wb, 1: _STRATS["ingredient_heavy"][0]},
-                flags={0: {}, 1: _STRATS["ingredient_heavy"][1]})
-    m = r["metrics"]
-    print(f"\n  hard-stuck turns / game     = {m['stuck_turns']:.3f}   (target ~0)")
-    print(f"  larder-overflow discards/gm = {m['overflow_discards']:.2f}   (hoarding is taxed, not free)")
-    print(f"  turns / game                = {m['turns']:.1f}")
-    verdict = "PASS" if m["stuck_turns"] < 0.05 else "FAIL"
-    print(f"\n  --> PROBE 4: {verdict}  (stuck {m['stuck_turns']:.3f}/game; pantry+Promote valves hold)\n")
-    return verdict
-
-
-# ---- health read (via engine round-robin) ----------------------------------------------------------
-def health(n=1200):
-    print("=" * 90)
-    print("HEALTH READ — full round-robin incl. naive baselines (engine health_read)")
-    print("=" * 90)
-    if round_robin is None:
-        print("  (engine not importable; skipping)")
-        return
-    res = round_robin(GAME, STRATEGIES, n=n)
-    print()
-    print(format_round_robin(res, title="Travel Agents v3 — health read"))
-    print()
+def _field_metrics(n=1500, seed=1):
+    """Balanced-mirror game arc + spread metrics (both seatings folded via mirror)."""
+    _, _, _, mt = _run({0: STRATEGIES["balanced"], 1: STRATEGIES["balanced"]},
+                       n=n, seed=seed, prefs=[BAL, BAL])
+    return mt
 
 
 if __name__ == "__main__":
-    print(f"[knobs] SEASON_FINAL(2p)={SEASON_FINAL[2]}  REGION_SUPPLY={REGION_SUPPLY}  "
-          f"EVENT_PROB={EVENT_PROB}  POACH_REP={POACH_REP_COST}  CONDUCTOR_FLAW={CONDUCTOR_FLAW}  "
-          f"EAST_FIX_LEVEL={EAST_FIX_LEVEL}  DISCOUNT_CAP={DISCOUNT_CAP}\n")
-    # NOTE: a full run is a few minutes (the char x mission mirror scan in Probe 3 dominates). The
-    # n-values below are those used for the committed v3.1 sim-notes read (2026-08-06).
-    print("### v3.1 LEAD PROBES (the two changes under test) ###\n")
-    vA = probeA_movement(n=800)
-    vB = probeB_poach(n=800)
-    print("### RE-CONFIRM the v3 probes still hold ###\n")
-    v1 = probe1_tracks(n=350)
-    v2 = probe2_runaway(n=600)
-    v3 = probe3_characters(n=300)
-    v4 = probe4_stuck(n=1000)
-    health(n=250)
-    print("\n" + "=" * 90)
-    print("SUMMARY:  A(movement)=%s  B(poach)=%s  1(track)=%s  2(runaway)=%s  3(chars)=%s  4(stuck)=%s"
-          % (vA[-1], vB[-1], v1[-1], v2, v3[-1], v4))
-    print("=" * 90)
+    _HERE = os.path.dirname(os.path.abspath(__file__))
+    _SIM = os.path.abspath(os.path.join(_HERE, "..", "..", "..", "tools", "sim"))
+    if _SIM not in sys.path:
+        sys.path.insert(0, _SIM)
+
+    if "--counts" in sys.argv:
+        from engine import per_count
+        counts = [2, 3, 4]
+        print(f"# {TITLE} — seat balance by player count (self-play: balanced)\n")
+        for c in counts:
+            g = _Seeded(c)
+            from engine import seat_balance
+            r = seat_balance(g, STRATEGIES["balanced"], c, n=800)
+            flag = "⚠ suspect" if r["suspect"] else "✓ balanced"
+            wr = "  ".join(f"seat{p}={v*100:.0f}%" for p, v in r["seat_win_rate"].items())
+            print(f"  {c}p  {flag}  (fair {r['fair_share']*100:.0f}%)  {wr}  ties={r['tie_rate']*100:.0f}%")
+        sys.exit(0)
+
+    N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 1200
+    print(f"# {TITLE} — v6.2 probe suite ({N} games/cell)\n")
+
+    print("## Game arc (balanced mirror)")
+    mt = _field_metrics(n=N)
+    print(f"  turns/player {mt['turns_per_player']:.1f}  vendors/player {mt['wins_per_player']:.1f}  "
+          f"winner VP {mt['win_total']:.1f} (P {mt['win_prestige']:.1f}/Rep {mt['win_rep_vp']:.1f}/Tkt {mt['win_ticket_score']:.1f})")
+    print(f"  dusk turn {mt['dusk_turn']:.1f}  last-train {mt['last_turn']:.1f}  "
+          f"end: lasttrain {mt['end_by_lasttrain']*100:.0f}% deck {mt['end_by_deck']*100:.0f}% stall {mt['end_by_stall']*100:.0f}%")
+    print(f"  contested-win frac {mt['contested_frac']*100:.1f}%  max_buzz {mt['max_buzz_on_vendor']:.1f}  "
+          f"drink-win share {mt['drink_win_share']*100:.0f}%  claims/gm {mt['claims_per_game']:.1f} completions/gm {mt['completions_per_game']:.1f}")
+    print(f"  CLAIM share  N {mt['claim_share_N']*100:.0f}% C {mt['claim_share_C']*100:.0f}% "
+          f"S {mt['claim_share_S']*100:.0f}% E {mt['claim_share_E']*100:.0f}%")
+    print(f"  SRC   share  N {mt['src_share_N']*100:.0f}% C {mt['src_share_C']*100:.0f}% "
+          f"S {mt['src_share_S']*100:.0f}% E {mt['src_share_E']*100:.0f}% K {mt['src_share_common']*100:.0f}%")
+    print(f"  moves/gm {mt['inter_moves']:.1f}  forced_turn_frac {mt['forced_turn_frac']:.3f}  "
+          f"avg_legal {mt['avg_legal_actions']:.1f}  empty_draws/gm {mt['empty_draws_per_game']:.2f}")
+
+    print("\n## PROBE 1 — the five playstyles vs each other + naive (win% vs the field)")
+    field = ["balanced", "opportunistic", "disruptive", "endgame", "mix", "no_drinks"]
+    for a in field:
+        wr = statistics.mean([_versus(a, b, n=N // 2) for b in field if b != a])
+        crush = _versus(a, "random", n=N // 2)
+        print(f"  {a:14} avg vs field {wr*100:5.1f}%   vs random {crush*100:4.0f}%")
+
+    print("\n## PROBE 2 — mix vs the ignore-objectives/ignore-drinks control; pure-drinks must lose")
+    print(f"  mix        vs ignore_obj   {_versus('mix', 'ignore_obj', n=N)*100:5.1f}%  (want >=50: a mix beats ignoring objectives+drinks)")
+    print(f"  balanced   vs ignore_obj   {_versus('balanced', 'ignore_obj', n=N)*100:5.1f}%")
+    print(f"  pure_drinks vs balanced    {_versus('pure_drinks', 'balanced', n=N)*100:5.1f}%  (want clearly <50)")
+    print(f"  pure_drinks vs no_drinks   {_versus('pure_drinks', 'no_drinks', n=N)*100:5.1f}%")
+
+    print("\n## PROBE 8 — character balance (char vs neutral, both seatings) — target 45-55%")
+    for ch in ("councillor", "office", "influencer", "dagushi", "dage"):
+        wr = _char_winrate(ch, n=N)
+        flag = "OK" if 0.45 <= wr <= 0.55 else "<-- OUT"
+        print(f"  {ch:12} {wr*100:5.1f}%  {flag}")
+
+    print("\n## H2 — 大哥 threshold+flaw (dage vs neutral) — resolve to 45-55%")
+    for label, thr, flaw in (("A tie+tab", 0, "tab"), ("B tie+promote1", 0, "promote1"),
+                             ("C lead1+tab", 1, "tab"), ("D lead1+none", 1, "none"),
+                             ("E tie+nocontest", 0, "nocontest")):
+        globals()["DAGE_THRESH"] = thr; globals()["DAGE_FLAW"] = flaw
+        print(f"  {label:18} dage {_char_winrate('dage', n=N)*100:5.1f}%")
+    globals()["DAGE_THRESH"] = 0; globals()["DAGE_FLAW"] = "tab"
+
+    print("\n## H1 — 大胃王 flaw (should all be ~in band; ship A)")
+    for label, mode in (("A hazards-twice", "twice"), ("B keep-only-2", "keep2"), ("C next-fires", "next")):
+        globals()["H1"] = mode
+        print(f"  {label:16} dagushi {_char_winrate('dagushi', n=N)*100:5.1f}%")
+    globals()["H1"] = "twice"
+
+    print("\n## 媽寶 buff options")
+    for label, mode in (("none (keep-1)", "none"), ("keep2", "keep2"), ("travel2", "travel2")):
+        globals()["OFFICE_BUFF"] = mode
+        print(f"  {label:16} office {_char_winrate('office', n=N)*100:5.1f}%")
+    globals()["OFFICE_BUFF"] = "keep2"
+
+    print("\n## 網紅 nerf — opponents' head-start (INFL_BEHIND) — target 45-55%")
+    for b in (3, 4, 5):
+        globals()["INFL_BEHIND"] = b
+        print(f"  behind={b}  influencer {_char_winrate('influencer', n=N)*100:5.1f}%")
+    globals()["INFL_BEHIND"] = 3
+
+    print("\n## PROBE 5 — CLOCK A/B (mission vs vendor-claims): pacing + length variance")
+    from engine import run_match
+    for mode in ("mission", "vendor"):
+        globals()["CLOCK_MODE"] = mode
+        mt = _field_metrics(n=N)
+        g = _Seeded(2, prefs=[BAL, BAL]); lens = []
+        for i in range(N):
+            _sc, _m = run_match(g, {0: STRATEGIES["balanced"], 1: STRATEGIES["balanced"]}, 5000 + i)
+            lens.append(_m["turns_per_player"])
+        sd = statistics.pstdev(lens) if len(lens) > 1 else 0.0
+        print(f"  {mode:8}  turns/player {mt['turns_per_player']:.1f} (sd {sd:.1f})  vendors/player {mt['wins_per_player']:.1f}  "
+              f"dusk {mt['dusk_turn']:.1f} last {mt['last_turn']:.1f}  end(LT/deck/stall) "
+              f"{mt['end_by_lasttrain']*100:.0f}/{mt['end_by_deck']*100:.0f}/{mt['end_by_stall']*100:.0f}%")
+    globals()["CLOCK_MODE"] = "mission"
+
+    print("\n## PROBE 6 — the −½ penalty A/B (does behaviour differ?)")
+    for mode in ("half", "zero"):
+        globals()["PENALTY"] = mode
+        wr = _versus("mix", "ignore_obj", n=N)
+        mt = _field_metrics(n=N)
+        print(f"  penalty={mode:5}  mix vs ignore_obj {wr*100:5.1f}%  claims/gm {mt['claims_per_game']:.1f}  "
+              f"tkt_done_winner {mt['tickets_done_winner']:.1f}/{mt['tickets_held_winner']:.1f}  winnerVP {mt['win_total']:.1f}")
+    globals()["PENALTY"] = "half"
+
+    print("\n## PROBE 10 — HOARDER (over-source a scarce signature to deny) — should LOSE")
+    print("   (empty_draws/gm = how often a Visit finds the region dry = the denial pressure on a rival)")
+    base_empty = _field_metrics(n=N)["empty_draws_per_game"]
+    print(f"   baseline (no hoarder) empty_draws/gm {base_empty:.2f}")
+    for hr in ("E", "S"):
+        hoard = {**BAL, "hoard_region": hr}
+        STRATEGIES["_hoard"] = _make(hoard); STRAT_PREFS["_hoard"] = hoard
+        wr = _versus("_hoard", "balanced", n=N)
+        _, _, _, hm = _run({0: STRATEGIES["_hoard"], 1: STRATEGIES["balanced"]},
+                           n=N, seed=1, prefs=[hoard, BAL])
+        print(f"  hoard {hr}  vs balanced  {wr*100:5.1f}%   empty_draws/gm {hm['empty_draws_per_game']:.2f}"
+              f"   (want <50 = a trap; empty_draws = the temporary denial it buys)")
+    del STRATEGIES["_hoard"]; del STRAT_PREFS["_hoard"]
+
+    print("\n## PROBE 11 — MP light seat-balance smoke (per count)")
+    from engine import seat_balance
+    for c in (2, 3, 4):
+        g = _Seeded(c)
+        r = seat_balance(g, STRATEGIES["balanced"], c, n=600)
+        flag = "⚠ suspect" if r["suspect"] else "✓ balanced"
+        wr = "  ".join(f"seat{p}={v*100:.0f}%" for p, v in r["seat_win_rate"].items())
+        print(f"  {c}p  {flag}  (fair {r['fair_share']*100:.0f}%)  {wr}  ties={r['tie_rate']*100:.0f}%")
