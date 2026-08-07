@@ -702,14 +702,22 @@ the flipped region against pawn positions; **Visit** also fires by scope; **Trav
 Auto tournament report: `sim-results.md`. This file is the **interpretation** — nothing here is logged to
 the design-doc / bible / decision-log; that's the CD's call after reading this.
 
+> **CORRECTION (2026-08-07, after CD steer).** The CD clarified the design bar: *nobody should win on
+> drinks alone — but a clever mix of drinks at the right time + night markets should be a good strategy.*
+> That is **not** "drinks-lean ≈ 50%"; it is "**ladder + well-timed drinks beats ignoring drinks.**" My
+> first-pass headline ("drinks is a structural trap") measured the wrong bar. The corrected read is below;
+> the short version: **the sim confirms the parts it can (pure-drinks correctly loses; no drinks runaway),
+> but the CD's actual goal — opportunistic well-timed drinks — is a KNOWN sim blind spot** (greedy one-step
+> bots never hit a genuinely dead beat), so it is a **table question**, not a sim verdict.
+
 **Headline (the two make-or-break v6.1 questions):**
-- **Riskiest #2 — the drinks fork "viable but not dominant": FAILS on the *viable* side.** Pure-drinks
-  **clearly loses** to a good ladder line (~1–10% h2h — the ceiling gap the design wanted, PASS), **but a
-  drinks *lean* is a trap, not a live alternative** (~30% h2h vs ladder/mixed). Crucially the weakness is
-  **structural, not a tuning miss**: neither flagged knob moves it — common availability (H3: 20→8→20% for
-  half/every/half-rich) and the CS event-scope ratio (H4: 19.5–19.8% flat) barely register, and the
-  **master beverage-value knob doesn't rescue it either** (value 2→3→4 stays ~30% and *drops* once
-  beverages also give +2 Rep). Root cause below.
+- **Riskiest #2 — the drinks fork:** what the sim CAN say **PASSES** — a **pure-drinks tour clearly loses**
+  to a good ladder line (~1–10% h2h, the intended ceiling gap) and **drinks are not secretly dominant** (no
+  runaway, no solved drinks line). What the sim CANNOT judge — **whether a well-timed drink at the right
+  moment makes a ladder line better** — is a **greedy-bot blind spot** (same failure mode as the old Poach
+  / Gourmand findings): the bots essentially never bank a drink when playing to win (0.0–0.7/game) because a
+  productive ladder dig is *always* available and scores more per action, so they never experience the
+  "right time." **→ hand to the 2p Screentop table.** (Detail + the value sweep below.)
 - **Riskiest #1 — the Buzz fight (incl. 大哥): the 大哥 dominance probe FLAGS hard**, and the Buzz fight
   itself is **near-absent in bot play** (4.3% of ladder wins contested) — so its *fun/tension* is unresolved
   and is a table question, but 大哥's **tie-win is confirmed too strong** in sim.
@@ -744,41 +752,57 @@ over the 14–18 target), mostly ending by last-train; see the pacing finding fo
 
 ---
 
-## RISKIEST #2 (the v6.1 make-or-break) — the drinks fork is a TRAP as tuned. Structural, not a knob.
+## RISKIEST #2 (the v6.1 make-or-break) — re-scoped to the CD's actual bar
 
-**Field (both seatings, naive-excluded head-to-head):** `mixed` ≈ `ladder_lean` ≈ `greedy_prest` at the
-top (~50–52% among themselves); **`drinks_lean` ~30% h2h** vs each of them; **`pure_drinks` ~1–10%** vs
-every real line (and only 58% in its own mirror). So the *ceiling gap* the design wanted is real — a
-pure-drinks tour can't out-score a good ladder tour — **but the fork's other half fails: leaning drinks is
-a losing choice, not a viable low-conflict alternative.** The design's "two legitimate identities" holds on
-the ladder side only.
+**The bar (per the CD):** *nobody wins on drinks alone; but a clever mix — well-timed drinks + night
+markets — should be a good strategy.* So the tests that matter are **(i)** does a pure-drinks tour lose to
+good ladder play? and **(ii)** does adding well-timed drinks make a ladder line *better than ignoring
+drinks*? — NOT "is a drinks-lean ≈ 50%."
 
-**Why raising the obvious knobs doesn't help — the root cause (validated):**
-- Per-player diagnostic (drinks_lean vs ladder_lean, competence-fixed): drinks wins **~3.3 beverages +
-  ~1.4 ladder ≈ 4.7 vendors** in ~23 turns; ladder wins **~5.7** efficiently. The **beverage deck never
-  empties (0% of games)** — drinks is nowhere near its 7-win ceiling.
-- **Bot-competence ruled out:** with the common made *artificially abundant everywhere*, a competent drinks
-  bot **still caps at ~4.75 beverages and ~28%**, and the deck **still** never empties. So common scarcity
-  is a red herring.
-- **The real cap is the deck-split + region-gating.** The 7-card Beverage deck is **seeded 4 (one per
-  region) + 3 reserve**. Refills replenish the *won slot's own region*, so a **low-travel "camp one stand"
-  line can win at most ~4 beverages** (its region's slot + the 3 reserve refills that land there); the other
-  3 seeded slots sit in **other regions that require travel to reach**. So maxing drinks demands touring the
-  island like the ladder — which **contradicts the whole "low-travel via ubiquity" pitch** — and even a full
-  7-beverage tour (~14 Prestige + Rep + the *3-beverage* mission ≈ 27) still loses to a ladder tour (~32–35).
-  Flat value-2 beverages simply have too low a ceiling once region-anchoring taxes the harvest with travel.
-- **The CS event-tax is NOT what's hurting drinks** (contrary to the pre-sim worry): only **~0.74
-  self-scoped CS events fire per game** — a negligible tax — which is exactly why H4 (the scope ratio) is
-  flat on drinks viability. v6.1's CS-risk neither over- nor under-nerfs drinks; it barely touches them.
+**(i) PASSES.** Field (both seatings, naive-excluded h2h): `mixed` ≈ `ladder_lean` ≈ `greedy_prest` at the
+top (~50–52% among themselves); **`pure_drinks` ~1–10%** vs every real line; a drinks-*lean* (an
+over-commit to drinks) sits ~30% h2h. So a drinks-only tour **correctly loses** to a good ladder tour — the
+ceiling gap the design wanted — and there is **no drinks runaway / solved drinks line**. Good.
 
-**Fix direction (a STRUCTURAL call for the CD / bg-design — NOT a value/knob tweak; the sim's knobs
-don't reach it):** to make a low-travel drinks lean viable, change the *harvest structure*, e.g.
-**(a)** seed **fewer** beverage slots from a **larger reserve** (so a camped stand refills many times — the
-common ingredient of the reserve stays local), or **(b)** raise how many beverages are winnable **per
-region**, or **(c)** reconsider region-gating the beverage *Bribe* (keep sourcing on-site but let a stand be
-closed from a hub), or **(d)** accept drinks as a *pure diversifier* (a mission-feeder + a hedge, not a road)
-and re-pitch the identity honestly. Whichever, **beverage point value is the wrong lever** — raising it does
-not move viability. This is the single biggest v6.1 finding.
+**(ii) is a SIM BLIND SPOT — hand to the table.** To test the intended "well-timed mix," I added a
+`ladder_only` bot (never touches a stand) and a `smart_mix` bot (ladder-primary, but banks an affordable
+*local* stand on a beat its ladder plan would otherwise waste on a non-progress dig). Result:
+
+| Matchup (both seatings, mixed field) | winner | drinks banked by the mixer |
+|---|---:|---:|
+| `mixed` vs `ladder_only` | mixed **53%** | **0.4/game** |
+| `ladder_lean` vs `ladder_only` | **50.5%** (coin flip) | **0.0/game** |
+| `smart_mix` vs `ladder_only` (value 2) | smart_mix **42%** | 0.6/game |
+| `smart_mix` vs `ladder_only` @ **value 4 + Rep 2** | smart_mix **48%** | 0.7/game |
+
+**The bots essentially never bank a drink when playing to win (0.0–0.7/game), even when explicitly told to
+look for the moment, even at double beverage value.** Reason: a stand costs **an action + common the ladder
+also wants**, and a *productive ladder dig is almost always available*, so a one-step greedy planner never
+faces a genuinely dead beat where an easy 2 VP is the best use of the turn. Forcing the drink in (smart_mix)
+just **spends tempo the ladder wanted → it loses (42–48%)**. This is the **same structural blind spot the
+notes already flag for the Poach ("blind to denial/tempo value") and the Gourmand ("flexibility invisible to
+greedy bots")** — the sim cannot model the human "right time" (larder full of the wrong tokens, waiting on a
+specific ladder slot, having just lost a Buzz race, repositioning), which is exactly when a human banks a
+cheap drink. **So the sim can neither bless nor condemn the intended well-timed mix.**
+
+**What this means for the CD:**
+- **Do NOT read "drinks is a trap" off the sim** (my first-pass headline was measuring the wrong bar). The
+  correct sim read is narrower: *drinks-as-a-standalone-road correctly loses (as intended), and drinks aren't
+  degenerate/dominant.* The value of an **opportunistic** drink is unmeasured, not disproven.
+- **The one concrete, sim-visible lever, IF the table finds drinks feel worthless:** the opportunity cost
+  (an action + contested common vs a flat 2 VP) is high, so **beverage value 2→3–4 and/or a lower common
+  cost** shifts the "is this beat worth a drink?" math at the margin (smart_mix 42% → 48% as value rises
+  2→4). But **don't pre-tune off the sim** — it can't see the payoff; the table can.
+- **Structural note (still true, now correctly contextualised):** the 7-card deck seeded 4-per-region + 3
+  reserve, with refills landing in the won slot's region, means a *low-travel camp* caps at ~4 beverages
+  (the other 3 seeded slots need travel). That's **fine** for "drinks are a supplement, not a road" — it
+  only becomes a lever to revisit *if* the CD ever wants a heavier drinks lean to be a genuine road (it
+  doesn't, per this steer).
+
+**→ The 2p Screentop session is the real test of Riskiest #2.** Instrument: how often a player banks a
+drink, at *what moments* (waiting on ingredients / lost a Buzz fight / repositioning / a stand right where
+they stand), and whether the drink-banker wins more than a drinks-abstainer. That is the exact decision the
+sim's greedy bots cannot make.
 
 **Pacing knock-on (Riskiest #2b) — CONFIRMED, but bounded to drinks-heavy fields.** Beverages-off-the-clock
 means a drinks-leaning player doesn't feed the day-clock. In **competent mixed/ladder play the game paces
@@ -858,28 +882,34 @@ there is **no snipe-degenerate or supply-crunch failure**, and 大哥's tie-win 
 ---
 
 ## Health read (field round-robin)
-`mixed` tops at 70.1% overall but only by **≤1pt head-to-head** over `ladder_lean`/`greedy_prest` — no
-crushing dominance among the ladder-capable lines, a mild "a mix is best" signal (as designed). Every real
-line crushes `random` (8.6%). The **defect is the fork asymmetry, not a dominant single line**:
-`drinks_lean` (54.6% overall, inflated by beating pure_drinks/random) sits at **~30% h2h vs the ladder
-lines**, and `pure_drinks` (27.5%) is a **near-pure loss** vs anything real. Seat effects mild, not flagged.
+The ladder-capable lines (`mixed` / `ladder_lean` / `ladder_only` / `greedy_prest` / `smart_mix`) pack
+within ~1–3pt head-to-head — no crushing dominant single line. Every real line crushes `random`. As
+designed, **the ladder is the game and a drinks-only tour loses** (`pure_drinks` a near-pure loss vs
+anything real; `drinks_lean`, an over-commit, ~30% h2h). What the field does NOT resolve — because the
+greedy bots won't bank an opportunistic drink (see Riskiest #2) — is whether *well-timed* drinks beat
+ignoring drinks. `mixed`/`smart_mix` ≈ `ladder_only` here **only because the bots barely use drinks**, not
+because well-timed drinks are proven worthless. Seat effects mild, not flagged.
 
 ---
 
-## The ONE change to test next (this pass) — decision for the CD
+## The ONE thing to test next (this pass)
+**Riskiest #2 goes to the 2p Screentop table, not to a knob.** The sim has done its job on the extremes
+(pure-drinks correctly loses; drinks aren't dominant; no runaway) and confirmed the parts it can. The CD's
+actual goal — *well-timed drinks as a good tactical supplement* — is a **greedy-bot blind spot** (0.0–0.7
+drinks banked/game even when instructed; a productive ladder dig is always the better per-action play), the
+same limitation the notes flag for the Poach and Gourmand. **Instrument the session** for: drink-bank
+frequency, the *moment* each drink is taken (waiting on ingredients / lost a Buzz fight / repositioning), and
+whether a drink-user out-scores a drink-abstainer. **Carry as a cheap, sim-visible lever only if the table
+finds drinks feel worthless:** beverage value 2→3–4 / a lower common cost (smart_mix 42%→48% as value 2→4).
+Do not pre-tune off the sim. **Separately (sim-confident):** treat **H2 (大哥) as unresolved** — none of
+A/B/C is in band; sim a 4th option (≥1 threshold + a lighter flaw, or ≥0 + a real brake). Nudge **網紅 down**
+/ **媽寶 up**; **ship 大胃王 = H1-A**; fix **East** via the common's spread. The Buzz fight's *fun* and the
+scoped take-that's *warmth* are table questions.
 
-**The drinks fork needs a STRUCTURAL rethink before anything else** — it is the v6.1 headline, and it is
-not a value/common/scope tuning problem (all three are sim-flat). Pick a harvest-structure fix (fewer slots
-+ bigger reserve so a camped stand refills; or more winnable per region; or de-gate the beverage *Bribe*
-from a hub; or re-pitch drinks as a diversifier), then re-sim the fork *and re-check the last-train/deck
-backstops* so a now-viable drinks lean can't stall the game. **Second, and separable:** treat **H2 (大哥) as
-unresolved** — none of A/B/C is in band; sim a 4th option (≥1 + lighter flaw, or ≥0 + a real brake). Nudge
-**網紅 down** (strengthen the go-last/behind flaw) and **媽寶 up** (soften "keep only 1", e.g. keep 2 when a
-hazard fired, or a small compensating boon). **Ship 大胃王 = H1-A** as-is. Fix **East** via the common's
-spread. Everything about the **Buzz fight's fun** and the **scoped take-that's warmth** is the 2p Screentop
-session — the sim de-risks the numbers, not the feel.
+---
 
-**Knobs exposed for re-sim:** `TA_BEV_VALUE` / `TA_BEV_REP` (beverage value — shown NOT to fix viability),
+**Knobs exposed for re-sim:** `TA_BEV_VALUE` / `TA_BEV_REP` (beverage value — a marginal lever on the
+opportunistic mix, 42%→48% as value 2→4; NOT a road-viability fix),
 `TA_H3` (common availability half/every/half_rich), `TA_SCOPE_SELF|REGION|NEIGH` (H4 scope ratio),
 `TA_H2_THRESH` / `TA_H2_FLAW` (大哥), `TA_H1` (大胃王), `TA_HAZARD` (event hazard frac), `TA_STARBOON`
 (★-boon frac), `TA_BUZZ_SUPPLY` / `TA_BUZZ_MARGIN`, `TA_DUSK` / `TA_LASTTRAIN` (clock marks),
@@ -889,7 +919,8 @@ harvest-fix knob exists yet — that's the design call to make, then encode.**
 ## Encoding simplifications (v6.1 — the sim's blind spots)
 1. **Beverages baked (10 templates, sliced to a 7/9/10 deck by count)** at region granularity; the
    region-anchored slot mechanics (seed 4 + reserve, refill-into-won-region, empty-and-stay-empty) are
-   faithful — and are the *cause* of the drinks cap, so the finding is structural, not an artifact.
+   faithful. These cap a low-travel drinks *camp* at ~4 wins — fine given the CD's "drinks are a supplement,
+   not a road" steer; a lever to revisit only if a heavier drinks lean should ever be a genuine road.
 2. **Event payloads abstracted** to tempo-tax (hazard) / free-ingredient or ★ (boon); Buzz/festival boons
    folded into the ingredient windfall. The *warmth* of rival-facing beats is unmodelled (bg-theme/table).
 3. **The Buzz war is concession-resolved** → contested-win rate (4.3%) is a floor; the fight's fun/tension
@@ -901,3 +932,8 @@ harvest-fix knob exists yet — that's the design call to make, then encode.**
 6. Component CSVs (`../components/*.csv`) are still on the pre-v6 data model; the sim bakes its own
    representative v6.1 vendor/event set (as prior passes did). The CSV rebuild is bg-developer's separate,
    still-gated data task — out of scope for this sim rework.
+7. **The `ladder_only` (never-drinks) and `smart_mix` (ladder + opportunistic local-stand) bots** exist to
+   test the CD's "well-timed mix" bar. `smart_mix` only banks a drink when its ladder plan would otherwise
+   be a non-progress dig AND a local stand is already affordable. It still fires rarely (0.6/game) and loses
+   to `ladder_only` (42–48%) — the greedy planner has almost no genuinely dead beats, so this UNDER-models
+   the human "right time." Read (ii) in Riskiest #2 as *unmeasured by the sim*, not *disproven*.

@@ -996,6 +996,8 @@ def _pick_target(view, p, prefs):
     for vid in board:
         if prefs["pure_drinks"] and VENDORS[vid]["region"] is not None:
             continue
+        if prefs.get("no_drinks") and VENDORS[vid]["region"] is None:
+            continue
         val = _road_value(view, p, vid, prefs)
         score = val - TEMPO * (_est_actions(view, p, vid) - 1.0)
         if score > bscore:
@@ -1038,7 +1040,8 @@ def _poke(view, p, legal):
 def _plan(view, p, legal, rng, prefs):
     pl = view["players"][p]
     bribes = [a for a in legal if a[0] == "bribe"
-              and not (prefs["pure_drinks"] and VENDORS[a[1]]["region"] is not None)]
+              and not (prefs["pure_drinks"] and VENDORS[a[1]]["region"] is not None)
+              and not (prefs.get("no_drinks") and VENDORS[a[1]]["region"] is None)]
     if bribes:
         return max(bribes, key=lambda a: _road_value(view, p, a[1], prefs))
 
@@ -1126,13 +1129,55 @@ def s_greedy_prestige(view, p, legal, rng):
     return _plan(view, p, legal, rng, prefs)
 
 
+# The "clever mix" the DESIGN INTENDS: ladder is the main game, and you bank an easy drink AT THE RIGHT
+# TIME — a stand you're already standing next to, that you can already pay for, on a turn your ladder plan
+# would otherwise be a non-progress dig. A one-step greedy value/action planner is blind to this timing
+# value (a drink always scores worse per-action than a night-market vendor), so this wraps the ladder
+# planner with the explicit opportunistic-close rule. This tests the CD's actual bar:
+# "a clever mix of drinks at the right time + night markets should be a good strategy."
+_SMART_PREFS = {"w_ladder": 1.25, "w_bev": 0.4, "pure_drinks": False, "road": "ladder"}
+
+
+def _opportunistic_drink(view, p, legal):
+    """A guaranteed-2-VP local stand to bank on a dead beat: present, affordable now, and either already
+    at the majority (bribe) or one Promote from it. Returns an action or None."""
+    pl = view["players"][p]
+    bev = view["bevslots"].get(pl["pos"])
+    if bev is None:
+        return None
+    if not all(pl["larder"].get(k, 0) >= c for k, c in GAME._pay_plan(view, p, bev).items()):
+        return None                                    # can't pay without diverting sourcing → not free
+    lead, _ = GAME._buzz_lead(view, p, bev)
+    if lead >= GAME._margin_for(pl) and ("bribe", bev) in legal:
+        return ("bribe", bev)
+    if ("promote", bev) in legal:
+        return ("promote", bev)                        # set up the close; next beat banks it
+    return None
+
+
+def s_smart_mix(view, p, legal, rng):
+    # a real ladder bribe always wins the turn (progress > an easy drink)
+    ladder_bribes = [a for a in legal if a[0] == "bribe" and VENDORS[a[1]]["region"] is not None]
+    if ladder_bribes:
+        return max(ladder_bribes, key=lambda a: _road_value(view, p, a[1], _SMART_PREFS))
+    base = _plan(view, p, legal, rng, _SMART_PREFS)
+    # only when the ladder plan is a non-progress dig/idle do we bank an easy local drink
+    if base in (("visit",),) or (isinstance(base, tuple) and base[0] == "cstore"):
+        opp = _opportunistic_drink(view, p, legal)
+        if opp is not None:
+            return opp
+    return base
+
+
 STRATEGIES = {
     "random":       s_random,
     "greedy_prest": s_greedy_prestige,
+    "ladder_only":  _make({"w_ladder": 1.25, "w_bev": 0.0,  "pure_drinks": False, "no_drinks": True, "road": "ladder"}),
     "ladder_lean":  _make({"w_ladder": 1.25, "w_bev": 0.35, "pure_drinks": False, "road": "ladder"}),
     "drinks_lean":  _make({"w_ladder": 0.7,  "w_bev": 1.6,  "pure_drinks": False, "road": "drinks"}),
     "pure_drinks":  _make({"w_ladder": 0.0,  "w_bev": 1.0,  "pure_drinks": True,  "road": "drinks"}),
     "mixed":        _make({"w_ladder": 1.0,  "w_bev": 1.0,  "pure_drinks": False, "road": "mixed"}),
+    "smart_mix":    s_smart_mix,
 }
 
 
