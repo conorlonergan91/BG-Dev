@@ -177,3 +177,90 @@ grounds (keep white on vermilion / jade / indigo). Fixes 2.1:1 → 6.1:1. Render
   colour-blind benefit. Skip unless you want the optional signature-gold comfort nudge (§7).
 </content>
 </invoke>
+
+---
+
+# v6.2 Re-check — Guardian Sweep (2026-08-07)
+
+> Guardian pass by `bg-access` after the v6.2 component build. Theme: `night-market`. Report-and-flag
+> only (bg-prototyper owns `themes.py` this cycle — fixes below are RECOMMENDED with exact values, to be
+> routed). Data: `components/{events,ingredients,tokens}.csv`, `player-aid.json`; theme `tools/cards/themes.py`;
+> renderers `tools/cards/build_cards.py`, `tools/boards/build_board.py`.
+
+## Checker
+
+`python tools/access/check_access.py --game games/travel-agents --theme night-market`
+**Result: 0 error(s), 3 warning(s).** Text contrast PASS (`ink` 9.4:1, `text` 10.4:1). Colour-blind
+separability: **no colour-only collisions** — every confusable pair is dual-coded by emblem. The 3 warnings
+(`mission`/`signature` ΔE 0; `mission`/`south` and `signature`/`south` ΔE 11) are the pre-existing
+gold-cluster pairs, all dual-coded (`stamp`/`spark`/`circle`) — **not new v6.2 regressions.** The new
+`sugar` suit (caramel `#B5835A` / `beam`) resolves clean against every neighbour; `seafood` is not a card
+`type` so it never renders as its own card suit (South ingredient cards render as the South region suit).
+
+## Focus items
+
+**1. New glyphs seafood 海鮮 / sugar 糖 — CVD.** `sugar` card suit is dual-coded (`beam`, distinct from all
+region emblems) — PASS. Physical tokens carry unique 繁體 (`海` / `糖`) + colour, glyph contrast auto-dark
+(seafood 6.1:1, sugar 3.9:1 large-text) — PASS. **BUT on vendor PAY-row ingredient chips** (`build_cards.py`
+L193-199) `resolve_suit` gives **pork=`hex`, tea=`hex`, seafood=`hex`** — three ingredients share one
+silhouette. They are told apart by **colour + the 繁體 label** (豬/茶/海), not by shape. The mandatory
+redundant-encoding rule PASSES (colour + label = two channels), but under protan/deutan red-`pork` and
+amber-`seafood` colours converge, leaving only the small CJK label. → **WATCH.**
+
+**2. Event scope icons ⦿ / ⬢ / ➤.** Triple-coded: glyph + word ("YOU" / "THIS REGION" / "NEXT DOOR") +
+the `scope` data field (`self`/`region`/`neighbour`). Redundant encoding PASSES with zero colour
+dependence. **BUT the render font WenQuanYi Zen Hei (the only CJK face, resolved first — cairosvg's toy
+text API does not fall through the family list) has NO glyph for U+29BF ⦿, U+2B22 ⬢, or U+27A4 ➤.** They
+render as **tofu boxes** in the exports and in the player aid (aid text L25-27 uses them). Meaning survives
+via the words, but the at-a-glance icon — the whole point — ships broken. → **FLAG (legibility).**
+
+**3. Win/lose piles 成團 / 遺珠.** Distinct 繁體 (`成` vs `遺`) + colour (gold `#C9A227` vs taupe `#7A6E58`,
+glyph contrast 5.3 / 5.0:1) + full names in the aid. Distinguishable without colour. → **PASS.**
+
+**4. Day / night distinction.** `build_cards.py` has **zero** phase handling — phase lives only in data
+(`phase`/`deck`/`tags`) and `art_note`. A day/night recolour is being added. If the recolour becomes the
+only on-card phase signal, colour-blind / low-vision players cannot tell a day card from a night card — and
+this is load-bearing (Dusk clears the whole day layer). Note: ☀ U+2600 / ☾ U+263E / 🌙 are **also missing**
+from the render font (would tofu). → **FLAG (pre-emptive — fail-in-waiting).** The recolour MUST carry a
+non-colour, font-covered phase marker.
+
+**5. Standing floor.** Four region colours (north `#D64545` / central `#1F8A7A` / south `#E6A930` / east
+`#26324D`) stay CVD-distinct + four distinct emblems (triangle/diamond/circle/square) — checker green. WCAG
+text contrast holds (9.4 / 10.4:1). Redundant encoding holds across regions (colour+emblem+name), tokens
+(colour+繁體), scope (glyph+word+field), piles (colour+繁體). → **PASS.**
+
+## Recommended fixes (route to bg-prototyper — exact values)
+
+**FIX A — scope icons (do now; legibility).** The font can't draw ⦿ ⬢ ➤. Draw them as SVG shapes (like
+`emblem_svg`) instead of font glyphs, centred at the effect-line lead:
+- `self` ⦿ → ring + centre dot: `<circle r=R fill=none stroke=ink sw=3/><circle r=R*0.42 fill=ink/>`
+- `region` ⬢ → reuse `emblem_svg("hex", …)` outline.
+- `neighbour` ➤ → right-pointing triangle: `<polygon points="cx-R,cy-R*0.7 cx+R,cy cx-R,cy+R*0.7" fill=ink/>`
+(A fallback font will NOT fix this — cairosvg's toy API resolves only the first family. Drawing is the fix.)
+
+**FIX B — day/night phase marker (before the recolour ships; fail-in-waiting).** Add a corner phase badge
+redundant to any recolour, using font-covered glyphs: **`日` (day) / `夜` (night)** as a small ink label, OR
+a drawn sun (`<circle/>` + short ray strokes) / crescent-moon (two offset circles) SVG. **Do NOT use
+☀/☾/🌙** — missing from the render font, they tofu. Phase must never be colour-only.
+
+**FIX C — ingredient-chip shape (hardening; WATCH).** Make the five v6.2 chips shape-distinct so shape is a
+third discriminator, not just colour+label. In `themes.py` night-market suits, change (chosen to avoid any
+same-colour + same-emblem clash with a live suit):
+- `"tea": {"color": "#1F8A7A", "emblem": "triangle"}`  (was `hex`; teal triangle — north triangle is red)
+- `"seafood": {"color": "#E6A930", "emblem": "square"}`  (was `hex`; amber square — east square is indigo)
+- keep `pork=hex`, `rice=circle`, `sugar=beam` → five distinct silhouettes.
+Also: the chip label is the load-bearing non-colour code, so `make.sh` MUST keep passing `--tokens-csv`
+(else `glyph_map` is `None` and chips render with no 繁體 — colour-only). Confirm it does.
+
+## Verdict
+
+**NOT a clean pass — 2 flags + 1 watch, all renderer/theme edits, none touching game rules.** The mandatory
+redundant-encoding floor is MET everywhere (no meaning is ever carried by colour alone). The flags are
+**legibility/rendering**: FIX A ships a visibly broken glyph today; FIX B prevents a colour-only phase code
+before the recolour lands.
+
+### Decision for the human — one fix now
+
+**FIX A (scope icons as SVG shapes).** Do this now — it's the only item that ships a broken artifact in the
+current build. FIX B is required but only once the recolour actually lands (block that PR on it). FIX C is
+optional hardening. All three are `themes.py` / renderer edits for bg-prototyper; no data or rules change.
