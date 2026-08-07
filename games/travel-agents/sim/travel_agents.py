@@ -1,70 +1,72 @@
 """
-travel_agents.py — Travel Agents: Taiwan (v6.2 · REGION VENDOR MARKETS + a MISSION CLOCK)
+travel_agents.py — Travel Agents: Taiwan (v6.3 · REACH gates Buzz · milestones · perks & tickets simplified)
 encoded for the simulation harness (see tools/sim/engine.py). Stdlib-only.
 
-This reworks the v6.1 sim (central Ladder + region-anchored beverage slots + a ladder-only clock) to the
-v6.2 PROPOSAL in design/v6.2-content-draft.md. v6.2 tears out the central Ladder and the beverage-slot
-special-case; the board is now FOUR REGION VENDOR MARKETS, drinks are just the low-value vendors in each
-deck, the day turns over to night at a single DUSK FLIP, and the day is paced by a MISSION CLOCK (with an
-all-vendor-claims clock behind a knob for the A/B). What the spine keeps from v6.1: the Buzz-majority
-public hype-fight, the 5-ingredient palette (4 signatures + 1 common in C&S), the push-your-luck market
-dig with scoped events, the discount ramp on food vendors, Prestige + Rep-end-VP scoring, the dynamic ★,
-and the five characters.
+This reworks the v6.2 sim (region vendor markets + a vendor-claims clock + Prestige/Rep-VP scoring + perks)
+to the v6.3 SHAPE-LOCK spec in design/v6.3-content-draft.md. v6.3 gives the Reputation track TEETH and
+strips the perk/ticket-pool cruft. The board, dusk flip, 5-ingredient palette, the vendor-claims clock,
+the push-your-luck market decks with scoped events, and the five characters all carry over from v6.2.
 
-WHAT v6.2 MOVED — and what this rework implements:
+WHAT v6.3 MOVED — and what this rework implements (vs the v6.2 sim):
 
-  (1) REGION VENDOR MARKETS (no central Ladder). Each of the 4 regions has its OWN face-down vendor deck
-      — a DAY deck in Act I, a NIGHT deck in Act II — with drinks mixed in as the low-value vendors. Each
-      region shows 1-2 face-up (North 2, others 1), refilled in place from that region's current deck. You
-      court whatever is face-up in the region you STAND in (one unified Bribe rule for everything).
+  (1) REPUTATION → "REACH": a LIVE CAP on committed Buzz. Your total Buzz committed across the board may
+      never exceed your current Reach. Winning a vendor clears your Buzz off it → frees the cap.
+      - START Reach = 2 (knob), track 0–12.
+      - SOURCES: Travel = +1 Reach; ~3–4 event cards = +1 Reach; vendors grant NO Reach.
+      - SINKS: a "Greedy Grab" (keep +1 on a Visit OR take a 2nd card on a Convenience Store) → −1 Reach;
+        plus ~2–3 Reach-cost events (−1).
+      - EDGE CASE: a voluntary Greedy Grab is legal only if it won't drop Reach below committed Buzz; a
+        forced event loss that breaches the cap makes the player immediately return Buzz to supply until
+        legal. Reach floors at 0.
+      - Reach NO LONGER SCORES (the 3/6/9/top VP table is DELETED).
 
-  (2) THE DUSK FLIP. At dusk the ENTIRE day layer is cleared island-wide — BOTH the day vendor decks AND
-      the day ingredient market decks are removed (unclaimed day vendors gone) — and the NIGHT decks are
-      swapped in. Players KEEP their Larder; only the board/supply resets. The night ingredient decks use
-      the SAME 5 palette but are EVENT-HEAVIER (the bustling night market).
+  (2) RAVE-REVIEW MILESTONES on the Bookings track: marks at Bookings 7 and 14, Set A "Tempo & Fuel"
+      (Mark 7 → +1 Reach; Mark 14 → take 1 ingredient of choice + next Bribe costs 1 less). FIRST player
+      to cross each gets the one-time boon.
 
-  (3) RENEWABLE DISCARD (the anti-lockout rule). Larder cap 7; excess → that region's market discard,
-      which reshuffles back into the deck when it runs dry — ingredients recycle, never removed from the
-      game. Modelled as a CONSERVED per-region token pool (+ a discard that folds back in), so the hoarder
-      probe + per-region signature supply size are faithful. Day discards clear at dusk.
+  (3) PERKS ELIMINATED. A vendor = Bookings value + (region icon | no icon). No perk field, no Rep value.
+      Vendor set = the reissued v6.3 table, PLUS the central-tea-export fix (see CENTRAL_TEA_FIX below):
+      北 牛肉麵 (Beef Noodle) is re-pointed from →S to →C so Central tea has cross-region export demand and
+      the cross-region cycle closes into a true four-region loop (N→C→S→E→N). This matches v6.2's validated
+      movement fix; bg-design flagged it isn't in the v6.3 table text yet — surfaced for bg-developer.
 
-  (4) THE VALUE SPREAD that PULLS travel: one ★ apex per region (E highest), a cross-region recipe cycle
-      N→S→E→N with C feeding S, North dense-not-rich (2 slots), drinks cheap (locally sourceable K) only
-      in C & S. Baked from the content draft.
+  (4) TICKET POOLS 3→2 (DAY / NIGHT). General folded in per the spec (遍地開花 → both, 收藏家 & 揮金如土 →
+      night). DAY tickets judged at DUSK into the win/lose piles; NIGHT tickets at the last train.
 
-  (5) TOUR TICKETS as the spine: a face-up shared ROW OF 3, claimed as a full action, scored RETROACTIVELY
-      (+value / −floor(value/2) if unfinished — the penalty is a knob for the A/B), drawn from day/night/
-      general pools (12 per phase in the box, 5 drawn per phase per game).
+  (5) PER-PLAYER WIN/LOSE piles (成團 / 遺珠) — already how the v6.2 sim scored; made explicit here.
 
-  (6) BOTH CLOCK MODES behind a knob. MISSION clock (a completed claimed mission advances the day; ~3 →
-      dusk, ~3 more → last train @2p) vs the all-VENDOR-CLAIMS clock. Recommend one from the sim.
+Scoring = TWO vectors: Bookings (live vendor-value track) + Tour Tickets (Σ win-pile − Σ floor(v/2)
+lose-pile). Tiebreak (folded as a tiny fractional term so the harness picks the right winner): most
+vendors → most regions → fewest lose-pile tickets.
 
 ------------------------------------------------------------------------------------------------------
 DESIGN FIDELITY / SIMPLIFICATIONS (bots are a FLOOR on depth, not a ceiling)
 ------------------------------------------------------------------------------------------------------
 Faithfully modelled: the 4-region ring + HSR(N↔S); the five actions; the 5-ingredient palette + common in
-C&S; per-region day/night vendor decks with 2/1/1/1 face-up + refill-in-place + the dusk sweep; the
-conserved per-region ingredient token pool with renewable over-cap discard; Visit-3-keep-2 with events
-firing by scope; Convenience Store single blind draw firing by scope; Travel drawing the arriving region
-(whiffs on an event); the Buzz-majority Bribe (≥margin lead, presence, pay ingredients −discounts) clearing
-to a finite supply; the discount ramp (food only; drinks carry none); the ★ apex + dynamic ★ boon; Tour
-Tickets from a shared row with retroactive ±scoring; both clock modes; the five characters.
+C&S; per-region day/night vendor decks with 2/1/1/1 face-up + refill + the dusk sweep; the conserved
+per-region ingredient pool with renewable over-cap discard; Visit-3-keep-2 (+Greedy Grab) and Convenience-
+Store single draw (+Greedy Grab) firing events by scope; Travel drawing the arriving region (whiffs) AND
+granting +1 Reach; the Buzz-majority Bribe (≥margin lead, presence, pay ingredients − icon discounts)
+clearing to supply; the discount ramp (food only); the ★ dynamic accolade; the Reach cap on Promote +
+its forced-return edge case; the two milestone marks; Tour Tickets judged per-phase into win/lose piles;
+the five v6.3-locked characters.
 
 Simplifications (the sim's blind spots — hand these to the table):
   * SHARED "engine brain": every strategy scores legal actions with ONE greedy planner; strategies differ
-    only in PREFS (value/ticket/ramp/speed weights + disrupt/opportunistic/hoard flags + drink/ticket
-    controls). Isolates the playstyle questions exactly as beacon.py isolates policy.
-  * Event PAYLOADS abstracted: a HAZARD = a bounded, tax-not-destroy tempo tax (one fewer sourced
-    ingredient); a BOON = a free ingredient windfall or (a fraction) the dynamic ★ placement. Warmth of
-    rival-facing beats is the feel-test's job (bg-theme).
-  * The Buzz war is resolved by a concession heuristic (appetite falls as the rival's committed Buzz
-    rises); the fight's fun/tension is a table question, not a sim one.
-  * ASSUMPTIONS where the draft left a value open are tagged `# ASSUMPTION:` and gathered in sim-notes.md.
+    only in PREFS. Isolates the playstyle questions exactly as beacon.py isolates policy.
+  * Event PAYLOADS abstracted: hazard = a bounded tempo tax OR a −1 Reach ding; boon = a free ingredient,
+    a +1 Reach boon, or (a fraction) the dynamic ★. Warmth of rival-facing beats is the feel-test's job.
+  * The Buzz war is resolved by a concession heuristic → bots rarely pile on the same vendor (contested
+    rate is a FLOOR); the fight's fun/tension is a table question, not a sim one.
+  * The Greedy Grab is taken only when the bot has comfortable Reach headroom (it never starves its own
+    fight) — so the measured grab-rate is a conservative floor; a human grabs more aggressively.
+  * 網紅's "Late to the Party" (miss the first NIGHT turn) is modelled exactly (a forced pass); "goes
+    last" is only a seat tiebreak (mild for greedy bots). ASSUMPTIONS tagged `# ASSUMPTION:`.
 
 Run:
-    python tools/sim/simulate.py --module games/travel-agents/sim/travel_agents.py --n 2000 \
+    python tools/sim/simulate.py --module games/travel-agents/sim/travel_agents.py --n 3000 \
         --out games/travel-agents/playtests/sim-results.md
-    python games/travel-agents/sim/travel_agents.py            # the full v6.2 probe suite
+    python games/travel-agents/sim/travel_agents.py            # the full v6.3 probe suite
     python games/travel-agents/sim/travel_agents.py --counts 2,3,4   # the MP seat-balance smoke
 """
 from __future__ import annotations
@@ -80,9 +82,21 @@ from collections import Counter, deque
 BUZZ_SUPPLY  = int(os.environ.get("TA_BUZZ_SUPPLY", "24"))     # 2p Buzz supply (+~9/extra player)
 BUZZ_MARGIN  = int(os.environ.get("TA_BUZZ_MARGIN", "2"))      # ≥N Buzz lead to Bribe (design 2)
 LARDER_CAP   = int(os.environ.get("TA_LARDER_CAP", "7"))
-STAR_BONUS_P = int(os.environ.get("TA_STAR_P", "2"))           # dynamic ★ token +Prestige
-STAR_BONUS_R = int(os.environ.get("TA_STAR_R", "1"))           # dynamic ★ token +Rep
-STALL_CAP    = int(os.environ.get("TA_STALL_CAP", "30"))       # hard per-player turn cap (drag backstop)
+STAR_BONUS_P = int(os.environ.get("TA_STAR_P", "2"))           # dynamic ★ token +Bookings (no more +Rep)
+STALL_CAP    = int(os.environ.get("TA_STALL_CAP", "34"))       # hard per-player turn cap (drag backstop)
+
+# --- REACH (v6.3 Change 1 — the live Buzz cap) ---------------------------------------------------
+REACH_START  = int(os.environ.get("TA_REACH_START", "2"))      # starting Reach (sim knob — start generous)
+REACH_TRAVEL = int(os.environ.get("TA_REACH_TRAVEL", "1"))     # +Reach per Travel (the engine's fuel line)
+REACH_TOP    = int(os.environ.get("TA_REACH_TOP", "12"))       # track top
+# event Reach economy: fraction of BOONS that are +1 Reach; fraction of HAZARDS that are −1 Reach
+REACH_BOON_FRAC = float(os.environ.get("TA_REACH_BOON", "0.34"))  # ~3–4 reach-gain events salted in
+REACH_HAZ_FRAC  = float(os.environ.get("TA_REACH_HAZ",  "0.30"))  # ~2–3 reach-loss events (負評/出包)
+
+# --- GREEDY GRAB (v6.3 Change 1c — the voluntary Reach sink) -------------------------------------
+# "off" | "visit" (Visit grab only) | "both" (Visit + Convenience Store) | "aggressive" (both, low headroom)
+GRAB_MODE     = os.environ.get("TA_GRAB", "both")
+GRAB_HEADROOM = int(os.environ.get("TA_GRAB_HEADROOM", "2"))   # only grab if Reach − committed ≥ this
 
 # The per-region signature SUPPLY (the hoarder / anti-lockout knob) — conserved tokens per region PER
 # PHASE. Larger = denial is weaker. Common (K) supply in C&S is K_SUPPLY.
@@ -92,44 +106,40 @@ K_SUPPLY   = int(os.environ.get("TA_K_SUPPLY", "6"))
 # Event density (the "hotter night" knob): fraction of market draws that are events, day vs night.
 DAY_EVENT_FRAC   = float(os.environ.get("TA_DAY_EVENT", "0.25"))
 NIGHT_EVENT_FRAC = float(os.environ.get("TA_NIGHT_EVENT", "0.42"))
-EVENT_HAZARD_FRAC = float(os.environ.get("TA_HAZARD", "0.58"))  # of events, this frac are hazards
-STAR_BOON_CHANCE  = float(os.environ.get("TA_STARBOON", "0.30"))# of boons, this frac drop a dynamic ★
+EVENT_HAZARD_FRAC = float(os.environ.get("TA_HAZARD", "0.55"))  # of events, this frac are hazards
+STAR_BOON_CHANCE  = float(os.environ.get("TA_STARBOON", "0.22"))# of (non-reach) boons, frac that drop a ★
 
 # Scope ratio (⦿ self / ⬢ region / ➤ neighbour); hazards skew region/neigh, boons skew self.
 SCOPE_SELF   = float(os.environ.get("TA_SCOPE_SELF", "0.40"))
 SCOPE_REGION = float(os.environ.get("TA_SCOPE_REGION", "0.40"))
 SCOPE_NEIGH  = float(os.environ.get("TA_SCOPE_NEIGH", "0.20"))
 
-# --- THE CLOCK (probe #5 A/B) --------------------------------------------------------------------
-CLOCK_MODE = os.environ.get("TA_CLOCK", "mission")             # "mission" | "vendor"
-# mission clock: completed claimed missions → dusk / last train (table-wide @2p; scale with count)
+# --- THE CLOCK (v6.3: keep the v6.2 vendor-claims clock) -----------------------------------------
+CLOCK_MODE = os.environ.get("TA_CLOCK", "vendor")             # "vendor" (v6.3 default) | "mission"
 M_DUSK = int(os.environ.get("TA_M_DUSK", "3"))
 M_END  = int(os.environ.get("TA_M_END",  "5"))
-# vendor-claim clock: total vendor claims → dusk / last train (@2p)
-V_DUSK = int(os.environ.get("TA_V_DUSK", "5"))
-V_END  = int(os.environ.get("TA_V_END",  "10"))
-NIGHT_SPRINT = int(os.environ.get("TA_NIGHT_SPRINT", "0"))     # >0: shorten the night half by this many
+V_DUSK = int(os.environ.get("TA_V_DUSK", "5"))                # dusk @ 5th table-wide vendor claim @2p
+V_END  = int(os.environ.get("TA_V_END",  "10"))               # last train @ 10th @2p
+NIGHT_SPRINT = int(os.environ.get("TA_NIGHT_SPRINT", "0"))
 
 MISSION_DRAW = int(os.environ.get("TA_MISSION_DRAW", "5"))     # tickets drawn per phase (2p)
 MROW = int(os.environ.get("TA_MROW", "3"))                     # face-up ticket row width
 
-# --- THE −½ PENALTY (probe #6 A/B) ----------------------------------------------------------------
+# --- THE −½ PENALTY (carried question) -----------------------------------------------------------
 PENALTY = os.environ.get("TA_PENALTY", "half")                 # "half" (−floor(v/2)) | "zero" (score 0)
+# DAY-ticket judging timing (v6.3 Change 4 = "dusk"; "end" = the v6.2 behaviour, for the A/B diagnosis)
+DAY_JUDGE = os.environ.get("TA_DAY_JUDGE", "dusk")             # "dusk" | "end"
 
-# --- CHARACTER KNOBS ------------------------------------------------------------------------------
-# H1 大胃王 flaw. "twice" (A) | "keep2" (B) | "next" (C).
+# --- CHARACTER KNOBS (v6.3 kits — locked; do NOT pre-tweak, the re-sim reads them) ---------------
+# H1 大胃王 flaw. "twice" (A, locked) | "keep2" (B) | "next" (C).
 H1 = os.environ.get("TA_H1", "twice")
-# H2 大哥 threshold+flaw. THRESH 0 (tie-win) | 1 (must-lead-by-1). FLAW "tab"(+1 ing) | "promote1" |
-# "none" (no flaw) | "nocontest" (tab + can't win a CONTESTED vendor — a real brake at the tie threshold).
-DAGE_THRESH = int(os.environ.get("TA_H2_THRESH", "0"))
-DAGE_FLAW   = os.environ.get("TA_H2_FLAW", "tab")
-# 媽寶 buff (probe #8). "none" (keep-1, v6.1) | "keep2" (keep-2 on Visit) | "travel2" (keep-1 but Travel
-# arrives with 2 from the region you left).
+# H2 大哥. v6.3 lock = option D: THRESH 1 (must lead by ≥1), FLAW "none". Probe others if he drifts.
+DAGE_THRESH = int(os.environ.get("TA_H2_THRESH", "1"))
+DAGE_FLAW   = os.environ.get("TA_H2_FLAW", "none")            # "none"|"tab"|"promote1"|"nocontest"
+# 媽寶 buff. v6.3 lock = "keep2". "none"|"keep2"|"travel2".
 OFFICE_BUFF = os.environ.get("TA_OFFICE", "keep2")
-# 網紅 flaw = "goes last + starts behind": opponents get INFL_BEHIND head-start signature tokens. NOTE
-# the ingredient head-start is a weak lever (flat ~60% at 1/2/3); the REAL flaw is GOING LAST (seat-1),
-# which lands him ~55% — but the sim under-counts a go-last disadvantage (see sim-notes). Kept at 2.
-INFL_BEHIND = int(os.environ.get("TA_INFL_BEHIND", "2"))
+# 網紅 flaw. v6.3 lock = "lateparty" (miss the first NIGHT-phase turn). Probe "none" to test retirement.
+INFL_FLAW = os.environ.get("TA_INFL_FLAW", "lateparty")       # "lateparty" | "none"
 
 # ==================================================================================================
 #  MAP
@@ -191,7 +201,10 @@ def _next_hop(pos, dest, char=None):
 
 
 # ==================================================================================================
-#  EVENT CARDS — ("ev", kind, scope, sub); kind hazard|boon; scope self|region|neigh; sub tempo|ingredient|star
+#  EVENT CARDS — ("ev", kind, scope, sub)
+#    kind  : hazard | boon
+#    scope : self | region | neigh
+#    sub   : tempo | reach   (hazard);  ingredient | reach | star   (boon)
 # ==================================================================================================
 def _sample_scope(kind, rng):
     if kind == "hazard":
@@ -208,55 +221,68 @@ def _sample_scope(kind, rng):
 
 
 def _make_event(kind, rng):
-    scope = _sample_scope(kind, rng)
     if kind == "boon":
+        if rng.random() < REACH_BOON_FRAC:
+            return ("ev", "boon", "self", "reach")          # "word spreads" — +1 Reach to the flipper
         if rng.random() < STAR_BOON_CHANCE:
             return ("ev", "boon", "region", "star")
-        return ("ev", "boon", scope, "ingredient")
-    return ("ev", "hazard", scope, "tempo")
+        return ("ev", "boon", _sample_scope("boon", rng), "ingredient")
+    # hazard
+    if rng.random() < REACH_HAZ_FRAC:
+        return ("ev", "hazard", "self", "reach")            # 負評 / 出包 — −1 Reach to the flipper
+    return ("ev", "hazard", _sample_scope("hazard", rng), "tempo")
 
 
 # ==================================================================================================
-#  VENDOR TABLE (baked v6.2 content — the per-region day/night spread from the content draft)
+#  VENDOR TABLE (v6.3 reissued — Bookings + (icon | none); NO perk, NO rep) + the central-tea fix
 # ==================================================================================================
 # A vendor: id, region, phase (1 day | 2 night), is_drink, cost (Counter over N/C/S/E/K),
-# prestige, rep, perk ("icon"|"double_icon"|"wild"|"rep_plus2"|None), star.
+# bookings (points), icon (bool — carries its own region discount icon), star (dynamic-★ eligible marker,
+# unused for seeding — dynamic ★ is event-placed).
+CENTRAL_TEA_FIX = os.environ.get("TA_TEA_FIX", "1") == "1"    # re-point 牛肉麵 →S to →C (tea gets export)
+
+
 def _build_vendors():
     V = []
 
-    def add(region, phase, is_drink, cost, prestige, rep, perk, star=False):
+    def add(region, phase, is_drink, cost, bookings, icon, star=False):
         V.append({"id": len(V), "region": region, "phase": phase, "is_drink": is_drink,
-                  "cost": Counter(cost), "prestige": prestige, "rep": rep, "perk": perk,
+                  "cost": Counter(cost), "bookings": bookings, "icon": icon,
                   "star": star, "total_cost": sum(cost.values())})
 
     # --- North 北 (pork · 2 slots · no local K) ---
-    add("N", 1, False, {"N": 1}, 2, 1, "icon")            # 肉包 Pork Bao
-    add("N", 1, False, {"N": 1}, 1, 1, "icon")            # 蛋餅 Egg Crepe
-    add("N", 1, True,  {"K": 1}, 2, 1, None)              # 豆漿 Soy Milk (drink)
-    add("N", 2, False, {"N": 2}, 4, 2, "double_icon")     # 胡椒餅 Pepper Bun
-    add("N", 2, False, {"N": 2, "S": 1}, 5, 2, "wild")    # 牛肉麵 Beef Noodle →S
-    add("N", 2, False, {"N": 3}, 7, 3, "rep_plus2", True) # ★ 大香腸 Big Sausage
-    add("N", 2, True,  {"K": 1}, 2, 1, None)              # 珍奶 Bubble Tea (drink)
+    add("N", 1, False, {"N": 1}, 2, True)                 # 肉包 Pork Bao (discount-only)
+    add("N", 1, False, {"N": 1}, 1, True)                 # 蛋餅 Egg Crepe (discount-only)
+    add("N", 1, True,  {"K": 1}, 2, False)                # 豆漿 Soy Milk (drink · none)
+    add("N", 2, False, {"N": 2}, 5, True)                 # 胡椒餅 Pepper Bun (both)
+    # 牛肉麵 Beef Noodle (both). v6.3 table = {N:2, S:1}→S. CENTRAL_TEA_FIX re-points it to {N:2, C:1}→C
+    # so Central tea gains cross-region export demand (closes N→C→S→E→N).
+    if CENTRAL_TEA_FIX:
+        add("N", 2, False, {"N": 2, "C": 1}, 6, True)     # 牛肉麵 →C  (the fix)
+    else:
+        add("N", 2, False, {"N": 2, "S": 1}, 6, True)     # 牛肉麵 →S  (raw v6.3 table)
+    add("N", 2, False, {"N": 3}, 7, False, True)          # ★ 大香腸 Big Sausage (Bookings-only trophy)
+    add("N", 2, True,  {"K": 1}, 2, False)                # 珍奶 Bubble Tea (drink · none)
     # --- Central 中 (tea · 1 slot · local K) ---
-    add("C", 1, False, {"C": 1}, 2, 1, "icon")            # 肉圓 Ba-wan
-    add("C", 1, False, {"C": 1}, 1, 1, "icon")            # 麵線 Misua
-    add("C", 1, True,  {"K": 1}, 2, 1, None)              # 珍珠奶茶 Bubble Tea (drink)
-    add("C", 2, False, {"C": 2}, 4, 2, "double_icon")     # 大腸包小腸 Sausage-in-Sausage
-    add("C", 2, False, {"C": 2, "S": 1}, 6, 3, "wild", True)  # ★ 逢甲名物 →S
-    add("C", 2, True,  {"K": 1}, 2, 1, None)              # 冬瓜茶 Wintermelon Tea (drink)
+    add("C", 1, False, {"C": 1}, 2, True)                 # 肉圓 Ba-wan (discount-only)
+    add("C", 1, False, {"C": 1}, 1, True)                 # 麵線 Misua (discount-only)
+    add("C", 1, True,  {"K": 1}, 2, False)                # 珍珠奶茶 Bubble Tea (drink · none)
+    add("C", 2, False, {"C": 2}, 5, True)                 # 大腸包小腸 Sausage-in-Sausage (both)
+    add("C", 2, False, {"C": 2, "S": 1}, 6, False, True)  # ★ 逢甲名物 →S (Bookings-only trophy)
+    add("C", 2, True,  {"K": 1}, 2, False)                # 冬瓜茶 Wintermelon Tea (drink · none)
     # --- South 南 (seafood · 1 slot · local K) ---
-    add("S", 1, False, {"S": 1}, 2, 1, "icon")            # 虱目魚粥 Milkfish Congee
-    add("S", 1, False, {"S": 1}, 1, 1, "icon")            # 碗粿 Rice Bowl Cake
-    add("S", 1, True,  {"K": 1}, 2, 1, None)              # 木瓜牛奶 Papaya Milk (drink)
-    add("S", 2, False, {"S": 2}, 4, 2, "double_icon")     # 蚵仔煎 Oyster Omelette
-    add("S", 2, False, {"S": 2, "E": 1}, 5, 2, "wild")    # 棺材板 Coffin Bread →E
-    add("S", 2, False, {"S": 3}, 7, 3, "rep_plus2", True) # ★ 擔仔麵 Tan-tsú-mī
+    add("S", 1, False, {"S": 1}, 2, True)                 # 虱目魚粥 Milkfish Congee (discount-only)
+    add("S", 1, False, {"S": 1}, 1, True)                 # 碗粿 Rice Bowl Cake (discount-only)
+    add("S", 1, True,  {"K": 1}, 2, False)                # 木瓜牛奶 Papaya Milk (drink · none)
+    add("S", 2, False, {"S": 2}, 5, True)                 # 蚵仔煎 Oyster Omelette (both)
+    add("S", 2, False, {"S": 2, "E": 1}, 6, True)         # 棺材板 Coffin Bread →E (both)
+    add("S", 2, False, {"S": 3}, 7, False, True)          # ★ 擔仔麵 Tan-tsú-mī (Bookings-only trophy)
     # --- East 東 (rice · 1 slot · no local K · Indigenous-forward) ---
-    add("E", 1, False, {"E": 2}, 2, 1, "icon")            # 竹筒飯 Bamboo-Tube Rice
-    add("E", 1, False, {"E": 1}, 2, 1, "icon")            # 米糕 Rice Cake
-    add("E", 2, False, {"E": 2}, 4, 2, "double_icon")     # 麻糬 Mochi
-    add("E", 2, False, {"E": 2, "N": 1}, 8, 3, "rep_plus2", True)  # ★ 部落風味 →N (apex, E highest)
-    add("E", 2, True,  {"K": 1}, 2, 1, None)              # 洛神花茶 Roselle Tea (drink)
+    add("E", 1, False, {"E": 2}, 2, True)                 # 竹筒飯 Bamboo-Tube Rice (discount-only)
+    add("E", 1, False, {"E": 1}, 2, True)                 # 米糕 Rice Cake (discount-only)
+    add("E", 1, True,  {"K": 1}, 2, False)                # 洛神花茶 Roselle Tea (drink · none)
+    add("E", 2, False, {"E": 2}, 5, True)                 # 麻糬 Mochi (both)
+    add("E", 2, False, {"E": 2, "N": 1}, 8, False, True)  # ★ 石板烤肉 Stone-Slab BBQ →N (apex trophy)
     return V
 
 
@@ -268,7 +294,7 @@ def _region_deck(region, phase):
 
 
 # ==================================================================================================
-#  TOUR TICKETS (v6.2 — 12 day + 12 night + 3 general; draw MISSION_DRAW per phase; face-up row of MROW)
+#  TOUR TICKETS (v6.3 — DAY / NIGHT pools; general folded in; win/lose piles per phase)
 # ==================================================================================================
 # key -> (value, phase-tag "d"|"n"|"g"). Progress read from a won-vendor stat block below.
 TICKETS = {
@@ -280,12 +306,15 @@ TICKETS = {
     "n_nmfood2": (5, "n"), "n_star1": (5, "n"), "n_all4": (7, "n"), "n_surfturf": (4, "n"),
     "n_prestige14": (6, "n"), "n_four": (5, "n"), "n_expensive1": (4, "n"), "n_east2": (5, "n"),
     "n_contest2": (5, "n"), "n_final2": (5, "n"), "n_drinks3": (4, "n"), "n_allvenue": (6, "n"),
-    # --- General (seeds both phases) ---
+    # --- General (v6.3: folded into the two pools — 遍地開花 into BOTH, 收藏家/揮金如土 into NIGHT) ---
     "g_travel3": (5, "g"), "g_collect5": (5, "g"), "g_prestige12": (6, "g"),
 }
 DAY_TICKETS = [k for k, (_, ph) in TICKETS.items() if ph == "d"]
 NIGHT_TICKETS = [k for k, (_, ph) in TICKETS.items() if ph == "n"]
-GENERAL_TICKETS = [k for k, (_, ph) in TICKETS.items() if ph == "g"]
+# v6.3 Change 4 — fold the 3 general tickets: 遍地開花 (g_travel3) → BOTH; 收藏家 (g_collect5) &
+# 揮金如土 (g_prestige12) → NIGHT. Two pools, ~13 / ~14.
+DAY_POOL = DAY_TICKETS + ["g_travel3"]                                     # 13
+NIGHT_POOL = NIGHT_TICKETS + ["g_collect5", "g_prestige12", "g_travel3"]   # 15 (spec ~14; near enough)
 
 
 def _wstat(won):
@@ -298,8 +327,8 @@ def _wstat(won):
         "night_food": sum(1 for v in won if v["phase"] == 2 and not v["is_drink"]),
         "food": sum(1 for v in won if not v["is_drink"]),
         "drinks": sum(1 for v in won if v["is_drink"]),
-        "prestige": sum(v["prestige"] for v in won),
-        "prestige_day": sum(v["prestige"] for v in won if v["act_won"] == 1),
+        "bookings": sum(v["bookings"] for v in won),
+        "bookings_day": sum(v["bookings"] for v in won if v["act_won"] == 1),
         "contested": sum(1 for v in won if v["contested"]),
         "stars": sum(1 for v in won if v["starred"]),
         "cost_le2": sum(1 for v in won if v["total_cost"] <= 2),
@@ -321,14 +350,14 @@ def _mprog(key, st):
     if key == "d_early3":      return min(st["before_dusk"], 3), 3
     if key == "d_cheap3":      return min(st["cost_le2"], 3), 3
     if key == "d_east1":       return min(by["E"], 1), 1
-    if key == "d_prestige8":   return min(st["prestige_day"], 8), 8
+    if key == "d_prestige8":   return min(st["bookings_day"], 8), 8
     if key == "d_central2":    return min(by["C"], 2), 2
     if key == "d_contest1":    return min(st["contested"], 1), 1
     if key == "n_nmfood2":     return min(st["night_food"], 2), 2
     if key == "n_star1":       return min(st["stars"], 1), 1
     if key == "n_all4":        return min(len(st["regions"]), 4), 4
     if key == "n_surfturf":    return min(by["S"], 1) + min(by["N"], 1), 2
-    if key == "n_prestige14":  return min(st["prestige"], 14), 14
+    if key == "n_prestige14":  return min(st["bookings"], 14), 14
     if key == "n_four":        return min(st["n"], 4), 4
     if key == "n_expensive1":  return min(st["cost_ge3"], 1), 1
     if key == "n_east2":       return min(by["E"], 2), 2
@@ -338,7 +367,7 @@ def _mprog(key, st):
     if key == "n_allvenue":    return min(st["day_food"], 1) + min(st["night_food"], 1) + min(st["drinks"], 1), 3
     if key == "g_travel3":     return min(len(st["regions"]), 3), 3
     if key == "g_collect5":    return min(st["n"], 5), 5
-    if key == "g_prestige12":  return min(st["prestige"], 12), 12
+    if key == "g_prestige12":  return min(st["bookings"], 12), 12
     return 0, 1
 
 
@@ -360,20 +389,18 @@ def _ticket_value(key):
     return TICKETS[key][0]
 
 
-def _ticket_final_score(pl):
-    tot = 0
-    for key in pl["tickets"]:
-        v = TICKETS[key][0]
-        if _mdone(key, pl["won"]):
-            tot += v
-        elif PENALTY == "half":
-            tot -= (v // 2)
-        # PENALTY == "zero": unfinished scores 0
-    return tot
+def _judge_ticket(key, won):
+    """Return the win/lose-pile score for one ticket judged against `won` (the vendors owned at the
+    judging trigger — dusk for DAY tickets, last train for NIGHT tickets)."""
+    v = TICKETS[key][0]
+    if _mdone(key, won):
+        return v                       # 成團 (win pile) → +value
+    if PENALTY == "half":
+        return -(v // 2)               # 遺珠 (lose pile) → −floor(v/2)
+    return 0                           # PENALTY == "zero"
 
 
 # --- ticket keep-fit (which ticket a bot wants to CLAIM off the face-up row) ---
-# rough completability in a ~5-6-win game; harder ones (all-4, prestige, multi-region) lower.
 TICKET_EASE = {
     "d_breakfast3": 0.7, "d_travel3": 0.5, "d_south2": 0.7, "d_north2": 0.8, "d_drinks2": 0.6,
     "d_mix1": 0.9, "d_early3": 0.5, "d_cheap3": 0.7, "d_east1": 0.7, "d_prestige8": 0.6,
@@ -386,9 +413,8 @@ TICKET_EASE = {
 
 
 def _ticket_fit(prefs, key):
-    """Can this bot realistically finish it, given its controls/leanings?"""
     needs_drink = key in ("d_drinks2", "n_drinks3", "d_mix1", "n_allvenue")
-    hard_drink = key in ("d_drinks2", "n_drinks3")           # pure-drink counting tickets
+    hard_drink = key in ("d_drinks2", "n_drinks3")
     needs_food = key not in ("d_drinks2", "n_drinks3")
     if prefs.get("no_drinks") and hard_drink:
         return 0.05
@@ -410,17 +436,6 @@ def _ticket_keep_score(won, key, prefs):
     return _ticket_value(key) * TICKET_EASE.get(key, 0.6) * _ticket_fit(prefs, key) + 2.0 * prog
 
 
-# ==================================================================================================
-#  SCORING helpers
-# ==================================================================================================
-def _rep_end_vp(rep):
-    if rep >= 12: return 9
-    if rep >= 9:  return 6
-    if rep >= 6:  return 4
-    if rep >= 3:  return 2
-    return 0
-
-
 CHARACTERS = ("neutral", "councillor", "office", "influencer", "dagushi", "dage")
 
 
@@ -432,7 +447,6 @@ class TravelAgentsGame:
     def new_state(self, rng, n_players=2, characters=None, prefs=None):
         chars = list(characters) if characters else ["neutral"] * n_players
         prefs = list(prefs) if prefs else [dict(BAL) for _ in range(n_players)]
-        # player-count scaling
         slots = {"N": 2, "C": 1, "S": 1, "E": 1}
         if n_players >= 3: slots["C"] = 2
         if n_players >= 4: slots["S"] = 2
@@ -444,7 +458,6 @@ class TravelAgentsGame:
         v_end  = {2: V_END,  3: V_END + 4,  4: V_END + 8}.get(n_players, V_END)
         starts = {2: ["N", "S"], 3: ["N", "S", "C"], 4: ["N", "C", "S", "E"]}.get(n_players, ["N", "S"])
 
-        # region vendor decks (day now; night held) + face-up reveal
         vdeck, faceup, buzz_ids = {}, {}, set()
         for r in REGIONS:
             d = _region_deck(r, 1); rng.shuffle(d)
@@ -452,7 +465,6 @@ class TravelAgentsGame:
             vdeck[r] = d; faceup[r] = up
             buzz_ids |= set(up)
 
-        # per-region conserved ingredient pools (DAY) + empty discards
         ing_pool, ing_discard = {}, {}
         for r in REGIONS:
             pool = Counter({r: SIG_SUPPLY})
@@ -461,9 +473,7 @@ class TravelAgentsGame:
             ing_pool[r] = pool
             ing_discard[r] = Counter()
 
-        # tickets: draw MISSION_DRAW for the day phase from DAY + GENERAL; fill the face-up row
-        day_pool = DAY_TICKETS + GENERAL_TICKETS
-        drawn = rng.sample(day_pool, min(mdraw, len(day_pool)))
+        drawn = rng.sample(DAY_POOL, min(mdraw, len(DAY_POOL)))
         mrow = drawn[:MROW]
         mreserve = drawn[MROW:]
 
@@ -473,22 +483,17 @@ class TravelAgentsGame:
             players.append({
                 "char": ch, "prefs": prefs[p],
                 "pos": starts[p % len(starts)],
-                "larder": Counter(), "won": [], "icons": Counter(), "wild": 0,
-                "prestige": 0, "rep": 0,
+                "larder": Counter(), "won": [], "icons": Counter(),
+                "bookings": 0,                                   # the live Bookings (former Prestige)
+                "reach": REACH_START,                            # v6.3: the live Buzz cap
                 "promote_bonus": (1 if ch == "influencer" else 0),
-                "rep_per_court_bonus": 0, "councillor_regions": set(),
+                "councillor_regions": set(),
                 "tickets": [], "counted_done": set(),
+                "day_ticket_score": 0, "day_win": 0, "day_lose": 0,   # DAY tickets frozen at dusk
                 "next_visit_extra_hazard": 0, "tempo_tax": 0,
+                "skip_next": False,                              # 網紅 "Late to the Party" pending pass
+                "bribe_discount": 0,                             # milestone-14 one-shot −1 ingredient
             })
-        if "influencer" in chars:
-            # 網紅 flaw: coasts on looks not brains → the RIVALS get a head start. Give each rival
-            # INFL_BEHIND tokens of their OWN start-region signature (a USEFUL leg-up they can spend on
-            # a local vendor) — a flat common (K) head start was inert (K is low-value), so this is the
-            # real teeth. Equivalent to "the influencer starts behind."
-            infl = chars.index("influencer")
-            for p in range(n_players):
-                if p != infl:
-                    players[p]["larder"][players[p]["pos"]] += INFL_BEHIND
 
         return {
             "n": n_players, "slots": slots,
@@ -502,10 +507,12 @@ class TravelAgentsGame:
             "mrow": mrow, "mreserve": mreserve, "mdraw": mdraw,
             "players": players, "turn": 0, "cur": 0,
             "end_turn": None, "end_cause": None, "done": False,
+            # milestones (Rave Reviews) — table-wide, one-time
+            "ms7_by": None, "ms14_by": None,
             # diagnostics
             "food_wins": 0, "drink_wins": 0, "contested_wins": 0,
             "star_placed": 0, "star_wins": {p: 0 for p in range(n_players)},
-            "max_buzz_on_vendor": 0,
+            "max_buzz_on_vendor": 0, "max_committed": 0,
             "claim_by_region": {r: 0 for r in REGIONS},
             "src_by_region": {r: 0 for r in REGIONS}, "src_common": 0,
             "travels": 0, "visits": 0, "cstores": 0, "promotes": 0, "inter_moves": 0,
@@ -513,7 +520,13 @@ class TravelAgentsGame:
             "legal_counts": [], "forced_turns": 0,
             "events_fired": 0, "scope_fired": {"self": 0, "region": 0, "neigh": 0},
             "cs_rival_hits": 0, "takethat_hits": 0, "pokes": 0,
-            "claims": 0, "empty_draws": 0,
+            "claims": 0, "empty_draws": 0, "passes": 0,
+            # --- REACH economy diagnostics ---
+            "reach_blocked": 0,                # times a bot wanted to Promote but the cap forbade it
+            "reach_gain_travel": 0, "reach_gain_event": 0, "reach_gain_ms": 0,
+            "reach_loss_grab": 0, "reach_loss_event": 0, "reach_forced_return": 0,
+            "greedy_visit": 0, "greedy_cs": 0,
+            "reach_zero_turns": 0, "reach_at_dusk": [], "reach_samples": [],
         }
 
     # -------- harness protocol --------
@@ -539,6 +552,9 @@ class TravelAgentsGame:
     def _present(self, s, p, vid):
         return s["players"][p]["pos"] == VENDORS[vid]["region"]
 
+    def _committed(self, s, p):
+        return sum(b[p] for b in s["buzz"].values())
+
     # -------- cost / affordability --------
     def _pay_plan(self, s, p, vid):
         pl = s["players"][p]
@@ -549,18 +565,18 @@ class TravelAgentsGame:
                 pay[COMMON] = c                          # common carries no icon → never discounted
             else:
                 pay[r] = max(0, c - pl["icons"].get(r, 0))
-        w = pl["wild"]
-        regs = [r for r in pay if r != COMMON]
-        while w > 0 and any(pay[r] > 0 for r in regs):
-            r = max(regs, key=lambda k: pay[k])
-            if pay[r] <= 0:
-                break
-            pay[r] -= 1; w -= 1
+        # 里長伯 Old Favours: first vendor courted in each of the first two regions costs 1 fewer
         if pl["char"] == "councillor" and not v["is_drink"] \
                 and v["region"] not in pl["councillor_regions"] and len(pl["councillor_regions"]) < 2:
             for r in sorted(pay, key=lambda k: -pay[k]):
                 if pay[r] > 0:
                     pay[r] -= 1; break
+        # milestone-14 boon: your NEXT Bribe costs 1 less ingredient (one-shot)
+        if pl["bribe_discount"] > 0:
+            for r in sorted(pay, key=lambda k: -pay[k]):
+                if pay[r] > 0:
+                    pay[r] -= 1; break
+        # 大哥 tab flaw (only if a "tab"/"nocontest" variant is being probed; v6.3 lock = no flaw)
         if pl["char"] == "dage" and DAGE_FLAW in ("tab", "nocontest"):
             tgt = COMMON if v["is_drink"] else v["region"]
             pay[tgt] = pay.get(tgt, 0) + 1
@@ -582,7 +598,7 @@ class TravelAgentsGame:
         if lead < self._margin_for(pl):
             return False
         if pl["char"] == "dage" and DAGE_FLAW == "nocontest" and rival > 0:
-            return False                                 # the "real brake": no contested wins at a tie
+            return False
         for r, c in self._pay_plan(s, p, vid).items():
             if pl["larder"].get(r, 0) < c:
                 return False
@@ -594,18 +610,27 @@ class TravelAgentsGame:
             y = 1
         return y
 
+    def _promote_ok(self, s, p, vid):
+        """Reach cap: committed Buzz + this Promote's Buzz must stay ≤ Reach."""
+        if s["supply"] <= 0 or not self._present(s, p, vid):
+            return False
+        pl = s["players"][p]
+        y = min(self._promote_yield(pl), s["supply"])
+        return self._committed(s, p) + y <= pl["reach"]
+
     # -------- legal actions --------
     def legal_actions(self, s, p):
         pl = s["players"][p]
+        if pl["skip_next"]:                                  # 網紅 misses this (its first NIGHT) turn
+            return [("pass",)]
         acts = []
         board = self._board(s)
         for vid in board:
             if self._can_bribe(s, p, vid):
                 acts.append(("bribe", vid))
-        if s["supply"] > 0:
-            for vid in board:
-                if self._present(s, p, vid):
-                    acts.append(("promote", vid))
+        for vid in board:
+            if self._promote_ok(s, p, vid):
+                acts.append(("promote", vid))
         acts.append(("visit",))
         for r in REGIONS:
             acts.append(("cstore", r))
@@ -624,8 +649,14 @@ class TravelAgentsGame:
         s["legal_counts"].append(len(legal))
         if len(legal) <= 1:
             s["forced_turns"] += 1
+        if pl["reach"] <= 0:
+            s["reach_zero_turns"] += 1
+        s["reach_samples"].append(pl["reach"])
         kind = act[0]
-        if kind == "bribe":
+        if kind == "pass":
+            pl["skip_next"] = False
+            s["passes"] += 1
+        elif kind == "bribe":
             self._do_bribe(s, p, act[1], rng)
         elif kind == "promote":
             self._do_promote(s, p, act[1])
@@ -646,28 +677,95 @@ class TravelAgentsGame:
         if s["end_turn"] is None and s["turn"] >= STALL_CAP * s["n"]:
             self._trigger_end(s, "stall")
         if s["end_turn"] is not None and s["turn"] >= s["end_turn"]:
+            self._finalize(s)
             s["done"] = True
         if s["turn"] > 8000:
+            self._finalize(s)
             s["done"] = True
         return s
+
+    # -------- REACH helpers --------
+    def _gain_reach(self, s, p, amt, kind):
+        pl = s["players"][p]
+        before = pl["reach"]
+        pl["reach"] = min(REACH_TOP, pl["reach"] + amt)
+        got = pl["reach"] - before
+        s[f"reach_gain_{kind}"] += got
+
+    def _lose_reach(self, s, p, amt, kind):
+        """Forced/voluntary Reach loss. Floors at 0; if committed > Reach, return Buzz to supply."""
+        pl = s["players"][p]
+        before = pl["reach"]
+        pl["reach"] = max(0, pl["reach"] - amt)
+        lost = before - pl["reach"]
+        s[f"reach_loss_{kind}"] += lost
+        # enforce the cap invariant: pull Buzz back off the board (bot's choice) until committed ≤ Reach
+        while self._committed(s, p) > pl["reach"]:
+            cands = [vid for vid, b in s["buzz"].items() if b[p] > 0]
+            if not cands:
+                break
+            # let a fizzle happen where you're LOSING the fight (least useful), tie-break least own buzz
+            def _key(vid):
+                lead, _ = self._buzz_lead(s, p, vid)
+                return (lead, s["buzz"][vid][p])
+            vid = min(cands, key=_key)
+            s["buzz"][vid][p] -= 1
+            s["supply"] += 1
+            s["reach_forced_return"] += 1
+
+    def _greedy_grab_ok(self, s, p):
+        """The voluntary Greedy Grab is legal only if it wouldn't drop Reach below committed Buzz, and
+        the bot only takes it with comfortable headroom (never starves its own fight)."""
+        if GRAB_MODE == "off":
+            return False
+        pl = s["players"][p]
+        headroom = pl["reach"] - self._committed(s, p)
+        need = 1 if GRAB_MODE == "aggressive" else GRAB_HEADROOM
+        if pl["reach"] - 1 < self._committed(s, p):          # would breach the cap → illegal
+            return False
+        if headroom < need:
+            return False
+        if sum(pl["larder"].values()) >= LARDER_CAP:         # nowhere to put the extra
+            return False
+        return self._hungry(s, p)
+
+    def _hungry(self, s, p):
+        """Is there a face-up food vendor this player is currently short of ingredients for?"""
+        pl = s["players"][p]
+        for vid in self._board(s):
+            v = VENDORS[vid]
+            if v["is_drink"]:
+                continue
+            pay = self._pay_plan(s, p, vid)
+            if any(pl["larder"].get(r, 0) < c for r, c in pay.items()):
+                return True
+        return False
 
     def _do_promote(self, s, p, vid):
         pl = s["players"][p]
         y = min(self._promote_yield(pl), s["supply"])
+        # clamp to the Reach cap (defensive; legal_actions already gates)
+        y = min(y, pl["reach"] - self._committed(s, p))
+        if y <= 0:
+            return
         s["supply"] -= y
         s["buzz"][vid][p] += y
         s["promotes"] += 1
         s["max_buzz_on_vendor"] = max(s["max_buzz_on_vendor"], max(s["buzz"][vid]))
+        s["max_committed"] = max(s["max_committed"], self._committed(s, p))
 
     def _do_claim(self, s, p):
         pl = s["players"][p]
         if not s["mrow"]:
             return
-        key = max(s["mrow"], key=lambda k: _ticket_keep_score(pl["won"], k, pl["prefs"]))
+        # prefer a ticket we can actually finish in this phase's window (competence fix)
+        reachable = [k for k in s["mrow"] if _reachable(s, p, k)]
+        pool = reachable if reachable else s["mrow"]
+        key = max(pool, key=lambda k: _ticket_keep_score(pl["won"], k, pl["prefs"]))
         s["mrow"].remove(key)
         pl["tickets"].append(key)
         s["claims"] += 1
-        if s["mreserve"]:                                # refill the face-up row
+        if s["mreserve"]:
             s["mrow"].append(s["mreserve"].pop(0))
 
     def _do_bribe(self, s, p, vid, rng):
@@ -676,27 +774,28 @@ class TravelAgentsGame:
         for r, c in self._pay_plan(s, p, vid).items():
             pl["larder"][r] -= c
         pl["larder"] = +pl["larder"]
+        if pl["bribe_discount"] > 0:
+            pl["bribe_discount"] -= 1                        # consume the milestone-14 one-shot
         _, rival_buzz = self._buzz_lead(s, p, vid)
         contested = rival_buzz > 0
         starred = vid in s["star"]
-        prestige = v["prestige"] + (STAR_BONUS_P if starred else 0)
-        rep = v["rep"] + (STAR_BONUS_R if starred else 0) + pl["rep_per_court_bonus"]
-        pl["prestige"] += prestige
-        pl["rep"] = min(12, pl["rep"] + rep)
+        bookings = v["bookings"] + (STAR_BONUS_P if starred else 0)
+        pl["bookings"] += bookings
         pl["won"].append({
             "id": vid, "region": v["region"], "is_drink": v["is_drink"], "phase": v["phase"],
-            "prestige": prestige, "total_cost": v["total_cost"], "contested": contested,
+            "bookings": bookings, "total_cost": v["total_cost"], "contested": contested,
             "starred": starred, "act_won": s["act"],
             "final_round": s["end_turn"] is not None,
         })
-        if not v["is_drink"]:                            # food → discount icon + perk (drinks carry none)
-            pl["icons"][v["region"]] += 1
-            self._apply_perk(pl, v)
+        if not v["is_drink"]:                                # food → discount icon (drinks carry none)
+            if v["icon"]:
+                pl["icons"][v["region"]] += 1
             if pl["char"] == "councillor" and v["region"] not in pl["councillor_regions"] \
                     and len(pl["councillor_regions"]) < 2:
                 pl["councillor_regions"].add(v["region"])
         if starred:
             s["star"].discard(vid); s["star_wins"][p] += 1
+        # winning clears YOUR Buzz off it → frees your Reach cap. Rivals' Buzz on it also returns.
         s["supply"] += sum(s["buzz"][vid]); s["buzz"][vid] = [0] * s["n"]
         s["claim_by_region"][v["region"]] += 1
         if v["is_drink"]:
@@ -707,17 +806,37 @@ class TravelAgentsGame:
             s["contested_wins"] += 1
         if v["phase"] == 2 and s["first_night_win_turn"] is None:
             s["first_night_win_turn"] = s["turn"]
+        self._check_milestones(s, p)
         self._remove_and_refill(s, v["region"], vid)
         self._on_claim_clock(s, p)
 
-    def _apply_perk(self, pl, v):
-        perk = v["perk"]
-        if perk == "double_icon":
-            pl["icons"][v["region"]] += 1
-        elif perk == "wild":
-            pl["wild"] += 1
-        elif perk == "rep_plus2":
-            pl["rep_per_court_bonus"] += 2
+    def _check_milestones(self, s, p):
+        """Rave Reviews — first player to cross Bookings 7 / 14 gets the one-time boon."""
+        pl = s["players"][p]
+        if s["ms7_by"] is None and pl["bookings"] >= 7:
+            s["ms7_by"] = p
+            self._gain_reach(s, p, 1, "ms")                  # Mark 7 → +1 Reach
+        if s["ms14_by"] is None and pl["bookings"] >= 14:
+            s["ms14_by"] = p
+            # Mark 14 → take 1 ingredient of choice + next Bribe costs 1 less
+            tok = self._most_useful_token(s, p)
+            pl["larder"][tok] += 1
+            pl["bribe_discount"] += 1
+
+    def _most_useful_token(self, s, p):
+        pl = s["players"][p]
+        need = Counter()
+        for vid in self._board(s):
+            v = VENDORS[vid]
+            if v["is_drink"]:
+                continue
+            for r, c in self._pay_plan(s, p, vid).items():
+                short = c - pl["larder"].get(r, 0)
+                if short > 0:
+                    need[r] += short
+        if need:
+            return need.most_common(1)[0][0]
+        return pl["pos"] if pl["pos"] in REGIONS else COMMON
 
     def _remove_and_refill(self, s, region, vid):
         up = s["faceup"][region]
@@ -729,9 +848,8 @@ class TravelAgentsGame:
             up.append(nv)
             s["buzz"].setdefault(nv, [0] * s["n"])
 
-    # -------- the clock (mission-driven or vendor-claims) --------
+    # -------- the clock (vendor-claims default) --------
     def _on_claim_clock(self, s, p):
-        # a vendor claim always counts the vendor-claim clock; and (re)checks mission completions
         s["vendor_claims"] += 1
         self._check_mission_completions(s, p)
         if s["clock_mode"] == "vendor":
@@ -739,7 +857,6 @@ class TravelAgentsGame:
                 self._dusk(s)
             if s["vendor_claims"] >= s["v_end"]:
                 self._trigger_end(s, "lasttrain")
-        # backstops (both modes): day decks island-wide empty → dusk; night decks empty → end
         if s["act"] == 1 and self._all_day_decks_dry(s) and s["end_turn"] is None:
             self._dusk(s)
         if s["act"] == 2 and self._all_night_decks_dry(s) and s["end_turn"] is None:
@@ -770,35 +887,53 @@ class TravelAgentsGame:
             return
         s["act"] = 2
         s["dusk_turn"] = s["turn"]
-        # sweep the day layer island-wide: unwon day vendors gone, day ingredient pools cleared
+        # v6.3 Change 4: JUDGE all held DAY tickets into the win/lose piles NOW (frozen at dusk).
+        # (TA_DAY_JUDGE="end" keeps them held to game end — the v6.2 behaviour — for the A/B diagnosis.)
+        for p in range(s["n"]):
+            pl = s["players"][p]
+            keep = []
+            for key in pl["tickets"]:
+                ph = TICKETS[key][1]
+                is_day = (ph == "d" or key == "g_travel3")
+                if is_day and DAY_JUDGE == "dusk":           # DAY pool (incl. the DAY 遍地開花 copy)
+                    sc = _judge_ticket(key, pl["won"])
+                    pl["day_ticket_score"] += sc
+                    if sc >= 0 and _mdone(key, pl["won"]):
+                        pl["day_win"] += 1
+                    else:
+                        pl["day_lose"] += 1
+                else:
+                    keep.append(key)
+            pl["tickets"] = keep
+            s["reach_at_dusk"].append(pl["reach"])
+            # 網紅 "Late to the Party": miss the FIRST turn of the NIGHT phase
+            if pl["char"] == "influencer" and INFL_FLAW == "lateparty":
+                pl["skip_next"] = True
+        # sweep the day layer island-wide: swap in night vendor decks + fresh night ingredient pools
         for r in REGIONS:
             for vid in list(s["faceup"][r]):
                 s["supply"] += sum(s["buzz"].get(vid, [0] * s["n"]))
                 s["buzz"][vid] = [0] * s["n"]
                 s["star"].discard(vid)
-            # swap in the NIGHT vendor deck + reveal
-            nd = _region_deck(r, 2); import_rng = None
+            nd = _region_deck(r, 2)
             self._rng_shuffle(s, nd)
             up = [nd.pop() for _ in range(min(s["slots"][r], len(nd)))]
             s["vdeck"][r] = nd; s["faceup"][r] = up
             for vid in up:
                 s["buzz"].setdefault(vid, [0] * s["n"])
-            # swap in fresh NIGHT ingredient pools (day discards clear with the day layer)
             pool = Counter({r: SIG_SUPPLY})
             if r in COMMON_REGIONS:
                 pool[COMMON] += K_SUPPLY
             s["ing_pool"][r] = pool
             s["ing_discard"][r] = Counter()
-        # the ticket pool switches to NIGHT: discard the day supply, draw a fresh night row
+        # the ticket row switches to the NIGHT pool
         rng = s.get("_rng")
-        night_pool = NIGHT_TICKETS + GENERAL_TICKETS
         if rng is not None:
-            drawn = rng.sample(night_pool, min(s["mdraw"], len(night_pool)))
+            drawn = rng.sample(NIGHT_POOL, min(s["mdraw"], len(NIGHT_POOL)))
         else:
-            drawn = night_pool[:s["mdraw"]]
+            drawn = NIGHT_POOL[:s["mdraw"]]
         s["mrow"] = drawn[:MROW]
         s["mreserve"] = drawn[MROW:]
-        # night sprint: shorten the night half (probe #7)
         if NIGHT_SPRINT > 0:
             if s["clock_mode"] == "mission":
                 s["m_end"] = max(s["completions"] + 1, s["m_end"] - NIGHT_SPRINT)
@@ -806,7 +941,6 @@ class TravelAgentsGame:
                 s["v_end"] = max(s["vendor_claims"] + 1, s["v_end"] - NIGHT_SPRINT)
 
     def _rng_shuffle(self, s, lst):
-        # the harness rng is threaded via step(); dusk has no rng arg, so use a stashed one
         rng = s.get("_rng")
         if rng is not None:
             rng.shuffle(lst)
@@ -818,33 +952,41 @@ class TravelAgentsGame:
         s["last_turn"] = s["turn"]
         n = s["n"]
         done = s["turn"] + 1
-        s["end_turn"] = ((done + n - 1) // n) * n + n    # finish this round + one more full round
+        s["end_turn"] = ((done + n - 1) // n) * n + n
 
-    # -------- events (fire by scope, resolved relative to the drawn region) --------
+    def _finalize(self, s):
+        """At the last train: judge any still-held (NIGHT) tickets into the win/lose piles."""
+        if s.get("_finalized"):
+            return
+        s["_finalized"] = True
+        for p in range(s["n"]):
+            pl = s["players"][p]
+            night = 0
+            for key in pl["tickets"]:
+                night += _judge_ticket(key, pl["won"])
+            pl["night_ticket_score"] = night
+
+    # -------- events --------
     def _event_frac(self, s):
         return DAY_EVENT_FRAC if s["act"] == 1 else NIGHT_EVENT_FRAC
 
     def _draw_market(self, s, r, rng):
-        """One market draw from region r: an event (regenerated) or a conserved token. Returns
-        ("ev", ...) for an event, a token string ("N"/"C"/.../"K") for an ingredient, or None (dry)."""
         if rng.random() < self._event_frac(s):
             kind = "hazard" if rng.random() < EVENT_HAZARD_FRAC else "boon"
             return _make_event(kind, rng)
         pool = s["ing_pool"][r]
-        if sum(pool.values()) == 0:                      # deck dry → reshuffle the discard back in
+        if sum(pool.values()) == 0:
             pool += s["ing_discard"][r]; s["ing_discard"][r] = Counter()
         if sum(pool.values()) == 0:
             s["empty_draws"] += 1
-            return None                                  # genuinely nothing here (temporary denial)
+            return None
         toks = list(pool.elements())
         tok = rng.choice(toks)
         pool[tok] -= 1; pool = +pool; s["ing_pool"][r] = pool
         return tok
 
     def _return_token(self, s, tok):
-        """A KEPT token is returned to circulation only via the over-cap discard (renewable). An UNKEPT
-        card from a Visit flip goes back to its region pool immediately (you didn't take it)."""
-        home = tok if tok != COMMON else "C"             # common recycles to a common region
+        home = tok if tok != COMMON else "C"
         s["ing_pool"][home][tok] += 1
         s["ing_pool"][home] = +s["ing_pool"][home]
 
@@ -860,25 +1002,35 @@ class TravelAgentsGame:
         _, kind, scope, sub = ev
         s["events_fired"] += 1
         s["scope_fired"][scope] += 1
-        targets = self._event_targets(s, actor, drawn_region, scope)
-        penalty = 0
         if kind == "boon" and sub == "star":
             self._place_star(s)
             return 0
+        targets = self._event_targets(s, actor, drawn_region, scope)
+        penalty = 0
         for t in targets:
             if kind == "hazard":
-                if during_visit and t == actor:
-                    penalty += 1
-                else:
-                    s["players"][t]["tempo_tax"] += 1
-                if t != actor:
-                    s["takethat_hits"] += 1
-                    if origin == "cstore":
-                        s["cs_rival_hits"] += 1
-            else:                                        # boon ingredient windfall (the region's signature)
-                tok = drawn_region if drawn_region in REGIONS else COMMON
-                s["players"][t]["larder"][tok] += 1
-                s["src_by_region"][drawn_region] += 1
+                if sub == "reach":
+                    self._lose_reach(s, t, 1, "event")       # 負評 / 出包 — a −1 Reach ding
+                    if t != actor:
+                        s["takethat_hits"] += 1
+                        if origin == "cstore":
+                            s["cs_rival_hits"] += 1
+                else:                                        # tempo tax
+                    if during_visit and t == actor:
+                        penalty += 1
+                    else:
+                        s["players"][t]["tempo_tax"] += 1
+                    if t != actor:
+                        s["takethat_hits"] += 1
+                        if origin == "cstore":
+                            s["cs_rival_hits"] += 1
+            else:                                            # boon
+                if sub == "reach":
+                    self._gain_reach(s, t, 1, "event")       # "word spreads" — +1 Reach
+                else:                                        # ingredient windfall (the region's signature)
+                    tok = drawn_region if drawn_region in REGIONS else COMMON
+                    s["players"][t]["larder"][tok] += 1
+                    s["src_by_region"][drawn_region] += 1
         return penalty
 
     def _apply_tempo_tax(self, pl, natural_keep):
@@ -891,7 +1043,7 @@ class TravelAgentsGame:
         cand = [vid for r in REGIONS for vid in s["faceup"][r] if vid not in s["star"]]
         if not cand:
             return
-        tgt = min(cand, key=lambda vid: VENDORS[vid]["prestige"])
+        tgt = min(cand, key=lambda vid: VENDORS[vid]["bookings"])
         s["star"].add(tgt); s["star_placed"] += 1
 
     # -------- sourcing --------
@@ -924,6 +1076,11 @@ class TravelAgentsGame:
             pl["next_visit_extra_hazard"] += actor_haz
         keep = max(0, keep - haz_hits)
         keep = max(0, self._apply_tempo_tax(pl, keep))
+        # v6.3 Greedy Grab (Visit touchpoint): keep +1 more for −1 Reach, if affordable & useful
+        if GRAB_MODE in ("visit", "both", "aggressive") and len(toks) > keep and self._greedy_grab_ok(s, p):
+            keep += 1
+            self._lose_reach(s, p, 1, "grab")
+            s["greedy_visit"] += 1
         kept = toks[:keep]
         for c in kept:
             pl["larder"][c] += 1
@@ -931,13 +1088,14 @@ class TravelAgentsGame:
                 s["src_common"] += 1
             else:
                 s["src_by_region"][c] += 1
-        for c in toks[keep:]:                            # unkept flips return to the region pool
+        for c in toks[keep:]:
             self._return_token(s, c)
 
     def _do_cstore(self, s, p, r, rng):
         pl = s["players"][p]
         s["cstores"] += 1
         c = self._draw_market(s, r, rng)
+        grabbed = False
         if isinstance(c, str):
             got = self._apply_tempo_tax(pl, 1)
             if got > 0:
@@ -946,10 +1104,24 @@ class TravelAgentsGame:
                     s["src_common"] += 1
                 else:
                     s["src_by_region"][c] += 1
+                grabbed = True
             else:
                 self._return_token(s, c)
         elif isinstance(c, tuple):
             self._fire_event(s, p, r, c, rng, during_visit=False, origin="cstore")
+        # v6.3 Greedy Grab (Convenience Store touchpoint): take the NEXT card too for −1 Reach
+        if grabbed and GRAB_MODE in ("both", "aggressive") and self._greedy_grab_ok(s, p):
+            c2 = self._draw_market(s, r, rng)
+            if isinstance(c2, str):
+                pl["larder"][c2] += 1
+                if c2 == COMMON:
+                    s["src_common"] += 1
+                else:
+                    s["src_by_region"][c2] += 1
+                self._lose_reach(s, p, 1, "grab")
+                s["greedy_cs"] += 1
+            elif isinstance(c2, tuple):
+                self._fire_event(s, p, r, c2, rng, during_visit=False, origin="cstore")
 
     def _do_travel(self, s, p, dest, rng):
         pl = s["players"][p]
@@ -957,11 +1129,12 @@ class TravelAgentsGame:
         pl["pos"] = dest
         s["travels"] += 1
         s["inter_moves"] += 1
+        self._gain_reach(s, p, REACH_TRAVEL, "travel")       # v6.3: Travel is the engine's fuel line
         draw_region = src if pl["char"] == "office" else dest
         n_draw = 2 if (pl["char"] == "office" and OFFICE_BUFF == "travel2") else 1
         for _ in range(n_draw):
             c = self._draw_market(s, draw_region, rng)
-            if isinstance(c, str):                       # an event on a Travel fly-by whiffs (no fire)
+            if isinstance(c, str):                           # an event on a Travel fly-by whiffs (no fire)
                 got = self._apply_tempo_tax(pl, 1)
                 if got > 0:
                     pl["larder"][c] += 1
@@ -980,17 +1153,27 @@ class TravelAgentsGame:
             tok = max((k for k in pl["larder"] if pl["larder"][k] > 0),
                       key=lambda k: pl["larder"][k])
             pl["larder"][tok] -= 1
-            # renewable: the excess returns to that ingredient's region market discard
             home = tok if tok != COMMON else "C"
             s["ing_discard"][home][tok] += 1
         pl["larder"] = +pl["larder"]
 
     # -------- scoring --------
+    def _ticket_score(self, pl):
+        return pl.get("day_ticket_score", 0) + pl.get("night_ticket_score", 0)
+
     def scores(self, s):
+        if not s.get("_finalized"):
+            self._finalize(s)
         out = {}
         for p in range(s["n"]):
             pl = s["players"][p]
-            out[p] = pl["prestige"] + _rep_end_vp(pl["rep"]) + _ticket_final_score(pl)
+            base = pl["bookings"] + self._ticket_score(pl)
+            # v6.3 tiebreak folded as a tiny fractional term: most vendors → most regions →
+            # fewest lose-pile tickets (so the harness's max() picks the right winner).
+            st = _wstat(pl["won"])
+            lose = pl.get("day_lose", 0) + sum(1 for k in pl["tickets"] if not _mdone(k, pl["won"]))
+            tie = 1e-3 * st["n"] + 1e-4 * len(st["regions"]) - 1e-5 * lose
+            out[p] = base + tie
         return out
 
     def metrics(self, s):
@@ -1006,6 +1189,9 @@ class TravelAgentsGame:
         src = s["src_by_region"]; src_tot = sum(src.values()) + s["src_common"]
         claim = s["claim_by_region"]; claim_tot = sum(claim.values()) or 1
         ev = s["events_fired"] or 1
+        end_reach = [s["players"][p]["reach"] for p in range(s["n"])]
+        ms_both_same = 1.0 if (s["ms7_by"] is not None and s["ms7_by"] == s["ms14_by"]) else 0.0
+        ms_both_fired = 1.0 if (s["ms7_by"] is not None and s["ms14_by"] is not None) else 0.0
 
         def csh(r): return claim[r] / claim_tot
         def ssh(x): return (x / src_tot) if src_tot else 0.0
@@ -1018,6 +1204,7 @@ class TravelAgentsGame:
             "contested_wins": float(s["contested_wins"]),
             "contested_frac": float(s["contested_wins"] / total_wins) if total_wins else 0.0,
             "max_buzz_on_vendor": float(s["max_buzz_on_vendor"]),
+            "max_committed": float(s["max_committed"]),
             "buzz_supply_min": float(s["supply_min"]),
             "star_placed": float(s["star_placed"]),
             "star_wins_total": float(sum(s["star_wins"].values())),
@@ -1029,6 +1216,8 @@ class TravelAgentsGame:
             "end_by_stall": 1.0 if s["end_cause"] == "stall" else 0.0,
             "travels_per_game": float(s["travels"]), "inter_moves": float(s["inter_moves"]),
             "visits_per_game": float(s["visits"]), "cstores_per_game": float(s["cstores"]),
+            "promotes_per_game": float(s["promotes"]),
+            "passes_per_game": float(s["passes"]),
             "claim_share_N": csh("N"), "claim_share_C": csh("C"),
             "claim_share_S": csh("S"), "claim_share_E": csh("E"),
             "src_share_N": ssh(src["N"]), "src_share_C": ssh(src["C"]),
@@ -1042,22 +1231,40 @@ class TravelAgentsGame:
             "scope_neigh_frac": float(s["scope_fired"]["neigh"] / ev),
             "takethat_hits_per_game": float(s["takethat_hits"]),
             "cs_rival_hits_per_game": float(s["cs_rival_hits"]),
-            "pokes_per_game": float(s["pokes"]),
             "empty_draws_per_game": float(s["empty_draws"]),
             "claims_per_game": float(s["claims"]),
-            "completions_per_game": float(s["completions"]),
+            # --- REACH economy ---
+            "reach_start": float(REACH_START),
+            "reach_blocked_per_game": float(s["reach_blocked"]),
+            "reach_gain_travel": float(s["reach_gain_travel"]),
+            "reach_gain_event": float(s["reach_gain_event"]),
+            "reach_gain_ms": float(s["reach_gain_ms"]),
+            "reach_loss_grab": float(s["reach_loss_grab"]),
+            "reach_loss_event": float(s["reach_loss_event"]),
+            "reach_forced_return": float(s["reach_forced_return"]),
+            "greedy_visit_per_game": float(s["greedy_visit"]),
+            "greedy_cs_per_game": float(s["greedy_cs"]),
+            "greedy_grab_per_game": float(s["greedy_visit"] + s["greedy_cs"]),
+            "reach_zero_turns": float(s["reach_zero_turns"]),
+            "reach_mean_all": float(statistics.mean(s["reach_samples"])) if s["reach_samples"] else 0.0,
+            "reach_at_dusk_mean": float(statistics.mean(s["reach_at_dusk"])) if s["reach_at_dusk"] else 0.0,
+            "reach_end_mean": float(statistics.mean(end_reach)),
+            # --- milestones (Rave Reviews) ---
+            "ms7_fired": 1.0 if s["ms7_by"] is not None else 0.0,
+            "ms14_fired": 1.0 if s["ms14_by"] is not None else 0.0,
+            "ms_both_fired": ms_both_fired,
+            "ms_both_same_player": ms_both_same,
+            "ms_both_same_given_both": (ms_both_same if ms_both_fired else 0.0),
+            # --- score breakdown (winner) ---
+            "win_bookings": float(wp["bookings"]),
+            "win_ticket_score": float(self._ticket_score(wp)),
+            "win_total": float(int(round(best))),
             "tickets_held_winner": float(len(wp["tickets"])),
-            "tickets_done_winner": float(sum(1 for k in wp["tickets"] if _mdone(k, wp["won"]))),
-            "ticket_net_winner": float(_ticket_final_score(wp)),
-            "win_prestige": float(wp["prestige"]),
-            "win_rep_vp": float(_rep_end_vp(wp["rep"])),
-            "win_ticket_score": float(_ticket_final_score(wp)),
-            "win_total": float(best),
         }
 
 
 GAME = TravelAgentsGame()
-TITLE = "Travel Agents: Taiwan (v6.2 — region vendor markets + a mission clock)"
+TITLE = "Travel Agents: Taiwan (v6.3 — Reach gates Buzz + milestones)"
 
 
 # ==================================================================================================
@@ -1085,25 +1292,17 @@ def _buzz_short_real(s, p, vid, pl):
 
 
 def _ramp_value(pl, v, w):
-    if v["perk"] in ("wild", "double_icon"):
-        return w * 1.3
-    if v["perk"] == "icon":
-        held = pl["icons"].get(v["region"], 0)
-        return w * (0.5 + 0.4 * held)
-    return 0.0
-
-
-def _rep_marginal(pl, v):
-    now = _rep_end_vp(pl["rep"])
-    then = _rep_end_vp(min(12, pl["rep"] + v["rep"] + pl["rep_per_court_bonus"]))
-    return 0.5 * (v["rep"] + pl["rep_per_court_bonus"]) + (then - now)
+    if v["is_drink"] or not v["icon"]:
+        return 0.0
+    held = pl["icons"].get(v["region"], 0)
+    return w * (0.5 + 0.4 * held)
 
 
 def _tickets_marginal(s, p, vid):
     pl = s["players"][p]
     v = VENDORS[vid]
     cand = {"id": v["id"], "region": v["region"], "is_drink": v["is_drink"], "phase": v["phase"],
-            "prestige": v["prestige"], "total_cost": v["total_cost"],
+            "bookings": v["bookings"], "total_cost": v["total_cost"],
             "contested": False, "starred": vid in s["star"], "act_won": s["act"],
             "final_round": s["end_turn"] is not None}
     total = 0.0
@@ -1120,14 +1319,14 @@ def _tickets_marginal(s, p, vid):
 def _road_value(s, p, vid, prefs):
     pl = s["players"][p]
     v = VENDORS[vid]
-    prestige = v["prestige"] + (STAR_BONUS_P if vid in s["star"] else 0)
-    core = prestige + _rep_marginal(pl, v)
+    bookings = v["bookings"] + (STAR_BONUS_P if vid in s["star"] else 0)
+    core = bookings
     if not v["is_drink"]:
         core += _ramp_value(pl, v, prefs.get("w_ramp", 1.0))
         core *= prefs.get("w_food", 1.0)
     else:
         core *= prefs.get("w_drink", 1.0)
-    if prefs.get("opportunistic") and (vid in s["star"] or v["prestige"] >= 6):
+    if prefs.get("opportunistic") and (vid in s["star"] or v["bookings"] >= 6):
         core *= 1.3
     return core * prefs.get("w_val", 1.0) + _tickets_marginal(s, p, vid)
 
@@ -1154,8 +1353,6 @@ def _pick_target(s, p, prefs):
             continue
         val = _road_value(s, p, vid, prefs)
         score = val - TEMPO * (_est_actions(s, p, vid) - 1.0)
-        # mild stickiness: a small nudge to finish a vendor you've already committed Buzz to (cuts the
-        # worst target-thrash) — kept light so it doesn't cause fixation on an unwinnable vendor.
         if s["buzz"][vid][p] > 0:
             score += 0.4
         if score > bscore:
@@ -1164,8 +1361,6 @@ def _pick_target(s, p, prefs):
 
 
 def _token_source(s, p, tok, legal, prefs):
-    """Best action to source token `tok`. Signatures: Visit/CS the region that holds it. Common: a
-    common region."""
     pl = s["players"][p]
     if tok == COMMON:
         targets = list(COMMON_REGIONS)
@@ -1173,12 +1368,6 @@ def _token_source(s, p, tok, legal, prefs):
         targets = [tok]
     if pl["pos"] in targets and ("visit",) in legal:
         return ("visit",)
-    for r in targets:
-        if ("cstore", r) in legal and (tok == COMMON or True):
-            # prefer to travel to a signature region and Visit (3× throughput) if it's a signature we
-            # need a lot of; but a single CS grab is fine for a top-up
-            pass
-    # relocate to a token region to Visit it (better yield than remote CS)
     dest = min(targets, key=lambda r: _dist(pl["pos"], r, pl["char"]))
     if pl["pos"] == dest and ("visit",) in legal:
         return ("visit",)
@@ -1199,22 +1388,69 @@ def _poke(s, p, legal):
     return None
 
 
+def _claim_window(s, p):
+    """A player's remaining vendor-claim budget before the CURRENT phase's ticket-judging trigger
+    (DAY tickets judged at dusk, NIGHT at the last train — v6.3 Change 4). Used so the bot doesn't
+    speculatively claim a ticket it can't finish inside its phase window (a competence fix — a human
+    wouldn't claim an un-finishable day ticket at dusk-minus-one)."""
+    if s["clock_mode"] == "vendor":
+        if s["act"] == 1:
+            remaining = max(0, s["v_dusk"] - s["vendor_claims"])
+        else:
+            remaining = max(0, s["v_end"] - s["vendor_claims"])
+    else:
+        remaining = 6
+    return max(1, (remaining + s["n"] - 1) // s["n"])       # my ~fair share of the remaining claims
+
+
+def _reachable(s, p, key):
+    """Can this player plausibly COMPLETE ticket `key` within its phase window (in vendor claims)?"""
+    pl = s["players"][p]
+    d, n = _mprog(key, _wstat(pl["won"]))
+    if d >= n:
+        return True
+    gap = n - d
+    # bookings-count tickets gain ~4 per claim; everything else ~1 progress per claim
+    per_claim = 4.0 if key in ("d_prestige8", "n_prestige14", "g_prestige12") else 1.0
+    needed_claims = (gap + per_claim - 1) // per_claim if per_claim == 1.0 else (gap / per_claim)
+    return needed_claims <= _claim_window(s, p)
+
+
 def _should_claim(s, p, legal, prefs):
     if ("claim",) not in legal or prefs.get("no_tickets"):
         return False
     pl = s["players"][p]
     incomplete = [k for k in pl["tickets"] if not _mdone(k, pl["won"])]
     limit = 3 if prefs.get("speed") else 2
-    # don't claim so late that a fresh ticket can't be finished
     if s["clock_mode"] == "mission":
         room = s["completions"] < s["m_end"] - 1
     else:
         room = s["vendor_claims"] < s["v_end"] - 1
-    return len(incomplete) < limit and room
+    if not (len(incomplete) < limit and room):
+        return False
+    # only claim if the row holds a ticket we can realistically FINISH in this phase's window
+    return any(_reachable(s, p, k) for k in s["mrow"])
+
+
+def _any_travel(s, p, legal, toward=None):
+    """A Travel action — toward a region if given, else any legal hop (used to farm Reach when the cap
+    blocks a Promote the bot wants to make)."""
+    pl = s["players"][p]
+    if toward is not None:
+        hop = _next_hop(pl["pos"], toward, pl["char"])
+        if ("travel", hop) in legal:
+            return ("travel", hop)
+    for a in legal:
+        if a[0] == "travel":
+            return a
+    return None
 
 
 def _plan(s, p, legal, rng, prefs):
     pl = s["players"][p]
+    if legal == [("pass",)]:
+        return ("pass",)
+
     # 1) a bribe that fits the road always progresses
     bribes = [a for a in legal if a[0] == "bribe"
               and not (prefs.get("pure_drinks") and not VENDORS[a[1]]["is_drink"])
@@ -1222,7 +1458,7 @@ def _plan(s, p, legal, rng, prefs):
     if bribes:
         return max(bribes, key=lambda a: _road_value(s, p, a[1], prefs))
 
-    # 2) hoarder overlay: over-source and SIT on a target region's signature to deny
+    # 2) hoarder overlay
     hr = prefs.get("hoard_region")
     if hr and sum(pl["larder"].values()) < LARDER_CAP:
         act = _token_source(s, p, hr, legal, prefs)
@@ -1248,7 +1484,7 @@ def _plan(s, p, legal, rng, prefs):
     margin = GAME._margin_for(pl)
     present = GAME._present(s, p, tgt)
 
-    # 4) get on-site if we're short the local ingredient, else route toward the target
+    # 4) get on-site if short the local ingredient, else route toward the target
     if not present:
         pos = pl["pos"]
         if need.get(pos, 0) > 0 and ("visit",) in legal:
@@ -1268,9 +1504,17 @@ def _plan(s, p, legal, rng, prefs):
         if ("visit",) in legal:
             return ("visit",)
 
-    # 6) win the Buzz fight
-    if lead < margin and present and ("promote", tgt) in legal:
-        return ("promote", tgt)
+    # 6) win the Buzz fight — Reach-cap-aware
+    if lead < margin and present:
+        if ("promote", tgt) in legal:
+            return ("promote", tgt)
+        # the ingredients are ready and we're present, but the Reach cap forbids the Promote →
+        # Travel to build Reach (the intended play: travel is the fight's fuel). Record the block.
+        if s["supply"] > 0 and GAME._committed(s, p) + GAME._promote_yield(pl) > pl["reach"]:
+            s["reach_blocked"] += 1
+            mv = _any_travel(s, p, legal)
+            if mv is not None:
+                return mv
     if lead < margin and not present:
         hop = _next_hop(pl["pos"], eff, pl["char"])
         if ("travel", hop) in legal:
@@ -1298,9 +1542,8 @@ BAL = {"w_val": 1.0, "w_food": 1.0, "w_drink": 1.0, "w_ramp": 1.0, "w_ticket": 1
 OPPORTUNISTIC = {**BAL, "opportunistic": True, "w_ticket": 1.15}
 DISRUPTIVE = {**BAL, "disrupt": True, "w_ticket": 1.1}
 ENDGAME = {**BAL, "speed": True, "w_ticket": 1.2}
-CHARLEAN = {**BAL}                                        # kit-driven; used with a character assigned
-MIXPREFS = {**BAL, "w_drink": 1.1, "w_ticket": 1.15}      # the well-timed mix
-IGNORE_OBJ = {**BAL, "no_tickets": True, "no_drinks": True}  # ignore objectives AND drinks (the control)
+MIXPREFS = {**BAL, "w_drink": 1.1, "w_ticket": 1.15}
+IGNORE_OBJ = {**BAL, "no_tickets": True, "no_drinks": True}
 PURE_DRINKS = {"w_val": 1.0, "w_food": 0.0, "w_drink": 1.0, "w_ramp": 0.0, "pure_drinks": True, "w_ticket": 1.0}
 NO_DRINKS = {**BAL, "no_drinks": True}
 
@@ -1309,16 +1552,18 @@ def s_random(s, p, legal, rng):
     return rng.choice(legal)
 
 
-def s_greedy_prestige(s, p, legal, rng):
+def s_greedy_bookings(s, p, legal, rng):
+    if legal == [("pass",)]:
+        return ("pass",)
     bribes = [a for a in legal if a[0] == "bribe"]
     if bribes:
-        return max(bribes, key=lambda a: VENDORS[a[1]]["prestige"])
+        return max(bribes, key=lambda a: VENDORS[a[1]]["bookings"])
     return _plan(s, p, legal, rng, BAL)
 
 
 STRATEGIES = {
     "random":        s_random,
-    "greedy_prest":  s_greedy_prestige,
+    "greedy_book":   s_greedy_bookings,
     "balanced":      _make(BAL),
     "opportunistic": _make(OPPORTUNISTIC),
     "disruptive":    _make(DISRUPTIVE),
@@ -1330,7 +1575,7 @@ STRATEGIES = {
 }
 
 STRAT_PREFS = {
-    "random": BAL, "greedy_prest": BAL, "balanced": BAL, "opportunistic": OPPORTUNISTIC,
+    "random": BAL, "greedy_book": BAL, "balanced": BAL, "opportunistic": OPPORTUNISTIC,
     "disruptive": DISRUPTIVE, "endgame": ENDGAME, "mix": MIXPREFS, "ignore_obj": IGNORE_OBJ,
     "pure_drinks": PURE_DRINKS, "no_drinks": NO_DRINKS,
 }
@@ -1340,8 +1585,6 @@ STRAT_PREFS = {
 #  A rng-threaded wrapper so dusk() can shuffle the night decks deterministically.
 # ==================================================================================================
 class _Seeded:
-    """Wrap GAME so new_state stashes the match rng into state (dusk needs to shuffle without an rng
-    arg). Also lets the probe runners pass n_players / characters / prefs."""
     def __init__(self, n=2, characters=None, prefs=None):
         self.n, self.characters, self.prefs = n, characters, prefs
 
@@ -1355,7 +1598,7 @@ class _Seeded:
 
 
 # ==================================================================================================
-#  __main__ — the v6.2 probe suite (uses the harness directly, like beacon.py)
+#  __main__ — the v6.3 probe suite
 # ==================================================================================================
 def _run(agents, n=1500, seed=1, n_players=2, characters=None, prefs=None):
     from engine import run_match
@@ -1378,8 +1621,6 @@ def _run(agents, n=1500, seed=1, n_players=2, characters=None, prefs=None):
 
 
 def _versus(sa, sb, n=1500, seed=1):
-    """A's win rate vs B, both seatings averaged, with each side's prefs/capability wired in (the
-    caps-AWARE probe — authoritative over the caps-blind round-robin)."""
     pa, pb = STRAT_PREFS[sa], STRAT_PREFS[sb]
     w0, t0, _, _ = _run({0: STRATEGIES[sa], 1: STRATEGIES[sb]}, n=n, seed=seed, prefs=[pa, pb])
     w1, t1, _, _ = _run({0: STRATEGIES[sb], 1: STRATEGIES[sa]}, n=n, seed=seed + n, prefs=[pb, pa])
@@ -1398,7 +1639,6 @@ def _char_winrate(ch, n=1200, seed=1, prefs=None):
 
 
 def _field_metrics(n=1500, seed=1):
-    """Balanced-mirror game arc + spread metrics (both seatings folded via mirror)."""
     _, _, _, mt = _run({0: STRATEGIES["balanced"], 1: STRATEGIES["balanced"]},
                        n=n, seed=seed, prefs=[BAL, BAL])
     return mt
@@ -1411,117 +1651,102 @@ if __name__ == "__main__":
         sys.path.insert(0, _SIM)
 
     if "--counts" in sys.argv:
-        from engine import per_count
         counts = [2, 3, 4]
         print(f"# {TITLE} — seat balance by player count (self-play: balanced)\n")
+        from engine import seat_balance
         for c in counts:
             g = _Seeded(c)
-            from engine import seat_balance
             r = seat_balance(g, STRATEGIES["balanced"], c, n=800)
-            flag = "⚠ suspect" if r["suspect"] else "✓ balanced"
+            flag = "SUSPECT" if r["suspect"] else "ok"
             wr = "  ".join(f"seat{p}={v*100:.0f}%" for p, v in r["seat_win_rate"].items())
             print(f"  {c}p  {flag}  (fair {r['fair_share']*100:.0f}%)  {wr}  ties={r['tie_rate']*100:.0f}%")
         sys.exit(0)
 
     N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 1200
-    print(f"# {TITLE} — v6.2 probe suite ({N} games/cell)\n")
+    print(f"# {TITLE} — v6.3 probe suite ({N} games/cell)\n")
 
     print("## Game arc (balanced mirror)")
     mt = _field_metrics(n=N)
     print(f"  turns/player {mt['turns_per_player']:.1f}  vendors/player {mt['wins_per_player']:.1f}  "
-          f"winner VP {mt['win_total']:.1f} (P {mt['win_prestige']:.1f}/Rep {mt['win_rep_vp']:.1f}/Tkt {mt['win_ticket_score']:.1f})")
+          f"winner {mt['win_total']:.1f} (Bookings {mt['win_bookings']:.1f} / Tickets {mt['win_ticket_score']:.1f})")
     print(f"  dusk turn {mt['dusk_turn']:.1f}  last-train {mt['last_turn']:.1f}  "
-          f"end: lasttrain {mt['end_by_lasttrain']*100:.0f}% deck {mt['end_by_deck']*100:.0f}% stall {mt['end_by_stall']*100:.0f}%")
+          f"end: LT {mt['end_by_lasttrain']*100:.0f}% deck {mt['end_by_deck']*100:.0f}% stall {mt['end_by_stall']*100:.0f}%")
     print(f"  contested-win frac {mt['contested_frac']*100:.1f}%  max_buzz {mt['max_buzz_on_vendor']:.1f}  "
-          f"drink-win share {mt['drink_win_share']*100:.0f}%  claims/gm {mt['claims_per_game']:.1f} completions/gm {mt['completions_per_game']:.1f}")
+          f"max_committed {mt['max_committed']:.1f}  drink-win share {mt['drink_win_share']*100:.0f}%  "
+          f"claims/gm {mt['claims_per_game']:.1f}")
     print(f"  CLAIM share  N {mt['claim_share_N']*100:.0f}% C {mt['claim_share_C']*100:.0f}% "
           f"S {mt['claim_share_S']*100:.0f}% E {mt['claim_share_E']*100:.0f}%")
     print(f"  SRC   share  N {mt['src_share_N']*100:.0f}% C {mt['src_share_C']*100:.0f}% "
           f"S {mt['src_share_S']*100:.0f}% E {mt['src_share_E']*100:.0f}% K {mt['src_share_common']*100:.0f}%")
-    print(f"  moves/gm {mt['inter_moves']:.1f}  forced_turn_frac {mt['forced_turn_frac']:.3f}  "
-          f"avg_legal {mt['avg_legal_actions']:.1f}  empty_draws/gm {mt['empty_draws_per_game']:.2f}")
+    print(f"  moves/gm {mt['inter_moves']:.1f}  promotes/gm {mt['promotes_per_game']:.1f}  "
+          f"forced_turn_frac {mt['forced_turn_frac']:.3f}  avg_legal {mt['avg_legal_actions']:.1f}")
 
-    print("\n## PROBE 1 — the five playstyles vs each other + naive (win% vs the field)")
-    field = ["balanced", "opportunistic", "disruptive", "endgame", "mix", "no_drinks"]
+    print("\n## REACH economy (probe 1 — does the Buzz fight BREATHE or CHOKE?)")
+    print(f"  reach: start {mt['reach_start']:.0f}  mean(all turns) {mt['reach_mean_all']:.1f}  "
+          f"at dusk {mt['reach_at_dusk_mean']:.1f}  at end {mt['reach_end_mean']:.1f}  "
+          f"turns@0 {mt['reach_zero_turns']:.2f}")
+    print(f"  reach GAIN: travel {mt['reach_gain_travel']:.1f}  event {mt['reach_gain_event']:.1f}  "
+          f"milestone {mt['reach_gain_ms']:.2f}   LOSS: grab {mt['reach_loss_grab']:.1f}  "
+          f"event {mt['reach_loss_event']:.1f}  forced-return {mt['reach_forced_return']:.2f}")
+    print(f"  REACH-BLOCKED promotes/gm {mt['reach_blocked_per_game']:.2f}  "
+          f"(a Promote the bot wanted but the cap forbade → it Travelled to build Reach instead)")
+    print(f"  GREEDY GRABS/gm: visit {mt['greedy_visit_per_game']:.2f}  cstore {mt['greedy_cs_per_game']:.2f}  "
+          f"total {mt['greedy_grab_per_game']:.2f}")
+
+    print("\n## MILESTONES (Rave Reviews — race vs runaway)")
+    print(f"  mark-7 fired {mt['ms7_fired']*100:.0f}%  mark-14 fired {mt['ms14_fired']*100:.0f}%  "
+          f"both fired {mt['ms_both_fired']*100:.0f}%  "
+          f"SAME player took both (given both fired) {mt['ms_both_same_given_both']*100:.0f}%")
+
+    print("\n## PROBE 3 — the five playstyles vs each other + naive (win% vs the field)")
+    field = ["balanced", "opportunistic", "disruptive", "endgame", "mix"]
     for a in field:
         wr = statistics.mean([_versus(a, b, n=N // 2) for b in field if b != a])
-        crush = _versus(a, "random", n=N // 2)
+        crush = _versus(a, "random", n=N // 3)
         print(f"  {a:14} avg vs field {wr*100:5.1f}%   vs random {crush*100:4.0f}%")
+    nd = statistics.mean([_versus("no_drinks", b, n=N // 2) for b in field])
+    print(f"  {'no_drinks':14} avg vs field {nd*100:5.1f}%   (ignore-drinks control — should trail)")
 
-    print("\n## PROBE 2 — mix vs the ignore-objectives/ignore-drinks control; pure-drinks must lose")
-    print(f"  mix        vs ignore_obj   {_versus('mix', 'ignore_obj', n=N)*100:5.1f}%  (want >=50: a mix beats ignoring objectives+drinks)")
-    print(f"  balanced   vs ignore_obj   {_versus('balanced', 'ignore_obj', n=N)*100:5.1f}%")
+    print("\n## PROBE 3b — a MIX beats the ignore-both control; pure-drinks must lose")
+    print(f"  mix         vs ignore_obj  {_versus('mix', 'ignore_obj', n=N)*100:5.1f}%  (want >50)")
+    print(f"  balanced    vs ignore_obj  {_versus('balanced', 'ignore_obj', n=N)*100:5.1f}%")
     print(f"  pure_drinks vs balanced    {_versus('pure_drinks', 'balanced', n=N)*100:5.1f}%  (want clearly <50)")
-    print(f"  pure_drinks vs no_drinks   {_versus('pure_drinks', 'no_drinks', n=N)*100:5.1f}%")
 
-    print("\n## PROBE 8 — character balance (char vs neutral, both seatings) — target 45-55%")
+    print("\n## PROBE 4/5 — character balance (char vs neutral, both seatings) — target 45-55%")
     for ch in ("councillor", "office", "influencer", "dagushi", "dage"):
         wr = _char_winrate(ch, n=N)
-        flag = "OK" if 0.45 <= wr <= 0.55 else "<-- OUT"
+        flag = "ok" if 0.45 <= wr <= 0.55 else "<-- OUT"
         print(f"  {ch:12} {wr*100:5.1f}%  {flag}")
 
-    print("\n## H2 — 大哥 threshold+flaw (dage vs neutral) — resolve to 45-55%")
-    for label, thr, flaw in (("A tie+tab", 0, "tab"), ("B tie+promote1", 0, "promote1"),
-                             ("C lead1+tab", 1, "tab"), ("D lead1+none", 1, "none"),
-                             ("E tie+nocontest", 0, "nocontest")):
+    print("\n## 網紅 — Late-to-the-Party flaw ON vs OFF (does the Reach gate let us retire it?)")
+    for lbl, mode in (("lateparty (locked)", "lateparty"), ("none (flaw retired)", "none")):
+        globals()["INFL_FLAW"] = mode
+        print(f"  {lbl:22} influencer {_char_winrate('influencer', n=N)*100:5.1f}%")
+    globals()["INFL_FLAW"] = "lateparty"
+
+    print("\n## 大哥 — does he drift? (v6.3 lock = D: lead-by-1, no flaw)")
+    for lbl, thr, flaw in (("D lead1+none (lock)", 1, "none"), ("A tie+tab", 0, "tab"),
+                           ("C lead1+tab", 1, "tab"), ("E tie+nocontest", 0, "nocontest")):
         globals()["DAGE_THRESH"] = thr; globals()["DAGE_FLAW"] = flaw
-        print(f"  {label:18} dage {_char_winrate('dage', n=N)*100:5.1f}%")
-    globals()["DAGE_THRESH"] = 0; globals()["DAGE_FLAW"] = "tab"
+        print(f"  {lbl:20} dage {_char_winrate('dage', n=N)*100:5.1f}%")
+    globals()["DAGE_THRESH"] = 1; globals()["DAGE_FLAW"] = "none"
 
-    print("\n## H1 — 大胃王 flaw (should all be ~in band; ship A)")
-    for label, mode in (("A hazards-twice", "twice"), ("B keep-only-2", "keep2"), ("C next-fires", "next")):
-        globals()["H1"] = mode
-        print(f"  {label:16} dagushi {_char_winrate('dagushi', n=N)*100:5.1f}%")
-    globals()["H1"] = "twice"
+    print("\n## PROBE 6 — Greedy Grab modes (usage + net Reach drain)")
+    for mode in ("off", "visit", "both", "aggressive"):
+        globals()["GRAB_MODE"] = mode
+        m = _field_metrics(n=N // 2)
+        print(f"  grab={mode:10} grabs/gm {m['greedy_grab_per_game']:.2f} "
+              f"(V {m['greedy_visit_per_game']:.2f}/CS {m['greedy_cs_per_game']:.2f})  "
+              f"reach end {m['reach_end_mean']:.1f}  blocked/gm {m['reach_blocked_per_game']:.2f}  "
+              f"contested {m['contested_frac']*100:.1f}%")
+    globals()["GRAB_MODE"] = "both"
 
-    print("\n## 媽寶 buff options")
-    for label, mode in (("none (keep-1)", "none"), ("keep2", "keep2"), ("travel2", "travel2")):
-        globals()["OFFICE_BUFF"] = mode
-        print(f"  {label:16} office {_char_winrate('office', n=N)*100:5.1f}%")
-    globals()["OFFICE_BUFF"] = "keep2"
-
-    print("\n## 網紅 nerf — opponents' head-start (INFL_BEHIND) — target 45-55%")
-    for b in (3, 4, 5):
-        globals()["INFL_BEHIND"] = b
-        print(f"  behind={b}  influencer {_char_winrate('influencer', n=N)*100:5.1f}%")
-    globals()["INFL_BEHIND"] = 3
-
-    print("\n## PROBE 5 — CLOCK A/B (mission vs vendor-claims): pacing + length variance")
-    from engine import run_match
-    for mode in ("mission", "vendor"):
-        globals()["CLOCK_MODE"] = mode
-        mt = _field_metrics(n=N)
-        g = _Seeded(2, prefs=[BAL, BAL]); lens = []
-        for i in range(N):
-            _sc, _m = run_match(g, {0: STRATEGIES["balanced"], 1: STRATEGIES["balanced"]}, 5000 + i)
-            lens.append(_m["turns_per_player"])
-        sd = statistics.pstdev(lens) if len(lens) > 1 else 0.0
-        print(f"  {mode:8}  turns/player {mt['turns_per_player']:.1f} (sd {sd:.1f})  vendors/player {mt['wins_per_player']:.1f}  "
-              f"dusk {mt['dusk_turn']:.1f} last {mt['last_turn']:.1f}  end(LT/deck/stall) "
-              f"{mt['end_by_lasttrain']*100:.0f}/{mt['end_by_deck']*100:.0f}/{mt['end_by_stall']*100:.0f}%")
-    globals()["CLOCK_MODE"] = "mission"
-
-    print("\n## PROBE 6 — the −½ penalty A/B (does behaviour differ?)")
-    for mode in ("half", "zero"):
-        globals()["PENALTY"] = mode
-        wr = _versus("mix", "ignore_obj", n=N)
-        mt = _field_metrics(n=N)
-        print(f"  penalty={mode:5}  mix vs ignore_obj {wr*100:5.1f}%  claims/gm {mt['claims_per_game']:.1f}  "
-              f"tkt_done_winner {mt['tickets_done_winner']:.1f}/{mt['tickets_held_winner']:.1f}  winnerVP {mt['win_total']:.1f}")
-    globals()["PENALTY"] = "half"
-
-    print("\n## PROBE 10 — HOARDER (over-source a scarce signature to deny) — should LOSE")
-    print("   (empty_draws/gm = how often a Visit finds the region dry = the denial pressure on a rival)")
-    base_empty = _field_metrics(n=N)["empty_draws_per_game"]
-    print(f"   baseline (no hoarder) empty_draws/gm {base_empty:.2f}")
+    print("\n## PROBE 8 — hoarder (over-source a scarce signature to deny) — should LOSE")
     for hr in ("E", "S"):
         hoard = {**BAL, "hoard_region": hr}
         STRATEGIES["_hoard"] = _make(hoard); STRAT_PREFS["_hoard"] = hoard
-        wr = _versus("_hoard", "balanced", n=N)
-        _, _, _, hm = _run({0: STRATEGIES["_hoard"], 1: STRATEGIES["balanced"]},
-                           n=N, seed=1, prefs=[hoard, BAL])
-        print(f"  hoard {hr}  vs balanced  {wr*100:5.1f}%   empty_draws/gm {hm['empty_draws_per_game']:.2f}"
-              f"   (want <50 = a trap; empty_draws = the temporary denial it buys)")
+        wr = _versus("_hoard", "balanced", n=N // 2)
+        print(f"  hoard {hr}  vs balanced  {wr*100:5.1f}%  (want <50 = a trap)")
     del STRATEGIES["_hoard"]; del STRAT_PREFS["_hoard"]
 
     print("\n## PROBE 11 — MP light seat-balance smoke (per count)")
@@ -1529,6 +1754,6 @@ if __name__ == "__main__":
     for c in (2, 3, 4):
         g = _Seeded(c)
         r = seat_balance(g, STRATEGIES["balanced"], c, n=600)
-        flag = "⚠ suspect" if r["suspect"] else "✓ balanced"
+        flag = "SUSPECT" if r["suspect"] else "ok"
         wr = "  ".join(f"seat{p}={v*100:.0f}%" for p, v in r["seat_win_rate"].items())
         print(f"  {c}p  {flag}  (fair {r['fair_share']*100:.0f}%)  {wr}  ties={r['tie_rate']*100:.0f}%")
