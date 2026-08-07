@@ -1,17 +1,22 @@
 # 🎲 Travel Agents: Taiwan — Game Bible
 
 > The single living source of truth for this game. Every agent reads and updates this. Keep it current.
-> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design — v6.3 SHAPE LOCKED (2026-08-07, CD
-> sign-off on all nine items); BALANCE PENDING a GATED re-sim. `design/v6.2-content-draft.md` remains the
-> last SIM-VALIDATED build until that run.** Next: the CD gives an explicit "go" on the combined re-sim
-> (Changes 1+2+3); the bg-developer data rebuild + sim-module rework wait on it. **v6.3 gives Reputation
-> teeth** (a live cap on committed Buzz — *your hype can't outrun your reputation*; earned by **Travel +
-> events, not vendors**; it **no longer scores**; + a small **Rep-sink** set where greed/corner-cutting cost
-> Rep), adds **milestone boons** on the (renamed) **Bookings** track (marks 7/14; first-to-cross), **kills
-> the perk field** (a vendor = Bookings value + region-icon-or-not; table reissued), collapses **ticket
-> pools 3→2 (DAY/NIGHT)**, and confirms **per-player win/lose piles**. New tiebreak: **most vendors → most
-> regions → fewest LOSE-pile tickets.** Full v6.3 shape: `design/v6.3-content-draft.md`. **⚠ Change 1 is NOT
-> sim-equivalent — the re-sim is required and GATED.**
+> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design — v6.3 TICKETS-ONLY LOCKED (2026-08-07, CD
+> sign-off, option A + C from the `sim-notes.md §v6.3-FIX` re-sim); SIM-VALIDATED except a pending CHARACTER
+> RE-PASS + the human FTUE. `design/v6.3-content-draft.md` is now canon.** **★ Headline: TICKETS-ONLY
+> scoring** — Tour Tickets are the **sole** scoring vector; **vendors give NO points** (a vendor is purely
+> the ENGINE — its region-discount ramp + the stop you assemble to complete tickets); this structurally
+> killed the `ignore_obj` grind-the-fattest-vendor exploit (80.7% → 43.8%). The **ticket deck is EXPANDED to
+> ~44 tickets** (region pairs, cross-region →X dishes, single-region depth, deeper collections, food-count
+> ladders). **Milestones ("Rave Reviews") = `perplayer`** (each player earns their own boon — no leader
+> pump) and **re-homed onto a Tours-Completed counter** (your 2nd & 4th completed tour). A vendor keeps a
+> printed **value** ATTRIBUTE (referenced by value-tickets + keeps the ★ apex the marquee get) — but it is
+> **not a score track**; the former "Bookings" score track is retired (rename flagged for bg-theme). v6.3
+> also gives **Reputation→Reach teeth** (a live cap on committed Buzz; earned by Travel + events, not
+> vendors; no longer scores; + Rep sinks), **kills the perk field**, and collapses **ticket pools 3→2**. New
+> tiebreak: **most vendors → most regions → fewest LOSE-pile tickets.** **Next: a gated CHARACTER RE-PASS
+> re-sim** (里長伯 hot ~61% / 網紅 cold ~39% / 大哥 fine ~50% under tickets-only), then the 2p FTUE; the
+> bg-developer data rebuild waits on the character re-pass. Full: `design/v6.3-content-draft.md`.
 >
 > _(v6.2 baseline, still the balance reference:)_ v6.2
 > restructures the board into **region vendor markets**, paces the day on the **vendor-claims clock**, and
@@ -123,7 +128,9 @@ Full spec in `design/v6.2-content-draft.md`. **A turn = ONE action:**
 - **Travel** (move one region — HSR links N↔S — draw the arriving region; an event whiffs) ·
 - **Promote** (place 2 Buzz onto vendor(s) you're with in this region) ·
 - **Bribe a Vendor** (be on-site, hold ≥2 more Buzz than your rival, pay its ingredients − discounts → win
-  it: Prestige scored **live**, a Rep bump, a perk; its Buzz clears to supply; refill the slot; lock it) ·
+  it: it joins your tour as an **engine piece** — its region-icon feeds the discount ramp — and may
+  **complete a held ticket**; **no points, no Rep grant, no perk** — vendors don't score; its Buzz clears to
+  supply, freeing your Reach cap; refill the slot; move the clock +1; lock it) ·
 - **Claim a Tour Ticket** (take one from the face-up row of 3; it refills — a public commitment judged at
   the end of its phase into your win-pile / lose-pile, tallied once at game end).
 
@@ -138,14 +145,15 @@ home**.
 <!-- The one memorable hook that makes it *this* game. -->
 **Buzz is a public, committed, contested majority you pile ON the island's vendors — you win a vendor by
 out-hyping your rival ON-SITE (by ≥2) while holding the ingredients its dish needs, and each food vendor
-won is an engine piece (a compounding ingredient discount) climbing Prestige and Reputation.** The
-travel-agent fiction (promote a vendor, out-woo your rival, win their blessing) and the food-geography
-fiction (source where the food lives) drive the *same* decisions. The runaway brake is the **Buzz fight
-itself** — undiscounted, region-gated, raise-able by your rival. **v6.2 sets this against your ITINERARY:**
-your **Tour Tickets** (booked openly from a face-up row) are the objective spine — raced against the phase
-clock into a **win-pile / lose-pile** — while the **vendor-claims clock** (each vendor won ticks the day
-toward night) is what **paces the day**. *(The "**Bribe a Vendor**" keyword is LOCKED — the warm, comedic
-"marketing opportunity," never corruption.)*
+won is an engine piece (a compounding ingredient discount) — the engine you assemble to COMPLETE your
+tours.** The travel-agent fiction (promote a vendor, out-woo your rival, win their blessing) and the
+food-geography fiction (source where the food lives) drive the *same* decisions. The runaway brake is the
+**Buzz fight itself** — undiscounted, region-gated, raise-able by your rival. **The ITINERARY is where the
+points live:** your **Tour Tickets** (booked openly from a face-up row) are the **sole scoring vector** —
+raced against the phase clock into a **win-pile / lose-pile** — while vendors are pure engine (**v6.3
+TICKETS-ONLY: vendors give no points**) and the **vendor-claims clock** (each vendor won ticks the day
+toward night) paces the day. *(The "**Bribe a Vendor**" keyword is LOCKED — the warm, comedic "marketing
+opportunity," never corruption.)*
 > **v6.3 deepens the twist — Reputation now gates the Buzz.** *Your hype can't outrun your reputation:* your
 > total committed Buzz may never exceed your **Reputation**, which you build by **Travelling** (spreading
 > your name) and through events, and **burn** by greed (a Greedy Grab of an extra ingredient costs −1 Rep).
@@ -165,59 +173,69 @@ live, none >~55%, with some rock-paper-scissors between them**:
 *(v6.2 target for `bg-developer`, **after CD lock**; BOM regenerates in `components/manifest.md`. Current
 CSVs are still pre-v6 — the data rebuild is gated.)*
 - **Map board** — Taiwan, 4 regions on a ring + HSR spine (N↔S), carrying the **Day→Night clock** (dusk +
-  last-train marks), the **Prestige (VP) track**, the **Reputation track**, and — **per region** — a
-  face-down **vendor-deck** space with **1–2 face-up slots** (North 2, others 1) **and** a face-down
+  last-train marks), the **Tours-Completed counter** (repurposed from the old VP track — with the two Rave
+  Review milestone marks at completed-tour 2 & 4), the **Reputation (Reach) track**, and — **per region** —
+  a face-down **vendor-deck** space with **1–2 face-up slots** (North 2, others 1) **and** a face-down
   **ingredient-deck** space (each holds the **day** deck in Act I, swapped for the **night** deck at dusk).
+  *(No score track — the score is the Tour-Ticket tally.)*
 - **~48 Vendor cards** — a **day set + a night set per region** (drinks are the low-value vendors mixed into
   each; recoloured day vs night), one per real locked dish (繁體 + Tâi-lô), each with cost (5-palette), a
-  **region icon** *(food only — the ramp; drinks carry none)*, **Prestige**, **Reputation**, and a **perk**.
-  **One apex (★) vendor per region in the night set** (comparable value — the rotating top prize); the
-  dynamic **★ Star token** can make a vendor hot mid-game (+2 Prestige/+1 Rep, recyclable).
-- **~27 Tour-Ticket (Mission) cards** — **12 daytime + 12 nighttime + a small general pool**; **draw 5 per
-  phase per game** (rest to the box). A **face-up shared row of 3** (bg-theme locked open tickets, not
-  hidden); claimed as an action, then sorted at the end of their phase into a **WIN pile** (completed) or a
-  **LOSE pile** (unfinished) and tallied once at game end (Σ win values − Σ floor(value/2) per lose ticket).
-  *(Naming: bg-theme / bg-infodesign to skin the two piles — e.g. "published tours" vs "the ones that got
-  away.")*
+  **region icon** *(food only — the ramp; drinks carry none)*, and a printed **value** attribute *(NOT a
+  score — referenced by value-tickets + marks the marquee prizes; perk field + Prestige + Rep numbers all
+  GONE)*. **One apex (★) vendor per region in the night set** (top value — the rotating trophy); the dynamic
+  **★ Star token** can make a vendor hot mid-game (+2 value, recyclable).
+- **~44 Tour-Ticket cards (the EXPANDED deck — the sole scoring vector)** — **DAY deck ~20 + NIGHT deck ~25**
+  (patterns: region pairs, cross-region →X dishes, single-region depth, deeper collections, food-count
+  ladders, plus the base coverage/thrift/contest/value patterns — full list in `design/v6.3-content-draft.md`
+  §4b–4c). **Draw 5 per phase** into a **face-up shared row of 3** (open tickets); claimed as an action,
+  then sorted at the end of their phase into a **WIN pile 成團** (completed) or **LOSE pile 遺珠** (unfinished)
+  and tallied once at game end (Σ win values − Σ floor(value/2) per lose ticket). *(Piles: WIN = 成團 "Tours
+  That Ran" / infodesign label "Departures"; LOSE = 遺珠 "The Ones That Got Away".)*
 - **ingredient Market cards** — a **day deck + a night deck per region** (5-palette: 4 signatures + the
   common in C & S) **+ scoped event cards** (each tagged ⦿/⬢/➤; hazard-leaning; tax-not-destroy) — the
   **night decks run event-heavier** (the hectic night-market feel). Recoloured day vs night.
 - **~24 Buzz tokens** (@2p; committed, public, contested — placed on vendors, cleared on a win).
-- **5 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**, kits LOCKED v6.2 — see the
-  kit table in `design/v6.2-content-draft.md`) + 4 Agent pawns + Prestige/Rep markers + the **vendor-claims
-  clock marker** (the day-clock track, dusk + last-train marks) + **~4 ★ Star tokens**.
+- **5 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**; kits carried UNCHANGED into
+  the gated character re-pass — ⚠ under tickets-only 里長伯 drifts hot ~61% / 網紅 cold ~39%, to be re-tuned
+  in that re-sim, NOT here) + 4 Agent pawns + **Reach markers + Tours-Completed markers** + the
+  **vendor-claims clock marker** (day-clock track, dusk + last-train marks) + **~4 ★ Star tokens**.
 **Component-load flag (bg-elegance / bg-infodesign):** two face-down piles per region + 5 face-up vendors +
 a 3-ticket row — confirm the table stays parseable.
 
 ## Win condition & scoring
-**v6.3 (SHAPE LOCKED — TWO scoring vectors; Reputation no longer scores).** The game ends at the **last
-train home** (the **10th table-wide vendor claim** @2p), **highest total wins** (no sudden-death). Score =
-**Bookings** (the former Prestige track — sum of your vendors' values, tracked **live**: drinks 2 / daytime
-food 1–2 / mid/night food 5–6 / ★ apex 6–8) + **Tour Tickets** via the **win-pile / lose-pile** model (each
-claimed ticket judged at the end of its deck's phase — DAY at dusk, NIGHT at the last train — into your
-**WIN pile 成團** / **LOSE pile 遺珠**, tallied **once at game end** = **Σ(win values) − Σ(floor(value/2) per
-lose ticket)**). **Reputation is a resource, not a score** — the old `3→+2 · 6→+4 · 9→+6 · top→+9` end-VP
-table is **DELETED** (Reputation now gates Buzz — see Signature twist). **Milestone boons** ("Rave Reviews")
-sit on the Bookings track at **7 / 14**; **first player to cross each** takes a one-time non-VP boon (Mark 7
-→ +1 Rep; Mark 14 → 1 ingredient of choice + next Bribe −1). **New tiebreak: most vendors → most regions
-covered → fewest LOSE-pile tickets.** Expected 2p winner **~18–28** (sim knob — retuned by the re-sim; the
-deleted Rep-VP shifts the old ~22–32 band down). Detail: `design/v6.3-content-draft.md`.
-_(v6.2 baseline scoring — the sim-validated reference until the re-sim — carried the three-vector model with
-Reputation end-VP; see `design/v6.2-content-draft.md`.)_
+**v6.3 (TICKETS-ONLY LOCKED — ONE scoring vector; neither vendors nor Reputation score).** The game ends at
+the **last train home** (the **10th table-wide vendor claim** @2p), **highest total wins** (no
+sudden-death). **Score = your Tour Tickets, and nothing else:** each claimed ticket is judged at the end of
+its deck's phase (DAY at dusk, NIGHT at the last train) into your **WIN pile 成團** / **LOSE pile 遺珠**,
+tallied **once at game end** = **Σ(win values) − Σ(floor(value/2) per lose ticket)**. **Vendors do NOT
+score** (Change 0) — a vendor is pure engine (discount ramp + a stop you assemble to complete tickets); it
+keeps a printed **value** attribute only for the few value-referencing tickets + to mark the ★ apex prizes.
+**Reputation does NOT score** — the old `3→+2 · 6→+4 · 9→+6 · top→+9` end-VP table is **DELETED**
+(Reputation now gates Buzz — see Signature twist). **Milestone boons** ("Rave Reviews") sit on the
+**Tours-Completed counter** at your **2nd & 4th** completed tour, `perplayer` (**each agent earns their own**
+— no leader pump): Mark 1 → +1 Reach; Mark 2 → 1 ingredient of choice + next Bribe −1. **Tiebreak: most
+vendors → most regions covered → fewest LOSE-pile tickets.** Expected 2p **winner ticket-score ~10–14** (sim:
+winner ~12.8, margin ~6–7 on the expanded deck; a sim knob — far lower absolutes than the old value-inclusive
+band, since value no longer adds in). Detail: `design/v6.3-content-draft.md`.
+_(Why tickets-only: under "both" scoring a grind-the-fattest-vendor line (`ignore_obj`) won 80.7%; making
+tickets the sole score structurally kills it → 43.8%. Sim-validated in `sim-notes.md §v6.3-FIX`.)_
 
 ## Rules summary
 Turn = one of **Visit / Convenience Store / Travel / Promote / Bribe a Vendor / Claim a Tour Ticket**;
 Larder cap 7. **Buzz is committed on vendors** (public; region-gated; both agents can pile on). To **Bribe**:
 be **with the vendor**, hold **≥2 more Buzz than your rival**, pay its ingredients (− region discounts);
-winning scores Prestige + Rep + a perk, clears the vendor's Buzz to supply, refills the slot, locks the
-rival out. Ingredient market decks are face-down; **events fire by scope on Visit + Convenience Store**
+winning adds an **engine piece** (may complete a held ticket → +1 Tours Completed) but **scores no points**
+(vendors don't score), clears the vendor's Buzz to supply (freeing your Reach cap), refills the slot, moves
+the clock +1, locks the rival out. Ingredient market decks are face-down; **events fire by scope on Visit +
+Convenience Store**
 (Travel whiffs). **Day → Night:** at **dusk** the whole day layer is cleared island-wide — **both the day
 vendor decks and the day ingredient decks** are removed and replaced by **night decks** (recoloured, and the
 night ingredient decks run event-heavier); **players keep their Larder**. At the **last-train** mark →
 finish the round + one more full round → score. **The clock is the VENDOR-CLAIMS clock** (each vendor
 claimed advances the day; **dusk = 5th table-wide claim, last train = 10th @2p**; the marks grow with player
-count; deck-exhaustion backstops end a phase). Tour Tickets score via the **win-pile / lose-pile** model
-(judged at the end of each ticket's phase, tallied once at game end). Full teach order → `design/rules-draft.md` (v6.2).
+count; deck-exhaustion backstops end a phase). **Tour Tickets are the sole score** via the **win-pile /
+lose-pile** model (judged at the end of each ticket's phase, tallied once at game end); vendors are pure
+engine. Full teach order → `design/rules-draft.md` (v6.3, tickets-only).
 
 ## Open questions & risks
 - ✅ **Spine — DECIDED & LOCKED (v6.2, 2026-08-07):** region vendor markets + Buzz-majority fight +
@@ -260,13 +278,17 @@ count; deck-exhaustion backstops end a phase). Tour Tickets score via the **win-
 - [x] Ideation
 - [x] Research
 - [x] Exploration
-- [x] Design ← **v6.2 LOCKED (2026-08-07)** — sim-validated, CD sign-off, all six forks resolved
-- [ ] Development ← **NEXT** (bg-developer builds the v6.2 component data — see the handoff in `design/v6.2-content-draft.md`)
+- [x] Design ← **v6.3 TICKETS-ONLY LOCKED (2026-08-07)** — CD sign-off (option A+C), sim-validated bar the
+  pending character re-pass + FTUE. *(v6.2 was the prior sim-validated lock.)*
+- [ ] **Character re-pass re-sim ← NEXT (gated on CD "go")** — re-seat 里長伯 (~61% hot) + 網紅 (~39% cold)
+  under tickets-only; light vendor-value engine-band retune; owned by `bg-playtest`.
+- [ ] Development (bg-developer: drop vendor scoring, rebuild the 44-ticket deck, wire Tours-Completed +
+  perplayer milestones — gated on the character re-pass)
 - [ ] Prototype (Screentop.gg / PnP)
-- [ ] Playtesting
+- [ ] Playtesting (the 2p FTUE — claiming-feels-joyless? ticket choice rich-not-fiddly? is the ~5% Buzz fight fun?)
 - [ ] Marketing
 - [ ] Publishing / IP
 
 ## Links
-- Current spec: `design/v6.2-content-draft.md` · Deeper (v6.1 history): `design/design-doc.md`
-- Identity: `identity.md` · Decisions: `decision-log.md` · Sim: `playtests/sim-notes.md`
+- Current spec: `design/v6.3-content-draft.md` (TICKETS-ONLY LOCKED) · Prior: `design/v6.2-content-draft.md` · v6.1 history: `design/design-doc.md`
+- Identity: `identity.md` · Decisions: `decision-log.md` · Sim: `playtests/sim-notes.md` (§v6.3-FIX)
