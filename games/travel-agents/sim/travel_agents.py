@@ -126,8 +126,10 @@ DAGE_FLAW   = os.environ.get("TA_H2_FLAW", "tab")
 # 媽寶 buff (probe #8). "none" (keep-1, v6.1) | "keep2" (keep-2 on Visit) | "travel2" (keep-1 but Travel
 # arrives with 2 from the region you left).
 OFFICE_BUFF = os.environ.get("TA_OFFICE", "keep2")
-# 網紅 flaw magnitude (opponents' head-start ingredients). v6.1 = 2 (was hot); try 3.
-INFL_BEHIND = int(os.environ.get("TA_INFL_BEHIND", "3"))
+# 網紅 flaw = "goes last + starts behind": opponents get INFL_BEHIND head-start signature tokens. NOTE
+# the ingredient head-start is a weak lever (flat ~60% at 1/2/3); the REAL flaw is GOING LAST (seat-1),
+# which lands him ~55% — but the sim under-counts a go-last disadvantage (see sim-notes). Kept at 2.
+INFL_BEHIND = int(os.environ.get("TA_INFL_BEHIND", "2"))
 
 # ==================================================================================================
 #  MAP
@@ -479,10 +481,14 @@ class TravelAgentsGame:
                 "next_visit_extra_hazard": 0, "tempo_tax": 0,
             })
         if "influencer" in chars:
+            # 網紅 flaw: coasts on looks not brains → the RIVALS get a head start. Give each rival
+            # INFL_BEHIND tokens of their OWN start-region signature (a USEFUL leg-up they can spend on
+            # a local vendor) — a flat common (K) head start was inert (K is low-value), so this is the
+            # real teeth. Equivalent to "the influencer starts behind."
             infl = chars.index("influencer")
             for p in range(n_players):
                 if p != infl:
-                    players[p]["larder"][COMMON] += INFL_BEHIND
+                    players[p]["larder"][players[p]["pos"]] += INFL_BEHIND
 
         return {
             "n": n_players, "slots": slots,
