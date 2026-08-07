@@ -3,7 +3,7 @@
 > The living source of truth for this game's **felt identity**: concept, theme, tone/vibe, story/lore,
 > look & feel, and naming. Owned by `bg-theme`; read alongside `game-bible.md`. Keep it current — and
 > keep it **coherent** while letting it **evolve** with the design.
-> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-07 (bg-theme — v6 guardian sweep: **"Code Red" end-trigger DROPPED** → the plain **Day → Night** close (last train home, no alarm) · **common ingredient named 糖 sugar** (the 手搖飲 + convenience-store staple) · drinks fork confirmed warm + native. Earlier: **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 + a day→night end-game · v5 sweep: ★ Star / accolade value-swing added, Coverage folded into a Mission, venue rename 早餐店→夜市攤 + 飲料店 all-day)
+> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-07 (bg-theme — **v6.1 guardian sweep: beverages now REGION-ANCHORED** (a persistent drinks stand in *every* region, not a region-free "Beverage Row"; low-travel now = **ubiquity + easy sourcing**, NOT bribing-at-a-distance) · **Convenience Store events now FIRE via a 3-way SCOPE** (⦿ self / ⬢ region / ➤ next-door — can land a warm island-hazard on a rival's region; bound to the warm/secular island-life rail) · confirmed no live "Code Red" remains. Earlier — v6 guardian sweep: **"Code Red" end-trigger DROPPED** → the plain **Day → Night** close (last train home, no alarm) · **common ingredient named 糖 sugar** (the 手搖飲 + convenience-store staple) · drinks fork confirmed warm + native. Earlier: **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 + a day→night end-game · v5 sweep: ★ Star / accolade value-swing added, Coverage folded into a Mission, venue rename 早餐店→夜市攤 + 飲料店 all-day)
 
 > **Restraint first.** Match identity depth to what the game *earns*. Leaving story/lore light on purpose
 > is a correct answer, not a gap. Never invent lore to fill a section.
@@ -231,13 +231,19 @@ the fiction.)*
   per-region proteins/produce down to one each; `bg-developer` keeps the dishes real). Rename the setting and
   the recipes break — still Taiwan-specific food geography, not "engine + map." *(The 5th ingredient, the
   **common 糖 sugar**, is region-light on purpose — see the drinks-fork bullet + Naming.)*
-- **The drinks fork = *"the drinks stand is always open"* (v6 — the off-clock easy-points road)** —
-  **integrated; reads WARM and native, NOT drinks-as-lesser.** The persistent, region-free **Beverage Row**
-  (飲料店 / 手搖飲, fed off the **Convenience Store** + the common **糖 sugar**) is the low-stakes lane you can
-  always take instead of fighting up the contested breakfast→night-market ladder. **Why it's an authentic
-  fiction fit, not a mechanical fudge:** Taiwan's 手搖飲 shops genuinely *are* on every corner, open all day,
-  and grabbing a drink genuinely *is* the easy, unhurried move no one races or fights over — so
-  "off-clock / always-there / uncontested / region-free" is exactly how a local reads a drinks run. **Why it
+- **The drinks fork = *"the drinks stand is always open — on every corner"* (v6.1 — the off-clock easy-points road, now REGION-ANCHORED)** —
+  **integrated; reads WARM and native, NOT drinks-as-lesser.** *(v6.1 correction: the drinks fork is **no
+  longer a region-free "Beverage Row"** you court from a distance — every region has its **own persistent
+  beverage stand**, all day, and you must be **on-site in that region** to Promote/Bribe it, the same one
+  unified rule as any vendor.)* The persistent, **per-region beverage stands** (飲料店 / 手搖飲, fed off the
+  **Convenience Store** + the common **糖 sugar**) are the low-stakes lane you can always take instead of
+  fighting up the contested breakfast→night-market ladder. **Why it's an authentic fiction fit, not a
+  mechanical fudge:** Taiwan's 手搖飲 shops genuinely *are* on every corner — one in every neighbourhood,
+  open all day — and grabbing a drink genuinely *is* the easy, unhurried move no one races or fights over.
+  So the low-travel identity now reads as **ubiquity + easy sourcing** — *court the stand where you already
+  stand* (there's always one), and the 糖 comes off the Convenience Store from anywhere — **NOT
+  bribing-at-a-distance**. "Off-clock / always-there-in-every-region / uncontested" is exactly how a local
+  reads a drinks run. **Why it
   is NOT "drinks are lesser food":** the low value is a *stakes/contest* level, not a *food-class* judgement
   — a 珍奶 isn't "worse" than breakfast, it's a calmer play; the venue arc is **time-of-day**, and drinks sit
   *outside* it entirely (see Naming's framing bind). Keeping the **★ accolade / Buzz-contest OFF drinks is
@@ -246,6 +252,25 @@ the fiction.)*
   would contradict that. The ★ and the fight belong on the ladder; the drinks stay the steady, sunny hedge.
   **On the north-star grin:** a drink in hand while two trench-coated rivals scrap over an auntie's stall IS
   the warm night-market picture.
+- **The event SCOPE = *"the island reaching past your own patch"* (v6.1 — the Convenience Store now FIRES
+  events, resolved by a 3-way scope) — integrated; reads WARM + secular, must stay a caper, never a strike.**
+  In-world, working a market (a **Visit**, or a **Convenience Store** blind grab) means you *reached into*
+  that region and the island **reacts** — and now the reaction can land past your own feet. Every event
+  carries a **scope**, read from the region the card came out of: **⦿ self** (just you — *you got the last
+  portion / you queued an hour*), **⬢ the region** (everyone standing in that place — *a typhoon shuts this
+  region's road, a festival crowd*), **➤ next-door** (it spills into the neighbouring region — *the queue
+  backs up into the next town*). Because a **Convenience Store** draw reaches *any* region, a ⬢/➤ event can
+  now land on a **rival** — flip their region and a warm island-hazard (a **颱風假 typhoon**, a **完售
+  sold-out** sign, a **festival crowd**) lands on *them*. **Why it's on-theme, not bolted-on:** this is the
+  *same* *"the island is a subject, not scenery — it pushes YOU around"* rail the conditions already ran on,
+  now **extended so the island can push your rival around too** — legible, warm, and Taiwan-native (weather,
+  crowds, sold-out signs). **The one binding warmth rail (BINDING → `bg-developer` / `bg-elegance`):** a
+  rival-facing scoped event is **NEVER mean-spirited take-that** — it is always a **warm, secular
+  island-life beat the *island* deals out** (rain shuts a road, a queue forty deep, a 完售 sign), it
+  **never destroys what a rival holds and never costs a whole turn**, and it must read as a **shared groan /
+  cheeky "ooh, bad luck,"** never a spiteful strike. Keep it the *island* doing it, not the *agent* — and it
+  stays squarely on the Tone "warm caper, not a thriller" rail. *(Scope icon set → Naming; dual-coding →
+  `bg-access` / `bg-infodesign`.)*
 - **Larder cap = 7 → *"travelling light, eating fresh — a night-market haul doesn't keep."*** Makes the
   cap feel inevitable. (v3 discards surplus; the old Dead-drop generosity beat is gone — no re-theme
   needed, the cap stands on the fresh-food logic alone.)
@@ -367,12 +392,16 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
       night-market stalls *in* the Night Market (夜市攤 in the 夜市): a reinforcement, not a clash.
     - **飲料店 / 手搖飲 beverage shop** *(**yǐnliào-diàn** / **shǒuyáo-yǐn**, "hand-shaken drinks" — the
       very-Taiwan modern term)* — **OFF the day-clock: the all-day, anytime easy-points fork** (was
-      "Eatery", now re-roled). A persistent, always-available parallel option — **low value, low conflict,
-      no contest to travel for** — that a player can build up instead of pushing the breakfast→night-market
-      ladder. Pairs with the low-travel **Convenience Store** action (the casual grab-and-go lane). 珍珠奶茶
-      bubble tea, 冬瓜茶, 青茶. ***Fiction fit is a strength, not a stretch:*** Taiwan's 手搖飲 shops genuinely
-      **are on every corner and open all day** — grabbing a drink is the easy, unhurried move you never fight
-      over, so "off-clock / always-there / uncontested" is the *authentic* read, not a mechanical fudge.
+      "Eatery", now re-roled). A persistent parallel option — **low value, low conflict, low travel** — that
+      a player can build up instead of pushing the breakfast→night-market ladder. *(v6.1: **region-anchored,
+      not region-free** — there's a beverage stand in **every** region, all day, and you court the one **in
+      the region you already stand in**, under the same on-site Bribe rule as any vendor; no more courting a
+      central "Beverage Row" from a distance.)* Pairs with the **Convenience Store** action (the casual
+      grab-and-go lane that sources the common 糖 from anywhere). 珍珠奶茶 bubble tea, 冬瓜茶, 青茶. ***Fiction
+      fit is a strength, not a stretch:*** Taiwan's 手搖飲 shops genuinely **are on every corner and open all
+      day** — one in every neighbourhood — so the low-travel is **ubiquity + easy sourcing** (grab the stand
+      where you stand; 糖 from the convenience store), *not* acting at a distance, and "off-clock /
+      in-every-region / uncontested" is the *authentic* read, not a mechanical fudge.
     **Framing (binds — keeps it warm):** the day-clock arc is **time of day** (morning breakfast building to
     the night-market climax), **NOT** a hierarchy of which food is "posher" — and drinks sit *outside* that
     arc entirely as the anytime option, so nothing implies bubble tea is "lesser" food, only a lower-stakes
@@ -400,6 +429,16 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     whether **果糖 fructose syrup** is the more natural token word for the 手搖飲 context (a cheap swap if so).
     *(Region signatures are `bg-design`'s call — listed here only so the ingredient set reads coherent as one
     warm, real, Taiwan-specific palette; `bg-developer` locks the East signature.)*
+  - **The event scope vocabulary** *(v6.1 — new; the 3-way "who does it hit?" icon set, → `bg-infodesign` to
+    finalise the icons + `bg-access` to dual-code).* Every event card carries **one** small scope icon, read
+    from the region the card came out of: **⦿ self** ("you") · **⬢ region** ("this place") · **➤ next-door**
+    ("next door"). Warm, plain reads — *you queued an hour* (⦿), *a typhoon shuts this region's road* (⬢),
+    *the crowd spills into the next town* (➤). The wording stays **island-life and secular** even when a
+    Convenience-Store draw lands one on a rival (the *island* pushes people around — see the resonance scope
+    bullet + §Sensitivity's warm rail). *Naming is **fluid**: "self / region / next-door" is the plain
+    default; a head-office-voice skin ("local / district / neighbouring", or a sitrep register) is optional
+    if it stays warm and never reads as a targeted attack. **The icons are `bg-infodesign`'s to finalise and
+    `bg-access`'s to dual-code** (redundant to colour: distinct glyph + short label).*
   - **The Acts** = the end-game structure — **a single glorious eating day, a TWO-BEAT arc** *(v5 — the CD's
     ≤30-min target)*, **morning breakfast → night-market climax.** With the venue rename the on-clock arc is
     **早餐店 → 夜市攤** (drinks run all-day alongside, off the clock). ***Act I · The Breakfast Run 早餐***
@@ -449,10 +488,11 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   - **best-tour title** = the season's prize you're both racing for — the compete-engine's payoff. A
     cutesy award *name* (a "Golden Boarding-Pass"-type gag) is **fluid** — hold it light; route any
     Chinese/Tâi-lô coinage through the native reviewer before it locks.
-  - Read the v6 set aloud together (travel agency / head office / signature Mission / **Bribe a Vendor** /
-    **Buzz → the Queue** / Vendor Board / **早餐店 · 夜市攤 · 飲料店 (all-day)** / ingredients: **豬肉 · 茶 ·
-    海鮮 · 米 + 糖 (common)** / **Act I The Breakfast Run 早餐 · Act II Night Market 夜市 · the last train
-    home** / **Prestige · Reputation** / Events / best-tour title / Stamps) — one warm
+  - Read the v6.1 set aloud together (travel agency / head office / signature Mission / **Bribe a Vendor** /
+    **Buzz → the Queue** / Vendor Board / **早餐店 · 夜市攤 · 飲料店 (all-day, one per region)** / ingredients:
+    **豬肉 · 茶 · 海鮮 · 米 + 糖 (common)** / **Act I The Breakfast Run 早餐 · Act II Night Market 夜市 · the
+    last train home** / **Prestige · Reputation** / Events (scopes **⦿ self · ⬢ region · ➤ next-door**) /
+    best-tour title / Stamps) — one warm
     travel-agent-playing-spy voice, no clashes. *(Venue set reads warm together: 早餐店 → 夜市攤 is the
     morning→night clock, 飲料店 the all-day drinks fork alongside.)* **"Bribe"** is the spiciest word in the set, so it *depends* on its
     neighbours to stay warm: *"the queue you drummed up,"* *"marketing opportunity,"* *"put her on the
@@ -664,6 +704,38 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
+- 2026-08-07 (bg-theme, **v6.1 guardian coherence sweep — the CD's two economy corrections: region-anchored
+  beverages + the Convenience-Store event SCOPE**) — **STILL COHERENT; concrete edits made, NO re-theme.**
+  Swept the v6.1 design-doc + rules-draft against identity. Verdicts on the two corrections + the Code Red
+  sweep:
+  **(1) Beverages REGION-ANCHORED, not a region-free "Beverage Row" (concrete edit).** v6 identity wrongly
+  called the drinks fork "region-free" with a central "Beverage Row." Corrected: each region has its **own
+  persistent beverage stand** (a drinks stand in *every* region, all day), and you must be **on-site in the
+  region** to Promote/Bribe it — the **one unified vendor rule**, no beverage exception. The low-travel fork
+  identity now reads as **ubiquity + easy sourcing** (*court the stand where you stand*; 糖 off the
+  Convenience Store from anywhere), **NOT bribing-at-a-distance**. Fixed the resonance drinks-fork bullet,
+  the beverage venue naming entry, the header, and the read-aloud set. **Reads MORE native, not less:** "a
+  手搖飲 on every corner" is *literally* the Taiwan read, so a stand in every region is a truer fiction than a
+  single central Row. No re-theme.
+  **(2) Convenience-Store events now FIRE via a 3-way SCOPE — CONFIRMED warm, fiction LOCKED.** The new scope
+  (⦿ self / ⬢ region / ➤ next-door, read from the region the card was drawn from) lets a Convenience-Store
+  draw land a warm island-hazard on a **rival's** region. **Confirmed the two asks:** (a) the three scope
+  icons/names read cleanly and warmly — "you / this place / next door," plain island-life reads; (b) a
+  **rival-facing scoped hazard stays a warm, secular island-life beat** (typhoon shuts a road, festival
+  crowd, 完售 sold-out) — **bound HARD to the warm/secular rail: NEVER mean-spirited take-that.** The
+  *island* (not the agent) does it; it's a shared groan / cheeky "bad luck," never a spiteful strike, never
+  destroys held cards or a whole turn. This *extends* the existing "the island is a subject that pushes YOU
+  around" rail to "…and can push your rival around too" — fully on-theme, on the "warm caper, not a thriller"
+  tone rail. **Added:** a resonance scope bullet, a Naming scope-vocabulary entry, and the binding warmth
+  rail. **→ `bg-access` + `bg-infodesign`:** the 3 scope icons need **dual-coding** (redundant to colour —
+  distinct glyph + short label) and an at-a-glance read; and the **per-region beverage-slot marker** needs a
+  clear board icon so "a stand in every region" parses instantly.
+  **(3) Code Red sweep — CONFIRMED clean.** bg-design flagged a possible leftover. Swept: **no live "Code
+  Red" mechanic reference remains** — every live instance already describes the *drop* (Day → Night / the
+  last train home), and the only remaining "Code Red" strings are **dated historical re-theme-log entries**
+  (the v5 sweeps) preserved as accurate decision history per this doc's own convention (see the v6 entry's
+  note). Nothing to strip; nothing stranded. Rung **held at evocative** — two corrections realigned, no new
+  lore.
 - 2026-08-07 (bg-theme, **v6 guardian coherence sweep — the economy rework: drinks fork + 5-ingredient
   palette + the "Code Red" drop**) — **STILL COHERENT; two concrete edits made, no re-theme needed.** Swept
   the v6 design-doc + rules-draft against identity. Verdicts on the four moves:
