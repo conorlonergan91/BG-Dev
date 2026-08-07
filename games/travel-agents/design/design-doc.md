@@ -1,28 +1,59 @@
 # Travel Agents: Taiwan — Design Doc
 
-> ## ⚠️ CURRENT DESIGN = v6.2 — see **`design/v6.2-content-draft.md`** for the authoritative current spec.
-> The detailed text below is **v6.1, retained as history/reference.** v6.2 (co-designed 2026-08-07; see the
-> top of `decision-log.md`) **supersedes** several v6.1 structures and the sections below that describe them:
+> ## ✅ CURRENT DESIGN = v6.2 — **LOCKED 2026-08-07** (CD sign-off, sim-validated). See **`design/v6.2-content-draft.md`** for the authoritative current spec.
+> The detailed text below is **v6.1, retained as history/reference.** v6.2 (co-designed 2026-08-07; sim run +
+> CD locks at the top of `decision-log.md`) **supersedes** several v6.1 structures and the sections below
+> that describe them:
 > - **Central Ladder → region vendor MARKETS.** No central Ladder. Each of the 4 regions has its own
 >   face-down **vendor pile** (daytime stacked on nighttime), **1–2 face-up per region** (North 2, others 1),
 >   refilled in place.
 > - **The ladder-vs-drinks FORK is GONE, and beverages are no longer off-clock / region-free.** There is now
 >   **one kind of vendor**; **drinks are simply the low-value vendors** mixed into each region's pile, courted
 >   by the same one rule (on-site + ≥2 Buzz majority + pay).
-> - **The single secret +7 mission → "Tour Tickets".** A **face-up row of 3**, claimed as an action, scored
->   **retroactively** (+value / −½ if unfinished), from **daytime / nighttime / general** pools (12 per phase
->   in the box, **5 drawn per phase per game**).
-> - **The clock → a MISSION clock** (the day advances as claimed Tour Tickets are completed; to A/B vs a
->   vendor-claim clock in sim). Daytime vendors are **swept at dusk**.
+> - **The single secret +7 mission → "Tour Tickets".** A **face-up row of 3**, claimed as an action, from
+>   **daytime / nighttime / general** pools (12 per phase in the box, **5 drawn per phase per game**). **Scored
+>   via a WIN-PILE / LOSE-PILE model (CD lock):** a ticket is judged **at the end of its phase** (daytime at
+>   dusk, nighttime at the last train) — **completed → WIN pile, unfinished → LOSE pile** — and points are
+>   tallied **once at game end**: **Σ(win-pile values) − Σ(floor(value/2) per lose-pile ticket)**. The −½
+>   penalty is KEPT; its reading is locked as *half the ticket's own value, rounded down*. **This is
+>   accounting-only and SIM-EQUIVALENT** — the same final scores the v6.2 sim's retroactive `+v / −floor(v/2)`
+>   produced, so it changes **no** balance and needs **no** re-sim. *(Naming the two piles → bg-theme /
+>   bg-infodesign, e.g. "published tours" vs "the ones that got away.")*
+> - **The clock → the VENDOR-CLAIMS clock (CD lock; the mission-clock A/B is CLOSED).** The day advances
+>   **as vendors are claimed** — **dusk = the 5th table-wide vendor claim, the last train = the 10th @2p**;
+>   the marks GROW with player count (bg-architect finalizes with the MP pass); deck-exhaustion backstops end
+>   a phase if decks dry island-wide. At **dusk the whole day layer flips** (both day vendor + day ingredient
+>   decks cleared island-wide → night decks, event-heavier; Larder kept). Chosen over the mission clock
+>   because it was tighter and more reliable (sim sd 3.9 vs 4.9, crisp mid-game dusk turn ~21 vs ~34, ~14% vs
+>   26% stall).
+> - **Character kits LOCKED (CD, from the sim):** **大哥 = lead-by-1 (≥1 Buzz margin, not ≥2), NO flaw**
+>   (51.7%; tie-win dropped); **媽寶 = keep-2 on a Visit** (45.6%; the keep-1 flaw dropped); **大胃王 = H1-A,
+>   hazards fire twice on his Visit** (52.6%); **網紅 = Going-Viral (+1 Buzz on Promote) + "misses its first
+>   turn of the night phase"** (CD refinement — a concrete lost-turn flaw replacing "starts behind"; **a KEY
+>   table balance-check, may over-correct**; dial in reserve); **里長伯 unchanged** (51.8%). Full kit table +
+>   dials in `design/v6.2-content-draft.md`.
 > - **Design target = the FIVE playstyles** (character-lean · opportunistic · disruptive · balanced ·
->   end-game-driver) all viable, none >~55%.
+>   end-game-driver) all viable, none >~55% — **sim PASS** (43–53% band; a well-timed MIX crushes the
+>   ignore-both control at 73%; pure-drinks is dead at ~0.5%).
+> - **📦 FOR bg-developer (the v6.2 data rebuild — gated component work):** rebuild `components/*.csv` +
+>   `player-aid.json` from the v6.2-content-draft (the CSVs are stale pre-v6 — do NOT render them). Build the
+>   **per-region day/night vendor decks** (drinks marked low-value, ★ apex marked, cross-region costs marked),
+>   the **Tour Tickets** (day/night/general; each carries its value; the win/lose-pile is a *scoring/handling*
+>   rule, not per-card data), the **per-region day/night ingredient market decks** (5-palette, event-heavier
+>   night, scoped events ⦿/⬢/➤), the **four character mats** to the locked kits above, the **Buzz supply**,
+>   and the **vendor-claims clock track** (dusk + last-train marks). **DATA TWEAK (from the sim — not a rules
+>   change): give Central tea an EXPORT.** Central is under-pulled (13% sourcing) because the cross-region
+>   cycle makes it a pure importer (逢甲 needs S) — tea has no external demand, so nobody travels to *source*
+>   it. Re-point one cross-region cost (an East or North night dish) to need **C tea**, closing the cycle into
+>   a true four-region loop, mirroring how the other signatures export.
 >
 > **UNCHANGED from v6.1 (still binding, read below):** the **Buzz-majority public hype-fight**, the
 > **5-ingredient palette** (N 豬肉 · C 茶 · S 海鮮 · E 米 + common 糖 in C & S), push-your-luck ingredient
 > **market decks** with **scoped events** (⦿/⬢/➤, fire on Visit + Convenience Store, whiff on Travel), the
 > **five characters** (里長伯/媽寶/網紅/大胃王/大哥), the **★ value swing**, the Prestige/Reputation vectors,
 > the **Day→Night → last-train** arc, and **all sensitivity rails**. v6.2 is a board/objective restructure,
-> not a new spine. A full v6.2 rewrite of this doc lands once the CD locks the design post-review/sim.
+> not a new spine. This banner + `design/v6.2-content-draft.md` are the LOCKED v6.2 canon; the v6.1 body
+> below is history where it conflicts.
 
 Deeper design detail than the game bible. Owned by `bg-design`; keep the bible's summary in sync.
 *(The v6.1 body follows — treat it as history where it conflicts with the v6.2 banner above.)*

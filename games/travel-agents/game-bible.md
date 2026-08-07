@@ -1,16 +1,18 @@
 # 🎲 Travel Agents: Taiwan — Game Bible
 
 > The single living source of truth for this game. Every agent reads and updates this. Keep it current.
-> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design — v6.2 PROPOSAL, content drafted, pending
-> a sim pass + CD lock.** v6.2 restructures the board into **region vendor markets** and makes **missions
-> the spine** (a face-up ticket row + a mission clock). It **supersedes v6.1's central Ladder, the
-> ladder-vs-drinks FORK, off-clock/region-free beverages, and the single secret +7 mission**: there is now
-> **one kind of vendor** (food and drinks alike; drinks are just the low-value ones), each of the 4 regions
-> has **its own face-down vendor pile** (daytime stacked on nighttime), **1–2 face-up per region** (North 2,
-> the rest 1), and the day runs **Day → Night → the last train home**. What stands from before: the
-> **Buzz-majority public hype-fight**, the **5-ingredient palette** (4 signatures + 1 common), the **five
-> Taiwanese-social-type characters**, and the sensitivity rails. Full current spec:
-> `design/v6.2-content-draft.md`. (v6.1 detail retained in `design/design-doc.md` as history.)
+> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design — v6.2 LOCKED (2026-08-07, CD sign-off,
+> sim-validated). Next: `bg-developer` builds the v6.2 component data for the Screentop prototype.** v6.2
+> restructures the board into **region vendor markets**, paces the day on the **vendor-claims clock**, and
+> makes **Tour Tickets** the objective spine (a face-up ticket row scored into a **win-pile / lose-pile**).
+> It **supersedes v6.1's central Ladder, the ladder-vs-drinks FORK, off-clock/region-free beverages, and the
+> single secret +7 mission**: there is now **one kind of vendor** (food and drinks alike; drinks are just the
+> low-value ones), each of the 4 regions has **its own face-down vendor pile** (daytime stacked on
+> nighttime), **1–2 face-up per region** (North 2, the rest 1), and the day runs **Day → Night → the last
+> train home**, advancing **as vendors are claimed** (dusk = 5th table-wide claim, last train = 10th @2p).
+> What stands from before: the **Buzz-majority public hype-fight**, the **5-ingredient palette** (4
+> signatures + 1 common), the **five Taiwanese-social-type characters**, and the sensitivity rails. Full
+> current spec: `design/v6.2-content-draft.md`. (v6.1 detail retained in `design/design-doc.md` as history.)
 
 ## One-liner
 <!-- The hook a stranger would repeat. -->
@@ -87,15 +89,19 @@ reaching toward an Arcs-Court interaction), built on:
   the common in C/S, and salted **scoped events**). **Visit** = flip 3, keep 2, events fire **by scope**
   (⦿ self / ⬢ region / ➤ neighbour). **Convenience Store** = top card of ANY region, blind — **also fires
   by scope** (the take-that lever). **Travel** = move + draw the arriving region (an event whiffs).
-- **The Day → Night clock + Tour Tickets (the spine, v6.2).** The day runs **Act I (daytime vendors) →
-  dusk → Act II (nighttime vendors) → the last train home**. **The dusk flip is a big, thematic turnover:**
-  the *entire* day layer is cleared island-wide — **both the day vendor decks AND the day ingredient market
-  decks** are removed (not just the face-up cards) and replaced by **night decks** (recoloured; the night
-  ingredient decks are **event-heavier** — the bustling night-market feel), while **players keep their
-  Larder**. **Missions ("Tour Tickets") are the heartbeat:** a **face-up row of 3**, claimed as an action,
-  scored **retroactively** (+value / −½ if unfinished), drawn from **daytime / nighttime / general** pools
-  (12 per phase in the box, **5 drawn per phase per game**). The **clock is driven by missions** — the day
-  advances as **claimed missions are completed** (to A/B vs a vendor-claim clock in sim).
+- **The Day → Night clock + Tour Tickets (the spine, v6.2 — LOCKED).** The day runs **Act I (daytime
+  vendors) → dusk → Act II (nighttime vendors) → the last train home**, paced by the **VENDOR-CLAIMS clock**:
+  the day advances **as vendors are claimed** — **dusk = the 5th table-wide vendor claim, the last train =
+  the 10th @2p** (the marks grow with player count; deck-exhaustion backstops end a phase if decks dry
+  island-wide). **The dusk flip is a big, thematic turnover:** the *entire* day layer is cleared island-wide
+  — **both the day vendor decks AND the day ingredient market decks** are removed (not just the face-up
+  cards) and replaced by **night decks** (recoloured; the night ingredient decks are **event-heavier** — the
+  bustling night-market feel), while **players keep their Larder**. **Tour Tickets are the objective spine:**
+  a **face-up row of 3**, claimed as an action, drawn from **daytime / nighttime / general** pools (12 per
+  phase in the box, **5 drawn per phase per game**). Each claimed ticket is **judged at the end of its phase**
+  (daytime tickets at dusk, nighttime at the last train) and sorted into a **WIN pile** (completed) or a
+  **LOSE pile** (unfinished); points are tallied **once, at game end**: Σ(win-pile values) − Σ(floor(value/2)
+  per lose-pile ticket).
 
 ## Core loop
 <!-- The repeated cycle of decisions and rewards. -->
@@ -107,14 +113,15 @@ Full spec in `design/v6.2-content-draft.md`. **A turn = ONE action:**
 - **Promote** (place 2 Buzz onto vendor(s) you're with in this region) ·
 - **Bribe a Vendor** (be on-site, hold ≥2 more Buzz than your rival, pay its ingredients − discounts → win
   it: Prestige scored **live**, a Rep bump, a perk; its Buzz clears to supply; refill the slot; lock it) ·
-- **Claim a Tour Ticket** (take one from the face-up row of 3; it refills — a public commitment scored
-  retroactively at game end).
+- **Claim a Tour Ticket** (take one from the face-up row of 3; it refills — a public commitment judged at
+  the end of its phase into your win-pile / lose-pile, tallied once at game end).
 
 You court whatever's **face-up in the region you stand in** (1–2 vendors + the day's layer). **Larder caps
 at 7.** The tension every turn: chase the region's face-up prize, dig for the ingredient you're short,
-grab a cheap drink when it's the efficient local play, commit to a ticket (and race to finish it before the
-penalty bites), or reach into a rival's region with a scoped Convenience-Store event. Day flips to night as
-the itinerary fills; when the night winds down, catch the **last train home**.
+grab a cheap drink when it's the efficient local play, commit to a ticket (and race to finish it before its
+phase closes and it drops to your lose-pile), or reach into a rival's region with a scoped Convenience-Store
+event. Day flips to night as **vendors are claimed**; when the night winds down, catch the **last train
+home**.
 
 ## Signature twist
 <!-- The one memorable hook that makes it *this* game. -->
@@ -124,8 +131,9 @@ won is an engine piece (a compounding ingredient discount) climbing Prestige and
 travel-agent fiction (promote a vendor, out-woo your rival, win their blessing) and the food-geography
 fiction (source where the food lives) drive the *same* decisions. The runaway brake is the **Buzz fight
 itself** — undiscounted, region-gated, raise-able by your rival. **v6.2 sets this against your ITINERARY:**
-missions ("Tour Tickets") are the game's spine — claimed openly, raced against a −½ penalty, and the thing
-that **paces the day toward night**. *(The "**Bribe a Vendor**" keyword is LOCKED — the warm, comedic
+your **Tour Tickets** (booked openly from a face-up row) are the objective spine — raced against the phase
+clock into a **win-pile / lose-pile** — while the **vendor-claims clock** (each vendor won ticks the day
+toward night) is what **paces the day**. *(The "**Bribe a Vendor**" keyword is LOCKED — the warm, comedic
 "marketing opportunity," never corruption.)*
 
 ## The five intended playstyles (the design's depth target)
@@ -151,24 +159,32 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
   dynamic **★ Star token** can make a vendor hot mid-game (+2 Prestige/+1 Rep, recyclable).
 - **~27 Tour-Ticket (Mission) cards** — **12 daytime + 12 nighttime + a small general pool**; **draw 5 per
   phase per game** (rest to the box). A **face-up shared row of 3** (bg-theme locked open tickets, not
-  hidden); scored **retroactively** (+value / −½ if unfinished).
+  hidden); claimed as an action, then sorted at the end of their phase into a **WIN pile** (completed) or a
+  **LOSE pile** (unfinished) and tallied once at game end (Σ win values − Σ floor(value/2) per lose ticket).
+  *(Naming: bg-theme / bg-infodesign to skin the two piles — e.g. "published tours" vs "the ones that got
+  away.")*
 - **ingredient Market cards** — a **day deck + a night deck per region** (5-palette: 4 signatures + the
   common in C & S) **+ scoped event cards** (each tagged ⦿/⬢/➤; hazard-leaning; tax-not-destroy) — the
   **night decks run event-heavier** (the hectic night-market feel). Recoloured day vs night.
 - **~24 Buzz tokens** (@2p; committed, public, contested — placed on vendors, cleared on a win).
-- **5 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**) + 4 Agent pawns +
-  Prestige/Rep markers + the **day-clock marker** + **~4 ★ Star tokens**.
+- **5 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**, kits LOCKED v6.2 — see the
+  kit table in `design/v6.2-content-draft.md`) + 4 Agent pawns + Prestige/Rep markers + the **vendor-claims
+  clock marker** (the day-clock track, dusk + last-train marks) + **~4 ★ Star tokens**.
 **Component-load flag (bg-elegance / bg-infodesign):** two face-down piles per region + 5 face-up vendors +
 a 3-ticket row — confirm the table stays parseable.
 
 ## Win condition & scoring
-Hybrid multi-track: the game ends at the **last train home**, **highest total VP wins** (no sudden-death).
-Score = **Tour Prestige** (sum of your vendors' values — drinks 2 / daytime food 1–3 / nighttime food 4–6 /
-★ apex 6–8) + **Reputation** end-VP by final track position (3→+2 · 6→+4 · 9→+6 · top→+9) + **Tour Tickets**
-(**+value each if completed, −floor(value/2) each if unfinished** — the retroactive, press-your-luck
-objective layer). ≥3 paths kept competitive (see the five playstyles); the Buzz fight adds
-opponent-dependence so openings don't solve. **Tiebreak:** highest Reputation, then most vendors, then most
-regions covered. Expected 2p winner **~22–32 VP**. Detail + balance model in `design/v6.2-content-draft.md`.
+Hybrid multi-track: the game ends at the **last train home** (the **10th table-wide vendor claim** @2p),
+**highest total VP wins** (no sudden-death). Score = **Tour Prestige** (sum of your vendors' values — drinks
+2 / daytime food 1–3 / nighttime food 4–6 / ★ apex 6–8) + **Reputation** end-VP by final track position
+(3→+2 · 6→+4 · 9→+6 · top→+9) + **Tour Tickets**, scored via the **win-pile / lose-pile** model: each claimed
+ticket is judged at the end of its phase (daytime at dusk, nighttime at the last train) into your **WIN
+pile** (completed) or **LOSE pile** (unfinished), then tallied **once at game end** = **Σ(win-pile values) −
+Σ(floor(value/2) per lose-pile ticket)** — the press-your-luck objective layer (accounting-only change from
+v6.1's live-retroactive scoring; the final total is identical). ≥3 paths kept competitive (see the five
+playstyles); the Buzz fight adds opponent-dependence so openings don't solve. **Tiebreak:** highest
+Reputation, then most vendors, then most regions covered. Expected 2p winner **~22–32 VP**. Detail + balance
+model in `design/v6.2-content-draft.md`.
 
 ## Rules summary
 Turn = one of **Visit / Convenience Store / Travel / Promote / Bribe a Vendor / Claim a Tour Ticket**;
@@ -179,32 +195,44 @@ rival out. Ingredient market decks are face-down; **events fire by scope on Visi
 (Travel whiffs). **Day → Night:** at **dusk** the whole day layer is cleared island-wide — **both the day
 vendor decks and the day ingredient decks** are removed and replaced by **night decks** (recoloured, and the
 night ingredient decks run event-heavier); **players keep their Larder**. At the **last-train** mark →
-finish the round + one more full round → score. **The clock is mission-driven** (completing claimed Tour
-Tickets advances it — to A/B vs a vendor-claim clock in sim). Full teach order → `design/rules-draft.md` (to be updated to v6.2 at build).
+finish the round + one more full round → score. **The clock is the VENDOR-CLAIMS clock** (each vendor
+claimed advances the day; **dusk = 5th table-wide claim, last train = 10th @2p**; the marks grow with player
+count; deck-exhaustion backstops end a phase). Tour Tickets score via the **win-pile / lose-pile** model
+(judged at the end of each ticket's phase, tallied once at game end). Full teach order → `design/rules-draft.md` (v6.2).
 
 ## Open questions & risks
-- ✅ **Spine — DECIDED (v6.2):** region vendor markets + Buzz-majority fight + push-your-luck ingredient
-  decks + a **Day→Night mission clock** + **Tour Tickets** + the 5-ingredient palette. Drinks are low-value
-  vendors (fork/off-clock gone). Five intended playstyles. **Content drafted; pending a sim pass + CD lock.**
-- ⚠️ **RISK #1 (carried, make-or-break) — is the Buzz-majority fight fun/tense, not degenerate?** And in
-  v6.2, **does spreading vendors across region markets make it too RARE** (players courting different
-  regions rarely collide)? The sim reads contested-win frequency; the *feel* is a table question. 大哥's
-  tie-win is still the dominance probe — **H2 unresolved (needs a 4th option)**.
-- ⚠️ **RISK #2 (the fork's successor) — do all FIVE playstyles live** (each ≤~55%, some intransitivity),
-  and is a **well-timed mix** a good line? v6.1 sim showed a drinks *lean* was a trap and flat drink value
-  couldn't fix it; **Tour Tickets** (a greedy-visible payoff) moved a mix toward parity — v6.2 is meant to
-  finish the job (drinks as the cheap local play + mix/drink tickets). *Disruptive* is the weakest-supported
-  today (take-that is light in sim) — watch whether it's a viable lean or just a spoiler.
-- ⚠️ **RISK #3 — does travel actually SPREAD** across all four regions (East not starved), now that value is
-  distributed (one ★ per region, cross-region cycle N→S→E→N, coverage tickets, scoped events)? Sim reads
-  per-region sourcing/claim share + inter-region moves.
-- ⚠️ **PACING — the clock.** Mission-clock vs vendor-claim clock (the sim A/Bs which paces better). The
-  all-vendor-claims clock introduced a **rush** risk (cheap claims race the end); the mission clock is the
-  proposed fix. Confirm ~25–30 min across the random 12→5 mission draws (length variance is the watch).
-- ⚠️ **Characters:** each **45–55%**, no dominant char×mission combo. Live: **大哥 too strong (H2), 網紅
-  hot, 媽寶 weak** (from the v6.1 sim); 大胃王 fine (ship H1-A).
-- ⚠️ **WEIGHT / table-state:** bg-elegance re-reading v6.2 (removed special-casing vs added
-  markets/clock/tickets); the component-load flag above.
+- ✅ **Spine — DECIDED & LOCKED (v6.2, 2026-08-07):** region vendor markets + Buzz-majority fight +
+  push-your-luck ingredient decks + a **Day→Night VENDOR-CLAIMS clock** + **Tour Tickets** (win-pile /
+  lose-pile) + the 5-ingredient palette. Drinks are low-value vendors (fork/off-clock gone). Five intended
+  playstyles. **Sim-validated + CD-locked; the residuals below are all table/feel questions.**
+- ✅ **CLOCK — DECIDED (vendor-claims, LOCKED):** the day advances as vendors are claimed (dusk 5 / last
+  train 10 @2p, growing with count). The mission-clock A/B is closed (vendor-claims was tighter: sd 3.9,
+  crisp mid-game dusk, ~14% stall). *Pacing watch:* bot games ran ~25 turns/player (over the 14–18 estimate)
+  because the markets deliberately add travel; a human table should be tighter (~25–30 min) — lower the
+  marks if it drags.
+- ✅ **Characters — RESOLVED (kits LOCKED):** **大哥 = lead-by-1, no flaw** (51.7%); **媽寶 = keep-2** (45.6%,
+  was 29% at keep-1); **大胃王 = H1-A** (52.6%); **網紅 = Going-Viral + misses its first night-phase turn**
+  (CD refinement — a concrete lost-turn flaw replacing "starts behind"; **⚠ KEY table balance-check — may
+  over-correct below 45%**, dial in reserve); 里長伯 unchanged (51.8%). No kit needs a day/night tweak.
+- ⚠️ **RISK #1 (carried, make-or-break) — is the Buzz-majority fight fun/tense, not degenerate?** And does
+  spreading vendors across region markets make it too RARE (players courting different regions rarely
+  collide)? Sim: ~5% contested (a floor, not near-zero — no hard flag), but the *feel* is unmeasurable in
+  sim → **the #1 table question** (Screentop plan §2).
+- ⚠️ **RISK #2 — do all FIVE playstyles live, and is a well-timed MIX good? SIM PASS:** all five in a 43–53%
+  band (none >~53%); a mix crushes the ignore-both control (73%); pure-drinks is dead (~0.5%). *Disruptive*
+  is the weakest lane (46.7%) — viable, not a trap, not oppressive; if toothless at the table the fix is
+  *more contest-reward*, not nastier events.
+- ⚠️ **RISK #3 — does travel SPREAD? SIM PASS on East** (18% src, was 9% in v6.1 — the cross-region cycle +
+  P8 apex + coverage tickets work). **NEW flag: Central is now the under-pulled region (13% src)** — tea has
+  no export demand → **a data tweak for bg-developer** (give tea one cross-region export), NOT a rules change.
+- ⚠️ **Tour-Ticket −½ penalty (elegance A/B, carried to the table):** sim saw no behavioural difference
+  (bots only claim finishable tickets), so it can't judge the penalty's real job (disciplining human
+  *speculative* claims). **Kept**; the Screentop session decides whether claims feel agonised-over (keep) or
+  inert (bg-elegance may cut). *(Now expressed as the win/lose-pile model — same scores, simpler accounting.)*
+- ⚠️ **WEIGHT / table-state:** bg-elegance's v6.2 read = within budget (~2.4, under 2.5) but felt weight is
+  in **table-state** (the ticket row + 5 face-up vendors + 2 face-down piles/region); keywords ~14/15 and
+  component types near-full. The win/lose-pile model *reduces* scoring prose (helps the rulebook-over-cap
+  flag). Component-load parse is a live FTUE check.
 - **Sensitivity:** a **real place & culture (Taiwan)** — the **East region is Indigenous-forward** (generic
   respectful labels, consultant before art), "Bribe"/大哥 warmth rails, 繁體 + Tâi-lô discipline. Owned by
   `bg-theme` + `bg-publishing`; paid Taiwanese cultural + language consultant before art/print.
@@ -213,8 +241,8 @@ Tickets advances it — to A/B vs a vendor-claim clock in sim). Full teach order
 - [x] Ideation
 - [x] Research
 - [x] Exploration
-- [ ] Design ← **in progress** (v6.2 proposal: content drafted, sim pass + CD lock pending)
-- [ ] Development
+- [x] Design ← **v6.2 LOCKED (2026-08-07)** — sim-validated, CD sign-off, all six forks resolved
+- [ ] Development ← **NEXT** (bg-developer builds the v6.2 component data — see the handoff in `design/v6.2-content-draft.md`)
 - [ ] Prototype (Screentop.gg / PnP)
 - [ ] Playtesting
 - [ ] Marketing
