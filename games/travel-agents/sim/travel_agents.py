@@ -1339,8 +1339,8 @@ class _Seeded:
     def __init__(self, n=2, characters=None, prefs=None):
         self.n, self.characters, self.prefs = n, characters, prefs
 
-    def new_state(self, rng):
-        st = GAME.new_state(rng, self.n, characters=self.characters, prefs=self.prefs)
+    def new_state(self, rng, n=None):
+        st = GAME.new_state(rng, n or self.n, characters=self.characters, prefs=self.prefs)
         st["_rng"] = rng
         return st
 
@@ -1474,11 +1474,23 @@ if __name__ == "__main__":
         print(f"  {label:16} office {_char_winrate('office', n=N)*100:5.1f}%")
     globals()["OFFICE_BUFF"] = "keep2"
 
-    print("\n## PROBE 5 — CLOCK A/B (mission vs vendor-claims): pacing")
+    print("\n## 網紅 nerf — opponents' head-start (INFL_BEHIND) — target 45-55%")
+    for b in (3, 4, 5):
+        globals()["INFL_BEHIND"] = b
+        print(f"  behind={b}  influencer {_char_winrate('influencer', n=N)*100:5.1f}%")
+    globals()["INFL_BEHIND"] = 3
+
+    print("\n## PROBE 5 — CLOCK A/B (mission vs vendor-claims): pacing + length variance")
+    from engine import run_match
     for mode in ("mission", "vendor"):
         globals()["CLOCK_MODE"] = mode
         mt = _field_metrics(n=N)
-        print(f"  {mode:8}  turns/player {mt['turns_per_player']:.1f}  vendors/player {mt['wins_per_player']:.1f}  "
+        g = _Seeded(2, prefs=[BAL, BAL]); lens = []
+        for i in range(N):
+            _sc, _m = run_match(g, {0: STRATEGIES["balanced"], 1: STRATEGIES["balanced"]}, 5000 + i)
+            lens.append(_m["turns_per_player"])
+        sd = statistics.pstdev(lens) if len(lens) > 1 else 0.0
+        print(f"  {mode:8}  turns/player {mt['turns_per_player']:.1f} (sd {sd:.1f})  vendors/player {mt['wins_per_player']:.1f}  "
               f"dusk {mt['dusk_turn']:.1f} last {mt['last_turn']:.1f}  end(LT/deck/stall) "
               f"{mt['end_by_lasttrain']*100:.0f}/{mt['end_by_deck']*100:.0f}/{mt['end_by_stall']*100:.0f}%")
     globals()["CLOCK_MODE"] = "mission"
@@ -1493,13 +1505,17 @@ if __name__ == "__main__":
     globals()["PENALTY"] = "half"
 
     print("\n## PROBE 10 — HOARDER (over-source a scarce signature to deny) — should LOSE")
+    print("   (empty_draws/gm = how often a Visit finds the region dry = the denial pressure on a rival)")
+    base_empty = _field_metrics(n=N)["empty_draws_per_game"]
+    print(f"   baseline (no hoarder) empty_draws/gm {base_empty:.2f}")
     for hr in ("E", "S"):
-        globals()["STRAT_PREFS"]  # no-op to keep linter calm
         hoard = {**BAL, "hoard_region": hr}
-        # register a temp hoarder strategy
         STRATEGIES["_hoard"] = _make(hoard); STRAT_PREFS["_hoard"] = hoard
         wr = _versus("_hoard", "balanced", n=N)
-        print(f"  hoard {hr}  vs balanced  {wr*100:5.1f}%   (want <50 = a trap, not a lockout)")
+        _, _, _, hm = _run({0: STRATEGIES["_hoard"], 1: STRATEGIES["balanced"]},
+                           n=N, seed=1, prefs=[hoard, BAL])
+        print(f"  hoard {hr}  vs balanced  {wr*100:5.1f}%   empty_draws/gm {hm['empty_draws_per_game']:.2f}"
+              f"   (want <50 = a trap; empty_draws = the temporary denial it buys)")
     del STRATEGIES["_hoard"]; del STRAT_PREFS["_hoard"]
 
     print("\n## PROBE 11 — MP light seat-balance smoke (per count)")
