@@ -24,16 +24,17 @@ signature mission** (+7, revealed at the end). Most = **Top Agent**.
 ## 2. Setup (teach while you set up)
 1. Unfold the **Taiwan map** — four regions in a ring: **North 北 · Central 中 · South 南 · East 東** (HSR
    links North↔South). The board holds the **day-clock** (with a **dusk** mark and a **last-train** mark),
-   the **Prestige track**, the **Reputation track**, the **Vendor Board** (two zones — see below), and a
-   face-down **market deck** space per region. Put each agent's markers at 0 and the **day-clock** at 0.
+   the **Prestige track**, the **Reputation track**, the central **Ladder** display, and — **per region** —
+   a face-down **market deck** space *and* a persistent **beverage slot** (a drinks stand in every region).
+   Put each agent's markers at 0 and the **day-clock** at 0.
 2. Build the **four region market decks**: each region's **one signature ingredient** (several copies) +
    the **common ingredient** *(only in the two regions that carry it)* + its **event cards** (mostly
-   hazards), shuffled face-down. Set out the **Buzz** supply (~24 @2p).
-3. Build the **three vendor decks** and stock the two board zones:
-   - **The Ladder** (the contested, clock-driving zone): deal from the **Act I · Breakfast Shop deck** to
-     fill it (2p: **4 slots**). *(The **Night-Market deck** waits face-down for dusk.)*
-   - **The Beverage Row** (the persistent, all-day zone): deal from the **Beverage Shop deck** (2p: **2
-     slots**).
+   hazards; each carries a **scope tag** — see §6), shuffled face-down. Set out the **Buzz** supply (~24 @2p).
+3. Build the **three vendor decks** and stock the board:
+   - **The Ladder** (the contested, clock-driving central display): deal from the **Act I · Breakfast Shop
+     deck** to fill it (2p: **4 slots**). *(The **Night-Market deck** waits face-down for dusk.)*
+   - **The region beverage slots** (persistent, all-day): seed **one beverage shop face-up into each
+     region's slot** from the **Beverage Shop deck** (2p: 4 dealt, one per region). Never swept.
 4. Each agent: take an **Agent Character** (ability + flaw — read aloud, public) and a **pawn** (start
    opposite at 2p — one North, one South). **Draw 3 Mission cards, secretly keep 1** (+7); return 2
    face-down. Your Larder starts empty and stays **face-up** — your mission is the only hidden thing.
@@ -42,32 +43,38 @@ signature mission** (+7, revealed at the end). Most = **Top Agent**.
 On your turn, do **ONE** action. Then if your Larder is over **7** ingredients, discard down to 7.
 
 - **VISIT THE LOCAL MARKET** *(where you stand)* — flip the top **3** of this region's market deck. Any
-  **event** flipped happens now (**hazards fire!**), then is discarded. **Keep up to 2** of the
-  **ingredients** you turned up (usually your region's **signature**); discard the rest. *(The gamble: more
-  hazards = more risk. This is how you bulk-source signatures.)*
+  **event** flipped happens now (**it fires by its scope** — see §6), then is discarded. **Keep up to 2** of
+  the **ingredients** you turned up (usually your region's **signature**); discard the rest. *(The gamble:
+  more events = more swing. This is how you bulk-source signatures.)*
 - **CONVENIENCE STORE** *(anywhere)* — flip the top **1** card of **any** region's market deck. An
-  ingredient? Take it. An event? Shrug — the shelf was bare (discard it, nothing happens). *(One safe blind
-  card, any region, no travel — the reliable way to grab the **common** ingredient your **drinks** run on.)*
+  ingredient? Take it. **An event? It fires — by its scope** (⦿ you / ⬢ the region you flipped / ➤ a
+  neighbour of it — see §6). *(One blind card, any region, no travel — the reliable way to grab the
+  **common** ingredient your **drinks** run on. It's now **live**: flip a rival's region and a scoped island-
+  hazard can land on **them** — but a self-scoped card taxes **you**, and you can't see the top card. Cheeky,
+  not a sure thing.)*
 - **TRAVEL** — move to a **neighbouring** region (HSR = North↔South), then flip the top **1** card of the
-  region you **arrive** in (ingredient → take it; event → nothing, keep moving).
-- **PROMOTE** *(with the vendor)* — place **2 Buzz** from the supply onto **vendor(s) you're with**: a
-  **ladder** vendor in **this region**, and/or a **beverage** vendor (drinks stands are everywhere, so from
-  anywhere). Buzz stays on the card for all to see; your rival can pile on too.
-- **BRIBE A VENDOR** — win a vendor over by out-hyping your rival. See §4–§5. *(Winning a **ladder** vendor
-  moves the day-clock; winning a **beverage** does not.)*
+  region you **arrive** in (ingredient → take it; **event → nothing, keep moving** — you're passing through,
+  not working the market).
+- **PROMOTE** *(with the vendor, in this region)* — place **2 Buzz** from the supply onto **vendor(s) you're
+  with in this region**: a **ladder** vendor here, and/or **this region's beverage slot**. Buzz stays on the
+  card for all to see; your rival can pile on too. *(You Promote the drinks stand where you stand — like any
+  vendor.)*
+- **BRIBE A VENDOR** — win a vendor over by out-hyping your rival, **on the spot**. See §4–§5. *(Winning a
+  **ladder** vendor moves the day-clock; winning a **beverage** does not.)*
 
 ## 4. Buzz — the hype fight (the heart of it)
 Every vendor wants to feel wanted. You show them with **Buzz** — you *promote* them, promising crowds and
 hype (that's literally your job as a travel agent: you bring people *to* the food).
 - Buzz only ever sits **in the supply** or **on a vendor** — you never keep it in hand.
-- To Buzz a **ladder** vendor you must be **standing in its region**. **Beverage** vendors have no region —
-  you can Buzz them from anywhere.
+- To Buzz **any** vendor you must be **standing in its region** — a ladder vendor here, or the beverage
+  stand in this region. *(One rule, every vendor type.)*
 - **Both agents can pile Buzz on the same vendor** — that's the fight (and on the ladder it's where the
-  game is won; drinks are rarely worth fighting over).
+  game is won; drinks are rarely worth fighting over, and since a stand sits in every region you two usually
+  end up at different ones).
 
 ## 5. Bribing a vendor (winning it over)
-To **Bribe** a Board vendor, you must, all at once:
-1. be **with the vendor** (in its region, for a ladder vendor; anywhere, for a beverage);
+To **Bribe** a Board vendor, you must, all at once (**one rule for every vendor type**):
+1. be **with the vendor — in its region** (a ladder vendor here, or this region's beverage stand);
 2. hold **at least 2 more Buzz on it than your rival** (the majority — checked right now);
 3. **pay its ingredients**, *minus your region discounts* (see below).
 Then take the vendor to your tour and gain, at once:
@@ -83,12 +90,12 @@ vendor, move the day-clock +1** (see §7). **A beverage win does NOT move the da
 > high road: contested, region-gated, and it *drives the day forward*. Its payoff is the **ramp**: each
 > ladder vendor carries a **region icon**, and every matching icon you hold makes that region's ingredients
 > **1 cheaper** on future vendors — sign a couple of Southern stalls and the next Southern vendor barely
-> needs oysters. The **drinks stands** are the easy road: **region-free**, cheap (just the common
-> ingredient off the convenience store), low-conflict, always open — a steady trickle of easy points that
-> *doesn't* move the clock. Great for padding your score and hedging a lost fight — but they don't ramp and
-> can't reach the big night-market names, so you can't win on drinks alone. **Buzz is never discounted** —
-> so as the ladder ramps, the *hype fight* (not the ingredients) becomes the thing that gates your next big
-> win.
+> needs oysters. The **drinks stands** are the easy road: there's **one in every region**, cheap (just the
+> common ingredient off the convenience store), low-conflict, always open — so you grab the stand **right
+> where you already are** (you never travel *for* a drink) for a steady trickle of easy points that *doesn't*
+> move the clock. Great for padding your score and hedging a lost fight — but they don't ramp and can't
+> reach the big night-market names, so you can't win on drinks alone. **Buzz is never discounted** — so as
+> the ladder ramps, the *hype fight* (not the ingredients) becomes the thing that gates your next big win.
 
 > **大哥 wins at a tie.** The Neighbourhood Big Brother needs only to **match or lead** his rival's Buzz on
 > a vendor (no +2 lead) — everyone already knows him — but each Bribe costs him **+1 ingredient** (he picks
@@ -100,15 +107,25 @@ vendor, move the day-clock +1** (see §7). **A beverage win does NOT move the da
 
 ## 6. The market decks & events (the island doesn't sit still)
 Each region's market is a **face-down deck** of its **signature ingredient** (+ the **common** ingredient,
-in two of the four regions) + a few **event** cards (mostly hazards). When you **Visit**, flipped events
-happen immediately:
-- **hazards** *(the majority)* — a typhoon washes a market's next cards, plum rains slow your haul, a "SOLD
-  OUT" sign, scooter gridlock eats your next trip. They **tax or delay — never destroy** what you already
-  hold, never cost a whole turn.
+in two of the four regions) + a few **event** cards (mostly hazards). **Whenever you work a market — a
+VISIT or a CONVENIENCE STORE — a flipped event fires straight away, by its scope.** *(Only a card flipped
+as you **arrive** on a Travel just means "shelf was bare" — nothing fires.)*
+- **hazards** *(the majority)* — a typhoon shuts a road, plum rains slow your haul, a "完售 SOLD OUT" sign,
+  scooter gridlock eats your next trip. They **tax or delay — never destroy** what you already hold, never
+  cost a whole turn.
 - **boons** *(the minority)* — a mango glut, a bubble-tea festival that hands out Buzz, a kind auntie who
   loads you up, or — the big one — a vendor **suddenly gets hot** (see ★ below).
-Warm, secular, region-flavoured. **Only Visiting fires events** — a lone card flipped by Travel or the
-Convenience Store just means "shelf was bare."
+
+> **The scope tag — who the event hits.** Every event carries a small icon that says who it lands on,
+> **measured from the region the card came out of**:
+> - **⦿ You** — just the player who flipped it (a personal boon or tempo tax).
+> - **⬢ This region** — everyone **standing in the region you drew from** (and/or that region's market/road).
+> - **➤ Next door** — someone standing in a **neighbouring** region.
+>
+> On a **Visit** you're standing in the region you flipped, so ⬢ tends to hit **you** (and any rival here).
+> On a **Convenience Store** you're often somewhere else, so ⬢ hits **whoever's standing in the region you
+> flipped** — flip your rival's region and a warm island-hazard can land on **them**. It's the island living
+> its life and pushing everyone around — never a mean personal attack, always a typhoon/crowd/sold-out beat.
 
 > **★ Star vendors — the hot targets (on the ladder).** Some standout **night-market** names carry a
 > **printed ★** (a real Michelin / Bib-Gourmand / competition nod) and score **7–8 Prestige** — the apex
@@ -125,7 +142,8 @@ night-market (ladder) vendor** — a **beverage** win never moves it. It has two
   low-contest; build your discount ramp here. *(The drinks stands run alongside, all day.)*
 - **DUSK (the day-clock hits the dusk mark, 2p: the 4th ladder win):** the breakfast places are closing.
   **Sweep** any unwon Ladder vendors (their Buzz returns to the supply) and re-stock the Ladder from the
-  **Night-Market** deck. Move to **Act II**. *(The Beverage Row is NOT swept — drinks are all day.)*
+  **Night-Market** deck. Move to **Act II**. *(The region beverage slots are NOT swept — drinks are all
+  day, in every region.)*
 - **Act II — Night Market 夜市:** the big **night-market stalls** — expensive, neon, fought-over. This is
   where the ladder game is won.
 
@@ -157,7 +175,9 @@ covered.
   their blessing, never taking from them or the place. "Bribe" is the cheeky word; the deed is a warm hard
   sell, not corruption.
 - Events are the island living its life — festivals, weather, kind locals — never sacred customs for
-  laughs; local characters are warm, real people.
+  laughs; local characters are warm, real people. When a Convenience-Store event lands on your rival, it's
+  the *island* doing it (a typhoon, a queue, a sold-out sign) — a shared groan, a cheeky "ooh, bad luck,"
+  never a spiteful strike.
 - Dish/vendor names stay real (Tâi-lô + 繁體). The comedy is the mission gag and your own gluttony.
 
 ---
@@ -165,15 +185,16 @@ covered.
 ## Teaching sequence (FTUE — the order a first game should reveal rules)
 1. **Goal + one Vendor** — "here's a breakfast stall; it wants 2 North ingredients, and whoever hypes it
    most (by 2 Buzz) while standing here wins it. Let's go get it."
-2. **Visit / Convenience Store / Travel** — dig the North market for its signature; note the hazard risk;
-   grab a safe card; move.
+2. **Visit / Convenience Store / Travel** — dig the North market for its signature; note that events fire
+   *by their scope* (point at the ⦿/⬢/➤ tag) when you Visit or hit the Convenience Store; grab a card; move.
 3. **Promote** — drop Buzz on the stall; "your rival can pile on too — this is the fight."
 4. **Bribe** — in-region, ahead by 2 Buzz, pay the ingredients → win it: Prestige moves, Rep moves, point
    at its **region icon** ("your first North discount"). Its Buzz clears; the day-clock ticks.
 5. **The ramp** — win a second North vendor and *watch the ingredients cost less* (Buzz still full).
-6. **The drinks fork** — point at the Beverage Row: "these are region-free, cheap off the convenience
-   store, low-fuss easy points — they *don't* move the clock. Great for padding, but they don't ramp and
-   can't reach the big names."
+6. **The drinks fork** — point at the beverage stand in this region: "there's one in *every* region, so you
+   grab the one where you already stand — cheap off the convenience store, low-fuss easy points that *don't*
+   move the clock. Same on-site Bribe rule as any vendor. Great for padding, but they don't ramp and can't
+   reach the big names."
 7. **The hype fight** — the first time you both stack Buzz on one ladder vendor: "out-commit, race to the
    ingredients, or concede and take another. Outraced, not robbed."
 8. **Reputation** — the second live track; "several ways to win — go tall, climb your Rep, or grind drinks."
