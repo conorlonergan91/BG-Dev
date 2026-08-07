@@ -1,10 +1,11 @@
 {
   "target_weight": 2.2,
   "max_acceptable_weight": 2.5,
-  "max_rulebook_words": 1650,
+  "max_rulebook_words": 1850,
   "max_keywords": 15,
   "max_exception_words": 14,
   "max_component_types": 8,
   "max_player_aid_lines": 22,
+  "_note_raise3": "CONSCIOUS RAISE #3 — RULEBOOK ONLY (Creative Director, 2026-08-07): rulebook cap 1650 -> 1850. WEIGHT is unchanged (target 2.2 / ceiling 2.5 hold) — this is a prose-length allowance, not a complexity increase. After the v6.2 lock, bg-elegance trimmed the rulebook 2673 -> ~1800 words with ZERO rules changed; the residual over 1650 is not fat (pure rules §1-9 = 1606 words; the rest is the title + a 90-word teach pitch + 95 words of tone/sensitivity notes). ~1600 words of rules is honest for an engine-builder with the dusk flip + scoped events + win/lose-pile layer, in-band with the reference games. CD chose to bump the cap rather than gut the pitch or the at-table East/Indigenous sensitivity framing to satisfy a proxy. Logged in decision-log.md; not silent creep.",
   "_note": "CONSCIOUS RAISE #2 (Creative Director, 2026-08-06): the game is moving from a light optimiser toward an ENGINE-BUILDER with multiple tracks (win over vendors for exclusive rights; each secured vendor is an engine piece), explicitly in the band of the CD's references — Splendor Duel ~2.3, LOTR: Duel for Middle-earth ~2.4, Arnak ~2.7. Aim ~2.2, acceptable ceiling ~2.5 (was 1.8/2.2). The CD accepts rising complexity for the engine-building depth. 'Lighter is still better / every rule earns its place' ethos holds — this is a TIGHT two-player engine (Splendor Duel / LOTR Duel), NOT a sprawling heavy euro; do not fill the budget just because it's there. Caps bumped for the engine layer (rulebook 1350->1650, keywords 12->15, exceptions 12->14, component_types 6->8 to allow vendor cards + character cards + track markers + 2-3 currencies, aid 18->22). Guard every iteration with `python tools/complexity/check_complexity.py --game games/travel-agents` + bg-elegance. Logged in decision-log.md; not silent creep."
 }
