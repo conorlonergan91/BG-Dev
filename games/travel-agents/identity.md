@@ -386,6 +386,22 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     pile with its **1–2 face-up slots** and a **day/night layer marker** so "morning stacked over night"
     reads at a glance; and the **scoped-event icons** (⦿ self · ⬢ region · ➤ next-door) already flagged for
     dual-coding. Drinks stalls need **no** special marker now — they're just cheaper vendors on the shelf.
+  - **Coherence bless — card backs + two-state board (bg-theme guardian pass, 2026-08-07): ON-BRAND / BLESSED.**
+    `bg-infodesign`'s new native back identity (constant dusk-indigo border + passport-stamp roundel +
+    "TRAVEL AGENTS 台灣" wordmark + ticket-stub perforation + day ☀日 sun / night ☾夜 crescent motifs, drawn
+    not glyph → no tofu) and the two-state day/night board (`map-day.png` / `map-night.png`) render as a
+    genuine felt-identity fit — the passport / boarding-pass shape language, the sun/moon day-night grammar,
+    the 繁體 throughout, and the 成團 / 遺珠 pile names are all native to *this* game; **no Beacon leftover
+    remains** (the old copied back is gone). The day/night language stays **warm, not alarm**: day = warm
+    amber/gold; night = festive night-market **neon** (lavender/magenta), which reads as lantern-neon glow,
+    never a cold/red alarm register. **Well-judged in one specific way worth noting:** the phase *chrome*
+    flips cool-neon (ground, market slots, panel frames) while the **identity colours stay warm** — region
+    headers (North vermilion / South amber / Central jade) and the ingredient chips (豬/茶/海/糖/米) hold
+    their warm palette in *both* states, so the night board stays tethered to the warm-dusk north star
+    instead of drifting fully cool. **One light, optional forward note for `bg-infodesign` (NOT a blocker):**
+    the *night ticket back* is the single artefact with the least warm anchor (near-all lavender + neon, vs
+    the day back's all-gold warmth) — a small lantern-vermilion or amber accent in the night back's stamp
+    roundel would keep it on the "warm dusk" rail as a pair; safe to leave as-is for now.
 - **Moodboard / references to gather in `art/`** (real photo refs for a human illustrator):
   Shilin / Raohe / Liuhe night markets at dusk; hand-painted stall signage & 繁體 hand-lettering; HSR
   and local trains; scooters; convenience-store culture; vintage travel stamps/stickers; and the iconic
