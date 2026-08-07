@@ -1,6 +1,31 @@
-# Travel Agents: Taiwan — Design Doc (v6.1 · the economy fork: drinks as easy points, a 5-ingredient palette, beverages off the clock BUT region-anchored, events fire everywhere via a scope)
+# Travel Agents: Taiwan — Design Doc
+
+> ## ⚠️ CURRENT DESIGN = v6.2 — see **`design/v6.2-content-draft.md`** for the authoritative current spec.
+> The detailed text below is **v6.1, retained as history/reference.** v6.2 (co-designed 2026-08-07; see the
+> top of `decision-log.md`) **supersedes** several v6.1 structures and the sections below that describe them:
+> - **Central Ladder → region vendor MARKETS.** No central Ladder. Each of the 4 regions has its own
+>   face-down **vendor pile** (daytime stacked on nighttime), **1–2 face-up per region** (North 2, others 1),
+>   refilled in place.
+> - **The ladder-vs-drinks FORK is GONE, and beverages are no longer off-clock / region-free.** There is now
+>   **one kind of vendor**; **drinks are simply the low-value vendors** mixed into each region's pile, courted
+>   by the same one rule (on-site + ≥2 Buzz majority + pay).
+> - **The single secret +7 mission → "Tour Tickets".** A **face-up row of 3**, claimed as an action, scored
+>   **retroactively** (+value / −½ if unfinished), from **daytime / nighttime / general** pools (12 per phase
+>   in the box, **5 drawn per phase per game**).
+> - **The clock → a MISSION clock** (the day advances as claimed Tour Tickets are completed; to A/B vs a
+>   vendor-claim clock in sim). Daytime vendors are **swept at dusk**.
+> - **Design target = the FIVE playstyles** (character-lean · opportunistic · disruptive · balanced ·
+>   end-game-driver) all viable, none >~55%.
+>
+> **UNCHANGED from v6.1 (still binding, read below):** the **Buzz-majority public hype-fight**, the
+> **5-ingredient palette** (N 豬肉 · C 茶 · S 海鮮 · E 米 + common 糖 in C & S), push-your-luck ingredient
+> **market decks** with **scoped events** (⦿/⬢/➤, fire on Visit + Convenience Store, whiff on Travel), the
+> **five characters** (里長伯/媽寶/網紅/大胃王/大哥), the **★ value swing**, the Prestige/Reputation vectors,
+> the **Day→Night → last-train** arc, and **all sensitivity rails**. v6.2 is a board/objective restructure,
+> not a new spine. A full v6.2 rewrite of this doc lands once the CD locks the design post-review/sim.
 
 Deeper design detail than the game bible. Owned by `bg-design`; keep the bible's summary in sync.
+*(The v6.1 body follows — treat it as history where it conflicts with the v6.2 banner above.)*
 
 **Provenance for v6.1 (read this first — two CD corrections folded into v6).** v6.1 folds in **two CD
 corrections to the v6 economy fork** (design-only; no sim, no data/CSV edits):

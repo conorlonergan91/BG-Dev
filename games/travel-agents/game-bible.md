@@ -1,14 +1,23 @@
 # 🎲 Travel Agents: Taiwan — Game Bible
 
 > The single living source of truth for this game. Every agent reads and updates this. Keep it current.
-> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design — locked for CD sign-off** (design-doc **v6** — the **economy fork** revision of the v5 two-Act day: committed public Buzz on vendors, push-your-luck market decks; a **5-ingredient palette** (4 region signatures + 1 common); the day is **Day → Night** on a day-clock — **Act I · The Breakfast Run 早餐 → Act II · Night Market 夜市 → the last train home** (no named "Code Red" alarm anymore); the venue bands are the real types — **breakfast shop / beverage shop / night-market stall**; **beverages are the "easy points" FORK — off the clock, region-free, all-day**, with only **ladder (breakfast/night-market) Bribes advancing the clock**; Region-Coverage is a Mission; **"Bribe a Vendor" LOCKED**; five Taiwanese-social-type characters. Extract + Poach + the wild pantry token cut. **No sim run yet — gated on CD sign-off.**)
+> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design — v6.2 PROPOSAL, content drafted, pending
+> a sim pass + CD lock.** v6.2 restructures the board into **region vendor markets** and makes **missions
+> the spine** (a face-up ticket row + a mission clock). It **supersedes v6.1's central Ladder, the
+> ladder-vs-drinks FORK, off-clock/region-free beverages, and the single secret +7 mission**: there is now
+> **one kind of vendor** (food and drinks alike; drinks are just the low-value ones), each of the 4 regions
+> has **its own face-down vendor pile** (daytime stacked on nighttime), **1–2 face-up per region** (North 2,
+> the rest 1), and the day runs **Day → Night → the last train home**. What stands from before: the
+> **Buzz-majority public hype-fight**, the **5-ingredient palette** (4 signatures + 1 common), the **five
+> Taiwanese-social-type characters**, and the sensitivity rails. Full current spec:
+> `design/v6.2-content-draft.md`. (v6.1 detail retained in `design/design-doc.md` as history.)
 
 ## One-liner
 <!-- The hook a stranger would repeat. -->
 You and your rival run competing **travel agencies** racing to build the best Taiwan food **tour** — ride
-the rails, source real regional ingredients, drum up **Buzz**, and spend both to **win over the island's
-vendors** (each one you sign makes the next easier to court). You just *behave* like covert agents about
-it. Best tour = **Top Agent**.
+the rails, source real regional ingredients, drum up **Buzz** to **win over the island's vendors**, and
+tick off your **itinerary** before the last train home. You just *behave* like covert agents about it.
+Best tour = **Top Agent**.
 
 ## Core fantasy / player role
 <!-- Who you are, what you're doing, the feeling (the "kind of fun"). -->
@@ -21,208 +30,185 @@ that's the gag. Kinds of fun (**locked**): **Discovery** (lead) + **Fellowship**
 
 ## Creative identity (concept · theme · tone · look & feel)
 - **North star:** *The mission is the meal — race your rival to build the island's best food tour before
-  the last train home.* (full framing in `identity.md`)
+  the last train home.* (full framing in `identity.md` — bg-theme is updating it to v6.2)
 - **Tone/vibe:** warm, funny, adventurous; the **secret-agent wink is first-class** (a rule-earning layer,
-  kept comedic) over the wholesome travel-agent day job (Creative Director, 2026-08-06).
+  kept comedic) over the wholesome travel-agent day job.
 - **Details:** see `identity.md`.
 
 ## Positioning
-- **Weight (BGG 1–5):** aim ~2.2, acceptable up to **~2.5** (raised 2026-08-06 for the engine-building pivot — lighter still better, tight-two-player engine not a heavy euro). Band: Splendor Duel ~2.3 · LOTR: Duel for Middle-earth ~2.4 · Arnak ~2.7.
-- **Players:** 2–4 (this game leads with a first-class **2-player duel** by its own design choice, then scales to a 3–4p race)
-- **Playtime:** **~25–30 min at 2p** (v5 target; the two-Act day-clock paces to ~5–6 wins/player; sim to confirm)
+- **Weight (BGG 1–5):** aim ~2.2, acceptable up to **~2.5**. Band: Splendor Duel ~2.3 · LOTR: Duel ~2.4 ·
+  Arnak ~2.7. **v6.2 watch:** the mission/ticket subsystem + region markets may push *table-state*
+  complexity even if rules count holds — bg-elegance is re-reading the v6.2 budget.
+- **Players:** 2–4 (leads with a first-class **2-player duel**, then scales to a 3–4p race)
+- **Playtime:** **~25–30 min at 2p** (the day-clock paces to ~5–6 vendors/player; sim to confirm v6.2)
 - **Tone:** silly / warm / adventurous
-- **Comparable:** *Splendor Duel* / *Arnak*-style engine-building + *Ticket to Ride* routing, wrapped in a warm Taiwan food-tour with a secret-agent wink (the CD's touchstones: *LOTR: Duel*, *Splendor Duel*, *Arnak*).
+- **Comparable:** *Splendor Duel* / *Arnak*-style engine-building + *Ticket to Ride* objective-tickets,
+  wrapped in a warm Taiwan food-tour with a secret-agent wink.
 - **Audience:** families, foodies, casual + gateway hobbyist; travel/Taiwan-culture fans.
 - **Target platform:** Screentop.gg for playtest (studio default); route-to-market TBD (`bg-funding`).
 
 ## Complexity budget (set at the START — defend it as you iterate)
-- **Target weight:** aim ~2.2; **acceptable ceiling ~2.5** (CD raise #2, 2026-08-06 — for the engine-building pivot; still a tight 2p engine, lighter preferred, every rule earns its place)
-- **Caps:** see `complexity-budget.json`. Check drift with
-  `python tools/complexity/check_complexity.py --game games/travel-agents` and run **`bg-elegance`** each
-  iteration. Over budget → simplify, or consciously log a raise. Never silent creep.
+- **Target weight:** aim ~2.2; **acceptable ceiling ~2.5**. v6.2 net: it **removes** real special-casing
+  (the central Ladder, the ladder/drinks fork, off-clock beverages, the single secret mission, the
+  "ladder-only clock" clause → one unified vendor rule) and **adds** region vendor markets + a mission
+  clock + a face-up ticket row. bg-elegance is weighing whether that's a wash, lighter, or a creep.
+- **Caps:** `complexity-budget.json`. Check with `python tools/complexity/check_complexity.py --game
+  games/travel-agents` and run **`bg-elegance`** each iteration. Never silent creep.
 
-## Modes & scope (see knowledge/modes-and-expansions.md)
-- **Player modes:** 2–4. Explore a dedicated **2-player duel** (head-to-head "who has the better trip")
-  alongside a 3–4p multiplayer race. Owned by `bg-architect`.
-- **Campaign?** None planned (fine!). Possible light "trip journal" replay hook later.
-- **Expansion ambition:** base = the competitive vendor-fight engine (**v4**): the shared **Vendor Board**
+## Modes & scope
+- **Player modes:** 2–4. A dedicated **2-player duel** (head-to-head) + a 3–4p race. Owned by `bg-architect`.
+- **Campaign?** None planned. Possible light "trip journal" replay hook later (the 12→5 mission draw already
+  gives strong game-to-game variety).
+- **Expansion ambition:** base = the competitive vendor-market engine — the region **vendor markets** +
   Buzz-majority fight + two inputs (region ingredients + committed **Buzz**) + the compounding discount +
-  escalating **Acts** + hybrid multi-track scoring (Prestige / Reputation / Coverage) + the secret
-  **signature mission** + push-your-luck **market decks**. Held hooks (not baggage): a **6th+ character**
-  (e.g. the Homesick Local) and a small vendor-pack, a deeper **campaign / "tour journal"** arc, and a
-  **destination series** ("Travel Agents: &lt;place&gt;") if the base sings. Owned by `bg-architect`.
+  the **Day → Night** clock + **Tour Tickets** (the objective/mission spine) + push-your-luck ingredient
+  **market decks**. Held hooks: a **6th+ character** (the Homesick Local), a small vendor/ticket pack, a
+  **destination series** ("Travel Agents: &lt;place&gt;"). Owned by `bg-architect`.
 - **Guardrail:** base must be complete & great on its own.
 
 ## Mechanism spine
-<!-- 1–3 mechanism families and the blend; why each part needs the others (see knowledge/archetypes.md). -->
-**Sourcing engine (spine A) + a Buzz-majority "area-influence" vendor fight** (CD v4 rework, 2026-08-06;
-see `design/design-doc.md` v4). A **tight two-player engine-builder** with a genuine *fight* at its centre
-(Splendor Duel / LOTR Duel band, reaching toward an Arcs-Court interaction), built on:
-- **Two-input engine-building with a contested currency.** You win **Vendors** off an escalating shared
-  **Vendor Board** by paying **two inputs** — region-specific **fresh ingredients** + **Buzz** — but Buzz
-  is no longer a private spend: it's **committed publicly ON each vendor** (Arcs-Court-like). You must be
-  **on-site** to place it, both agents can pile onto the same vendor, and you **win only by out-hyping your
-  rival by ≥2 while holding the ingredients**. Each vendor won is a **permanent engine piece**: a
-  **compounding ingredient discount** (region icon) feeding several scoring vectors.
-- **Set collection with a twist — recipes by region** (the ingredient input). Vendor costs name
-  region-specific ingredients from the Taiwan **regions that actually supply them**. **v6 cuts the palette
-  to 5** — one **signature per region** (a North protein · Central tea · South seafood · East rice/greens)
-  + one **common** ingredient (the drinks/convenience staple, in two of the four regions). Real food
-  geography, not "food + map." The v3.1 movement-rebalance spirit carries over (anchor ladder vendors
-  in-region + ~40% night-market cross-links); the **wild pantry token is cut** (folded into the common).
-- **Push-your-luck sourcing.** Each region's market is a **face-down deck** (its 2 specialties + salted
-  **hazard events**). **Visit the Local Market** = draw 3, keep 2 — a flipped typhoon fires on the spot.
-  The **Convenience Store** (top card of any region, blind) and **Travel** (arrive with a card) are the
-  low-variance valves.
-- **Region routing / travel** — you move *because* the ingredient AND the Buzz-placement AND the Bribe are
-  all region-gated. Position matters more than ever.
-- **The rival fight + the escalating day + the fork:** the **Ladder** zone of the Vendor Board is the
-  public tug-of-war (out-hype the rival to win a vendor); the game runs the **Day → Night arc on a single
-  day-clock** — **Act I · The Breakfast Run 早餐 (breakfast shops) → Act II · Night Market 夜市
-  (night-market stalls)** — the clock **advancing on table-wide LADDER wins only**, flipping the Ladder to
-  the night-market deck at **dusk** and ending the game at the **last train home**. Alongside runs the
-  off-clock, region-free **Beverage Row** (the easy-points fork). No linear Season counter, no Extract, no
-  named "Code Red" alarm.
+<!-- mechanism families + the blend; why each part needs the others. -->
+A **tight two-player engine-builder** with a genuine *fight* at its centre (Splendor Duel / LOTR Duel band,
+reaching toward an Arcs-Court interaction), built on:
+- **Region vendor markets (v6.2).** Each of the 4 regions (**North 北 · Central 中 · South 南 · East 東**)
+  has **its own face-down vendor pile** — a **daytime** layer stacked on a **nighttime** layer, with
+  **drinks mixed in as the low-value vendors**. Each region keeps **1–2 face-up** (North 2, others 1),
+  refilled in place. No central Ladder, no ladder/drinks fork — **one kind of vendor, one courting rule**.
+- **Two-input engine-building with a contested currency.** You win **Vendors** by paying **region-specific
+  ingredients** + **Buzz**, where Buzz is committed **publicly ON each vendor** (Arcs-Court-like): be
+  **on-site** to place it, both agents can pile on the same vendor, and you **win only by out-hyping your
+  rival by ≥2 while holding the ingredients**. Each **food** vendor won is an engine piece (a compounding
+  **region-icon ingredient discount**); **drinks carry no icon** (low value, no ramp).
+- **Set collection by region — the 5-ingredient palette.** One **signature per region** (**N 豬肉 pork · C
+  茶 tea · S 海鮮 seafood · E 米 rice**) + one **common (K 糖 sugar)** that lives in **C & S** only. Real
+  food geography. ~40% of nighttime vendors are **cross-region** (a vendor here needs an ingredient from
+  there) — a load-bearing travel lever.
+- **Push-your-luck ingredient sourcing.** Each region also has a face-down **market deck** (its signature,
+  the common in C/S, and salted **scoped events**). **Visit** = flip 3, keep 2, events fire **by scope**
+  (⦿ self / ⬢ region / ➤ neighbour). **Convenience Store** = top card of ANY region, blind — **also fires
+  by scope** (the take-that lever). **Travel** = move + draw the arriving region (an event whiffs).
+- **The Day → Night clock + Tour Tickets (the spine, v6.2).** The day runs **Act I (daytime vendors) →
+  dusk → Act II (nighttime vendors) → the last train home**; at dusk the face-up daytime vendors are
+  **swept**. **Missions ("Tour Tickets") are the heartbeat:** a **face-up row of 3**, claimed as an action,
+  scored **retroactively** (+value / −½ if unfinished), drawn from **daytime / nighttime / general** pools
+  (12 per phase in the box, **5 drawn per phase per game**). The **clock is driven by missions** — the day
+  advances as **claimed missions are completed** (to A/B vs a vendor-claim clock in sim).
 
 ## Core loop
-<!-- The repeated cycle of decisions and rewards, step by step. -->
-Specified in `design/design-doc.md` (v6). **A turn = ONE action:** **Visit the Local Market** (draw 3 keep
-2 from your region's deck; hazards fire — how you bulk-source region **signatures**) · **Convenience Store**
-(top card of ANY region's deck, blind, whiffs on an event — the safe, no-travel way to grab the **common**
-ingredient the **drinks** run on) · **Travel** (move one region, draw the arriving region's top card) ·
-**Promote** (place 2 Buzz onto vendor(s) you're with) · **Bribe a Vendor** (holding ≥2 more Buzz on it than
-your rival, pay its ingredients − discounts → win it: Prestige scored **live**, a Rep bump, a perk; its
-Buzz clears to supply; refill; lock it from the rival). **Two roads:** the **Ladder** (breakfast shops now,
-night-market stalls after dusk) is contested, **region-gated**, and each ladder Bribe **advances the
-day-clock**; the **Beverage Row** is a persistent, **region-free**, all-day trickle of cheap easy points
-that **does NOT advance the clock**. You can only take a region's **signature** while there (5-ingredient
-palette: one signature per region N/C/S/E + one **common** in two of the four regions). Your **Larder sits
-face-up** (the secret **signature mission** is the game's *only* hidden info). **Larder caps at 7.** The
-tension every turn: push the contested ladder (travel, dig your signature, win the Buzz fight) — or bank a
-safe region-free drink? And on the ladder: dig now (risk a hazard), grab a safe card, travel, pile more
-Buzz, or close the Bribe before your rival out-hypes you. *(Extract, Poach, the wild pantry token, and the
-Coverage scoring track are cut; breadth is now a Mission.)*
+<!-- The repeated cycle of decisions and rewards. -->
+Full spec in `design/v6.2-content-draft.md`. **A turn = ONE action:**
+- **Visit the Local Market** (flip 3 of your region's ingredient deck, keep 2; events fire by scope) ·
+- **Convenience Store** (top card of ANY region's ingredient deck, blind — grab the common, or fire a
+  scoped event, incl. onto a rival's region) ·
+- **Travel** (move one region — HSR links N↔S — draw the arriving region; an event whiffs) ·
+- **Promote** (place 2 Buzz onto vendor(s) you're with in this region) ·
+- **Bribe a Vendor** (be on-site, hold ≥2 more Buzz than your rival, pay its ingredients − discounts → win
+  it: Prestige scored **live**, a Rep bump, a perk; its Buzz clears to supply; refill the slot; lock it) ·
+- **Claim a Tour Ticket** (take one from the face-up row of 3; it refills — a public commitment scored
+  retroactively at game end).
+
+You court whatever's **face-up in the region you stand in** (1–2 vendors + the day's layer). **Larder caps
+at 7.** The tension every turn: chase the region's face-up prize, dig for the ingredient you're short,
+grab a cheap drink when it's the efficient local play, commit to a ticket (and race to finish it before the
+penalty bites), or reach into a rival's region with a scoped Convenience-Store event. Day flips to night as
+the itinerary fills; when the night winds down, catch the **last train home**.
 
 ## Signature twist
-<!-- The one memorable rule/hook that makes it *this* game. -->
+<!-- The one memorable hook that makes it *this* game. -->
 **Buzz is a public, committed, contested majority you pile ON the island's vendors — you win a vendor by
-out-hyping your rival ON-SITE (by ≥2) while holding the ingredients its dish needs, and each vendor won is
-an engine piece (a compounding ingredient discount) climbing Prestige and Reputation toward your hidden
-signature tour.** The travel-agent fiction (promote a vendor, out-woo your rival, win their blessing) and
-the food-geography fiction (source where the food lives) drive the *same* decisions. The runaway brake is
-the **Buzz fight itself** — undiscounted, region-gated, and raise-able by your rival — so even a
-fully-ramped engine must still win a contested tug-of-war for every vendor. *(v4 — reshapes v3's
-private-Buzz spend into an Arcs-Court-like public majority; the "**Bribe a Vendor**" keyword is LOCKED —
-the warm, comedic *"marketing opportunity"* hard sell, never corruption.)* **v6 sets the twist against a
-FORK:** the contested ladder is one road; the region-free, off-the-clock **all-day drinks stands** are the
-low-value / low-conflict / low-travel other road — a real "push progress OR bank easy points" choice.
+out-hyping your rival ON-SITE (by ≥2) while holding the ingredients its dish needs, and each food vendor
+won is an engine piece (a compounding ingredient discount) climbing Prestige and Reputation.** The
+travel-agent fiction (promote a vendor, out-woo your rival, win their blessing) and the food-geography
+fiction (source where the food lives) drive the *same* decisions. The runaway brake is the **Buzz fight
+itself** — undiscounted, region-gated, raise-able by your rival. **v6.2 sets this against your ITINERARY:**
+missions ("Tour Tickets") are the game's spine — claimed openly, raced against a −½ penalty, and the thing
+that **paces the day toward night**. *(The "**Bribe a Vendor**" keyword is LOCKED — the warm, comedic
+"marketing opportunity," never corruption.)*
+
+## The five intended playstyles (the design's depth target)
+The game should support several viable ways to win — the bar (and the sim's test lineup) is **all five
+live, none >~55%, with some rock-paper-scissors between them**:
+- **Character-lean** — play hard into your character's ability.
+- **Opportunistic** — chase the currently-lucrative: ★/premium face-up vendors, high-value tickets, event windfalls.
+- **Disruptive** — reach into a rival's region with scoped Convenience-Store events; deny and tax.
+- **Balanced** — a mix of the above.
+- **End-game driver** — complete objectives fast to slam the last train shut while ahead.
 
 ## Components (summary)
-*(v6 target for `bg-developer`, **after CD sign-off**; full BOM regenerates in `components/manifest.md`.)*
-**~6 component types** (pantry/wild token gone, event tiles folded into the market decks), within the cap of
-**8**: (1) **Map board** — Taiwan, 4 regions on a ring + HSR spine, carrying the **day-clock** (with a
-**dusk** mark and a **last-train** mark — no named alarm), the **Prestige (VP) track**, the **Reputation
-track**, and a **two-zone Vendor Board** — the **Ladder** (Act-cycling, region-gated, with per-vendor
-**Buzz zones**) + a persistent, **region-free Beverage Row** — plus a face-down **market-deck** space per
-region; (2) **25 Vendor cards** — three real **venue types** re-sorted by dish identity into **three decks**:
-**Breakfast Shops 早餐店 (~10, Act I Ladder) · Night-Market Stalls 夜市攤 (~8–9, Act II Ladder) · Beverage
-Shops 飲料店 (~6–7, the persistent Beverage Row)**, one per **real locked dish** (Tâi-lô + 繁體), each with
-cost (**5-palette: signatures + common**), a **region icon** *(ladder only — the region you must stand in to
-hype/Bribe it; beverages carry none)*, **Prestige**, **Reputation**, a **perk**, and its **venue type**;
-**2–3 apex "Legendary" night-market stalls carry a printed ★ (7–8 Prestige)** — a real
-Michelin/Bib-Gourmand/competition accolade making them the hot targets; region-icon balance held across
-N/C/S/E; (3) **~12 Mission cards** (secret +7 vendor patterns, draw-3-keep-1 — the sole breadth/grand-tour
-carrier; incl. a *"3 beverage shops"* drinks line); (4) **~44–50 Market cards** — four face-down region
-decks of **ingredient cards** (**5-ingredient palette**: 4 region signatures + 1 common, the common in **two
-of the four** region decks) **+ event cards** (~14, hazard-leaning ~55–60%), sharing a common back; (5)
-**~24 Buzz tokens** (@2p; the committed, public, contested resource — placed on vendors, cleared on a win);
-(6) **5 Character mats** (one ability + one flaw each — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**; 里長伯 & 媽寶
-= KEPT kits re-lored, 大胃王 & 大哥 = NEW, numbers sim-tunable) + 4 Agent pawns + Prestige/Rep markers +
-**day-clock marker** + **~4 ★ Star tokens** (the dynamic value swing — a "vendor gets hot" boon drops one on
-a **Ladder** vendor for **+2 Prestige / +1 Rep**, recyclable) (board bits).
-**Cut:** the **wild pantry token** (folded into the named common; palette 10→5), **Event tiles** as a
-separate type (now market cards), the **Season counter** (→ day-clock), the **Coverage scoring key**.
-Deck-size note: 25 vendors across the three decks is comfortable at 2p; 3–4p may want a few more per venue
-type (→ `bg-architect`).
+*(v6.2 target for `bg-developer`, **after CD lock**; BOM regenerates in `components/manifest.md`. Current
+CSVs are still pre-v6 — the data rebuild is gated.)*
+- **Map board** — Taiwan, 4 regions on a ring + HSR spine (N↔S), carrying the **Day→Night clock** (dusk +
+  last-train marks), the **Prestige (VP) track**, the **Reputation track**, and — **per region** — a
+  face-down **vendor-pile** space with **1–2 face-up slots** (North 2, others 1) **and** a face-down
+  **ingredient-market-deck** space.
+- **~24 Vendor cards** across the four region piles (day/night layers; **drinks are the low-value vendors**
+  mixed in), one per real locked dish (繁體 + Tâi-lô), each with cost (5-palette), a **region icon**
+  *(food only — the ramp; drinks carry none)*, **Prestige**, **Reputation**, a **perk**, and its
+  daytime/nighttime layer. **One apex (★) vendor per region** (comparable value — the rotating top prize);
+  the dynamic **★ Star token** can make a vendor hot mid-game (+2 Prestige/+1 Rep, recyclable).
+- **~27 Tour-Ticket (Mission) cards** — **12 daytime + 12 nighttime + a small general pool**; **draw 5 per
+  phase per game** (rest to the box). Secret patterns *(bg-theme is settling face-up-row vs any hidden
+  element)*; scored **retroactively** (+value / −½ if unfinished).
+- **~44–50 ingredient Market cards** — four face-down region decks (5-palette: 4 signatures + the common in
+  C & S) **+ scoped event cards** (~14; each tagged ⦿/⬢/➤; hazard-leaning; tax-not-destroy).
+- **~24 Buzz tokens** (@2p; committed, public, contested — placed on vendors, cleared on a win).
+- **5 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**) + 4 Agent pawns +
+  Prestige/Rep markers + the **day-clock marker** + **~4 ★ Star tokens**.
+**Component-load flag (bg-elegance / bg-infodesign):** two face-down piles per region + 5 face-up vendors +
+a 3-ticket row — confirm the table stays parseable.
 
 ## Win condition & scoring
-Hybrid multi-track: the game ends at the **last train home** (the day-clock's last-train mark — the Day →
-Night arc winding down; no named alarm), **highest total VP wins** (no sudden-death). Score = **Tour
-Prestige** (vendors' values: breakfast shop 1–2 / beverage shop 2 flat / night-market stall 5–6 / ★ apex
-7–8) + **Reputation** end-VP by final track position (3→+2 · 6→+4 · 9→+6 · top→+9; **pure end-VP —
-milestone perks cut**) + **secret signature mission** (+7 if completed, revealed at scoring — the carrier
-of the grand-tour breadth line). A **live tracker** (Prestige + Rep markers) shows both open vectors; the
-**only** off-tracker VP is the hidden +7. **Region-Coverage is CUT as its own scoring track** (breadth →
-the "all 4 regions" Mission; beverages are region-free so they don't count toward it). ≥2 paths kept
-competitive (tall vs rep-climb vs grand-tour vs the drinks-volume line pull against each other; the Buzz
-fight adds opponent-dependence so openings don't solve; **a pure-drinks line must clearly lose to a good
-ladder line** — the fork's ceiling gap). **Tiebreak:** highest Reputation, then most vendors, then most
-regions covered. Expected 2p winner **~22–32 VP** (retuned for the shorter ~5–6-win fork game). Detail +
-balance model in `design/design-doc.md` v6.
+Hybrid multi-track: the game ends at the **last train home**, **highest total VP wins** (no sudden-death).
+Score = **Tour Prestige** (sum of your vendors' values — drinks 2 / daytime food 1–3 / nighttime food 4–6 /
+★ apex 6–8) + **Reputation** end-VP by final track position (3→+2 · 6→+4 · 9→+6 · top→+9) + **Tour Tickets**
+(**+value each if completed, −floor(value/2) each if unfinished** — the retroactive, press-your-luck
+objective layer). ≥3 paths kept competitive (see the five playstyles); the Buzz fight adds
+opponent-dependence so openings don't solve. **Tiebreak:** highest Reputation, then most vendors, then most
+regions covered. Expected 2p winner **~22–32 VP**. Detail + balance model in `design/v6.2-content-draft.md`.
 
 ## Rules summary
-Drafted in `design/rules-draft.md` v6 (teach-in-play order). Turn = one of **Visit the Local Market
-(draw 3 keep 2, hazards fire) / Convenience Store (top of any deck, blind — the drinks/common valve) /
-Travel (move + draw arriving region) / Promote (place 2 Buzz on vendor[s] you're with) / Bribe a Vendor**;
-Larder cap 7. **Buzz is committed on vendors** (public; **ladder vendors region-gated, beverages
-region-free**; both agents can pile on the same vendor). To **Bribe** you must be **with the vendor** (in
-its region for a ladder vendor; anywhere for a beverage), hold **≥2 more Buzz on it than your rival**, and
-pay its ingredients (− region discounts, floored); winning scores Prestige + Rep + a perk, **clears the
-vendor's Buzz to the supply**, refills the slot, and locks the rival out. **Only a LADDER Bribe (breakfast
-or night-market) advances the day-clock +1; a beverage Bribe does not.** Market decks are face-down
-(hazards fire on Visit; single blind draws whiff). The game is the **Day → Night arc on a day-clock**
-(advances +1 per table-wide LADDER win): at the **dusk** mark (2p: 4th ladder win) the **Ladder** flips from
-**Act I · The Breakfast Run 早餐** (breakfast shops) to **Act II · Night Market 夜市** (night-market stalls;
-the Beverage Row is not swept); at the **last-train** mark (2p: 7th ladder win) **night winds down → the
-last train home** → finish the round + one more full round → reveal missions → score. (Rep-top scores +9
-but doesn't end the game; deck exhaustion backstops each mark.) **One hidden-info hook only:** the secret
-signature mission.
+Turn = one of **Visit / Convenience Store / Travel / Promote / Bribe a Vendor / Claim a Tour Ticket**;
+Larder cap 7. **Buzz is committed on vendors** (public; region-gated; both agents can pile on). To **Bribe**:
+be **with the vendor**, hold **≥2 more Buzz than your rival**, pay its ingredients (− region discounts);
+winning scores Prestige + Rep + a perk, clears the vendor's Buzz to supply, refills the slot, locks the
+rival out. Ingredient market decks are face-down; **events fire by scope on Visit + Convenience Store**
+(Travel whiffs). **Day → Night:** at **dusk** each region's face-up daytime vendors are **swept** and the
+nighttime layer starts revealing; at the **last-train** mark → finish the round + one more full round →
+score. **The clock is mission-driven** (completing claimed Tour Tickets advances it — to A/B vs a
+vendor-claim clock in sim). Full teach order → `design/rules-draft.md` (to be updated to v6.2 at build).
 
 ## Open questions & risks
-- ✅ **Mechanism spine — DECIDED (v4 rework + v5 tightening + v6 economy fork, 2026-08-06/07):** sourcing
-  engine + a **Buzz-majority vendor fight** (committed public Buzz, Arcs-Court-like) + **push-your-luck
-  market decks** + a **Day → Night day-clock** (The Breakfast Run → Night Market → the last train home) +
-  the **drinks FORK** (off-clock, region-free beverages; only ladder Bribes advance the clock) + a
-  **5-ingredient palette**. Extract + Poach + the wild pantry token cut; **Coverage folded into a Mission**;
-  **"Bribe a Vendor" LOCKED**; five Taiwanese-social-type characters. **Design locked for CD sign-off; sim
-  gated.**
-- ⚠️ **TOP RISK #1 (v4, THE make-or-break) — is the Buzz-majority tug-of-war fun/tense, not a swingy
-  slap-fight or a degenerate "never commit, always snipe"?** New, load-bearing, untested. *Attack (sim +
-  table):* Buzz-war frequency/depth (sane escalation vs draining the supply on one vendor); **"snipe-only"
-  win-rate ≤~55%** (early commitment must be viable); loser's-tempo cost ("outraced not robbed" vs
-  feels-bad); Buzz supply pressure (~24 @2p right?). *Fail fixes:* tune the ≥2 margin (≥1/≥3), Buzz/Promote,
-  supply size, or a partial loser-refund.
-- ⚠️ **TOP RISK #2 (v4) — no dominant track or opening under the new interaction.** Keep **tall ≈ rep-climb
-  ≈ breadth** competitive; the Buzz fight should keep openings from solving (opponent-dependence). *Attack:*
-  dominant-track/opening probe (no line >~55%, ≥3 viable) + 2p Screentop feel-test. *Fail fixes:* rebalance
-  costs / track rewards.
-- ⚠️ **TOP RISK #3 (v4) — is the push-your-luck market spicy not punishing, and does movement still
-  spread?** *Attack:* hazard-hit rate per Visit; Visit vs Convenience-Store usage (is Visit worth the
-  risk?); per-region sourcing share (each ≥~18%, South not starved); inter-region moves/game (region-gating
-  should *increase* travel). *Fail fixes:* hazard density, reveal-count, the "brewing" telegraph knob, the
-  cross-link rate.
-- ⚠️ **Secondary risks:** per-character win-rate **45–55%** with no dominant char×mission combo (the
-  re-homed Rookie/Gourmand are now **sim-legible**; watch the sharper Influencer in the Buzz fight); does
-  the **Day → Night day-clock** pacing land ~5–6 wins/player in **≤30 min** (dusk 4 / last train 7 ladder
-  wins @2p); **is the drinks fork viable-but-not-dominant** (v6's headline new risk — drinks-lean vs
-  ladder-lean each ≤~55%, pure-drinks clearly loses); does a drinks-heavy field make the game drag; does
-  the boon/hazard ratio feel warm not grim; does Fellowship survive (the comedic Buzz fight + market drama).
-- ⚠️ **WEIGHT (honest):** v4 is a real increase — **~2.5–2.6 pre-trim**, at/over the 2.5 ceiling, driven by
-  the Buzz-majority system. Banked: Extract/Poach/pantry cut, Season→Acts, tiles→cards (component types
-  7→~6). **Hold ≤2.5** by folding **Coverage → mission-only** (recommended), then **Rep milestones → pure
-  end-VP**; else **consciously raise the ceiling to ~2.6** (defensible next to Arcs/Splendor Duel+).
-  `bg-elegance` guards. **← CD decision (see design-doc *Open decisions* D1–D4).**
-- 2p-first, but confirm it scales cleanly to 3–4 (`bg-architect`); Automa sketch now near-expected on a
-  mid-weight engine.
-- **Sensitivity:** the game depicts a **real place & culture (Taiwan)** — flag for `bg-theme` +
-  `bg-publishing` (respectful, well-researched, avoid caricature; "Taiwanese humour" done *with* not *at*;
-  paid Taiwanese cultural + language consultant before art/print).
+- ✅ **Spine — DECIDED (v6.2):** region vendor markets + Buzz-majority fight + push-your-luck ingredient
+  decks + a **Day→Night mission clock** + **Tour Tickets** + the 5-ingredient palette. Drinks are low-value
+  vendors (fork/off-clock gone). Five intended playstyles. **Content drafted; pending a sim pass + CD lock.**
+- ⚠️ **RISK #1 (carried, make-or-break) — is the Buzz-majority fight fun/tense, not degenerate?** And in
+  v6.2, **does spreading vendors across region markets make it too RARE** (players courting different
+  regions rarely collide)? The sim reads contested-win frequency; the *feel* is a table question. 大哥's
+  tie-win is still the dominance probe — **H2 unresolved (needs a 4th option)**.
+- ⚠️ **RISK #2 (the fork's successor) — do all FIVE playstyles live** (each ≤~55%, some intransitivity),
+  and is a **well-timed mix** a good line? v6.1 sim showed a drinks *lean* was a trap and flat drink value
+  couldn't fix it; **Tour Tickets** (a greedy-visible payoff) moved a mix toward parity — v6.2 is meant to
+  finish the job (drinks as the cheap local play + mix/drink tickets). *Disruptive* is the weakest-supported
+  today (take-that is light in sim) — watch whether it's a viable lean or just a spoiler.
+- ⚠️ **RISK #3 — does travel actually SPREAD** across all four regions (East not starved), now that value is
+  distributed (one ★ per region, cross-region cycle N→S→E→N, coverage tickets, scoped events)? Sim reads
+  per-region sourcing/claim share + inter-region moves.
+- ⚠️ **PACING — the clock.** Mission-clock vs vendor-claim clock (the sim A/Bs which paces better). The
+  all-vendor-claims clock introduced a **rush** risk (cheap claims race the end); the mission clock is the
+  proposed fix. Confirm ~25–30 min across the random 12→5 mission draws (length variance is the watch).
+- ⚠️ **Characters:** each **45–55%**, no dominant char×mission combo. Live: **大哥 too strong (H2), 網紅
+  hot, 媽寶 weak** (from the v6.1 sim); 大胃王 fine (ship H1-A).
+- ⚠️ **WEIGHT / table-state:** bg-elegance re-reading v6.2 (removed special-casing vs added
+  markets/clock/tickets); the component-load flag above.
+- **Sensitivity:** a **real place & culture (Taiwan)** — the **East region is Indigenous-forward** (generic
+  respectful labels, consultant before art), "Bribe"/大哥 warmth rails, 繁體 + Tâi-lô discipline. Owned by
+  `bg-theme` + `bg-publishing`; paid Taiwanese cultural + language consultant before art/print.
 
 ## Status by stage
 - [x] Ideation
 - [x] Research
 - [x] Exploration
-- [ ] Design ← **in progress** (`bg-design` specifying spine A)
+- [ ] Design ← **in progress** (v6.2 proposal: content drafted, sim pass + CD lock pending)
 - [ ] Development
 - [ ] Prototype (Screentop.gg / PnP)
 - [ ] Playtesting
@@ -230,6 +216,5 @@ signature mission.
 - [ ] Publishing / IP
 
 ## Links
-<!-- design/, components/, playtests/, marketing/ artifacts as they appear. -->
-- Identity: `identity.md`
-- Decisions: `decision-log.md`
+- Current spec: `design/v6.2-content-draft.md` · Deeper (v6.1 history): `design/design-doc.md`
+- Identity: `identity.md` · Decisions: `decision-log.md` · Sim: `playtests/sim-notes.md`
