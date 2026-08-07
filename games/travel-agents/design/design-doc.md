@@ -1,6 +1,18 @@
 # Travel Agents: Taiwan — Design Doc
 
-> ## ✅ CURRENT DESIGN = v6.2 — **LOCKED 2026-08-07** (CD sign-off, sim-validated). See **`design/v6.2-content-draft.md`** for the authoritative current spec.
+> ## 🔒 CURRENT DESIGN = v6.3 — **SHAPE LOCKED 2026-08-07** (CD sign-off on all nine items). See **`design/v6.3-content-draft.md`** for the authoritative current *shape*.
+> **Balance is PENDING a gated re-sim.** v6.3 gives **Reputation teeth** (a live cap on committed Buzz;
+> earned by Travel + events, **not** vendors; **it no longer scores**; and a small **Rep-sink** set —
+> greed/corner-cutting cost Rep), adds **milestone boons** on the (renamed) **Bookings** track (marks 7/14,
+> Set A "Tempo & Fuel", first-to-cross), **eliminates the perk field** (a vendor = Bookings + icon-or-not;
+> table reissued), collapses **ticket pools 3→2 (DAY/NIGHT)**, and confirms **per-player win/lose piles**
+> (成團 / 遺珠). New tiebreak: **most vendors → most regions → fewest LOSE-pile tickets.**
+> **⚠ Change 1 is NOT sim-equivalent — a combined re-sim (Changes 1+2+3) is REQUIRED and GATED on the CD's
+> explicit "go."** **Until that run validates the numbers, `design/v6.2-content-draft.md` remains the last
+> SIM-VALIDATED build.** Do not rebuild the CSVs or the sim module before the re-sim. Full v6.3 shape +
+> the open sim knobs: `design/v6.3-content-draft.md`; the options + rationale: `design/v6.3-proposal.md`.
+
+> ## ✅ PRIOR SIM-VALIDATED BUILD = v6.2 — **LOCKED 2026-08-07** (CD sign-off, sim-validated). See **`design/v6.2-content-draft.md`**. (Superseded in SHAPE by v6.3 above; remains the balance baseline until the v6.3 re-sim.)
 > The detailed text below is **v6.1, retained as history/reference.** v6.2 (co-designed 2026-08-07; sim run +
 > CD locks at the top of `decision-log.md`) **supersedes** several v6.1 structures and the sections below
 > that describe them:

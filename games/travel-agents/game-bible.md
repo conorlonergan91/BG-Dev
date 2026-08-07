@@ -1,8 +1,19 @@
 # 🎲 Travel Agents: Taiwan — Game Bible
 
 > The single living source of truth for this game. Every agent reads and updates this. Keep it current.
-> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design — v6.2 LOCKED (2026-08-07, CD sign-off,
-> sim-validated). Next: `bg-developer` builds the v6.2 component data for the Screentop prototype.** v6.2
+> Slug: `travel-agents` · Started: 2026-08-06 · Status: **Design — v6.3 SHAPE LOCKED (2026-08-07, CD
+> sign-off on all nine items); BALANCE PENDING a GATED re-sim. `design/v6.2-content-draft.md` remains the
+> last SIM-VALIDATED build until that run.** Next: the CD gives an explicit "go" on the combined re-sim
+> (Changes 1+2+3); the bg-developer data rebuild + sim-module rework wait on it. **v6.3 gives Reputation
+> teeth** (a live cap on committed Buzz — *your hype can't outrun your reputation*; earned by **Travel +
+> events, not vendors**; it **no longer scores**; + a small **Rep-sink** set where greed/corner-cutting cost
+> Rep), adds **milestone boons** on the (renamed) **Bookings** track (marks 7/14; first-to-cross), **kills
+> the perk field** (a vendor = Bookings value + region-icon-or-not; table reissued), collapses **ticket
+> pools 3→2 (DAY/NIGHT)**, and confirms **per-player win/lose piles**. New tiebreak: **most vendors → most
+> regions → fewest LOSE-pile tickets.** Full v6.3 shape: `design/v6.3-content-draft.md`. **⚠ Change 1 is NOT
+> sim-equivalent — the re-sim is required and GATED.**
+>
+> _(v6.2 baseline, still the balance reference:)_ v6.2
 > restructures the board into **region vendor markets**, paces the day on the **vendor-claims clock**, and
 > makes **Tour Tickets** the objective spine (a face-up ticket row scored into a **win-pile / lose-pile**).
 > It **supersedes v6.1's central Ladder, the ladder-vs-drinks FORK, off-clock/region-free beverages, and the
@@ -135,6 +146,11 @@ your **Tour Tickets** (booked openly from a face-up row) are the objective spine
 clock into a **win-pile / lose-pile** — while the **vendor-claims clock** (each vendor won ticks the day
 toward night) is what **paces the day**. *(The "**Bribe a Vendor**" keyword is LOCKED — the warm, comedic
 "marketing opportunity," never corruption.)*
+> **v6.3 deepens the twist — Reputation now gates the Buzz.** *Your hype can't outrun your reputation:* your
+> total committed Buzz may never exceed your **Reputation**, which you build by **Travelling** (spreading
+> your name) and through events, and **burn** by greed (a Greedy Grab of an extra ingredient costs −1 Rep).
+> So the fight gains a resource spine — the agent who travelled more can out-escalate a collision — Travel
+> becomes the engine's fuel line, and Reputation **stops scoring** (gating replaces its old end-VP job).
 
 ## The five intended playstyles (the design's depth target)
 The game should support several viable ways to win — the bar (and the sim's test lineup) is **all five
@@ -174,17 +190,20 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
 a 3-ticket row — confirm the table stays parseable.
 
 ## Win condition & scoring
-Hybrid multi-track: the game ends at the **last train home** (the **10th table-wide vendor claim** @2p),
-**highest total VP wins** (no sudden-death). Score = **Tour Prestige** (sum of your vendors' values — drinks
-2 / daytime food 1–3 / nighttime food 4–6 / ★ apex 6–8) + **Reputation** end-VP by final track position
-(3→+2 · 6→+4 · 9→+6 · top→+9) + **Tour Tickets**, scored via the **win-pile / lose-pile** model: each claimed
-ticket is judged at the end of its phase (daytime at dusk, nighttime at the last train) into your **WIN
-pile** (completed) or **LOSE pile** (unfinished), then tallied **once at game end** = **Σ(win-pile values) −
-Σ(floor(value/2) per lose-pile ticket)** — the press-your-luck objective layer (accounting-only change from
-v6.1's live-retroactive scoring; the final total is identical). ≥3 paths kept competitive (see the five
-playstyles); the Buzz fight adds opponent-dependence so openings don't solve. **Tiebreak:** highest
-Reputation, then most vendors, then most regions covered. Expected 2p winner **~22–32 VP**. Detail + balance
-model in `design/v6.2-content-draft.md`.
+**v6.3 (SHAPE LOCKED — TWO scoring vectors; Reputation no longer scores).** The game ends at the **last
+train home** (the **10th table-wide vendor claim** @2p), **highest total wins** (no sudden-death). Score =
+**Bookings** (the former Prestige track — sum of your vendors' values, tracked **live**: drinks 2 / daytime
+food 1–2 / mid/night food 5–6 / ★ apex 6–8) + **Tour Tickets** via the **win-pile / lose-pile** model (each
+claimed ticket judged at the end of its deck's phase — DAY at dusk, NIGHT at the last train — into your
+**WIN pile 成團** / **LOSE pile 遺珠**, tallied **once at game end** = **Σ(win values) − Σ(floor(value/2) per
+lose ticket)**). **Reputation is a resource, not a score** — the old `3→+2 · 6→+4 · 9→+6 · top→+9` end-VP
+table is **DELETED** (Reputation now gates Buzz — see Signature twist). **Milestone boons** ("Rave Reviews")
+sit on the Bookings track at **7 / 14**; **first player to cross each** takes a one-time non-VP boon (Mark 7
+→ +1 Rep; Mark 14 → 1 ingredient of choice + next Bribe −1). **New tiebreak: most vendors → most regions
+covered → fewest LOSE-pile tickets.** Expected 2p winner **~18–28** (sim knob — retuned by the re-sim; the
+deleted Rep-VP shifts the old ~22–32 band down). Detail: `design/v6.3-content-draft.md`.
+_(v6.2 baseline scoring — the sim-validated reference until the re-sim — carried the three-vector model with
+Reputation end-VP; see `design/v6.2-content-draft.md`.)_
 
 ## Rules summary
 Turn = one of **Visit / Convenience Store / Travel / Promote / Bribe a Vendor / Claim a Tour Ticket**;
