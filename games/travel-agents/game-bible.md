@@ -71,8 +71,8 @@ that's the gag. Kinds of fun (**locked**): **Discovery** (lead) + **Fellowship**
 A **tight two-player engine-builder** with a genuine *fight* at its centre (Splendor Duel / LOTR Duel band,
 reaching toward an Arcs-Court interaction), built on:
 - **Region vendor markets (v6.2).** Each of the 4 regions (**North 北 · Central 中 · South 南 · East 東**)
-  has **its own face-down vendor pile** — a **daytime** layer stacked on a **nighttime** layer, with
-  **drinks mixed in as the low-value vendors**. Each region keeps **1–2 face-up** (North 2, others 1),
+  has **its own face-down vendor deck** — a **DAY deck** in Act I, a separate **NIGHT deck** in Act II —
+  with **drinks mixed in as the low-value vendors**. Each region keeps **1–2 face-up** (North 2, others 1),
   refilled in place. No central Ladder, no ladder/drinks fork — **one kind of vendor, one courting rule**.
 - **Two-input engine-building with a contested currency.** You win **Vendors** by paying **region-specific
   ingredients** + **Buzz**, where Buzz is committed **publicly ON each vendor** (Arcs-Court-like): be
@@ -88,8 +88,11 @@ reaching toward an Arcs-Court interaction), built on:
   (⦿ self / ⬢ region / ➤ neighbour). **Convenience Store** = top card of ANY region, blind — **also fires
   by scope** (the take-that lever). **Travel** = move + draw the arriving region (an event whiffs).
 - **The Day → Night clock + Tour Tickets (the spine, v6.2).** The day runs **Act I (daytime vendors) →
-  dusk → Act II (nighttime vendors) → the last train home**; at dusk the face-up daytime vendors are
-  **swept**. **Missions ("Tour Tickets") are the heartbeat:** a **face-up row of 3**, claimed as an action,
+  dusk → Act II (nighttime vendors) → the last train home**. **The dusk flip is a big, thematic turnover:**
+  the *entire* day layer is cleared island-wide — **both the day vendor decks AND the day ingredient market
+  decks** are removed (not just the face-up cards) and replaced by **night decks** (recoloured; the night
+  ingredient decks are **event-heavier** — the bustling night-market feel), while **players keep their
+  Larder**. **Missions ("Tour Tickets") are the heartbeat:** a **face-up row of 3**, claimed as an action,
   scored **retroactively** (+value / −½ if unfinished), drawn from **daytime / nighttime / general** pools
   (12 per phase in the box, **5 drawn per phase per game**). The **clock is driven by missions** — the day
   advances as **claimed missions are completed** (to A/B vs a vendor-claim clock in sim).
@@ -139,18 +142,19 @@ live, none >~55%, with some rock-paper-scissors between them**:
 CSVs are still pre-v6 — the data rebuild is gated.)*
 - **Map board** — Taiwan, 4 regions on a ring + HSR spine (N↔S), carrying the **Day→Night clock** (dusk +
   last-train marks), the **Prestige (VP) track**, the **Reputation track**, and — **per region** — a
-  face-down **vendor-pile** space with **1–2 face-up slots** (North 2, others 1) **and** a face-down
-  **ingredient-market-deck** space.
-- **~24 Vendor cards** across the four region piles (day/night layers; **drinks are the low-value vendors**
-  mixed in), one per real locked dish (繁體 + Tâi-lô), each with cost (5-palette), a **region icon**
-  *(food only — the ramp; drinks carry none)*, **Prestige**, **Reputation**, a **perk**, and its
-  daytime/nighttime layer. **One apex (★) vendor per region** (comparable value — the rotating top prize);
-  the dynamic **★ Star token** can make a vendor hot mid-game (+2 Prestige/+1 Rep, recyclable).
+  face-down **vendor-deck** space with **1–2 face-up slots** (North 2, others 1) **and** a face-down
+  **ingredient-deck** space (each holds the **day** deck in Act I, swapped for the **night** deck at dusk).
+- **~48 Vendor cards** — a **day set + a night set per region** (drinks are the low-value vendors mixed into
+  each; recoloured day vs night), one per real locked dish (繁體 + Tâi-lô), each with cost (5-palette), a
+  **region icon** *(food only — the ramp; drinks carry none)*, **Prestige**, **Reputation**, and a **perk**.
+  **One apex (★) vendor per region in the night set** (comparable value — the rotating top prize); the
+  dynamic **★ Star token** can make a vendor hot mid-game (+2 Prestige/+1 Rep, recyclable).
 - **~27 Tour-Ticket (Mission) cards** — **12 daytime + 12 nighttime + a small general pool**; **draw 5 per
-  phase per game** (rest to the box). Secret patterns *(bg-theme is settling face-up-row vs any hidden
-  element)*; scored **retroactively** (+value / −½ if unfinished).
-- **~44–50 ingredient Market cards** — four face-down region decks (5-palette: 4 signatures + the common in
-  C & S) **+ scoped event cards** (~14; each tagged ⦿/⬢/➤; hazard-leaning; tax-not-destroy).
+  phase per game** (rest to the box). A **face-up shared row of 3** (bg-theme locked open tickets, not
+  hidden); scored **retroactively** (+value / −½ if unfinished).
+- **ingredient Market cards** — a **day deck + a night deck per region** (5-palette: 4 signatures + the
+  common in C & S) **+ scoped event cards** (each tagged ⦿/⬢/➤; hazard-leaning; tax-not-destroy) — the
+  **night decks run event-heavier** (the hectic night-market feel). Recoloured day vs night.
 - **~24 Buzz tokens** (@2p; committed, public, contested — placed on vendors, cleared on a win).
 - **5 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**) + 4 Agent pawns +
   Prestige/Rep markers + the **day-clock marker** + **~4 ★ Star tokens**.
@@ -172,10 +176,11 @@ Larder cap 7. **Buzz is committed on vendors** (public; region-gated; both agent
 be **with the vendor**, hold **≥2 more Buzz than your rival**, pay its ingredients (− region discounts);
 winning scores Prestige + Rep + a perk, clears the vendor's Buzz to supply, refills the slot, locks the
 rival out. Ingredient market decks are face-down; **events fire by scope on Visit + Convenience Store**
-(Travel whiffs). **Day → Night:** at **dusk** each region's face-up daytime vendors are **swept** and the
-nighttime layer starts revealing; at the **last-train** mark → finish the round + one more full round →
-score. **The clock is mission-driven** (completing claimed Tour Tickets advances it — to A/B vs a
-vendor-claim clock in sim). Full teach order → `design/rules-draft.md` (to be updated to v6.2 at build).
+(Travel whiffs). **Day → Night:** at **dusk** the whole day layer is cleared island-wide — **both the day
+vendor decks and the day ingredient decks** are removed and replaced by **night decks** (recoloured, and the
+night ingredient decks run event-heavier); **players keep their Larder**. At the **last-train** mark →
+finish the round + one more full round → score. **The clock is mission-driven** (completing claimed Tour
+Tickets advances it — to A/B vs a vendor-claim clock in sim). Full teach order → `design/rules-draft.md` (to be updated to v6.2 at build).
 
 ## Open questions & risks
 - ✅ **Spine — DECIDED (v6.2):** region vendor markets + Buzz-majority fight + push-your-luck ingredient
