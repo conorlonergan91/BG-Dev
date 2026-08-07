@@ -52,7 +52,7 @@ SCOPE_WORD = {"self": "YOU 自己", "region": "THIS REGION 全區", "neighbour":
 _SCOPE_GLYPHS = "⦿⬢➤"
 
 from themes import (get_theme, resolve_suit, emblem_svg, page_gradient, pick_text_color,
-                    phase_style, phase_ribbon_svg)
+                    phase_style, phase_ribbon_svg, back_style)
 
 # ---- Card geometry (poker, trimmed, 300 DPI) --------------------------------
 CARD_W, CARD_H = 750, 1050          # px @ 300 DPI
@@ -451,9 +451,19 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
 </svg>"""
 
 
-def render_back_svg(slug: str, theme: dict) -> str:
+def render_back_svg(slug: str, theme: dict, phase: str | None = None) -> str:
+    """Shared card back. Themes that declare a `back` config (Travel Agents' night-market) get a bespoke
+    boarding-pass / passport-stamp back, with a day/night/general variant layered on from `phase`;
+    every other theme (Beacon's nautical, …) falls through to the unchanged generic ring back."""
+    bstyle = back_style(theme, phase)
+    if bstyle is None:
+        return _render_back_generic(slug, theme)
+    return _render_back_travel_agents(slug, theme, bstyle)
+
+
+def _render_back_generic(slug: str, theme: dict) -> str:
+    """The original concentric-ring back — kept byte-for-byte for Beacon and every non-opted theme."""
     ink, accent, radius = theme["ink"], theme["accent"], theme["radius"]
-    scol = theme["suits"].get("_default", {}).get("color", accent)
     cx, cy = CARD_W / 2, CARD_H / 2
     rings = "".join(
         f'<circle cx="{cx}" cy="{cy}" r="{90 + i*46}" fill="none" stroke="{accent}" stroke-width="3" opacity="0.35"/>'
@@ -466,6 +476,70 @@ def render_back_svg(slug: str, theme: dict) -> str:
   {rings}
   {emblem_svg('spark', cx, cy, 60, accent)}
   <text x="{cx}" y="{CARD_H-90}" font-size="46" fill="{ink}" text-anchor="middle" font-family="{theme['title_font']}" font-style="italic">{esc(slug)}</text>
+</svg>"""
+
+
+def _render_back_travel_agents(slug: str, theme: dict, b: dict) -> str:
+    """A night-market boarding-pass back: dusk-indigo ground, a passport-stamp roundel, a ticket-stub
+    perforation, and (when phased) a warm-sun 日 / neon-moon 夜 treatment so a face-down pile sorts into
+    day vs night at a glance — by MOTIF + palette, never colour alone. All shapes DRAWN (no ☀/☾ tofu)."""
+    radius = theme["radius"]
+    tfont = theme["title_font"]
+    ground = b["ground"]
+    ptop, pbot = b["panel"]
+    stamp = b["stamp"]
+    glow = b.get("glow", stamp)
+    char = b.get("char", "")
+    label = b.get("label", b.get("sub", ""))
+    emblem = b.get("emblem", "stamp")
+    cx = CARD_W / 2
+    # inner panel inset
+    ix, iy, iw, ih = 40, 40, CARD_W - 80, CARD_H - 80
+    # ground colour under the panel that shows through the border + notches
+    panel_txt = pick_text_color(pbot, dark=theme["ink"], light="#ffffff")
+    # ticket-stub perforation across the lower third, with edge notches punched out of the panel
+    perf_y = CARD_H - 300
+    dashes = "".join(
+        f'<line x1="{ix + 44 + i*46}" y1="{perf_y}" x2="{ix + 44 + i*46 + 24}" y2="{perf_y}" '
+        f'stroke="{stamp}" stroke-width="6" stroke-linecap="round" opacity="0.65"/>'
+        for i in range(int((iw - 88) // 46)))
+    notch_l = f'<circle cx="{ix}" cy="{perf_y}" r="22" fill="{ground}"/>'
+    notch_r = f'<circle cx="{ix + iw}" cy="{perf_y}" r="22" fill="{ground}"/>'
+    # central passport-stamp roundel: double ring + the drawn phase motif + the 繁體 phase char
+    sy = 430
+    roundel = (
+        f'<circle cx="{cx}" cy="{sy}" r="150" fill="none" stroke="{stamp}" stroke-width="10" opacity="0.9"/>'
+        f'<circle cx="{cx}" cy="{sy}" r="128" fill="none" stroke="{stamp}" stroke-width="3" opacity="0.6"/>'
+        + emblem_svg(emblem, cx, sy - 18, 66, stamp))
+    if char:
+        roundel += (f'<text x="{cx}" y="{sy + 96}" font-size="72" fill="{stamp}" text-anchor="middle" '
+                    f'font-family="{tfont}" font-weight="bold">{esc(char)}</text>')
+    # corner stamp flecks for texture (low opacity), always the neutral stamp mark
+    corners = "".join(
+        emblem_svg("stamp", x, y, 22, stamp) for (x, y) in
+        ((ix + 54, iy + 54), (ix + iw - 54, iy + 54),
+         (ix + 54, iy + ih - 54), (ix + iw - 54, iy + ih - 54)))
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
+  <defs>
+    <linearGradient id="tab" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="{ptop}"/><stop offset="1" stop-color="{pbot}"/>
+    </linearGradient>
+    <radialGradient id="tag" cx="0.5" cy="0.42" r="0.75">
+      <stop offset="0" stop-color="{glow}" stop-opacity="0.28"/><stop offset="1" stop-color="{glow}" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="{CARD_W}" height="{CARD_H}" rx="{radius}" fill="{ground}"/>
+  <rect x="{ix}" y="{iy}" width="{iw}" height="{ih}" rx="{radius-10}" fill="url(#tab)" stroke="{stamp}" stroke-width="6"/>
+  <rect x="{ix}" y="{iy}" width="{iw}" height="{ih}" rx="{radius-10}" fill="url(#tag)"/>
+  <g opacity="0.28">{corners}</g>
+  <text x="{cx}" y="{iy + 108}" font-size="60" fill="{stamp}" text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="6">{esc(b.get('wordmark',''))}</text>
+  <text x="{cx}" y="{iy + 162}" font-size="34" fill="{panel_txt}" text-anchor="middle" font-family="{tfont}" letter-spacing="4" opacity="0.8">{esc(b.get('sub',''))}</text>
+  {roundel}
+  {dashes}
+  {notch_l}
+  {notch_r}
+  <text x="{cx}" y="{CARD_H - 190}" font-size="40" fill="{panel_txt}" text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="3">{esc(label)}</text>
+  <text x="{cx}" y="{CARD_H - 100}" font-size="30" fill="{panel_txt}" text-anchor="middle" font-family="{tfont}" font-style="italic" opacity="0.7">{esc(slug)}</text>
 </svg>"""
 
 
@@ -520,9 +594,15 @@ def main() -> int:
         p = args.out / "svg" / f"{cid}.svg"
         p.write_text(render_card_svg(row, theme, glyph_map), encoding="utf-8")
         svg_paths.append((cid, p, int(row.get("quantity") or 1)))
-    back_svg = render_back_svg(slug, theme)
+    # Distinct day/night/general backs, DATA-DRIVEN off the `phase` column: a deck whose cards all share
+    # one phase gets that phase's back (so a split day/night pile sorts face-down at a glance); a mixed
+    # or unphased deck (the full-CSV overview sheets, characters) gets the neutral Travel-Agents back.
+    phases = {(r.get("phase") or "").strip().lower() for r in rows}
+    phases.discard("")
+    back_phase = next(iter(phases)) if len(phases) == 1 else None
+    back_svg = render_back_svg(slug, theme, back_phase)
     (args.out / "svg" / "_back.svg").write_text(back_svg, encoding="utf-8")
-    print(f"[svg]  wrote {len(svg_paths)} card SVGs -> {args.out/'svg'}")
+    print(f"[svg]  wrote {len(svg_paths)} card SVGs -> {args.out/'svg'}  (back phase: {back_phase or 'neutral'})")
 
     # cairosvg is needed for anything raster/PDF.
     try:

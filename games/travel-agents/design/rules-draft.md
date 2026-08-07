@@ -146,3 +146,5 @@ Most points wins → **Top Agent**. **Ties:** highest Reputation, then most vend
 - Events are the island living its life — never sacred customs for laughs; a Convenience-Store event on your
   rival is the *island* doing it, a shared groan, never a spiteful strike. Dish and vendor names stay real
   (Tâi-lô + 繁體); the comedy is the caper gag and your own gluttony.
+
+{{ICONOGRAPHY}}

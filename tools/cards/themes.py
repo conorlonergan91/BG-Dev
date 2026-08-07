@@ -100,6 +100,22 @@ THEMES = {
         "title_font": "'WenQuanYi Zen Hei', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif",
         "body_font": "'WenQuanYi Zen Hei', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif",
         "radius": 40,
+        # --- CARD BACK identity (Travel-Agents-native — NOT the shared generic ring back) -------------
+        # A theme that carries a "back" dict opts in to a bespoke back renderer (see build_cards.py
+        # render_back_svg). Themes WITHOUT a "back" key (Beacon's `nautical`, clean, ember, …) fall
+        # through to the unchanged generic ring back, so nothing else regresses. The look derives from
+        # identity.md: a night-market boarding-pass / passport-stamp — dusk-indigo ground, a lantern-
+        # vermilion stamp roundel, ticket-stub perforation, warm bao-paper panel. The day/night VARIANTS
+        # layer the PHASE_STYLES treatment on top (warm sun 日 vs neon moon 夜) so a face-down pile sorts
+        # into day/night by MOTIF + palette, never colour alone (bg-access: drawn sun/moon, CJK 日/夜).
+        "back": {
+            "ground": "#1B2338",        # deep dusk indigo — the constant TA border on every back
+            "panel": ("#F7F1E3", "#E4D4B4"),  # bao-paper panel for the NEUTRAL (unphased/mixed) back
+            "stamp": "#D64545",         # lantern-vermilion stamp roundel (neutral)
+            "wordmark": "TRAVEL AGENTS",
+            "sub": "台灣 · TAIWAN",
+            "emblem": "stamp",          # neutral central motif = a passport/dossier stamp
+        },
         "suits": {
             # --- dish deck: suit = REGION (colour) + a distinct emblem (the dual-code) ---
             "north":      {"color": "#D64545", "emblem": "triangle"},  # Lantern vermilion — beef / pork
@@ -186,6 +202,41 @@ PHASE_STYLES = {
 def phase_style(phase: str) -> dict | None:
     """Return the day/night treatment for a card's `phase` value, or None (neutral)."""
     return PHASE_STYLES.get((phase or "").strip().lower())
+
+
+# Phase → the character + drawn motif a card back carries (font-covered 繁體 + a DRAWN sun/moon, so a
+# face-down pile sorts by shape, never colour alone — bg-access). Neutral (mixed/unphased) decks get no
+# phase mark, just the base TA passport identity.
+BACK_PHASE = {
+    "day":     {"char": "日", "label": "DAY · 早", "emblem": "sun"},
+    "night":   {"char": "夜", "label": "NIGHT · 夜市", "emblem": "moon"},
+    "general": {"char": "通", "label": "ANY · 通用", "emblem": "spark"},
+}
+
+
+def back_style(theme: dict, phase: str | None) -> dict | None:
+    """Resolve a theme's card-back styling, merged with the day/night/general treatment.
+
+    Returns None when the theme carries no `back` key → the caller renders the shared generic back
+    (so Beacon and every non-opted-in theme are byte-unchanged). When a `back` key IS present, returns
+    a dict of {ground, panel, stamp, wordmark, sub, emblem, char?, label?, glow?} with the phase layered
+    on: day = warm sunrise + sun 日, night = neon night-market + moon 夜, general = gold + 通, and a bare
+    phase (or None) = the neutral passport back."""
+    back = theme.get("back")
+    if not back:
+        return None
+    out = dict(back)  # base TA identity (neutral)
+    ph = (phase or "").strip().lower()
+    pstyle = PHASE_STYLES.get(ph)
+    bp = BACK_PHASE.get(ph)
+    if pstyle and bp:
+        out["panel"] = pstyle["page"]      # warm/neon panel ground
+        out["stamp"] = pstyle["frame"]     # phase-tinted stamp roundel + frame
+        out["glow"] = pstyle.get("glow")
+        out["emblem"] = bp["emblem"]       # drawn sun / moon / spark
+        out["char"] = bp["char"]           # 日 / 夜 / 通  (font-covered, never ☀/☾ tofu)
+        out["label"] = bp["label"]
+    return out
 
 
 def phase_ribbon_svg(style: dict, card_w: int, card_h: int, margin: int, tfont: str) -> str:

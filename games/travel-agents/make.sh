@@ -42,8 +42,10 @@ for d in build/decks/*.csv; do
     python3 $T/cards/build_cards.py --csv "$d" --out build --theme "$theme" --formats screentop --tight-grid $tok
 done
 
-# Board (the region-ring map) — 4 regions on the ring + HSR spine + face-up slot counts.
-python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --out build/map.png
+# Board (the region-ring table-layout) — ring + HSR + vendor slots + per-region day/night market decks +
+# placeholder zones for every component. Rendered in BOTH states (mirrors the dusk flip): day / night.
+python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --out build/map-day.png
+python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --out build/map-night.png
 
 # Live in-game tracks.
 # Prestige = the VP tracker (0->50, one marker per player, mark points as you Bribe vendors).
@@ -88,7 +90,10 @@ cp build/sheets/ingredients_back.png      exports/ 2>/dev/null || true
 cp build/sheets/events_sheet_*.png        exports/ 2>/dev/null || true
 cp build/sheets/events_back.png           exports/ 2>/dev/null || true
 cp build/sheets/characters_sheet_*.png    exports/ 2>/dev/null || true
-cp build/map.png                          exports/map.png 2>/dev/null || true
+# stale orphan from the pre-flip single-state board
+rm -f exports/map.png
+cp build/map-day.png                      exports/map-day.png 2>/dev/null || true
+cp build/map-night.png                    exports/map-night.png 2>/dev/null || true
 cp build/prestige-track.png               exports/prestige-track.png 2>/dev/null || true
 cp build/reputation-track.png             exports/reputation-track.png 2>/dev/null || true
 cp build/clock-track.png                  exports/clock-track.png 2>/dev/null || true
