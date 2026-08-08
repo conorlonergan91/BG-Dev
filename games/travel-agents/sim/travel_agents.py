@@ -2816,6 +2816,50 @@ if __name__ == "__main__":
         print("  re-run --matchups to confirm soft counters (esp. 網紅 steamroll checked by an early loss).")
         sys.exit(0)
 
+    # ==============================================================================================
+    #  --econbind — v6.4d THE MASTER KEY: tighten the follower economy so following BINDS, and check it
+    #  (a) makes committed Followers press the cap in the back half, (b) ACTIVATES 網紅's high-ceiling
+    #  steamroll (her ceiling only matters if following binds), and (c) keeps her CHECKED by 大哥 the
+    #  early aggressor. Sweeps night/apex demand + a trimmed global ceiling (網紅 keeps a higher one).
+    #  Usage: ...travel_agents.py --econbind [N].
+    # ==============================================================================================
+    if "--econbind" in sys.argv:
+        _args = [a for a in sys.argv[1:] if a.isdigit()]
+        N = int(_args[0]) if _args else 500
+
+        def setecon(nd=0, ap=0, top=12, itop=-1, vend=9):
+            globals()["NIGHT_DEMAND"] = nd; globals()["APEX_DEMAND"] = ap
+            globals()["REACH_TOP"] = top; globals()["INFL_TOP"] = itop; globals()["V_END"] = vend
+
+        def infl_vs(oppchar):
+            so = CHAR_STYLE[oppchar]
+            a1, a2 = _make(INFL_STYLE), _make(so)
+            w0, t0, _, _ = _run({0: a1, 1: a2}, n=N, seed=1, characters=["influencer", oppchar], prefs=[INFL_STYLE, so])
+            w1, t1, _, _ = _run({0: a2, 1: a1}, n=N, seed=1 + N, characters=[oppchar, "influencer"], prefs=[so, INFL_STYLE])
+            return ((w0[0] + 0.5 * t0) + (w1[1] + 0.5 * t1)) / 2 * 100
+
+        print(f"# {TITLE}")
+        print(f"# v6.4d ECONOMY-BIND SWEEP — does tightening make following BIND + activate 網紅? (N={N})\n")
+        print(f"  {'econ setting (nd/apex/top/網紅top)':34}{'capfillN':>9}{'contest%':>9}{'nclaim/p':>9}"
+              f"{'stall%':>8}{'網紅vsNEU':>10}{'網紅vs大哥':>11}")
+        for lbl, nd, ap, top, itop, vend in (
+                ("base (slack: 0/0/12/—)", 0, 0, 12, -1, 9),
+                ("bind-lite (1/0/10/14) +clk9", 1, 0, 10, 14, 9),
+                ("bind (1/1/9/14) +clk9", 1, 1, 9, 14, 9),
+                ("bind (1/1/9/16) +clk8", 1, 1, 9, 16, 8),
+                ("bind-hard (2/1/8/16) +clk8", 2, 1, 8, 16, 8)):
+            setecon(nd, ap, top, itop, vend)
+            m = _field_metrics(n=N)
+            iv_neu = _char_winrate("influencer", n=N, prefs=INFL_STYLE) * 100
+            iv_dage = infl_vs("dage")
+            print(f"  {lbl:34}{m['capfill_night']*100:8.0f}%{m['contested_frac']*100:8.1f}%"
+                  f"{m['night_claims_per_player']:9.2f}{m['end_by_stall']*100:7.0f}%{iv_neu:9.1f}%{iv_dage:10.1f}%")
+        print("\n  WANT: capfill_night climbs well above the ~8% slack baseline (following now binds);")
+        print("  網紅vsNEU rises with her higher ceiling (steamroll activates); 網紅vs大哥 stays <~52 (still")
+        print("  checked by the brawler); stall stays manageable (≤~20%, clock nudge absorbing the demand).")
+        setecon()  # restore
+        sys.exit(0)
+
     N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 1200
     print(f"# {TITLE} — v6.3.1 probe suite ({N} games/cell)\n")
     print(f"  KNOBS: NIGHT_CURVE={int(NIGHT_CURVE)} MIN1_FLOOR={int(MIN1_FLOOR)} "
