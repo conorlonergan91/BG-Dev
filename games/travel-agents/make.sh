@@ -17,15 +17,20 @@ echo "→ regenerating into build/ (scratch)"
 # sheet) can't linger in build/sheets and get re-snapshotted into exports/. build/ is
 # disposable scratch (gitignored) — always regenerate from scratch.
 rm -rf build
+# The PHASED decks (vendors / tickets / ingredients / events) render as `png` only here — their
+# play-ready sheets come from the day/night SPLITS below (top-level PnP + Screentop), so the mixed
+# full-CSV screentop sheet (one NEUTRAL back) is deliberately NOT produced: it would hide the
+# day/night back distinction the identity requires. `png` keeps per-card art + the PnP print PDF.
 # Vendor decks (24 vendors, day+night, drinks mixed in). tokens.csv feeds the recipe chip glyphs.
-python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build --theme "$theme" --formats png screentop --tokens-csv components/tokens.csv
+python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build --theme "$theme" --formats png --tokens-csv components/tokens.csv
 # Tour Tickets (20 DAY + 25 NIGHT = 45 cards / 44 patterns — the SOLE scoring vector; win-pile / lose-pile).
-python3 $T/cards/build_cards.py --csv components/missions.csv    --out build --theme "$theme" --formats png screentop
+python3 $T/cards/build_cards.py --csv components/missions.csv    --out build --theme "$theme" --formats png
 # Ingredient market decks (5-palette; K in C/S) — the Visit / CS / Travel draw.
-python3 $T/cards/build_cards.py --csv components/ingredients.csv  --out build --theme "$theme" --formats png screentop --tokens-csv components/tokens.csv
+python3 $T/cards/build_cards.py --csv components/ingredients.csv  --out build --theme "$theme" --formats png --tokens-csv components/tokens.csv
 # Scoped EVENT cards (⦿/⬢/➤) — shuffled into the matching region+phase ingredient deck (night event-heavier).
-python3 $T/cards/build_cards.py --csv components/events.csv      --out build --theme "$theme" --formats png screentop
-# Character mats — rendered as cards for the prototype (bespoke mat template is a bg-infodesign task).
+python3 $T/cards/build_cards.py --csv components/events.csv      --out build --theme "$theme" --formats png
+# Character mats — NON-phased (neutral back); rendered as cards for the prototype (bespoke mat template
+# is a bg-infodesign task). Keeps `screentop` — its single sheet feeds BOTH the top-level and Screentop sets.
 python3 $T/cards/build_cards.py --csv components/characters.csv  --out build --theme "$theme" --formats png screentop
 
 # --- PLAY-READY per-deck Screentop sheets (assembled from the data by split_decks.py) ----------
@@ -44,6 +49,27 @@ for d in build/decks/*.csv; do
     tok=""
     case "$d" in *market_*|*vend_*) tok="--tokens-csv components/tokens.csv";; esac
     python3 $T/cards/build_cards.py --csv "$d" --out build --theme "$theme" --formats screentop --tight-grid $tok
+done
+
+# --- DAY/NIGHT-SPLIT top-level PnP / overview sheets (phased decks carry their DISTINCT phase back) --
+# The top-level exports/ is the shareable / print-and-play set. Split the phased card types by `phase`
+# so each exports as a DAY sheet and a NIGHT sheet, EACH stamped with its own boarding-pass back
+# (warm-☀日 / neon-☾夜) — so anyone using the MAIN export (not just the Screentop module) can sort day
+# vs night piles by the back at setup / storage. Coarser than the Screentop split on purpose: two piles
+# per type here (a clean PnP overview), vs Screentop's per-region+phase play piles. Ingredients + scoped
+# events combine into one MARKET deck per phase (mirrors the region markets: you draw them together).
+# Rendered into build/top so build/top/sheets is ISOLATED from build/sheets — the screentop snapshot's
+# market_*/vend_*/ticket_* globs can never pick these up, and vice-versa.
+echo "→ assembling day/night-split top-level PnP sheets"
+rm -rf build/top
+python3 $T/cards/split_decks.py --out build/top/decks --prefix vendors --key phase --csv components/vendors.csv
+python3 $T/cards/split_decks.py --out build/top/decks --prefix market  --key phase \
+    --csv components/ingredients.csv --csv components/events.csv
+python3 $T/cards/split_decks.py --out build/top/decks --prefix tickets --key phase --csv components/missions.csv
+for d in build/top/decks/*.csv; do
+    tok=""
+    case "$d" in *vendors_*|*market_*) tok="--tokens-csv components/tokens.csv";; esac
+    python3 $T/cards/build_cards.py --csv "$d" --out build/top --theme "$theme" --formats screentop --tight-grid $tok
 done
 
 # Board (the region-ring table-layout) — ring + HSR + vendor slots + per-region day/night market decks +
@@ -90,16 +116,24 @@ mkdir -p exports
 # Wipe the top-level deliverables first so orphans from older/renamed builds can't linger
 # (mirrors the `rm -rf exports/screentop` below). exports/ is fully regenerated from data —
 # nothing at the top level is hand-curated, so a clean-then-copy keeps it exactly in sync.
-rm -f exports/*.png exports/*.pdf
+rm -f exports/*.png exports/*.pdf exports/*.html
 cp build/cover.png                        exports/cover.png 2>/dev/null || true
-cp build/sheets/vendors_sheet_*.png       exports/ 2>/dev/null || true
-cp build/sheets/vendors_back.png          exports/ 2>/dev/null || true
-cp build/sheets/missions_sheet_*.png      exports/ 2>/dev/null || true
-cp build/sheets/missions_back.png         exports/ 2>/dev/null || true
-cp build/sheets/ingredients_sheet_*.png   exports/ 2>/dev/null || true
-cp build/sheets/ingredients_back.png      exports/ 2>/dev/null || true
-cp build/sheets/events_sheet_*.png        exports/ 2>/dev/null || true
-cp build/sheets/events_back.png           exports/ 2>/dev/null || true
+# PHASED decks — DAY + NIGHT sheet each, EACH with its DISTINCT phase back (sort day vs night by the
+# back). This replaces the old single mixed sheet + one neutral back, so the day/night boarding-pass
+# backs live in the MAIN export too, not only in exports/screentop/.
+cp build/top/sheets/vendors_day_sheet_*.png    exports/ 2>/dev/null || true
+cp build/top/sheets/vendors_day_back.png       exports/ 2>/dev/null || true
+cp build/top/sheets/vendors_night_sheet_*.png  exports/ 2>/dev/null || true
+cp build/top/sheets/vendors_night_back.png     exports/ 2>/dev/null || true
+cp build/top/sheets/market_day_sheet_*.png     exports/ 2>/dev/null || true
+cp build/top/sheets/market_day_back.png        exports/ 2>/dev/null || true
+cp build/top/sheets/market_night_sheet_*.png   exports/ 2>/dev/null || true
+cp build/top/sheets/market_night_back.png      exports/ 2>/dev/null || true
+cp build/top/sheets/tickets_day_sheet_*.png    exports/ 2>/dev/null || true
+cp build/top/sheets/tickets_day_back.png       exports/ 2>/dev/null || true
+cp build/top/sheets/tickets_night_sheet_*.png  exports/ 2>/dev/null || true
+cp build/top/sheets/tickets_night_back.png     exports/ 2>/dev/null || true
+# Characters — NON-phased; single sheet, unchanged.
 cp build/sheets/characters_sheet_*.png    exports/ 2>/dev/null || true
 cp build/map-day.png                      exports/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/map-night.png 2>/dev/null || true
@@ -109,6 +143,7 @@ cp build/clock-track.png                  exports/clock-track.png 2>/dev/null ||
 cp build/token-key.png                    exports/token-key.png 2>/dev/null || true
 cp build/player-aid.png                   exports/player-aid.png 2>/dev/null || true
 cp build/rulebook.pdf                     exports/rulebook.pdf 2>/dev/null || true
+cp build/rulebook.html                    exports/rulebook.html 2>/dev/null || true   # keep the tracked HTML in sync (build always emits it) so it can't silently drift
 
 # The PLAY-READY Screentop upload set — one sheet + back per pile (assembled per-deck sheets).
 echo "→ snapshotting the play-ready Screentop deck set into exports/screentop/"
