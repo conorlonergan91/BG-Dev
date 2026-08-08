@@ -7,7 +7,7 @@ sugar,糖 Sugar (the COMMON — C & S only),糖,#B5835A,16
 buzz,Buzz 讚 (committed on vendors; capped by your Reach),讚,#6A4C93,24
 star,★ Star token (accolade — +2 Draw 人氣 to whoever wins the vendor),★,#C9A227,4
 mkReach,Reach marker (your Buzz cap — start at 2; NOT a score),及,#1F8A7A,4
-mkTours,Tours Completed marker (Rave Reviews at your 2nd & 4th tour),團,#C9A227,4
+mkTours,Tours Completed marker (Rave Reviews at your 2nd & 4th tour),團,#1F8A7A,4
 mkClock,Vendor-claims day-clock marker,鐘,#D64545,1
 hsrClosed,HSR-closed reminder marker (Scheduled Maintenance),停,#8A8F98,1
 pileWin,成團 Departures win-pile marker,成,#C9A227,2

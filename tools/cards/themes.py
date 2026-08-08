@@ -352,6 +352,12 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
         return (f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{color}" '
                 f'stroke-width="{max(2, r*0.30)}"/>'
                 f'<circle cx="{cx}" cy="{cy}" r="{r*0.40}" fill="{color}"/>')
+    if kind == "island_ring":  # ISLAND-WIDE scope — concentric double ring (shape-distinct from
+        # ⦿ ring_dot / ⬢ hex / ➤ arrow); says "hits the whole board", not a drawn-region scope.
+        return (f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{color}" '
+                f'stroke-width="{max(2, r*0.24)}"/>'
+                f'<circle cx="{cx}" cy="{cy}" r="{r*0.58}" fill="none" stroke="{color}" '
+                f'stroke-width="{max(2, r*0.24)}"/>')
     if kind == "arrow":  # ➤ scope=NEXT DOOR — a right-pointing arrowhead
         pts = f"{cx-r},{cy-r*0.92} {cx+r},{cy} {cx-r},{cy+r*0.92} {cx-r*0.45},{cy}"
         return f'<polygon points="{pts}" fill="{color}" {sw}/>'
@@ -370,6 +376,19 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
         return (f'<path fill-rule="evenodd" fill="{color}" d="'
                 f'M {cx} {cy-r} a {r} {r} 0 1 0 0 {2*r} a {r} {r} 0 1 0 0 {-2*r} Z '
                 f'M {cx+off} {cy-ri} a {ri} {ri} 0 1 0 0 {2*ri} a {ri} {ri} 0 1 0 0 {-2*ri} Z"/>')
+    if kind == "crowd":  # 人氣 crowd-pull — a little cluster of people (NOT the gold VP spark);
+        # keeps DRAW reading as an audience/popularity attribute, never a score numeral.
+        s = ""
+        for dx in (-r * 0.62, 0.0, r * 0.62):
+            hx = cx + dx
+            s += f'<circle cx="{hx}" cy="{cy-r*0.34}" r="{r*0.34}" fill="{color}"/>'
+            s += (f'<path d="M {hx-r*0.44} {cy+r*0.74} q {r*0.44} -{r*0.62} {r*0.88} 0 Z" '
+                  f'fill="{color}"/>')
+        return s
+    if kind == "home":  # a house — 里長伯's home-region marker
+        return (f'<path d="M {cx} {cy-r} L {cx+r} {cy-r*0.12} L {cx+r*0.72} {cy-r*0.12} '
+                f'L {cx+r*0.72} {cy+r} L {cx-r*0.72} {cy+r} L {cx-r*0.72} {cy-r*0.12} '
+                f'L {cx-r} {cy-r*0.12} Z" fill="{color}" {sw}/>')
     if kind == "spark":  # 4-point sparkle (two crossed diamonds)
         a = f"{cx},{cy-r} {cx+r*0.32},{cy} {cx},{cy+r} {cx-r*0.32},{cy}"
         b = f"{cx-r},{cy} {cx},{cy+r*0.32} {cx+r},{cy} {cx},{cy-r*0.32}"

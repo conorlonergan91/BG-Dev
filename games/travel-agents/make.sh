@@ -49,14 +49,19 @@ python3 $T/boards/build_board.py --type regionmap --spec components/map.json --t
 
 # Live in-game tracks (v6.3.1 — TICKETS-ONLY scoring: there is NO score/VP track; your score is your Tour-Ticket tally).
 # Reach track — your Buzz CAP (start at 2). +1 per Travel + some events. NOT a score.
+# Violet accent (the Buzz hue Reach caps) so the three tracks read as DIFFERENT instruments, not clones.
 python3 $T/boards/build_board.py --type scoretrack --max 12 --per-row 13 \
-    --title "Reach track (Buzz cap)" --start-label "START at 2" \
+    --title "Reach track (Buzz cap)" --start-label "START at 2" --accent-hex "#6A4C93" \
+    --kicker "YOUR BUZZ CAP — committed Buzz ≤ Reach · NOT a score" \
     --note "One marker per player, START AT 2. Your total committed Buzz may never exceed your Reach. +1 each Travel; a few events +/-. Winning a vendor clears its Buzz, freeing your cap. Reach does NOT score." \
     --theme "$theme" --out build/reach-track.png
 # Tours-Completed counter — the repurposed former Bookings/VP track. Hosts the per-player Rave Reviews.
+# Teal accent (off the 成團 win-pile score-gold) + a "NOT your score" kicker so the completions METER is
+# never mistaken for the ticket score (bg-theme coherence flag / bg-infodesign item 2).
 python3 $T/boards/build_board.py --type scoretrack --max 8 --per-row 9 \
-    --title "Tours Completed (Rave Reviews)" --start-label "0" \
-    --milestones "2:RAVE REVIEW 1 — +1 Reach;4:RAVE REVIEW 2 — 1 ingredient + next Bribe -1" \
+    --title "Tours Completed (Rave Reviews)" --start-label "0" --accent-hex "#1F8A7A" \
+    --kicker "A COMPLETIONS METER — NOT your score (成團 win pile is your score)" \
+    --milestones "2:RAVE REVIEW 1: +1 Reach;4:RAVE REVIEW 2: +1 ingredient, next Bribe -1" \
     --note "One marker per player, starts at 0 and never goes down. +1 the instant a held Tour Ticket's pattern is met. Each agent earns their OWN Rave Review the first time THEY reach the 2nd / 4th mark (no leader pump). A COMPLETIONS counter, NOT the 成團 win pile." \
     --theme "$theme" --out build/tours-track.png
 # The VENDOR-CLAIMS day-clock. +1 each time ANY agent Bribes a vendor.

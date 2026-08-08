@@ -376,6 +376,20 @@ def render_regionmap(theme, spec, phase="day"):
                      f'fill="{steel}" stroke="#fff" stroke-width="2"/>')
         parts.append(f'<text x="{x1}" y="{my+10}" font-size="26" fill="#fff" text-anchor="middle" '
                      f'font-family="{tfont}" font-weight="bold">HSR 高鐵 · 北–南</text>')
+        # HSR-CLOSED reminder slot (CD-2 Scheduled Maintenance): where the 停 marker sits while the HSR is
+        # down for the whole table. Slate ties it to the island-banner event card (bg-access §v6.3.1).
+        if spec.get("hsr_closed_marker"):
+            slate = "#8A8F98"
+            mky = my + 58
+            parts.append(f'<rect x="{x1-164}" y="{mky-24}" width="328" height="56" rx="12" fill="#ffffff" '
+                         f'opacity="0.55" stroke="{slate}" stroke-width="3" stroke-dasharray="9 7"/>')
+            parts.append(f'<circle cx="{x1-134}" cy="{mky+4}" r="20" fill="{slate}" stroke="{ink}" stroke-width="2"/>')
+            parts.append(f'<text x="{x1-134}" y="{mky+12}" font-size="24" fill="#fff" text-anchor="middle" '
+                         f'font-family="{tfont}" font-weight="bold">停</text>')
+            parts.append(f'<text x="{x1-102}" y="{mky-2}" font-size="18" fill="{ink}" '
+                         f'font-family="{tfont}" font-weight="bold">HSR-CLOSED slot</text>')
+            parts.append(f'<text x="{x1-102}" y="{mky+22}" font-size="15" fill="{muted}" '
+                         f'font-family="{bfont}">place 停 during Scheduled Maintenance</text>')
 
     # --- region panels ---
     for r in spec.get("regions", []):
@@ -398,6 +412,14 @@ def render_regionmap(theme, spec, phase="day"):
         parts.append(emblem_svg(emb, X + 32, Y + 27, 15, "#ffffff"))
         parts.append(f'<text x="{X+58}" y="{Y+37}" font-size="32" fill="#fff" '
                      f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(r.get("name",""))}</text>')
+        # common-start marker (CD-3: every agent starts in Taipei, North's hub) — a pill on the hub region
+        if r.get("start"):
+            sp_w = 150
+            parts.append(f'<rect x="{X+PW-sp_w-14}" y="{Y+11}" width="{sp_w}" height="32" rx="16" '
+                         f'fill="#ffffff" opacity="0.94"/>')
+            parts.append(f'<text x="{X+PW-sp_w/2-14}" y="{Y+33}" font-size="19" fill="{rcol}" '
+                         f'text-anchor="middle" font-family="{tfont}" font-weight="bold" '
+                         f'letter-spacing="1">START · 台北</text>')
         # signature chips (shape + 繁體 + short EN under) — short labels so nothing overflows
         chips = r.get("chips", [])
         n = len(chips)
@@ -440,13 +462,17 @@ def render_regionmap(theme, spec, phase="day"):
 
     # --- RIGHT column: track + pile + supply placeholder zones ---
     rc_x, rc_w = 1250, 550
-    parts.append(zone(rc_x, 120, rc_w, 128, "Prestige (VP) track",
-                      emblem_svg("spark", rc_x + rc_w - 44, 168, 26, theme["suits"].get("signature", {}).get("color", "#C9A227")),
-                      "sum of your vendors' values — separate track"))
-    parts.append(zone(rc_x, 268, rc_w, 128, "Reputation track",
-                      f'<circle cx="{rc_x+rc_w-44}" cy="316" r="26" fill="{theme["suits"].get("central",{}).get("color","#1F8A7A")}"/>'
-                      f'<text x="{rc_x+rc_w-44}" y="325" font-size="26" fill="#fff" text-anchor="middle" font-family="{tfont}" font-weight="bold">譽</text>',
-                      "scores by FINAL position — separate track"))
+    # v6.3.1 TICKETS-ONLY: there is NO VP/score track and Reputation (→ Reach) no longer scores. The two
+    # zones below REPLACE the stale v6.2 "Prestige (VP)" + "Reputation scores by final position" labels
+    # (which flatly contradicted canon and mis-taught the FTUE). Both are now flagged NOT a score.
+    reach_teal = theme["suits"].get("central", {}).get("color", "#1F8A7A")
+    parts.append(zone(rc_x, 120, rc_w, 128, "Reach — your Buzz cap",
+                      f'<circle cx="{rc_x+rc_w-44}" cy="168" r="26" fill="{reach_teal}"/>'
+                      f'<text x="{rc_x+rc_w-44}" y="177" font-size="26" fill="#fff" text-anchor="middle" font-family="{tfont}" font-weight="bold">及</text>',
+                      "committed Buzz ≤ Reach · +1 each Travel · NOT a score"))
+    parts.append(zone(rc_x, 268, rc_w, 128, "Tours Completed — Rave Reviews",
+                      emblem_svg("crowd", rc_x + rc_w - 46, 316, 24, reach_teal),
+                      "a completions meter — NOT your score"))
     parts.append(zone(rc_x, 416, rc_w, 128, "Vendor-claims clock",
                       f'<circle cx="{rc_x+rc_w-44}" cy="464" r="26" fill="{accent}"/>'
                       f'<text x="{rc_x+rc_w-44}" y="473" font-size="24" fill="#fff" text-anchor="middle" font-family="{tfont}" font-weight="bold">鐘</text>',
@@ -498,11 +524,18 @@ def render_regionmap(theme, spec, phase="day"):
 
 
 # ---- score / reputation track (serpentine, numbered) ------------------------
-def render_scoretrack(theme, max_v, per_row, title, milestones, note, start_label):
+def render_scoretrack(theme, max_v, per_row, title, milestones, note, start_label,
+                      accent_hex="", kicker=""):
     """A compact numbered 0..max track that snakes across rows — a real running
     tracker you advance a per-player marker along. Milestones (pos->label) are
-    highlighted with a call-out above the cell."""
-    ink, accent, muted, text = theme["ink"], theme["accent"], theme["muted"], theme["text"]
+    highlighted with a call-out above the cell.
+
+    `accent_hex` overrides the milestone/highlight colour so sibling tracks (Reach cap, Tours-Completed
+    counter, the day-clock) read as DIFFERENT instruments at a glance instead of three identical tracks —
+    and, for the Tours-Completed counter, keeps it off the score-gold of the 成團 win pile (bg-infodesign
+    item 2). `kicker` prints a bold sub-banner under the title (e.g. 'a progress meter — NOT your score')."""
+    ink, muted, text = theme["ink"], theme["muted"], theme["text"]
+    accent = accent_hex or theme["accent"]
     tfont, bfont = theme["title_font"], theme["body_font"]
     cell = 108
     gap = 12
@@ -510,8 +543,8 @@ def render_scoretrack(theme, max_v, per_row, title, milestones, note, start_labe
     n = max_v + 1
     per_row = min(per_row, n)
     rows = math.ceil(n / per_row)
-    title_h = 92
-    call_h = 46                                   # room above each row for milestone call-outs
+    title_h = 92 + (40 if kicker else 0)
+    call_h = 78                                   # room above each row for (up to 2-line) milestone call-outs
     row_h = cell + call_h + gap
     W = pad * 2 + per_row * (cell + gap) - gap
     H = title_h + rows * row_h + 70
@@ -530,6 +563,10 @@ def render_scoretrack(theme, max_v, per_row, title, milestones, note, start_labe
     if title:
         parts.append(f'<text x="{W/2}" y="60" font-size="50" fill="{ink}" text-anchor="middle" '
                      f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(title)}</text>')
+    if kicker:
+        parts.append(f'<rect x="{pad}" y="82" width="{W-2*pad}" height="40" rx="20" fill="{accent}"/>')
+        parts.append(f'<text x="{W/2}" y="110" font-size="26" fill="#ffffff" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(kicker)}</text>')
     # groove: a faint polyline through cell centres in snake order (shows one continuous track)
     pts = " ".join(f"{cell_xy(v)[0]+cell/2},{cell_xy(v)[1]+cell/2}" for v in range(n))
     parts.append(f'<polyline points="{pts}" fill="none" stroke="{muted}" stroke-width="8" '
@@ -555,8 +592,12 @@ def render_scoretrack(theme, max_v, per_row, title, milestones, note, start_labe
             parts.append(f'<text x="{x+cell/2}" y="{y-14}" font-size="24" fill="{ink}" '
                          f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(start_label)}</text>')
         if is_ms:
-            for j, seg in enumerate(textwrap.wrap(milestones[v], 16)[:2]):
-                parts.append(f'<text x="{x+cell/2}" y="{y-16+j*22}" font-size="21" fill="{accent}" '
+            # stack the call-out ABOVE the cell top (y): the last line lands just over the cell so 2-line
+            # labels no longer overlap the numeral. Tighter wrap keeps each line within ~one cell width.
+            segs = textwrap.wrap(milestones[v], 13)[:2]
+            base = y - 12 - (len(segs) - 1) * 24
+            for j, seg in enumerate(segs):
+                parts.append(f'<text x="{x+cell/2}" y="{base + j*24}" font-size="20" fill="{accent}" '
                              f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(seg)}</text>')
     if note:
         parts.append(f'<text x="{pad}" y="{H-28}" font-size="26" fill="{muted}" '
@@ -587,6 +628,9 @@ def main():
     ap.add_argument("--milestones", default="", help="scoretrack: 'pos:label;pos:label' call-outs")
     ap.add_argument("--note", default="", help="scoretrack: footer note")
     ap.add_argument("--start-label", default="", help="scoretrack: label above the 0 cell")
+    ap.add_argument("--accent-hex", default="", help="scoretrack: override the milestone/highlight colour "
+                    "(so sibling tracks read as different instruments; keeps Tours-Completed off score-gold)")
+    ap.add_argument("--kicker", default="", help="scoretrack: bold sub-banner under the title")
     # tokens
     ap.add_argument("--shape", default="circle", choices=["circle", "square", "hex"])
     ap.add_argument("--diameter-mm", type=float, default=22.0)
@@ -636,7 +680,8 @@ def main():
                 except ValueError:
                     pass
         svg, W, H = render_scoretrack(theme, args.max, args.per_row, args.title,
-                                      milestones, args.note, args.start_label)
+                                      milestones, args.note, args.start_label,
+                                      args.accent_hex, args.kicker)
     else:  # aid
         if not args.spec:
             ap.error("--type aid requires --spec <file.json>")

@@ -47,9 +47,12 @@ from pathlib import Path
 # Scoped-event icons: the ⦿/⬢/➤ glyphs are TOFU under cairosvg's toy text API (no fall-through to a
 # glyph-bearing font), so we DRAW them as SVG shapes keyed off the event `scope` column and keep the
 # word label alongside. (bg-access FIX A.)
-SCOPE_SHAPE = {"self": "ring_dot", "region": "hex", "neighbour": "arrow"}
-SCOPE_WORD = {"self": "YOU 自己", "region": "THIS REGION 全區", "neighbour": "NEXT DOOR 鄰區"}
+SCOPE_SHAPE = {"self": "ring_dot", "region": "hex", "neighbour": "arrow", "island": "island_ring"}
+SCOPE_WORD = {"self": "YOU 自己", "region": "THIS REGION 全區", "neighbour": "NEXT DOOR 鄰區",
+              "island": "ISLAND-WIDE 全島"}
 _SCOPE_GLYPHS = "⦿⬢➤"
+# The slate that ties the Scheduled-Maintenance island banner to its 停 board marker (bg-access §v6.3.1).
+MAINT_SLATE = "#8A8F98"
 
 from themes import (get_theme, resolve_suit, emblem_svg, page_gradient, pick_text_color,
                     phase_style, phase_ribbon_svg, back_style)
@@ -202,11 +205,17 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
                     f'font-family="{bfont}" font-style="italic">{esc(eng)}</text>')
 
     # --- PAY row: ingredient chips (emblem-shaped, region colour, 繁體) + Buzz ----
+    # v6.3.1 CD-4: every NIGHT marquee is CROSS-REGION — a chip whose ingredient belongs to a DIFFERENT
+    # signature region than this vendor is flagged with an out-of-region "→" badge (and a header
+    # CROSS-REGION tag) so the two-region bill parses at a glance, not just as a differently-coloured chip.
+    ING_REGION = {"pork": "N", "tea": "C", "seafood": "S", "rice": "E"}   # sugar = common (never foreign)
+    card_letter = {"north": "N", "central": "C", "south": "S", "east": "E"}.get(region, "")
     pay_label_y = strip_y + 104
     chips_cy = pay_label_y + 66
     r = 34
     x = MARGIN + 6
     chips = ""
+    cross_letters: list[str] = []
     for iid in recipe:
         isuit = resolve_suit(theme, iid) if iid in theme["suits"] else {"color": muted, "emblem": "circle"}
         icol = isuit["color"]
@@ -215,6 +224,15 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
         chips += emblem_svg(isuit["emblem"], x + r, chips_cy, r, icol, stroke=ink)
         chips += (f'<text x="{x + r}" y="{chips_cy + r * 0.34}" font-size="30" fill="{tcol}" '
                   f'text-anchor="middle" font-family="{bfont}" font-weight="bold">{lab}</text>')
+        foreign = ING_REGION.get(iid)
+        if foreign and card_letter and foreign != card_letter:
+            cross_letters.append(foreign)
+            # a small out-of-region badge riding the chip's top-right: arrow + the region letter
+            bx, by = x + 2 * r - 6, chips_cy - r - 4
+            chips += (f'<circle cx="{bx}" cy="{by}" r="18" fill="#ffffff" stroke="{icol}" stroke-width="3"/>'
+                      + emblem_svg("arrow", bx - 3, by, 7, icol) +
+                      f'<text x="{bx + 8}" y="{by + 7}" font-size="20" fill="{icol}" text-anchor="middle" '
+                      f'font-family="{tfont}" font-weight="bold">{esc(foreign)}</text>')
         x += 2 * r + 20
     # plus + Buzz badge
     plus_x = x + 6
@@ -227,25 +245,43 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
         f'font-family="{tfont}" font-weight="bold">{esc(buzz)}</text>'
         f'<text x="{x2 + r}" y="{chips_cy + 62}" font-size="24" fill="{violet}" text-anchor="middle" '
         f'font-family="{tfont}" font-weight="bold">讚 BUZZ</text>')
+    # CROSS-REGION tag riding the PAY label — reads the two-region requirement without decoding chip colours
+    cross_tag = ""
+    if cross_letters:
+        seen = "".join(dict.fromkeys(cross_letters))
+        ctx = MARGIN + 170
+        cross_tag = (
+            f'<rect x="{ctx}" y="{pay_label_y - 30}" width="{150 + 22*len(seen)}" height="40" rx="20" '
+            f'fill="#ffffff" opacity="0.85" stroke="{accent}" stroke-width="2"/>'
+            + emblem_svg("arrow", ctx + 22, pay_label_y - 10, 11, accent) +
+            f'<text x="{ctx + 44}" y="{pay_label_y - 2}" font-size="23" fill="{accent}" '
+            f'font-family="{tfont}" font-weight="bold" letter-spacing="1">CROSS-REGION →{esc(seen)}</text>')
     pay_block = (
         f'<text x="{MARGIN}" y="{pay_label_y}" font-size="28" fill="{accent}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">PAY 付</text>' + chips + buzz_badge)
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">PAY 付</text>'
+        + cross_tag + chips + buzz_badge)
 
     # --- DRAW row: the vendor's Draw (人氣) ATTRIBUTE — a printed number, NOT a score --
     # v6.3 tickets-only: vendors give no points. Draw only feeds the value-referencing
     # tickets and marks the ★ apex the marquee get. So the old GAIN(Prestige+Rep) +
     # PERK blocks are gone — a vendor face is just Draw + (region icon | none).
+    # The Draw number is deliberately DE-SCORED: a crowd/人氣 glyph (never the gold ★-spark, which reads
+    # as VP) and the number set inside a rounded "meter" gauge so it parses as a crowd-pull ATTRIBUTE, not
+    # a points value. Kept mid-card (not the bottom-right VP corner) with an explicit "not points" caption.
     draw_label_y = chips_cy + 118
     draw_cy = draw_label_y + 62
-    dx = MARGIN + 40
+    dx = MARGIN + 42
+    gauge_x, gauge_w, gauge_h = dx + 60, 108, 60
     draw_block = (
         f'<text x="{MARGIN}" y="{draw_label_y}" font-size="28" fill="{accent}" '
         f'font-family="{tfont}" font-weight="bold" letter-spacing="3">DRAW 人氣</text>'
-        + emblem_svg("spark", dx, draw_cy, 38, gold) +
-        f'<text x="{dx + 66}" y="{draw_cy + 18}" font-size="56" fill="{gold}" '
-        f'font-family="{tfont}" font-weight="bold">{esc(draw)}</text>'
-        f'<text x="{dx + 150}" y="{draw_cy + 16}" font-size="24" fill="{muted}" '
-        f'font-family="{bfont}" font-style="italic">crowd-pull · not a score</text>')
+        + emblem_svg("crowd", dx, draw_cy, 34, gold) +
+        f'<rect x="{gauge_x}" y="{draw_cy - gauge_h/2}" width="{gauge_w}" height="{gauge_h}" '
+        f'rx="{gauge_h/2}" fill="#ffffff" opacity="0.55" stroke="{gold}" stroke-width="3"/>'
+        f'<text x="{gauge_x + gauge_w/2}" y="{draw_cy + 16}" font-size="46" fill="{gold}" '
+        f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(draw)}</text>'
+        f'<text x="{gauge_x + gauge_w + 20}" y="{draw_cy + 14}" font-size="23" fill="{muted}" '
+        f'font-family="{bfont}" font-style="italic">crowd-pull · engine value, not points</text>')
 
     # --- ICON box: region discount icon, or NONE (trophy / drink) ---------------
     icon_label_y = draw_cy + 108
@@ -292,9 +328,187 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
 </svg>"""
 
 
+def _is_island_banner(row: dict) -> bool:
+    """The Scheduled-Maintenance table-wide event: NOT a ⦿/⬢/➤ scoped card — its own island banner."""
+    tags = str(row.get("tags", "")).lower()
+    return (str(row.get("kind", "")).strip().lower() == "maintenance"
+            or ("island-wide" in tags and "banner" in tags))
+
+
+def _is_character(row: dict) -> bool:
+    """A Travel-Agents character mat: carries ability_code + flaw_code (Beacon/others don't)."""
+    return bool(str(row.get("ability_code", "")).strip()) and bool(str(row.get("flaw_code", "")).strip())
+
+
+def _hazard_stripes(x: float, y: float, w: float, h: float, a: str, b: str) -> str:
+    """A hi-vis maintenance hazard band (diagonal a/b bars) — the 'roadworks' read, drawn (no pattern)."""
+    step = 34
+    clip = f'<clipPath id="hz"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8"/></clipPath>'
+    bars = [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{a}"/>']
+    i = -1
+    while x + i * step < x + w + h:
+        x0 = x + i * step
+        bars.append(f'<polygon points="{x0},{y+h} {x0+step*0.5},{y+h} '
+                    f'{x0+step*0.5+h},{y} {x0+h},{y}" fill="{b}"/>')
+        i += 2
+    return f'{clip}<g clip-path="url(#hz)">{"".join(bars)}</g>'
+
+
+def _render_island_banner(row: dict, theme: dict) -> str:
+    """Scheduled Maintenance — a distinctly-framed ISLAND-WIDE banner, visibly NOT a ⦿/⬢/➤ scoped card.
+    Redundant channels (bg-access §v6.3.1): the island double-ring glyph + the words 'ISLAND-WIDE 全島'
+    + a slate header that ties the card to its 停 board marker + a hi-vis works banner + an HSR-closed
+    motif. Slate replaces the region suit colour so it never reads as a region-scoped event."""
+    ink, text, muted = theme["ink"], theme["text"], theme["muted"]
+    radius = theme["radius"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    slate = MAINT_SLATE
+    amber = theme["suits"].get("south", {}).get("color", "#E6A930")
+    pstyle = phase_style(row.get("phase"))
+    page_cols = pstyle["page"] if pstyle else None
+    ribbon = phase_ribbon_svg(pstyle, CARD_W, CARD_H, MARGIN, tfont)
+
+    title_lines = wrap(row.get("name", ""), max_chars=18) or [""]
+    han = esc(row.get("hanzi", ""))
+    header_h = 132
+
+    # ISLAND-WIDE scope banner (top): the double-ring glyph + the words, on slate — the shape/label channel
+    scope_y = 26 + header_h + 40
+    scope_banner = (
+        emblem_svg("island_ring", MARGIN + 30, scope_y - 8, 24, slate, stroke=ink) +
+        f'<text x="{MARGIN + 74}" y="{scope_y}" font-size="34" fill="{slate}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="2">ISLAND-WIDE 全島</text>'
+        f'<text x="{CARD_W - MARGIN}" y="{scope_y}" font-size="22" fill="{muted}" text-anchor="end" '
+        f'font-family="{bfont}" font-style="italic">a whole-board event</text>')
+
+    # hi-vis works banner
+    hz_y = scope_y + 26
+    hazard = _hazard_stripes(MARGIN, hz_y, CARD_W - 2 * MARGIN, 30, ink, amber)
+
+    # HSR-closed motif: a short double rail with a red barrier + the 停 roundel (matches the board marker)
+    m_cy = hz_y + 150
+    rail_x0, rail_x1 = MARGIN + 60, CARD_W - MARGIN - 60
+    rails = "".join(
+        f'<line x1="{rail_x0}" y1="{m_cy + dy}" x2="{rail_x1}" y2="{m_cy + dy}" stroke="{slate}" '
+        f'stroke-width="6" stroke-linecap="round"/>' for dy in (-14, 14))
+    ties = "".join(
+        f'<line x1="{rail_x0 + 30 + i*70}" y1="{m_cy - 22}" x2="{rail_x0 + 30 + i*70}" y2="{m_cy + 22}" '
+        f'stroke="{slate}" stroke-width="4"/>' for i in range(int((rail_x1 - rail_x0 - 30) // 70)))
+    barrier = (f'<line x1="{CARD_W/2 - 70}" y1="{m_cy - 46}" x2="{CARD_W/2 + 70}" y2="{m_cy + 46}" '
+               f'stroke="{theme["accent"]}" stroke-width="12" stroke-linecap="round"/>')
+    stop_roundel = (
+        f'<circle cx="{CARD_W/2}" cy="{m_cy - 96}" r="40" fill="{slate}" stroke="{ink}" stroke-width="3"/>'
+        f'<text x="{CARD_W/2}" y="{m_cy - 84}" font-size="42" fill="#ffffff" text-anchor="middle" '
+        f'font-family="{tfont}" font-weight="bold">停</text>'
+        f'<text x="{CARD_W/2}" y="{m_cy + 78}" font-size="26" fill="{slate}" text-anchor="middle" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="1">HSR CLOSED · 高鐵停駛</text>')
+
+    # body: drop the now-redundant "ISLAND-WIDE (not a scoped event — its own banner)." lead sentence
+    eff = re.sub(r'^\s*ISLAND-WIDE[^.]*\.\s*', '', str(row.get("effect", "")))
+    body_y = m_cy + 130
+    body_tspans = "".join(f'<tspan x="{MARGIN}" dy="{0 if i == 0 else LINE_H}">{esc(l)}</tspan>'
+                          for i, l in enumerate(wrap(eff, max_chars=34)))
+    title_tspans = "".join(
+        f'<tspan x="{MARGIN}" y="{MARGIN + 46 + i * TITLE_LINE_H}">{esc(l)}</tspan>'
+        for i, l in enumerate(title_lines))
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
+  <defs>{page_gradient(theme, 'pg', page_cols)}</defs>
+  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{slate}" stroke-width="8"/>
+  <rect x="18" y="18" width="{CARD_W-36}" height="{CARD_H-36}" rx="{radius-6}" fill="none" stroke="{slate}" stroke-width="2" opacity="0.5"/>
+  <path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{slate}"/>
+  <text font-size="{TITLE_SIZE}" fill="#ffffff" font-family="{tfont}" font-weight="bold">{title_tspans}</text>
+  <text x="{CARD_W - MARGIN}" y="{MARGIN + 46}" font-size="40" fill="#ffffff" text-anchor="end" font-family="{tfont}" opacity="0.92">{han}</text>
+  {scope_banner}
+  {hazard}
+  {rails}{ties}{barrier}{stop_roundel}
+  <text x="{MARGIN}" y="{body_y}" font-size="{BODY_SIZE}" fill="{text}" font-family="{bfont}">{body_tspans}</text>
+  {ribbon}
+</svg>"""
+
+
+def _render_character_svg(row: dict, theme: dict) -> str:
+    """A Travel-Agents character mat rendered as a card: name (Tâi-lô + 繁體) + a public ABILITY block and
+    FLAW block read off the clean `ability`/`flaw` columns (NOT the sim-annotated `effect`). 里長伯's
+    home-region-discount + away-tax kit gets its two mat icons (bg-infodesign item 3)."""
+    ink, text, muted, accent = theme["ink"], theme["text"], theme["muted"], theme["accent"]
+    radius = theme["radius"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
+    teal = theme["suits"].get("central", {}).get("color", "#1F8A7A")
+    vermilion = theme["suits"].get("north", {}).get("color", "#D64545")
+
+    title_lines = wrap(row.get("name", ""), max_chars=20) or [""]
+    han = esc(row.get("hanzi", ""))
+    header_h = 104 + (len(title_lines) - 1) * TITLE_LINE_H
+    header_end = 26 + header_h
+    title_tspans = "".join(
+        f'<tspan x="{MARGIN}" y="{MARGIN + 44 + i * TITLE_LINE_H}">{esc(l)}</tspan>'
+        for i, l in enumerate(title_lines))
+
+    ability = str(row.get("ability", "")).strip()
+    flaw = str(row.get("flaw", "")).strip()
+    ability_code = str(row.get("ability_code", "")).strip().lower()
+    flaw_code = str(row.get("flaw_code", "")).strip().lower()
+
+    def kit_icon(cx: float, cy: float, code: str, side: str) -> str:
+        """A drawn mat-icon for the kit's key codes; home/away get bespoke glyphs (item 3)."""
+        if code == "discount_home":   # a house + a −1 chip → 'cheaper on home turf'
+            return (emblem_svg("home", cx, cy, 30, teal, stroke=ink) +
+                    f'<circle cx="{cx+30}" cy="{cy+26}" r="20" fill="#ffffff" stroke="{teal}" stroke-width="3"/>'
+                    f'<text x="{cx+30}" y="{cy+33}" font-size="26" fill="{teal}" text-anchor="middle" '
+                    f'font-family="{tfont}" font-weight="bold">−1</text>')
+        if code == "away_tax":        # an out-of-home arrow + a +1 chip → 'pay more off your patch'
+            return (emblem_svg("arrow", cx, cy, 28, vermilion, stroke=ink) +
+                    f'<circle cx="{cx+30}" cy="{cy+26}" r="20" fill="#ffffff" stroke="{vermilion}" stroke-width="3"/>'
+                    f'<text x="{cx+30}" y="{cy+33}" font-size="26" fill="{vermilion}" text-anchor="middle" '
+                    f'font-family="{tfont}" font-weight="bold">+1</text>')
+        emb = {"self": "ring_dot"}.get(code, "spark")
+        return emblem_svg(emb, cx, cy, 28, gold if side == "ability" else muted, stroke=ink)
+
+    def block(y0: float, label: str, code: str, txt: str, col: str, side: str) -> tuple[str, float]:
+        lines = wrap(txt, max_chars=30)
+        bh = 78 + len(lines) * 40
+        icon = kit_icon(MARGIN + 52, y0 + 60, code, side)
+        tspans = "".join(f'<tspan x="{MARGIN + 116}" dy="{0 if i == 0 else 40}">{esc(l)}</tspan>'
+                         for i, l in enumerate(lines))
+        s = (f'<rect x="{MARGIN}" y="{y0}" width="{CARD_W - 2*MARGIN}" height="{bh}" rx="18" '
+             f'fill="#ffffff" opacity="0.5" stroke="{col}" stroke-width="3"/>'
+             f'<text x="{MARGIN + 20}" y="{y0 + 34}" font-size="26" fill="{col}" '
+             f'font-family="{tfont}" font-weight="bold" letter-spacing="2">{esc(label)}</text>'
+             + icon +
+             f'<text x="{MARGIN + 116}" y="{y0 + 70}" font-size="30" fill="{text}" '
+             f'font-family="{bfont}">{tspans}</text>')
+        return s, y0 + bh + 28
+
+    y = header_end + 40
+    ability_block, y = block(y, "ABILITY 能力", ability_code, ability, teal, "ability")
+    flaw_block, y = block(y, "FLAW 弱點", flaw_code, flaw, vermilion, "flaw")
+    setup_note = ""
+    if ability_code == "discount_home":
+        setup_note = (f'<text x="{MARGIN}" y="{y + 6}" font-size="24" fill="{muted}" '
+                      f'font-family="{bfont}" font-style="italic">Setup: pick ONE home region (open).</text>')
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
+  <defs>{page_gradient(theme, 'pg')}</defs>
+  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>
+  <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{gold}" stroke-width="2" opacity="0.5"/>
+  <path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{gold}"/>
+  <text font-size="{TITLE_SIZE}" fill="#ffffff" font-family="{tfont}" font-weight="bold">{title_tspans}</text>
+  <text x="{CARD_W - MARGIN}" y="{MARGIN + 44}" font-size="40" fill="#ffffff" text-anchor="end" font-family="{tfont}" opacity="0.92">{han}</text>
+  {ability_block}
+  {flaw_block}
+  {setup_note}
+</svg>"""
+
+
 def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> str:
     if _is_vendor(row):
         return render_vendor_svg(row, theme, glyph_map)
+    if _is_island_banner(row):
+        return _render_island_banner(row, theme)
+    if _is_character(row):
+        return _render_character_svg(row, theme)
     ctype = (row.get("type") or "").strip()
     suit = resolve_suit(theme, ctype)
     scol = suit["color"]
