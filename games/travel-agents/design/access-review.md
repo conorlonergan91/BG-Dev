@@ -299,3 +299,114 @@ high-contrast ink word ("DAY · 早" / "NIGHT · 夜市"). A face-down pile sort
   Night back needs no change.
 
 **Verdict:** PASS on the floor + board; one WATCH (day-back amber motif contrast) with an exact-hex fix.
+
+---
+
+# v6.3.1 Re-check — Guardian Sweep (2026-08-08)
+
+> Guardian pass by `bg-access` after the v6.3.1 component rebuild. Theme: `night-market`. REPORT-and-flag
+> only (bg-infodesign owns the render this cycle — no edits to `themes.py`/templates; fixes below are
+> RECOMMENDED with exact values, to be routed). Data: `components/{vendors,events,tokens,ingredients}.csv`,
+> `player-aid.json`; theme `tools/cards/themes.py`; rendered faces in `exports/` + `exports/screentop/`.
+
+## Checker
+
+`python tools/access/check_access.py --game games/travel-agents --theme night-market`
+**Result: 0 error(s), 3 warning(s).** Text contrast PASS (`ink #26324D` 9.4:1, `text #2B2B2B` 10.4:1).
+Colour-blind separability: **no colour-only suit collisions** — every confusable pair is dual-coded by
+emblem. The 3 warnings are the standing gold-cluster pairs (`mission`/`signature` ΔE 0 → stamp vs spark;
+`mission`/`south` and `signature`/`south` ΔE 11 → stamp/spark vs circle). All dual-coded, **not new
+v6.3.1 regressions.** Four region colours stay CVD-distinct; floor holds.
+
+## What's new in v6.3.1 — focus items
+
+**1. Simplified vendor face — PASS.** The day/night vendor faces now carry only region label → PAY row →
+DRAW 人氣 → ICON. Confirmed on `vend_central-day` / `vend_east-night` / `vend_south-night`:
+- **Draw legible + not-a-score-safe:** the Draw number renders as a large dark olive/gold numeral on
+  cream (day) / pale lavender (night) — strong contrast, clear top-of-hierarchy after the title. The
+  "crowd-pull · not a score" caption disambiguates it from VP. No hierarchy regression from dropping
+  score/Rep/perk — the face is *cleaner*, DRAW reads as the dominant number.
+- **Region dual-coded:** "◆ CENTRAL 中" / "◉ SOUTH 南" / "■ EAST 東" = emblem shape + English caps + 繁體 +
+  header-band colour. Four channels; not colour-only.
+- **Region-icon-or-none dual-coded:** discount vendors show the region emblem chip + text ("C discount
+  icon — …"); drinks show a neutral disc + "Drink — NO discount icon"; trophies show ★ + "trophy — top
+  Draw, NO discount icon". The discount region is carried by emblem + letter + text, never colour alone.
+
+**2. Night-marquee cross-region costs — PASS.** The 5 ingredient chips are shape-distinct in `themes.py`
+(v6.2 FIX C landed): **pork=hex, tea=triangle, seafood=square, rice=circle, sugar=beam** — plus a unique
+繁體 label (豬/茶/海/米/糖) and region colour. Every cross-region cost that actually co-occurs on one card
+is distinguishable by shape **and** glyph **and** colour:
+
+| Card | Cost | Chips (shape / glyph) |
+|------|------|------------------------|
+| 石板烤肉 Stone-Slab BBQ | {E:3, N:2} | circle 米 vs hex 豬 |
+| 蚵仔煎 Oyster Omelette | {S:2, N:1} | square 海 vs hex 豬 |
+| 棺材板 Coffin Bread | {S:2, E:1} | square 海 vs circle 米 |
+| 擔仔麵 Tan-tsú-mī | {S:3, E:1} | square 海 vs circle 米 |
+| 麻糬 Mochi | {E:2, C:1} | circle 米 vs triangle 茶 |
+| 胡椒餅 Pepper Bun | {N:2, C:1} | hex 豬 vs triangle 茶 |
+
+Chips stay readable at card scale (glyph bold, disc large). *Minor note (not a flag):* rice (filled
+circle) and sugar (beam = ring + centre dot) are the two roundest silhouettes, but they **never co-occur
+on a cost** (sugar appears only on single-cost day drinks) and are colour- + glyph-distinct regardless.
+The "5 shape-distinct chips" claim holds.
+
+**3. New tokens/markers — PASS.** All render as coloured discs + a unique glyph (verified on
+`token-key.png`), distinguishable without colour:
+- Reach 及 (teal `#1F8A7A`), Tours-Completed 團 (gold `#C9A227`), HSR-closed 停 (slate `#8A8F98`),
+  clock 鐘 (vermilion `#D64545`), ★ Star (gold disc + dark star pictogram, now +2 Draw).
+- The gold cluster (★ / 團 / 成 win-pile, all `#C9A227`) is told apart by glyph (a pictogram vs two
+  distinct 繁體) and sits in different board zones — glyph is a legitimate redundant channel. OK.
+
+**4. Scheduled Maintenance banner — WATCH (the one real flag).** The island-wide event (`EV-M01/M02`,
+`scope=island`) and its board marker split into two verdicts:
+- **Board marker 停 — PASS.** Slate disc + 停 glyph, distinct from every other marker.
+- **The card — WATCH.** On `events_sheet_1.png` the two Maintenance cards render with the **same purple
+  night-event header band and the same layout as every scoped hazard**, and carry a region deck-tag
+  (NORTH / SOUTH) but **no scope icon** in the slot where scoped cards show the drawn ⦿ / ⬢ / ➤. Its
+  island-wide nature — game-critical (it changes *everyone's* Travel for a round) — is therefore carried
+  by **body text alone** ("ISLAND-WIDE (not a scoped event…)"). For a low-vision / at-a-glance / ESL
+  player it reads like a region hazard. The task's "clearly distinct from the ⦿/⬢/➤ scoped events" is
+  **not yet met** by a non-text channel. (Also: the card body is dense — ~9 small lines — a secondary
+  legibility/elegance watch; `bg-elegance` could trim, the effect is also on the aid.)
+
+**5. Standing floor — PASS.** Scope icons ⦿/⬢/➤ render as drawn SVG shapes + bilingual words + `scope`
+field (v6.2 FIX A holds — no tofu). Four region colours CVD-distinct; WCAG page/body contrast 9.4/10.4:1;
+redundant encoding everywhere. *(Pre-existing, not a v6.3.1 item: the amber "SOUTH 南" region-label text
+is low-contrast on cream — but it is heavily redundant (band colour + circle emblem + caps + 南); no new
+regression, no action.)*
+
+## Intersectional conflict worth a human call
+
+The Maintenance fix (below) wants a distinct **colour band** to set the banner apart — but colour must not
+be the *only* new channel (colour-blind players). Solution keeps it honest: lead with a **distinct scope
+glyph** (shape channel) and use colour only as a bonus, tied to the 停 marker's slate so card and board
+token read as one object.
+
+## Recommended fix (route to bg-infodesign — exact values)
+
+**FIX — give Scheduled Maintenance a non-text "island-wide" channel** (data/theme/renderer layer,
+regenerates; no rules change):
+- **Add an `island` scope glyph** in the slot where `self/region/neighbour` draw ⦿/⬢/➤. Draw it as an
+  SVG shape (like `emblem_svg`, never a font glyph) that is **shape-distinct** from the other three — e.g.
+  concentric double-ring "whole island": `<circle r=R fill=none stroke=ink sw=3/><circle r=R*0.6 fill=none
+  stroke=ink sw=3/>` — paired with the word **"ISLAND-WIDE 全島"** (font-covered 全島).
+- **Optional colour tie (bonus channel):** give the banner a top stripe / header accent in the
+  HSR-maintenance slate **`#8A8F98`** (matches the 停 board marker), so the card visually links to its
+  reminder token *and* stands apart from the region-coloured event bands. Colour is the bonus, the glyph +
+  word carry the meaning.
+- **Secondary (optional):** trim the Maintenance body to ~5 lines (hand to `bg-elegance`) — the full rule
+  already lives on the player aid.
+
+## Verdict
+
+**NEAR-PASS — one WATCH (Scheduled Maintenance visual distinctness), everything else PASS.** The mandatory
+redundant-encoding floor is MET across the new vendor faces, cross-region cost chips, and all new tokens.
+The single gap: the island-wide event is distinguishable from scoped events only by reading its body text.
+
+### Decision for the human — one fix now
+
+**Add an `island` scope glyph (double-ring SVG) + the word "ISLAND-WIDE 全島" to the Scheduled Maintenance
+card**, optionally with a slate `#8A8F98` header accent tying it to the 停 board marker. Cheap
+renderer/theme edit, regenerates, no rules or data-content change. Route to `bg-infodesign`. Everything
+else in v6.3.1 ships clean.
