@@ -881,7 +881,7 @@ its take-that off; it pressures via the ladder only.)* **Defer to `bg-architect`
 ## Complexity budget
 
 Target **~2.4–2.5, ceiling 2.5** — **still holdable, now with more headroom** (the 10→5 palette cut is a
-real bank). `complexity-budget.json` caps (rulebook 1650 words, keywords 15, component types 8, aid 22
+real bank). `complexity-budget.json` caps (rulebook 1850 words, keywords 15, component types 8, aid 22
 lines); `bg-elegance` guards.
 
 **The weight call (honest, v6.1).** v6 banks the palette cut (fewer ingredient token types, fewer card
@@ -900,46 +900,43 @@ v6.1 delta ledger.)
 
 ## Keywords / glossary
 
-- **Larder** — your sourced ingredient cards, **face-up**. Cap **7**.
-- **Vendor** — a Board card you **Bribe** to secure. One of three **venue types**: **breakfast shop 早餐店**
-  (Act I Ladder), **night-market stall 夜市攤** (Act II Ladder), **beverage shop 飲料店** (persistent,
-  off-clock, one per region beverage slot). Carries an ingredient cost, a region **icon** *(ladder only)*,
-  **Prestige**, **Reputation**, a **perk**, and the **Buzz piled on it**.
-- **the Ladder** — the contested, region-gated, clock-driving central display of vendors; cycles from
-  breakfast shops (Act I) to night-market stalls (Act II) at dusk.
-- **region beverage slot** — each region's persistent, off-the-clock drinks-stand space (a face-up beverage
-  shop fed by the Beverage deck, never swept). A stand in every region — you court the one where you stand
-  *(v6.1: replaces the mistaken region-free central "Beverage Row")*.
-- **Bribe a Vendor** *(LOCKED keyword)* — the core action, **one unified rule for every vendor type**: be
-  **with the vendor (in its region)**, hold a ≥2 Buzz majority (≥0 for 大哥), pay its ingredients
-  (− discount) to win it. **A ladder Bribe advances the day-clock +1; a beverage Bribe does not.** Carries
-  the binding warm reframe (*"a marketing opportunity, not a bribe"*).
-- **Buzz** — the committed, public, contested resource; **Promote** to place it on a vendor you're with (in
-  your current region); never discounted; clears to supply on a win. The interactive anti-runaway brake.
-- **Promote** — the action that places 2 Buzz (3 for 網紅) on vendor(s) you're with **in your current
-  region** (ladder vendor and/or this region's beverage slot).
-- **event scope** *(v6.1)* — a dual-coded tag on every event card (**⦿ self** / **⬢ region** / **➤
-  neighbour**) that decides who it hits, resolved relative to the region the card was drawn from. Events
-  fire when you **work a market** (Visit or Convenience Store); a card flipped on a Travel fly-by whiffs.
-- **discount icon** — a **ladder** vendor's region badge; each held reduces that region's ingredient cost on
-  future vendors by 1 (floored at 0). The compounding engine (ingredients only; **beverages carry none**).
-- **Prestige (VP)** — a vendor's value; the headline VP vector; live on the track.
-- **★ Star** — a value hook on a standout **ladder** vendor: **printed** on an apex "Legendary" 夜市攤 (a
-  standing Michelin/Bib-Gourmand/competition accolade, 7–8), or a **Star token** dropped mid-game by a
-  "vendor gets hot" boon (+2 Prestige / +1 Rep; token returns on the win). The deliberate value swing on the
-  ladder road.
-- **signature ingredient** — a region's one specialty (N/C/S/E). **common ingredient** — the fifth, shared
-  ingredient the drinks fork + Convenience Store run on (in two of the four regions).
-- **market deck** — a region's face-down deck of its signature (+ common, in two regions) + events (each
-  scope-tagged); **Visit** draws 3 keeps 2 (events fire by scope); **Convenience Store** draws 1 (**also
-  fires** by scope); **Travel**'s arrival draw is the only reveal that **whiffs**.
-- **signature Mission** — your secret **+7** vendor pattern (draw-3-keep-1); the only hidden info; carries
-  the grand-tour breadth line and the *"3 beverage shops"* drinks line.
-- **day-clock (the Act track)** — the marker that climbs +1 on every table-wide **ladder** Bribe (never a
-  beverage one); at **dusk** the Ladder flips to the Night-Market deck (Act I → II); at the **last-train**
-  mark **night falls, the night market winds down** and the game ends.
-- **the last train home** — the end-game: when the day-clock hits the last-train mark, finish the round +
-  one full round → reveal missions → score. (Day → Night arc; no named alarm — was "Code Red" in v5.)
+> Re-curated for v6.3.1 (2026-08-08, bg-elegance) — the true player term set (15). Stale v6.1/v6.2 vocab
+> dropped because it no longer exists in the game: Prestige, Bookings/VP track, perk, the central Ladder,
+> region beverage slot, the three venue types (早餐店/夜市攤/飲料店), signature/common ingredient (now plain
+> board terms), signature Mission (objectives are Tour Tickets), and Code Red. One bolded head-term per
+> entry (definitions plain) so the count reads true.
+
+- **Larder** — your sourced ingredient cards, kept face-up; cap 7.
+- **Vendor** — a face-up card you Bribe to win; carries a Draw number and either one region icon or none.
+  Once won it is a stop on your tours and an engine piece — it never scores directly.
+- **Draw** (人氣) — a vendor's printed value attribute (crowd-pulling power). NOT a score; it only feeds the
+  few Tour Tickets that reference vendor value and marks the ★ apex as the marquee get.
+- **Bribe** — the one unified action to win a face-up vendor: be with it in its region, hold a ≥2 Buzz
+  majority, and pay its ingredients minus your region discounts. Winning moves the day-clock +1.
+- **Buzz** — the committed, public, contested resource placed by Promote; never discounted; sits only in the
+  supply or on a vendor; clears back to supply when the vendor is won.
+- **Promote** — the action that places 2 Buzz on vendor(s) you are with in your current region, so long as
+  your total committed Buzz stays within your Reach.
+- **Reach** — your live Buzz cap (committed Buzz ≤ Reach); a track marker starting at 2. Built by Travel
+  (+1) and some events; dinged by greed (the Greedy Grab) and a couple of events. It does NOT score.
+- **region discount icon** — a vendor's region badge; each one you hold makes that region's ingredients 1
+  cheaper on future vendors (floored at 0). The compounding engine; drinks and the ★ apex carry none.
+- **★ Star** — the apex night-market trophy: a printed ★, the top Draw, no region icon (one per region). A
+  boon can also drop a ★ Star token on a vendor, worth +2 Draw to whoever wins it.
+- **Tour Ticket** — the objective you book from the shared row (DAY / NIGHT pools); the sole scoring vector.
+  Judged at its phase end into your win-pile or lose-pile.
+- **成團 / 遺珠** — your two ticket piles: 成團 (WIN, tours that ran, +value) and 遺珠 (LOSE, the ones that
+  got away, −floor(value ÷ 2)); tallied once at game end.
+- **Rave Reviews** (好評) — the two per-player milestone boons on the Tours Completed counter, earned the
+  first time YOU reach your 2nd and 4th completed tour (never pumps the leader).
+- **market deck** — a region's face-down deck of its signature ingredient (+ the common K, in two regions)
+  and a few events. Events carry a scope (⦿ self / ⬢ region / ➤ next-door) and fire on a Visit or
+  Convenience Store; a card flipped on Travel arrival does nothing.
+- **day-clock** — the Day→Night track; climbs +1 on every vendor win. At dusk the day layer is swept for the
+  night decks (and day tickets are judged); at the last-train mark the game ends.
+- **Scheduled Maintenance** (排班保養) — a table-wide event (its own island-wide banner, not a scope glyph):
+  the HSR is down for everyone until the drawer's next turn; North and South take the long way. Two copies,
+  seeded in the North and South NIGHT ingredient decks.
 
 ---
 
@@ -1085,7 +1082,7 @@ region/neighbour, boons leaning self, and **events fire on Visit + Convenience S
   rival* capability must land as **cheeky caper, not spite** (the identity's "island is a subject that
   pushes everyone around" rail helps here). `bg-theme` to (1) confirm the rival-facing beats read warm; (2)
   name/lock the three **scope icons** (⦿ self / ⬢ region / ➤ neighbour) in the icon vocabulary; (3) note
-  the scope adds a *new keyword* — check it doesn't over-clutter the warm register.
+  the scope adds a *new game-term* — check it doesn't over-clutter the warm register.
 - **(B) Beverages region-ANCHORED — `bg-theme` + identity.md fix.** Beverages are no longer region-free;
   there is now a drinks stand **in every region**, and you must be **on-site** to Promote/Bribe one.
   **identity.md is now STALE on this** — it repeatedly calls the drinks fork **"region-free"** and names a
@@ -1097,7 +1094,7 @@ region/neighbour, boons leaning self, and **events fire on Visit + Convenience S
   coherence.
 - **`bg-elegance` (v6.1 net):** we **removed** a special case (region-free beverages → **one unified Bribe
   rule + one unified Promote rule**, a real teach-simplification) and **added** one small concept (the
-  3-icon **event scope**). Roughly a wash on keywords (~12 → ~13). See the *v6.1 delta ledger* up top. The
+  3-icon **event scope**). Roughly a wash on game-terms (~12 → ~13). See the *v6.1 delta ledger* up top. The
   standing v6 flag is unchanged and still live: **rulebook prose is over its word cap** — write the scope
   block tight (one compact table) and let the unified Bribe/Promote rules *shorten* the action prose (they
   no longer fork by vendor type). The scope must be taught as **ONE concept** ("every event has a scope =
@@ -1125,8 +1122,8 @@ below are the v6-base record, lightly patched.)*
   directive) → the plain **Day → Night** arc ("night winds down → last train home"); identity.md still says
   "Code Red" — **bg-theme to strip it in the guardian re-check** (I did not touch identity.md).
 - **`bg-elegance` check:** the **10→5 palette cut** should read materially lighter on the component/cost
-  gauges (fewer ingredient token types; the `type`-column artifact shrinks). Net weight ~2.4–2.5; keyword
-  count ~12 *(v6.1: ~13 with the scope keyword, which nets against the removed region-free special case)*.
+  gauges (fewer ingredient token types; the `type`-column artifact shrinks). Net weight ~2.4–2.5; game-term
+  count ~12 *(v6.1: ~13 with the scope term, which nets against the removed region-free special case)*.
   The NEW ideas to weigh: the **region beverage slots** *(v6.1: per-region, superseding the v6 "Beverage
   Row")* and the **"drinks don't tick the clock"** clause. Guard the rulebook word count — and note the
   editorial fix below is now done.
@@ -1230,3 +1227,36 @@ The order a first game should reveal the rules:
 9. **Reputation** — the second live track; "several ways to win — go tall, climb your Rep, chase tickets."
 10. **Dusk → the Night Market** — introduce at the dusk flip: "the day judges your daytime tickets, the
     street turns over to neon, the big names arrive — and night's coming, so don't miss the last train."
+
+
+---
+
+## Rules-draft provenance (relocated)
+
+> Relocated here 2026-08-08 (bg-elegance) from the scaffolding HTML comment at the top of `rules-draft.md`,
+> to keep the rulebook's word count clean while losing no context. Voice for the rulebook: warm
+> travel-guide, teach-in-play order (identity.md). CANON spec = `design/v6.3-content-draft.md`.
+> Terminology now blessed/locked and used in the rulebook: a vendor's *value* attribute = **Draw** 人氣;
+> *Reputation* = **Reach**. (The note below is the historical v6.3/v6.3.1 change record; it predates the
+> Draw rename and still says "value" for the vendor attribute — read that as Draw.)
+
+**v6.3 changes folded in:** TICKETS-ONLY scoring (vendors give NO points — Tour Tickets are the sole score;
+expanded ~44-ticket deck); Reputation→Reach gates Buzz (a live cap) + Reach sinks; Reputation no longer
+scores; perk field eliminated; ticket pools 3→2; milestones = perplayer, re-homed on a Tours-Completed
+counter. A vendor keeps a printed value ATTRIBUTE (referenced by value-tickets; NOT a score) — now named
+**Draw** 人氣. The former "Bookings" score track is retired as a score; its physical track is repurposed as
+the Tours-Completed / Rave-Reviews counter.
+
+**v6.3.1 (four CD changes — BALANCE-VALIDATED by the re-sim, `playtests/sim-notes.md §v6.3.1`; the CD's
+three final calls LOCKED 2026-08-08):**
+1. 里長伯 reworked — picks a HOME region at setup; −1 discount there only, +1 ingredient away-tax elsewhere;
+   no-HSR flaw REMOVED. LOCKED −1/+1 AS-IS (lands 55%, top-of-band, CD-accepted); he starts Reach 2 like
+   everyone (NO start-Reach change — the sim module's start-Reach-1 default is NOT canon).
+2. New table-wide event "Scheduled Maintenance" (HSR down for everyone one round — re-homes the no-HSR
+   concept); LOCKED at 2 copies (a felt ~12% beat; sim default 1 is NOT canon).
+3. ALL agents start in Taipei (North hub) — replaces the split N/S 2p start.
+4. NIGHT vendors cost meaningfully MORE than day vendors (LOTR:Duel-style curve); LOCKED SOFT curve — night
+   "both" foods → 3, apex ★ → 4 (top apex 5), every night marquee cross-region biased; DAY held as printed;
+   steep +2 and the min-1 floor both rejected.
+
+bg-developer builds to CANON (v6.3-content-draft §CD-4 table), not the sim defaults.
