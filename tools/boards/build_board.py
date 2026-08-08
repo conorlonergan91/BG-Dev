@@ -562,6 +562,236 @@ def render_regionmap(theme, spec, phase="day"):
     return _svg(W, H, parts), W, H
 
 
+# ---- per-player CHARACTER BOARD (landscape player mat) ----------------------
+def _slugify(s: str) -> str:
+    s = re.sub(r'^\s*the\s+', '', (s or "").strip(), flags=re.I)
+    s = re.sub(r'[^A-Za-z0-9]+', '-', s).strip('-').lower()
+    return s or "char"
+
+
+def _pb_chip(cx, cy, txt, col, tfont, r=19):
+    """A small white numeric/keyword chip (a legit 'icon' when it's a number/keyword) — always ASCII
+    digits + '+'/'-'/'×' (all font-covered; NO U+2212 or ≥ → no tofu)."""
+    return (f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="#ffffff" stroke="{col}" stroke-width="3"/>'
+            f'<text x="{cx}" y="{cy+r*0.36:.0f}" font-size="{r*1.15:.0f}" fill="{col}" text-anchor="middle" '
+            f'font-family="{tfont}" font-weight="bold">{esc(txt)}</text>')
+
+
+def _pb_kit_glyph(cx, cy, code, col, ink, tfont):
+    """The Travel-Agents CHARACTER icon vocabulary — ONE consistent drawn glyph per ability/flaw code,
+    the same meaning everywhere. Icons are memory anchors; the block TEXT carries the precise rule.
+    Every shape is DRAWN (no font glyphs) so nothing renders tofu (bg-infodesign / bg-access)."""
+    e = emblem_svg
+    if code == "discount_home":       # house + '-1' → cheaper on home turf
+        return e("home", cx, cy, 27, col, stroke=ink) + _pb_chip(cx+32, cy+24, "-1", col, tfont)
+    if code == "away_tax":            # out-of-home arrow + '+1' → costs more off your patch
+        return e("arrow", cx, cy, 25, col, stroke=ink) + _pb_chip(cx+32, cy+24, "+1", col, tfont)
+    if code == "travel_draw_left":    # ring + back-chevron → draw the region you LEFT
+        return (f'<circle cx="{cx}" cy="{cy}" r="27" fill="none" stroke="{col}" stroke-width="4"/>'
+                f'<polyline points="{cx+8},{cy-13} {cx-9},{cy} {cx+8},{cy+13}" fill="none" '
+                f'stroke="{col}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>')
+    if code == "visit_keep3":         # three stacked cards + '3' → keep all 3 on a Visit
+        cards = "".join(f'<rect x="{cx-26+i*10:.0f}" y="{cy-22-i*6:.0f}" width="32" height="44" rx="6" '
+                        f'fill="#ffffff" stroke="{col}" stroke-width="3"/>' for i in range(3))
+        return cards + _pb_chip(cx+40, cy+22, "3", col, tfont)
+    if code == "hazard_twice_visit":  # warning triangle + '×2' → hazards fire twice on his Visit
+        return e("triangle", cx, cy, 25, col, stroke=ink) + _pb_chip(cx+34, cy+24, "×2", col, tfont)
+    if code == "promote3":            # buzz sparkle + '3' → Promote places 3 Buzz
+        return e("spark", cx, cy, 26, col) + _pb_chip(cx+34, cy+24, "3", col, tfont)
+    if code == "goes_last":           # a queue of 3 dots, last one ringed → take the last seat
+        dots = "".join(f'<circle cx="{cx-26+i*26:.0f}" cy="{cy}" r="9" fill="{col}" '
+                       f'opacity="{0.38 if i<2 else 1}"/>' for i in range(3))
+        return dots + f'<circle cx="{cx+26}" cy="{cy}" r="15" fill="none" stroke="{col}" stroke-width="3"/>'
+    if code == "bribe_margin1":       # two bars, yours taller by one + '1' → win the fight at a 1 lead
+        return (f'<rect x="{cx-22}" y="{cy-4}" width="15" height="30" rx="3" fill="{col}" opacity="0.42"/>'
+                f'<rect x="{cx+3}" y="{cy-20}" width="15" height="46" rx="3" fill="{col}"/>'
+                + _pb_chip(cx+42, cy-2, "1", col, tfont))
+    if code == "none":                # a struck-through ring → no drawback
+        return (f'<circle cx="{cx}" cy="{cy}" r="23" fill="none" stroke="{col}" stroke-width="3" opacity="0.6"/>'
+                f'<line x1="{cx-13}" y1="{cy}" x2="{cx+13}" y2="{cy}" stroke="{col}" '
+                f'stroke-width="5" stroke-linecap="round" opacity="0.7"/>')
+    return e("spark", cx, cy, 24, col)
+
+
+def render_playerboard(theme, row):
+    """One landscape CHARACTER BOARD per agent (replaces the old character CARDS). Layout, top→bottom:
+       • header band — the name in THREE scripts (Tâi-lô · English · 繁體);
+       • LEFT: a reserved ART placeholder (passport-photo frame + [FIG-CHAR-<slug>]) + a warm prose blurb;
+       • RIGHT: the ABILITY + FLAW blocks (icon vocabulary + clean text off the ability/flaw columns);
+       • BUZZ ZONE with a movable REACH cap marker (folds in the old standalone reach-track) — slots
+         0→12, locked past the cap, so 'committed Buzz ≤ Reach' is enforced at a glance;
+       • the SOLD (成團) / CANCELLED (取消) per-player pile zones;
+       • a per-player TOURS COMPLETED (好評 Rave Reviews) mini-track (marks at 2 & 4).
+    TA-specific: only games/travel-agents/make.sh calls --type playerboard, and it renders only rows that
+    carry ability_code + flaw_code — so Beacon and every other game are untouched."""
+    W, H = 1680, 1200
+    ink, accent, muted, text = theme["ink"], theme["accent"], theme["muted"], theme["text"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
+    teal = theme["suits"].get("central", {}).get("color", "#1F8A7A")      # ABILITY hue
+    vermilion = theme["suits"].get("north", {}).get("color", "#D64545")   # FLAW hue
+    violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")       # Buzz / Reach hue
+    gold_pile, taupe = gold, muted
+
+    name = row.get("name", "")
+    hanzi = row.get("hanzi", "")
+    name_en = str(row.get("name_en", "")).strip()
+    blurb = str(row.get("blurb", "")).strip()
+    ability = str(row.get("ability", "")).strip()
+    flaw = str(row.get("flaw", "")).strip()
+    acode = str(row.get("ability_code", "")).strip().lower()
+    fcode = str(row.get("flaw_code", "")).strip().lower()
+    slug = _slugify(name_en or row.get("id", ""))
+
+    P = [f'<defs>{page_gradient(theme, "pg")}</defs>',
+         f'<rect width="{W}" height="{H}" rx="34" fill="url(#pg)" stroke="{ink}" stroke-width="7"/>',
+         f'<rect x="30" y="30" width="{W-60}" height="{H-60}" rx="24" fill="none" '
+         f'stroke="{gold}" stroke-width="2" opacity="0.5"/>']
+
+    # --- header: THREE scripts (Tâi-lô · English · 繁體) ---
+    ox, hr, hh = 18, 24, 132
+    P.append(f'<path d="M{ox} {18+hr} a {hr} {hr} 0 0 1 {hr} -{hr} h {W-2*ox-2*hr} '
+             f'a {hr} {hr} 0 0 1 {hr} {hr} v {hh-hr} h -{W-2*ox} z" fill="{gold}"/>')
+    P.append(f'<text x="46" y="78" font-size="56" fill="#ffffff" font-family="{tfont}" '
+             f'font-weight="bold" letter-spacing="1">{esc(name)}</text>')
+    if name_en:
+        P.append(f'<text x="48" y="120" font-size="30" fill="#ffffff" opacity="0.93" '
+                 f'font-family="{tfont}" font-style="italic">{esc(name_en)}</text>')
+    P.append(f'<text x="{W-46}" y="96" font-size="66" fill="#ffffff" text-anchor="end" '
+             f'font-family="{tfont}" font-weight="bold">{esc(hanzi)}</text>')
+
+    top = 18 + hh + 26
+
+    # --- LEFT: art placeholder (passport-photo frame) + blurb ---
+    lx, lw = 44, 560
+    ax, ay, aw, ah = lx, top, lw, 320
+    P.append(f'<rect x="{ax}" y="{ay}" width="{aw}" height="{ah}" rx="16" fill="#ffffff" opacity="0.4" '
+             f'stroke="{gold}" stroke-width="3" stroke-dasharray="12 8"/>')
+    for (tx, ty, dx, dy) in [(ax+16, ay+16, 1, 1), (ax+aw-16, ay+16, -1, 1),
+                             (ax+16, ay+ah-16, 1, -1), (ax+aw-16, ay+ah-16, -1, -1)]:
+        P.append(f'<path d="M{tx} {ty+dy*24} L{tx} {ty} L{tx+dx*24} {ty}" fill="none" '
+                 f'stroke="{muted}" stroke-width="3"/>')
+    scx, scy = ax+aw/2, ay+ah/2 - 6
+    P.append(f'<circle cx="{scx}" cy="{scy-40}" r="46" fill="{muted}" opacity="0.28"/>')
+    P.append(f'<path d="M{scx-80} {scy+98} q80 -108 160 0 z" fill="{muted}" opacity="0.28"/>')
+    P.append(f'<text x="{ax+aw/2}" y="{ay+30}" font-size="18" fill="{muted}" text-anchor="middle" '
+             f'font-family="{bfont}" font-style="italic">illustration placeholder · human-illustrated (no AI final art)</text>')
+    P.append(f'<rect x="{ax+aw/2-158}" y="{ay+ah-54}" width="316" height="36" rx="18" fill="{ink}"/>')
+    P.append(f'<text x="{ax+aw/2}" y="{ay+ah-29}" font-size="23" fill="#ffffff" text-anchor="middle" '
+             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[FIG-CHAR-{esc(slug)}]</text>')
+    by0 = ay + ah + 34
+    for i, ln in enumerate(textwrap.wrap(blurb, 44)):
+        P.append(f'<text x="{lx}" y="{by0 + i*32}" font-size="24" fill="{text}" '
+                 f'font-family="{bfont}" font-style="italic">{esc(ln)}</text>')
+
+    # --- RIGHT: ability + flaw blocks ---
+    rx0 = 640
+    rw = W - 44 - rx0
+    def kit_block(y0, label, code, txt, col):
+        lines = textwrap.wrap(txt, 50) or [""]
+        bh = max(170, 96 + len(lines)*36)
+        s = [f'<rect x="{rx0}" y="{y0}" width="{rw}" height="{bh}" rx="18" fill="#ffffff" '
+             f'opacity="0.5" stroke="{col}" stroke-width="3"/>',
+             f'<text x="{rx0+24}" y="{y0+42}" font-size="28" fill="{col}" font-family="{tfont}" '
+             f'font-weight="bold" letter-spacing="2">{esc(label)}</text>',
+             _pb_kit_glyph(rx0+62, y0 + bh*0.60, code, col, ink, tfont)]
+        for i, ln in enumerate(lines):
+            s.append(f'<text x="{rx0+124}" y="{y0+92+i*36}" font-size="27" fill="{text}" '
+                     f'font-family="{bfont}">{esc(ln)}</text>')
+        return "".join(s), y0 + bh + 24
+    y = top
+    ab_svg, y = kit_block(y, "ABILITY 能力", acode, ability, teal)
+    fl_svg, y = kit_block(y, "FLAW 弱點", fcode, flaw, vermilion)
+    P.append(ab_svg)
+    P.append(fl_svg)
+    if acode == "discount_home":
+        P.append(f'<text x="{rx0}" y="{y+8}" font-size="23" fill="{muted}" font-family="{bfont}" '
+                 f'font-style="italic">Setup: pick ONE home region (open).</text>')
+
+    # --- BUZZ ZONE (marquee) — slots 0→12 with a movable REACH cap marker ---
+    bx, byz, bw, bh = 44, 726, 1136, 224
+    P.append(f'<rect x="{bx}" y="{byz}" width="{bw}" height="{bh}" rx="18" fill="#ffffff" opacity="0.5" '
+             f'stroke="{violet}" stroke-width="4"/>')
+    P.append(emblem_svg("spark", bx+34, byz+38, 15, violet))
+    P.append(f'<text x="{bx+60}" y="{byz+48}" font-size="30" fill="{violet}" font-family="{tfont}" '
+             f'font-weight="bold" letter-spacing="1">BUZZ 讚 committed</text>')
+    P.append(f'<text x="{bx+bw-20}" y="{byz+48}" font-size="26" fill="{violet}" text-anchor="end" '
+             f'font-family="{tfont}" font-weight="bold">must stay ≤ your REACH 及</text>')
+    reach_start = 2
+    n_slots = 13
+    pad = 34
+    cell = (bw - 2*pad) / n_slots
+    slot_y = byz + 152
+    r = 28
+    for i in range(n_slots):
+        scx2 = bx + pad + cell*(i + 0.5)
+        active = i <= reach_start
+        fill = "#ffffff" if active else "#E7E1D4"
+        stroke = violet if active else muted
+        dash = "" if active else ' stroke-dasharray="6 5"'
+        P.append(f'<circle cx="{scx2:.1f}" cy="{slot_y}" r="{r}" fill="{fill}" stroke="{stroke}" '
+                 f'stroke-width="{3 if active else 2}"{dash}/>')
+        ncol = ink if active else muted
+        P.append(f'<text x="{scx2:.1f}" y="{slot_y+9}" font-size="26" fill="{ncol}" text-anchor="middle" '
+                 f'font-family="{tfont}" font-weight="bold">{i}</text>')
+    # REACH cap marker (movable) — a violet flag pointing down at the current cap (start = 2)
+    mcx = bx + pad + cell*(reach_start + 0.5)
+    P.append(f'<rect x="{mcx-58:.1f}" y="{slot_y-84}" width="116" height="32" rx="16" fill="{violet}"/>')
+    P.append(f'<text x="{mcx:.1f}" y="{slot_y-61}" font-size="22" fill="#ffffff" text-anchor="middle" '
+             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">及 REACH</text>')
+    P.append(f'<polygon points="{mcx-15:.1f},{slot_y-52} {mcx+15:.1f},{slot_y-52} {mcx:.1f},{slot_y-r-4}" '
+             f'fill="{violet}"/>')
+    P.append(f'<text x="{bx+pad}" y="{byz+bh-18}" font-size="21" fill="{muted}" font-family="{bfont}" '
+             f'font-style="italic">Start REACH at 2. Slide the marker RIGHT +1 each Travel; place Buzz only in slots up to it. Winning a vendor clears its Buzz.</text>')
+
+    # --- SOLD / CANCELLED per-player pile zones ---
+    px0, pw = 1210, W - 44 - 1210
+    def pile(y0, en, han, emcol, note):
+        return "".join([
+            f'<rect x="{px0}" y="{y0}" width="{pw}" height="94" rx="14" fill="#ffffff" opacity="0.5" '
+            f'stroke="{emcol}" stroke-width="3" stroke-dasharray="10 7"/>',
+            emblem_svg("stamp", px0+42, y0+47, 24, emcol, stroke=ink),
+            f'<text x="{px0+82}" y="{y0+40}" font-size="27" fill="{ink}" font-family="{tfont}" '
+            f'font-weight="bold" letter-spacing="1">{esc(en)} {esc(han)}</text>',
+            f'<text x="{px0+82}" y="{y0+70}" font-size="19" fill="{muted}" '
+            f'font-family="{bfont}">{esc(note)}</text>'])
+    P.append(pile(726, "SOLD", "成團", gold_pile, "tours that ran -> +value"))
+    P.append(pile(846, "CANCELLED", "取消", taupe, "didn't run in time -> half value"))
+
+    # --- per-player TOURS COMPLETED (好評 Rave Reviews) mini-track ---
+    ty0 = 976
+    P.append(f'<rect x="44" y="{ty0}" width="{W-88}" height="200" rx="18" fill="#ffffff" opacity="0.42" '
+             f'stroke="{teal}" stroke-width="3"/>')
+    P.append(emblem_svg("crowd", 84, ty0+40, 20, teal))
+    P.append(f'<text x="120" y="{ty0+48}" font-size="28" fill="{teal}" font-family="{tfont}" '
+             f'font-weight="bold" letter-spacing="1">TOURS COMPLETED 好評 · Rave Reviews (yours)</text>')
+    P.append(f'<text x="{W-64}" y="{ty0+48}" font-size="20" fill="{muted}" text-anchor="end" '
+             f'font-family="{bfont}" font-style="italic">a completions meter — NOT your score</text>')
+    tn = 7
+    tcell = (W - 88 - 120) / tn
+    tsy = ty0 + 132
+    rave = {2: "RAVE REVIEW 1: +1 Reach", 4: "RAVE REVIEW 2: +1 ingredient · next Bribe -1"}
+    for i in range(tn):
+        tcx = 100 + tcell*(i + 0.5)
+        is_ms = i in rave
+        fill = teal if is_ms else "#ffffff"
+        tcol = "#ffffff" if is_ms else ink
+        P.append(f'<circle cx="{tcx:.1f}" cy="{tsy}" r="30" fill="{fill}" stroke="{teal}" '
+                 f'stroke-width="{4 if is_ms else 2}"/>')
+        P.append(f'<text x="{tcx:.1f}" y="{tsy+10}" font-size="28" fill="{tcol}" text-anchor="middle" '
+                 f'font-family="{tfont}" font-weight="bold">{i}</text>')
+        if is_ms:
+            segs = textwrap.wrap(rave[i], 22)[:2]
+            base = tsy - 44 - (len(segs)-1)*22
+            for j, seg in enumerate(segs):
+                P.append(f'<text x="{tcx:.1f}" y="{base+j*22:.0f}" font-size="18" fill="{teal}" '
+                         f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(seg)}</text>')
+    P.append(f'<text x="100" y="{ty0+182}" font-size="19" fill="{muted}" font-family="{bfont}" '
+             f'font-style="italic">+1 the instant a held Tour Ticket\'s pattern is met; never goes down. Earn each Rave Review the FIRST time YOU reach that mark.</text>')
+
+    return _svg(W, H, P), W, H
+
+
 # ---- score / reputation track (serpentine, numbered) ------------------------
 def render_scoretrack(theme, max_v, per_row, title, milestones, note, start_label,
                       accent_hex="", kicker=""):
@@ -658,7 +888,7 @@ def _svg(W, H, parts):
 def main():
     ap = argparse.ArgumentParser(description="Render themed boards, tracks, and tokens.")
     ap.add_argument("--type", required=True,
-                    choices=["track", "tokens", "mat", "aid", "regionmap", "scoretrack"])
+                    choices=["track", "tokens", "mat", "aid", "regionmap", "scoretrack", "playerboard"])
     ap.add_argument("--theme", default="clean")
     ap.add_argument("--out", type=Path, default=Path("build/board.png"))
     # track
@@ -683,8 +913,11 @@ def main():
     ap.add_argument("--from-csv", type=Path, default=None, help="tokens: columns label[,color][,qty][,name]")
     ap.add_argument("--legend", action="store_true", help="tokens: render a true KEY (one row per type: "
                     "swatch + name + ×qty) instead of the qty-expanded punch-grid")
-    # mat
+    # mat / regionmap
     ap.add_argument("--spec", type=Path, default=None)
+    # playerboard: characters CSV → one landscape board per (character) row into --out (a DIRECTORY)
+    ap.add_argument("--csv", type=Path, default=None,
+                    help="playerboard: characters CSV (renders one board per row carrying ability+flaw)")
     # regionmap day/night state (mirrors the dusk flip)
     ap.add_argument("--phase", default="day", choices=["day", "night"],
                     help="regionmap: render the day (warm) or night (neon) state of the board")
@@ -692,6 +925,26 @@ def main():
 
     theme = get_theme(args.theme)
     labels = [s.strip() for s in args.labels.split(",")] if args.labels else []
+
+    if args.type == "playerboard":
+        if not args.csv:
+            ap.error("--type playerboard requires --csv <characters.csv>")
+        import csv as _csv
+        with args.csv.open(newline="", encoding="utf-8") as f:
+            rows = list(_csv.DictReader(f))
+        # Beacon-safe: render ONLY Travel-Agents character rows (carry ability_code + flaw_code).
+        rows = [r for r in rows if str(r.get("ability_code", "")).strip()
+                and str(r.get("flaw_code", "")).strip()]
+        if not rows:
+            print("[board] playerboard: no character rows (ability_code+flaw_code) — nothing rendered.")
+            return 0
+        # --out is a DIRECTORY for playerboard (one file per character).
+        outdir = args.out if args.out.suffix == "" else args.out.parent
+        for r in rows:
+            svg, W, H = render_playerboard(theme, r)
+            slug = _slugify(str(r.get("name_en", "")).strip() or r.get("id", ""))
+            _save(svg, outdir / f"board-{slug}.png", W, H)
+        return 0
 
     if args.type == "track":
         svg, W, H = render_track(theme, args.spaces, args.title, labels, args.left_label, args.right_label)

@@ -29,9 +29,8 @@ python3 $T/cards/build_cards.py --csv components/missions.csv    --out build --t
 python3 $T/cards/build_cards.py --csv components/ingredients.csv  --out build --theme "$theme" --formats png --tokens-csv components/tokens.csv
 # Scoped EVENT cards (⦿/⬢/➤) — shuffled into the matching region+phase ingredient deck (night event-heavier).
 python3 $T/cards/build_cards.py --csv components/events.csv      --out build --theme "$theme" --formats png
-# Character mats — NON-phased (neutral back); rendered as cards for the prototype (bespoke mat template
-# is a bg-infodesign task). Keeps `screentop` — its single sheet feeds BOTH the top-level and Screentop sets.
-python3 $T/cards/build_cards.py --csv components/characters.csv  --out build --theme "$theme" --formats png screentop
+# Character CARDS are RETIRED — replaced by per-player CHARACTER BOARDS (landscape player mats), rendered
+# in the board section below via `build_board.py --type playerboard`. See art/character-boards.md.
 
 # --- PLAY-READY per-deck Screentop sheets (assembled from the data by split_decks.py) ----------
 # Each pile below becomes ONE Screentop deck upload (one sheet + its back). The full-CSV sheets above
@@ -77,23 +76,20 @@ done
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --out build/map-day.png
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --out build/map-night.png
 
+# Per-player CHARACTER BOARDS (5 landscape mats, one per characters.csv row) — REPLACES the character
+# cards. Each board carries: name in THREE scripts (Tâi-lô · English · 繁體), an art placeholder
+# [FIG-CHAR-<slug>] + a warm blurb, the ABILITY/FLAW icon blocks, the BUZZ zone with a movable REACH cap
+# marker (this FOLDS IN the old standalone reach-track — committed Buzz ≤ Reach enforced at a glance), the
+# per-player SOLD 成團 / CANCELLED 取消 pile zones, and a per-player TOURS-COMPLETED (好評 Rave Reviews)
+# mini-track. TA-only: --type playerboard renders only rows with ability_code+flaw_code, so Beacon et al.
+# are untouched.
+python3 $T/boards/build_board.py --type playerboard --csv components/characters.csv --theme "$theme" --out build/boards/
+
 # Live in-game tracks (v6.3.1 — TICKETS-ONLY scoring: there is NO score/VP track; your score is your Tour-Ticket tally).
-# Reach track — your Buzz CAP (start at 2). +1 per Travel + some events. NOT a score.
-# Violet accent (the Buzz hue Reach caps) so the three tracks read as DIFFERENT instruments, not clones.
-python3 $T/boards/build_board.py --type scoretrack --max 12 --per-row 13 \
-    --title "Reach track (Buzz cap)" --start-label "START at 2" --accent-hex "#6A4C93" \
-    --kicker "YOUR BUZZ CAP — committed Buzz ≤ Reach · NOT a score" \
-    --note "One marker per player, START AT 2. Your total committed Buzz may never exceed your Reach. +1 each Travel; a few events +/-. Winning a vendor clears its Buzz, freeing your cap. Reach does NOT score." \
-    --theme "$theme" --out build/reach-track.png
-# Tours-Completed counter — the repurposed former Bookings/VP track. Hosts the per-player Rave Reviews.
-# Teal accent (off the 成團 win-pile score-gold) + a "NOT your score" kicker so the completions METER is
-# never mistaken for the ticket score (bg-theme coherence flag / bg-infodesign item 2).
-python3 $T/boards/build_board.py --type scoretrack --max 8 --per-row 9 \
-    --title "Tours Completed (Rave Reviews)" --start-label "0" --accent-hex "#1F8A7A" \
-    --kicker "A COMPLETIONS METER — NOT your score (成團 win pile is your score)" \
-    --milestones "2:RAVE REVIEW 1: +1 Reach;4:RAVE REVIEW 2: +1 ingredient, next Bribe -1" \
-    --note "One marker per player, starts at 0 and never goes down. +1 the instant a held Tour Ticket's pattern is met. Each agent earns their OWN Rave Review the first time THEY reach the 2nd / 4th mark (no leader pump). A COMPLETIONS counter, NOT the 成團 win pile." \
-    --theme "$theme" --out build/tours-track.png
+# NOTE: the standalone REACH track and TOURS-COMPLETED track are RETIRED — both are per-player instruments
+# and now live ON the character boards above (Reach = the movable cap marker on the Buzz slot row 0→12;
+# Tours-Completed = the 好評 Rave-Reviews mini-track). Only the TABLE-WIDE vendor-claims clock stays a
+# shared track (it will move onto the MAP in the next map pass — a board↔map interface note).
 # The VENDOR-CLAIMS day-clock. +1 each time ANY agent Bribes a vendor.
 python3 $T/boards/build_board.py --type scoretrack --max 10 --per-row 11 \
     --title "Vendor-claims clock (2p)" --start-label "START" \
@@ -133,12 +129,11 @@ cp build/top/sheets/tickets_day_sheet_*.png    exports/ 2>/dev/null || true
 cp build/top/sheets/tickets_day_back.png       exports/ 2>/dev/null || true
 cp build/top/sheets/tickets_night_sheet_*.png  exports/ 2>/dev/null || true
 cp build/top/sheets/tickets_night_back.png     exports/ 2>/dev/null || true
-# Characters — NON-phased; single sheet, unchanged.
-cp build/sheets/characters_sheet_*.png    exports/ 2>/dev/null || true
+# Character BOARDS — 5 landscape player mats (replaces the old characters_sheet). Reach + Tours-Completed
+# now live on these, so the standalone reach-track / tours-track exports are gone.
+cp build/boards/board-*.png               exports/ 2>/dev/null || true
 cp build/map-day.png                      exports/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/map-night.png 2>/dev/null || true
-cp build/reach-track.png                  exports/reach-track.png 2>/dev/null || true
-cp build/tours-track.png                  exports/tours-track.png 2>/dev/null || true
 cp build/clock-track.png                  exports/clock-track.png 2>/dev/null || true
 cp build/token-key.png                    exports/token-key.png 2>/dev/null || true
 cp build/player-aid.png                   exports/player-aid.png 2>/dev/null || true
@@ -155,6 +150,6 @@ cp build/sheets/vend_*_sheet_*.png        exports/screentop/ 2>/dev/null || true
 cp build/sheets/vend_*_back.png           exports/screentop/ 2>/dev/null || true
 cp build/sheets/ticket_*_sheet_*.png      exports/screentop/ 2>/dev/null || true
 cp build/sheets/ticket_*_back.png         exports/screentop/ 2>/dev/null || true
-cp build/sheets/characters_sheet_*.png    exports/screentop/ 2>/dev/null || true
-cp build/sheets/characters_back.png       exports/screentop/ 2>/dev/null || true
+# Character BOARDS go into the Screentop set too — each uploads as a per-player board image.
+cp build/boards/board-*.png               exports/screentop/ 2>/dev/null || true
 echo "✓ exports/ refreshed — commit these."
