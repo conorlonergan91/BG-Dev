@@ -1804,3 +1804,155 @@ start-Reach-1 councillor) both confirm in-band, and the 1-copy Maintenance rarit
 existing watch-flags (2p back-half drag ~4–6% stall; 媽寶 floor; 里長伯 North-camping feel; the ~3–7%
 contested Buzz fight's *fun*; endgame the softest playstyle; Maintenance ~7% — felt beat or rare surprise?)
 to the FTUE table, where the sim goes blind.
+
+---
+
+# v6.4 — GATED RE-SIM (2026-08-08) — FOLLOWERS vocab · Bookings hand-limit N=3 · 網紅 start-max · base Travel de-sourced · Trending · the FOLLOWERS-ECONOMY sweep
+
+Sim module reworked for v6.4 (`sim/travel_agents.py`; run via `python sim/travel_agents.py --v64 600`
+— one gated invocation: validation + economy diagnosis + full lever sweep; character band at N=1200/cell,
+sweep cells at N=600). This is the **interpretation**; nothing here is logged to the design-doc / bible /
+decision-log — that is the CD's call at sign-off. **Module defaults for this run** (the carried v6.3.1
+divergence still applies): `NIGHT_CURVE=1 MAINT=1 COUNCILLOR_REACH=1` (⚠ CANON is Maintenance ×2 /
+里長伯 start-max 2 — see the v6.3.1 §CANON-vs-SIM-DEFAULT flag; unchanged by v6.4, carried to bg-developer),
+plus the new v6.4 defaults `HAND_LIMIT=3 INFL_MAX_START=4 TRAVEL_NO_SOURCE=1 TRENDING=max(+1)`.
+
+**Headline (3 validation items + the economy):**
+**(1) base-Travel-de-source → 媽寶 FLOOR-FIX PASSES cleanly · (2) hand-limit N=3 PASSES (invisible, no
+breadth pinch) · (3) 網紅 start-max 4 reads HOT (~58%) → the sim recommends the start-3 reserve dial ·
+(4) the Followers-economy imbalance is REAL but every tightening lever over-corrects into STALL — so the
+sim recommends a LIGHT touch (lost-war −1 sting) and carries the back-half-tension question to the table.**
+
+## STEP 2 — VALIDATION (baseline v6.4, all economy levers OFF, N=600 arc / N=1200 band)
+
+Arc is v6.3.1-identical → the renames + the three structural touches are balance-neutral at baseline:
+`turns/plyr 28.8 · vendors/plyr 5.1 · winner 14.4 · end LT 93%/stall 7% · contested_frac 3.7% ·
+max_committed 3.09 · reach_end 7.40 · forced_turn_frac 0.000`.
+
+### (a) FIVE-CHARACTER BAND — `網紅 58.1 · 大胃王 54.2 · 媽寶 50.9 · 大哥 49.9 · 里長伯 47.5` [47.5–58.1]
+- ✅ **媽寶 (Homebody) FLOOR-FIX — the clean win.** 43.5% → **50.9%**, lifted into band **without overshoot**
+  (target was "off the ~43.5 floor, not past ~55"). As the **sole Travel-sourcer** (base Travel now sources
+  nothing for everyone else) its routing ability finally earns its keep — exactly the predicted organic
+  floor-fix (§Change 5e-2). No reserve lever needed.
+- ⚠ **網紅 (Influencer) start-max 4 reads HOT — 58.1%, the band top, +4pt clear of the pack.** The +2
+  head-start is too strong on this measure. **Reserve dial (§Change 4c): start-max 3 lands ~54% (in band).**
+  → **the sim recommends locking 網紅 at start-max 3, not 4** (see the reserve-dial read below).
+- 大胃王 54.2 / 大哥 49.9 / 里長伯 47.5 — all in band. (里長伯 at start-max **1** here, the sim default;
+  at CANON start-max **2** he reads ~+7pt = ~55, top-of-band, as the CD accepted in v6.3.1 — a **carried
+  divergence**, not a v6.4 change; his kit is untouched.)
+- **Caveat on absolute levels (important for reading 網紅):** char-vs-neutral runs the *whole roster* hotter
+  in v6.4 because de-sourcing base Travel makes every *ingredient* ability (大胃王 keep-3, 媽寶 travel-source,
+  里長伯 discount) worth more vs a plain neutral — the field mean sits ~52, not ~50. So absolute numbers are
+  inflated vs the v6.3.1 43.5–55.2 band, and the true 5-way gap is smaller than "58 vs 50" looks. Two things
+  the harness under-credits, both cooling 網紅 at a real table: (i) her **"goes last" flaw washes out** in a
+  2p both-seatings mirror (zero balancing credit here; a real 3–4p tempo cost), and (ii) the inflation is
+  uniform. Net: **start-3 is the prudent sim-driven lock; start-4 is a legitimate table-confirmable
+  alternative** if the CD wants the bolder head-start — a clean A/B for sign-off.
+
+### (b) NIGHT-HALF SOURCING with base Travel DE-SOURCED — ✅ HOLDS
+`src/turn DAY 0.20 · NIGHT 0.20 → night 105% of day` (target ~60–100%; **cleared with room**). Night claims/
+plyr 2.64, first-night bribe turn 36.5 — the night climax still fires. **The CD-4 soft curve does NOT need
+touching**: removing base Travel from sourcing did **not** collapse night sourcing (Visit + Convenience
+Store + 媽寶's travel-draw carry it), and `_bump_src` was fixed so a base Travel is no longer miscounted as
+a sourcing action (else this metric would have been meaningless). No night-curve or clock change from this item.
+
+### (c) HAND-LIMIT N=3 — ✅ NO PINCH (invisible to healthy play)
+- `collector` breadth line (weights n_collect6/g_collect5/food-ladders, pushes right up to the cap) wins
+  **44.7% vs the field** — viable, **not** crushed by the 3-slot cap.
+- Field: **cancels/gm 0.00 · at-limit claims/gm 0.00 · tickets_held_winner 2.58** — the winner's working set
+  sits one *below* the cap, so N=3 never binds in healthy play (matches the ~2.38 prediction). Cancel-to-claim
+  is modelled + scored (−floor(v/2)) but essentially never triggers for a competent line.
+- **tickets-only health holds:** balanced beats `ignore_obj` **65.7%** h2h — the grind-only exploit stays
+  structurally dead. N=3 is safe to lock.
+
+## STEP 3 — FOLLOWERS-ECONOMY diagnosis + lever SWEEP ("let the sim decide the fix")
+
+### Diagnosis (baseline v6.4) — the imbalance is REAL and reproduces
+`gain/gm 17.1` (Travel **13.0** · events 1.8 · Rave milestones 1.89 · **Trending 0.45**) **vs `sink/gm 6.3`**
+(greedy-grab 4.3 · bad-review events 2.0). The cap ramps `2 → reach_end 7.40` while `max_committed 3.09`
+and **cap-bind DAY 21% / NIGHT 2%** — the cap **bites early, is slack late**: back-half (night) **cap-FILL
+just 9% of the dial**, mean night slack **4.99**. **The top half of the ramped cap is dead weight in the
+back half** — exactly the CD's read. (The new Trending gain adds only +0.45/gm — the dynamic marker is rare,
+so it barely worsens the imbalance.)
+
+### ⚠ LOST-PROMOTION-WAR — the CD's first-class lever: what it does, and what the sim says
+**CURRENT STATE (off):** when a contested vendor resolves, the **loser's committed Followers simply RETURN
+to supply, the cap is freed, and there is NO sting** — the missing, contention-scaled sink the CD flagged.
+Baseline: **lost wars/gm 0.38**, **Followers committed per lost war 0.97** (~1 follower per lost war).
+
+Lever test (field mirror, N=600):
+
+| mode | contest% | lost-wars/gm | cap-bind NIGHT | night fill | night slack | reach_end |
+|---|---|---|---|---|---|---|
+| off (v6.3) | 3.7% | 0.38 | 2% | 9% | 4.99 | 7.40 |
+| burn (committed SPENT) | 3.7% | 0.38 | 2% | 9% | 4.99 | 7.40 |
+| dropmax −1 | 3.7% | 0.37 | 2% | 9% | 4.89 | 7.25 |
+| dropmax −2 | 3.7% | 0.38 | 2% | 9% | 4.80 | 7.09 |
+| both (burn+drop1) | 3.7% | 0.37 | 2% | 9% | 4.89 | 7.25 |
+
+- **The lost-war consequence is nearly INERT as an economy sink** — because lost wars are **rare (~0.38/gm)**
+  and each involves ~1 committed Follower. `burn` is invisible (a spent follower vs a 24-pool supply);
+  `dropmax` shaves reach_end only 7.40→7.25 (−1) / 7.09 (−2) and moves back-half fill 0pt. **It cannot be
+  THE economy fix at the current ~5% fight rate.**
+- **But it is SAFE and it is the right STING.** It does **not** collapse the fight rate in-sim (contested
+  stays 3.7% — the greedy bots are *blind* to the downside, so whether a real human stops contesting when
+  losing drops their dial is the **#1 human-playtest question**, unchanged from the standing "~5% fight fun"
+  flag). Recommended: **adopt `dropmax −1`** — losing a war drops your Followers-max by 1 (a real bite + a
+  small contention-scaled sink that gives the dial a job) at **near-zero stall cost**. Do NOT go −2 or add
+  `burn` on top (no sim benefit, and the sting escalates for no measured gain).
+
+### Lever (b) — raise NIGHT/APEX demand + lift the ceiling  [the only real back-half mover — but it STALLS]
+
+| night/apex/top | contest% | cap-bind N | night fill | night claims | stall% | reach_end |
+|---|---|---|---|---|---|---|
+| +0/+0/12 (base) | 3.7% | 2% | 9% | 2.64 | **7%** | 7.40 |
+| +1/+0/12 | 3.3% | 6% | **19%** | 2.48 | **23%** | 7.95 |
+| +1/+1/14 | 3.9% | 7% | 19% | 2.47 | 26% | 8.14 |
+| +2/+1/14 | 3.7% | 9% | 22% | 2.42 | 31% | 8.50 |
+| +2/+2/16 | 4.3% | 9% | 22% | 2.40 | 35% | 8.63 |
+
+- **This is the ONLY lever that meaningfully spends the ramped cap late** — night-demand +1 ≈ **doubles**
+  back-half fill (9%→19%) and triples night cap-bind (2%→6%). The dial finally gets used at night.
+- **But it OVER-CORRECTS into stall exactly like the rejected steep night curve:** +1 pushes 2p stall
+  **7%→23%** (the steep curve was rejected at 18%). Higher follower-demand = more Promotes per night vendor
+  = the vendor-claims clock reaches last-train later = more games hit the drag backstop. Night claims also
+  thin (2.64→2.48). **+2 is worse (31–35% stall).** So night-demand is a real fix for the *slack* but it
+  cannot stand alone — it needs a compensating **one-notch clock nudge (`V_END` 10→9 @2p)** to absorb the
+  stall, and that pairing was NOT swept here (a cheap confirming micro-run, flagged below).
+
+### Lever (c) — Follower-SINK events — modest; shaves the ceiling, doesn't raise fill
+`+0.10`: sink 6.3→6.8, reach_end 7.40→7.22, fill 9%→9%. `+0.20`: sink 7.2, reach_end 7.00, fill 9%.
+Lowering the cap does **not** raise commitment (commit is the bottleneck, not the dial) — so sinks make the
+dial read lower but do **not** make the back half tense. Useful only as a gentle ceiling trim.
+
+### Lever (a) — tighten AVAILABILITY (fewer face-up slots) — the ONLY fight-rate mover, but stalls too
+`slots 1,1,1,1` (vs 2,1,1,1): contested **3.7%→6.9%**, fights/gm **0.38→0.65** (nearly doubles the fight),
+but stall **7%→18%**. Per the CD this is **NOT** the primary knob — the fight's *fun* at ~5–7% is the #1
+human question, and tightening it also drags the close.
+
+## RECOMMENDATION (the sim's read for the design lock)
+
+**The honest finding:** the Followers-economy imbalance is real, but **the back-half cap slack is functioning
+as the game's closing-valve** — every lever that tightens it (night-demand, availability) trades the slack
+for **stall**, tripping the CD's own "without over-correcting into a starved, swingy feel" guardrail. So the
+sim recommends a **LIGHT touch**, not a heavy re-cost:
+
+1. **網紅 → start-max 3** (the reserve dial). start-4 reads hot (~58%, band top); start-3 lands ~54% (in
+   band). *A/B for the CD:* start-4 is table-confirmable because the harness under-credits her goes-last
+   flaw — but **3 is the prudent lock.**
+2. **Lost-war consequence → `dropmax −1`** (a lost promotion war drops your Followers-max by 1). The CD's
+   first-class lever, adopted for the **STING + a contention-scaled sink** it asked for — near-zero stall
+   cost, gives the dial a real downside. **Not** the economy's whole fix (fights too rare in-sim), and its
+   fight-suppression risk is a human question (bots are blind). Reject `burn` and `−2` (no sim gain).
+3. **The "dead-weight top of the dial" → treat as cosmetic + a gentle ceiling trim** (optionally print the
+   dial ceiling lower, e.g. 12→9, since `max_committed` is ~3 and the top is never reached) rather than a
+   balance break. It does not hurt play (stall 7%, band healthy, night fires).
+4. **CARRY the back-half TENSION question to the 2p human table** — where the fight's fun already lives as
+   the #1 FTUE flag. **Reserve tension lever = night-demand +1 PLUS a `V_END` 10→9 clock nudge** (adopt only
+   if the table finds the back half slack/boring; night-demand alone over-corrects into ~23% stall).
+   **Flag a cheap confirming micro-run** of {night+1, V_END 9} before ever baking it.
+
+**Everything else validated:** 媽寶 floor-fix (clean), hand-limit N=3 (no pinch, tickets-only health holds),
+night sourcing (105% of day — CD-4 curve untouched), the renames/Trending/dial (balance-neutral).
+**No blocker to the design lock.** The one genuinely OUT-of-band item is 網紅 start-max (→ start-3);
+everything else is a light-touch feel choice for the CD + the table.
