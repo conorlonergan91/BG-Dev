@@ -5,6 +5,31 @@ Hand-authored read of the sim runs. Owner: `bg-playtest`. Sim module: `../sim/tr
 `sim-results.md`. This file is the interpretation + the one change to test. **Nothing here has been
 logged to the design-doc / bible / decision-log — that's the CD's call after reading this.**
 
+## §V7 Phase-1.5 — deck-driven clock + dial-drop sink — VERDICT: 6p FIXED · economy tighter · new balance target is 里長伯-hot/阿嬤-floor · buff-the-weak wins the band
+
+**★ 6p is FIXED.** The deck-driven clock (DAY 3·(N+1) / NIGHT 4·(N+1)) + scaled decks make every count finish: **end LAST TRAIN 3p 99% · 4p 100% · 5p 100% · 6p 97%** (Phase-1 6p was 0% / **71% stall**). turns/player 27–29 (target 26–30); `empty_mkt_draws 0.00`; **supply_min recovered 7.5 → 26–47**. The deck-clock is stall-proof exactly as designed — the root fix landed.
+
+**Economy tightened.** `slack_night` 4.0–4.4 (was ~5–6.5). Dial-drops/gm rise with count (0.48→0.92→0.92→1.20), overwhelmingly at **night** (6p day 0.28 / night 0.92 — as designed); `floor_hits` rare (0.02–0.11); the committed-over-max clause fired **0.000×** (dormant, as bg-design predicted). Sink sensitivity: −1/−2 vs −1/−1 vs off sit close on slack (~3.8–4.3) → most of the tighten comes from the shorter deck-paced game; the dial-drop is a mild, thematic sink. **Keep canon −1/−2.**
+
+**Health holds all counts:** tickets-only DEAD (`ignore_obj` 1.2–4.6% ≪ fair); seat fairness ok; downtime fine (`avg_legal_actions` ~9.5–9.9, forced 0, ~27 t/p even at 6p); night sourcing 67–131% of day.
+
+**★ The balance story CHANGED — the "battlers" are no longer the problem.** The dial-drop + deck-pacing cooled 大哥/網紅 into the mid-pack (idx ~1.1–1.3); the §11f reserve levers barely move them and are **not needed**. The real outliers now:
+- **里長伯 (Old Councillor) = TOP at every count** — idx 1.39 / 1.12 / 1.38 / 1.40 (escalation-ladder default 6p 1.60). The new hot character.
+- **阿嬤 = FLOOR at every count** — idx 0.97 / 0.92 / 0.93 / 0.91. Persistently just below fair.
+
+**CD escalation ladder — band spread (hi−lo idx; lower = tighter):**
+
+| approach | 4p spread | 6p spread |
+|---|---|---|
+| defaults (canon dial-drop) | 0.31 | 0.63 |
+| (1) nerf-battlers (reserve levers) | 0.57 | 0.42 |
+| (2) remove-ALL-flaws | 0.34 | **0.77 (worst)** |
+| (3) **buff-the-weak (阿嬤+媽寶)** | **0.23** | **0.32 (best)** |
+
+**buff-the-weak wins decisively** — tightest band at both counts, by lifting the floor (阿嬤 0.95–1.16, 媽寶 1.23–1.24) rather than dragging the top down. **remove-all-flaws BACKFIRES** (frees the already-strong 里長伯/大哥 → 0.77 @6p). nerf-battlers is mis-targeted (the battlers aren't the issue).
+
+**→ ONE CHANGE TO TEST (for CD sign-off):** adopt **buff-the-weak** — lift **阿嬤** (persistent floor) + **媽寶**, and consider a small **里長伯** trim (now the top, esp. 6p at idx 1.4–1.6). Reject remove-all-flaws; drop the reserve battler-nerfs (unneeded). Exact buff/trim numbers → bg-design to spec → confirm re-sim. **6p ships (no cap at 5 needed).**
+
 **Headline:** the design's single make-or-break assumption — *is the Dead-drop tuned so cooperation is
 individually rational?* — **FAILS as the rules are written**, and the fix is clear and proven in sim:
 **add +1 VP per Dead-drop.** Kingmaking and the payout-C pick-race both PASS untouched.
@@ -2143,3 +2168,153 @@ only if Phase-1's downtime + length hold"), **6p does not clear.** Two paths for
 she lands in the pack (expected idx toward ~1.2–1.3), then the human table decides 3-vs-4 (the goes-last
 flaw is under-credited in-sim). Everything else at 3–5p is SOLID; 6p is a separate CD decision
 (re-tune-and-re-sim vs cap at 5).
+
+---
+
+# V7 — PHASE 1.5 RE-SIM (2026-08-08) — the DECK-DRIVEN clock + the DIAL-DROP lost-war sink
+
+CD-gated re-sim of the two §11 fixes (deck-driven clock replacing the vendor-claims clock; dial-drop
+replacing burn), written against the Phase-1 verdict **3–5p healthy, 6p BROKEN** (0% last-train / 71%
+stall / 34.6 t/p / supply_min 7.5 / 網紅 idx 1.74, 大哥 1.79). Auto report: `sim-results.md`. Config
+run: `CLOCK=deck · DAY=3·(N+1)/NIGHT=4·(N+1) · LOSTWAR=dialdrop (−1 day/−2 night, floor=start) · strict
+plurality tie-blocks · 大哥 wins ties all-game · hand-limit 3 · 網紅 start-max 4 · base-Travel de-sourced
+· Trending +1`. N=250/seating.
+
+## HEADLINE — 6p is FIXED; the economy tightened; the battlers COOLED (not hotter). Adopt both fixes.
+
+Both §11 moves work, and they compound exactly as §11e predicted. **6p now completes on the clock and
+bands honestly for the first time.** The dial-drop did the OPPOSITE of the feared §11e outcome — instead
+of buffing the tie-winners it **cooled 網紅 and 大哥 hard** (the whole economy tightened, so the fight-edge
+is worth less). **Neither reserve lever is needed.** The one persistent band outlier is now 里長伯 (the
+carried canon-hot councillor), not the battlers.
+
+## What changed in `sim/travel_agents.py` (the encode)
+
+- **Deck-driven clock (§11a, `CLOCK_MODE="deck"` default).** The shared BOOKING deck IS the clock: the
+  DAY booking deck exhausts → DUSK (flip to night); the NIGHT booking deck exhausts → LAST TRAIN (end).
+  Exhaustion = a refill finding the reserve empty (the seeded boundary card). REMOVED as clock drivers:
+  the vendor-claims counter, the dusk@/last-train@ thresholds, the +1-on-Bribe step, the vendor-deck-dry
+  end. The old STALL backstop is retained ONLY as a safety net (raised 34→50 t/p) so a real deadlock
+  shows as a stall% spike rather than being masked; under the deck-clock it fires 0–3%.
+- **Deck sizes (§11b) — TUNED.** §11b specced DAY=3·(N+2)/NIGHT=4·(N+2) [15/20·18/24·21/28·24/32] as
+  *starting* knobs, flagged "the #1 re-sim knob." **At +2 they ran long (t/p 32–36) and 6p still stalled
+  8%.** Swept the offset → **DECK_OFFSET=1 (DAY=3·(N+1)/NIGHT=4·(N+1) = 3p 12/16 · 4p 15/20 · 5p 18/24 ·
+  6p 21/28)** lands every count at t/p 26.4–29.0 with LT 97–100%. The flat +3 day/+4 night-per-player and
+  the 3:4 day:night ratio are preserved; only the constant offset moved 2→1. (Equal decks, which put dusk
+  at ~50%, re-broke 6p — LT 67% — so night stays the longer act, dusk ~24–41%.)
+- **Dial-drop sink (§11d, `LOSTWAR="dialdrop"`).** Lost-vendor Followers RETURN to the loser's supply
+  (nothing burned); the loser's Followers-max drops −1 day / −2 night, floored at the character's START
+  value (2 base / 4 網紅), with the committed-over-max reconcile (instrumented — fires **0.000/gm** at
+  every count, provably dormant as §11d showed).
+- **MODELING CHANGE (load-bearing — flag for the CD).** Under the deck-clock the balanced bots now keep
+  their booking hand FULL to the hand-limit (was: self-limit to 2). This models the CD's design premise
+  ("you score only by completing Bookings, so you must keep drawing new ones"). **Without it the deck
+  depletes at the fight-gated completion rate and 5–6p re-stall** (LT 48%/10%) — i.e. the booking-clock is
+  NOT automatically fight-independent; it only decouples if players churn their booking hand. See the
+  FLAGS section — this is a real rulebook/teaching implication, not just a sim knob.
+
+## Per-count verdict — PASS at EVERY count (incl. 6p)
+
+| | end LT% | stall% | t/p | dusk/last | supply_min | max_committed | slack_night | band idx |
+|---|---|---|---|---|---|---|---|---|
+| **3p** | 99 | 1 | 29.0 | 31/82 | 26.0 | 3.48 | 4.40 | 0.97–1.39 |
+| **4p** | 100 | 0 | 26.8 | 24/101 | 33.3 | 4.00 | 3.77 | 0.92–1.26 |
+| **5p** | 100 | 0 | 26.4 | 45/124 | 40.7 | 4.28 | 4.02 | 0.93–1.38 |
+| **6p** | 97 | 3 | 27.6 | 63/156 | 47.4 | 4.70 | 4.25 | 0.91–1.40 |
+
+## Probe read (the §11f probes)
+
+**(A) 6p completes? — YES.** end LAST TRAIN **97%** (was 0%), STALL **3%** (was 71%), t/p **27.6** (was
+34.6, target 26–30). dusk 63 ≈ 40% of last 156 (night the longer climax, on §11c intent). The deck-clock
+is monotonic and drawn by the (now-eager) booking action → it fires reliably at every count.
+
+**(B) Economy tightens? — YES.** slack_night off the ~5.0–6.5 Phase-1 range to **3.8–4.4** at every count.
+supply_min **recovers off 7.5 → 47.4 at 6p** (no starvation anywhere; 26–47). max_committed **10.2 → 4.7**
+at 6p — dials no longer ramp/commit unchecked. gain:sink narrows from ~3:1 to ~2:1 (6p 52.0 vs 25.7). The
+dial-drop is a genuine capacity sink. (capbind_night stays low 0.05–0.10 — the dial still doesn't *hard*-
+bind at night in-sim, because bot contention is a floor; carried as the human-table feel question.)
+
+**(C) Six-character band on COMPLETED games —** now measured honestly (6p completes). **阿嬤 (the Phase-1
+floor) HOLDS at idx 0.91–0.97** — just below fair share, in-band-ish, a documented bot blind spot, not a
+weak kit (§11e prediction confirmed). **網紅 & 大哥 (the 6p-hot pair) COOLED HARD:** 網紅 idx **1.74 →
+1.31** (6p), 大哥 **1.79 → 1.28** (6p). The dial-drop did NOT worsen their hotness — the whole-economy
+tightening cut the value of their fight-edge. **The new band top at every count is 里長伯 (idx 1.39–1.60),
+the carried canon-hot councillor** — now the #1 band outlier, in place of the battlers.
+
+**(D) Fairness / health / diagnostics —** seat fairness OK at every count (ties 0%). ignore_obj 1.2–4.6%
+(≪ fair) — tickets-only DEAD. contested_frac 4.4–8.0% — NOT cratered (dial-drop vs off barely moves it:
+6p 5.1% vs 5.3%), so the sink does NOT over-suppress contention (probe 9 PASS). Dial-drops 0.48–1.20/gm,
+mostly NIGHT (0.38–0.92 vs day 0.08–0.28 — the −2 night sink is where it bites, as designed); floor_hits
+0.02–0.11/gm (rare); **committed-over-max fires 0.000/gm** (dormant, confirmed). empty_mkt_draws **0.00** —
+the reshuffling ingredient markets never gate progress. No deck-clock deadlock; boundary card always drawn.
+
+## The 大哥 / 網紅 CALL (CD: "let the sim decide") → **leave the reserve levers UNUSED**
+
+Ran the DEFAULTS first: at 6p 網紅 idx ~1.31 and 大哥 ~1.28 (main band) — **top-of-band, marginally over
+the 1.10 nominal ceiling but nowhere near the Phase-1 crusher (~1.75/1.79), and both sit BELOW 里長伯 (1.40)**.
+The focused reserve-lever follow-up confirms neither lever earns its keep:
+
+- **Cap 網紅's floor at 2:** 6p 網紅 1.45 → 1.43 — **~zero effect** (the floor bites only ~0.08/gm, so
+  lowering it does nothing). Do NOT adopt — it adds a special-case rule for no measurable gain.
+- **Night-scope 大哥's tie-win:** 6p 大哥 1.27 → 1.28 — **no effect on him** (most of his wins are already
+  at night). It does incidentally cool 網紅 (1.45→1.28) via the shared economy, but that's a side effect,
+  not a targeted fix. Do NOT adopt — it re-adds the unblessed night-scoping complexity for no on-target gain.
+
+**Recommendation: keep the V7 canon kit — 網紅 floor = start-value 4, 大哥 tie-win all-game.** The dial-drop
+already did the cooling the reserve levers were held for. Hold both levers as documented reserves only.
+
+## The CD escalation ladder — nerf-battlers vs remove-flaws vs buff-the-weak (band SPREAD, 6p)
+
+| approach | 6p spread (idx hi−lo) | read |
+|---|---|---|
+| defaults (canon dial-drop) | 0.63 (里長伯 1.60 the outlier) | battlers cooled; 里長伯 the lone top |
+| (1) nerf-battlers (levers) | 0.42 | barely helps; levers do little (see above) |
+| (2) remove-ALL-flaws | **0.77 — WORSE** | un-checks 里長伯 (1.73) & 大哥 (1.45): flaws are load-bearing |
+| (3) buff-the-weak (阿嬤+媽寶) | **0.32 — tightest** | lifts 媽寶; 阿嬤 stays 0.95 (bot blind spot) |
+
+**Ladder read:** "**remove all flaws**" is the WRONG lever — it WIDENS the band, proving the strong
+characters' checks (里長伯's away-tax especially — removing it sends him to 1.73) are doing real work and
+must stay. "**Buff-the-weak**" gives the tightest band but can't move 阿嬤 (her basket cap isn't her
+in-sim bottleneck — bots under-value her mobility). "Nerf-battlers" is unnecessary. **None of the three
+is the right primary move**; the targeted fix is a 里長伯 brake (below), not a blanket flaw/buff pass.
+
+## The ONE change to test next → a **里長伯 (councillor) brake** (a CD canon ruling first)
+
+With the battlers cooled, 里長伯 is the single out-of-band character (idx 1.39–1.60, top at 3p/5p/6p).
+This is the **carried canon-vs-exploration discrepancy** (Phase-1 FLAG 4 / decision-log CD-1): at canon
+(−1 home / +1 away / start-max 2) he runs hot. The escalation ladder shows his away-tax is load-bearing
+(removing it → 1.73), so the brake is in the OTHER direction. Candidates, one at a time:
+1. **Harsher away-tax (+2 away)** or **start-Followers-max 1** (the v6.4d exploration brake) — needs the
+   CD to bless departing from canon §303.
+2. Re-run `--v7` with the chosen brake; expected to pull him toward idx ~1.15–1.25 (into the pack behind
+   大哥/網紅). Everything else at every count is SOLID.
+
+**Decision for the CD (A/B/C):**
+- **(A, recommended) ADOPT both §11 fixes as canon** — deck-driven clock at **DAY=3·(N+1)/NIGHT=4·(N+1)**
+  (the tuned offset) + **dial-drop −1/−2 floor=start**, keep the battler kit as-is (no reserve levers).
+  Then test the ONE 里長伯 brake. 6p SHIPS as a validated stretch (it now clears the length + band gates).
+- **(B)** Adopt the fixes but ALSO pre-emptively night-scope 大哥 / cap 網紅's floor. *Not recommended —
+  the sim shows both do ~nothing on-target and add rules.*
+- **(C)** Adopt the clock but keep BURN instead of dial-drop. *Rejected — burn tested within noise in
+  Phase-1; the dial-drop is what recovered supply_min (7.5→47) and cooled the battlers.*
+
+## FLAGS for the CD + Phase-2 guardians
+
+1. **Deck sizes are TUNED to DECK_OFFSET=1** (3·(N+1)/4·(N+1)), not the §11b starting 3·(N+2)/4·(N+2).
+   Update §11b's canon numbers to **3p 12/16 · 4p 15/20 · 5p 18/24 · 6p 21/28** if the CD adopts.
+2. **The deck-clock RELIES on players keeping their booking hand full** (the modeling change). This is a
+   real teaching point: the rulebook/player-aid should nudge "keep drawing tours — an empty booking slot
+   is wasted tempo." A table that hoards a small hand of un-completable tours would drag the clock. Hand
+   this to `bg-elegance` (rulebook) + confirm at the human table / FTUE. NOT a blocker, but the one
+   assumption the whole clock rests on.
+3. **里長伯 is the new #1 band outlier** (canon-hot). The battler worry is resolved; the councillor canon
+   ruling is now the open balance question. See "one change to test."
+4. **阿嬤 bands at floor (idx ~0.91–0.97) — bot blind spot, NOT a weak kit** (unchanged read). Do not tune
+   on this number; her mobility value is a human-table read. Still owes the Phase-2 bg-theme dignity bless.
+5. **4p night-sourcing dipped to 67% of day** (day rate 0.10/turn) — within the CD-4 60–100% target but
+   noisy: the 4p day is very short (dusk ~24% of the game) so few day-sourcing actions are sampled. Flag,
+   don't change; re-confirm if the 4p day lengthens.
+6. **Back-half cap-bind is still soft in-sim** (capbind_night 0.05–0.10) even though slack tightened — bot
+   contention is a floor, so the dial "binding late" is still a human-table feel question, not a sim call.
+7. **Sim blind spots (bots = floor):** the FUN of the area-majority fight, the *feel* of a dial-drop
+   ("taken down a peg"), real 5–6p downtime, 阿嬤's mobility, directed politics/kingmaking. → the table.
