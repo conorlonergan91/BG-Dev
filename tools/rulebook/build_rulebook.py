@@ -35,6 +35,29 @@ from themes import get_theme, emblem_svg, pick_text_color, PHASE_STYLES  # noqa:
 # ---------------------------------------------------------------------------
 ICON_TOKEN = "{{ICONOGRAPHY}}"
 
+# Figure directive: a `> 🖼 **[FIG-CODE]** — brief…` blockquote becomes a RESERVED image box (a dashed
+# placeholder sized for the illustrator's art) with the brief kept as a caption — instead of the plain
+# bordered-callout fallback. Only fires on blockquotes carrying a [FIG-…] code, so rulebooks without them
+# (Beacon) are byte-identical. Optionally, `[FIG-CODE|path.png]` embeds a real image if the file exists.
+FIG_BLOCK_RE = re.compile(r'<blockquote>\s*(<p>.*?\[FIG-[A-Z0-9-]+.*?\].*?</p>)\s*</blockquote>', re.DOTALL)
+FIG_CODE_RE = re.compile(r'\[FIG-([A-Z0-9-]+)(?:\|([^\]]+))?\]')
+
+
+def insert_figure_boxes(body_html: str) -> str:
+    """Turn [FIG-…] blockquotes into reserved figure boxes. Non-matching content is untouched."""
+    def repl(m: re.Match) -> str:
+        inner = m.group(1)
+        cm = FIG_CODE_RE.search(inner)
+        code = cm.group(1) if cm else ""
+        img = (cm.group(2).strip() if (cm and cm.group(2)) else "")
+        if img and Path(img).exists():
+            reserve = f'<img class="figimg" src="{html.escape(img)}" alt="{html.escape(code)}"/>'
+        else:
+            reserve = (f'<div class="figreserve"><span class="figcode">🖼 FIG · {html.escape(code)}</span>'
+                       f'<span class="fignote">illustration reserved — see art brief</span></div>')
+        return f'<figure class="figbox">{reserve}<figcaption>{inner}</figcaption></figure>'
+    return FIG_BLOCK_RE.sub(repl, body_html)
+
 
 def _star_svg(cx, cy, r, color):
     pts = []
@@ -69,6 +92,9 @@ def iconography_html(theme: dict) -> str:
     teal = col("central", "#1F8A7A")
     violet = col("buzz", "#6A4C93")
     taupe = theme.get("muted", "#7A6E58")
+    muted = theme["muted"]
+    north = col("north", "#D64545")
+    slate = "#8A8F98"   # the Scheduled-Maintenance island slate (matches build_cards MAINT_SLATE)
 
     # 1) Ingredients (the 5-token palette) — shape + colour + 繁體
     ingredients = "".join([
@@ -85,11 +111,15 @@ def iconography_html(theme: dict) -> str:
         _tile(_chip("circle", col("south", "#E6A930"), "南", ink, bfont), "South 南", "amber · circle · seafood"),
         _tile(_chip("square", col("east", "#26324D"), "東", ink, bfont), "East 東", "indigo · square · rice"),
     ])
-    # 3) Event scope — DRAWN shapes (never the ⦿/⬢/➤ font glyphs)
+    # 3) Event scope — DRAWN shapes (never the ⦿/⬢/➤ font glyphs). The island-wide double-ring is the
+    # Scheduled-Maintenance banner marker — deliberately NOT a 4th scope glyph: it's a table-wide event
+    # with its own banner frame, listed here so a player who sees it knows it isn't a ⦿/⬢/➤ card.
     scope = "".join([
         _tile(emblem_svg("ring_dot", 42, 34, 24, ink), "⦿ You", "self — only the flipper"),
         _tile(emblem_svg("hex", 42, 34, 24, ink), "⬢ This region", "everyone standing in the drawn region"),
         _tile(emblem_svg("arrow", 42, 34, 24, ink), "➤ Next door", "spills into a neighbouring region"),
+        _tile(emblem_svg("island_ring", 42, 34, 24, slate, stroke=ink), "◎ Island-wide",
+              "Scheduled Maintenance (HSR down for all) — its OWN banner, not a ⦿/⬢/➤ card"),
     ])
     # 4) Phase — drawn sun/moon + 繁體 (never ☀/☾)
     phase = "".join([
@@ -100,53 +130,95 @@ def iconography_html(theme: dict) -> str:
               + f'<text x="42" y="72" font-size="24" text-anchor="middle" fill="{night["frame"]}" font-family="{bfont}" font-weight="bold">夜</text>',
               "Night 夜 · 市", "neon night-market layer (after dusk)"),
     ])
-    # 5) Currencies & scoring
-    scoring = "".join([
+    # 5) The fight — Buzz · Reach · Draw. TICKETS-ONLY (v6.3.1): NONE of these score — the score is the
+    # ticket piles (§ below). Draw uses the vendor face's crowd glyph in GOLD (never the gold ★-spark,
+    # which reads as VP); Reach is the drawn violet Buzz-cap (no invented 繁體 — Reach carries no blessed
+    # char anywhere in the game, so the tile shows the cap relationship, not a character); ★ apex is the
+    # top-Draw trophy, not a prize that scores.
+    fight = "".join([
         _tile(emblem_svg("spark", 42, 34, 24, violet)
               + f'<text x="42" y="44" font-size="22" text-anchor="middle" fill="#fff" font-family="{bfont}" font-weight="bold">讚</text>',
-              "Buzz 讚", "the hype you pile on a vendor"),
-        _tile(_star_svg(42, 34, 26, gold), "★ Apex / Star", "top prize per region; a Star adds value"),
-        _tile(emblem_svg("spark", 42, 34, 24, gold), "Prestige", "a vendor's point value (your score)"),
-        _tile(f'<circle cx="42" cy="34" r="26" fill="{teal}" stroke="{ink}" stroke-width="2"/>'
-              f'<text x="42" y="44" font-size="26" text-anchor="middle" fill="#fff" font-family="{bfont}" font-weight="bold">譽</text>',
-              "Reputation 譽", "your standing — scores by final position"),
+              "Buzz 讚", "the hype you pile on a vendor (the fight currency)"),
+        _tile(f'<line x1="18" y1="22" x2="66" y2="22" stroke="{violet}" stroke-width="5" stroke-linecap="round"/>'
+              f'<circle cx="34" cy="44" r="10" fill="{violet}"/><circle cx="54" cy="44" r="10" fill="{violet}"/>',
+              "Reach", "your Buzz cap — committed Buzz ≤ Reach. NOT a score"),
+        _tile(emblem_svg("crowd", 42, 34, 22, gold),
+              "Draw 人氣", "a vendor's crowd-pull attribute — NOT a score"),
+        _tile(_star_svg(42, 34, 26, gold), "★ Apex / Star",
+              "top-Draw trophy vendor (no discount icon); scores nothing itself"),
     ])
-    # 6) The two ticket piles
+    # 6) The two ticket piles — the ONLY thing that scores (tickets-only).
     piles = "".join([
         _tile(emblem_svg("stamp", 42, 34, 24, gold)
               + f'<text x="42" y="44" font-size="24" text-anchor="middle" fill="{pick_text_color(gold, dark=ink, light="#fff")}" font-family="{bfont}" font-weight="bold">成</text>',
-              "成團 · Win pile", "tours that ran: gain printed value"),
+              "成團 · Win pile", "tours that RAN: score +the ticket's printed value"),
         _tile(emblem_svg("stamp", 42, 34, 24, taupe)
               + f'<text x="42" y="44" font-size="24" text-anchor="middle" fill="#fff" font-family="{bfont}" font-weight="bold">遺</text>',
-              "遺珠 · Lose pile", "got away: lose half the value"),
+              "遺珠 · Lose pile", "the ones that got away: -½ the ticket's value"),
+    ])
+    # 7) Counters & character markers — the Tours-Completed METER (must NOT read as the 成團 score pile:
+    # teal meter with the 2/4 Rave-Review ticks, no stamp) + 里長伯's home-discount / away-tax mat icons
+    # (drawn exactly as build_cards' kit_icon: a teal home −1 and a vermilion away-arrow +1).
+    counters = "".join([
+        _tile(f'<rect x="14" y="30" width="56" height="16" rx="8" fill="{teal}" opacity="0.92"/>'
+              f'<line x1="34" y1="24" x2="34" y2="52" stroke="{ink}" stroke-width="3"/>'
+              f'<line x1="54" y1="24" x2="54" y2="52" stroke="{ink}" stroke-width="3"/>',
+              "Tours Completed", "your completions meter (Rave Reviews at 2 & 4) — NOT the 成團 score"),
+        _tile(emblem_svg("home", 30, 34, 18, teal, stroke=ink)
+              + f'<circle cx="58" cy="46" r="13" fill="#fff" stroke="{teal}" stroke-width="3"/>'
+              f'<text x="58" y="52" font-size="17" text-anchor="middle" fill="{teal}" font-family="{bfont}" font-weight="bold">-1</text>',
+              "里長伯 · home -1", "cheaper to Bribe in his chosen home region"),
+        _tile(emblem_svg("arrow", 28, 34, 16, north, stroke=ink)
+              + f'<circle cx="58" cy="46" r="13" fill="#fff" stroke="{north}" stroke-width="3"/>'
+              f'<text x="58" y="52" font-size="17" text-anchor="middle" fill="{north}" font-family="{bfont}" font-weight="bold">+1</text>',
+              "里長伯 · away +1", "the away tax: +1 ingredient off his home patch"),
     ])
 
-    # 7) Vendor card — layout key (a labelled schematic mirroring build_cards' vendor template)
-    north = col("north", "#D64545")
-    vkey = f'''<svg viewBox="0 0 620 300" class="vkey">
-      <rect x="8" y="8" width="220" height="284" rx="16" fill="#fff" stroke="{ink}" stroke-width="3"/>
-      <path d="M8 24 a16 16 0 0 1 16 -16 h188 a16 16 0 0 1 16 16 v40 h-220 z" fill="{north}"/>
-      <text x="24" y="40" font-size="18" fill="#fff" font-family="{bfont}" font-weight="bold">肉包 · Bao</text>
-      <rect x="150" y="14" width="66" height="26" rx="13" fill="#fff" opacity="0.9"/>
-      <text x="183" y="33" font-size="14" fill="{north}" text-anchor="middle" font-family="{bfont}" font-weight="bold">攤</text>
-      <text x="24" y="92" font-size="15" fill="{theme['accent']}" font-family="{bfont}" font-weight="bold">PAY 付</text>
-      {emblem_svg("hex", 44, 118, 16, north, stroke=ink)}<text x="44" y="124" font-size="16" fill="#fff" text-anchor="middle" font-family="{bfont}" font-weight="bold">豬</text>
-      <circle cx="96" cy="118" r="16" fill="{violet}" stroke="{ink}" stroke-width="2"/><text x="96" y="124" font-size="15" fill="#fff" text-anchor="middle" font-family="{bfont}" font-weight="bold">2</text>
-      <text x="24" y="164" font-size="15" fill="{theme['accent']}" font-family="{bfont}" font-weight="bold">GAIN 得</text>
-      {_star_svg(40, 190, 15, gold)}<text x="64" y="196" font-size="20" fill="{gold}" font-family="{bfont}" font-weight="bold">2</text>
-      <circle cx="120" cy="190" r="15" fill="{teal}" stroke="{ink}" stroke-width="2"/><text x="120" y="196" font-size="14" fill="#fff" text-anchor="middle" font-family="{bfont}" font-weight="bold">+1</text>
-      <rect x="24" y="212" width="180" height="42" rx="8" fill="none" stroke="{gold}" stroke-width="2"/>
-      <text x="34" y="238" font-size="13" fill="{ink}" font-family="{bfont}">PERK 技 — special effect</text>
-      <rect x="30" y="266" width="176" height="18" rx="9" fill="{day['tag_fill']}"/>
-      <text x="118" y="280" font-size="12" fill="{day['tag_ink']}" text-anchor="middle" font-family="{bfont}" font-weight="bold">日 DAY 早</text>
+    # 8) Vendor card — layout key. Mirrors the v6.3.1 render_vendor_svg face EXACTLY: a de-scored two-input
+    # PAY row (ingredient chips + the Buzz reminder) + a printed DRAW (人氣) crowd-pull ATTRIBUTE in a gauge
+    # + a region-discount ICON (or none) — and NO GAIN, NO Prestige, NO Reputation, NO perk. The old
+    # GAIN(★+譽)+PERK schematic is retired: vendors don't score.
+    vkey = f'''<svg viewBox="0 0 760 392" class="vkey">
+      <rect x="8" y="8" width="224" height="372" rx="16" fill="#fff" stroke="{ink}" stroke-width="3"/>
+      <!-- ① header band: region colour + dish name + tier pill -->
+      <path d="M8 24 a16 16 0 0 1 16 -16 h192 a16 16 0 0 1 16 16 v40 h-224 z" fill="{north}"/>
+      <text x="22" y="42" font-size="19" fill="#fff" font-family="{bfont}" font-weight="bold">肉包 · Bao</text>
+      <rect x="158" y="14" width="62" height="26" rx="13" fill="#fff" opacity="0.9"/>
+      <text x="189" y="33" font-size="15" fill="{north}" text-anchor="middle" font-family="{bfont}" font-weight="bold">攤</text>
+      <!-- region strip + English dish name -->
+      {emblem_svg("triangle", 26, 90, 12, north)}<text x="46" y="96" font-size="16" fill="{north}" font-family="{bfont}" font-weight="bold">NORTH 北</text>
+      <text x="216" y="96" font-size="13" fill="{muted}" text-anchor="end" font-family="{bfont}" font-style="italic">engine</text>
+      <text x="22" y="122" font-size="16" fill="{ink}" font-family="{bfont}" font-style="italic">Pork Bao</text>
+      <!-- ② PAY row: ingredient chip (shape+繁體) + Buzz reminder (讚) -->
+      <text x="22" y="152" font-size="14" fill="{theme['accent']}" font-family="{bfont}" font-weight="bold">PAY 付</text>
+      {emblem_svg("hex", 40, 184, 16, north, stroke=ink)}<text x="40" y="190" font-size="15" fill="#fff" text-anchor="middle" font-family="{bfont}" font-weight="bold">豬</text>
+      <text x="66" y="190" font-size="24" fill="{muted}" font-family="{bfont}" font-weight="bold">+</text>
+      <circle cx="108" cy="184" r="16" fill="{violet}" stroke="{ink}" stroke-width="2"/><text x="108" y="190" font-size="15" fill="#fff" text-anchor="middle" font-family="{bfont}" font-weight="bold">2</text>
+      <text x="130" y="190" font-size="12" fill="{violet}" font-family="{bfont}" font-weight="bold">讚</text>
+      <!-- ③ DRAW row: crowd glyph + gauge number (an attribute, NOT points) -->
+      <text x="22" y="224" font-size="14" fill="{theme['accent']}" font-family="{bfont}" font-weight="bold">DRAW 人氣</text>
+      {emblem_svg("crowd", 40, 256, 16, gold)}
+      <rect x="66" y="240" width="46" height="30" rx="15" fill="none" stroke="{gold}" stroke-width="2.5"/>
+      <text x="89" y="262" font-size="20" fill="{gold}" text-anchor="middle" font-family="{bfont}" font-weight="bold">2</text>
+      <text x="120" y="262" font-size="11" fill="{muted}" font-family="{bfont}" font-style="italic">not points</text>
+      <!-- ④ ICON box: region discount icon (or NONE) -->
+      <text x="22" y="296" font-size="14" fill="{theme['accent']}" font-family="{bfont}" font-weight="bold">ICON 圖示</text>
+      <rect x="22" y="304" width="196" height="34" rx="10" fill="none" stroke="{north}" stroke-width="2"/>
+      {emblem_svg("triangle", 40, 322, 12, north)}<text x="58" y="326" font-size="12.5" fill="{ink}" font-family="{bfont}">N discount — its region -1</text>
+      <!-- ⑤ phase ribbon -->
+      <rect x="28" y="350" width="184" height="22" rx="11" fill="{day['tag_fill']}"/>
+      <text x="120" y="366" font-size="12" fill="{day['tag_ink']}" text-anchor="middle" font-family="{bfont}" font-weight="bold">日 DAY 早</text>
       <g font-family="{bfont}" font-size="15" fill="{ink}">
-        <text x="250" y="34">① <tspan font-weight="bold">Header band</tspan> = region colour + emblem + dish name</text>
-        <text x="250" y="70">② <tspan font-weight="bold">PAY 付</tspan> = ingredient chips (shape+繁體) + Buzz needed</text>
-        <text x="250" y="106">③ <tspan font-weight="bold">GAIN 得</tspan> = Prestige (★) + Reputation (譽) + perk</text>
-        <text x="250" y="142">④ <tspan font-weight="bold">PERK 技</tspan> = the vendor's special bonus</text>
-        <text x="250" y="178">⑤ <tspan font-weight="bold">Phase ribbon</tspan> = day 日 / night 夜 (which layer)</text>
-        <text x="250" y="214">Top-right pill = venue tier (攤 stall · 小吃 · 名店)</text>
-        <text x="250" y="250">★ printed = an apex / Star vendor (top prize)</text>
+        <text x="256" y="30">① <tspan font-weight="bold">Header band</tspan> = region colour + emblem + dish name</text>
+        <text x="256" y="66">② <tspan font-weight="bold">PAY 付</tspan> = ingredient chips (shape+繁體) + Buzz needed (讚)</text>
+        <text x="278" y="88" font-size="12.5" fill="{muted}">night marquees add a CROSS-REGION →X tag (a two-region bill)</text>
+        <text x="256" y="124">③ <tspan font-weight="bold">DRAW 人氣</tspan> = the crowd-pull ATTRIBUTE — NOT points</text>
+        <text x="256" y="160">④ <tspan font-weight="bold">ICON 圖示</tspan> = a region discount icon (N/C/S/E), or NONE</text>
+        <text x="278" y="182" font-size="12.5" fill="{muted}">no icon = a ★ apex trophy, or a drink (filler)</text>
+        <text x="256" y="218">⑤ <tspan font-weight="bold">Phase ribbon</tspan> = day 日 / night 夜 (which layer)</text>
+        <text x="256" y="258">Top-right pill = venue tier (攤 stall · 小吃 eatery · 名店 marquee)</text>
+        <text x="256" y="294">★ apex = top-Draw trophy: no discount icon, scores nothing itself</text>
+        <text x="256" y="336" fill="{theme['accent']}" font-weight="bold">Vendors don't score: no GAIN, Prestige, Reputation or perk.</text>
       </g>
     </svg>'''
 
@@ -171,8 +243,10 @@ def iconography_html(theme: dict) -> str:
             f'<h2>The four regions</h2><div class="legend-grid">{regions}</div>'
             f'<h2>Event scope — who it hits</h2><div class="legend-grid">{scope}</div>'
             f'<h2>Day / Night</h2><div class="legend-grid">{phase}</div>'
-            f'<h2>Currencies &amp; scoring</h2><div class="legend-grid">{scoring}</div>'
-            f'<h2>The two ticket piles</h2><div class="legend-grid">{piles}</div>'
+            f'<h2>The fight — Buzz · Reach · Draw <span style="font-weight:normal;font-size:9pt;">(none of these score)</span></h2>'
+            f'<div class="legend-grid">{fight}</div>'
+            f'<h2>Your ONLY score — the two ticket piles</h2><div class="legend-grid">{piles}</div>'
+            f'<h2>Counters &amp; character markers</h2><div class="legend-grid">{counters}</div>'
             f'<h2>Vendor card — layout key</h2>{vkey}</section>')
 
 
@@ -250,6 +324,15 @@ def css(theme: dict) -> str:
     code {{ background: {top}; padding: 1pt 4pt; border-radius: 3pt; font-size: 9.5pt; }}
     blockquote {{ margin: 8pt 0; padding: 6pt 10pt; border-left: 4pt solid {accent};
                   background: {top}; color: {muted}; font-style: italic; }}
+    .figbox {{ margin: 10pt 0; }}
+    .figbox .figreserve {{ display: flex; flex-direction: column; align-items: center; justify-content: center;
+                  gap: 3pt; height: 120pt; border: 2pt dashed {accent}; border-radius: 6pt; background: {top}; }}
+    .figbox .figcode {{ font-family: {tfont}; color: {ink}; font-weight: bold; font-size: 11pt; letter-spacing: 1pt; }}
+    .figbox .fignote {{ color: {muted}; font-size: 8.5pt; font-style: italic; }}
+    .figbox .figimg {{ width: 100%; height: auto; border-radius: 6pt; }}
+    .figbox figcaption {{ margin-top: 4pt; padding-left: 8pt; border-left: 3pt solid {accent};
+                  color: {muted}; font-size: 9pt; }}
+    .figbox figcaption p {{ margin: 0; }}
     """
 
 
@@ -264,6 +347,8 @@ def main():
     theme = get_theme(args.theme)
     raw = args.md.read_text(encoding="utf-8")
     body = md_to_html(raw)
+    # Reserve image boxes for any [FIG-…] directives (no-op for rulebooks without them, e.g. Beacon).
+    body = insert_figure_boxes(body)
     # Inject the drawn-SVG iconography page wherever the {{ICONOGRAPHY}} token appears (as its own last
     # page). Absent → untouched, so rulebooks without the token (e.g. Beacon) are byte-identical.
     if ICON_TOKEN in raw:

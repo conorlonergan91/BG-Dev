@@ -457,7 +457,7 @@ def _render_character_svg(row: dict, theme: dict) -> str:
             return (emblem_svg("home", cx, cy, 30, teal, stroke=ink) +
                     f'<circle cx="{cx+30}" cy="{cy+26}" r="20" fill="#ffffff" stroke="{teal}" stroke-width="3"/>'
                     f'<text x="{cx+30}" y="{cy+33}" font-size="26" fill="{teal}" text-anchor="middle" '
-                    f'font-family="{tfont}" font-weight="bold">−1</text>')
+                    f'font-family="{tfont}" font-weight="bold">-1</text>')
         if code == "away_tax":        # an out-of-home arrow + a +1 chip → 'pay more off your patch'
             return (emblem_svg("arrow", cx, cy, 28, vermilion, stroke=ink) +
                     f'<circle cx="{cx+30}" cy="{cy+26}" r="20" fill="#ffffff" stroke="{vermilion}" stroke-width="3"/>'
