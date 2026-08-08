@@ -21,7 +21,8 @@ These are signed off by the CD. Re-validate/re-scale them for multiplayer; do no
 - **Base Travel = move + +1 Follower-max only, NO ingredient.** **Homebody (媽寶) = the SOLE Travel-sourcer** (draws the region LEFT; event on that draw whiffs).
 - **Trending** (renamed ★ star *token*): dynamic, event-dropped ("Gone Viral"); **winning a Trending-marked vendor → +1 Follower-max**. The *printed* ★ Michelin/Bib-Gourmand **apex** vendors are a SEPARATE permanent thing (top Draw) — naming TBD (Phase 2, bg-theme).
 - **Rave Reviews = per-player boons kept** (at the 2nd & 4th completed tour); **Tours-Completed stays per-player on the character board** (no VP race, no map track).
-- **Lost promotion-war must STING the dial** (burn the loser's committed Followers and/or drop their Followers-max) — a first-class economy lever; at multiplayer this is the NORM, not an edge case.
+- **Lost promotion-war = the Followers-max DIAL DROPS** — down **1 notch by day, 2 at night** (CD, post Phase-1; replaces the weak "burn"). The contention-scaled economy sink; at multiplayer this is the NORM. (Floor + committed-over-max interaction: bg-design specs in Phase 1.5.)
+- **Pacing scales with player count** (CD, post Phase-1): day + night decks grow/shrink with N; **deck exhaustion drives the clock** — day-deck-out → dusk, night-deck-out → last train — with a possible different "shift gears" night trigger; the clock track also scales per count. (bg-design specs in Phase 1.5; this is the 6p fix.)
 - **Ingredients are CARDS** in the regional market decks — **retire the ingredient tokens** (pork/tea/seafood/rice/sugar); food/ingredient cards become **pictorial** (language-agnostic).
 - **Map:** **phase-split** day/night card slots (day-only slots on the day side, night-only on the night side; unused cards → box); **drop the Ingredient-Supply section**; **remove the across-the-table orientation** (one neutral shared board; region diamond + single central clock + realistic scaling stay).
 - **Component direction:** **icon-first, language-agnostic** (no on-component CJK), **RA-clarity**; SVG icon placeholders + art-prompts; character boards = **icon-only** abilities/flaws (rulebook carries the words), the **Followers dial** (reach-track retired), **card-shaped Complete/Cancelled** zones, **booking slots**; player aid stripped to **"On your turn" only**.
@@ -51,6 +52,17 @@ Output: a new `design/v7-content-draft.md` (the v6.3-content-draft stays as hist
 - [ ] **Multiplayer contested-vendor health:** how often vendors are genuinely contested now; whether the **lost-war Follower sink** lands the economy tense in the back half **without** starving/swinging. (This replaces the 2p economy sweep — contention now comes for free. Test the lost-war-burn / dial-drop lever + levers b [raise night/apex demand + ceiling] / c [more sink events], and **recommend the mix**. Do NOT force the fight rate as the primary knob.)
 - [ ] Confirm **night sourcing** still healthy with base Travel de-sourced (flag, don't change, the CD-4 curve if it drops); **tickets-only health** holds (`ignore_obj` stays dead); **kingmaking / leader-pump** check at 5–6.
 - [ ] Commit + push the sim module + refreshed `sim-results.md` / `sim-notes.md`.
+
+## PHASE 1.5 — 6p PACING FIX + dial-drop sink (CD direction, post Phase-1)  *(fix 6p, don't cap)*
+
+Phase-1 verdict: 3–5p healthy, **6p broken** (0% last-train / 71% stall — a scaling failure). Fix it via a pacing-model change + a real lost-war sink, then re-sim. bg-design (architect hat) specs into `design/v7-content-draft.md`; **gated re-sim only after the CD confirms the spec.**
+
+- [ ] **Decks scale with player count** — set day + night market/booking deck sizes per count (3/4/5/6) so pacing self-adjusts and 6p stops exhausting supply.
+- [ ] **Deck-exhaustion clock** — day-deck-out → **dusk** (flip to night); night-deck-out → **last train** (end). Propose the night "shift gears" trigger if it differs from a symmetric day-style deck-out.
+- [ ] **Reconcile** the deck-clock with the existing vendor-claims clock (replace it, or keep a per-count-scaled claims-clock as a secondary end) — pick the cleanest single model; scale the clock track per count.
+- [ ] **Lost-war dial-drop sink** — lose a promotion war → Followers-max dial down **1 (day) / 2 (night)**. Spec the **floor** (below start? at 1? at 0?) and the **committed-over-max** interaction (return Followers to supply, player's choice, until within cap).
+- [ ] Flag the load-bearing **sub-forks** for a CD quick-confirm (deck sizes, night "shift gears", clock reconciliation, dial-drop floor); commit + push the spec.
+- [ ] **Gated re-sim across 3–6** (CD go required): must show **6p now COMPLETES** (last-train, not stall), the **economy TIGHTENS** (slack_night down), and the **character band + tickets-only + seat fairness hold**. Re-read 阿嬤 (floor) + 網紅/大哥 (6p-hot) post-fix. Commit results.
 
 ## PHASE 2 — design review + lock (bg-design + guardian sweep)
 
