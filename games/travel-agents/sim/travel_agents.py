@@ -276,6 +276,11 @@ H1 = os.environ.get("TA_H1", "twice")
 # H2 大哥. v6.3 lock = option D: THRESH 1 (must lead by ≥1), FLAW "none". Probe others if he drifts.
 DAGE_THRESH = int(os.environ.get("TA_H2_THRESH", "1"))
 DAGE_FLAW   = os.environ.get("TA_H2_FLAW", "none")            # "none"|"tab"|"promote1"|"nocontest"
+# v6.4b 大哥 NIGHT-SCOPED fight edge (CD steer: give Big Brother real back-half weight — night scarcity
+# alone won't). At NIGHT his contested-win threshold drops (he only needs to MATCH a rival, not lead) —
+# "once the night market heats up he muscles in." Default = DAGE_THRESH (no night edge); set 0 to test the
+# win-on-a-tie edge. A universal ≥1-committed-Follower floor (in _can_bribe) stops a 0-Follower win.
+DAGE_NIGHT_THRESH = int(os.environ.get("TA_H2_NIGHT_THRESH", str(DAGE_THRESH)))
 # 媽寶 buff. v6.3 lock = "keep2". "none"|"keep2"|"travel2".
 OFFICE_BUFF = os.environ.get("TA_OFFICE", "keep2")
 # 網紅 flaw. CHARACTER RE-PASS default = "none" (Late-to-the-Party RETIRED — see the re-pass note in the
@@ -965,14 +970,17 @@ class TravelAgentsGame:
 
     def _margin_for(self, pl, vid=None):
         """The Follower lead needed to Bribe. v6.4 lever (b): a NIGHT / APEX vendor demands a bigger
-        committed presence, so the ramped Followers-max actually gets spent + binds late."""
-        m = DAGE_THRESH if pl["char"] == "dage" else BUZZ_MARGIN
-        if vid is not None and (NIGHT_DEMAND or APEX_DEMAND):
-            v = VENDORS[vid]
-            if v["phase"] == 2:
-                m += NIGHT_DEMAND
-                if v["star"]:
-                    m += APEX_DEMAND
+        committed presence, so the ramped Followers-max actually gets spent + binds late. v6.4b: 大哥 gets
+        a NIGHT-SCOPED lower threshold (he only needs to MATCH a rival after dark)."""
+        is_night = vid is not None and VENDORS[vid]["phase"] == 2
+        if pl["char"] == "dage":
+            m = DAGE_NIGHT_THRESH if is_night else DAGE_THRESH
+        else:
+            m = BUZZ_MARGIN
+        if is_night and (NIGHT_DEMAND or APEX_DEMAND):
+            m += NIGHT_DEMAND
+            if VENDORS[vid]["star"]:
+                m += APEX_DEMAND
         return m
 
     def _buzz_lead(self, s, p, vid):
@@ -987,6 +995,8 @@ class TravelAgentsGame:
         lead, rival = self._buzz_lead(s, p, vid)
         if lead < self._margin_for(pl, vid):
             return False
+        if s["buzz"][vid][p] < 1:                            # v6.4b floor: never win a stall on 0 Followers
+            return False                                     # (guards 大哥's night win-on-a-tie threshold)
         if pl["char"] == "dage" and DAGE_FLAW == "nocontest" and rival > 0:
             return False
         for r, c in self._pay_plan(s, p, vid).items():
@@ -2135,8 +2145,9 @@ def _plan(s, p, legal, rng, prefs):
         if ("visit",) in legal:
             return ("visit",)
 
-    # 6) win the Buzz fight — Reach-cap-aware
-    if lead < margin and present:
+    # 6) win the Buzz fight — Reach-cap-aware. v6.4b: also promote to satisfy the ≥1-committed floor
+    #    (so 大哥's night win-on-a-tie threshold still puts at least one Follower on the stall).
+    if (lead < margin or s["buzz"][tgt][p] < 1) and present:
         # v6.4 probe: the bot WANTS to Promote this turn (split by half for the cap-bind read).
         if s["act"] == 2:
             s["promote_want_night"] += 1
