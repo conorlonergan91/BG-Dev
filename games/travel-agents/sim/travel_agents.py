@@ -284,6 +284,43 @@ COUNCILLOR_REGIONS = int(os.environ.get("TA_COUNCILLOR_REGIONS", "1"))
 COUNCILLOR_REACH = int(os.environ.get("TA_COUNCILLOR_REACH", "1"))
 
 # ==================================================================================================
+#  v6.4 KNOBS (the gated re-sim: hand-limit · Influencer start-max · base-Travel-no-source · Trending
+#  · the FOLLOWERS-ECONOMY lever sweep incl. the lost-promotion-war consequence)
+# ==================================================================================================
+# (1) Bookings HAND-LIMIT — at most N in-progress Bookings held at once (cancel-to-claim; shared
+#     Day/Night slots; completing a Booking frees its slot). v6.4 CD-LOCK = 3.
+HAND_LIMIT = int(os.environ.get("TA_HAND_LIMIT", "3"))
+# (2) 網紅 Influencer — Followers-max STARTS at 4 (baseline 2 +2); Promote is a flat 2 like everyone
+#     (the old "Promote places 3" is DROPPED — promote_bonus goes to 0 for all).
+INFL_MAX_START = int(os.environ.get("TA_INFL_MAX_START", "4"))
+# (3) TRENDING marker — winning a Trending-marked vendor grants a NEW gain. v6.4 = "+1 Followers-max"
+#     ("max"); the old dynamic-★ payoff was "+2 Bookings/Draw" ("draw"). Kept as an A/B knob.
+TRENDING     = os.environ.get("TA_TRENDING", "max")            # "max" (v6.4 default) | "draw" (old)
+TREND_MAX    = int(os.environ.get("TA_TREND_MAX", "1"))        # Followers-max granted on a Trending win
+# (4) base TRAVEL sources NO ingredient — move + +1 Followers-max only; 媽寶 (office) is the SOLE
+#     Travel-sourcer (draws the LEFT region, event whiffs). ON by default in v6.4. =0 recovers the
+#     v6.3 behaviour (every character sources on a Travel) for the A/B.
+TRAVEL_NO_SOURCE = os.environ.get("TA_TRAVEL_NO_SOURCE", "1") == "1"
+# --- FOLLOWERS-ECONOMY LEVERS (the sweep — "let the sim decide the fix") --------------------------
+# The diagnosis: gains (~17/gm) ≫ sinks (~6/gm) → the cap ramps 2→~7.5 while peak commit is only ~3.7,
+# so the top half of the cap is dead weight in the back half and it rarely binds late. Levers:
+#   LOSTWAR — the lost-promotion-war consequence (the CD's first-class lever). On a contested resolution
+#     the LOSER's committed Followers currently just RETURN to supply (no sting, a missing sink). Modes:
+#       "off"     = v6.3 behaviour (return to supply, no penalty)
+#       "burn"    = the crowd disperses — the loser's committed Followers are SPENT (not returned)
+#       "dropmax" = the loser's Followers-max drops by LOSTWAR_DROP (you overreached and lost face)
+#       "both"    = burn + dropmax
+LOSTWAR      = os.environ.get("TA_LOSTWAR", "off")
+LOSTWAR_DROP = int(os.environ.get("TA_LOSTWAR_DROP", "1"))
+#   (b) raise NIGHT / APEX Follower DEMAND (need a bigger committed presence to win a night/apex vendor →
+#       the ramped cap actually gets SPENT + binds late) + lift the ceiling (REACH_TOP, above).
+NIGHT_DEMAND = int(os.environ.get("TA_NIGHT_DEMAND", "0"))     # extra Followers to win a NIGHT vendor
+APEX_DEMAND  = int(os.environ.get("TA_APEX_DEMAND", "0"))      # extra ON TOP for a printed apex (★) vendor
+#   (c) add Follower-SINK events (offset the gain-heavy economy + the new Trending gain).
+SINK_BOOST   = float(os.environ.get("TA_SINK_BOOST", "0.0"))  # +fraction of events that are −1-Followers-max
+#   (a) tighten vendor AVAILABILITY — use SLOTS_OVERRIDE (fewer face-up slots → more collisions/fights).
+
+# ==================================================================================================
 #  MAP
 # ==================================================================================================
 REGIONS = ("N", "C", "S", "E")
@@ -379,7 +416,7 @@ def _make_event(kind, rng):
             return ("ev", "boon", "region", "star")
         return ("ev", "boon", _sample_scope("boon", rng), "ingredient")
     # hazard
-    if rng.random() < REACH_HAZ_FRAC:
+    if rng.random() < min(1.0, REACH_HAZ_FRAC + SINK_BOOST):  # SINK_BOOST (v6.4 lever c) adds Follower sinks
         return ("ev", "hazard", "self", "reach")            # 負評 / 出包 — −1 Reach to the flipper
     return ("ev", "hazard", _sample_scope("hazard", rng), "tempo")
 
@@ -628,6 +665,10 @@ def _ticket_ease(key):
 # --- which ticket a bot wants to CLAIM off the face-up row -----------------------------------------
 _OPP_KEYS = ("n_star1", "n_prestige14", "g_prestige12", "d_prestige8", "n_expensive1",
              "n_expensive2", "n_cross2", "n_collect6")
+# v6.4: the BREADTH / collection / food-count lanes — the ones a hoarder-of-Bookings would want 4+ open
+# slots for. The `collector` playstyle chases these; the hand-limit probe checks N=3 doesn't pinch them.
+_COLLECT_KEYS = ("n_collect6", "g_collect5", "d_collect4", "n_allfood5", "n_nightfood3", "d_food3",
+                 "n_four", "n_deep3", "d_deep2", "n_deep3", "n_all4")
 _DISRUPT_KEYS = ("d_contest1", "n_contest2")
 _SPEED_KEYS = ("d_early3", "n_final2", "d_breakfast3", "n_four", "d_cheap2", "d_pairNC")
 _HARD_DRINK = ("d_drinks2", "n_drinks3")
@@ -649,6 +690,8 @@ def _ticket_fit(prefs, key):
         fit *= 1.6
     if prefs.get("speed") and key in _SPEED_KEYS:
         fit *= 1.3
+    if prefs.get("collect") and key in _COLLECT_KEYS:
+        fit *= 1.7
     return fit
 
 
@@ -741,9 +784,14 @@ class TravelAgentsGame:
                 "pos": starts[p % len(starts)],
                 "larder": Counter(), "won": [], "icons": Counter(),
                 "bookings": 0,                                   # the live Bookings (former Prestige)
-                # v6.3: the live Buzz cap. 里長伯 option-B flaw = a thinner island-wide name → less start Reach.
-                "reach": (COUNCILLOR_REACH if (ch == "councillor" and COUNCILLOR_REACH >= 0) else REACH_START),
-                "promote_bonus": (1 if ch == "influencer" else 0),
+                # v6.3: the live Buzz cap (v6.4: "Followers-max"). 里長伯 flaw = a thinner island-wide name
+                # → less start-max. v6.4 CHANGE 4c: 網紅 Influencer STARTS at INFL_MAX_START (4) — her edge
+                # is a persistent higher ceiling, not a bigger Promote.
+                "reach": (INFL_MAX_START if ch == "influencer"
+                          else COUNCILLOR_REACH if (ch == "councillor" and COUNCILLOR_REACH >= 0)
+                          else REACH_START),
+                # v6.4 CHANGE 4c: "Promote places 3" DROPPED — everyone Promotes a flat 2.
+                "promote_bonus": 0,
                 # CD-1: 里長伯 declares ONE home region at setup (bot heuristic). None for everyone else.
                 "home_region": (_pick_home_region(faceup, mrow) if ch == "councillor" else None),
                 "councillor_regions": set(),
@@ -753,6 +801,7 @@ class TravelAgentsGame:
                 "skip_next": False,                              # 網紅 "Late to the Party" pending pass
                 "bribe_discount": 0,                             # milestone-14 one-shot −1 ingredient
                 "ms7_done": False, "ms14_done": False,           # per-player milestone flags (fix #3)
+                "cancel_penalty": 0,                             # v6.4: Σ floor(v/2) of cancelled Bookings
             })
 
         return {
@@ -793,12 +842,24 @@ class TravelAgentsGame:
             "events_fired": 0, "scope_fired": {"self": 0, "region": 0, "neigh": 0},
             "cs_rival_hits": 0, "takethat_hits": 0, "pokes": 0,
             "claims": 0, "empty_draws": 0, "passes": 0,
-            # --- REACH economy diagnostics ---
+            # --- REACH / FOLLOWERS economy diagnostics ---
             "reach_blocked": 0,                # times a bot wanted to Promote but the cap forbade it
+            "reach_blocked_day": 0, "reach_blocked_night": 0,   # v6.4: cap-bind split by half
             "reach_gain_travel": 0, "reach_gain_event": 0, "reach_gain_ms": 0,
+            "reach_gain_trending": 0,          # v6.4: the new Trending-win Followers-max gain
             "reach_loss_grab": 0, "reach_loss_event": 0, "reach_forced_return": 0,
+            "reach_loss_lostwar": 0,           # v6.4: Followers-max burned by lost-war dropmax
             "greedy_visit": 0, "greedy_cs": 0,
             "reach_zero_turns": 0, "reach_at_dusk": [], "reach_samples": [],
+            # v6.4 economy probes: back-half committed-to-cap slack (act==2 turns) + cap-bind rate
+            "slack_night_sum": 0.0, "slack_night_turns": 0,     # Σ(reach − committed) over night turns
+            "capfill_night_sum": 0.0,                           # Σ(committed / reach) over night turns
+            "capfill_day_sum": 0.0, "slack_day_turns": 0,       # day counterpart (for the day↔night read)
+            "promote_want_day": 0, "promote_want_night": 0,     # turns the bot wanted to Promote, by half
+            # v6.4 lost-promotion-war probes
+            "lost_wars": 0, "lostwar_committed": 0,             # #lost wars + Σ loser committed Followers
+            # v6.4 Bookings hand-limit probes
+            "cancels": 0, "book_capbind": 0,                    # cancel-to-claims + times at the hand-limit
         }
 
     # -------- harness protocol --------
@@ -876,8 +937,17 @@ class TravelAgentsGame:
             pay[r0] = 1
         return pay
 
-    def _margin_for(self, pl):
-        return DAGE_THRESH if pl["char"] == "dage" else BUZZ_MARGIN
+    def _margin_for(self, pl, vid=None):
+        """The Follower lead needed to Bribe. v6.4 lever (b): a NIGHT / APEX vendor demands a bigger
+        committed presence, so the ramped Followers-max actually gets spent + binds late."""
+        m = DAGE_THRESH if pl["char"] == "dage" else BUZZ_MARGIN
+        if vid is not None and (NIGHT_DEMAND or APEX_DEMAND):
+            v = VENDORS[vid]
+            if v["phase"] == 2:
+                m += NIGHT_DEMAND
+                if v["star"]:
+                    m += APEX_DEMAND
+        return m
 
     def _buzz_lead(self, s, p, vid):
         b = s["buzz"][vid]
@@ -889,7 +959,7 @@ class TravelAgentsGame:
             return False
         pl = s["players"][p]
         lead, rival = self._buzz_lead(s, p, vid)
-        if lead < self._margin_for(pl):
+        if lead < self._margin_for(pl, vid):
             return False
         if pl["char"] == "dage" and DAGE_FLAW == "nocontest" and rival > 0:
             return False
@@ -930,8 +1000,11 @@ class TravelAgentsGame:
             acts.append(("cstore", r))
         for d in neighbours(pl["pos"], pl["char"], _hsr_is_open(s)):   # CD-2: HSR may be closed
             acts.append(("travel", d))
-        if s["mrow"] and len(pl["tickets"]) < 4 and not pl["prefs"].get("no_tickets"):
-            acts.append(("claim",))
+        # v6.4 Bookings hand-limit: claim if under the cap, or (at the cap) a worthwhile cancel-to-claim.
+        if s["mrow"] and not pl["prefs"].get("no_tickets"):
+            inprog = self._in_progress(pl)
+            if len(inprog) < HAND_LIMIT or self._cancel_to_claim_target(s, p, inprog) is not None:
+                acts.append(("claim",))
         return acts
 
     # -------- transition --------
@@ -946,6 +1019,16 @@ class TravelAgentsGame:
         if pl["reach"] <= 0:
             s["reach_zero_turns"] += 1
         s["reach_samples"].append(pl["reach"])
+        # v6.4 economy probe: back-half committed-to-cap slack + fill, sampled per turn by half.
+        _comm = self._committed(s, p)
+        if s["act"] == 2:
+            s["slack_night_sum"] += (pl["reach"] - _comm); s["slack_night_turns"] += 1
+            if pl["reach"] > 0:
+                s["capfill_night_sum"] += _comm / pl["reach"]
+        else:
+            s["slack_day_turns"] += 1
+            if pl["reach"] > 0:
+                s["capfill_day_sum"] += _comm / pl["reach"]
         # CD-4 probe #1: which half is this turn, and CD-2: is the HSR currently closed this turn?
         if s["act"] == 1:
             s["turns_day"] += 1
@@ -1055,10 +1138,44 @@ class TravelAgentsGame:
         s["max_buzz_on_vendor"] = max(s["max_buzz_on_vendor"], max(s["buzz"][vid]))
         s["max_committed"] = max(s["max_committed"], self._committed(s, p))
 
+    # -------- v6.4 Bookings hand-limit (N in-progress; cancel-to-claim; completing frees a slot) -------
+    def _in_progress(self, pl):
+        """In-progress Bookings occupy a slot; a COMPLETED (counted_done) Booking has vacated its slot."""
+        return [k for k in pl["tickets"] if k not in pl["counted_done"]]
+
+    def _cancel_to_claim_target(self, s, p, inprog):
+        """At the hand-limit, the held in-progress Booking worth CANCELLING to pivot to a hotter one —
+        or None if no pivot is worthwhile (then the bot simply cannot claim). A rational pivot only:
+        never cancel a Booking already ≥ half done (don't waste an almost-complete tour)."""
+        pl = s["players"][p]
+        best_row = max((_ticket_keep_score(pl["won"], k, pl["prefs"]) for k in s["mrow"]
+                        if _reachable(s, p, k)), default=None)
+        if best_row is None:
+            return None
+        cands = []
+        for k in inprog:
+            d, n = _mprog(k, _wstat(pl["won"]))
+            if n and d / n >= 0.5:
+                continue                                     # close to done → keep it
+            cands.append((k, _ticket_keep_score(pl["won"], k, pl["prefs"])))
+        if not cands:
+            return None
+        victim, worst = min(cands, key=lambda kv: kv[1])
+        return victim if best_row > worst * 1.25 else None   # only pivot for a clearly hotter Booking
+
     def _do_claim(self, s, p):
         pl = s["players"][p]
         if not s["mrow"]:
             return
+        inprog = self._in_progress(pl)
+        if len(inprog) >= HAND_LIMIT:                        # v6.4: at the cap → cancel-to-claim
+            s["book_capbind"] += 1
+            victim = self._cancel_to_claim_target(s, p, inprog)
+            if victim is None:
+                return                                       # no worthwhile pivot → cannot claim
+            pl["tickets"].remove(victim)                     # CANCEL → Cancelled pile, −floor(v/2) at scoring
+            pl["cancel_penalty"] += (_ticket_value(victim) // 2)
+            s["cancels"] += 1
         # prefer a ticket we can actually finish in this phase's window (competence fix)
         reachable = [k for k in s["mrow"] if _reachable(s, p, k)]
         pool = reachable if reachable else s["mrow"]
@@ -1086,8 +1203,10 @@ class TravelAgentsGame:
             pl["bribe_discount"] -= 1                        # consume the milestone-14 one-shot
         _, rival_buzz = self._buzz_lead(s, p, vid)
         contested = rival_buzz > 0
-        starred = vid in s["star"]
-        bookings = v["bookings"] + (STAR_BONUS_P if starred else 0)
+        starred = vid in s["star"]                            # a DYNAMIC Trending marker (event-placed)
+        # v6.4: the Trending marker's payoff moved from "+2 Bookings/Draw" ("draw") to "+1 Followers-max"
+        # ("max", the default). The +Bookings bonus only applies in the legacy "draw" mode.
+        bookings = v["bookings"] + (STAR_BONUS_P if (starred and TRENDING == "draw") else 0)
         pl["bookings"] += bookings
         pl["won"].append({
             "id": vid, "region": v["region"], "is_drink": v["is_drink"], "phase": v["phase"],
@@ -1103,8 +1222,25 @@ class TravelAgentsGame:
                 pl["councillor_regions"].add(v["region"])
         if starred:
             s["star"].discard(vid); s["star_wins"][p] += 1
-        # winning clears YOUR Buzz off it → frees your Reach cap. Rivals' Buzz on it also returns.
-        s["supply"] += sum(s["buzz"][vid]); s["buzz"][vid] = [0] * s["n"]
+            if TRENDING == "max":
+                # v6.4: winning a Trending-marked vendor jumps your Followers-max (a NEW gain — "this
+                # stall went viral → your reach jumps"). Worsens the gain-heavy economy (the sim must see it).
+                self._gain_reach(s, p, TREND_MAX, "trending")
+        # v6.4 LOST-PROMOTION-WAR consequence. Identify the losers (rivals who committed Followers here).
+        losers = [q for q in range(s["n"]) if q != p and s["buzz"][vid][q] > 0]
+        for q in losers:
+            s["lost_wars"] += 1
+            s["lostwar_committed"] += s["buzz"][vid][q]
+        # winning clears YOUR Buzz off it → frees your cap. Losers' Followers RETURN to supply (v6.3
+        # "off") UNLESS the lost-war lever burns them (crowd disperses → SPENT, not returned).
+        ret = sum(s["buzz"][vid])
+        if LOSTWAR in ("burn", "both"):
+            ret -= sum(s["buzz"][vid][q] for q in losers)     # losers' committed Followers are spent
+        s["supply"] += ret
+        s["buzz"][vid] = [0] * s["n"]
+        if LOSTWAR in ("dropmax", "both"):
+            for q in losers:                                  # the loser overreached → Followers-max drops
+                self._lose_reach(s, q, LOSTWAR_DROP, "lostwar")
         s["claim_by_region"][v["region"]] += 1
         if v["is_drink"]:
             s["drink_wins"] += 1
@@ -1422,7 +1558,9 @@ class TravelAgentsGame:
         return 2
 
     def _bump_src(self, s):
-        """CD-4 probe #1: a sourcing action (Visit / Convenience Store / Travel), counted per game-half."""
+        """CD-4 probe #1: a SOURCING action counted per game-half. v6.4: Visit + Convenience Store +
+        ONLY the Homebody's Travel-draw (base Travel no longer sources, so it is NOT bumped here — else
+        the night-sourcing rate would be inflated and the CD-4 re-check meaningless)."""
         if s["act"] == 1:
             s["src_actions_day"] += 1
         else:
@@ -1505,8 +1643,15 @@ class TravelAgentsGame:
         pl["pos"] = dest
         s["travels"] += 1
         s["inter_moves"] += 1
-        self._bump_src(s)
         self._gain_reach(s, p, REACH_TRAVEL, "travel")       # v6.3: Travel is the engine's fuel line
+        # v6.4 CHANGE 5: base Travel sources NO ingredient — it is move + +1 Followers-max ONLY. The
+        # Homebody (office/媽寶) is the SOLE Travel-sourcer: she draws the region she LEFT (event whiffs).
+        # (TRAVEL_NO_SOURCE=0 recovers the v6.3 behaviour — everyone sources the arriving region — for the A/B.)
+        is_sourcer = (pl["char"] == "office") or (not TRAVEL_NO_SOURCE)
+        if not is_sourcer:
+            return                                           # base Travel: fuel + move, nothing drawn
+        # only a SOURCING Travel counts toward the CD-4 night-sourcing metric (base Travel must NOT inflate it)
+        self._bump_src(s)
         draw_region = src if pl["char"] == "office" else dest
         n_draw = 2 if (pl["char"] == "office" and OFFICE_BUFF == "travel2") else 1
         for _ in range(n_draw):
@@ -1540,7 +1685,9 @@ class TravelAgentsGame:
 
     # -------- scoring --------
     def _ticket_score(self, pl):
-        return pl.get("day_ticket_score", 0) + pl.get("night_ticket_score", 0)
+        # v6.4: cancel-to-claim Cancellations take their −floor(v/2) here, alongside the judged piles.
+        return (pl.get("day_ticket_score", 0) + pl.get("night_ticket_score", 0)
+                - pl.get("cancel_penalty", 0))
 
     def scores(self, s):
         if not s.get("_finalized"):
@@ -1638,6 +1785,29 @@ class TravelAgentsGame:
             "reach_mean_all": float(statistics.mean(s["reach_samples"])) if s["reach_samples"] else 0.0,
             "reach_at_dusk_mean": float(statistics.mean(s["reach_at_dusk"])) if s["reach_at_dusk"] else 0.0,
             "reach_end_mean": float(statistics.mean(end_reach)),
+            # --- v6.4 FOLLOWERS-economy diagnosis ---
+            "reach_gain_trending": float(s["reach_gain_trending"]),
+            "reach_loss_lostwar": float(s["reach_loss_lostwar"]),
+            # gain-vs-sink per game (the imbalance headline)
+            "followers_gain_total": float(s["reach_gain_travel"] + s["reach_gain_event"]
+                                          + s["reach_gain_ms"] + s["reach_gain_trending"]),
+            "followers_sink_total": float(s["reach_loss_grab"] + s["reach_loss_event"]
+                                          + s["reach_loss_lostwar"]),
+            # cap-bind rate DAY vs NIGHT (blocked promotes / promotes wanted, per half)
+            "capbind_day": float(s["reach_blocked_day"] / s["promote_want_day"]) if s["promote_want_day"] else 0.0,
+            "capbind_night": float(s["reach_blocked_night"] / s["promote_want_night"]) if s["promote_want_night"] else 0.0,
+            "reach_blocked_day": float(s["reach_blocked_day"]),
+            "reach_blocked_night": float(s["reach_blocked_night"]),
+            # back-half committed-to-cap slack + fill (the "dead top half of the cap" read)
+            "slack_night_mean": float(s["slack_night_sum"] / s["slack_night_turns"]) if s["slack_night_turns"] else 0.0,
+            "capfill_night": float(s["capfill_night_sum"] / s["slack_night_turns"]) if s["slack_night_turns"] else 0.0,
+            "capfill_day": float(s["capfill_day_sum"] / s["slack_day_turns"]) if s["slack_day_turns"] else 0.0,
+            # lost-promotion-war probes
+            "lost_wars_per_game": float(s["lost_wars"]),
+            "followers_per_lost_war": float(s["lostwar_committed"] / s["lost_wars"]) if s["lost_wars"] else 0.0,
+            # Bookings hand-limit probes
+            "cancels_per_game": float(s["cancels"]),
+            "book_capbind_per_game": float(s["book_capbind"]),
             # --- milestones (Rave Reviews) ---
             "ms7_fired": 1.0 if s["ms7_by"] is not None else 0.0,
             "ms14_fired": 1.0 if s["ms14_by"] is not None else 0.0,
@@ -1675,7 +1845,8 @@ class TravelAgentsGame:
 
 
 GAME = TravelAgentsGame()
-TITLE = "Travel Agents: Taiwan (v6.3.1 — four CD reworks: home-region 里長伯 · Maintenance · Taipei start · night curve)"
+TITLE = ("Travel Agents: Taiwan (v6.4 — FOLLOWERS vocab · Bookings hand-limit N=3 · 網紅 start-max 4 · "
+         "base Travel de-sourced [媽寶 sole sourcer] · Trending +1 Followers-max)")
 
 
 # ==================================================================================================
@@ -1697,7 +1868,7 @@ def _needs(s, p, vid):
 
 def _buzz_short_real(s, p, vid, pl):
     _, rival = GAME._buzz_lead(s, p, vid)
-    margin = GAME._margin_for(pl)
+    margin = GAME._margin_for(pl, vid)
     raw = max(0, rival + margin - s["buzz"][vid][p])
     return raw + 0.6 * rival
 
@@ -1836,7 +2007,8 @@ def _should_claim(s, p, legal, prefs):
         return False
     pl = s["players"][p]
     incomplete = [k for k in pl["tickets"] if not _mdone(k, pl["won"])]
-    limit = 3 if prefs.get("speed") else 2
+    # v6.4: the `collect` breadth line pushes right up to the hand-limit; others self-limit lower.
+    limit = HAND_LIMIT if prefs.get("collect") else (3 if prefs.get("speed") else 2)
     if s["clock_mode"] == "mission":
         room = s["completions"] < s["m_end"] - 1
     else:
@@ -1896,7 +2068,7 @@ def _plan(s, p, legal, rng, prefs):
     eff = v["region"]
     need = _needs(s, p, tgt)
     lead, _rival = GAME._buzz_lead(s, p, tgt)
-    margin = GAME._margin_for(pl)
+    margin = GAME._margin_for(pl, tgt)   # v6.4: night/apex demand may raise the Followers needed
     present = GAME._present(s, p, tgt)
 
     # 4) get on-site if short the local ingredient, else route toward the target
@@ -1921,12 +2093,21 @@ def _plan(s, p, legal, rng, prefs):
 
     # 6) win the Buzz fight — Reach-cap-aware
     if lead < margin and present:
+        # v6.4 probe: the bot WANTS to Promote this turn (split by half for the cap-bind read).
+        if s["act"] == 2:
+            s["promote_want_night"] += 1
+        else:
+            s["promote_want_day"] += 1
         if ("promote", tgt) in legal:
             return ("promote", tgt)
         # the ingredients are ready and we're present, but the Reach cap forbids the Promote →
         # Travel to build Reach (the intended play: travel is the fight's fuel). Record the block.
         if s["supply"] > 0 and GAME._committed(s, p) + GAME._promote_yield(pl) > pl["reach"]:
             s["reach_blocked"] += 1
+            if s["act"] == 2:
+                s["reach_blocked_night"] += 1
+            else:
+                s["reach_blocked_day"] += 1
             mv = _any_travel(s, p, legal)
             if mv is not None:
                 return mv
@@ -1959,6 +2140,7 @@ DISRUPTIVE = {**BAL, "disrupt": True, "w_ticket": 1.1}
 ENDGAME = {**BAL, "speed": True, "w_ticket": 1.2}
 MIXPREFS = {**BAL, "w_drink": 1.1, "w_ticket": 1.15}
 IGNORE_OBJ = {**BAL, "no_tickets": True, "no_drinks": True}
+COLLECTOR = {**BAL, "collect": True, "w_ticket": 1.2}         # v6.4: the breadth-lane hand-limit probe
 PURE_DRINKS = {"w_val": 1.0, "w_food": 0.0, "w_drink": 1.0, "w_ramp": 0.0, "pure_drinks": True, "w_ticket": 1.0}
 NO_DRINKS = {**BAL, "no_drinks": True}
 
@@ -1987,12 +2169,13 @@ STRATEGIES = {
     "ignore_obj":    _make(IGNORE_OBJ),
     "pure_drinks":   _make(PURE_DRINKS),
     "no_drinks":     _make(NO_DRINKS),
+    "collector":     _make(COLLECTOR),
 }
 
 STRAT_PREFS = {
     "random": BAL, "greedy_book": BAL, "balanced": BAL, "opportunistic": OPPORTUNISTIC,
     "disruptive": DISRUPTIVE, "endgame": ENDGAME, "mix": MIXPREFS, "ignore_obj": IGNORE_OBJ,
-    "pure_drinks": PURE_DRINKS, "no_drinks": NO_DRINKS,
+    "pure_drinks": PURE_DRINKS, "no_drinks": NO_DRINKS, "collector": COLLECTOR,
 }
 
 
@@ -2084,6 +2267,177 @@ if __name__ == "__main__":
             flag = "SUSPECT" if r["suspect"] else "ok"
             wr = "  ".join(f"seat{p}={v*100:.0f}%" for p, v in r["seat_win_rate"].items())
             print(f"  {c}p  {flag}  (fair {r['fair_share']*100:.0f}%)  {wr}  ties={r['tie_rate']*100:.0f}%")
+        sys.exit(0)
+
+    # ==============================================================================================
+    #  --v64  — the CD-GATED v6.4 re-sim: validation + the FOLLOWERS-ECONOMY diagnosis & lever sweep.
+    #  Usage:  python games/travel-agents/sim/travel_agents.py --v64 [N]
+    #  N drives the sweep field cells (default 400); the make-or-break CHARACTER BAND runs at 2× N for
+    #  precision. Everything runs in ONE invocation (the sim is slow — one gated run).
+    # ==============================================================================================
+    if "--v64" in sys.argv:
+        _args = [a for a in sys.argv[1:] if a.isdigit()]
+        N = int(_args[0]) if _args else 400
+        NB = N * 2                                            # character-band precision (±~2pt @ NB≥1600)
+
+        _CFG_KEYS = ("LOSTWAR", "LOSTWAR_DROP", "NIGHT_DEMAND", "APEX_DEMAND", "SINK_BOOST",
+                     "REACH_TOP", "SLOTS_OVERRIDE")
+
+        def _setcfg(lostwar="off", drop=1, night=0, apex=0, sink=0.0, top=12, slots=""):
+            globals()["LOSTWAR"] = lostwar; globals()["LOSTWAR_DROP"] = drop
+            globals()["NIGHT_DEMAND"] = night; globals()["APEX_DEMAND"] = apex
+            globals()["SINK_BOOST"] = sink; globals()["REACH_TOP"] = top
+            globals()["SLOTS_OVERRIDE"] = slots
+
+        def _band(n=NB):
+            """The five-character band (char vs neutral, both seatings). Returns {char: winrate}."""
+            return {ch: _char_winrate(ch, n=n) for ch in
+                    ("councillor", "office", "influencer", "dagushi", "dage")}
+
+        def _band_str(b):
+            names = {"councillor": "里長伯", "office": "媽寶", "influencer": "網紅",
+                     "dagushi": "大胃王", "dage": "大哥"}
+            lo, hi = min(b.values()), max(b.values())
+            body = "  ".join(f"{names[c]} {b[c]*100:4.1f}" for c in
+                             ("influencer", "dage", "dagushi", "councillor", "office"))
+            return f"{body}   [band {lo*100:.1f}–{hi*100:.1f}]"
+
+        print(f"# {TITLE}")
+        print(f"# CD-GATED v6.4 RE-SIM — sweep N={N}/cell, character band N={NB}/cell\n")
+        print(f"  FIXED v6.4: HAND_LIMIT={HAND_LIMIT}  INFL_MAX_START={INFL_MAX_START}  "
+              f"TRAVEL_NO_SOURCE={int(TRAVEL_NO_SOURCE)}  TRENDING={TRENDING}(+{TREND_MAX})  "
+              f"(carried: NIGHT_CURVE={int(NIGHT_CURVE)} MAINT={MAINT_COUNT} COUNCILLOR_REACH={COUNCILLOR_REACH})\n")
+
+        # ------------------------------------------------------------------ STEP 2 — VALIDATION -----
+        print("## STEP 2 — VALIDATION (baseline v6.4: all economy levers OFF) ".ljust(96, "="))
+        _setcfg()
+        mt = _field_metrics(n=N)
+        print(f"  arc: turns/plyr {mt['turns_per_player']:.1f}  vendors/plyr {mt['wins_per_player']:.1f}  "
+              f"winner {mt['win_total']:.1f}  end LT {mt['end_by_lasttrain']*100:.0f}%/stall {mt['end_by_stall']*100:.0f}%")
+        print(f"  contested_frac {mt['contested_frac']*100:.1f}%  max_committed {mt['max_committed']:.2f}  "
+              f"reach end {mt['reach_end_mean']:.2f}  forced_turn_frac {mt['forced_turn_frac']:.3f}")
+
+        print("\n  (a) FIVE-CHARACTER BAND — target 網紅 ≥45 & ≤~55, no crusher, 媽寶 lifts off ~43.5 floor")
+        b0 = _band()
+        print(f"      {_band_str(b0)}")
+        infl, homb = b0["influencer"] * 100, b0["office"] * 100
+        print(f"      → 網紅 {infl:.1f}% ({'OK' if 45 <= infl <= 55.5 else 'OUT'})  "
+              f"媽寶 {homb:.1f}% ({'lifted' if homb >= 44 else 'STILL LOW'}"
+              f"{'' if homb <= 55.5 else ' / OVERSHOOT'})  vs prior 網紅 51.2 / 媽寶 43.5")
+
+        print("\n  (b) NIGHT-HALF SOURCING with base Travel DE-SOURCED (target ~60–100% of day rate; flag if <60)")
+        print(f"      src/turn DAY {mt['src_day_per_turn']:.2f}  NIGHT {mt['src_night_per_turn']:.2f}  "
+              f"→ night {mt['night_day_src_ratio']*100:.0f}% of day  "
+              f"({'OK' if mt['night_day_src_ratio'] >= 0.60 else 'FLAG <60%'})")
+        print(f"      night claims/plyr {mt['night_claims_per_player']:.2f}  1st-night turn {mt['first_night_win_turn']:.1f}")
+
+        print("\n  (c) HAND-LIMIT N=3 — does it pinch the breadth/collection lane?  (collector vs field)")
+        col = statistics.mean([_versus("collector", x, n=N // 2)
+                               for x in ("balanced", "mix", "opportunistic")])
+        cm = _field_metrics(n=N)  # cancels/capbind on the balanced field
+        print(f"      collector avg vs field {col*100:.1f}%  (viable if ~45–55, not crushed by the cap)")
+        print(f"      field: cancels/gm {cm['cancels_per_game']:.2f}  at-limit claims/gm {cm['book_capbind_per_game']:.2f}  "
+              f"tickets_held_winner {cm['tickets_held_winner']:.2f}")
+        ig = _versus("balanced", "ignore_obj", n=N)
+        print(f"      tickets-only health: balanced vs ignore_obj {ig*100:.1f}%  (ignore_obj must stay dead <~45)")
+
+        # ------------------------------------------------- STEP 3 — ECONOMY DIAGNOSIS + SWEEP -------
+        print("\n## STEP 3 — FOLLOWERS-ECONOMY diagnosis + lever SWEEP ".ljust(96, "="))
+        print("\n  DIAGNOSIS (baseline v6.4, levers OFF):")
+        print(f"    gain/gm {mt['followers_gain_total']:.1f}  (travel {mt['reach_gain_travel']:.1f} · "
+              f"event {mt['reach_gain_event']:.1f} · milestone {mt['reach_gain_ms']:.2f} · "
+              f"TRENDING {mt['reach_gain_trending']:.2f})   vs sink/gm {mt['followers_sink_total']:.1f}  "
+              f"(grab {mt['reach_loss_grab']:.1f} · event {mt['reach_loss_event']:.1f})")
+        print(f"    cap-bind rate  DAY {mt['capbind_day']*100:.0f}%   NIGHT {mt['capbind_night']*100:.0f}%   "
+              f"(the cap bites EARLY; the back half is slack)")
+        print(f"    back-half (night) cap-FILL {mt['capfill_night']*100:.0f}% of the dial  "
+              f"(day {mt['capfill_day']*100:.0f}%)  mean night slack {mt['slack_night_mean']:.2f}  "
+              f"→ the top of the ramped cap is DEAD WEIGHT late")
+
+        print("\n  LOST-PROMOTION-WAR — current state + the lever (⚠ CD's first-class knob)")
+        print(f"    CURRENT (off): a loser's committed Followers RETURN to supply, cap freed, NO sting.")
+        print(f"    baseline: lost wars/gm {mt['lost_wars_per_game']:.2f}  "
+              f"Followers committed per lost war {mt['followers_per_lost_war']:.2f}")
+        print(f"    {'mode':22}{'contest%':>9}{'lostwar/gm':>11}{'capbindN':>9}{'fill_N':>8}{'slackN':>8}{'reach_end':>10}")
+        for lbl, lw, dr in (("off (v6.3)", "off", 1), ("burn", "burn", 1),
+                            ("dropmax −1", "dropmax", 1), ("dropmax −2", "dropmax", 2),
+                            ("both (burn+drop1)", "both", 1)):
+            _setcfg(lostwar=lw, drop=dr)
+            m = _field_metrics(n=N)
+            print(f"    {lbl:22}{m['contested_frac']*100:8.1f}%{m['lost_wars_per_game']:11.2f}"
+                  f"{m['capbind_night']*100:8.0f}%{m['capfill_night']*100:7.0f}%"
+                  f"{m['slack_night_mean']:8.2f}{m['reach_end_mean']:10.2f}")
+
+        print("\n  LEVER (b) — raise NIGHT/APEX demand + lift the ceiling  [root-cause: spend the ramped cap late]")
+        print(f"    {'night/apex/top':22}{'contest%':>9}{'capbindN':>9}{'fill_N':>8}{'slackN':>8}"
+              f"{'nightclaim':>11}{'stall%':>8}{'reach_end':>10}")
+        for lbl, nd, ap, tp in (("+0/+0/12 (base)", 0, 0, 12), ("+1/+0/12", 1, 0, 12),
+                                ("+1/+1/14", 1, 1, 14), ("+2/+1/14", 2, 1, 14), ("+2/+2/16", 2, 2, 16)):
+            _setcfg(night=nd, apex=ap, top=tp)
+            m = _field_metrics(n=N)
+            print(f"    {lbl:22}{m['contested_frac']*100:8.1f}%{m['capbind_night']*100:8.0f}%"
+                  f"{m['capfill_night']*100:7.0f}%{m['slack_night_mean']:8.2f}"
+                  f"{m['night_claims_per_player']:11.2f}{m['end_by_stall']*100:7.0f}%{m['reach_end_mean']:10.2f}")
+
+        print("\n  LEVER (c) — add Follower-SINK events")
+        print(f"    {'sink_boost':22}{'sink/gm':>9}{'fill_N':>8}{'slackN':>8}{'reach_end':>10}{'stall%':>8}")
+        for lbl, sk in (("+0.00 (base)", 0.0), ("+0.10", 0.10), ("+0.20", 0.20)):
+            _setcfg(sink=sk)
+            m = _field_metrics(n=N)
+            print(f"    {lbl:22}{m['followers_sink_total']:9.1f}{m['capfill_night']*100:7.0f}%"
+                  f"{m['slack_night_mean']:8.2f}{m['reach_end_mean']:10.2f}{m['end_by_stall']*100:7.0f}%")
+
+        print("\n  LEVER (a) — tighten vendor AVAILABILITY (fewer face-up slots → more fights). NOT the primary knob.")
+        print(f"    {'slots N,C,S,E':22}{'contest%':>9}{'fight/gm':>9}{'capbindN':>9}{'stall%':>8}")
+        for lbl, sl in (("2,1,1,1 (base)", ""), ("1,1,1,1 (tight)", "1,1,1,1")):
+            _setcfg(slots=sl)
+            m = _field_metrics(n=N)
+            print(f"    {lbl:22}{m['contested_frac']*100:8.1f}%{m['contested_wins']:9.2f}"
+                  f"{m['capbind_night']*100:8.0f}%{m['end_by_stall']*100:7.0f}%")
+
+        # ------------------------------------------------- RECOMMENDED COMBINATION -------------------
+        # The sim's read (from the sweep above): lever (b) night/apex DEMAND is the root-cause mover that
+        # spends the ramped cap late; the lost-war knob is nearly inert as an ECONOMY sink (fights are
+        # rare) but is worth adopting as a lost-war STING; sink events (c) only shave the ceiling. Because
+        # night-demand AMPLIFIES 網紅's higher start-max, test a MODEST vs a STRONGER combo + the 網紅
+        # start-3 reserve dial, so the CD sees the trade.
+        print("\n  ★ CANDIDATE COMBOS — night-demand spine + lost-war −1 sting; read the back-half + 網紅")
+        print(f"    {'combo':30}{'fill_N':>7}{'slackN':>8}{'nightclaim':>11}{'stall%':>8}"
+              f"{'nsrc%':>7}{'網紅%':>7}{'媽寶%':>7}")
+        combos = (
+            ("MODEST  n+1/a+0/top14/drop1", dict(lostwar="dropmax", drop=1, night=1, apex=0, top=14)),
+            ("STRONG  n+1/a+1/top14/drop1", dict(lostwar="dropmax", drop=1, night=1, apex=1, top=14)),
+        )
+        rec_metrics = {}
+        for lbl, cfg in combos:
+            _setcfg(**cfg)
+            m = _field_metrics(n=N)
+            infl = _char_winrate("influencer", n=NB)
+            homb = _char_winrate("office", n=NB)
+            rec_metrics[lbl] = (m, infl, homb)
+            print(f"    {lbl:30}{m['capfill_night']*100:6.0f}%{m['slack_night_mean']:8.2f}"
+                  f"{m['night_claims_per_player']:11.2f}{m['end_by_stall']*100:7.0f}%"
+                  f"{m['night_day_src_ratio']*100:6.0f}%{infl*100:6.1f}%{homb*100:6.1f}%")
+
+        # 網紅 start-4 vs the start-3 reserve dial, under the MODEST combo (the recommended spine).
+        print("\n  網紅 start-max reserve dial (under MODEST combo n+1/top14/drop1):")
+        _setcfg(lostwar="dropmax", drop=1, night=1, apex=0, top=14)
+        for lbl, start in (("start-max 4 (v6.4 lock)", 4), ("start-max 3 (reserve)", 3)):
+            globals()["INFL_MAX_START"] = start
+            print(f"    {lbl:28} 網紅 {_char_winrate('influencer', n=NB)*100:.1f}%")
+        globals()["INFL_MAX_START"] = INFL_MAX_START  # (module default already 4)
+
+        # The FULL five-character band under the recommended (MODEST) combo, 網紅 = 4.
+        print("\n  ★ FIVE-CHARACTER BAND under the recommended MODEST combo (網紅 start-4):")
+        _setcfg(lostwar="dropmax", drop=1, night=1, apex=0, top=14)
+        globals()["INFL_MAX_START"] = 4
+        br = _band()
+        print(f"      {_band_str(br)}")
+        ir, hr = br["influencer"] * 100, br["office"] * 100
+        print(f"      → 網紅 {ir:.1f}% ({'OK' if 45 <= ir <= 55.5 else 'OUT — see reserve dial'})  "
+              f"媽寶 {hr:.1f}% ({'OK' if 44 <= hr <= 55.5 else 'WATCH'})")
+
+        _setcfg()  # restore all economy globals to v6.4 defaults
         sys.exit(0)
 
     N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 1200
