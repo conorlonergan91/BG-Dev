@@ -256,6 +256,13 @@ SLOTS_OVERRIDE = os.environ.get("TA_SLOTS", "")
 #     face-up vendor slots (the DAY stays the calm engine-building phase). "" = same as the day slots.
 #     e.g. TA_NIGHT_SLOTS="1,1,1,1" (every region shows just one night stall → both agents crowd it).
 NIGHT_SLOTS_OVERRIDE = os.environ.get("TA_NIGHT_SLOTS", "")
+# --- v6.4b DEPLETING-NIGHT-POOL lever (CD steer #2): each region deals its NIGHT stalls face-up and
+#     they DO NOT REFILL when claimed — the pool depletes as the night wears on, so scarcity RAMPS and
+#     the late-night board becomes a scramble for the last stalls (a tension curve + a natural end-press).
+#     Modelled as "deal NIGHT_SLOTS per region from the shuffled night deck, no refill, rest stay hidden"
+#     (game-to-game variety preserved). Night ends (deck-dry) when the face-up board is picked clean OR
+#     no one can afford a remaining face-up stall ("the market's closed" — prevents an unaffordable strand).
+NIGHT_NOREFILL = os.environ.get("TA_NIGHT_NOREFILL", "0") == "1"
 
 # --- CHARACTER KNOBS (v6.3 kits — locked; do NOT pre-tweak, the re-sim reads them) ---------------
 # H1 大胃王 flaw. "twice" (A, locked) | "keep2" (B) | "next" (C).
@@ -752,6 +759,8 @@ class TravelAgentsGame:
         if NIGHT_SLOTS_OVERRIDE:
             _nv = [int(x) for x in NIGHT_SLOTS_OVERRIDE.split(",")]
             night_slots = {"N": _nv[0], "C": _nv[1], "S": _nv[2], "E": _nv[3]}
+        elif NIGHT_NOREFILL:
+            night_slots = {"N": 2, "C": 2, "S": 2, "E": 2}    # CD steer #2: deal 2 per region, no refill
         supply = int(round(BUZZ_SUPPLY * (1 + 0.375 * (n_players - 2))))
         mdraw = MISSION_DRAW + (1 if n_players == 3 else 2 if n_players >= 4 else 0)
         m_dusk = {2: M_DUSK, 3: M_DUSK + 1, 4: M_DUSK + 2}.get(n_players, M_DUSK)
@@ -1343,6 +1352,9 @@ class TravelAgentsGame:
         up = s["faceup"][region]
         if vid in up:
             up.remove(vid)
+        # v6.4b DEPLETING NIGHT POOL: night stalls do NOT refill — the board thins as the night wears on.
+        if NIGHT_NOREFILL and s["act"] == 2:
+            return
         deck = s["vdeck"][region]
         if deck:
             nv = deck.pop()
@@ -1381,6 +1393,11 @@ class TravelAgentsGame:
         return all(not s["vdeck"][r] and not s["faceup"][r] for r in REGIONS)
 
     def _all_night_decks_dry(self, s):
+        # v6.4b DEPLETING NIGHT POOL: the night is "over" when the face-up board is picked clean (the
+        # hidden remainder never refills). A residual of unaffordable stalls just rides the last-train
+        # (10th claim) / stall backstop — surfaced honestly as stall% rather than a fake early end.
+        if NIGHT_NOREFILL:
+            return all(not s["faceup"][r] for r in REGIONS)
         return all(not s["vdeck"][r] and not s["faceup"][r] for r in REGIONS)
 
     def _dusk(self, s):
@@ -2470,9 +2487,10 @@ if __name__ == "__main__":
         N = int(_args[0]) if _args else 400
         NB = N * 2
 
-        def _setnight(nslots="", vend=10):
+        def _setnight(nslots="", vend=10, norefill=False):
             globals()["NIGHT_SLOTS_OVERRIDE"] = nslots
             globals()["V_END"] = vend
+            globals()["NIGHT_NOREFILL"] = norefill
 
         def _band5(n=NB):
             names = {"councillor": "里長伯", "office": "媽寶", "influencer": "網紅",
@@ -2488,35 +2506,34 @@ if __name__ == "__main__":
         print(f"# v6.4b NIGHT-CONTENTION sweep — sweep N={N}/cell, band N={NB}/cell")
         print(f"  GOAL: hectic/scrappy NIGHT (more back-half battles) + 大哥 back-half weight, "
               f"WITHOUT wrecking the close (stall). DAY slots held (N2/others1).\n")
-        print(f"  {'night slots / clock':26}{'contest%':>9}{'NIGHTcontest%':>14}{'nbattle/gm':>11}"
+        print(f"  {'night model / clock':30}{'contest%':>9}{'NIGHTcont%':>11}{'nbattle/gm':>11}"
               f"{'capfillN':>9}{'nclaim/p':>9}{'stall%':>8}{'turns/p':>8}")
-        for lbl, ns, ve in (
-                ("day-slots (baseline)", "", 10),
-                ("night 1,1,1,1", "1,1,1,1", 10),
-                ("night 1,1,1,1 +clock9", "1,1,1,1", 9),
-                ("night 1,1,1,0 (E dark)", "1,1,1,0", 10),
-                ("night 2,1,1,1→tight C/S", "2,0,0,1", 10)):
-            _setnight(ns, ve)
+        for lbl, ns, ve, nr in (
+                ("day-slots refill (baseline)", "", 10, False),
+                ("night 1/region refill", "1,1,1,1", 10, False),
+                ("★ 2/region NO-REFILL (deplete)", "", 10, True),
+                ("★ 2/region NO-REFILL +clock9", "", 9, True),
+                ("★ 2/region NO-REFILL +clock8", "", 8, True)):
+            _setnight(ns, ve, nr)
             m = _field_metrics(n=N)
-            print(f"  {lbl:26}{m['contested_frac']*100:8.1f}%{m['night_contested_frac']*100:13.1f}%"
+            print(f"  {lbl:30}{m['contested_frac']*100:8.1f}%{m['night_contested_frac']*100:10.1f}%"
                   f"{m['night_contested_wins_per_game']:11.2f}{m['capfill_night']*100:8.0f}%"
                   f"{m['night_claims_per_player']:9.2f}{m['end_by_stall']*100:7.0f}%{m['turns_per_player']:8.1f}")
 
-        print("\n  ★ CHARACTER BAND — baseline (day-slots) vs the recommended NIGHT-TIGHT setting")
-        print("     (watch 大哥 gain back-half weight; others must stay ≤~55, 網紅 already hot → start-3 assumed)")
+        print("\n  ★ CHARACTER BAND — baseline vs the DEPLETING-POOL night (網紅 start-3 folded in)")
+        print("     (watch 大哥 gain real back-half weight; others must stay ≤~55.5)")
         globals()["INFL_MAX_START"] = 3   # fold in the resolved 網紅 lock so the band reads the real build
-        _setnight("", 10)
+        _setnight("", 10, False)
         b0, s0 = _band5()
-        print(f"     day-slots (baseline)   : {s0}")
-        _setnight("1,1,1,1", 9)
+        print(f"     day-slots refill (baseline) : {s0}")
+        _setnight("", 9, True)
         b1, s1 = _band5()
-        print(f"     night 1,1,1,1 +clock9  : {s1}")
+        print(f"     2/region NO-REFILL +clock9  : {s1}")
         dage0, dage1 = b0["dage"] * 100, b1["dage"] * 100
         print(f"\n     → 大哥 {dage0:.1f}% → {dage1:.1f}%  (Δ {dage1-dage0:+.1f}pt — the back-half weight we want)"
               f"  |  band top now {max(b1.values())*100:.1f}% ({'OK ≤55.5' if max(b1.values())<=55.5 else 'WATCH'})")
 
-        globals()["INFL_MAX_START"] = 4  # restore module default
-        _setnight("", 10)
+        globals()["INFL_MAX_START"] = 4; _setnight("", 10, False)  # restore module defaults
         sys.exit(0)
 
     N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 1200
