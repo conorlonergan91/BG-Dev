@@ -1,5 +1,5 @@
 {
-  "_note": "v6.2 quick-glance aid for build_board.py --type aid. A REMINDER, not a rulebook — condensed by bg-infodesign (faithful to rules-draft.md §3-§9; no rule changed). Kept well under complexity-budget.json max_player_aid_lines 22 (currently 13 line-entries). Each line is short enough to sit on one row (no wrap) at W=1600. Subtitle is short so it no longer overflows the header band.",
+  "_note": "v6.3.1 quick-glance aid for build_board.py --type aid. A REMINDER, not a rulebook — condensed by bg-infodesign (faithful to rules-draft.md §3-§9; no rule changed). Kept under complexity-budget.json max_player_aid_lines 22 (currently 16 line-entries). Reflects the v6.3.1 canon: TICKETS-ONLY scoring (vendors + Reach don't score), the Reach cap on committed Buzz, the Greedy Grab sink, Rave Reviews on the Tours-Completed counter, and the table-wide Scheduled Maintenance event.",
   "title": "Travel Agents: Taiwan — Player Aid",
   "subtitle": "One action per turn · then trim your Larder to 7",
   "sections": [
@@ -8,36 +8,45 @@
       "lines": [
         "VISIT (here): flip 3 from this region's market — event fires by scope, keep 2 ingredients.",
         "CONVENIENCE STORE (anywhere): flip 1 from any region — take the ingredient, or the event fires.",
-        "TRAVEL: move 1 region (HSR = 北↔南), flip 1 on arrival — take it (an event does nothing).",
-        "PROMOTE (here): put 2 Buzz on face-up vendor(s) — public, and your rival can pile on.",
-        "CLAIM A TICKET: take 1 from the row of 3, then refill. Scores into your piles later."
+        "TRAVEL: move 1 region (HSR = 北↔南), flip 1 on arrival (event does nothing). Gain +1 Reach.",
+        "PROMOTE (here): put 2 Buzz on face-up vendor(s) — public; keep total Buzz ≤ your Reach.",
+        "BRIBE A VENDOR: win it (below). Moves the day-clock +1.",
+        "LINE UP A TOUR TICKET: take 1 from the row of 3, then refill. Your tickets are your whole score."
       ]
     },
     {
       "heading": "Bribe a vendor  (win it — one rule for all)",
       "lines": [
-        "Be with it + hold 2+ more Buzz than your rival + pay its ingredients minus your region-discount icons (Buzz never discounts).",
-        "Gain Prestige + Reputation + perk → clear ALL Buzz, refill, clock +1. FOOD has a discount icon; DRINKS none."
+        "Be with it + hold 2+ more Buzz than your rival + pay its ingredients minus your region-icon discounts (Buzz never discounts).",
+        "It joins your tour as an engine piece + may complete a ticket → clear ALL its Buzz, refill, clock +1. Scores NO points itself."
+      ]
+    },
+    {
+      "heading": "Reach = your Buzz cap  (not a score)",
+      "lines": [
+        "Your total committed Buzz can never exceed your Reach (start 2). Travel +1, some events ±. Winning a vendor frees its Buzz.",
+        "Greedy Grab: keep 1 extra ingredient → −1 Reach (only if it won't drop Reach below your committed Buzz)."
       ]
     },
     {
       "heading": "Events — the island living its life",
       "lines": [
-        "⦿ YOU · ⬢ THIS REGION · ➤ NEXT DOOR (read from the drawn region). Hazards tax or delay — never destroy, never a whole turn."
+        "⦿ YOU · ⬢ THIS REGION · ➤ NEXT DOOR (read from the drawn region). Hazards tax or delay — never destroy, never a whole turn.",
+        "排班保養 Scheduled Maintenance (island-wide banner): HSR down for everyone one round — Travel the long way round the ring."
       ]
     },
     {
       "heading": "Day → Night clock  (+1 each Bribe)",
       "lines": [
-        "DUSK (5th Bribe, 2p): judge daytime tickets, flip the day layer → night decks, swap the ticket row. Keep your Larder.",
-        "LAST TRAIN (10th, 2p): judge nighttime tickets, then finish the round + one more. Marks grow with player count."
+        "DUSK (5th Bribe, 2p): judge DAY tickets into your piles, flip the day layer → night decks, swap the ticket row. Keep your Larder.",
+        "LAST TRAIN (10th, 2p): judge NIGHT tickets, then finish the round + one more. Marks grow with player count."
       ]
     },
     {
-      "heading": "Score once, at the end",
+      "heading": "Rave Reviews & scoring",
       "lines": [
-        "Prestige (your vendors) + Reputation (final slot 3/6/9/top → +2/+4/+6/+9) + tickets.",
-        "Tickets: +value in your 成團 WIN pile, less floor(value/2) in your 遺珠 LOSE pile. Most = TOP AGENT."
+        "Tours Completed 2nd → +1 Reach; 4th → 1 ingredient of choice + next Bribe −1 (each agent earns their own).",
+        "SCORE = tickets only: + value in your 成團 WIN pile, − floor(value/2) in your 遺珠 LOSE pile. Most = TOP AGENT."
       ]
     }
   ]

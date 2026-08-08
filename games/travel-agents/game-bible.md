@@ -326,10 +326,13 @@ engine. Full teach order → `design/rules-draft.md` (v6.3, tickets-only).
   night-half sourcing probe (113% of day — CD-4 soft curve validated), Taipei-start seat balance (ok at
   2p/3p/4p), Scheduled Maintenance impact, and the five-character band (43.5–55.2%, all in band). Owned by
   `bg-playtest`.
-- [ ] **Development ← NEXT (now unblocked): bg-developer** — drop vendor scoring; rebuild `tickets.csv`
-  (44-ticket deck, DAY 20/NIGHT 25); rebuild `vendors.csv` to the LOCKED soft night curve (both 3 / apex 4 /
-  top 5, cross-region + the Central tea-export fix); 里長伯 mat −1/+1 start-Reach 2; seed 2 Scheduled
-  Maintenance; wire Tours-Completed + `perplayer` milestones. **Build to CANON, not the sim-module defaults.**
+- [x] **Development ← DONE (bg-developer, 2026-08-08):** component data rebuilt to v6.3.1 CANON (not the sim
+  defaults). Tickets-only (vendor scoring dropped; face = Draw+icon); `missions.csv` = 45 cards / 44 patterns
+  (DAY 20/NIGHT 25); `vendors.csv` = 24 on the LOCKED soft night curve (both 3 / apex 4 / top 5, every night
+  marquee cross-region + the Central tea-export placed); 里長伯 mat −1 home/+1 away, start-Reach 2; 網紅
+  lost-turn flaw retired; Tours-Completed + `perplayer` Rave Reviews wired; Scheduled Maintenance ×2 (N/S
+  night) + Reach economy events. **Linter 0 errors; full `make.sh` render confirmed.** Deferred to bg-elegance:
+  the ≤1850 rules rewrite + ≤15-term glossary (guardrail A). See `decision-log.md` (top entry) + `components/`.
 - [ ] Prototype (Screentop.gg / PnP)
 - [ ] Playtesting (the 2p FTUE — claiming-feels-joyless? ticket choice rich-not-fiddly? is the ~5% Buzz fight fun?)
 - [ ] Marketing

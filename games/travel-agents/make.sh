@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Per-game build script for Travel Agents: Taiwan — v6.2 (region vendor markets + the vendor-claims clock).
+# Per-game build script for Travel Agents: Taiwan — v6.3.1 (TICKETS-ONLY scoring; soft night-cost curve).
 # Regenerates build/ (scratch) from data and snapshots the shareable deliverables into exports/ (committed).
 # Run: ./make.sh   (from games/travel-agents/)  — needs the 2D pipeline deps (see tools/cards/requirements.txt).
 #
@@ -15,7 +15,7 @@ title="Travel Agents: Taiwan"
 echo "→ regenerating into build/ (scratch)"
 # Vendor decks (24 vendors, day+night, drinks mixed in). tokens.csv feeds the recipe chip glyphs.
 python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build --theme "$theme" --formats png screentop --tokens-csv components/tokens.csv
-# Tour Tickets (12 day + 12 night + 3 general) — the objective spine (win-pile / lose-pile scored later).
+# Tour Tickets (20 DAY + 25 NIGHT = 45 cards / 44 patterns — the SOLE scoring vector; win-pile / lose-pile).
 python3 $T/cards/build_cards.py --csv components/missions.csv    --out build --theme "$theme" --formats png screentop
 # Ingredient market decks (5-palette; K in C/S) — the Visit / CS / Travel draw.
 python3 $T/cards/build_cards.py --csv components/ingredients.csv  --out build --theme "$theme" --formats png screentop --tokens-csv components/tokens.csv
@@ -34,7 +34,7 @@ python3 $T/cards/split_decks.py --out build/decks --prefix market --key deck \
     --csv components/ingredients.csv --csv components/events.csv
 # 8 vendor decks split by region + phase (face-up: North 2, others 1 — see the setup note).
 python3 $T/cards/split_decks.py --out build/decks --prefix vend --key type,phase --csv components/vendors.csv
-# 3 Tour-Ticket decks by phase (day / night / general — draw 5/phase, reveal a row of 3).
+# 2 Tour-Ticket decks by phase (DAY / NIGHT — draw 5/phase, reveal a row of 3).
 python3 $T/cards/split_decks.py --out build/decks --prefix ticket --key phase --csv components/missions.csv
 for d in build/decks/*.csv; do
     tok=""
@@ -47,19 +47,19 @@ done
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --out build/map-day.png
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --out build/map-night.png
 
-# Live in-game tracks.
-# Prestige = the VP tracker (0->50, one marker per player, mark points as you Bribe vendors).
-python3 $T/boards/build_board.py --type scoretrack --max 50 --per-row 13 \
-    --title "Prestige (VP) track" --start-label "START" \
-    --note "One marker per player. Advance it as you score — each vendor you Bribe adds its Prestige. Most points = Top Agent." \
-    --theme "$theme" --out build/prestige-track.png
-# Reputation track — end-VP by FINAL position only (not cumulative).
+# Live in-game tracks (v6.3.1 — TICKETS-ONLY scoring: there is NO score/VP track; your score is your Tour-Ticket tally).
+# Reach track — your Buzz CAP (start at 2). +1 per Travel + some events. NOT a score.
 python3 $T/boards/build_board.py --type scoretrack --max 12 --per-row 13 \
-    --title "Reputation track" --start-label "START" \
-    --milestones "3:+2 VP;6:+4 VP;9:+6 VP;12:+9 VP" \
-    --note "Climb by Bribing (each vendor's printed Rep). At GAME END score the VP bonus for your FINAL position only. Reputation does NOT end the game — the last train does." \
-    --theme "$theme" --out build/reputation-track.png
-# The VENDOR-CLAIMS clock — the v6.2 day-clock. +1 each time ANY agent Bribes a vendor.
+    --title "Reach track (Buzz cap)" --start-label "START at 2" \
+    --note "One marker per player, START AT 2. Your total committed Buzz may never exceed your Reach. +1 each Travel; a few events +/-. Winning a vendor clears its Buzz, freeing your cap. Reach does NOT score." \
+    --theme "$theme" --out build/reach-track.png
+# Tours-Completed counter — the repurposed former Bookings/VP track. Hosts the per-player Rave Reviews.
+python3 $T/boards/build_board.py --type scoretrack --max 8 --per-row 9 \
+    --title "Tours Completed (Rave Reviews)" --start-label "0" \
+    --milestones "2:RAVE REVIEW 1 — +1 Reach;4:RAVE REVIEW 2 — 1 ingredient + next Bribe -1" \
+    --note "One marker per player, starts at 0 and never goes down. +1 the instant a held Tour Ticket's pattern is met. Each agent earns their OWN Rave Review the first time THEY reach the 2nd / 4th mark (no leader pump). A COMPLETIONS counter, NOT the 成團 win pile." \
+    --theme "$theme" --out build/tours-track.png
+# The VENDOR-CLAIMS day-clock. +1 each time ANY agent Bribes a vendor.
 python3 $T/boards/build_board.py --type scoretrack --max 10 --per-row 11 \
     --title "Vendor-claims clock (2p)" --start-label "START" \
     --milestones "5:DUSK — flip to night;10:LAST TRAIN — end game" \
@@ -94,8 +94,8 @@ cp build/sheets/events_back.png           exports/ 2>/dev/null || true
 cp build/sheets/characters_sheet_*.png    exports/ 2>/dev/null || true
 cp build/map-day.png                      exports/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/map-night.png 2>/dev/null || true
-cp build/prestige-track.png               exports/prestige-track.png 2>/dev/null || true
-cp build/reputation-track.png             exports/reputation-track.png 2>/dev/null || true
+cp build/reach-track.png                  exports/reach-track.png 2>/dev/null || true
+cp build/tours-track.png                  exports/tours-track.png 2>/dev/null || true
 cp build/clock-track.png                  exports/clock-track.png 2>/dev/null || true
 cp build/token-key.png                    exports/token-key.png 2>/dev/null || true
 cp build/player-aid.png                   exports/player-aid.png 2>/dev/null || true

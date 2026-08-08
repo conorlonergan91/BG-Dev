@@ -1,9 +1,12 @@
 {
-  "_note": "v6.2 region-ring TABLE-LAYOUT board for build_board.py --type regionmap. It is now a setup/placement guide: the 4-region ring (adjacency + HSR spine drawn as edges) PLUS labelled placeholder zones for every component, so a player can set up without the rulebook. Renders in two states via --phase day|night (make.sh builds both) to mirror the dusk flip: warm ☀日 morning vs neon ☾夜 night market, with a drawn sun/moon badge (never a font glyph → no tofu). Region layout + all zone positions are computed by the renderer from this content (positions are no longer hand-set here). Region colours: first-pass night-market (identity.md), CVD-checked via check_access.py; every region carries colour + emblem + 繁體 (dual-coded). Real illustrated Taiwan map is a later bg-infodesign/art task.",
-  "title": "Travel Agents: Taiwan — the table (v6.2)",
+  "_note": "v6.3.1 region-ring TABLE-LAYOUT board for build_board.py --type regionmap. A setup/placement guide: the 4-region ring (adjacency + HSR spine drawn as edges) PLUS labelled placeholder zones for every component, so a player can set up without the rulebook. Renders in two states via --phase day|night (make.sh builds both) to mirror the dusk flip. v6.3.1 changes: North's hub is TAIPEI, the COMMON START for every agent at every count (CD-3 — replaces the split N/S 2p start); the HSR spine carries an HSR-CLOSED reminder slot for the Scheduled Maintenance table-wide event (CD-2). No score track anymore (tickets-only scoring); the former VP/Bookings track is repurposed as the Tours-Completed counter (rendered separately in make.sh). Region colours: first-pass night-market (identity.md), CVD-checked via check_access.py; every region carries colour + emblem + 繁體 (dual-coded). Real illustrated Taiwan map is a later bg-infodesign/art task.",
+  "title": "Travel Agents: Taiwan — the table (v6.3.1)",
+  "start_hub": "north",
+  "hsr_closed_marker": true,
   "regions": [
     {
       "key": "north", "name": "NORTH 北", "color": "#D64545", "emblem": "triangle", "slots_n": 2,
+      "hub": "Taipei", "start": true,
       "chips": [{"id": "pork", "label": "豬", "en": "pork"}]
     },
     {

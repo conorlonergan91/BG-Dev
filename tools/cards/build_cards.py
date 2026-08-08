@@ -95,11 +95,12 @@ def wrap(text: str, max_chars: int) -> list[str]:
 
 
 # ---- Vendor card (Travel Agents) --------------------------------------------
-# A vendor row carries a two-input economy (ingredients + Buzz) and three reward
-# vectors (Prestige / Reputation / perk). The generic template buries all of that
-# in body text, so vendor-shaped rows get a dedicated cost-row / reward-row layout.
-# Dispatch is guarded by `_is_vendor` (needs BOTH `tier` and `buzz_cost`), so decks
-# without those columns — Beacon, missions, events, characters — are byte-unchanged.
+# v6.3 TICKETS-ONLY: a vendor gives NO points. Its face is just a two-input PAY row
+# (ingredients + the Buzz majority reminder) + a printed DRAW (人氣) attribute + a
+# region discount ICON or none. The old GAIN(Prestige/Reputation) + PERK reward
+# vectors are RETIRED (vendors don't score; the perk field is gone). Dispatch is
+# guarded by `_is_vendor` (needs BOTH `tier` and `buzz_cost`), so decks without
+# those columns — Beacon, missions, events, characters — are byte-unchanged.
 TIER_FICTION = {"1": "攤 STALL", "2": "小吃 EATERY", "3": "名店 MARQUEE"}
 REGION_LABEL = {"north": "NORTH 北", "central": "CENTRAL 中",
                 "south": "SOUTH 南", "east": "EAST 東"}
@@ -153,11 +154,14 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
 
     recipe = [s.strip() for s in (row.get("recipe") or "").split(";") if s.strip()]
     buzz = str(row.get("buzz_cost", "")).strip()
-    prestige = str(row.get("value", "")).strip()
-    rep = str(row.get("rep", "")).strip()
+    draw = str(row.get("draw", "")).strip()          # v6.3: the vendor's Draw (人氣) ATTRIBUTE — not a score
     tier = str(row.get("tier", "")).strip()
-    perk_text = (row.get("perk") or "").strip()
-    perk_code = (row.get("perk_code") or "").strip()
+    icon = str(row.get("icon", "")).strip().upper()  # v6.3: N/C/S/E discount icon, or blank (trophy/drink)
+    tags = str(row.get("tags", "")).lower()
+    is_apex = ("apex" in tags) or ("trophy" in tags)
+    is_drink = "drink" in tags
+    strip_hint = ("★ trophy" if is_apex else ("drink" if is_drink else
+                  ("discount engine" if icon else "no icon")))
 
     # --- header band (region colour): Tâi-lô title (wraps) + 繁體 subtitle -------
     # wrap at 16 so a long title breaks BEFORE the top-right tier pill instead of under it
@@ -190,7 +194,7 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
         f'font-family="{tfont}" font-weight="bold" letter-spacing="1">'
         f'{esc(REGION_LABEL.get(region, region.upper()))}</text>'
         f'<text x="{CARD_W - MARGIN}" y="{strip_y}" font-size="24" fill="{muted}" '
-        f'text-anchor="end" font-family="{bfont}" font-style="italic">discount + coverage</text>')
+        f'text-anchor="end" font-family="{bfont}" font-style="italic">{esc(strip_hint)}</text>')
     eng = _english_name(row.get("effect", ""))
     eng_line = ""
     if eng:
@@ -227,48 +231,48 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
         f'<text x="{MARGIN}" y="{pay_label_y}" font-size="28" fill="{accent}" '
         f'font-family="{tfont}" font-weight="bold" letter-spacing="3">PAY 付</text>' + chips + buzz_badge)
 
-    # --- GAIN row: Prestige star + number, Reputation chip ----------------------
-    gain_label_y = chips_cy + 118
-    gain_cy = gain_label_y + 62
-    # Prestige
-    px = MARGIN + 40
-    prestige_block = (
-        emblem_svg("spark", px, gain_cy, 38, gold) +
-        f'<text x="{px + 66}" y="{gain_cy + 18}" font-size="56" fill="{gold}" '
-        f'font-family="{tfont}" font-weight="bold">{esc(prestige)}</text>'
-        f'<text x="{px - 4}" y="{gain_cy + 70}" font-size="24" fill="{muted}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="1">PRESTIGE</text>')
-    # Reputation
-    rx = MARGIN + 320
-    rep_block = (
-        f'<circle cx="{rx + 34}" cy="{gain_cy}" r="38" fill="{teal}" stroke="{ink}" stroke-width="3"/>'
-        f'<text x="{rx + 34}" y="{gain_cy + 14}" font-size="40" fill="#ffffff" text-anchor="middle" '
-        f'font-family="{tfont}" font-weight="bold">+{esc(rep)}</text>'
-        f'<text x="{rx + 90}" y="{gain_cy + 18}" font-size="34" fill="{teal}" '
-        f'font-family="{tfont}" font-weight="bold">譽</text>'
-        f'<text x="{rx - 4}" y="{gain_cy + 70}" font-size="24" fill="{muted}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="1">REPUTATION</text>')
-    gain_block = (
-        f'<text x="{MARGIN}" y="{gain_label_y}" font-size="28" fill="{accent}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">GAIN 得</text>'
-        + prestige_block + rep_block)
+    # --- DRAW row: the vendor's Draw (人氣) ATTRIBUTE — a printed number, NOT a score --
+    # v6.3 tickets-only: vendors give no points. Draw only feeds the value-referencing
+    # tickets and marks the ★ apex the marquee get. So the old GAIN(Prestige+Rep) +
+    # PERK blocks are gone — a vendor face is just Draw + (region icon | none).
+    draw_label_y = chips_cy + 118
+    draw_cy = draw_label_y + 62
+    dx = MARGIN + 40
+    draw_block = (
+        f'<text x="{MARGIN}" y="{draw_label_y}" font-size="28" fill="{accent}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">DRAW 人氣</text>'
+        + emblem_svg("spark", dx, draw_cy, 38, gold) +
+        f'<text x="{dx + 66}" y="{draw_cy + 18}" font-size="56" fill="{gold}" '
+        f'font-family="{tfont}" font-weight="bold">{esc(draw)}</text>'
+        f'<text x="{dx + 150}" y="{draw_cy + 16}" font-size="24" fill="{muted}" '
+        f'font-family="{bfont}" font-style="italic">crowd-pull · not a score</text>')
 
-    # --- PERK box: icon + wrapped text ------------------------------------------
-    perk_label_y = gain_cy + 108
-    pemb, pcol = _perk_visual(perk_code, rsuit, theme)
-    box_y = perk_label_y + 18
+    # --- ICON box: region discount icon, or NONE (trophy / drink) ---------------
+    icon_label_y = draw_cy + 108
+    box_y = icon_label_y + 18
     box_h = CARD_H - MARGIN - box_y
-    perk_lines = wrap(perk_text, max_chars=26)
-    perk_tspans = "".join(f'<tspan x="{MARGIN + 96}" dy="{0 if i == 0 else 40}">{esc(l)}</tspan>'
-                          for i, l in enumerate(perk_lines))
-    perk_block = (
-        f'<text x="{MARGIN}" y="{perk_label_y}" font-size="28" fill="{accent}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">PERK 技</text>'
+    if icon:
+        isuit = resolve_suit(theme, {"N": "north", "C": "central",
+                                     "S": "south", "E": "east"}.get(icon, icon.lower()))
+        iemb, icol = isuit["emblem"], isuit["color"]
+        icon_txt = f"{icon} discount icon — each you hold makes this region's ingredients 1 cheaper."
+    elif is_apex:
+        iemb, icol = "spark", gold
+        icon_txt = "★ trophy — top Draw, NO discount icon (a get, not an engine piece)."
+    else:
+        iemb, icol = "circle", muted
+        icon_txt = "Drink — cheap filler, NO discount icon."
+    icon_lines = wrap(icon_txt, max_chars=26)
+    icon_tspans = "".join(f'<tspan x="{MARGIN + 96}" dy="{0 if i == 0 else 40}">{esc(l)}</tspan>'
+                          for i, l in enumerate(icon_lines))
+    icon_block = (
+        f'<text x="{MARGIN}" y="{icon_label_y}" font-size="28" fill="{accent}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">ICON 圖示</text>'
         f'<rect x="{MARGIN}" y="{box_y}" width="{CARD_W - 2*MARGIN}" height="{box_h}" rx="18" '
-        f'fill="#ffffff" opacity="0.45" stroke="{pcol}" stroke-width="3"/>'
-        + emblem_svg(pemb, MARGIN + 46, box_y + 52, 30, pcol) +
+        f'fill="#ffffff" opacity="0.45" stroke="{icol}" stroke-width="3"/>'
+        + emblem_svg(iemb, MARGIN + 46, box_y + 52, 30, icol) +
         f'<text x="{MARGIN + 96}" y="{box_y + 46}" font-size="30" fill="{text}" '
-        f'font-family="{bfont}">{perk_tspans}</text>')
+        f'font-family="{bfont}">{icon_tspans}</text>')
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
   <defs>{page_gradient(theme, 'pg', page_cols)}</defs>
@@ -282,8 +286,8 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
   {region_strip}
   {eng_line}
   {pay_block}
-  {gain_block}
-  {perk_block}
+  {draw_block}
+  {icon_block}
   {ribbon}
 </svg>"""
 
