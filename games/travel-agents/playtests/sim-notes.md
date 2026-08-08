@@ -1762,3 +1762,45 @@ encodes these as its defaults (the data rebuild inherits them):
 fun question; no ticket-threshold retune needed at the soft curve. **Next gated step: bg-developer bakes the
 soft curve + start-Reach-1 + 1-copy Maintenance into the component CSVs + design docs + a decision-log
 entry, then the human FTUE.**
+
+## RE-RUN VERIFICATION (2026-08-08, bg-playtest) — the gated run RE-EXECUTED; the locks REPRODUCE
+
+The v6.3.1 sim + this §v6.3.1 write-up were authored in a prior session; this pass **actually re-ran the
+gated probe suite** on the committed module (`python sim/travel_agents.py`, N=600/cell authoritative +
+N=120 smoke) to confirm the locked defaults reproduce before the data rebuild. **They do — every
+load-bearing number lands within run-to-run noise (±~2–3pt at N=600) of the table above.** Module knobs as
+committed: `NIGHT_CURVE=1 MIN1_FLOOR=0 START_SPLIT=0 COUNCILLOR_KIT=home COUNCILLOR_REACH=1 MAINT=1@N/ph2`
+(`SCORING=tickets_only TICKETS=expanded MS_MODE=perplayer`).
+
+| Verified cell (N=600 re-run) | committed §v6.3.1 | re-run | verdict |
+|---|---|---|---|
+| ★ night:day sourcing (soft, default) | 113% | **113%** | HOLDS — night stays live |
+| free night bribes/gm (soft) | 0.95 | **0.95** | HOLDS — cut ~45% vs raw 1.73 |
+| curve A/B: raw / soft / +floor / steep (stall%) | 2 / 6 / 7 / 17 | **2 / 4 / 7 / 17** | HOLDS — steep still rejected (17% stall) |
+| Scheduled Maintenance fire rate (1 copy N night) | ~7% | **7%** | HOLDS — rare spice as specced |
+| 里長伯 home-pick North / away-tax incidence | 60% / 26–33% | **61% / 30%** | HOLDS — home-centric, tax bites |
+| 里長伯 LOCKED (home −1/+1 + start-Reach 1) | 45.5% | **46.5%** | HOLDS — in band (dead-centre lever works) |
+| 里長伯 levers (no-reach 55 / no-tax 65 / legacy 61) | 55.2 / 64.9 / 60.7 | **57.2 / 64.8 / 61.0** | HOLDS |
+| 網紅 flaw retired / (old lateparty) | 51.2 / — | **50.1 / 41.2** | HOLDS — retiring the flaw is right (lateparty → 41%) |
+| 大哥 lock D (lead-1, no flaw) | 50.7% | **47.6%** | HOLDS — in band; alts A/C/E out (64/28/60) |
+| 5-char band (locked kits) | 43.5–55.2 | **44.9–50.5** | HOLDS — tighter under the start-Reach-1 lock |
+| 5-playstyle band (mix top, no crusher) | 46.0–53.1 | **46.4–51.9** | HOLDS — mix/balanced top |
+| ignore_obj beaten h2h / pure_drinks | 65% / 2.9% | **64.8% / 2.7%** | HOLDS — tickets-only exploit stays dead |
+| CD-3 seat balance 2p / 3p / 4p (all ok) | 52·48 / 39·31·30 / 25·29·23·23 | **50·50 / 37·31·31 / 27·26·23·24** | HOLDS — no suspect seat at any count |
+| hoarder E / S vs balanced (a trap) | — | **14.8% / 16.0%** | HOLDS — denial is self-taxing, not a lockout |
+| arc: turns/p · LT% · contested · claims/gm | 27.0 · 94 · 4.2% · 9.3 | **27.0 · 96 · 3.6% · 9.4** | HOLDS |
+
+**Only deltas worth noting (all noise / known):** 媽寶 office **44.9%** here (0.1pt under the strict 45 gate;
+the documented ~43.5% floor — its routing-flexibility ability is a greedy-bot blind spot, a carried FTUE
+watch, *not* a new break); 大哥 47.6% and 大胃王 50.5% read a touch lower than the N=1500 authoritative
+cells but sit comfortably mid-band. The `no_drinks` control reads ~52% (higher than disruptive/endgame) —
+expected, not a flag: it's "balanced minus the low-value drinks," a near-peer of balanced, **not** a
+degenerate control (the degenerate controls `ignore_obj`/`pure_drinks` are both clearly beaten).
+
+**VERIFIED VERDICT — v6.3.1 HOLDS on re-execution.** All four CD reworks are balance-clean with the
+CD-locked defaults; the tickets-only health survives all four. **Ready for the bg-developer data rebuild +
+the human FTUE.** No new CD decision surfaced by the re-run — the two prior CD calls (soft curve;
+start-Reach-1 councillor) both confirm in-band, and the 1-copy Maintenance rarity is unchanged. Carry the
+existing watch-flags (2p back-half drag ~4–6% stall; 媽寶 floor; 里長伯 North-camping feel; the ~3–7%
+contested Buzz fight's *fun*; endgame the softest playstyle; Maintenance ~7% — felt beat or rare surprise?)
+to the FTUE table, where the sim goes blind.
