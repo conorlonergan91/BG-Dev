@@ -318,7 +318,7 @@ def render_regionmap(theme, spec, phase="day"):
     mid-line and every element that has a *reading direction* is oriented for a seat:
       • the vendor-claims CLOCK is built into BOTH long edges — one rail per player, the bottom rail
         mirror-rotated 180° so each seat reads day→night left-to-right upright. It is the ONE shared
-        track (per-player Reach / Tours-Completed / 成團·遺珠 piles now live on the CHARACTER BOARDS,
+        track (per-player Reach / Tours-Completed / 成團·取消 piles now live on the CHARACTER BOARDS,
         so they are NOT drawn here);
       • the 4-region DIAMOND (北 top · 中 left · 東 right · 南 bottom) is the neutral shared zone in the
         middle, read from both sides (colour + emblem + big 繁體 carry WHERE, orientation-tolerant), with
@@ -702,7 +702,7 @@ def render_regionmap(theme, spec, phase="day"):
         "both sides): colour + emblem + 繁體 carry the region.",
         "PER-PLAYER pieces live on YOUR character board, NOT here:",
         "  · REACH 及 (your Buzz cap)   · TOURS COMPLETED 好評",
-        "  · your 成團 SOLD / 遺珠 CANCELLED tour piles.",
+        "  · your 成團 COMPLETED / 取消 CANCELLED tour piles.",
         "Placeholders are shown at real component size (mm labelled);",
         "final board ≈ 570 × 400 mm.",
     ]
@@ -771,7 +771,7 @@ def render_playerboard(theme, row):
        • RIGHT: the ABILITY + FLAW blocks (icon vocabulary + clean text off the ability/flaw columns);
        • BUZZ ZONE with a movable REACH cap marker (folds in the old standalone reach-track) — slots
          0→12, locked past the cap, so 'committed Buzz ≤ Reach' is enforced at a glance;
-       • the SOLD (成團) / CANCELLED (取消) per-player pile zones;
+       • the COMPLETED (成團) / CANCELLED (取消) per-player pile zones;
        • a per-player TOURS COMPLETED (好評 Rave Reviews) mini-track (marks at 2 & 4).
     TA-specific: only games/travel-agents/make.sh calls --type playerboard, and it renders only rows that
     carry ability_code + flaw_code — so Beacon and every other game are untouched."""
@@ -895,7 +895,7 @@ def render_playerboard(theme, row):
     P.append(f'<text x="{bx+pad}" y="{byz+bh-18}" font-size="21" fill="{muted}" font-family="{bfont}" '
              f'font-style="italic">Start REACH at 2. Slide the marker RIGHT +1 each Travel; place Buzz only in slots up to it. Winning a vendor clears its Buzz.</text>')
 
-    # --- SOLD / CANCELLED per-player pile zones ---
+    # --- COMPLETED / CANCELLED per-player pile zones ---
     px0, pw = 1210, W - 44 - 1210
     def pile(y0, en, han, emcol, note):
         return "".join([
@@ -906,7 +906,7 @@ def render_playerboard(theme, row):
             f'font-weight="bold" letter-spacing="1">{esc(en)} {esc(han)}</text>',
             f'<text x="{px0+82}" y="{y0+70}" font-size="19" fill="{muted}" '
             f'font-family="{bfont}">{esc(note)}</text>'])
-    P.append(pile(726, "SOLD", "成團", gold_pile, "tours that ran -> +value"))
+    P.append(pile(726, "COMPLETED", "成團", gold_pile, "tours that ran -> +value"))
     P.append(pile(846, "CANCELLED", "取消", taupe, "didn't run in time -> half value"))
 
     # --- per-player TOURS COMPLETED (好評 Rave Reviews) mini-track ---

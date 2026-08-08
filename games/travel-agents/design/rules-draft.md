@@ -139,8 +139,8 @@ It's one eating day, and the **day-clock climbs +1 every time anyone Bribes a ve
 ## 8. Scoring
 
 Reveal both piles and tally **once**:
-- **+ the printed value** of each ticket in your **WIN pile (成團)** — the tours that ran.
-- **- floor(value ÷ 2)** for each ticket in your **LOSE pile (遺珠)** — the ones that got away.
+- **+ the printed value** of each ticket in your **WIN pile — COMPLETED (成團)** — the tours that ran.
+- **- floor(value ÷ 2)** for each ticket in your **LOSE pile — CANCELLED (取消)** — the tours that didn't run in time.
 
 Vendors, Draw, and Reach score **nothing**. Most points is **Top Agent**. **Ties:** most vendors, then most
 regions covered, then fewest tickets in your lose pile.

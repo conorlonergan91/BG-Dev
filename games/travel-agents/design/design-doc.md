@@ -6,7 +6,7 @@
 > greed/corner-cutting cost Rep), adds **milestone boons** on the (renamed) **Bookings** track (marks 7/14,
 > Set A "Tempo & Fuel", first-to-cross), **eliminates the perk field** (a vendor = Bookings + icon-or-not;
 > table reissued), collapses **ticket pools 3→2 (DAY/NIGHT)**, and confirms **per-player win/lose piles**
-> (成團 / 遺珠). New tiebreak: **most vendors → most regions → fewest LOSE-pile tickets.**
+> (COMPLETED 成團 / CANCELLED 取消). New tiebreak: **most vendors → most regions → fewest LOSE-pile tickets.**
 > **⚠ Change 1 is NOT sim-equivalent — a combined re-sim (Changes 1+2+3) is REQUIRED and GATED on the CD's
 > explicit "go."** **Until that run validates the numbers, `design/v6.2-content-draft.md` remains the last
 > SIM-VALIDATED build.** Do not rebuild the CSVs or the sim module before the re-sim. Full v6.3 shape +
@@ -925,8 +925,8 @@ v6.1 delta ledger.)
   boon can also drop a ★ Star token on a vendor, worth +2 Draw to whoever wins it.
 - **Tour Ticket** — the objective you book from the shared row (DAY / NIGHT pools); the sole scoring vector.
   Judged at its phase end into your win-pile or lose-pile.
-- **成團 / 遺珠** — your two ticket piles: 成團 (WIN, tours that ran, +value) and 遺珠 (LOSE, the ones that
-  got away, −floor(value ÷ 2)); tallied once at game end.
+- **成團 / 取消** — your two ticket piles: **COMPLETED 成團** (WIN, tours that ran, +value) and **CANCELLED 取消**
+  (LOSE, tours that didn't run in time, −floor(value ÷ 2)); tallied once at game end.
 - **Rave Reviews** (好評) — the two per-player milestone boons on the Tours Completed counter, earned the
   first time YOU reach your 2nd and 4th completed tour (never pumps the leader).
 - **market deck** — a region's face-down deck of its signature ingredient (+ the common K, in two regions)

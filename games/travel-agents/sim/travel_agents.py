@@ -69,7 +69,7 @@ WHAT v6.3 MOVED — and what this rework implements (vs the v6.2 sim):
   (4) TICKET POOLS 3→2 (DAY / NIGHT). General folded in per the spec (遍地開花 → both, 收藏家 & 揮金如土 →
       night). DAY tickets judged at DUSK into the win/lose piles; NIGHT tickets at the last train.
 
-  (5) PER-PLAYER WIN/LOSE piles (成團 / 遺珠) — already how the v6.2 sim scored; made explicit here.
+  (5) PER-PLAYER WIN/LOSE piles (COMPLETED 成團 / CANCELLED 取消) — already how the v6.2 sim scored; made explicit here.
 
 Scoring = TWO vectors: Bookings (live vendor-value track) + Tour Tickets (Σ win-pile − Σ floor(v/2)
 lose-pile). Tiebreak (folded as a tiny fractional term so the harness picks the right winner): most
@@ -617,7 +617,7 @@ def _judge_ticket(key, won):
     if _mdone(key, won):
         return v                       # 成團 (win pile) → +value
     if PENALTY == "half":
-        return -(v // 2)               # 遺珠 (lose pile) → −floor(v/2)
+        return -(v // 2)               # CANCELLED 取消 (lose pile) → −floor(v/2)
     return 0                           # PENALTY == "zero"
 
 

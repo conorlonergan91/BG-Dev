@@ -213,9 +213,9 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
   (patterns: region pairs, cross-region →X dishes, single-region depth, deeper collections, food-count
   ladders, plus the base coverage/thrift/contest/value patterns — full list in `design/v6.3-content-draft.md`
   §4b–4c). **Draw 5 per phase** into a **face-up shared row of 3** (open tickets); claimed as an action,
-  then sorted at the end of their phase into a **WIN pile 成團** (completed) or **LOSE pile 遺珠** (unfinished)
-  and tallied once at game end (Σ win values − Σ floor(value/2) per lose ticket). *(Piles: WIN = 成團 "Tours
-  That Ran" / infodesign label "Departures"; LOSE = 遺珠 "The Ones That Got Away".)*
+  then sorted at the end of their phase into a **WIN pile COMPLETED 成團** (completed) or **LOSE pile CANCELLED 取消** (unfinished)
+  and tallied once at game end (Σ win values − Σ floor(value/2) per lose ticket). *(Piles: WIN = **COMPLETED 成團**
+  (the tour ran / formed); LOSE = **CANCELLED 取消** (it didn't run in time).)*
 - **ingredient Market cards** — a **day deck + a night deck per region** (5-palette: 4 signatures + the
   common in C & S) **+ scoped event cards** (each tagged ⦿/⬢/➤; hazard-leaning; tax-not-destroy) — the
   **night decks run event-heavier** (the hectic night-market feel). Recoloured day vs night. **Plus one
@@ -228,7 +228,13 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
   table-wide friction.
 - **~24 Buzz tokens** (@2p; committed, public, contested — placed on vendors, cleared on a win).
 - **5 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**; validated by the gated
-  character re-pass re-sim (DONE — five-char band 43.5–55.2%, all in band). **里長伯 REWORKED (v6.3.1 CD-1,
+  character re-pass re-sim (DONE — five-char band 43.5–55.2%, all in band).
+  **English names LOCKED & BLESSED (v6.3.2, CD "adopt as proposed"; dignity-passed by `bg-theme`)** — each
+  mat prints the name in three scripts (Tâi-lô · English · 繁體): **Lí-tiúⁿ-peh / The Old Councillor / 里長伯 ·
+  Ma-pó / The Homebody / 媽寶 · Bāng-âng / The Influencer / 網紅 · Tuā-uī-ông / The Big Eater / 大胃王 ·
+  Tuā-ko / The Big Brother / 大哥**. The warm portrayals of **The Homebody** (media 媽寶) and **The Big
+  Brother** (大哥, warm elder/community figure — NOT a gangster) are binding/load-bearing; **The Big Brother**
+  is the #1 character-name consultant watch-item. All 繁體 are Traditional characters. **里長伯 REWORKED (v6.3.1 CD-1,
   LOCKED −1/+1 as-is, 55%):** picks a **home region** at setup — his −1 discount works only there, and he
   pays a **+1-ingredient away-tax** to Bribe anywhere else; the old no-HSR flaw is **removed** (re-homed as
   the table-wide "Scheduled Maintenance" event). **Starts Reach 2 like everyone — NO start-Reach change**
@@ -245,7 +251,7 @@ a 3-ticket row — confirm the table stays parseable.
 **v6.3 (TICKETS-ONLY LOCKED — ONE scoring vector; neither vendors nor Reputation score).** The game ends at
 the **last train home** (the **10th table-wide vendor claim** @2p), **highest total wins** (no
 sudden-death). **Score = your Tour Tickets, and nothing else:** each claimed ticket is judged at the end of
-its deck's phase (DAY at dusk, NIGHT at the last train) into your **WIN pile 成團** / **LOSE pile 遺珠**,
+its deck's phase (DAY at dusk, NIGHT at the last train) into your **WIN pile COMPLETED 成團** / **LOSE pile CANCELLED 取消**,
 tallied **once at game end** = **Σ(win values) − Σ(floor(value/2) per lose ticket)**. **Vendors do NOT
 score** (Change 0) — a vendor is pure engine (discount ramp + a stop you assemble to complete tickets); it
 keeps a printed **value** attribute only for the few value-referencing tickets + to mark the ★ apex prizes.

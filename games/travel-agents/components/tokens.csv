@@ -10,8 +10,8 @@ mkReach,Reach marker (your Buzz cap — start at 2; NOT a score),及,#6A4C93,4
 mkTours,Tours Completed marker (Rave Reviews at your 2nd & 4th tour),團,#1F8A7A,4
 mkClock,Vendor-claims day-clock marker,鐘,#D64545,1
 hsrClosed,HSR-closed reminder marker (Scheduled Maintenance),停,#8A8F98,1
-pileWin,成團 Departures win-pile marker,成,#C9A227,2
-pileLose,遺珠 Ones That Got Away lose-pile marker,遺,#7A6E58,2
+pileWin,COMPLETED 成團 win-pile marker,成,#C9A227,2
+pileLose,CANCELLED 取消 lose-pile marker,取,#7A6E58,2
 pawnA,Agent pawn A,A,#5B4FB0,1
 pawnB,Agent pawn B,B,#C2185B,1
 pawnC,Agent pawn C,C,#00838F,1

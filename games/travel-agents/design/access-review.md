@@ -214,8 +214,10 @@ text API does not fall through the family list) has NO glyph for U+29BF ⦿, U+2
 render as **tofu boxes** in the exports and in the player aid (aid text L25-27 uses them). Meaning survives
 via the words, but the at-a-glance icon — the whole point — ships broken. → **FLAG (legibility).**
 
-**3. Win/lose piles 成團 / 遺珠.** Distinct 繁體 (`成` vs `遺`) + colour (gold `#C9A227` vs taupe `#7A6E58`,
-glyph contrast 5.3 / 5.0:1) + full names in the aid. Distinguishable without colour. → **PASS.**
+**3. Win/lose piles COMPLETED 成團 / CANCELLED 取消** *(繁體 lose glyph updated 遺→取, CD 2026-08-08).*
+Distinct 繁體 (`成` vs `取`) + colour (gold `#C9A227` vs taupe `#7A6E58`) + full English labels
+(COMPLETED vs CANCELLED) on the board and aid. Distinguishable without colour. → **PASS** (re-confirm glyph
+contrast on the next access run now that the lose glyph is 取).
 
 **4. Day / night distinction.** `build_cards.py` has **zero** phase handling — phase lives only in data
 (`phase`/`deck`/`tags`) and `art_note`. A day/night recolour is being added. If the recolour becomes the

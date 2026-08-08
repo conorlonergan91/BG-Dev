@@ -56,10 +56,16 @@
 ---
 
 ## Data / naming flags (for the CD + `bg-theme`)
-- **English names are PROPOSALS** (added to `characters.csv` as `name_en`, needing a bless): The Old
-  Councillor · The Homebody · The Big Eater · The Influencer · The Big Brother. `The Homebody` is the one
-  I'd most want a second look at (literal 媽寶 = "mama's boy"; I chose the warmer, less-loaded reading).
+- **English names are BLESSED & CANONICAL** (in `characters.csv` as `name_en`; CD "adopt as proposed"
+  2026-08-08, dignity-passed by `bg-theme`): The Old Councillor · The Homebody · The Big Eater ·
+  The Influencer · The Big Brother. `The Homebody` (the warmer, de-fanged read of literal 媽寶 "mama's
+  boy") and `The Big Brother` (the warm elder/community-figure 大哥, NOT a gangster) both PASS the dignity
+  bar **only while their warm portrayals stay load-bearing on every surface** — carry the blurb/art-note
+  warmth (never a mocking or menacing read). These two + the 里長→"Councillor" gloss are the character-name
+  watch-items for the paid Taiwanese consultant (still required before art/print).
 - **`blurb` column** on `characters.csv` is the cleaned warm prose shown on each board (pulled from the
   `effect` flavour column with the `[re-sim …]` sim-metadata + the mechanical restatement STRIPPED).
-- **Cancelled-pile 繁體 `取消` is a WORKING label** on the board (paired with Sold `成團`) — `bg-theme` to
-  bless or finalise against the currently-locked 遺珠 "Ones That Got Away" (see report).
+- **Pile labels FINALISED (CD 2026-08-08): COMPLETED `成團` (win) / CANCELLED `取消` (lose)** — this is now
+  the sole canonical pair everywhere. The old English "SOLD" label and the retired 繁體 `遺珠` "the Ones
+  That Got Away" are GONE; the board now renders **COMPLETED 成團 / CANCELLED 取消**. (繁體 成團 · 取消 →
+  native reviewer to bless.)

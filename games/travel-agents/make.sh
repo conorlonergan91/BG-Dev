@@ -80,7 +80,7 @@ python3 $T/boards/build_board.py --type regionmap --spec components/map.json --t
 # cards. Each board carries: name in THREE scripts (Tâi-lô · English · 繁體), an art placeholder
 # [FIG-CHAR-<slug>] + a warm blurb, the ABILITY/FLAW icon blocks, the BUZZ zone with a movable REACH cap
 # marker (this FOLDS IN the old standalone reach-track — committed Buzz ≤ Reach enforced at a glance), the
-# per-player SOLD 成團 / CANCELLED 取消 pile zones, and a per-player TOURS-COMPLETED (好評 Rave Reviews)
+# per-player COMPLETED 成團 / CANCELLED 取消 pile zones, and a per-player TOURS-COMPLETED (好評 Rave Reviews)
 # mini-track. TA-only: --type playerboard renders only rows with ability_code+flaw_code, so Beacon et al.
 # are untouched.
 python3 $T/boards/build_board.py --type playerboard --csv components/characters.csv --theme "$theme" --out build/boards/

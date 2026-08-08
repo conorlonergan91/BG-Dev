@@ -12,7 +12,7 @@
 > upright); the 4-region **diamond** (北 top · 中 left · 東 right · 南 bottom) is the neutral shared map in
 > the middle, with the **HSR spine** + Scheduled-Maintenance 停 slot down the centre; the four **corners**
 > carry shared supplies (Tour-Ticket decks, ingredient wells, Buzz + ★, a read-me legend). Per-player
-> instruments (Reach 及, Tours-Completed 好評, 成團/遺珠 piles) are NOT here — they live on the character
+> instruments (Reach 及, Tours-Completed 好評, 成團/取消 piles) are NOT here — they live on the character
 > boards.
 >
 > **Shared direction:** the warm night-market palette (lantern vermilion `#D64545` / jade teal `#1F8A7A` /

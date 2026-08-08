@@ -67,7 +67,7 @@ prototyper shuffles each region+phase's ingredient cards + matching-`deck` event
 | Tours-Completed markers | `tokens.csv` | 4 | One per player on the Tours-Completed counter (hosts the per-player Rave Reviews at the 2nd & 4th tour). |
 | Vendor-claims clock marker | `tokens.csv` | 1 | Shared, on the day-clock track. |
 | HSR-closed reminder marker | `tokens.csv` | 1 | Sits on the HSR spine while a **Scheduled Maintenance** card is active (N↔S closed). |
-| 成團 / 遺珠 pile markers | `tokens.csv` | 2 + 2 | Win-pile (Departures) / lose-pile (Ones That Got Away) area markers, per player. |
+| 成團 / 取消 pile markers | `tokens.csv` | 2 + 2 | Win-pile (COMPLETED 成團) / lose-pile (CANCELLED 取消) area markers, per player. |
 | Agent pawns | `tokens.csv` | 4 (2 used @2p) | One per agent, on the region ring — **all start in Taipei (North hub)**. |
 | **Region-ring board** | `map.json` | 1 | 4 regions on the diamond, ring + HSR spine, face-up slot counts, **Taipei common-start hub**, HSR-closed reminder slot. |
 | **Reach track** | make.sh (scoretrack 0–12) | 1 | Buzz cap; start at 2. NOT a score. |
@@ -84,8 +84,8 @@ Cards (vendors / tickets / ingredients / events — one card type), character ma
 (the live VP/score track is gone under tickets-only). (bg-elegance owns the formal complexity check.)
 
 ## Notes / flags
-- **TICKETS-ONLY scoring (v6.3):** vendors give NO points; the score is Σ WIN-pile 成團 value − Σ
-  floor(value/2) LOSE-pile 遺珠. Draw is a printed attribute only.
+- **TICKETS-ONLY scoring (v6.3):** vendors give NO points; the score is Σ WIN-pile COMPLETED 成團 value − Σ
+  floor(value/2) LOSE-pile CANCELLED 取消. Draw is a printed attribute only.
 - **CD-4 soft night curve + Central tea-export fix** baked into `vendors.csv` (see the vendor table above).
 - **Scheduled Maintenance ×2** (island-wide banner event) in the N/S NIGHT decks — needs its own frame +
   HSR-closed board marker (→ bg-infodesign).
@@ -94,4 +94,4 @@ Cards (vendors / tickets / ingredients / events — one card type), character ma
 - **East 石板烤肉 (Indigenous-forward):** #1 pre-art item — **paid Taiwanese/Indigenous consultant sign-off
   on dish + naming + framing BEFORE art**.
 - **繁體 + Tâi-lô** on every vendor/dish; romanisations are first-pass → native reviewer to bless.
-- **成團 / 遺珠 scoring is a RULE, not per-card data** — tickets carry only value + pattern + phase tag.
+- **COMPLETED 成團 / CANCELLED 取消 scoring is a RULE, not per-card data** — tickets carry only value + pattern + phase tag.
