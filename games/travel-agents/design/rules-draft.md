@@ -1,4 +1,4 @@
-# Travel Agents: Taiwan — Rules Draft (v6.3 — TICKETS-ONLY LOCKED; balance sim-validated bar the pending character re-pass + FTUE)
+# Travel Agents: Taiwan — Rules Draft (v6.3.1 — TICKETS-ONLY · BALANCE-VALIDATED (re-sim); ready for the data rebuild + FTUE)
 
 <!-- Scaffolding note (not laid-out rulebook text): teach-in-play order, warm travel-guide voice per
 identity.md. Full spec, character kits, and the FTUE teaching sequence live in v6.3-content-draft.md +
@@ -8,12 +8,16 @@ longer scores; perk field eliminated; ticket pools 3→2; milestones = perplayer
 Tours-Completed counter. A vendor keeps a printed "value" ATTRIBUTE (referenced by value-tickets; NOT a
 score). The former "Bookings" score track is retired as a score — rename flagged for bg-theme; working
 label "value" (vendor attribute) + "Tours Completed" (the repurposed milestone track).
-v6.3.1 (four CD changes, 2026-08-07 PM, economy-changing → validated by the NEXT gated re-sim): (1) 里長伯
-reworked — picks a HOME region at setup; −1 discount there only, +1 ingredient away-tax elsewhere; no-HSR
-flaw REMOVED; (2) new table-wide event "Scheduled Maintenance" (HSR down for everyone one round — re-homes
-the no-HSR concept); (3) ALL agents start in Taipei (North hub) — replaces the split N/S 2p start; (4)
-NIGHT vendors cost meaningfully MORE than day vendors (LOTR:Duel-style cost curve — the discount engine
-affords the night marquee but can't zero-out sourcing). Numbers = re-sim knobs. -->
+v6.3.1 (four CD changes — BALANCE-VALIDATED by the re-sim, `playtests/sim-notes.md §v6.3.1`; the CD's three
+final calls LOCKED 2026-08-08): (1) 里長伯 reworked — picks a HOME region at setup; −1 discount there only,
++1 ingredient away-tax elsewhere; no-HSR flaw REMOVED. LOCKED −1/+1 AS-IS (lands 55%, top-of-band,
+CD-accepted); he starts Reach 2 like everyone (NO start-Reach change — ⚠ the sim module's start-Reach-1
+default is NOT canon). (2) new table-wide event "Scheduled Maintenance" (HSR down for everyone one round —
+re-homes the no-HSR concept); LOCKED at 2 copies (a felt ~12% beat; ⚠ sim default 1 is NOT canon). (3) ALL
+agents start in Taipei (North hub) — replaces the split N/S 2p start. (4) NIGHT vendors cost meaningfully
+MORE than day vendors (LOTR:Duel-style curve); LOCKED SOFT curve — night "both" foods → 3, apex ★ → 4 (top
+apex 5), every night marquee cross-region biased; DAY held as printed; steep +2 and the min-1 floor both
+rejected. bg-developer builds to CANON (this doc + v6.3-content-draft §CD-4 table), not the sim defaults. -->
 
 
 ---
@@ -43,8 +47,10 @@ doesn't score either — it's the fuel that lets you make Buzz; see §4.)*
 2. Sort each region's cards into a **DAY deck** and a **NIGHT deck** (drinks are the low-value vendors mixed
    into each); set the **night** decks aside for dusk. Shuffle each **day vendor deck** and **day ingredient
    deck** face-down into place. Ingredient decks use the 5-palette (**N 豬肉 · C 茶 · S 海鮮 · E 米** + the
-   common **K 糖**, in **C & S** only) plus a few **event cards** (§6). Fill the face-up vendor slots. Set out
-   the **Buzz** supply (~24 @2p).
+   common **K 糖**, in **C & S** only) plus a few **event cards** (§6) — including the **two 排班保養
+   "Scheduled Maintenance"** cards, one shuffled into the **North NIGHT** ingredient deck and one into the
+   **South NIGHT** ingredient deck (they live in the night decks set aside for dusk). Fill the face-up vendor
+   slots. Set out the **Buzz** supply (~24 @2p).
 3. **Tour Tickets — two decks, DAY and NIGHT:** shuffle the **DAY** deck, **draw 5** (rest to the box),
    reveal **3** as the shared **ticket row** (the other 2 form its draw pile). Set the **NIGHT** deck aside
    for dusk (drawn the same way then). A ticket's **deck is its clock**: **DAY tickets are judged at dusk,
@@ -131,9 +137,10 @@ its own** — points come only from completed Tour Tickets (§9).
 > stalls and the next barely needs oysters (that's the engine). **Drinks and the apex ★ trophies carry no
 > icon** (drinks = cheap low-value filler; ★ = the top-value marquee get, no ramp). **Buzz is never
 > discounted**, so the *hype fight* — gated by your Reputation — not the ingredients, is what gates your
-> next big win. **Night stalls cost meaningfully more than day stalls** — your discount ramp *helps you
-> afford* the big night names but never zeroes them out: even a strong engine still has to source and
-> travel to land the night-market marquee. Day builds the ramp; night is where it pays off.
+> next big win. **Night stalls cost meaningfully more than day stalls, and every night name needs
+> ingredients from two regions** — so your one-region discount ramp *helps you afford* the big night names
+> but never zeroes them out: even a strong engine still has to source and travel for that second region's
+> ingredient it can't discount away. Day builds the ramp; night is where it pays off.
 
 > **Outraced, not robbed.** If your rival out-hypes you, your Buzz just fizzles back to the supply — you keep
 > every ingredient you sourced, and a fresh vendor comes out. You never seize a place.
