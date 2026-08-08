@@ -560,13 +560,15 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
         except ValueError:
             vn = 0
         if is_objective:
-            # +N VP footer chip (bottom-left), no top index, no pip row
-            chw, chh = 168, 60
+            # value footer chip (bottom-left), no top index, no pip row. Travel Agents' Tour Tickets score
+            # in the game's own "value" language (成團 win pile → +value); other games keep the generic VP.
+            bonus_word = "value" if ctype.lower() == "mission" else "VP"
+            chw, chh = (224 if bonus_word == "value" else 168), 60
             cx0, cy0 = MARGIN, CARD_H - MARGIN - 60
             value_row = (
                 f'<rect x="{cx0}" y="{cy0}" width="{chw}" height="{chh}" rx="{chh/2}" fill="{scol}"/>'
-                f'<text x="{cx0 + chw/2}" y="{cy0 + chh*0.68}" font-size="40" fill="#ffffff" '
-                f'text-anchor="middle" font-family="{tfont}" font-weight="bold">+{esc(value)} VP</text>')
+                f'<text x="{cx0 + chw/2}" y="{cy0 + chh*0.68}" font-size="38" fill="#ffffff" '
+                f'text-anchor="middle" font-family="{tfont}" font-weight="bold">+{esc(value)} {bonus_word}</text>')
         else:
             # top-right index — only when no cost badge and a single-line title share the corner cleanly
             if not cost and len(title_lines) == 1:
@@ -586,10 +588,13 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
     # --- type line with emblem (rides just below the header band) ---
     type_emblem_cy = header_end + 20
     type_text_y = header_end + 30
+    # Travel Agents renamed its objective spine "Tour Ticket" (canon); the CSV type stays "mission" so
+    # sim/logic are unchanged — only the printed label is remapped. Other games print their type verbatim.
+    type_label = "TOUR TICKET" if ctype.lower() == "mission" else ctype.upper()
     type_block = (
         emblem_svg(suit['emblem'], MARGIN + 16, type_emblem_cy, 15, scol) +
         f'<text x="{MARGIN+44}" y="{type_text_y}" font-size="{TYPE_SIZE}" fill="{muted}" '
-        f'font-family="{tfont}" font-style="italic" letter-spacing="2">{esc(ctype).upper()}</text>')
+        f'font-family="{tfont}" font-style="italic" letter-spacing="2">{esc(type_label)}</text>')
 
     # --- recipe chip-row (dishes only): one disc per ingredient = region colour + 繁體 glyph, matching
     # the tokens exactly. The bridge from a token in hand to the dish that needs it. Needs a `recipe`

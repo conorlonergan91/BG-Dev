@@ -40,7 +40,7 @@ n_contest2,Hard Won,苦戰得手,mission,5,contested_wins>=2,night,1,ticket;nigh
 n_final2,Closing Time,打烊前,mission,5,final_round_wins>=2,night,1,ticket;night;speed;end-game-driver;v6.3,"Win 2 vendors in the FINAL round. Sprint for the last train.",Ticket with a departures board flipping to LAST TRAIN
 n_drinks3,One More Round,續攤,mission,4,drinks>=3,night,1,ticket;night;drinks;v6.3,"Win 3 drink vendors in total. End on something sweet.",Ticket with three dessert cups in a row
 n_allvenue,Full Spread,全席,mission,6,day_food>=1;night_food>=1;drink>=1,night,1,ticket;night;mix;v6.3,"Win one daytime food, one night-market food, and one drink — one of each venue.",Ticket with a bowl, a lantern stall, and a cup in a triptych
-g_travel3n,Blossoming,遍地開花,mission,5,regions>=3,night,1,ticket;night;coverage;general;v6.3,"Win vendors in 3 DIFFERENT regions. Spread out.",Ticket with flowers blooming across a map
+g_travel3n,Night Owl,夜貓子,mission,5,regions>=3,night,1,ticket;night;coverage;general;v6.3,"Win vendors in 3 DIFFERENT regions. The night owl's circuit.",Ticket with lantern-lit stalls strung across a night map
 g_collect5,Collector,收藏家,mission,5,vendors_total>=5,night,1,ticket;night;collection;general;v6.3,"Win 5 vendors in total. Fill the album.",Ticket with a bulging stamp album
 g_prestige12,Money No Object,揮金如土,mission,6,draw_total>=12,night,1,ticket;night;value;general;v6.3,"Your vendors total at least 12 Draw (人氣). Spare no expense.",Ticket with banknotes fluttering over a banquet
 g_cross1,Across the Strait,跨海,mission,4,cross_region>=1,night,1,ticket;night;cross-region;general;v6.3,"Win 1 cross-region (→X) dish.",Ticket with a dish straddling two coastlines
