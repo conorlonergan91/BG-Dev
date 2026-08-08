@@ -13,6 +13,10 @@ theme=night-market
 title="Travel Agents: Taiwan"
 
 echo "→ regenerating into build/ (scratch)"
+# Clean-rebuild build/ every run so stale/renamed renders (e.g. a removed ticket_general
+# sheet) can't linger in build/sheets and get re-snapshotted into exports/. build/ is
+# disposable scratch (gitignored) — always regenerate from scratch.
+rm -rf build
 # Vendor decks (24 vendors, day+night, drinks mixed in). tokens.csv feeds the recipe chip glyphs.
 python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build --theme "$theme" --formats png screentop --tokens-csv components/tokens.csv
 # Tour Tickets (20 DAY + 25 NIGHT = 45 cards / 44 patterns — the SOLE scoring vector; win-pile / lose-pile).
