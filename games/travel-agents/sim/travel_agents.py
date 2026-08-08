@@ -177,7 +177,7 @@ LARDER_CAP   = int(os.environ.get("TA_LARDER_CAP", "7"))
 # v6.4d 阿嬤 A-má (granny, "the senior citizen"): OAP 敬老卡 travel pass → moves anywhere in one Travel
 # (2-hop reach on this 4-ring+HSR map), but a small basket → a low Larder cap (can't hoard). A mobility/
 # tempo character + the natural anti-hoard predator of the glutton 大胃王.
-AMA_CAP      = int(os.environ.get("TA_AMA_CAP", "5"))          # 阿嬤's reduced Larder cap (small basket)
+AMA_CAP      = int(os.environ.get("TA_AMA_CAP", "6"))          # v6.4d: basket 6 (cap-5 flaw was too harsh, 42.5→46)
 # v6.4d kit-strength dials (the "tweak ideas" sweep): 大胃王's Visit keep-amount (his glutton edge — the
 # dominant character; test nerfing 3→2) and 媽寶's Visit keep-amount (her gatherer edge — test buffing 2→3).
 DAGU_KEEP    = int(os.environ.get("TA_DAGU_KEEP", "3"))        # 大胃王 keeps N on a Visit (default 3)
@@ -305,7 +305,7 @@ INFL_FLAW = os.environ.get("TA_INFL_FLAW", "none")            # "none" (RE-PASS 
 #     there) on every Bribe OUTSIDE home; and he now USES HSR (the no-HSR flaw is re-homed as CD-2).
 # "regions" recovers the retired first-N-regions discount kit (COUNCILLOR_REGIONS) for an A/B if useful.
 COUNCILLOR_KIT       = os.environ.get("TA_COUNCILLOR_KIT", "home")   # "home" (CD-1 default) | "regions"
-COUNCILLOR_HOME_DISC = int(os.environ.get("TA_COUNCILLOR_HOME_DISC", "1"))  # home Old-Favours magnitude
+COUNCILLOR_HOME_DISC = int(os.environ.get("TA_COUNCILLOR_HOME_DISC", "2"))  # v6.4d: −2 home (46.6→51, rewards his engine)
 COUNCILLOR_AWAY_TAX  = int(os.environ.get("TA_COUNCILLOR_AWAY_TAX", "1"))   # away-tax magnitude
 # (legacy "regions" kit knob — how many regions the old first-region discount covers; unused under KIT=home)
 COUNCILLOR_REGIONS = int(os.environ.get("TA_COUNCILLOR_REGIONS", "1"))
@@ -377,12 +377,10 @@ def neighbours(pos, char=None, hsr_open=True):
     v6.4d 阿嬤 (ama): her OAP travel pass lets her reach ANY region in one Travel (2-hop pass; the map's
     diameter is 2) — a gentle mobility edge. The HSR outage still grounds the N↔S express for her too."""
     if char == "ama":
-        reach = [r for r in REGIONS if r != pos]
-        if not hsr_open:                                 # HSR down → she can't use the N↔S express leg
-            other = HSR[1] if pos == HSR[0] else HSR[0] if pos in HSR else None
-            if other in reach and other not in RING[pos]:
-                reach.remove(other)
-        return reach
+        # v6.4d: her 敬老卡 covers ALL transit (buses/ferries), so she reaches any region in one Travel
+        # AND is immune to the Scheduled-Maintenance HSR outage (she takes the bus when the rail's down) —
+        # a small, thematic mobility payoff on top of the basket-6 flaw.
+        return [r for r in REGIONS if r != pos]
     ns = list(RING[pos])
     if hsr_open and pos in HSR:
         other = HSR[1] if pos == HSR[0] else HSR[0]
