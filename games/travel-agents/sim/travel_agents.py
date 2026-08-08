@@ -174,6 +174,10 @@ MAINT_REGION = os.environ.get("TA_MAINT_REGION", "N")         # HSR endpoint: "N
 MAINT_PHASE  = int(os.environ.get("TA_MAINT_PHASE", "2"))     # 1 day | 2 night (CD default night)
 MAINT = "MAINT"                                               # the marker token mixed into that deck
 LARDER_CAP   = int(os.environ.get("TA_LARDER_CAP", "7"))
+# v6.4d 阿嬤 A-má (granny, "the senior citizen"): OAP 敬老卡 travel pass → moves anywhere in one Travel
+# (2-hop reach on this 4-ring+HSR map), but a small basket → a low Larder cap (can't hoard). A mobility/
+# tempo character + the natural anti-hoard predator of the glutton 大胃王.
+AMA_CAP      = int(os.environ.get("TA_AMA_CAP", "5"))          # 阿嬤's reduced Larder cap (small basket)
 STAR_BONUS_P = int(os.environ.get("TA_STAR_P", "2"))           # dynamic ★ token +Bookings (no more +Rep)
 STALL_CAP    = int(os.environ.get("TA_STALL_CAP", "34"))       # hard per-player turn cap (drag backstop)
 
@@ -361,7 +365,16 @@ COMMON_REGIONS = {"C", "S"}                          # where the common 糖 live
 def neighbours(pos, char=None, hsr_open=True):
     """A pawn's LEGAL travel destinations. v6.3.1: the HSR N↔S hop is available to EVERYONE (the old
     里長伯 no-HSR guard is REMOVED — re-homed as the CD-2 table-wide Scheduled-Maintenance outage) UNLESS
-    the HSR is currently closed by a Scheduled-Maintenance event (hsr_open=False → slow road for all)."""
+    the HSR is currently closed by a Scheduled-Maintenance event (hsr_open=False → slow road for all).
+    v6.4d 阿嬤 (ama): her OAP travel pass lets her reach ANY region in one Travel (2-hop pass; the map's
+    diameter is 2) — a gentle mobility edge. The HSR outage still grounds the N↔S express for her too."""
+    if char == "ama":
+        reach = [r for r in REGIONS if r != pos]
+        if not hsr_open:                                 # HSR down → she can't use the N↔S express leg
+            other = HSR[1] if pos == HSR[0] else HSR[0] if pos in HSR else None
+            if other in reach and other not in RING[pos]:
+                reach.remove(other)
+        return reach
     ns = list(RING[pos])
     if hsr_open and pos in HSR:
         other = HSR[1] if pos == HSR[0] else HSR[0]
@@ -753,7 +766,12 @@ def _pick_home_region(faceup, mrow):
     return max(REGIONS, key=lambda r: (score[r], -REGIONS.index(r)))
 
 
-CHARACTERS = ("neutral", "councillor", "office", "influencer", "dagushi", "dage")
+CHARACTERS = ("neutral", "councillor", "office", "influencer", "dagushi", "dage", "ama")
+
+
+def _larder_cap(pl):
+    """Per-player Larder cap. v6.4d: 阿嬤's small basket caps her lower (she can't hoard)."""
+    return AMA_CAP if pl["char"] == "ama" else LARDER_CAP
 
 
 # ==================================================================================================
@@ -1156,7 +1174,7 @@ class TravelAgentsGame:
             return False
         if headroom < need:
             return False
-        if sum(pl["larder"].values()) >= LARDER_CAP:         # nowhere to put the extra
+        if sum(pl["larder"].values()) >= _larder_cap(pl):    # nowhere to put the extra
             return False
         return self._hungry(s, p)
 
@@ -1735,10 +1753,11 @@ class TravelAgentsGame:
                 s["ing_pool"][draw_region][MAINT] += 1
 
     def _discard_to_cap(self, s, pl):
+        cap = _larder_cap(pl)
         total = sum(pl["larder"].values())
-        if total <= LARDER_CAP:
+        if total <= cap:
             return
-        for _ in range(total - LARDER_CAP):
+        for _ in range(total - cap):
             tok = max((k for k in pl["larder"] if pl["larder"][k] > 0),
                       key=lambda k: pl["larder"][k])
             pl["larder"][tok] -= 1
@@ -2134,7 +2153,7 @@ def _plan(s, p, legal, rng, prefs):
 
     # 2) hoarder overlay
     hr = prefs.get("hoard_region")
-    if hr and sum(pl["larder"].values()) < LARDER_CAP:
+    if hr and sum(pl["larder"].values()) < _larder_cap(pl):
         act = _token_source(s, p, hr, legal, prefs)
         if act is not None:
             return act
@@ -2247,8 +2266,9 @@ INFL_STYLE    = {**BAL, "w_drink": 1.4, "travel_early": True,             # 網�
 OFFICE_STYLE  = {**BAL, "w_food": 1.3, "avoid_contest": True}             # 媽寶: heads-down gatherer, straight wins
 COUNCIL_STYLE = {**BAL, "w_ramp": 1.8, "ramp_first": True, "opportunistic": True}  # 里長伯: engine-first → cheap wins
 DAGU_STYLE    = {**BAL, "w_val": 1.3, "marquee": True}                    # 大胃王: glutton marquee-hunter (keep-3 gluts)
+AMA_STYLE     = {**BAL, "cheap_early": True}                              # 阿嬤: mobility/tempo — cheap just-in-time wins (kit carries)
 CHAR_STYLE = {"dage": DAGE_STYLE, "influencer": INFL_STYLE, "office": OFFICE_STYLE,
-              "councillor": COUNCIL_STYLE, "dagushi": DAGU_STYLE, "neutral": BAL}
+              "councillor": COUNCIL_STYLE, "dagushi": DAGU_STYLE, "ama": AMA_STYLE, "neutral": BAL}
 PURE_DRINKS = {"w_val": 1.0, "w_food": 0.0, "w_drink": 1.0, "w_ramp": 0.0, "pure_drinks": True, "w_ticket": 1.0}
 NO_DRINKS = {**BAL, "no_drinks": True}
 
@@ -2620,10 +2640,11 @@ if __name__ == "__main__":
         _args = [a for a in sys.argv[1:] if a.isdigit()]
         N = int(_args[0]) if _args else 1000
         names = {"councillor": "里長伯 Politician", "office": "媽寶 Homebody",
-                 "influencer": "網紅 Influencer", "dagushi": "大胃王 Big Eater", "dage": "大哥 Big Brother"}
+                 "influencer": "網紅 Influencer", "dagushi": "大胃王 Big Eater", "dage": "大哥 Big Brother",
+                 "ama": "阿嬤 A-má (granny)"}
         style_lbl = {"dage": "brawler (contest)", "influencer": "travel→cheap→scrappy",
                      "office": "gather + avoid-fights", "councillor": "engine-first → cheap",
-                     "dagushi": "glutton marquee-hunter"}
+                     "dagushi": "glutton marquee-hunter", "ama": "mobility / cheap tempo"}
 
         def _wr_style(ch, style, opp_style, oppchar, n=N, seed=1):
             a1, a2 = _make(style), _make(opp_style)
@@ -2637,7 +2658,7 @@ if __name__ == "__main__":
         print(f"# v6.4c CHARACTER-TAILORED PLAYSTYLES — each character on its own spine (N={N}/cell)\n")
         print(f"  {'character':22}{'style':26}{'vs neutral-BAL':>16}{'tailored vs self-generic':>26}")
         band = {}
-        for ch in ("dage", "influencer", "office", "councillor", "dagushi"):
+        for ch in ("dage", "influencer", "office", "councillor", "dagushi", "ama"):
             style = CHAR_STYLE[ch]
             vs_neutral = _wr_style(ch, style, BAL, "neutral")            # (a) the new band
             vs_self = _wr_style(ch, style, BAL, ch)                       # (b) does the kit reward the line?
@@ -2660,8 +2681,9 @@ if __name__ == "__main__":
     if "--matchups" in sys.argv:
         _args = [a for a in sys.argv[1:] if a.isdigit()]
         N = int(_args[0]) if _args else 800
-        chars = ["dage", "influencer", "office", "councillor", "dagushi"]
-        zh = {"dage": "大哥", "influencer": "網紅", "office": "媽寶", "councillor": "里長伯", "dagushi": "大胃王"}
+        chars = ["dage", "influencer", "office", "councillor", "dagushi", "ama"]
+        zh = {"dage": "大哥", "influencer": "網紅", "office": "媽寶", "councillor": "里長伯",
+              "dagushi": "大胃王", "ama": "阿嬤"}
 
         def wr(a, b, n, seed):   # char a (its style) vs char b (its style), both seatings averaged
             sa, sb = CHAR_STYLE[a], CHAR_STYLE[b]
@@ -2792,7 +2814,7 @@ if __name__ == "__main__":
     print(f"  pure_drinks vs balanced    {_versus('pure_drinks', 'balanced', n=N)*100:5.1f}%  (want clearly <50)")
 
     print("\n## PROBE 4/5 — character balance (char vs neutral, both seatings) — target 45-55%")
-    for ch in ("councillor", "office", "influencer", "dagushi", "dage"):
+    for ch in ("councillor", "office", "influencer", "dagushi", "dage", "ama"):
         wr = _char_winrate(ch, n=N)
         flag = "ok" if 0.45 <= wr <= 0.55 else "<-- OUT"
         print(f"  {ch:12} {wr*100:5.1f}%  {flag}")
