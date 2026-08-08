@@ -1956,3 +1956,190 @@ sim recommends a **LIGHT touch**, not a heavy re-cost:
 night sourcing (105% of day — CD-4 curve untouched), the renames/Trending/dial (balance-neutral).
 **No blocker to the design lock.** The one genuinely OUT-of-band item is 網紅 start-max (→ start-3);
 everything else is a light-touch feel choice for the CD + the table.
+
+---
+
+# V7 — MULTIPLAYER RE-HOME (3–6 players, area-majority) — Phase-1 re-sim
+
+Hand-authored read of the CD-gated V7 Phase-1 re-sim. Auto report: `sim-results.md` (regenerated for
+the V7 multi-count config via `python games/travel-agents/sim/travel_agents.py --v7 250 --out …`).
+Run config: `BUZZ_MARGIN=1` (strict plurality — a tie BLOCKS) · 大哥 threshold `0` (wins ties all-game,
+night-scoping dropped) · `LOSTWAR=burn` · `HAND_LIMIT=3` · 網紅 `start-max=4` · base Travel de-sourced
+(媽寶 sole sourcer, `_bump_src` excludes base Travel) · Trending `+1 Followers-max` · run-out-of-stock
+night `OFF` · 里長伯 reset to canon (−1 home / +1 away / start-max 2). Six characters incl. 阿嬤.
+N = 250 games/seating (character band = avg of the first + last seat; field/seat probes ≥ 400–500).
+
+## Encode summary (what changed in `sim/travel_agents.py`)
+- **Per-count scaling — fixed the n=5/6 fallback bug.** `new_state` now defines slots / supply / clock /
+  Booking-row / market-depth **explicitly per count** to §4 (verified non-fallback): slots N/C/S/E
+  3p 2/2/1/1 · 4p 2/2/2/1 · 5p 2/2/2/2 · 6p 3/2/2/2; Followers supply 33/42/51/60; dusk 7/9/11/13;
+  last-train 14/18/22/26; face-up Booking row 3 (≤3p) → 4 (4p+); ingredient market depth ×1.4/1.8/2.2/2.6.
+- **Multiplayer area-majority + tie rule.** `_buzz_lead` already generalised to N (lead over the *max*
+  rival); set `BUZZ_MARGIN=1` so a claim needs **strictly more** than every other agent and a **tie
+  blocks** (verified: 2-vs-2 → no claim; 3-vs-2 → claim). The `_can_bribe` ≥1-committed floor stays.
+- **大哥 wins ties all-game.** `_margin_for` returns `0` for 大哥 at every phase (dropped the unblessed
+  v6.4b night-scoping). Verified: on a 2-vs-2 tie 大哥 *can* claim, a neutral cannot.
+- **Lost-war = BURN by default** (losers' committed Followers spent, not returned); dropmax/both kept for
+  the sweep.
+- **Canon confirmations:** 網紅 start-max 4 (was stale 3); Promote flat 2 for all; hand-limit 3; base
+  Travel de-sourced + `_bump_src` fix (both already correct); 媽寶 sole Travel-sourcer; Trending +1.
+- **Neutralised unblessed exploration:** run-out-of-stock / region-shutdown (`NIGHT_DECK_CAP`) → default
+  **OFF**; night contention slots (`NIGHT_SLOTS`) → **OFF** (night = day slots); 里長伯 `−2 home` and
+  `start-max 1` (v6.4d tunes contradicting v6.4 §303) → reset to canon **−1 / start-2**. (`fighter`
+  test-bot left in place — it's a strategy, not a rule.)
+
+## How to read the character band (methodology caveat)
+Each character is banded **vs a field of kitless `neutral`s** (char in the first seat and the last seat,
+averaged). Because a `neutral` in that seat would win exactly the fair share (1/N), **`idx×fair` = 1.0
+means "the kit performs no better than no kit," and idx > 1 is the EXPECTED, healthy sign that a kit
+helps.** So — unlike the 2p "45–55%" band (which was symmetric around a 50% char-vs-one-neutral fair
+point) — the MP read is: **nobody should be a FLOOR (idx ≪ 1, a trap kit); watch the relative spread and
+any runaway crusher.** These are greedy bots: a floor on depth, blind to mobility value and to human
+contest/politics.
+
+## Per-count verdict (PASS / SOFT / FAIL)
+
+| Probe | 3p | 4p (HOME) | 5p | 6p (stretch) |
+|---|---|---|---|---|
+| (1) six-char band | SOFT | SOFT | SOFT | **FAIL** (crushers) |
+| (2) seat fairness | PASS | PASS | PASS | PASS |
+| (3) downtime proxy | PASS | PASS | PASS | SOFT |
+| (4) length vs clock | PASS | PASS | PASS | **FAIL** |
+| (5) contested/economy | SOFT | SOFT | PASS | SOFT |
+| (6) night sourcing (CD-4) | PASS | PASS | PASS | PASS |
+| (7) tickets-only dead | PASS | PASS | PASS | PASS |
+| (8) kingmaking/take-that | PASS | PASS | SOFT | SOFT |
+| **overall** | **SOLID** | **SOLID** | **SOLID** | **NO-SHIP (as configured)** |
+
+### (1) Six-character band
+- **No hard floor at any count.** 阿嬤 sits nearest neutral (idx 0.98 → 1.06 → 1.02 → 1.04) — her OAP
+  "reach any region in one Travel" mobility is a **known greedy-bot blind spot** (bots don't route to
+  exploit reach), so idx≈1 is a *sim artifact, not a weak kit*. **Do NOT drop or buff her on this number**
+  — her value is a table question (tempo/positioning). FLAG for the human table + Phase-2 guardians.
+- **媽寶 lifted off her floor.** As the **sole Travel-sourcer** she now bands **at/above** neutral every
+  count (idx 1.01 / 1.22 / 1.16 / 1.07) — she was the sub-neutral 43.5% floor at 2p. The §Change-5 organic
+  floor-fix **works and does not overshoot**. PASS.
+- **網紅 start-max 4 reads HOT in MP** (idx 1.25 / 1.50 / 1.46 / 1.74). The persistent +2 ceiling lets her
+  out-commit early in every fight, and the edge *grows* with player count. **Recommend testing the reserve
+  start-3** (§4c) — start-4 is the top of the band and at 6p she's a co-crusher. Goes-last seat read: at
+  3p being last costs her hard (seat0 48.8 vs last 34.4); at 4–6p the first/last gap is small — but note
+  the sim only models "goes last" as turn order, not as a real structural penalty, so the *felt* goes-last
+  flaw is under-credited (a table watch, worse as N rises per §1/§4c).
+- **大哥 win-on-tie all-game scales too strong at high counts** (idx 1.18 / 1.37 / 1.41 / **1.79**). More
+  players → more ties → more free claims for him. At 3–4p he's in the pack; by 6p he is the top crusher.
+  **FLAG:** the all-game tie-win (adopted over the night-only edge) may need re-scoping for 5–6p (e.g.
+  night-only after all, or a soft cost) — decide with the human table + bg-critic.
+- **里長伯 at canon runs hot** (idx 1.31 / 1.46 / 1.44 / 1.31), consistently top-2/3. This is the
+  canon-vs-exploration reset I made (−1 home / start-2, per v6.4 §303) — the v6.4d exploration had tried
+  −2 home / start-1 to tame him. At 2p canon the CD accepted him "top-of-band 55%"; in MP he's similarly
+  hot. **FLAG the discrepancy** (below) for a CD ruling on his canonical numbers.
+- **The 6p band FAILS**: spread blows out to idx 1.04–1.79 with 大哥 + 網紅 pulling away as crushers —
+  compounding the 6p length fail below.
+
+### (2) Seat fairness — PASS at every count
+No suspect seat at 3/4/5/6p (each seat within fair bounds; 6p has a benign 3% tie rate). The common Taipei
+start + fixed order does **not** create a catastrophic first/last skew for the *field*. The one seat-order
+effect is 網紅-specific (goes-last at 3p, above) — carry to the table, not a board-level fairness break.
+
+### (3) Downtime — PASS 3–5p, SOFT 6p
+`forced_turn_frac = 0.000` everywhere (the one-action turn: never a dead/forced move). avg_legal_actions
+~8.8–9.3 (healthy decision load, not AP-inducing). turns/player 28–30 at 3–5p; **34.6 at 6p** (up against
+the stall backstop — see length). The one-action turn is doing its load-bearing downtime job through 5p;
+6p downtime is coupled to the length fail (five rivals between turns *and* the game overruns).
+
+### (4) Length vs the clock — PASS 3–5p, **FAIL 6p**
+3p/4p/5p end on the **last train 94% / 97% / 93%** of games (stall backstop only 3–7%) — the vendor-claims
+clock fires cleanly and paces the game. **6p: the last train NEVER fires (0%)** — 71% of games hit the
+hard stall backstop (34 turns/player) and 29% end on deck-dry, at ~33 turns/player. **The last-train = 26
+clock is unreachable at 6p**: the per-player claim *rate* DROPS at 6p (crowded board + heavy contention +
+near-empty supply, `supply_min 7.5` vs 24–29 lower), so §4's "per-player claims ≈ constant" assumption
+**breaks** — 6 players do NOT sustain 26 table claims before the backstop. This is the 6p ship gate, and
+it does not hold.
+
+### (5) Contested / lost-war economy
+- **Contention comes for free with players** (as the pivot predicted): contested_frac 5.1% → 6.3% → 9.6%
+  → 14.1%; lost_wars/game 0.81 → 1.34 → 2.72 → 6.28; followers/lost-war 1.6 → 2.1 → 3.0 → 5.0. The lost
+  promotion war becomes the **norm** at 5–6p, exactly the design goal — with **zero forcing of the fight
+  rate**.
+- **BUT the back half is not tense at 3–5p in-sim, and no sink lever changes that.** Gains still ≫ sinks
+  (~2.6–2.7 : 1), capfill_night stays 0.10–0.13, night cap-bind ~0.03–0.06, slack_night ~5. The dial's
+  top half remains dead weight in the back half — the *same* 2p diagnosis, persisting because the **bot
+  concession heuristic keeps commitment far below the cap** (contested_frac is a documented FLOOR). At 6p
+  the cap finally binds (capfill_day 0.34, max_committed 10.2) — but only because the board is gridlocked,
+  which is the *bad* kind of tension (the length fail).
+- **This is the load-bearing "bots can't judge it" caveat:** whether the back half FEELS tense is the #1
+  human-table question. The sink is correctly structured; the sim just can't exercise it because bots
+  won't pile in like people will.
+
+### (6) Night sourcing (CD-4) — PASS every count
+With base Travel de-sourced, night:day sourcing ratio = **105% / 97% / 98% / 99%** — comfortably in the
+~60–100%+ target at every count. Removing base-Travel sourcing did **not** collapse night sourcing (媽寶's
+lone Travel-draw + Visit/CStore carry it). **Do not touch the night curve.** Minor watch: free-night-bribes
+crept 0.95 (v6.3.1) → ~1.2–1.4/game at 3–5p (0.6 at 6p) — a small rise, not a regression; flag, don't act.
+
+### (7) Tickets-only — PASS every count
+`ignore_obj` is crushed: 6.2% / 1.6% / 0.8% / 2.0% vs fair 33/25/20/17%. A zero-ticket line loses hard at
+every count; the expanded/duplicated deck's collection lanes are not pinched by hand-limit 3.
+
+### (8) Kingmaking / take-that
+takethat_hits/game scales with player count (4.6 → 9.6 → 18.3 → 39.4) but these are **event spillover
+pokes, not directed kingmaking** — the sim's greedy bots don't collude or target. The structural
+anti-kingmaking property is intact (tickets-only, you only ever score your own pile, burn-your-own-fight).
+**5–6p politics/griefing is the new worry that replaces the 2p fight-rate worry and is a genuine table
+question** (hand to bg-critic + the human table).
+
+## Lost-war sink recommendation → **BURN alone (canon), levers held in reserve**
+The 4p + 5p sweep (off / burn / dropmax1 / both / burn+leverB[night-demand+ceiling] / burn+leverC[sink
+events]) shows **all six configs are statistically indistinguishable** on the tension metrics (4p
+capfill_night 0.11–0.12, slack 4.95–5.38, LT 94–98%; 5p capfill 0.12–0.14, slack 5.5–5.8, LT 88–92%).
+Because bot contention is a floor, no sink lever can tighten a back half where commitment never approaches
+the cap. Read:
+- **Adopt `burn` as the default** — it is the correct **contention-scaled, zero-bookkeeping** sink; it does
+  no harm in-sim and is the structurally right sting for when humans DO pile in (which they will, far more
+  than bots). This matches the §3 LOCKED recommendation.
+- **Reject `dropmax`/`both` as the default** — they add a dial-tracking step for **no measurable sim gain**
+  and carry a real over-punish/fight-suppression risk. Hold as a reserve escalation only if the human table
+  finds the back half slack even with humans fighting.
+- **Levers b (night/apex demand + higher ceiling) and c (sink events) are also inert in-sim** — hold both
+  as reserves; do not bake now.
+- **The economy's back-half tension is explicitly deferred to the human table** (the #1 feel question),
+  per the mandate "do not force the fight rate."
+
+## 6p ship / no-ship read → **NO-SHIP as configured; fixable-or-cap is a CD call**
+6p **fails the length bar** (0% last-train, 71% stall, ~34 turns/player) and shows a **crusher band**
+(大哥/網紅 idx ~1.75) and near-supply-starvation (`supply_min 7.5`). Per the pivot's own gate ("ship 6
+only if Phase-1's downtime + length hold"), **6p does not clear.** Two paths for the CD/Phase-2:
+1. **Re-tune 6p and re-sim:** nudge the 6p last-train **down hard** (≈26 → ~18–20 so it fires before the
+   backstop), and likely **raise 6p Follower supply** (60 → ~68–72) so the deep-pile + burn economy doesn't
+   bottom out. Then re-run `--v7`. If it then ends on the clock at an acceptable length, 6p can ship as a
+   validated stretch.
+2. **Cap the range at 3–5** and call it a great 3–5 game (a smaller range done well beats a wide one done
+   badly). **This is my leaning** unless a focused 6p re-tune clears both the length AND the 大哥/網紅
+   crusher gap — two coupled problems, not one.
+
+## FLAGS for the CD + Phase-2 guardians
+1. **6p length + crushers (blocking for 6p).** See above — re-tune-and-re-sim or cap at 5.
+2. **網紅 start-max 4 is HOT in MP** (idx 1.5 @4p, 1.74 @6p). **Recommend the reserve start-3** (§4c) — a
+   one-line change; re-band confirms. Human table can confirm start-4 (goes-last under-credited in-sim).
+3. **大哥 all-game tie-win over-scales at 5–6p** (idx 1.41 → 1.79). Re-scoping candidate (night-only edge,
+   or a soft cost). bg-critic + table.
+4. **里長伯 canon-vs-exploration DISCREPANCY (needs a CD ruling).** The committed sim carried v6.4d
+   *unblessed* tunes (`−2 home`, `start-max 1`) that **contradict v6.4 CANON §303 (−1 home / +1 away /
+   start-max 2 like everyone)** and decision-log CD-1. I **reset the sim to canon**; at canon he runs hot
+   (idx 1.31–1.46). The CD must confirm his canonical numbers (canon-hot, or adopt an exploration brake).
+5. **阿嬤 bands at ≈neutral (idx ~1.0) — a bot blind spot, NOT a weak kit.** Do not tune her on this number;
+   her mobility value is a table read. Phase-2 still owes her the bg-theme dignity/identity bless (a granny
+   must read warm, never a caricature) + naming coherence.
+6. **Back-half economy tension is unresolved in-sim** (dead top-of-dial persists at 3–5p because bot
+   contention is a floor). Carry as the #1 human-table feel question; burn is the right default sink.
+7. **run-out-of-stock/region-shutdown OFF changed nothing material** vs the v6.4b exploration for the
+   *balance* read (it was never V7 canon) — noted per the checklist; no economy/clock artifact from
+   disabling it beyond the honest 6p clock behaviour above.
+8. **Sim blind spots (bots = floor, not ceiling):** the FUN of the area-majority fight; real downtime FEEL
+   at 5–6p; 阿嬤's mobility; directed kingmaking/take-that politics at 5–6p. All → the human table.
+
+## The one change to test next
+**網紅 start-max 4 → 3** (the single out-of-band, one-line, self-tapering fix) — re-band at 3–5p to confirm
+she lands in the pack (expected idx toward ~1.2–1.3), then the human table decides 3-vs-4 (the goes-last
+flaw is under-credited in-sim). Everything else at 3–5p is SOLID; 6p is a separate CD decision
+(re-tune-and-re-sim vs cap at 5).
