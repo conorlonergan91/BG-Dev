@@ -251,6 +251,11 @@ MS_T2 = int(os.environ.get("TA_MS_T2", "4"))                   # tickets-complet
 # override the face-up vendor slot counts to test whether tighter scarcity lifts collisions. "" = default
 # (N:2, others:1). e.g. TA_SLOTS="1,1,1,1" for a 4-slot board (max scarcity).
 SLOTS_OVERRIDE = os.environ.get("TA_SLOTS", "")
+# --- v6.4b NIGHT-CONTENTION lever (CD steer: make the night HECTIC/SCRAPPY, force more back-half
+#     battles, and let 大哥's fight-ability earn its keep in the back half). Tighten ONLY the NIGHT
+#     face-up vendor slots (the DAY stays the calm engine-building phase). "" = same as the day slots.
+#     e.g. TA_NIGHT_SLOTS="1,1,1,1" (every region shows just one night stall → both agents crowd it).
+NIGHT_SLOTS_OVERRIDE = os.environ.get("TA_NIGHT_SLOTS", "")
 
 # --- CHARACTER KNOBS (v6.3 kits — locked; do NOT pre-tweak, the re-sim reads them) ---------------
 # H1 大胃王 flaw. "twice" (A, locked) | "keep2" (B) | "next" (C).
@@ -742,6 +747,11 @@ class TravelAgentsGame:
         if SLOTS_OVERRIDE:                                   # fix #2 lever — tighten face-up scarcity
             _sv = [int(x) for x in SLOTS_OVERRIDE.split(",")]
             slots = {"N": _sv[0], "C": _sv[1], "S": _sv[2], "E": _sv[3]}
+        # v6.4b NIGHT-CONTENTION lever: a separate, tighter face-up count for the NIGHT half only.
+        night_slots = None
+        if NIGHT_SLOTS_OVERRIDE:
+            _nv = [int(x) for x in NIGHT_SLOTS_OVERRIDE.split(",")]
+            night_slots = {"N": _nv[0], "C": _nv[1], "S": _nv[2], "E": _nv[3]}
         supply = int(round(BUZZ_SUPPLY * (1 + 0.375 * (n_players - 2))))
         mdraw = MISSION_DRAW + (1 if n_players == 3 else 2 if n_players >= 4 else 0)
         m_dusk = {2: M_DUSK, 3: M_DUSK + 1, 4: M_DUSK + 2}.get(n_players, M_DUSK)
@@ -805,7 +815,7 @@ class TravelAgentsGame:
             })
 
         return {
-            "n": n_players, "slots": slots,
+            "n": n_players, "slots": slots, "night_slots": night_slots,
             "vdeck": vdeck, "faceup": faceup,
             "ing_pool": ing_pool, "ing_discard": ing_discard,
             "buzz": {vid: [0] * n_players for vid in buzz_ids},
@@ -830,6 +840,7 @@ class TravelAgentsGame:
             "turns_day": 0, "turns_night": 0,
             "src_actions_day": 0, "src_actions_night": 0,
             "night_claims": 0, "night_food_wins": 0,       # night vendor claims (climax must still fire)
+            "night_contested_wins": 0,                       # v6.4b: contested night claims (the hectic-night probe)
             "free_bribes": 0, "free_night_bribes": 0,       # fully-discounted bribes (the free-bribe exploit)
             # --- v6.3.1 CD-2 Scheduled Maintenance (table-wide HSR outage) ---
             "hsr_closed_until_turn": None, "maint_fired": 0, "maint_closed_turns": 0,
@@ -1252,6 +1263,8 @@ class TravelAgentsGame:
             s["night_claims"] += 1
             if not v["is_drink"]:
                 s["night_food_wins"] += 1
+            if contested:                                    # v6.4b: a back-half BATTLE (the hectic-night probe)
+                s["night_contested_wins"] += 1
         if v["phase"] == 2 and s["first_night_win_turn"] is None:
             s["first_night_win_turn"] = s["turn"]
         if pl["char"] == "councillor" and COUNCILLOR_KIT == "home" and not v["is_drink"]:
@@ -1405,7 +1418,10 @@ class TravelAgentsGame:
                 s["star"].discard(vid)
             nd = _region_deck(r, 2)
             self._rng_shuffle(s, nd)
-            up = [nd.pop() for _ in range(min(s["slots"][r], len(nd)))]
+            # v6.4b: the NIGHT half can run TIGHTER face-up slots than the day (CD steer: force more
+            # back-half battles). Fall back to the day slots when no night override is set.
+            nslot = s["night_slots"][r] if s.get("night_slots") else s["slots"][r]
+            up = [nd.pop() for _ in range(min(nslot, len(nd)))]
             s["vdeck"][r] = nd; s["faceup"][r] = up
             for vid in up:
                 s["buzz"].setdefault(vid, [0] * s["n"])
@@ -1822,6 +1838,8 @@ class TravelAgentsGame:
             "night_day_src_ratio": float(night_day_src_ratio),
             "night_claims_per_player": float(s["night_claims"] / s["n"]),
             "night_food_wins_per_player": float(s["night_food_wins"] / s["n"]),
+            "night_contested_wins_per_game": float(s["night_contested_wins"]),
+            "night_contested_frac": float(s["night_contested_wins"] / s["night_claims"]) if s["night_claims"] else 0.0,
             "free_bribes_per_game": float(s["free_bribes"]),
             "free_night_bribes_per_game": float(s["free_night_bribes"]),
             "turns_night_frac": float(s["turns_night"] / s["turn"]) if s["turn"] else 0.0,
@@ -2438,6 +2456,67 @@ if __name__ == "__main__":
               f"媽寶 {hr:.1f}% ({'OK' if 44 <= hr <= 55.5 else 'WATCH'})")
 
         _setcfg()  # restore all economy globals to v6.4 defaults
+        sys.exit(0)
+
+    # ==============================================================================================
+    #  --night  — CD steer (v6.4b): tighten the NIGHT half to force more back-half BATTLES (hectic /
+    #  scrappy night market), and check it gives 大哥 (Big Brother, the fight character) real back-half
+    #  weight WITHOUT wrecking the close (stall) or breaking the band. Usage:
+    #     python games/travel-agents/sim/travel_agents.py --night [N]
+    #  Sweeps NIGHT_SLOTS tightness (day slots UNCHANGED), with a V_END clock-nudge compensator.
+    # ==============================================================================================
+    if "--night" in sys.argv:
+        _args = [a for a in sys.argv[1:] if a.isdigit()]
+        N = int(_args[0]) if _args else 400
+        NB = N * 2
+
+        def _setnight(nslots="", vend=10):
+            globals()["NIGHT_SLOTS_OVERRIDE"] = nslots
+            globals()["V_END"] = vend
+
+        def _band5(n=NB):
+            names = {"councillor": "里長伯", "office": "媽寶", "influencer": "網紅",
+                     "dagushi": "大胃王", "dage": "大哥"}
+            b = {ch: _char_winrate(ch, n=n) for ch in
+                 ("councillor", "office", "influencer", "dagushi", "dage")}
+            lo, hi = min(b.values()), max(b.values())
+            body = "  ".join(f"{names[c]} {b[c]*100:4.1f}" for c in
+                             ("dage", "influencer", "dagushi", "councillor", "office"))
+            return b, f"{body}   [band {lo*100:.1f}–{hi*100:.1f}]"
+
+        print(f"# {TITLE}")
+        print(f"# v6.4b NIGHT-CONTENTION sweep — sweep N={N}/cell, band N={NB}/cell")
+        print(f"  GOAL: hectic/scrappy NIGHT (more back-half battles) + 大哥 back-half weight, "
+              f"WITHOUT wrecking the close (stall). DAY slots held (N2/others1).\n")
+        print(f"  {'night slots / clock':26}{'contest%':>9}{'NIGHTcontest%':>14}{'nbattle/gm':>11}"
+              f"{'capfillN':>9}{'nclaim/p':>9}{'stall%':>8}{'turns/p':>8}")
+        for lbl, ns, ve in (
+                ("day-slots (baseline)", "", 10),
+                ("night 1,1,1,1", "1,1,1,1", 10),
+                ("night 1,1,1,1 +clock9", "1,1,1,1", 9),
+                ("night 1,1,1,0 (E dark)", "1,1,1,0", 10),
+                ("night 2,1,1,1→tight C/S", "2,0,0,1", 10)):
+            _setnight(ns, ve)
+            m = _field_metrics(n=N)
+            print(f"  {lbl:26}{m['contested_frac']*100:8.1f}%{m['night_contested_frac']*100:13.1f}%"
+                  f"{m['night_contested_wins_per_game']:11.2f}{m['capfill_night']*100:8.0f}%"
+                  f"{m['night_claims_per_player']:9.2f}{m['end_by_stall']*100:7.0f}%{m['turns_per_player']:8.1f}")
+
+        print("\n  ★ CHARACTER BAND — baseline (day-slots) vs the recommended NIGHT-TIGHT setting")
+        print("     (watch 大哥 gain back-half weight; others must stay ≤~55, 網紅 already hot → start-3 assumed)")
+        globals()["INFL_MAX_START"] = 3   # fold in the resolved 網紅 lock so the band reads the real build
+        _setnight("", 10)
+        b0, s0 = _band5()
+        print(f"     day-slots (baseline)   : {s0}")
+        _setnight("1,1,1,1", 9)
+        b1, s1 = _band5()
+        print(f"     night 1,1,1,1 +clock9  : {s1}")
+        dage0, dage1 = b0["dage"] * 100, b1["dage"] * 100
+        print(f"\n     → 大哥 {dage0:.1f}% → {dage1:.1f}%  (Δ {dage1-dage0:+.1f}pt — the back-half weight we want)"
+              f"  |  band top now {max(b1.values())*100:.1f}% ({'OK ≤55.5' if max(b1.values())<=55.5 else 'WATCH'})")
+
+        globals()["INFL_MAX_START"] = 4  # restore module default
+        _setnight("", 10)
         sys.exit(0)
 
     N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 1200
