@@ -112,8 +112,42 @@ def render_track(theme, spaces, title, labels, left_label, right_label):
 
 
 # ---- tokens -----------------------------------------------------------------
-def render_tokens(theme, tokens, shape, diameter_px, cols):
-    """tokens: list of dicts {label, color, qty}."""
+def render_tokens(theme, tokens, shape, diameter_px, cols, legend=False):
+    """tokens: list of dicts {label, color, qty, name?}."""
+    if legend:
+        # A TRUE KEY (not a punch-grid): one row per token TYPE — swatch + glyph, its name (what it MEANS),
+        # and the ×qty count — so a player can decode 及/團/成/遺/鐘/停 from this sheet alone (bg-infodesign).
+        ink, muted = theme["ink"], theme["muted"]
+        tfont, bfont = theme["title_font"], theme["body_font"]
+        default = theme["suits"].get("_default", {}).get("color", theme["accent"])
+        d = min(diameter_px, 92)
+        gap, pad = 22, 34
+        row_h = d + gap
+        name_x = pad + d + 28
+        W = 1320
+        H = pad + len(tokens) * row_h + pad
+        parts = [f'<defs>{page_gradient(theme, "pg")}</defs>',
+                 f'<rect width="{W}" height="{H}" rx="26" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>']
+        for i, t in enumerate(tokens):
+            cy = pad + i * row_h + d / 2
+            cx = pad + d / 2
+            color = t.get("color") or default
+            rad = d / 2
+            if shape == "square":
+                parts.append(f'<rect x="{cx-rad}" y="{cy-rad}" width="{d}" height="{d}" rx="{d*0.14}" fill="{color}" stroke="{ink}" stroke-width="4"/>')
+            elif shape == "hex":
+                pts = " ".join(f"{cx+rad*math.cos(math.radians(a))},{cy+rad*math.sin(math.radians(a))}" for a in range(0, 360, 60))
+                parts.append(f'<polygon points="{pts}" fill="{color}" stroke="{ink}" stroke-width="4"/>')
+            else:
+                parts.append(f'<circle cx="{cx}" cy="{cy}" r="{rad}" fill="{color}" stroke="{ink}" stroke-width="4"/>')
+            tcol = pick_text_color(color, dark=ink, light="#ffffff")
+            parts.append(f'<text x="{cx}" y="{cy+d*0.11}" font-size="{d*0.34}" fill="{tcol}" text-anchor="middle" '
+                         f'font-family="{tfont}" font-weight="bold">{esc(t.get("label",""))}</text>')
+            parts.append(f'<text x="{name_x}" y="{cy+10}" font-size="30" fill="{ink}" '
+                         f'font-family="{bfont}">{esc(t.get("name","") or t.get("label",""))}</text>')
+            parts.append(f'<text x="{W-pad}" y="{cy+10}" font-size="28" fill="{muted}" text-anchor="end" '
+                         f'font-family="{tfont}" font-weight="bold">×{int(t.get("qty",1) or 1)}</text>')
+        return _svg(W, H, parts), W, H
     expanded = []
     for t in tokens:
         expanded.extend([t] * max(1, int(t.get("qty", 1))))
@@ -465,13 +499,16 @@ def render_regionmap(theme, spec, phase="day"):
     # v6.3.1 TICKETS-ONLY: there is NO VP/score track and Reputation (→ Reach) no longer scores. The two
     # zones below REPLACE the stale v6.2 "Prestige (VP)" + "Reputation scores by final position" labels
     # (which flatly contradicted canon and mis-taught the FTUE). Both are now flagged NOT a score.
-    reach_teal = theme["suits"].get("central", {}).get("color", "#1F8A7A")
+    # Distinct hue per instrument so the two teal-clone markers stop colliding (bg-infodesign): Reach = the
+    # violet Buzz hue it caps (matches the Reach track + the 及 marker); Tours = teal (matches its track).
+    tours_teal = theme["suits"].get("central", {}).get("color", "#1F8A7A")
+    reach_violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
     parts.append(zone(rc_x, 120, rc_w, 128, "Reach — your Buzz cap",
-                      f'<circle cx="{rc_x+rc_w-44}" cy="168" r="26" fill="{reach_teal}"/>'
+                      f'<circle cx="{rc_x+rc_w-44}" cy="168" r="26" fill="{reach_violet}"/>'
                       f'<text x="{rc_x+rc_w-44}" y="177" font-size="26" fill="#fff" text-anchor="middle" font-family="{tfont}" font-weight="bold">及</text>',
                       "committed Buzz ≤ Reach · NOT a score"))
     parts.append(zone(rc_x, 268, rc_w, 128, "Tours Completed — Rave Reviews",
-                      emblem_svg("crowd", rc_x + rc_w - 46, 316, 24, reach_teal),
+                      emblem_svg("crowd", rc_x + rc_w - 46, 316, 24, tours_teal),
                       "a completions meter — NOT your score"))
     parts.append(zone(rc_x, 416, rc_w, 128, "Vendor-claims clock",
                       f'<circle cx="{rc_x+rc_w-44}" cy="464" r="26" fill="{accent}"/>'
@@ -643,7 +680,9 @@ def main():
     ap.add_argument("--shape", default="circle", choices=["circle", "square", "hex"])
     ap.add_argument("--diameter-mm", type=float, default=22.0)
     ap.add_argument("--cols", type=int, default=6)
-    ap.add_argument("--from-csv", type=Path, default=None, help="tokens: columns label[,color][,qty]")
+    ap.add_argument("--from-csv", type=Path, default=None, help="tokens: columns label[,color][,qty][,name]")
+    ap.add_argument("--legend", action="store_true", help="tokens: render a true KEY (one row per type: "
+                    "swatch + name + ×qty) instead of the qty-expanded punch-grid")
     # mat
     ap.add_argument("--spec", type=Path, default=None)
     # regionmap day/night state (mirrors the dusk flip)
@@ -663,10 +702,10 @@ def main():
             with args.from_csv.open(newline="", encoding="utf-8") as f:
                 for row in csv.DictReader(f):
                     tokens.append({"label": row.get("label", ""), "color": row.get("color") or None,
-                                   "qty": row.get("qty", 1)})
+                                   "qty": row.get("qty", 1), "name": row.get("name", "")})
         else:
             tokens = [{"label": l, "qty": 1} for l in labels] or [{"label": "?", "qty": 1}]
-        svg, W, H = render_tokens(theme, tokens, args.shape, mm(args.diameter_mm), args.cols)
+        svg, W, H = render_tokens(theme, tokens, args.shape, mm(args.diameter_mm), args.cols, legend=args.legend)
     elif args.type == "mat":
         if not args.spec:
             ap.error("--type mat requires --spec <file.json>")

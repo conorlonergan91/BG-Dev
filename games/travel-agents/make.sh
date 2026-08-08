@@ -76,7 +76,7 @@ python3 $T/boards/build_board.py --type scoretrack --max 10 --per-row 11 \
     --theme "$theme" --out build/clock-track.png
 
 # Token key + player aid.
-python3 $T/boards/build_board.py --type tokens --from-csv components/tokens.csv --shape circle --cols 6 \
+python3 $T/boards/build_board.py --type tokens --from-csv components/tokens.csv --shape circle --legend \
     --theme "$theme" --out build/token-key.png
 python3 $T/boards/build_board.py --type aid    --spec components/player-aid.json --theme "$theme" --out build/player-aid.png
 
