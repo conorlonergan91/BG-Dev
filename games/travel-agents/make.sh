@@ -82,7 +82,7 @@ python3 $T/boards/build_board.py --type aid    --spec components/player-aid.json
 
 # Cover + rulebook.
 python3 $T/cards/build_cover.py --title "$title" --subtitle "Court the island's vendors — a warm Taiwan food-tour duel" \
-    --theme "$theme" --players 2 --time "40–50 min" --weight 2.2 --out build/cover.png
+    --theme "$theme" --players "2–4" --time "25–30 min" --weight 2.2 --out build/cover.png
 python3 $T/rulebook/build_rulebook.py --md design/rules-draft.md --title "$title" --theme "$theme" --out build/rulebook.pdf
 
 echo "→ snapshotting deliverables into exports/ (committed)"
