@@ -188,9 +188,14 @@ AMA_CAP      = int(os.environ.get("TA_AMA_CAP", "7"))          # V7 CD-LOCKED bu
 # v6.4d kit-strength dials (the "tweak ideas" sweep): 大胃王's Visit keep-amount (his glutton edge — the
 # dominant character; test nerfing 3→2) and 媽寶's Visit keep-amount (her gatherer edge — test buffing 2→3).
 DAGU_KEEP    = int(os.environ.get("TA_DAGU_KEEP", "3"))        # 大胃王 keeps N on a Visit (default 3)
-OFFICE_KEEP  = int(os.environ.get("TA_OFFICE_KEEP", "3"))      # 媽寶 keeps N on a Visit. V7 CD-LOCKED
-#     buff-the-weak: keep 3 (was 2) — her gatherer edge lifted toward the battlers. (Phase-4 renders this as
-#     a glyph / +1 badge on the component, NOT a named keyword — that rendering is Phase-4's job, not the sim's.)
+OFFICE_KEEP  = int(os.environ.get("TA_OFFICE_KEEP", "2"))      # 媽寶 keeps N on a Visit. V7 CLOSE-OUT:
+#     REVERTED 3 → 2 (she keeps the normal 2 on a Visit again). The keep-3 buff-the-weak lift is RETIRED
+#     because it COLLIDED with 大胃王's keep-3 glutton signature (two characters sharing the same edge).
+#     Her buff is RE-THEMED onto her unique Travel-sourcer axis instead — see OFFICE_TRAVEL_DRAW below.
+OFFICE_TRAVEL_DRAW = int(os.environ.get("TA_OFFICE_TRAVEL_DRAW", "2"))  # 媽寶 "Mum Packed Extra for the
+#     road": on her signature Travel she draws THIS MANY cards of the region she LEFT and keeps them all
+#     (was 1). V7 CLOSE-OUT re-theme — relocates her buff-the-weak lift onto her SOLE Travel-sourcer axis
+#     (no collision with 大胃王's keep-3). Magnitude is a knob so the buff can be tuned in-band.
 STAR_BONUS_P = int(os.environ.get("TA_STAR_P", "2"))           # dynamic ★ token +Bookings (no more +Rep)
 STALL_CAP    = int(os.environ.get("TA_STALL_CAP", "50"))       # V7 P1.5: SAFETY net only (the designed
 #     stall backstop is REMOVED — the deck-clock is monotonic & guaranteed to fire). Raised 34→50 so a
@@ -347,7 +352,10 @@ COUNCILLOR_KIT       = os.environ.get("TA_COUNCILLOR_KIT", "home")   # "home" (C
 # V7/v6.4 CANON (v6.4-content-draft §303): −1 home / +1 away. The v6.4d "−2 home" was UNBLESSED
 # exploration (a "kit tune" the decision-log leaves superseded) → reset to canon −1. FLAG for the CD.
 COUNCILLOR_HOME_DISC = int(os.environ.get("TA_COUNCILLOR_HOME_DISC", "1"))  # V7 canon −1 home (was v6.4d −2)
-COUNCILLOR_AWAY_TAX  = int(os.environ.get("TA_COUNCILLOR_AWAY_TAX", "1"))   # away-tax magnitude (canon +1)
+COUNCILLOR_AWAY_TAX  = int(os.environ.get("TA_COUNCILLOR_AWAY_TAX", "2"))   # V7 CLOSE-OUT: stiffened +1 → +2.
+#     里長伯 ran HOT @6p (~1.3x+ idx); this is the clean NO-NEW-RULE lever — he now pays +2 ingredients to
+#     Bribe away from home (was +1), tightening his home-camp reward. Kept a knob. FALLBACK if this doesn't
+#     land him <~1.30 @6p: a home-discount CAP — but the away-tax=2 is the change to test first.
 # (legacy "regions" kit knob — how many regions the old first-region discount covers; unused under KIT=home)
 COUNCILLOR_REGIONS = int(os.environ.get("TA_COUNCILLOR_REGIONS", "1"))
 # 里長伯 start Followers-max. V7/v6.4 CANON (v6.4-content-draft §303): "start Followers-max 2 like
@@ -1906,7 +1914,14 @@ class TravelAgentsGame:
         # only a SOURCING Travel counts toward the CD-4 night-sourcing metric (base Travel must NOT inflate it)
         self._bump_src(s)
         draw_region = src if pl["char"] == "office" else dest
-        n_draw = 2 if (pl["char"] == "office" and OFFICE_BUFF == "travel2") else 1
+        # V7 CLOSE-OUT re-theme: 媽寶's signature is drawing OFFICE_TRAVEL_DRAW (default 2) cards of the
+        # region she LEFT and keeping them all — her buff now lives on this unique Travel-sourcer axis
+        # (the retired keep-3 lift collided with 大胃王). The legacy OFFICE_BUFF="travel2" flag still
+        # forces the 2-draw for an A/B, but the office character now draws OFFICE_TRAVEL_DRAW by default.
+        if pl["char"] == "office":
+            n_draw = OFFICE_TRAVEL_DRAW
+        else:
+            n_draw = 1
         for _ in range(n_draw):
             c = self._draw_market(s, draw_region, rng)
             if isinstance(c, str):                           # an event on a Travel fly-by whiffs (no fire)
@@ -2852,8 +2867,9 @@ if __name__ == "__main__":
 
         _out(f"# {TITLE}")
         _out(f"# V7 buff-the-weak SPOT-CHECK — six-character band, 4p + 6p, N={N}/seating (seed-matched)\n")
-        _out(f"Baked buffs: AMA_CAP={AMA_CAP} (阿嬤 basket) · OFFICE_KEEP={OFFICE_KEEP} (媽寶 keep-on-Visit). "
-             f"Everything else V7 canon.\n")
+        _out(f"V7 close-out config: AMA_CAP={AMA_CAP} (阿嬤 basket) · OFFICE_KEEP={OFFICE_KEEP} (媽寶 keep-on-Visit, "
+             f"reverted 3→2) · OFFICE_TRAVEL_DRAW={OFFICE_TRAVEL_DRAW} (媽寶 Travel-draw-left re-theme) · "
+             f"COUNCILLOR_AWAY_TAX={COUNCILLOR_AWAY_TAX} (里長伯 away-tax stiffened 1→2). Everything else V7 canon.\n")
 
         seed = 1                                              # FIXED base seed → seed-matched, reproducible
         for c in (4, 6):
