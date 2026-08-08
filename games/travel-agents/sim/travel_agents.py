@@ -1994,6 +1994,12 @@ def _pick_target(s, p, prefs):
         score = val - TEMPO * (_est_actions(s, p, vid) - 1.0)
         if s["buzz"][vid][p] > 0:
             score += 0.4
+        # v6.4b THE FIGHTER: chase a rival's vendor LOCK-IN — the more Followers they've committed, the
+        # juicier the steal/deny. This makes the fighter follow rivals to their contested stalls.
+        if prefs.get("contest"):
+            rb = max((s["buzz"][vid][q] for q in range(s["n"]) if q != p), default=0)
+            if rb > 0:
+                score += 3.0 + 1.5 * rb
         if score > bscore:
             bscore, best = score, vid
     return best
@@ -2196,6 +2202,7 @@ ENDGAME = {**BAL, "speed": True, "w_ticket": 1.2}
 MIXPREFS = {**BAL, "w_drink": 1.1, "w_ticket": 1.15}
 IGNORE_OBJ = {**BAL, "no_tickets": True, "no_drinks": True}
 COLLECTOR = {**BAL, "collect": True, "w_ticket": 1.2}         # v6.4: the breadth-lane hand-limit probe
+FIGHTER = {**BAL, "contest": True}                            # v6.4b: follows rivals + contests their lock-ins
 PURE_DRINKS = {"w_val": 1.0, "w_food": 0.0, "w_drink": 1.0, "w_ramp": 0.0, "pure_drinks": True, "w_ticket": 1.0}
 NO_DRINKS = {**BAL, "no_drinks": True}
 
@@ -2225,12 +2232,13 @@ STRATEGIES = {
     "pure_drinks":   _make(PURE_DRINKS),
     "no_drinks":     _make(NO_DRINKS),
     "collector":     _make(COLLECTOR),
+    "fighter":       _make(FIGHTER),
 }
 
 STRAT_PREFS = {
     "random": BAL, "greedy_book": BAL, "balanced": BAL, "opportunistic": OPPORTUNISTIC,
     "disruptive": DISRUPTIVE, "endgame": ENDGAME, "mix": MIXPREFS, "ignore_obj": IGNORE_OBJ,
-    "pure_drinks": PURE_DRINKS, "no_drinks": NO_DRINKS, "collector": COLLECTOR,
+    "pure_drinks": PURE_DRINKS, "no_drinks": NO_DRINKS, "collector": COLLECTOR, "fighter": FIGHTER,
 }
 
 
