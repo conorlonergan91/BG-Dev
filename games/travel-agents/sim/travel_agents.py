@@ -263,6 +263,12 @@ NIGHT_SLOTS_OVERRIDE = os.environ.get("TA_NIGHT_SLOTS", "")
 #     (game-to-game variety preserved). Night ends (deck-dry) when the face-up board is picked clean OR
 #     no one can afford a remaining face-up stall ("the market's closed" — prevents an unaffordable strand).
 NIGHT_NOREFILL = os.environ.get("TA_NIGHT_NOREFILL", "0") == "1"
+# --- v6.4b RUN-OUT-OF-STOCK lever (CD steer #3): keep 1 face-up per region that REFILLS, but CAP each
+#     region's total night stock small so it "runs out" and the region SHUTS DOWN for the night. Combines
+#     1-visible collision pressure (both agents crowd the region's single stall) with progressive region
+#     shutdown (the market contracts as stalls sell out). TA_NIGHT_DECK_CAP = max night vendors per region
+#     (0 = off/full deck). Use with TA_NIGHT_SLOTS="1,1,1,1" and refill ON (NIGHT_NOREFILL=0).
+NIGHT_DECK_CAP = int(os.environ.get("TA_NIGHT_DECK_CAP", "0"))
 
 # --- CHARACTER KNOBS (v6.3 kits — locked; do NOT pre-tweak, the re-sim reads them) ---------------
 # H1 大胃王 flaw. "twice" (A, locked) | "keep2" (B) | "next" (C).
@@ -1435,6 +1441,9 @@ class TravelAgentsGame:
                 s["star"].discard(vid)
             nd = _region_deck(r, 2)
             self._rng_shuffle(s, nd)
+            # v6.4b RUN-OUT-OF-STOCK: cap the region's total night stock so it depletes + shuts down.
+            if NIGHT_DECK_CAP > 0:
+                nd = nd[:NIGHT_DECK_CAP]
             # v6.4b: the NIGHT half can run TIGHTER face-up slots than the day (CD steer: force more
             # back-half battles). Fall back to the day slots when no night override is set.
             nslot = s["night_slots"][r] if s.get("night_slots") else s["slots"][r]
