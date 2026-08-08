@@ -1,6 +1,42 @@
 """
-travel_agents.py — Travel Agents: Taiwan (v6.3 · REACH gates Buzz · milestones · perks & tickets simplified)
+travel_agents.py — Travel Agents: Taiwan (v6.3.1 · four CD reworks on top of the tickets-only lock)
 encoded for the simulation harness (see tools/sim/engine.py). Stdlib-only.
+
+------------------------------------------------------------------------------------------------------
+v6.3.1 — THE FOUR CD CHANGES (2026-08-08 re-sim; folds ON TOP of the tickets-only lock)
+------------------------------------------------------------------------------------------------------
+Canon: design/v6.3-content-draft.md "v6.3 → v6.3.1 — FOUR CD CHANGES". All four change the economy, so
+they are validated TOGETHER in this gated re-sim. The tickets-only lock (SCORING=tickets_only, expanded
+44-ticket deck, MS_MODE=perplayer) + the whole Reach economy are held FIXED (all prior-validated).
+
+  CD-1  里長伯 (councillor) home-region rework (TA_COUNCILLOR_KIT=home, default). He picks ONE home
+        region at setup; Old Favours −1 ingredient applies ONLY in his home region (floored at 0), and a
+        +1 AWAY TAX (one chosen type — the vendor's local signature, cheapest-to-add since he must stand
+        there) hits every Bribe OUTSIDE home. The old first-N-regions discount lives behind KIT=regions.
+        The councillor NO-HSR restriction is REMOVED (re-homed as CD-2) — he uses HSR like everyone.
+  CD-2  "Scheduled Maintenance" (排班保養) — a TABLE-WIDE, PERSISTENT event (NOT a ⦿/⬢/➤ scope). Seeded
+        (TA_MAINT_COUNT copies, default 1) in a NIGHT ingredient deck of an HSR endpoint (TA_MAINT_REGION,
+        default N). Fires on a Visit / Convenience-Store flip (whiffs on Travel, like any event). While
+        active the HSR N↔S hop is CLOSED for ALL players until the start of the drawing player's next turn
+        (one full go-around), then reopens. Tracked as s["hsr_closed_until_turn"].
+  CD-3  Common Taipei start (TA_START_SPLIT=0, default). ALL players start in N (Taipei/North hub) at
+        every count. The old split ({2:[N,S],...}) is behind TA_START_SPLIT=1 for the seat-balance A/B.
+  CD-4  Night-cost escalation (TA_NIGHT_CURVE graded 0/1/2, default 1=SOFT). DAY vendors stay as-printed;
+        the re-sim landed on the SOFT curve (a +1 escalation: NIGHT "both" foods → 3, apex ★ → 4, top apex
+        5 — every night marquee CROSS-REGION biased). Soft keeps night sourcing alive (~113% of day) and
+        cuts free night bribes 1.73→0.95 (each remaining free bribe now needs a genuine DUAL-region ramp =
+        a legitimate deep-engine reward, not the single-region zero-out exploit) at a modest 2%→6% stall.
+        The STEEP curve (2) meets the "≥2 residual" principle literally but pushes ~16% of games past the
+        last-train into the stall backstop — REJECTED. Backstop TA_MIN1_FLOOR (default OFF) drives free
+        bribes to 0 but adds a rule + stall for little gain — NOT needed (probe #1 verdict).
+
+  ★ PROBE #1 (the load-bearing one): day/night SOURCING split (Visit+CStore+Travel per turn). Reported as
+  the night-half rate as a FRACTION of the day-half rate. FAIL = night collapses ~0 (sourcing trivialised).
+  GOAL = night stays ~60–100% of day. Over-correction watch = night marquees unaffordable (night claims
+  thin / clock stalls / game drags) — probe night claims/player + turns-to-first-night-Bribe.
+
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+(v6.3 lineage below — unchanged shape carried forward)
 
 This reworks the v6.2 sim (region vendor markets + a vendor-claims clock + Prestige/Rep-VP scoring + perks)
 to the v6.3 SHAPE-LOCK spec in design/v6.3-content-draft.md. v6.3 gives the Reputation track TEETH and
@@ -63,10 +99,13 @@ Simplifications (the sim's blind spots — hand these to the table):
   * 網紅's "Late to the Party" (miss the first NIGHT turn) is modelled exactly (a forced pass); "goes
     last" is only a seat tiebreak (mild for greedy bots). ASSUMPTIONS tagged `# ASSUMPTION:`.
 
+(end v6.3 lineage)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Run:
     python tools/sim/simulate.py --module games/travel-agents/sim/travel_agents.py --n 3000 \
         --out games/travel-agents/playtests/sim-results.md
-    python games/travel-agents/sim/travel_agents.py            # the full v6.3 probe suite
+    python games/travel-agents/sim/travel_agents.py            # the full v6.3.1 probe suite
     python games/travel-agents/sim/travel_agents.py --counts 2,3,4   # the MP seat-balance smoke
 """
 from __future__ import annotations
@@ -105,6 +144,35 @@ from collections import Counter, deque
 #     Central under-pull (a bg-developer data question), not a Draw-value miscalibration.
 BUZZ_SUPPLY  = int(os.environ.get("TA_BUZZ_SUPPLY", "24"))     # 2p Buzz supply (+~9/extra player)
 BUZZ_MARGIN  = int(os.environ.get("TA_BUZZ_MARGIN", "2"))      # ≥N Buzz lead to Bribe (design 2)
+
+# --- v6.3.1 CD-4 NIGHT-COST ESCALATION (the LOTR:Duel model) -------------------------------------
+# NIGHT_CURVE is a GRADED level (the re-sim found the steep curve over-corrects → clock stalls):
+#   0 = OFF (raw v6.3 night costs — "both" 2–3, apex 3, for the A/B floor);
+#   1 = SOFT (default) — a +1 escalation, cross-region biased: "both" → 3, apex → 4 (top apex 5). Keeps
+#       night sourcing alive (~60–100% of day) WITHOUT dragging the vendor-claims clock into the stall;
+#   2 = STEEP — a +2 escalation: "both" → 4, apex → 5–6. Meets the design's "≥2 residual" principle to
+#       the letter but pushes ~16% of games past the last-train into the stall backstop (rejected — see
+#       playtests/sim-notes.md §v6.3.1). DAY costs held as printed unless DAY_CURVE (reserve knob).
+NIGHT_CURVE = int(os.environ.get("TA_NIGHT_CURVE", "1"))      # 0 off | 1 soft (CD-4 default) | 2 steep
+DAY_CURVE   = os.environ.get("TA_DAY_CURVE", "0") == "1"      # reserve: escalate DAY costs too (default OFF)
+# CD-4 BACKSTOP: after ALL discounts, every Bribe still costs ≥1 ingredient of the vendor's cost. Default
+# OFF — probe #1 decides whether the cost curve alone suffices or this floor is needed against free bribes.
+MIN1_FLOOR  = os.environ.get("TA_MIN1_FLOOR", "0") == "1"    # (default OFF)
+
+# --- v6.3.1 CD-3 COMMON TAIPEI START -------------------------------------------------------------
+# 0 (default) = ALL players start in N (Taipei/North hub) at every count. 1 = the old per-count split
+# ({2:[N,S], 3:[N,S,C], 4:[N,C,S,E]}) — kept behind the knob for the seat-balance A/B.
+START_SPLIT = os.environ.get("TA_START_SPLIT", "0") == "1"   # (CD-3 default: common Taipei start)
+
+# --- v6.3.1 CD-2 "Scheduled Maintenance" (排班保養) — table-wide HSR outage ------------------------
+# A special TABLE-WIDE, PERSISTENT event (NOT a ⦿/⬢/➤ scope). Seeded as MAINT_COUNT marker(s) in the
+# MAINT_REGION deck of phase MAINT_PHASE (1 day | 2 night). Surfacing on a Visit / Convenience-Store flip
+# closes the HSR N↔S hop for ALL players until the start of the drawing player's next turn (one go-around).
+# Count (1 vs 2) and day/night placement are the CD's knobs.
+MAINT_COUNT  = int(os.environ.get("TA_MAINT_COUNT", "1"))     # copies seeded (CD default 1)
+MAINT_REGION = os.environ.get("TA_MAINT_REGION", "N")         # HSR endpoint: "N" | "S" (CD default N)
+MAINT_PHASE  = int(os.environ.get("TA_MAINT_PHASE", "2"))     # 1 day | 2 night (CD default night)
+MAINT = "MAINT"                                               # the marker token mixed into that deck
 LARDER_CAP   = int(os.environ.get("TA_LARDER_CAP", "7"))
 STAR_BONUS_P = int(os.environ.get("TA_STAR_P", "2"))           # dynamic ★ token +Bookings (no more +Rep)
 STALL_CAP    = int(os.environ.get("TA_STALL_CAP", "34"))       # hard per-player turn cap (drag backstop)
@@ -196,13 +264,21 @@ OFFICE_BUFF = os.environ.get("TA_OFFICE", "keep2")
 # header + playtests/sim-notes.md §v6.3 CHARACTER RE-PASS). Was "lateparty" (miss the first NIGHT turn),
 # which double-taxed the kit once the Reach cap already throttles Promote-3. Probe "lateparty" to compare.
 INFL_FLAW = os.environ.get("TA_INFL_FLAW", "none")            # "none" (RE-PASS default) | "lateparty"
-# 里長伯 Old Favours — how many regions the "first vendor courted here costs 1 fewer" discount covers.
-# v6.2/v6.3 kit = 2; CHARACTER RE-PASS default = 1 (the brake for the tickets-only HOT drift; keeps the
-# "regular's discount in your home patch" hook, drops the sprawl). 0 would gut the hook (do not).
+# 里長伯 KIT (v6.3.1 CD-1) — "home" (default) is the reworked HOME-REGION kit:
+#   * picks ONE home region at setup (bot heuristic: the region his face-up day ramp + dealt day-tickets
+#     most reward — see _pick_home_region; ASSUMPTION-tagged, and since everyone now starts in N/Taipei
+#     the home diagnostic reports whether he just camps North);
+#   * Old Favours −1 ingredient applies ONLY in his home region (floored at 0, like any discount);
+#   * an AWAY TAX +TAX of one chosen type (the vendor's local signature — cheapest-to-add, he must stand
+#     there) on every Bribe OUTSIDE home; and he now USES HSR (the no-HSR flaw is re-homed as CD-2).
+# "regions" recovers the retired first-N-regions discount kit (COUNCILLOR_REGIONS) for an A/B if useful.
+COUNCILLOR_KIT       = os.environ.get("TA_COUNCILLOR_KIT", "home")   # "home" (CD-1 default) | "regions"
+COUNCILLOR_HOME_DISC = int(os.environ.get("TA_COUNCILLOR_HOME_DISC", "1"))  # home Old-Favours magnitude
+COUNCILLOR_AWAY_TAX  = int(os.environ.get("TA_COUNCILLOR_AWAY_TAX", "1"))   # away-tax magnitude
+# (legacy "regions" kit knob — how many regions the old first-region discount covers; unused under KIT=home)
 COUNCILLOR_REGIONS = int(os.environ.get("TA_COUNCILLOR_REGIONS", "1"))
-# 里長伯 optional OFFSETTING FLAW (CD option B): his island-wide name is thin, so he starts with less Reach.
-# Default -1 = OFF (start = REACH_START). Set 1 ("start Reach 1") to pair with REGIONS=1 for a dead-centre
-# in-sim landing (~51%) + an explicit ability+flaw silhouette. See the re-pass note.
+# 里長伯 reserve BRAKE (CD-1 lever / the old option B): a thin island-wide name → less START Reach.
+# Default -1 = OFF (start = REACH_START). Set 1 ("start Reach 1") if the home-region kit still runs hot.
 COUNCILLOR_REACH = int(os.environ.get("TA_COUNCILLOR_REACH", "-1"))
 
 # ==================================================================================================
@@ -215,14 +291,23 @@ COMMON = "K"
 COMMON_REGIONS = {"C", "S"}                          # where the common 糖 lives (locally sourceable)
 
 
-def neighbours(pos, char=None):
-    """A pawn's LEGAL travel destinations (character-aware: 里長伯 cannot use HSR)."""
+def neighbours(pos, char=None, hsr_open=True):
+    """A pawn's LEGAL travel destinations. v6.3.1: the HSR N↔S hop is available to EVERYONE (the old
+    里長伯 no-HSR guard is REMOVED — re-homed as the CD-2 table-wide Scheduled-Maintenance outage) UNLESS
+    the HSR is currently closed by a Scheduled-Maintenance event (hsr_open=False → slow road for all)."""
     ns = list(RING[pos])
-    if char != "councillor" and pos in HSR:
+    if hsr_open and pos in HSR:
         other = HSR[1] if pos == HSR[0] else HSR[0]
         if other not in ns:
             ns.append(other)
     return ns
+
+
+def _hsr_is_open(s):
+    """CD-2: is the HSR N↔S hop currently open? Closed while a Scheduled-Maintenance card is active
+    (until the start of the drawing player's next turn = s['turn'] reaches hsr_closed_until_turn)."""
+    u = s.get("hsr_closed_until_turn")
+    return u is None or s["turn"] >= u
 
 
 def region_neighbours(r):
@@ -233,13 +318,13 @@ def region_neighbours(r):
     return ns
 
 
-def _dist(pos, dest, char=None):
+def _dist(pos, dest, char=None, hsr_open=True):
     if pos == dest:
         return 0
     q = deque([(pos, 0)]); seen = {pos}
     while q:
         cur, d = q.popleft()
-        for nb in neighbours(cur, char):
+        for nb in neighbours(cur, char, hsr_open):
             if nb in seen:
                 continue
             if nb == dest:
@@ -248,20 +333,20 @@ def _dist(pos, dest, char=None):
     return 99
 
 
-def _next_hop(pos, dest, char=None):
+def _next_hop(pos, dest, char=None, hsr_open=True):
     if pos == dest or dest is None:
         return pos
     q = deque([(pos, None)]); seen = {pos}
     while q:
         cur, first = q.popleft()
-        for nb in neighbours(cur, char):
+        for nb in neighbours(cur, char, hsr_open):
             if nb in seen:
                 continue
             fh = nb if first is None else first
             if nb == dest:
                 return fh
             seen.add(nb); q.append((nb, fh))
-    return neighbours(pos, char)[0]
+    return neighbours(pos, char, hsr_open)[0]
 
 
 # ==================================================================================================
@@ -314,43 +399,60 @@ def _build_vendors():
                   "cost": Counter(cost), "bookings": bookings, "icon": icon,
                   "star": star, "total_cost": sum(cost.values())})
 
+    # CD-4: NIGHT costs escalate (cross-region biased) so a night marquee EXCEEDS the max single-region
+    # ramp; the region-discount defrays but never zeroes it. DAY costs held as printed (unless DAY_CURVE).
+    # `nc(raw, soft, steep)` picks by NIGHT_CURVE level (0/1/2). The re-sim landed on SOFT (level 1):
+    # a +1 escalation ("both"→3, apex→4, cross-region biased) — night sourcing stays live without the
+    # STEEP curve's clock stall. `dc` is the reserve DAY escalation (default off).
+    def nc(raw, soft, steep):
+        return {0: raw, 1: soft, 2: steep}.get(NIGHT_CURVE, soft)
+
+    def dc(base, escalated):
+        return escalated if DAY_CURVE else base
+
     # --- North 北 (pork · 2 slots · no local K) ---
-    add("N", 1, False, {"N": 1}, 2, True)                 # 肉包 Pork Bao (discount-only)
-    add("N", 1, False, {"N": 1}, 1, True)                 # 蛋餅 Egg Crepe (discount-only)
+    add("N", 1, False, dc({"N": 1}, {"N": 1}), 2, True)   # 肉包 Pork Bao (discount-only)
+    add("N", 1, False, dc({"N": 1}, {"N": 1}), 1, True)   # 蛋餅 Egg Crepe (discount-only)
     add("N", 1, True,  {"K": 1}, 2, False)                # 豆漿 Soy Milk (drink · none)
-    add("N", 2, False, {"N": 2}, 5, True)                 # 胡椒餅 Pepper Bun (both)
-    # 牛肉麵 Beef Noodle (both). v6.3 table = {N:2, S:1}→S. CENTRAL_TEA_FIX re-points it to {N:2, C:1}→C
-    # so Central tea gains cross-region export demand (closes N→C→S→E→N).
+    add("N", 2, False, nc({"N": 2}, {"N": 2, "C": 1}, {"N": 3, "C": 1}), 5, True)  # 胡椒餅 (both, +C export)
+    # 牛肉麵 Beef Noodle (both). v6.3 table = {N:2, S:1}→S. CENTRAL_TEA_FIX re-points it →C.
     if CENTRAL_TEA_FIX:
-        add("N", 2, False, {"N": 2, "C": 1}, 6, True)     # 牛肉麵 →C  (the fix)
+        add("N", 2, False, nc({"N": 2, "C": 1}, {"N": 2, "C": 1}, {"N": 3, "C": 1}), 6, True)  # 牛肉麵 →C
     else:
-        add("N", 2, False, {"N": 2, "S": 1}, 6, True)     # 牛肉麵 →S  (raw v6.3 table)
-    add("N", 2, False, {"N": 3}, 7, False, True)          # ★ 大香腸 Big Sausage (Bookings-only trophy)
+        add("N", 2, False, nc({"N": 2, "S": 1}, {"N": 2, "S": 1}, {"N": 3, "S": 1}), 6, True)  # 牛肉麵 →S
+    add("N", 2, False, nc({"N": 3}, {"N": 3, "S": 1}, {"N": 4, "S": 1}), 7, False, True)  # ★ 大香腸 (apex, cross)
     add("N", 2, True,  {"K": 1}, 2, False)                # 珍奶 Bubble Tea (drink · none)
     # --- Central 中 (tea · 1 slot · local K) ---
-    add("C", 1, False, {"C": 1}, 2, True)                 # 肉圓 Ba-wan (discount-only)
-    add("C", 1, False, {"C": 1}, 1, True)                 # 麵線 Misua (discount-only)
+    add("C", 1, False, dc({"C": 1}, {"C": 1}), 2, True)   # 肉圓 Ba-wan (discount-only)
+    add("C", 1, False, dc({"C": 1}, {"C": 1}), 1, True)   # 麵線 Misua (discount-only)
     add("C", 1, True,  {"K": 1}, 2, False)                # 珍珠奶茶 Bubble Tea (drink · none)
-    add("C", 2, False, {"C": 2}, 5, True)                 # 大腸包小腸 Sausage-in-Sausage (both)
-    add("C", 2, False, {"C": 2, "S": 1}, 6, False, True)  # ★ 逢甲名物 →S (Bookings-only trophy)
+    add("C", 2, False, nc({"C": 2}, {"C": 2, "S": 1}, {"C": 3, "S": 1}), 5, True)  # 大腸包小腸 (both, cross)
+    add("C", 2, False, nc({"C": 2, "S": 1}, {"C": 3, "S": 1}, {"C": 4, "S": 1}), 6, False, True)  # ★ 逢甲名物 →S
     add("C", 2, True,  {"K": 1}, 2, False)                # 冬瓜茶 Wintermelon Tea (drink · none)
     # --- South 南 (seafood · 1 slot · local K) ---
-    add("S", 1, False, {"S": 1}, 2, True)                 # 虱目魚粥 Milkfish Congee (discount-only)
-    add("S", 1, False, {"S": 1}, 1, True)                 # 碗粿 Rice Bowl Cake (discount-only)
+    add("S", 1, False, dc({"S": 1}, {"S": 1}), 2, True)   # 虱目魚粥 Milkfish Congee (discount-only)
+    add("S", 1, False, dc({"S": 1}, {"S": 1}), 1, True)   # 碗粿 Rice Bowl Cake (discount-only)
     add("S", 1, True,  {"K": 1}, 2, False)                # 木瓜牛奶 Papaya Milk (drink · none)
-    add("S", 2, False, {"S": 2}, 5, True)                 # 蚵仔煎 Oyster Omelette (both)
-    add("S", 2, False, {"S": 2, "E": 1}, 6, True)         # 棺材板 Coffin Bread →E (both)
-    add("S", 2, False, {"S": 3}, 7, False, True)          # ★ 擔仔麵 Tan-tsú-mī (Bookings-only trophy)
+    add("S", 2, False, nc({"S": 2}, {"S": 2, "E": 1}, {"S": 3, "E": 1}), 5, True)  # 蚵仔煎 (both, cross)
+    add("S", 2, False, nc({"S": 2, "E": 1}, {"S": 3, "E": 1}, {"S": 3, "E": 1}), 6, True)  # 棺材板 →E (both)
+    add("S", 2, False, nc({"S": 3}, {"S": 3, "C": 1}, {"S": 4, "C": 1}), 7, False, True)  # ★ 擔仔麵 (apex, cross)
     # --- East 東 (rice · 1 slot · no local K · Indigenous-forward) ---
-    add("E", 1, False, {"E": 2}, 2, True)                 # 竹筒飯 Bamboo-Tube Rice (discount-only)
-    add("E", 1, False, {"E": 1}, 2, True)                 # 米糕 Rice Cake (discount-only)
+    add("E", 1, False, dc({"E": 2}, {"E": 2}), 2, True)   # 竹筒飯 Bamboo-Tube Rice (discount-only)
+    add("E", 1, False, dc({"E": 1}, {"E": 1}), 2, True)   # 米糕 Rice Cake (discount-only)
     add("E", 1, True,  {"K": 1}, 2, False)                # 洛神花茶 Roselle Tea (drink · none)
-    add("E", 2, False, {"E": 2}, 5, True)                 # 麻糬 Mochi (both)
-    add("E", 2, False, {"E": 2, "N": 1}, 8, False, True)  # ★ 石板烤肉 Stone-Slab BBQ →N (apex trophy)
+    add("E", 2, False, nc({"E": 2}, {"E": 2, "N": 1}, {"E": 3, "N": 1}), 5, True)  # 麻糬 (both, cross)
+    add("E", 2, False, nc({"E": 2, "N": 1}, {"E": 3, "N": 1}, {"E": 4, "N": 2}), 8, False, True)  # ★ 石板烤肉 →N (top apex)
     return V
 
 
 VENDORS = _build_vendors()
+
+
+def _rebuild_vendors():
+    """Rebuild the module-level VENDORS table — needed when a cost knob (NIGHT_CURVE / DAY_CURVE) is
+    toggled at RUNTIME for an A/B, since costs are baked in at build time."""
+    global VENDORS
+    VENDORS = _build_vendors()
 
 
 def _is_cross(vid):
@@ -554,6 +656,30 @@ def _ticket_keep_score(won, key, prefs):
     return _ticket_value(key) * _ticket_ease(key) * _ticket_fit(prefs, key) + 2.0 * prog
 
 
+# --- CD-1: 里長伯's home-region pick (bot heuristic) ----------------------------------------------
+# ASSUMPTION: a real 里長伯 picks the region he intends to GRIND. The bot scores each region by (a) the
+# face-up DAY ramp vendors sitting there (where he can build the icon ramp his home discount amplifies) +
+# (b) how many of his dealt DAY tickets a single vendor of that region would advance (where the objectives
+# pull him). argmax. Since CD-3 puts EVERYONE in N/Taipei at the start, North's 2 day slots give it a
+# baseline edge — the home-region DIAGNOSTIC (probe below) reports the actual distribution so we can see
+# whether he just camps North rather than making a real regional declaration.
+def _pick_home_region(faceup, mrow):
+    score = {r: 0.0 for r in REGIONS}
+    for r in REGIONS:
+        for vid in faceup[r]:
+            v = VENDORS[vid]
+            if not v["is_drink"] and v["icon"]:
+                score[r] += 1.0
+    for r in REGIONS:
+        fake = {"id": -1, "region": r, "is_drink": False, "phase": 1, "bookings": 3,
+                "total_cost": 1, "contested": False, "starred": False, "act_won": 1,
+                "cross": False, "final_round": False}
+        for key in mrow:
+            if _mhelps(key, fake, []):
+                score[r] += 1.5
+    return max(REGIONS, key=lambda r: (score[r], -REGIONS.index(r)))
+
+
 CHARACTERS = ("neutral", "councillor", "office", "influencer", "dagushi", "dage")
 
 
@@ -577,7 +703,11 @@ class TravelAgentsGame:
         m_end  = {2: M_END,  3: M_END + 2,  4: M_END + 4}.get(n_players, M_END)
         v_dusk = {2: V_DUSK, 3: V_DUSK + 2, 4: V_DUSK + 4}.get(n_players, V_DUSK)
         v_end  = {2: V_END,  3: V_END + 4,  4: V_END + 8}.get(n_players, V_END)
-        starts = {2: ["N", "S"], 3: ["N", "S", "C"], 4: ["N", "C", "S", "E"]}.get(n_players, ["N", "S"])
+        # CD-3: everyone starts in N (Taipei/North hub). The old per-count split is behind START_SPLIT.
+        if START_SPLIT:
+            starts = {2: ["N", "S"], 3: ["N", "S", "C"], 4: ["N", "C", "S", "E"]}.get(n_players, ["N", "S"])
+        else:
+            starts = ["N"] * n_players
 
         vdeck, faceup, buzz_ids = {}, {}, set()
         for r in REGIONS:
@@ -591,6 +721,9 @@ class TravelAgentsGame:
             pool = Counter({r: SIG_SUPPLY})
             if r in COMMON_REGIONS:
                 pool[COMMON] += K_SUPPLY
+            # CD-2: seed the Scheduled-Maintenance marker into the DAY deck only if MAINT_PHASE==1 (day).
+            if MAINT_COUNT > 0 and r == MAINT_REGION and MAINT_PHASE == 1:
+                pool[MAINT] += MAINT_COUNT
             ing_pool[r] = pool
             ing_discard[r] = Counter()
 
@@ -609,6 +742,8 @@ class TravelAgentsGame:
                 # v6.3: the live Buzz cap. 里長伯 option-B flaw = a thinner island-wide name → less start Reach.
                 "reach": (COUNCILLOR_REACH if (ch == "councillor" and COUNCILLOR_REACH >= 0) else REACH_START),
                 "promote_bonus": (1 if ch == "influencer" else 0),
+                # CD-1: 里長伯 declares ONE home region at setup (bot heuristic). None for everyone else.
+                "home_region": (_pick_home_region(faceup, mrow) if ch == "councillor" else None),
                 "councillor_regions": set(),
                 "tickets": [], "counted_done": set(),
                 "day_ticket_score": 0, "day_win": 0, "day_lose": 0,   # DAY tickets frozen at dusk
@@ -640,6 +775,17 @@ class TravelAgentsGame:
             "claim_by_region": {r: 0 for r in REGIONS},
             "src_by_region": {r: 0 for r in REGIONS}, "src_common": 0,
             "travels": 0, "visits": 0, "cstores": 0, "promotes": 0, "inter_moves": 0,
+            # --- v6.3.1 CD-4 probe #1: day/night SOURCING split (Visit+CStore+Travel per turn) ---
+            "turns_day": 0, "turns_night": 0,
+            "src_actions_day": 0, "src_actions_night": 0,
+            "night_claims": 0, "night_food_wins": 0,       # night vendor claims (climax must still fire)
+            "free_bribes": 0, "free_night_bribes": 0,       # fully-discounted bribes (the free-bribe exploit)
+            # --- v6.3.1 CD-2 Scheduled Maintenance (table-wide HSR outage) ---
+            "hsr_closed_until_turn": None, "maint_fired": 0, "maint_closed_turns": 0,
+            "maint_seeded": (MAINT_COUNT if (MAINT_COUNT > 0 and MAINT_PHASE == 1) else 0),
+            # --- v6.3.1 CD-1 councillor home/away diagnostics ---
+            "councillor_home_bribes": 0, "councillor_away_bribes": 0,
+            "home_pick": Counter(pl["home_region"] for pl in players if pl["home_region"]),
             "dusk_turn": None, "last_turn": None, "first_night_win_turn": None,
             "legal_counts": [], "forced_turns": 0,
             "events_fired": 0, "scope_fired": {"self": 0, "region": 0, "neigh": 0},
@@ -689,12 +835,30 @@ class TravelAgentsGame:
                 pay[COMMON] = c                          # common carries no icon → never discounted
             else:
                 pay[r] = max(0, c - pl["icons"].get(r, 0))
-        # 里長伯 Old Favours: first vendor courted in each of the first two regions costs 1 fewer
-        if pl["char"] == "councillor" and not v["is_drink"] \
-                and v["region"] not in pl["councillor_regions"] and len(pl["councillor_regions"]) < COUNCILLOR_REGIONS:
-            for r in sorted(pay, key=lambda k: -pay[k]):
-                if pay[r] > 0:
-                    pay[r] -= 1; break
+        # 里長伯 CD-1 HOME-REGION kit (default): −HOME_DISC in his home region, +AWAY_TAX everywhere else.
+        if pl["char"] == "councillor" and not v["is_drink"]:
+            if COUNCILLOR_KIT == "home":
+                if v["region"] == pl["home_region"]:
+                    for _ in range(COUNCILLOR_HOME_DISC):    # Old Favours (home only), floored at 0
+                        for r in sorted(pay, key=lambda k: -pay[k]):
+                            if pay[r] > 0:
+                                pay[r] -= 1; break
+                else:
+                    # AWAY TAX: +1 of a chosen type. He must STAND in the vendor's region to Bribe, so the
+                    # vendor's local signature is the cheapest-to-add type (ASSUMPTION — a human might pay
+                    # it in a surplus type; this keeps the tax reliably biting where he sources anyway).
+                    tax_type = v["region"]
+                    if tax_type == COMMON or tax_type not in pay:
+                        # cross-region/common edge: fall back to the largest existing region cost entry
+                        cands = [r for r in pay if r != COMMON] or list(pay)
+                        tax_type = max(cands, key=lambda r: pay.get(r, 0)) if cands else v["region"]
+                    pay[tax_type] = pay.get(tax_type, 0) + COUNCILLOR_AWAY_TAX
+            else:  # legacy "regions" kit — first vendor courted in each of the first N regions costs 1 fewer
+                if v["region"] not in pl["councillor_regions"] \
+                        and len(pl["councillor_regions"]) < COUNCILLOR_REGIONS:
+                    for r in sorted(pay, key=lambda k: -pay[k]):
+                        if pay[r] > 0:
+                            pay[r] -= 1; break
         # milestone-14 boon: your NEXT Bribe costs 1 less ingredient (one-shot)
         if pl["bribe_discount"] > 0:
             for r in sorted(pay, key=lambda k: -pay[k]):
@@ -704,6 +868,10 @@ class TravelAgentsGame:
         if pl["char"] == "dage" and DAGE_FLAW in ("tab", "nocontest"):
             tgt = COMMON if v["is_drink"] else v["region"]
             pay[tgt] = pay.get(tgt, 0) + 1
+        # CD-4 BACKSTOP: after ALL discounts, every Bribe still costs ≥1 ingredient of the vendor's cost.
+        if MIN1_FLOOR and v["total_cost"] > 0 and sum(pay.values()) <= 0:
+            r0 = min(v["cost"], key=lambda k: (k == COMMON, v["cost"][k]))  # a type in the vendor's cost
+            pay[r0] = 1
         return pay
 
     def _margin_for(self, pl):
@@ -758,7 +926,7 @@ class TravelAgentsGame:
         acts.append(("visit",))
         for r in REGIONS:
             acts.append(("cstore", r))
-        for d in neighbours(pl["pos"], pl["char"]):
+        for d in neighbours(pl["pos"], pl["char"], _hsr_is_open(s)):   # CD-2: HSR may be closed
             acts.append(("travel", d))
         if s["mrow"] and len(pl["tickets"]) < 4 and not pl["prefs"].get("no_tickets"):
             acts.append(("claim",))
@@ -776,6 +944,13 @@ class TravelAgentsGame:
         if pl["reach"] <= 0:
             s["reach_zero_turns"] += 1
         s["reach_samples"].append(pl["reach"])
+        # CD-4 probe #1: which half is this turn, and CD-2: is the HSR currently closed this turn?
+        if s["act"] == 1:
+            s["turns_day"] += 1
+        else:
+            s["turns_night"] += 1
+        if not _hsr_is_open(s):
+            s["maint_closed_turns"] += 1
         kind = act[0]
         if kind == "pass":
             pl["skip_next"] = False
@@ -895,7 +1070,14 @@ class TravelAgentsGame:
     def _do_bribe(self, s, p, vid, rng):
         pl = s["players"][p]
         v = VENDORS[vid]
-        for r, c in self._pay_plan(s, p, vid).items():
+        _plan_pay = self._pay_plan(s, p, vid)
+        # CD-4 diagnostic: a FULLY-FREE bribe (all ingredient cost discounted to 0) on a vendor that
+        # printed a cost — the exploit the night curve / MIN1_FLOOR guard against.
+        if v["total_cost"] > 0 and sum(_plan_pay.values()) <= 0:
+            s["free_bribes"] += 1
+            if v["phase"] == 2:
+                s["free_night_bribes"] += 1
+        for r, c in _plan_pay.items():
             pl["larder"][r] -= c
         pl["larder"] = +pl["larder"]
         if pl["bribe_discount"] > 0:
@@ -928,8 +1110,17 @@ class TravelAgentsGame:
             s["food_wins"] += 1
         if contested:
             s["contested_wins"] += 1
+        if v["phase"] == 2:                                  # CD-4: night claims — the climax must fire
+            s["night_claims"] += 1
+            if not v["is_drink"]:
+                s["night_food_wins"] += 1
         if v["phase"] == 2 and s["first_night_win_turn"] is None:
             s["first_night_win_turn"] = s["turn"]
+        if pl["char"] == "councillor" and COUNCILLOR_KIT == "home" and not v["is_drink"]:
+            if v["region"] == pl["home_region"]:
+                s["councillor_home_bribes"] += 1
+            else:
+                s["councillor_away_bribes"] += 1
         self._remove_and_refill(s, v["region"], vid)
         self._on_claim_clock(s, p)
         self._check_milestones(s, p)                         # after the clock so MS_ON=tickets sees fresh counted_done
@@ -1083,6 +1274,10 @@ class TravelAgentsGame:
             pool = Counter({r: SIG_SUPPLY})
             if r in COMMON_REGIONS:
                 pool[COMMON] += K_SUPPLY
+            # CD-2: seed the Scheduled-Maintenance marker into the NIGHT deck (default MAINT_PHASE==2).
+            if MAINT_COUNT > 0 and r == MAINT_REGION and MAINT_PHASE == 2:
+                pool[MAINT] += MAINT_COUNT
+                s["maint_seeded"] += MAINT_COUNT
             s["ing_pool"][r] = pool
             s["ing_discard"][r] = Counter()
         # the ticket row switches to the NIGHT pool
@@ -1142,6 +1337,10 @@ class TravelAgentsGame:
         toks = list(pool.elements())
         tok = rng.choice(toks)
         pool[tok] -= 1; pool = +pool; s["ing_pool"][r] = pool
+        if tok == MAINT:
+            # CD-2: the seeded Scheduled-Maintenance card surfaced — a table-wide event tuple. It FIRES
+            # only on a Visit / Convenience-Store flip (Travel whiffs on any event); consumed either way.
+            return ("ev", "maint", "table", "hsr")
         return tok
 
     def _return_token(self, s, tok):
@@ -1160,6 +1359,13 @@ class TravelAgentsGame:
     def _fire_event(self, s, actor, drawn_region, ev, rng, during_visit, origin):
         _, kind, scope, sub = ev
         s["events_fired"] += 1
+        if kind == "maint":
+            # CD-2: TABLE-WIDE HSR outage. Close the N↔S hop for ALL players until the start of the
+            # drawing player's next turn (one full go-around). At fire time s["turn"] is still the drawing
+            # player's turn, so their next turn is s["turn"] + n → reopen when s["turn"] reaches that.
+            s["hsr_closed_until_turn"] = s["turn"] + s["n"]
+            s["maint_fired"] += 1
+            return 0
         s["scope_fired"][scope] += 1
         if kind == "boon" and sub == "star":
             self._place_star(s)
@@ -1213,10 +1419,18 @@ class TravelAgentsGame:
             return 2 if OFFICE_BUFF == "keep2" else 1
         return 2
 
+    def _bump_src(self, s):
+        """CD-4 probe #1: a sourcing action (Visit / Convenience Store / Travel), counted per game-half."""
+        if s["act"] == 1:
+            s["src_actions_day"] += 1
+        else:
+            s["src_actions_night"] += 1
+
     def _do_visit(self, s, p, rng):
         pl = s["players"][p]
         r = pl["pos"]
         s["visits"] += 1
+        self._bump_src(s)
         cards = [self._draw_market(s, r, rng) for _ in range(3)]
         toks = [c for c in cards if isinstance(c, str)]
         events = [c for c in cards if isinstance(c, tuple)]
@@ -1253,6 +1467,7 @@ class TravelAgentsGame:
     def _do_cstore(self, s, p, r, rng):
         pl = s["players"][p]
         s["cstores"] += 1
+        self._bump_src(s)
         c = self._draw_market(s, r, rng)
         grabbed = False
         if isinstance(c, str):
@@ -1288,6 +1503,7 @@ class TravelAgentsGame:
         pl["pos"] = dest
         s["travels"] += 1
         s["inter_moves"] += 1
+        self._bump_src(s)
         self._gain_reach(s, p, REACH_TRAVEL, "travel")       # v6.3: Travel is the engine's fuel line
         draw_region = src if pl["char"] == "office" else dest
         n_draw = 2 if (pl["char"] == "office" and OFFICE_BUFF == "travel2") else 1
@@ -1303,6 +1519,10 @@ class TravelAgentsGame:
                         s["src_by_region"][draw_region] += 1
                 else:
                     self._return_token(s, c)
+            elif isinstance(c, tuple) and c[1] == "maint":
+                # CD-2: the Scheduled-Maintenance card only FIRES on a Visit/CStore flip. A Travel flyby
+                # that surfaces it must NOT waste it — return the marker to the deck so it keeps waiting.
+                s["ing_pool"][draw_region][MAINT] += 1
 
     def _discard_to_cap(self, s, pl):
         total = sum(pl["larder"].values())
@@ -1352,6 +1572,13 @@ class TravelAgentsGame:
         end_reach = [s["players"][p]["reach"] for p in range(s["n"])]
         ms_both_same = 1.0 if (s["ms7_by"] is not None and s["ms7_by"] == s["ms14_by"]) else 0.0
         ms_both_fired = 1.0 if (s["ms7_by"] is not None and s["ms14_by"] is not None) else 0.0
+        # CD-4 probe #1: day/night sourcing RATE (actions per turn in each half) + the night:day ratio.
+        day_src_rate = (s["src_actions_day"] / s["turns_day"]) if s["turns_day"] else 0.0
+        night_src_rate = (s["src_actions_night"] / s["turns_night"]) if s["turns_night"] else 0.0
+        night_day_src_ratio = (night_src_rate / day_src_rate) if day_src_rate else 0.0
+        c_home = s["councillor_home_bribes"]; c_away = s["councillor_away_bribes"]
+        c_tot = c_home + c_away
+        hp = s["home_pick"]; hp_tot = sum(hp.values()) or 1
 
         def csh(r): return claim[r] / claim_tot
         def ssh(x): return (x / src_tot) if src_tot else 0.0
@@ -1417,6 +1644,26 @@ class TravelAgentsGame:
             "ms_both_same_given_both": (ms_both_same if ms_both_fired else 0.0),
             "ms7_earn_players": float(s["ms7_earn"]),        # #players who got mark-1 boon (>1 spreads it)
             "ms14_earn_players": float(s["ms14_earn"]),
+            # --- v6.3.1 CD-4 probe #1: day/night sourcing ---
+            "src_day_per_turn": float(day_src_rate),
+            "src_night_per_turn": float(night_src_rate),
+            "night_day_src_ratio": float(night_day_src_ratio),
+            "night_claims_per_player": float(s["night_claims"] / s["n"]),
+            "night_food_wins_per_player": float(s["night_food_wins"] / s["n"]),
+            "free_bribes_per_game": float(s["free_bribes"]),
+            "free_night_bribes_per_game": float(s["free_night_bribes"]),
+            "turns_night_frac": float(s["turns_night"] / s["turn"]) if s["turn"] else 0.0,
+            # --- v6.3.1 CD-2 Scheduled Maintenance ---
+            "maint_seeded_per_game": float(s["maint_seeded"]),
+            "maint_fired_per_game": float(s["maint_fired"]),
+            "maint_fired_rate": 1.0 if s["maint_fired"] > 0 else 0.0,
+            "maint_closed_turns_per_game": float(s["maint_closed_turns"]),
+            # --- v6.3.1 CD-1 councillor home/away ---
+            "councillor_home_bribes": float(c_home),
+            "councillor_away_bribes": float(c_away),
+            "councillor_away_frac": float(c_away / c_tot) if c_tot else 0.0,
+            "home_pick_N": float(hp.get("N", 0) / hp_tot), "home_pick_C": float(hp.get("C", 0) / hp_tot),
+            "home_pick_S": float(hp.get("S", 0) / hp_tot), "home_pick_E": float(hp.get("E", 0) / hp_tot),
             # --- score breakdown (winner) ---
             "win_bookings": float(wp["bookings"]),
             "win_ticket_score": float(self._ticket_score(wp)),
@@ -1426,7 +1673,7 @@ class TravelAgentsGame:
 
 
 GAME = TravelAgentsGame()
-TITLE = "Travel Agents: Taiwan (v6.3 — Reach gates Buzz + milestones)"
+TITLE = "Travel Agents: Taiwan (v6.3.1 — four CD reworks: home-region 里長伯 · Maintenance · Taipei start · night curve)"
 
 
 # ==================================================================================================
@@ -1527,16 +1774,17 @@ def _pick_target(s, p, prefs):
 
 def _token_source(s, p, tok, legal, prefs):
     pl = s["players"][p]
+    ho = _hsr_is_open(s)
     if tok == COMMON:
         targets = list(COMMON_REGIONS)
     else:
         targets = [tok]
     if pl["pos"] in targets and ("visit",) in legal:
         return ("visit",)
-    dest = min(targets, key=lambda r: _dist(pl["pos"], r, pl["char"]))
+    dest = min(targets, key=lambda r: _dist(pl["pos"], r, pl["char"], ho))
     if pl["pos"] == dest and ("visit",) in legal:
         return ("visit",)
-    hop = _next_hop(pl["pos"], dest, pl["char"])
+    hop = _next_hop(pl["pos"], dest, pl["char"], ho)
     if ("travel", hop) in legal:
         return ("travel", hop)
     for r in targets:
@@ -1602,7 +1850,7 @@ def _any_travel(s, p, legal, toward=None):
     blocks a Promote the bot wants to make)."""
     pl = s["players"][p]
     if toward is not None:
-        hop = _next_hop(pl["pos"], toward, pl["char"])
+        hop = _next_hop(pl["pos"], toward, pl["char"], _hsr_is_open(s))
         if ("travel", hop) in legal:
             return ("travel", hop)
     for a in legal:
@@ -1656,7 +1904,7 @@ def _plan(s, p, legal, rng, prefs):
             return ("visit",)
         if need.get(COMMON, 0) > 0 and pos in COMMON_REGIONS and ("cstore", pos) in legal:
             return ("cstore", pos)
-        hop = _next_hop(pos, eff, pl["char"])
+        hop = _next_hop(pos, eff, pl["char"], _hsr_is_open(s))
         if ("travel", hop) in legal:
             return ("travel", hop)
 
@@ -1681,7 +1929,7 @@ def _plan(s, p, legal, rng, prefs):
             if mv is not None:
                 return mv
     if lead < margin and not present:
-        hop = _next_hop(pl["pos"], eff, pl["char"])
+        hop = _next_hop(pl["pos"], eff, pl["char"], _hsr_is_open(s))
         if ("travel", hop) in legal:
             return ("travel", hop)
 
@@ -1803,6 +2051,15 @@ def _char_winrate(ch, n=1200, seed=1, prefs=None):
     return ((w0[0] + 0.5 * t0) + (w1[1] + 0.5 * t1)) / 2
 
 
+def _char_metrics(ch, n=1200, seed=1, prefs=None):
+    """Run char (seat 0) vs neutral and return the averaged metrics — for the character-specific
+    diagnostics (里長伯 home-pick distribution + away-tax incidence) that the neutral field can't show."""
+    pr = prefs or BAL
+    _, _, _, mt = _run({0: STRATEGIES["balanced"], 1: STRATEGIES["balanced"]},
+                       n=n, seed=seed, characters=[ch, "neutral"], prefs=[pr, BAL])
+    return mt
+
+
 def _field_metrics(n=1500, seed=1):
     _, _, _, mt = _run({0: STRATEGIES["balanced"], 1: STRATEGIES["balanced"]},
                        n=n, seed=seed, prefs=[BAL, BAL])
@@ -1828,7 +2085,11 @@ if __name__ == "__main__":
         sys.exit(0)
 
     N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 1200
-    print(f"# {TITLE} — v6.3 probe suite ({N} games/cell)\n")
+    print(f"# {TITLE} — v6.3.1 probe suite ({N} games/cell)\n")
+    print(f"  KNOBS: NIGHT_CURVE={int(NIGHT_CURVE)} MIN1_FLOOR={int(MIN1_FLOOR)} "
+          f"START_SPLIT={int(START_SPLIT)} COUNCILLOR_KIT={COUNCILLOR_KIT} "
+          f"MAINT={MAINT_COUNT}@{MAINT_REGION}/ph{MAINT_PHASE}  "
+          f"(SCORING={SCORING} TICKETS={TICKET_SET} MS_MODE={MS_MODE})\n")
 
     print("## Game arc (balanced mirror)")
     mt = _field_metrics(n=N)
@@ -1845,6 +2106,39 @@ if __name__ == "__main__":
           f"S {mt['src_share_S']*100:.0f}% E {mt['src_share_E']*100:.0f}% K {mt['src_share_common']*100:.0f}%")
     print(f"  moves/gm {mt['inter_moves']:.1f}  promotes/gm {mt['promotes_per_game']:.1f}  "
           f"forced_turn_frac {mt['forced_turn_frac']:.3f}  avg_legal {mt['avg_legal_actions']:.1f}")
+
+    print("\n## ★ PROBE #1 — day/night SOURCING split (CD-4 night curve: does sourcing stay live at night?)")
+    print(f"  sourcing/turn: DAY {mt['src_day_per_turn']:.2f}  NIGHT {mt['src_night_per_turn']:.2f}  "
+          f"→ night is {mt['night_day_src_ratio']*100:.0f}% of day  (GOAL ~60-100%; FAIL = collapse→0)")
+    print(f"  night claims/player {mt['night_claims_per_player']:.2f}  night-food/player {mt['night_food_wins_per_player']:.2f}  "
+          f"first-night-Bribe turn {mt['first_night_win_turn']:.1f}  (over-correction watch: claims must not thin out)")
+    print(f"  FREE (zero-ingredient) bribes/gm: all {mt['free_bribes_per_game']:.2f}  night {mt['free_night_bribes_per_game']:.2f}  "
+          f"(the exploit CD-4 guards — MIN1_FLOOR only earns its keep if this is non-trivial)")
+    print(f"  end: LT {mt['end_by_lasttrain']*100:.0f}% deck {mt['end_by_deck']*100:.0f}% "
+          f"stall {mt['end_by_stall']*100:.0f}%  (drag/stall watch — night must stay reachable-with-a-good-engine)")
+
+    print("\n## PROBE #1 curve level A/B — 0 off / 1 soft (default) / 2 steep / 1+MIN1_FLOOR")
+    for lbl, lvl, flr in (("0 off (raw v6.3)", 0, False), ("1 soft (DEFAULT)", 1, False),
+                          ("1 soft +MIN1_FLOOR", 1, True), ("2 steep", 2, False)):
+        globals()["NIGHT_CURVE"] = lvl; globals()["MIN1_FLOOR"] = flr
+        _rebuild_vendors()
+        m = _field_metrics(n=max(400, N // 2))
+        print(f"  {lbl:22} night/day-src {m['night_day_src_ratio']*100:3.0f}%  "
+              f"night-claims/plyr {m['night_claims_per_player']:.2f}  "
+              f"1st-night turn {m['first_night_win_turn']:.1f}  LT {m['end_by_lasttrain']*100:.0f}%  "
+              f"stall {m['end_by_stall']*100:.0f}%  turns/plyr {m['turns_per_player']:.1f}")
+    globals()["NIGHT_CURVE"] = 1; globals()["MIN1_FLOOR"] = False; _rebuild_vendors()
+
+    print("\n## CD-2 — Scheduled Maintenance (table-wide HSR outage) — fires? symmetric? no dead stretch")
+    print(f"  seeded/gm {mt['maint_seeded_per_game']:.2f}  fired/gm {mt['maint_fired_per_game']:.2f}  "
+          f"fired-at-least-once {mt['maint_fired_rate']*100:.0f}%  HSR-closed turns/gm {mt['maint_closed_turns_per_game']:.2f}")
+
+    print("\n## CD-1 — 里長伯 home-region: pick distribution + away-tax incidence (watch: does he camp North?)")
+    cm = _char_metrics("councillor", n=N)
+    print(f"  home pick:  N {cm['home_pick_N']*100:.0f}%  C {cm['home_pick_C']*100:.0f}%  "
+          f"S {cm['home_pick_S']*100:.0f}%  E {cm['home_pick_E']*100:.0f}%")
+    print(f"  councillor bribes: home {cm['councillor_home_bribes']:.2f}  away {cm['councillor_away_bribes']:.2f}  "
+          f"→ away-tax paid on {cm['councillor_away_frac']*100:.0f}% of his food bribes")
 
     print("\n## REACH economy (probe 1 — does the Buzz fight BREATHE or CHOKE?)")
     print(f"  reach: start {mt['reach_start']:.0f}  mean(all turns) {mt['reach_mean_all']:.1f}  "
@@ -1889,12 +2183,20 @@ if __name__ == "__main__":
         print(f"  {lbl:22} influencer {_char_winrate('influencer', n=N)*100:5.1f}%")
     globals()["INFL_FLAW"] = "none"
 
-    print("\n## 里長伯 — Old-Favours brake (RE-PASS: REGIONS=1 default; option B adds start-Reach 1)")
-    for lbl, rc, cr in (("REGIONS=1 (default)", 1, -1), ("REGIONS=2 (old lock)", 2, -1),
-                        ("REGIONS=1 + Reach1 (opt B)", 1, 1), ("REGIONS=0 (guts hook)", 0, -1)):
-        globals()["COUNCILLOR_REGIONS"] = rc; globals()["COUNCILLOR_REACH"] = cr
+    print("\n## 里長伯 — CD-1 HOME-REGION kit levers (home-disc / away-tax / start-Reach) + legacy A/B")
+    _save = (COUNCILLOR_KIT, COUNCILLOR_HOME_DISC, COUNCILLOR_AWAY_TAX, COUNCILLOR_REACH, COUNCILLOR_REGIONS)
+    for lbl, kit, disc, tax, cr, rg in (
+            ("home d1/t1 (CD-1 default)", "home", 1, 1, -1, 1),
+            ("home d1/t1 + start-Reach1", "home", 1, 1, 1, 1),
+            ("home d1/t2 (harsher tax)", "home", 1, 2, -1, 1),
+            ("home d1/t0 (no away tax)", "home", 1, 0, -1, 1),
+            ("legacy REGIONS=1 (old A/B)", "regions", 1, 1, -1, 1)):
+        globals()["COUNCILLOR_KIT"] = kit; globals()["COUNCILLOR_HOME_DISC"] = disc
+        globals()["COUNCILLOR_AWAY_TAX"] = tax; globals()["COUNCILLOR_REACH"] = cr
+        globals()["COUNCILLOR_REGIONS"] = rg
         print(f"  {lbl:28} councillor {_char_winrate('councillor', n=N)*100:5.1f}%")
-    globals()["COUNCILLOR_REGIONS"] = 1; globals()["COUNCILLOR_REACH"] = -1
+    (globals()["COUNCILLOR_KIT"], globals()["COUNCILLOR_HOME_DISC"], globals()["COUNCILLOR_AWAY_TAX"],
+     globals()["COUNCILLOR_REACH"], globals()["COUNCILLOR_REGIONS"]) = _save
 
     print("\n## 大哥 — does he drift? (v6.3 lock = D: lead-by-1, no flaw)")
     for lbl, thr, flaw in (("D lead1+none (lock)", 1, "none"), ("A tie+tab", 0, "tab"),
