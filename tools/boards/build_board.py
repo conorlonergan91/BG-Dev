@@ -549,7 +549,11 @@ def render_scoretrack(theme, max_v, per_row, title, milestones, note, start_labe
     call_h = 78                                   # room above each row for (up to 2-line) milestone call-outs
     row_h = cell + call_h + gap
     W = pad * 2 + per_row * (cell + gap) - gap
-    H = title_h + rows * row_h + 70
+    # Wrap the footer note to the panel width so a long --note never clips at the right edge
+    # (bg-infodesign): grow the panel height to fit however many wrapped lines it needs.
+    note_lines = textwrap.wrap(note, max(20, int((W - 2 * pad) / 14))) if note else []
+    note_block_h = (len(note_lines) * 32 + 24) if note_lines else 40
+    H = title_h + rows * row_h + 30 + note_block_h
 
     def cell_xy(v):
         row = v // per_row
@@ -601,9 +605,11 @@ def render_scoretrack(theme, max_v, per_row, title, milestones, note, start_labe
             for j, seg in enumerate(segs):
                 parts.append(f'<text x="{x+cell/2}" y="{base + j*24}" font-size="20" fill="{accent}" '
                              f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(seg)}</text>')
-    if note:
-        parts.append(f'<text x="{pad}" y="{H-28}" font-size="26" fill="{muted}" '
-                     f'font-family="{bfont}" font-style="italic">{esc(note)}</text>')
+    if note_lines:
+        ny = H - note_block_h + 30
+        for i, ln in enumerate(note_lines):
+            parts.append(f'<text x="{pad}" y="{ny + i*32}" font-size="26" fill="{muted}" '
+                         f'font-family="{bfont}" font-style="italic">{esc(ln)}</text>')
     return _svg(W, H, parts), W, H
 
 
