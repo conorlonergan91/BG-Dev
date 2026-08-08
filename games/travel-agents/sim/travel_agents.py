@@ -840,6 +840,12 @@ class TravelAgentsGame:
             })
 
         return {
+            # store the rng so night-deck / night-ticket shuffling works for ALL harness paths — not just
+            # the _Seeded wrapper. (Bug fix: simulate.py's round_robin uses the raw GAME without _Seeded,
+            # so without this the night decks/tickets were never shuffled — harmless with the old refill
+            # night, but under the v6.4b run-out-of-stock night a fixed unshuffled subset broke night
+            # ticket completion and spuriously revived the ignore_obj grind in sim-results.md only.)
+            "_rng": rng,
             "n": n_players, "slots": slots, "night_slots": night_slots,
             "vdeck": vdeck, "faceup": faceup,
             "ing_pool": ing_pool, "ing_discard": ing_discard,
