@@ -137,3 +137,34 @@ Full six-char band [char vs neutrals, avg first+last seat], idx×fair. SPREAD = 
     (1) nerf-battlers (levers)     里長伯 1.39  媽寶 1.22  網紅 1.30  大胃王 1.18  大哥 1.25  阿嬤 0.97   [spread 0.42]
     (2) remove-ALL-flaws           里長伯 1.73  媽寶 1.31  網紅 1.14  大胃王 1.14  大哥 1.45  阿嬤 0.95   [spread 0.77]
     (3) buff-the-weak (阿嬤+媽寶)   里長伯 1.26  媽寶 1.24  網紅 1.22  大胃王 1.18  大哥 1.27  阿嬤 0.95   [spread 0.32]
+
+## §V7 buff spot-check — baked AMA_CAP=7 / OFFICE_KEEP=3 (seed-matched, N=1000/seating)
+`python games/travel-agents/sim/travel_agents.py --spotcheck 1000` — LIGHT confirm of the CD-locked
+buff-the-weak fix now baked as module DEFAULTS (阿嬤 basket 6→7, retiring the small-basket flaw = standard
+Larder cap; 媽寶 keep-on-Visit 2→3). Six-character band only, 4p + 6p, seed 1 (reproducible). Same band
+logic as `--v7` (`_char_wr_mp`: char vs (c−1) neutrals, avg of first+last seat, idx×fair). NB: all idx read
+>1.0 because a kitted character faces kit-less neutrals — read the RELATIVE band/spread, comparable to the
+§CD ESCALATION LADDER above.
+
+### 4p  (fair 25.0%)
+    里長伯 1.26  媽寶 1.19  網紅 1.27  大胃王 1.08  大哥 1.28  阿嬤 1.08   [spread 0.20]
+
+### 6p  (fair 16.7%)
+    里長伯 1.33  媽寶 1.35  網紅 1.22  大胃王 1.18  大哥 1.34  阿嬤 1.08   [spread 0.26]
+
+VERDICT
+- **里長伯 honest 6p idx = 1.33 → TRIM NEEDED = YES.** The N=300 ladder's buff-the-weak 6p read (1.26) was
+  seed-noise; the tighter N=1000 seed-matched read confirms he sits at the top tier (~1.33, close to the
+  defaults-run's 1.60→ now tamed by the buffs but still ≥1.30). He remains a top-tier battler at 6p and
+  warrants the reserved 里長伯 trim (reduce his home-discount reach / stiffen the away-tax — one variable).
+- **阿嬤 NO overshoot.** 1.08 @4p and 1.08 @6p — she sits at the *bottom* of the band at both counts. The
+  basket 6→7 buff lifted her off the floor to a healthy in-tier position without over-buffing (well under
+  the ~1.15 @4p watch line). Clean.
+- **媽寶 — 4p clean (1.19, under the ~1.27 watch line), but 6p reads 1.35 = a MILD OVERSHOOT.** The keep-3
+  buff lifted her to the top tier at 6p, statistically level with the battlers 大哥 1.34 / 里長伯 1.33
+  (all within ±1 idx-hundredth = noise-tied). Not a runaway, but above the 1.27 watch line at 6p — FLAG for
+  the CD: if the 里長伯 trim is applied, re-read 媽寶 @6p; keep-3 may want a small dial-back or she inherits
+  the top slot. (N=1000 CI on idx ≈ ±0.08.)
+- Other three mid-pack: 網紅 1.22–1.27, 大胃王 1.08–1.18 (mid), 大哥 1.28–1.34 (top — a *designed* battler,
+  expected). Band spread tightened to 0.20 @4p / 0.26 @6p (vs the ladder's 0.23/0.32 at N=300) — the buffs
+  narrowed the band as intended; 阿嬤 is no longer the cold outlier.

@@ -182,11 +182,15 @@ LARDER_CAP   = int(os.environ.get("TA_LARDER_CAP", "7"))
 # v6.4d 阿嬤 A-má (granny, "the senior citizen"): OAP 敬老卡 travel pass → moves anywhere in one Travel
 # (2-hop reach on this 4-ring+HSR map), but a small basket → a low Larder cap (can't hoard). A mobility/
 # tempo character + the natural anti-hoard predator of the glutton 大胃王.
-AMA_CAP      = int(os.environ.get("TA_AMA_CAP", "6"))          # v6.4d: basket 6 (cap-5 flaw was too harsh, 42.5→46)
+AMA_CAP      = int(os.environ.get("TA_AMA_CAP", "7"))          # V7 CD-LOCKED buff-the-weak: basket 7 (= standard
+#     Larder cap; retires 阿嬤's small-basket flaw). Was v6.4d 6 (cap-5 was too harsh); the V7 buff-the-weak
+#     ladder landed on 7 = the character no longer carries a basket drawback at all.
 # v6.4d kit-strength dials (the "tweak ideas" sweep): 大胃王's Visit keep-amount (his glutton edge — the
 # dominant character; test nerfing 3→2) and 媽寶's Visit keep-amount (her gatherer edge — test buffing 2→3).
 DAGU_KEEP    = int(os.environ.get("TA_DAGU_KEEP", "3"))        # 大胃王 keeps N on a Visit (default 3)
-OFFICE_KEEP  = int(os.environ.get("TA_OFFICE_KEEP", "2"))      # 媽寶 keeps N on a Visit (default 2)
+OFFICE_KEEP  = int(os.environ.get("TA_OFFICE_KEEP", "3"))      # 媽寶 keeps N on a Visit. V7 CD-LOCKED
+#     buff-the-weak: keep 3 (was 2) — her gatherer edge lifted toward the battlers. (Phase-4 renders this as
+#     a glyph / +1 badge on the component, NOT a named keyword — that rendering is Phase-4's job, not the sim's.)
 STAR_BONUS_P = int(os.environ.get("TA_STAR_P", "2"))           # dynamic ★ token +Bookings (no more +Rep)
 STALL_CAP    = int(os.environ.get("TA_STALL_CAP", "50"))       # V7 P1.5: SAFETY net only (the designed
 #     stall backstop is REMOVED — the deck-clock is monotonic & guaranteed to fire). Raised 34→50 so a
@@ -2795,6 +2799,74 @@ if __name__ == "__main__":
                 body = "  ".join(f"{ZH[ch]} {idxs[ch]:.2f}" for ch in CH6)
                 _out(f"    {lbl}  {body}   [spread {hi-lo:.2f}]")
         globals().update(_LADSAVE)
+
+        if OUT:
+            os.makedirs(os.path.dirname(OUT), exist_ok=True)
+            with open(OUT, "w", encoding="utf-8") as f:
+                f.write("\n".join(L) + "\n")
+            print(f"\n[sim] wrote {OUT}")
+        sys.exit(0)
+
+    # ==============================================================================================
+    #  --spotcheck [N]  — a LIGHT, seed-matched spot-check of the V7 buff-the-weak fix. Runs ONLY the
+    #  per-count six-character band (char vs neutrals, avg of first+last seat, idx×fair) for 4p AND 6p,
+    #  reusing the SAME band logic as --v7's _char_wr_mp. The full --v7 suite runs the 3–6 probe battery
+    #  (~40 min); this is the fast confirm that the baked buffs (AMA_CAP 7 / OFFICE_KEEP 3) landed and
+    #  里長伯's honest 6p idx / 阿嬤 / 媽寶 sit where expected. Seed-matched (fixed base seed) so a re-run
+    #  reproduces exactly.  Usage:  python .../travel_agents.py --spotcheck [N]  (default N=1000, min 800)
+    # ==============================================================================================
+    if "--spotcheck" in sys.argv:
+        _args = [a for a in sys.argv[1:] if a.isdigit()]
+        N = int(_args[0]) if _args else 1000
+        if N < 800:
+            N = 800                                           # enforce the ≥800 precision floor
+        OUT = sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv else None
+        from engine import run_match
+        CH6 = ("councillor", "office", "influencer", "dagushi", "dage", "ama")
+        ZH = {"councillor": "里長伯", "office": "媽寶", "influencer": "網紅",
+              "dagushi": "大胃王", "dage": "大哥", "ama": "阿嬤"}
+        L = []
+
+        def _out(line=""):
+            print(line); L.append(line)
+
+        def _char_wr_mp(ch, c, n, seed):
+            """SAME band logic as --v7: char in FIRST seat and LAST seat vs balanced-neutrals; everyone
+            balanced/BAL. Returns (avg_winrate, seat0_wr, seatlast_wr). Fair share = 1/c."""
+            bal = STRATEGIES["balanced"]
+            got = {}
+            for seat in (0, c - 1):
+                chars = ["neutral"] * c
+                chars[seat] = ch
+                g = _Seeded(c, characters=chars, prefs=[BAL] * c)
+                won = 0.0
+                for i in range(n):
+                    sc, _ = run_match(g, {p: bal for p in range(c)}, seed + i)
+                    best = max(sc.values())
+                    winners = [p for p, v in sc.items() if v == best]
+                    if seat in winners:
+                        won += 1.0 / len(winners)
+                got[seat] = won / n
+                seed += n
+            return (got[0] + got[c - 1]) / 2, got[0], got[c - 1]
+
+        _out(f"# {TITLE}")
+        _out(f"# V7 buff-the-weak SPOT-CHECK — six-character band, 4p + 6p, N={N}/seating (seed-matched)\n")
+        _out(f"Baked buffs: AMA_CAP={AMA_CAP} (阿嬤 basket) · OFFICE_KEEP={OFFICE_KEEP} (媽寶 keep-on-Visit). "
+             f"Everything else V7 canon.\n")
+
+        seed = 1                                              # FIXED base seed → seed-matched, reproducible
+        for c in (4, 6):
+            fair = 100.0 / c
+            _out(f"\n## {c}p  (fair share = {fair:.1f}%)")
+            idxs = {}
+            for ch in CH6:
+                avg, s0, sl = _char_wr_mp(ch, c, N, seed); seed += 4 * N
+                idx = avg / (fair / 100)
+                idxs[ch] = idx
+                _out(f"    {ZH[ch]:6} {avg*100:5.1f}%   idx×fair {idx:4.2f}   (seat0 {s0*100:.1f} / last {sl*100:.1f})")
+            lo, hi = min(idxs.values()), max(idxs.values())
+            _out(f"    SPREAD (hi−lo idx) {hi-lo:.2f}   (fair {fair:.1f}%; idx 0.90–1.10 ≈ in-band)")
 
         if OUT:
             os.makedirs(os.path.dirname(OUT), exist_ok=True)
