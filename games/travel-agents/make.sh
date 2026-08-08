@@ -152,4 +152,7 @@ cp build/sheets/ticket_*_sheet_*.png      exports/screentop/ 2>/dev/null || true
 cp build/sheets/ticket_*_back.png         exports/screentop/ 2>/dev/null || true
 # Character BOARDS go into the Screentop set too — each uploads as a per-player board image.
 cp build/boards/board-*.png               exports/screentop/ 2>/dev/null || true
+# The shared TABLE map (both day/night states) — the Screentop module stands the play area up from these.
+cp build/map-day.png                      exports/screentop/map-day.png 2>/dev/null || true
+cp build/map-night.png                    exports/screentop/map-night.png 2>/dev/null || true
 echo "✓ exports/ refreshed — commit these."

@@ -310,55 +310,71 @@ def render_aid(theme, spec):
     return _svg(W, H, parts), W, H
 
 
-# ---- region-ring map (TABLE-LAYOUT setup guide) -----------------------------
+# ---- region-ring map (ACROSS-THE-TABLE 2p centrepiece) ----------------------
 def render_regionmap(theme, spec, phase="day"):
-    """A table-layout setup board: the 4-region ring (adjacency + HSR drawn as edges) with each region
-    showing its signature chips, its FACE-UP vendor slots, and its DAY/NIGHT market-deck space — PLUS
-    labelled placeholder zones for every other component (Tour-Ticket decks, Prestige / Reputation /
-    clock tracks, the 成團/遺珠 piles, Buzz supply, ★ Star tokens, character mats). Renders in two states
-    (--phase day|night) mirroring the dusk flip: warm ☀日 morning vs neon ☾夜 night (drawn sun/moon, never
-    a font glyph). Region layout + all zone positions are computed here from spec content. TA-specific —
-    only games/travel-agents/make.sh calls --type regionmap, so this does not affect other games."""
-    W, H = 1840, 1540
+    """The shared TABLE board, redesigned as a 2-player across-the-table centrepiece (v6.3.2).
+
+    Two agents sit on the LONG edges (top & bottom). The layout is symmetric about the horizontal
+    mid-line and every element that has a *reading direction* is oriented for a seat:
+      • the vendor-claims CLOCK is built into BOTH long edges — one rail per player, the bottom rail
+        mirror-rotated 180° so each seat reads day→night left-to-right upright. It is the ONE shared
+        track (per-player Reach / Tours-Completed / 成團·遺珠 piles now live on the CHARACTER BOARDS,
+        so they are NOT drawn here);
+      • the 4-region DIAMOND (北 top · 中 left · 東 right · 南 bottom) is the neutral shared zone in the
+        middle, read from both sides (colour + emblem + big 繁體 carry WHERE, orientation-tolerant), with
+        the HSR spine + Scheduled-Maintenance 停 slot down the centre;
+      • every place a physical piece goes is a sized, LABELLED placeholder at its real component footprint
+        (vendor card slots 63×89mm, market decks, Ø20mm ingredient wells, Ø12mm Buzz, 18mm ★, agent pawns);
+      • the four CORNERS carry the shared SUPPLIES (Tour-Ticket decks + on-offer row, ingredient supply,
+        Buzz + ★ supply, and a read-me / interface legend).
+    Renders in two states (--phase day|night) mirroring the dusk flip: warm ☀日 vs neon ☾夜 chrome
+    (drawn sun/moon, never a font glyph). TA-specific — only games/travel-agents/make.sh calls
+    --type regionmap, so this does not affect other games."""
+    W, H = 2280, 1600
     ink, accent, muted, text = theme["ink"], theme["accent"], theme["muted"], theme["text"]
     tfont, bfont = theme["title_font"], theme["body_font"]
     regions = {r["key"]: r for r in spec.get("regions", [])}
 
     ps = PHASE_STYLES.get((phase or "day").lower(), PHASE_STYLES["day"])
     is_night = (phase or "day").lower() == "night"
-    ground = ps["page"]                      # (top, bottom) phase gradient
-    frame = ps["frame"]                      # phase accent (morning amber / neon violet)
-    glow = ps.get("glow", frame)
-    badge_emblem = ps.get("emblem", "sun")   # DRAWN sun / moon
+    ground = ps["page"]                          # (top, bottom) phase gradient
+    frame = ps["frame"]                          # phase accent (morning amber / neon violet)
+    badge_emblem = ps.get("emblem", "sun")       # DRAWN sun / moon
     badge_char = "夜" if is_night else "日"
     badge_word = "NIGHT · 夜市" if is_night else "DAY · 早"
     steel = "#4A5A72"
+    day_amber = PHASE_STYLES["day"]["frame"]     # #E6A930 — the clock's DAY half (constant, both states)
+    night_violet = PHASE_STYLES["night"]["tag_fill"]  # #6A4C93 — the clock's NIGHT half (constant)
+
+    # component footprints — labelled with their REAL mm so the board reads as a playable surface, not a
+    # diagram (proportions honoured; the render is a proto preview, mm labels carry the print intent).
+    CARD_W, CARD_H = 138, 193      # 63.5 × 88.9 mm poker card (ratio 0.715)
+    TOK_R = 40                     # Ø20 mm ingredient token
+    BUZZ_R = 24                    # Ø12 mm Buzz disc
+    STAR_R = 30                    # 18 mm ★ apex token
+    PAWN_R = 26                    # 15 mm agent pawn
 
     parts = [f'<defs>{page_gradient(theme, "pg", ground)}</defs>',
              f'<rect width="{W}" height="{H}" rx="30" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>']
 
-    # --- title band + day/night badge ---
-    title = spec.get("title", "")
-    parts.append(f'<rect x="0" y="0" width="{W}" height="92" fill="{ink}"/>')
-    parts.append(f'<rect x="0" y="92" width="{W}" height="6" fill="{frame}"/>')
-    parts.append(f'<text x="44" y="60" font-size="44" fill="#fff" '
-                 f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(title)}</text>')
-    # phase badge, right of the title band
-    bx = W - 300
-    parts.append(f'<rect x="{bx}" y="20" width="256" height="54" rx="27" fill="{frame}"/>')
-    parts.append(emblem_svg(badge_emblem, bx + 38, 47, 18, "#fff"))
-    parts.append(f'<text x="{bx + 150}" y="58" font-size="30" fill="#fff" text-anchor="middle" '
-                 f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(badge_char + "  " + badge_word)}</text>')
+    # ------------------------------------------------------------------ helpers
+    def _star(cx, cy, r, fill, stroke="none"):
+        pts = " ".join(
+            f'{cx + (r if i % 2 == 0 else r*0.42)*math.cos(-math.pi/2 + i*math.pi/5):.1f},'
+            f'{cy + (r if i % 2 == 0 else r*0.42)*math.sin(-math.pi/2 + i*math.pi/5):.1f}'
+            for i in range(10))
+        sw = f' stroke="{stroke}" stroke-width="2"' if stroke != "none" else ""
+        return f'<polygon points="{pts}" fill="{fill}"{sw}/>'
 
-    # --- helpers -----------------------------------------------------------------
-    def zone(x, y, w, h, label, glyph="", desc="", fill_op=0.42):
+    def zone(x, y, w, h, label, glyph="", desc="", fill_op=0.42, col=None):
+        col = col or frame
         z = [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" fill="#ffffff" opacity="{fill_op}"/>',
-             f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" fill="none" stroke="{frame}" '
+             f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" fill="none" stroke="{col}" '
              f'stroke-width="3" stroke-dasharray="11 8"/>',
-             f'<text x="{x+18}" y="{y+34}" font-size="25" fill="{ink}" font-family="{tfont}" '
+             f'<text x="{x+20}" y="{y+38}" font-size="26" fill="{ink}" font-family="{tfont}" '
              f'font-weight="bold" letter-spacing="1">{esc(label.upper())}</text>']
         if desc:
-            z.append(f'<text x="{x+18}" y="{y+62}" font-size="20" fill="{muted}" '
+            z.append(f'<text x="{x+20}" y="{y+66}" font-size="20" fill="{muted}" '
                      f'font-family="{bfont}">{esc(desc)}</text>')
         if glyph:
             z.append(glyph)
@@ -370,28 +386,132 @@ def render_regionmap(theme, spec, phase="day"):
              f'<rect x="{x+8}" y="{y+8}" width="{w-16}" height="{h-16}" rx="8" fill="none" '
              f'stroke="#ffffff" stroke-width="2" opacity="0.5"/>']
         tc = pick_text_color(col, dark=ink, light="#ffffff")
-        d.append(f'<text x="{x+w/2}" y="{y+h/2-2}" font-size="24" fill="{tc}" text-anchor="middle" '
+        d.append(f'<text x="{x+w/2}" y="{y+h/2-2}" font-size="26" fill="{tc}" text-anchor="middle" '
                  f'font-family="{tfont}" font-weight="bold">{esc(label)}</text>')
         if sub:
-            d.append(f'<text x="{x+w/2}" y="{y+h/2+26}" font-size="17" fill="{tc}" text-anchor="middle" '
-                     f'font-family="{bfont}" opacity="0.85">{esc(sub)}</text>')
+            d.append(f'<text x="{x+w/2}" y="{y+h/2+28}" font-size="18" fill="{tc}" text-anchor="middle" '
+                     f'font-family="{bfont}" opacity="0.9">{esc(sub)}</text>')
         return "".join(d)
 
-    # --- region ring geometry (computed) ---
-    PW, PH = 404, 262
-    centers = {"north": (626, 268), "central": (256, 590), "east": (996, 590), "south": (626, 912)}
+    def card_slot(x, y, emb, rcol, tag="vendor", mm="63×89mm"):
+        s = [f'<rect x="{x}" y="{y}" width="{CARD_W}" height="{CARD_H}" rx="10" fill="#ffffff" '
+             f'opacity="0.55" stroke="{rcol}" stroke-width="2" stroke-dasharray="8 6"/>',
+             emblem_svg(emb, x + CARD_W/2, y + CARD_H/2 - 8, 26, rcol),
+             f'<text x="{x+CARD_W/2}" y="{y+CARD_H-40}" font-size="20" fill="{muted}" text-anchor="middle" '
+             f'font-family="{bfont}">{esc(tag)}</text>',
+             f'<text x="{x+CARD_W/2}" y="{y+CARD_H-16}" font-size="16" fill="{muted}" text-anchor="middle" '
+             f'font-family="{bfont}" font-style="italic">{esc(mm)}</text>']
+        return "".join(s)
+
+    # ================================================================== TITLE
+    title = spec.get("title", "")
+    parts.append(f'<rect x="0" y="0" width="{W}" height="74" fill="{ink}"/>')
+    parts.append(f'<rect x="0" y="74" width="{W}" height="5" fill="{frame}"/>')
+    parts.append(f'<text x="40" y="52" font-size="40" fill="#fff" '
+                 f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(title)}</text>')
+    # phase badge (which state this render is) + a seat cue — no glyph arrows (no-tofu rail)
+    bx = W - 260
+    parts.append(f'<rect x="{bx}" y="18" width="220" height="40" rx="20" fill="{frame}"/>')
+    parts.append(emblem_svg(badge_emblem, bx + 32, 38, 14, "#fff"))
+    parts.append(f'<text x="{bx + 128}" y="46" font-size="24" fill="#fff" text-anchor="middle" '
+                 f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(badge_char + " " + badge_word)}</text>')
+    parts.append(f'<text x="{bx-24}" y="46" font-size="22" fill="#fff" text-anchor="end" '
+                 f'font-family="{bfont}" opacity="0.85">2 players · seated top &amp; bottom</text>')
+
+    # ================================================================== CLOCK (both edges)
+    clk = spec.get("clock", {}) or {}
+    cmax = int(clk.get("max", 10))
+    dusk = int(clk.get("dusk", 5))
+    last = int(clk.get("last_train", cmax))
+
+    def clock_rail(rx, ry, rw, rh):
+        """The shared vendor-claims day→night clock as ONE horizontal rail (0..cmax). Drawn upright;
+        the caller mirror-rotates the second copy for the far seat. Sun/moon + a day/night split make
+        the phase dual-coded (shape + colour), never colour alone (bg-access)."""
+        p = []
+        # rail ground: warm day gradient left, neon night right, split at dusk
+        n = cmax + 1
+        pad_in = 118
+        usable = rw - 2 * pad_in
+        def cx(i):
+            return rx + pad_in + (usable * i / (n - 1) if n > 1 else 0)
+        split_x = (cx(dusk - 1) + cx(dusk)) / 2 if dusk < n else cx(cmax)
+        p.append(f'<rect x="{rx}" y="{ry}" width="{rw}" height="{rh}" rx="20" fill="#ffffff" opacity="0.5" '
+                 f'stroke="{ink}" stroke-width="3"/>')
+        # day / night wash behind the cells
+        band_y, band_h = ry + rh*0.34, rh*0.40
+        p.append(f'<rect x="{rx+16}" y="{band_y}" width="{split_x-rx-16}" height="{band_h}" rx="12" '
+                 f'fill="{day_amber}" opacity="0.16"/>')
+        p.append(f'<rect x="{split_x}" y="{band_y}" width="{rx+rw-16-split_x}" height="{band_h}" rx="12" '
+                 f'fill="{night_violet}" opacity="0.16"/>')
+        # header line
+        p.append(emblem_svg("sun", rx + 46, ry + 34, 15, day_amber))
+        p.append(f'<text x="{rx+72}" y="{ry+42}" font-size="26" fill="{ink}" font-family="{tfont}" '
+                 f'font-weight="bold" letter-spacing="1">VENDOR-CLAIMS CLOCK · 早 DAY → 夜 NIGHT (2p)</text>')
+        p.append(emblem_svg("moon", rx + rw - 46, ry + 34, 15, night_violet))
+        # dusk divider
+        p.append(f'<line x1="{split_x:.1f}" y1="{ry+56}" x2="{split_x:.1f}" y2="{ry+rh-52}" '
+                 f'stroke="{night_violet}" stroke-width="3" stroke-dasharray="7 6"/>')
+        # cells
+        cy = ry + rh*0.56
+        for i in range(n):
+            x = cx(i)
+            is_dusk = (i == dusk)
+            is_last = (i == last)
+            is_gate = is_dusk or is_last
+            gcol = night_violet if is_night or i >= dusk else day_amber
+            fill = gcol if is_gate else "#ffffff"
+            stroke = ink if is_gate else muted
+            tcol = "#ffffff" if is_gate else ink
+            p.append(f'<circle cx="{x:.1f}" cy="{cy:.1f}" r="26" fill="{fill}" stroke="{stroke}" '
+                     f'stroke-width="{4 if is_gate else 2}"/>')
+            p.append(f'<text x="{x:.1f}" y="{cy+9:.1f}" font-size="26" fill="{tcol}" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold">{i}</text>')
+        # gate + start call-outs ABOVE the cells
+        def callout(i, ln1, ln2, gcol):
+            x = cx(i)
+            yb = cy - 46
+            p.append(f'<text x="{x:.1f}" y="{yb:.1f}" font-size="19" fill="{gcol}" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold">{esc(ln1)}</text>')
+            if ln2:
+                p.append(f'<text x="{x:.1f}" y="{yb+22:.1f}" font-size="15" fill="{muted}" text-anchor="middle" '
+                         f'font-family="{bfont}">{esc(ln2)}</text>')
+        callout(0, "START", "clock marker", muted)
+        callout(dusk, "黃昏 DUSK", "flip to night", night_violet)
+        callout(last, "末班車 LAST TRAIN", "game end", night_violet)
+        # start marker (a downward flag on cell 0)
+        mx = cx(0)
+        p.append(f'<polygon points="{mx-13:.1f},{cy-30} {mx+13:.1f},{cy-30} {mx:.1f},{cy-6}" fill="{accent}"/>')
+        # footnote below cells
+        p.append(f'<text x="{rx+rw/2:.1f}" y="{ry+rh-18:.1f}" font-size="18" fill="{muted}" '
+                 f'text-anchor="middle" font-family="{bfont}" font-style="italic">'
+                 f'+1 each time ANY agent Bribes a vendor · 2p: DUSK = 5th claim, LAST TRAIN = 10th · marks grow with player count</text>')
+        return p
+
+    RX, RW, RH = 40, W - 80, 168
+    # TOP rail — upright for the top-seated player
+    parts.extend(clock_rail(RX, 90, RW, RH))
+    # BOTTOM rail — same clock, mirror-rotated 180° about its own centre → upright for the bottom player
+    by = H - 90 - RH
+    bcx, bcy = W / 2, by + RH / 2
+    parts.append(f'<g transform="rotate(180 {bcx} {bcy})">' + "".join(clock_rail(RX, by, RW, RH)) + '</g>')
+
+    # ================================================================== REGION DIAMOND (centre)
+    PW_NS, PW_CE, PH = 600, 540, 360
+    centers = {"north": (1140, 468), "central": (470, 840), "east": (1810, 840), "south": (1140, 1212)}
+    pwidth = {"north": PW_NS, "south": PW_NS, "central": PW_CE, "east": PW_CE}
 
     def tl(key):
         cx, cy = centers[key]
-        return cx - PW / 2, cy - PH / 2
+        return cx - pwidth[key] / 2, cy - PH / 2
 
     # ring edges (under the panels)
     for a, b in spec.get("ring", []):
         if a in centers and b in centers:
             (x1, y1), (x2, y2) = centers[a], centers[b]
             parts.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{muted}" '
-                         f'stroke-width="12" stroke-linecap="round" opacity="0.5"/>')
-    # HSR double-rail spine (North↔South)
+                         f'stroke-width="13" stroke-linecap="round" opacity="0.5"/>')
+    # HSR double-rail spine (North↔South, vertical through the centre)
     hsr = spec.get("hsr", [])
     if len(hsr) == 2 and all(k in centers for k in hsr):
         (x1, y1), (x2, y2) = centers[hsr[0]], centers[hsr[1]]
@@ -400,164 +520,195 @@ def render_regionmap(theme, spec, phase="day"):
         for s in (off, -off):
             parts.append(f'<line x1="{x1+s}" y1="{sy}" x2="{x2+s}" y2="{ey}" stroke="{steel}" '
                          f'stroke-width="6" stroke-linecap="round"/>')
-        ties = 12
-        for i in range(1, ties):
-            my = sy + (ey - sy) * i / ties
-            parts.append(f'<line x1="{x1-(off+5)}" y1="{my}" x2="{x1+(off+5)}" y2="{my}" '
+        for i in range(1, 13):
+            ty = sy + (ey - sy) * i / 13
+            parts.append(f'<line x1="{x1-(off+5)}" y1="{ty}" x2="{x1+(off+5)}" y2="{ty}" '
                          f'stroke="{steel}" stroke-width="4"/>')
         my = (sy + ey) / 2
-        parts.append(f'<rect x="{x1-150}" y="{my-26}" width="300" height="52" rx="26" '
+        parts.append(f'<rect x="{x1-140}" y="{my-88}" width="280" height="48" rx="24" '
                      f'fill="{steel}" stroke="#fff" stroke-width="2"/>')
-        parts.append(f'<text x="{x1}" y="{my+10}" font-size="26" fill="#fff" text-anchor="middle" '
+        parts.append(f'<text x="{x1}" y="{my-56}" font-size="24" fill="#fff" text-anchor="middle" '
                      f'font-family="{tfont}" font-weight="bold">HSR 高鐵 · 北–南</text>')
-        # HSR-CLOSED reminder slot (CD-2 Scheduled Maintenance): where the 停 marker sits while the HSR is
-        # down for the whole table. Slate ties it to the island-banner event card (bg-access §v6.3.1).
+        # HSR-CLOSED reminder slot (CD-2 Scheduled Maintenance): where the 停 marker sits table-wide.
         if spec.get("hsr_closed_marker"):
             slate = "#8A8F98"
-            mky = my + 58
-            parts.append(f'<rect x="{x1-164}" y="{mky-24}" width="328" height="56" rx="12" fill="#ffffff" '
-                         f'opacity="0.55" stroke="{slate}" stroke-width="3" stroke-dasharray="9 7"/>')
-            parts.append(f'<circle cx="{x1-134}" cy="{mky+4}" r="20" fill="{slate}" stroke="{ink}" stroke-width="2"/>')
-            parts.append(f'<text x="{x1-134}" y="{mky+12}" font-size="24" fill="#fff" text-anchor="middle" '
+            mky = my + 4
+            parts.append(f'<rect x="{x1-150}" y="{mky-24}" width="300" height="88" rx="12" fill="#ffffff" '
+                         f'opacity="0.6" stroke="{slate}" stroke-width="3" stroke-dasharray="9 7"/>')
+            parts.append(f'<circle cx="{x1}" cy="{mky+2}" r="22" fill="{slate}" stroke="{ink}" stroke-width="2"/>')
+            parts.append(f'<text x="{x1}" y="{mky+11}" font-size="26" fill="#fff" text-anchor="middle" '
                          f'font-family="{tfont}" font-weight="bold">停</text>')
-            parts.append(f'<text x="{x1-102}" y="{mky-2}" font-size="18" fill="{ink}" '
+            parts.append(f'<text x="{x1}" y="{mky+48}" font-size="16" fill="{ink}" text-anchor="middle" '
                          f'font-family="{tfont}" font-weight="bold">HSR-CLOSED slot</text>')
-            parts.append(f'<text x="{x1-102}" y="{mky+22}" font-size="15" fill="{muted}" '
-                         f'font-family="{bfont}">place 停 during Scheduled Maintenance</text>')
+            parts.append(f'<text x="{x1}" y="{mky+68}" font-size="14" fill="{muted}" text-anchor="middle" '
+                         f'font-family="{bfont}">Scheduled Maintenance 排班保養</text>')
 
-    # --- region panels ---
+    hub_hanzi = spec.get("hub_hanzi", "台北")
     for r in spec.get("regions", []):
         key = r["key"]
         if key not in centers:
             continue
+        PWc = pwidth[key]
         X, Y = tl(key)
         rcol = r.get("color", accent)
         emb = r.get("emblem", "circle")
         rad = 18
         # phase frame accent (thin, outside) + white panel + region-colour border
-        parts.append(f'<rect x="{X-4}" y="{Y-4}" width="{PW+8}" height="{PH+8}" rx="{rad+4}" '
+        parts.append(f'<rect x="{X-4}" y="{Y-4}" width="{PWc+8}" height="{PH+8}" rx="{rad+4}" '
                      f'fill="none" stroke="{frame}" stroke-width="3" opacity="0.7"/>')
-        parts.append(f'<rect x="{X}" y="{Y}" width="{PW}" height="{PH}" rx="{rad}" '
+        parts.append(f'<rect x="{X}" y="{Y}" width="{PWc}" height="{PH}" rx="{rad}" '
                      f'fill="#ffffff" stroke="{rcol}" stroke-width="4"/>')
-        # header
-        hh = 54
-        parts.append(f'<path d="M{X} {Y+rad} a {rad} {rad} 0 0 1 {rad} -{rad} h {PW-2*rad} '
-                     f'a {rad} {rad} 0 0 1 {rad} {rad} v {hh-rad} h -{PW} z" fill="{rcol}"/>')
-        parts.append(emblem_svg(emb, X + 32, Y + 27, 15, "#ffffff"))
-        parts.append(f'<text x="{X+58}" y="{Y+37}" font-size="32" fill="#fff" '
+        hh = 56
+        parts.append(f'<path d="M{X} {Y+rad} a {rad} {rad} 0 0 1 {rad} -{rad} h {PWc-2*rad} '
+                     f'a {rad} {rad} 0 0 1 {rad} {rad} v {hh-rad} h -{PWc} z" fill="{rcol}"/>')
+        parts.append(emblem_svg(emb, X + 34, Y + 28, 16, "#ffffff"))
+        parts.append(f'<text x="{X+62}" y="{Y+39}" font-size="34" fill="#fff" '
                      f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(r.get("name",""))}</text>')
-        # common-start marker (CD-3: every agent starts in Taipei, North's hub) — a pill on the hub region
+        # common-start pill (CD-3: every agent starts in Taipei, North's hub)
         if r.get("start"):
-            sp_w = 150
-            parts.append(f'<rect x="{X+PW-sp_w-14}" y="{Y+11}" width="{sp_w}" height="32" rx="16" '
-                         f'fill="#ffffff" opacity="0.94"/>')
-            parts.append(f'<text x="{X+PW-sp_w/2-14}" y="{Y+33}" font-size="19" fill="{rcol}" '
+            sp_w = 168
+            parts.append(f'<rect x="{X+PWc-sp_w-14}" y="{Y+12}" width="{sp_w}" height="32" rx="16" '
+                         f'fill="#ffffff" opacity="0.95"/>')
+            parts.append(f'<text x="{X+PWc-sp_w/2-14}" y="{Y+34}" font-size="19" fill="{rcol}" '
                          f'text-anchor="middle" font-family="{tfont}" font-weight="bold" '
-                         f'letter-spacing="1">START · 台北</text>')
-        # signature chips (shape + 繁體 + short EN under) — short labels so nothing overflows
+                         f'letter-spacing="1">START · {esc(hub_hanzi)}</text>')
+
+        # signature chips (shape + 繁體 + short EN) on the left; card row on the right
         chips = r.get("chips", [])
-        n = len(chips)
-        chip_r = 26
-        cell = 108
-        x0 = X + PW / 2 - (n * cell) / 2 + cell / 2
-        ccy = Y + hh + 52
+        chip_r = 24
+        ccy = Y + hh + 44
         for i, sp in enumerate(chips):
             suit = resolve_suit(theme, sp.get("id", "")) if sp.get("id") in theme["suits"] else {}
             scol = suit.get("color", rcol)
             semb = suit.get("emblem", "circle")
-            cx = x0 + i * cell
+            cx = X + 44 + i * 96
             tcol = pick_text_color(scol, dark=ink, light="#ffffff")
             parts.append(emblem_svg(semb, cx, ccy, chip_r, scol, stroke=ink))
-            parts.append(f'<text x="{cx}" y="{ccy + chip_r*0.34}" font-size="28" fill="{tcol}" '
+            parts.append(f'<text x="{cx}" y="{ccy + chip_r*0.34}" font-size="26" fill="{tcol}" '
                          f'text-anchor="middle" font-family="{bfont}" font-weight="bold">{esc(sp.get("label",""))}</text>')
-            parts.append(f'<text x="{cx}" y="{ccy + chip_r + 26}" font-size="19" fill="{text}" '
+            parts.append(f'<text x="{cx}" y="{ccy + chip_r + 24}" font-size="17" fill="{text}" '
                          f'text-anchor="middle" font-family="{bfont}">{esc(sp.get("en",""))}</text>')
-        # bottom row: FACE-UP vendor slots (left) + the DAY/NIGHT market deck (right)
+
+        # agent-pawn spaces at the common start (North / Taipei) — stacked in the free left column
+        if r.get("start"):
+            parts.append(f'<text x="{X+52}" y="{Y+180}" font-size="16" fill="{rcol}" text-anchor="middle" '
+                         f'font-family="{tfont}" font-weight="bold" letter-spacing="1">PAWNS · 台北</text>')
+            for i in range(2):
+                px, py = X + 52, Y + 218 + i * 66
+                parts.append(f'<circle cx="{px}" cy="{py}" r="{PAWN_R}" fill="#ffffff" opacity="0.6" '
+                             f'stroke="{rcol}" stroke-width="2" stroke-dasharray="6 5"/>')
+                parts.append(f'<circle cx="{px}" cy="{py-7}" r="9" fill="{rcol}" opacity="0.55"/>')
+                parts.append(f'<rect x="{px-9}" y="{py+1}" width="18" height="15" rx="5" fill="{rcol}" opacity="0.55"/>')
+            parts.append(f'<text x="{X+52}" y="{Y+322}" font-size="15" fill="{muted}" text-anchor="middle" '
+                         f'font-family="{bfont}" font-style="italic">agents · 15mm</text>')
+
+        # functional row (right): FACE-UP vendor card slot(s) + MARKET deck (flips with phase)
         slots_n = int(r.get("slots_n", 1))
-        row_top = Y + PH - 112
-        sw, sh = 60, 90
-        parts.append(f'<text x="{X+26}" y="{row_top-8}" font-size="18" fill="{rcol}" '
+        row_y = Y + PH - CARD_H - 30
+        gap = 14
+        n_cells = slots_n + 1  # vendor slots + one market deck
+        block_w = n_cells * CARD_W + (n_cells - 1) * gap
+        x_start = X + PWc - 26 - block_w
+        parts.append(f'<text x="{x_start}" y="{row_y-10}" font-size="17" fill="{rcol}" '
                      f'font-family="{tfont}" font-weight="bold" letter-spacing="1">FACE-UP ×{slots_n}</text>')
         for i in range(slots_n):
-            sx = X + 26 + i * (sw + 12)
-            parts.append(f'<rect x="{sx}" y="{row_top}" width="{sw}" height="{sh}" rx="8" '
-                         f'fill="none" stroke="{rcol}" stroke-width="2" stroke-dasharray="7 6"/>')
-            parts.append(emblem_svg(emb, sx + sw/2, row_top + 34, 12, rcol))
-            parts.append(f'<text x="{sx+sw/2}" y="{row_top+sh-12}" font-size="15" fill="{muted}" '
-                         f'text-anchor="middle" font-family="{bfont}">vendor</text>')
-        # market deck (flips with phase)
-        dw, dh = 92, 104
-        dx = X + PW - 26 - dw
-        deck_col = ground[1] if not is_night else "#3A2E52"
-        parts.append(f'<text x="{dx+dw/2}" y="{row_top-8}" font-size="18" fill="{frame}" '
+            sx = x_start + i * (CARD_W + gap)
+            parts.append(card_slot(sx, row_y, emb, rcol))
+        dx = x_start + slots_n * (CARD_W + gap)
+        parts.append(f'<text x="{dx+CARD_W/2}" y="{row_y-10}" font-size="17" fill="{frame}" '
                      f'text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="1">MARKET</text>')
-        parts.append(facedown_deck(dx, row_top, dw, dh, frame,
-                                   badge_char, "night" if is_night else "day"))
+        parts.append(facedown_deck(dx, row_y, CARD_W, CARD_H, frame, badge_char, "night" if is_night else "day"))
 
-    # --- RIGHT column: track + pile + supply placeholder zones ---
-    rc_x, rc_w = 1250, 550
-    # v6.3.1 TICKETS-ONLY: there is NO VP/score track and Reputation (→ Reach) no longer scores. The two
-    # zones below REPLACE the stale v6.2 "Prestige (VP)" + "Reputation scores by final position" labels
-    # (which flatly contradicted canon and mis-taught the FTUE). Both are now flagged NOT a score.
-    # Distinct hue per instrument so the two teal-clone markers stop colliding (bg-infodesign): Reach = the
-    # violet Buzz hue it caps (matches the Reach track + the 及 marker); Tours = teal (matches its track).
-    tours_teal = theme["suits"].get("central", {}).get("color", "#1F8A7A")
-    reach_violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
-    parts.append(zone(rc_x, 120, rc_w, 128, "Reach — your Buzz cap",
-                      f'<circle cx="{rc_x+rc_w-44}" cy="168" r="26" fill="{reach_violet}"/>'
-                      f'<text x="{rc_x+rc_w-44}" y="177" font-size="26" fill="#fff" text-anchor="middle" font-family="{tfont}" font-weight="bold">及</text>',
-                      "committed Buzz ≤ Reach · NOT a score"))
-    parts.append(zone(rc_x, 268, rc_w, 128, "Tours Completed — Rave Reviews",
-                      emblem_svg("crowd", rc_x + rc_w - 46, 316, 24, tours_teal),
-                      "a completions meter — NOT your score"))
-    parts.append(zone(rc_x, 416, rc_w, 128, "Vendor-claims clock",
-                      f'<circle cx="{rc_x+rc_w-44}" cy="464" r="26" fill="{accent}"/>'
-                      f'<text x="{rc_x+rc_w-44}" y="473" font-size="24" fill="#fff" text-anchor="middle" font-family="{tfont}" font-weight="bold">鐘</text>',
-                      "dusk @5 · last train @10 (2p)"))
-    # piles
-    pw = (rc_w - 16) / 2
-    gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
-    taupe = muted
-    parts.append(zone(rc_x, 564, pw, 150, "成團 · Win pile",
-                      emblem_svg("stamp", rc_x + pw - 40, 636, 24, gold), "tours that ran → +value"))
-    parts.append(zone(rc_x + pw + 16, 564, pw, 150, "遺珠 · Lose pile",
-                      emblem_svg("stamp", rc_x + pw + 16 + pw - 40, 636, 24, taupe), "got away → half value"))
-    # supply
+    # ================================================================== SUPPLY CORNERS
+    day_deck_col = ground[1]
+    # --- TOP-LEFT: Tour-Ticket decks (shared open row) ---
+    tlx, tly, tlw, tlh = 60, 96 + RH + 18, 710, 336
+    parts.append(zone(tlx, tly, tlw, tlh, "Tour-Ticket decks 行程票",
+                      desc="draw 5/phase · reveal a face-up ROW OF 3 · refill on claim", col=frame))
+    tdw, tdh = 128, 180
+    trow_y = tly + 96
+    labels = [("day", "日 DAY", day_deck_col), ("night", "夜 NIGHT", night_violet)]
+    for i, (pk, lab, cc) in enumerate(labels):
+        parts.append(facedown_deck(tlx + 24 + i * (tdw + 12), trow_y, tdw, tdh, cc, lab, "deck"))
+    ofx = tlx + 24 + 2 * (tdw + 12) + 18
+    parts.append(f'<text x="{ofx}" y="{trow_y-10}" font-size="16" fill="{muted}" '
+                 f'font-family="{tfont}" font-weight="bold" letter-spacing="1">ON OFFER ×3</text>')
+    for i in range(3):
+        parts.append(card_slot(ofx + i * (108 + 8), trow_y, "stamp", frame, tag="ticket", mm="63×89"))
+
+    # --- TOP-RIGHT: shared ingredient token supply (the 5-ingredient palette) ---
+    trx, tryy, trw, trh = W - 60 - 710, 96 + RH + 18, 710, 336
+    parts.append(zone(trx, tryy, trw, trh, "Ingredient supply 食材",
+                      desc="shared wells · draw via Visit / Convenience Store / Travel", col=frame))
+    # derive the 5 palette ingredients from the regions' chips (union, stable order)
+    seen, ing = set(), []
+    for r in spec.get("regions", []):
+        for sp in r.get("chips", []):
+            iid = sp.get("id", "")
+            if iid and iid not in seen:
+                seen.add(iid)
+                ing.append(sp)
+    wy = tryy + 168
+    n_ing = max(1, len(ing))
+    wstep = (trw - 80) / n_ing
+    for i, sp in enumerate(ing):
+        suit = resolve_suit(theme, sp.get("id", "")) if sp.get("id") in theme["suits"] else {}
+        scol = suit.get("color", accent)
+        semb = suit.get("emblem", "circle")
+        wx = trx + 40 + wstep * (i + 0.5)
+        parts.append(f'<circle cx="{wx:.1f}" cy="{wy}" r="{TOK_R+8}" fill="#ffffff" opacity="0.5" '
+                     f'stroke="{scol}" stroke-width="2" stroke-dasharray="6 5"/>')
+        tcol = pick_text_color(scol, dark=ink, light="#ffffff")
+        parts.append(emblem_svg(semb, wx, wy, TOK_R, scol, stroke=ink))
+        parts.append(f'<text x="{wx:.1f}" y="{wy + TOK_R*0.34:.1f}" font-size="28" fill="{tcol}" '
+                     f'text-anchor="middle" font-family="{bfont}" font-weight="bold">{esc(sp.get("label",""))}</text>')
+        parts.append(f'<text x="{wx:.1f}" y="{wy + TOK_R + 30:.1f}" font-size="17" fill="{text}" '
+                     f'text-anchor="middle" font-family="{bfont}">{esc(sp.get("en",""))}</text>')
+    parts.append(f'<text x="{trx+trw-20}" y="{tryy+trh-16}" font-size="16" fill="{muted}" text-anchor="end" '
+                 f'font-family="{bfont}" font-style="italic">Ø20mm tokens</text>')
+
+    # --- BOTTOM-LEFT: Buzz + Star shared supply ---
+    blx, bly, blw, blh = 60, H - 96 - RH - 18 - 336, 710, 336
+    parts.append(zone(blx, bly, blw, blh, "Buzz & ★ supply 讚 · 星",
+                      desc="shared reserves — take from here when you Promote / a stall stars", col=frame))
     violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
-    parts.append(zone(rc_x, 730, pw, 150, "Buzz supply",
-                      f'<circle cx="{rc_x+pw-40}" cy="802" r="24" fill="{violet}" stroke="{ink}" stroke-width="2"/>'
-                      f'<text x="{rc_x+pw-40}" y="811" font-size="24" fill="#fff" text-anchor="middle" font-family="{tfont}" font-weight="bold">讚</text>',
-                      "~24 tokens (2p)"))
-    star_svg = ('<polygon points="' + " ".join(
-        f'{rc_x+pw+16+pw-40 + (24 if i%2==0 else 24*0.42)*math.cos(-math.pi/2+i*math.pi/5):.1f},'
-        f'{802 + (24 if i%2==0 else 24*0.42)*math.sin(-math.pi/2+i*math.pi/5):.1f}' for i in range(10))
-        + f'" fill="{gold}"/>')
-    parts.append(zone(rc_x + pw + 16, 730, pw, 150, "★ Star tokens", star_svg, "apex accolades (~4)"))
+    gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
+    # Buzz cluster
+    bzx, bzy = blx + 40, bly + 150
+    parts.append(f'<text x="{bzx}" y="{bzy-56}" font-size="20" fill="{violet}" font-family="{tfont}" '
+                 f'font-weight="bold">BUZZ 讚 · Ø12mm ×~24 (2p)</text>')
+    for i in range(10):
+        ox = bzx + (i % 5) * 52 + (10 if i >= 5 else 0)
+        oy = bzy + (0 if i < 5 else 44)
+        parts.append(f'<circle cx="{ox}" cy="{oy}" r="{BUZZ_R}" fill="{violet}" stroke="{ink}" stroke-width="2"/>')
+        parts.append(f'<text x="{ox}" y="{oy+8}" font-size="20" fill="#fff" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold">讚</text>')
+    # Star cluster
+    stx, sty = blx + blw - 250, bly + 150
+    parts.append(f'<text x="{stx}" y="{sty-56}" font-size="20" fill="{gold}" font-family="{tfont}" '
+                 f'font-weight="bold">★ STAR 星 · 18mm ×4</text>')
+    for i in range(4):
+        ox = stx + (i % 2) * 96 + 24
+        oy = sty + (0 if i < 2 else 60)
+        parts.append(_star(ox, oy, STAR_R, gold, stroke=ink))
 
-    # --- BOTTOM band: Tour-Ticket decks (left) + character mats (right) ---
-    by = 1070
-    # tickets
-    parts.append(zone(60, by, 840, 400, "Tour-Ticket decks", desc="reveal a face-up ROW OF 3; refill when claimed"))
-    tdw, tdh = 232, 250
-    # v6.3.1 pools collapsed 3→2: missions.csv has day+night phases only (no ANY pool) — see game-bible.
-    tlabels = [("day", "日 DAY", ground[1]), ("night", "夜 NIGHT", "#6A4C93")]
-    n = len(tlabels)
-    tspacing = (840 - 40 - n * tdw) / (n + 1)
-    for i, (pk, lab, cc) in enumerate(tlabels):
-        tx = 60 + 20 + tspacing + i * (tdw + tspacing)
-        parts.append(facedown_deck(tx, by + 90, tdw, tdh, cc, lab, "draw 5 / phase"))
-    # character mats
-    parts.append(zone(940, by, 840, 400, "Character mats", desc="one per agent — ability + flaw, public"))
-    mw = (840 - 40 - 20) / 2
-    for i, lab in enumerate(("Agent A", "Agent B")):
-        mx = 940 + 20 + i * (mw + 20)
-        parts.append(f'<rect x="{mx}" y="{by+90}" width="{mw}" height="250" rx="14" fill="#ffffff" '
-                     f'opacity="0.55" stroke="{ink}" stroke-width="2" stroke-dasharray="9 7"/>')
-        parts.append(emblem_svg("stamp", mx + mw/2, by + 180, 30, frame))
-        parts.append(f'<text x="{mx+mw/2}" y="{by+260}" font-size="24" fill="{ink}" text-anchor="middle" '
-                     f'font-family="{tfont}" font-weight="bold">{esc(lab)}</text>')
-        parts.append(f'<text x="{mx+mw/2}" y="{by+292}" font-size="18" fill="{muted}" text-anchor="middle" '
-                     f'font-family="{bfont}">ability + flaw</text>')
+    # --- BOTTOM-RIGHT: read-me / interface legend ---
+    brx, bry, brw, brh = W - 60 - 710, H - 96 - RH - 18 - 336, 710, 336
+    parts.append(zone(brx, bry, brw, brh, "How to read this table", col=frame))
+    lines = [
+        "Sit ACROSS the table — the day→night clock is built into BOTH long",
+        "edges, one upright for each player. It is the ONE shared track.",
+        "The 4-region diamond in the middle is the shared map (read from",
+        "both sides): colour + emblem + 繁體 carry the region.",
+        "PER-PLAYER pieces live on YOUR character board, NOT here:",
+        "  · REACH 及 (your Buzz cap)   · TOURS COMPLETED 好評",
+        "  · your 成團 SOLD / 遺珠 CANCELLED tour piles.",
+        "Placeholders are shown at real component size (mm labelled);",
+        "final board ≈ 570 × 400 mm.",
+    ]
+    for i, ln in enumerate(lines):
+        parts.append(f'<text x="{brx+22}" y="{bry+96+i*27}" font-size="20" fill="{text}" '
+                     f'font-family="{bfont}">{esc(ln)}</text>')
 
     return _svg(W, H, parts), W, H
 
