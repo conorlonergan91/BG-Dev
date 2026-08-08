@@ -211,7 +211,8 @@ CLOCK_MODE = os.environ.get("TA_CLOCK", "vendor")             # "vendor" (v6.3 d
 M_DUSK = int(os.environ.get("TA_M_DUSK", "3"))
 M_END  = int(os.environ.get("TA_M_END",  "5"))
 V_DUSK = int(os.environ.get("TA_V_DUSK", "5"))                # dusk @ 5th table-wide vendor claim @2p
-V_END  = int(os.environ.get("TA_V_END",  "10"))               # last train @ 10th @2p
+V_END  = int(os.environ.get("TA_V_END",  "9"))                # last train @ 9th @2p (v6.4b: −1 clock nudge
+#                                                               absorbs the run-out-of-stock night's stall)
 NIGHT_SPRINT = int(os.environ.get("TA_NIGHT_SPRINT", "0"))
 
 MISSION_DRAW = int(os.environ.get("TA_MISSION_DRAW", "5"))     # tickets drawn per phase (2p)
@@ -255,7 +256,7 @@ SLOTS_OVERRIDE = os.environ.get("TA_SLOTS", "")
 #     battles, and let 大哥's fight-ability earn its keep in the back half). Tighten ONLY the NIGHT
 #     face-up vendor slots (the DAY stays the calm engine-building phase). "" = same as the day slots.
 #     e.g. TA_NIGHT_SLOTS="1,1,1,1" (every region shows just one night stall → both agents crowd it).
-NIGHT_SLOTS_OVERRIDE = os.environ.get("TA_NIGHT_SLOTS", "")
+NIGHT_SLOTS_OVERRIDE = os.environ.get("TA_NIGHT_SLOTS", "1,1,1,1")   # v6.4b: 1 face-up/region at night
 # --- v6.4b DEPLETING-NIGHT-POOL lever (CD steer #2): each region deals its NIGHT stalls face-up and
 #     they DO NOT REFILL when claimed — the pool depletes as the night wears on, so scarcity RAMPS and
 #     the late-night board becomes a scramble for the last stalls (a tension curve + a natural end-press).
@@ -268,7 +269,7 @@ NIGHT_NOREFILL = os.environ.get("TA_NIGHT_NOREFILL", "0") == "1"
 #     1-visible collision pressure (both agents crowd the region's single stall) with progressive region
 #     shutdown (the market contracts as stalls sell out). TA_NIGHT_DECK_CAP = max night vendors per region
 #     (0 = off/full deck). Use with TA_NIGHT_SLOTS="1,1,1,1" and refill ON (NIGHT_NOREFILL=0).
-NIGHT_DECK_CAP = int(os.environ.get("TA_NIGHT_DECK_CAP", "0"))
+NIGHT_DECK_CAP = int(os.environ.get("TA_NIGHT_DECK_CAP", "2"))   # v6.4b: finite night stock → shutdown
 
 # --- CHARACTER KNOBS (v6.3 kits — locked; do NOT pre-tweak, the re-sim reads them) ---------------
 # H1 大胃王 flaw. "twice" (A, locked) | "keep2" (B) | "next" (C).
@@ -280,7 +281,7 @@ DAGE_FLAW   = os.environ.get("TA_H2_FLAW", "none")            # "none"|"tab"|"pr
 # alone won't). At NIGHT his contested-win threshold drops (he only needs to MATCH a rival, not lead) —
 # "once the night market heats up he muscles in." Default = DAGE_THRESH (no night edge); set 0 to test the
 # win-on-a-tie edge. A universal ≥1-committed-Follower floor (in _can_bribe) stops a 0-Follower win.
-DAGE_NIGHT_THRESH = int(os.environ.get("TA_H2_NIGHT_THRESH", str(DAGE_THRESH)))
+DAGE_NIGHT_THRESH = int(os.environ.get("TA_H2_NIGHT_THRESH", "0"))   # v6.4b: 大哥 wins a contested night stall on a tie
 # 媽寶 buff. v6.3 lock = "keep2". "none"|"keep2"|"travel2".
 OFFICE_BUFF = os.environ.get("TA_OFFICE", "keep2")
 # 網紅 flaw. CHARACTER RE-PASS default = "none" (Late-to-the-Party RETIRED — see the re-pass note in the
@@ -313,9 +314,13 @@ COUNCILLOR_REACH = int(os.environ.get("TA_COUNCILLOR_REACH", "1"))
 # (1) Bookings HAND-LIMIT — at most N in-progress Bookings held at once (cancel-to-claim; shared
 #     Day/Night slots; completing a Booking frees its slot). v6.4 CD-LOCK = 3.
 HAND_LIMIT = int(os.environ.get("TA_HAND_LIMIT", "3"))
+# v6.4b LOCKED-CONFIG DEFAULTS (CD-decided this session): run-out-of-stock night (1 face-up/region,
+# stock cap 2, region shuts when sold out) + last-train nudged to 9; 網紅 start-max 3 (was the hot 4);
+# 大哥 night win-on-a-tie edge (thr 0). Set as module defaults so the round-robin + verification reflect
+# v6.4b canon. (The lost-war dial-drop is deliberately NOT baked — sim-inert + bg-elegance cut.)
 # (2) 網紅 Influencer — Followers-max STARTS at 4 (baseline 2 +2); Promote is a flat 2 like everyone
 #     (the old "Promote places 3" is DROPPED — promote_bonus goes to 0 for all).
-INFL_MAX_START = int(os.environ.get("TA_INFL_MAX_START", "4"))
+INFL_MAX_START = int(os.environ.get("TA_INFL_MAX_START", "3"))   # v6.4b: start-4 read hot (58%) → locked 3
 # (3) TRENDING marker — winning a Trending-marked vendor grants a NEW gain. v6.4 = "+1 Followers-max"
 #     ("max"); the old dynamic-★ payoff was "+2 Bookings/Draw" ("draw"). Kept as an A/B knob.
 TRENDING     = os.environ.get("TA_TRENDING", "max")            # "max" (v6.4 default) | "draw" (old)
@@ -1899,8 +1904,9 @@ class TravelAgentsGame:
 
 
 GAME = TravelAgentsGame()
-TITLE = ("Travel Agents: Taiwan (v6.4 — FOLLOWERS vocab · Bookings hand-limit N=3 · 網紅 start-max 4 · "
-         "base Travel de-sourced [媽寶 sole sourcer] · Trending +1 Followers-max)")
+TITLE = ("Travel Agents: Taiwan (v6.4b — FOLLOWERS vocab · Bookings hand-limit N=3 · 網紅 start-max 3 · "
+         "base Travel de-sourced [媽寶 sole sourcer] · Trending +1 Followers-max · run-out-of-stock NIGHT "
+         "[1/region, stock 2, region shutdown, last-train 9] · 大哥 night win-on-a-tie · +fighter)")
 
 
 # ==================================================================================================
