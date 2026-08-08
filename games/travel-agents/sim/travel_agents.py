@@ -1988,6 +1988,7 @@ def _est_actions(s, p, vid):
 
 
 def _pick_target(s, p, prefs):
+    pl = s["players"][p]
     board = GAME._board(s)
     best, bscore = None, -1e9
     for vid in board:
@@ -2000,12 +2001,26 @@ def _pick_target(s, p, prefs):
         score = val - TEMPO * (_est_actions(s, p, vid) - 1.0)
         if s["buzz"][vid][p] > 0:
             score += 0.4
-        # v6.4b THE FIGHTER: chase a rival's vendor LOCK-IN — the more Followers they've committed, the
-        # juicier the steal/deny. This makes the fighter follow rivals to their contested stalls.
-        if prefs.get("contest"):
-            rb = max((s["buzz"][vid][q] for q in range(s["n"]) if q != p), default=0)
-            if rb > 0:
-                score += 3.0 + 1.5 * rb
+        rb = max((s["buzz"][vid][q] for q in range(s["n"]) if q != p), default=0)
+        # v6.4b THE FIGHTER / 大哥 brawler: chase a rival's vendor LOCK-IN (the bigger their commitment,
+        # the juicier the steal/deny) — this makes them follow rivals to their contested stalls. 網紅 only
+        # gets scrappy in the back half (contest_late → act 2). 媽寶 does the OPPOSITE — steers clear.
+        do_contest = prefs.get("contest") or (prefs.get("contest_late") and s["act"] == 2)
+        if do_contest and rb > 0:
+            score += 3.0 + 1.5 * rb
+        if prefs.get("avoid_contest") and rb > 0:
+            score -= 2.0 + 1.5 * rb                          # 媽寶: take the straight, uncontested win
+        # v6.4c character-tailored target biases:
+        if prefs.get("marquee"):                             # 大胃王: hunt the expensive apex/cross plates
+            if vid in s["star"] or v["total_cost"] >= 3:
+                score += 1.5
+            if _is_cross(vid):
+                score += 0.8
+        if prefs.get("cheap_early") and s["act"] == 1:       # 網紅: easy early wins (cheap food / drinks)
+            if v["total_cost"] <= 2 or v["is_drink"]:
+                score += 1.2
+        if prefs.get("ramp_first") and not v["is_drink"] and v["region"] == pl.get("home_region"):
+            score += 1.2                                     # 里長伯: build the engine in the home region
         if score > bscore:
             bscore, best = score, vid
     return best
@@ -2122,6 +2137,13 @@ def _plan(s, p, legal, rng, prefs):
     if _should_claim(s, p, legal, prefs):
         return ("claim",)
 
+    # v6.4c 網紅 TRAVEL-EARLY: front-load Travel in the DAY half to pump Followers-max (her steamroll
+    # fuel), until she has a working ceiling (~4). She still bribes-ready (step 1) and claims (step 3) first.
+    if prefs.get("travel_early") and s["act"] == 1 and pl["reach"] < 4:
+        mv = _any_travel(s, p, legal)
+        if mv is not None:
+            return mv
+
     tgt = _pick_target(s, p, prefs)
     if tgt is None:
         pk = _poke(s, p, legal) if prefs.get("disrupt") else None
@@ -2209,6 +2231,18 @@ MIXPREFS = {**BAL, "w_drink": 1.1, "w_ticket": 1.15}
 IGNORE_OBJ = {**BAL, "no_tickets": True, "no_drinks": True}
 COLLECTOR = {**BAL, "collect": True, "w_ticket": 1.2}         # v6.4: the breadth-lane hand-limit probe
 FIGHTER = {**BAL, "contest": True}                            # v6.4b: follows rivals + contests their lock-ins
+
+# v6.4c CHARACTER-TAILORED playstyles (CD steer: "build playstyles around the characters' strengths /
+# weaknesses"). Each character played to ITS spine, so the sim measures the kit at its true ceiling and
+# tests whether the kit actually REWARDS its intended line. Composed from weight knobs + the planner flags.
+DAGE_STYLE    = {**BAL, "contest": True}                                  # 大哥 brawler: build a following, then fight
+INFL_STYLE    = {**BAL, "w_drink": 1.4, "travel_early": True,             # 網紅: travel-early → cheap wins → scrappy late
+                 "cheap_early": True, "contest_late": True}
+OFFICE_STYLE  = {**BAL, "w_food": 1.3, "avoid_contest": True}             # 媽寶: heads-down gatherer, straight wins
+COUNCIL_STYLE = {**BAL, "w_ramp": 1.8, "ramp_first": True, "opportunistic": True}  # 里長伯: engine-first → cheap wins
+DAGU_STYLE    = {**BAL, "w_val": 1.3, "marquee": True}                    # 大胃王: glutton marquee-hunter (keep-3 gluts)
+CHAR_STYLE = {"dage": DAGE_STYLE, "influencer": INFL_STYLE, "office": OFFICE_STYLE,
+              "councillor": COUNCIL_STYLE, "dagushi": DAGU_STYLE, "neutral": BAL}
 PURE_DRINKS = {"w_val": 1.0, "w_food": 0.0, "w_drink": 1.0, "w_ramp": 0.0, "pure_drinks": True, "w_ticket": 1.0}
 NO_DRINKS = {**BAL, "no_drinks": True}
 
@@ -2567,7 +2601,49 @@ if __name__ == "__main__":
         print(f"\n     → 大哥 {dage0:.1f}% → {dage1:.1f}%  (Δ {dage1-dage0:+.1f}pt — the back-half weight we want)"
               f"  |  band top now {max(b1.values())*100:.1f}% ({'OK ≤55.5' if max(b1.values())<=55.5 else 'WATCH'})")
 
-        globals()["INFL_MAX_START"] = 4; _setnight("", 10, False)  # restore module defaults
+        globals()["INFL_MAX_START"] = 3; _setnight("1,1,1,1", 9, False)  # restore v6.4b defaults
+        sys.exit(0)
+
+    # ==============================================================================================
+    #  --charplay — v6.4c CHARACTER-TAILORED playstyles: measure each character on ITS OWN spine.
+    #  (a) tailored-vs-neutral (the new band, comparable to the old char-vs-neutral one);
+    #  (b) tailored-vs-same-char-generic (the KEY test: does the kit REWARD its intended line? >50 = yes).
+    #  Runs at the locked v6.4b config (module defaults). Usage: ...travel_agents.py --charplay [N]
+    # ==============================================================================================
+    if "--charplay" in sys.argv:
+        _args = [a for a in sys.argv[1:] if a.isdigit()]
+        N = int(_args[0]) if _args else 1000
+        names = {"councillor": "里長伯 Politician", "office": "媽寶 Homebody",
+                 "influencer": "網紅 Influencer", "dagushi": "大胃王 Big Eater", "dage": "大哥 Big Brother"}
+        style_lbl = {"dage": "brawler (contest)", "influencer": "travel→cheap→scrappy",
+                     "office": "gather + avoid-fights", "councillor": "engine-first → cheap",
+                     "dagushi": "glutton marquee-hunter"}
+
+        def _wr_style(ch, style, opp_style, oppchar, n=N, seed=1):
+            a1, a2 = _make(style), _make(opp_style)
+            w0, t0, _, _ = _run({0: a1, 1: a2}, n=n, seed=seed,
+                                characters=[ch, oppchar], prefs=[style, opp_style])
+            w1, t1, _, _ = _run({0: a2, 1: a1}, n=n, seed=seed + n,
+                                characters=[oppchar, ch], prefs=[opp_style, style])
+            return ((w0[0] + 0.5 * t0) + (w1[1] + 0.5 * t1)) / 2
+
+        print(f"# {TITLE}")
+        print(f"# v6.4c CHARACTER-TAILORED PLAYSTYLES — each character on its own spine (N={N}/cell)\n")
+        print(f"  {'character':22}{'style':26}{'vs neutral-BAL':>16}{'tailored vs self-generic':>26}")
+        band = {}
+        for ch in ("dage", "influencer", "office", "councillor", "dagushi"):
+            style = CHAR_STYLE[ch]
+            vs_neutral = _wr_style(ch, style, BAL, "neutral")            # (a) the new band
+            vs_self = _wr_style(ch, style, BAL, ch)                       # (b) does the kit reward the line?
+            band[ch] = vs_neutral
+            rew = "REWARDS line" if vs_self >= 52 else ("neutral" if vs_self >= 48 else "HURTS?!")
+            print(f"  {names[ch]:22}{style_lbl[ch]:26}{vs_neutral*100:14.1f}%  "
+                  f"{vs_self*100:10.1f}%  ({rew})")
+        lo, hi = min(band.values()), max(band.values())
+        print(f"\n  TAILORED BAND (each char on its own line, vs neutral): "
+              f"{lo*100:.1f}–{hi*100:.1f}%   (target ~45–55, no crusher)")
+        print("  Read: column (a) is the character's ceiling on its intended line; (b)>50 means the kit")
+        print("  actually pays off played that way (the design goal) — vs the same character played generic.")
         sys.exit(0)
 
     N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 1200
