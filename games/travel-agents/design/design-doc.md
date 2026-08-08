@@ -1224,7 +1224,8 @@ The order a first game should reveal the rules:
    to your lose-pile at half value. Book bold, or play it safe."
 8. **The hype fight** — the first time you both stack Buzz on one vendor: "out-commit, race to the
    ingredients, or concede and take another. Outraced, not robbed."
-9. **Reputation** — the second live track; "several ways to win — go tall, climb your Rep, chase tickets."
+9. **Reach** — the Buzz cap you build by travelling; "it fuels the hype fight but never scores — the only
+   score is your Tour Tickets, so book bold and finish them."
 10. **Dusk → the Night Market** — introduce at the dusk flip: "the day judges your daytime tickets, the
     street turns over to neon, the big names arrive — and night's coming, so don't miss the last train."
 
@@ -1260,3 +1261,33 @@ three final calls LOCKED 2026-08-08):**
    steep +2 and the min-1 floor both rejected.
 
 bg-developer builds to CANON (v6.3-content-draft §CD-4 table), not the sim defaults.
+
+---
+
+## Sensitivity — production rail (RELOCATED from the player rulebook, 2026-08-08, bg-elegance)
+
+> **Why this lives here, not in `rules-draft.md`:** these are **production constraints for the team**
+> (art, naming, print, publishing), not rules a first-time player needs. The rulebook now carries only a
+> short, warm player-facing line ("these are real Taiwanese dishes and night markets — celebrated with
+> care"). The binding rail below is NOT lost — it is relocated intact and still binds `bg-developer`,
+> `bg-theme`, `bg-publishing`, and the art pipeline. Full context: `identity.md` §Sensitivity + the
+> theme↔mechanic resonance bullets; this is the consolidated at-a-glance rail.
+
+**Binding production constraints (all must hold before art/print):**
+- **Paid Taiwanese / Indigenous cultural + language consultant sign-off** before art — the **#1 pre-art
+  item**, especially the East region (Indigenous-forward) and the top apex **石板烤肉 Stone-Slab BBQ**
+  (dish + naming + framing must clear the consultant first).
+- **Names are never mangled.** Dish, vendor, and place names stay real and intact — **Tâi-lô romanisation +
+  繁體字**, never bent to fit a gag or a "starred" joke.
+- **Traditional Chinese only (繁體), never Simplified** — Taiwan uses Traditional characters; this is
+  non-negotiable in every printed and rendered string.
+- **Secular only.** No mechanics, art, or gags built on temple festivals, deities, ghost-month, or funerary
+  customs. Events lean modern/secular — food fairs, fruit seasons, weather, roads, crowds, warm local
+  characters (people with dignity, never exotic punchlines).
+- **"Bribe" reads as warm comedy, never corruption** — the smarm lands on the over-the-top agent; the
+  vendor is the beloved, never a mark. 大哥 (gangster-adjacent) and 里長伯 (politician) sit next to that
+  word and carry the tied-#1 consultant flags — bind the warmth hard.
+- **★ accolades stay real and secular**, dishes stay dish-typed generic stalls — **never a false star on a
+  real named business.**
+- **Celebration, not extraction** — the agents are passionate local promoters showing off home; if a tour
+  or event ever reads as outsiders packaging/harvesting the island, that's a re-theme flag.
