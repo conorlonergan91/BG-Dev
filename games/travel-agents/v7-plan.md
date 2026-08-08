@@ -1,6 +1,6 @@
-# Travel Agents: Taiwan — v7.0 Work Plan (the multiplayer re-home)
+# Travel Agents: Taiwan — V7 Work Plan (the multiplayer re-home)
 
-**This is the authoritative job checklist for the v7.0 arc.** Work top to bottom, tick each box as you
+**This is the authoritative job checklist for the V7 arc.** Work top to bottom, tick each box as you
 finish it, and **commit + push after each meaningful item** so progress is never stranded. Do NOT skip
 the sign-off gate (Phase 3). Full rationale for every decision below lives in `decision-log.md` (newest at
 top) — this file is the *do-list*; the log is the *why*.
@@ -31,17 +31,17 @@ These are signed off by the CD. Re-validate/re-scale them for multiplayer; do no
 
 ## PHASE 0 — bg-architect RE-HOME to multiplayer (with bg-design on concrete rules)
 
-Output: a new `design/v7.0-content-draft.md` (the v6.3-content-draft stays as history).
+Output: a new `design/v7-content-draft.md` (the v6.3-content-draft stays as history).
 
-- [ ] Set the **design-home count** (recommend **4**) and describe how **3 / 4 / 5** differ in feel; treat **6** as a validated stretch.
-- [ ] **Re-architect the contested-vendor core** from 1v1 duel → **multiplayer AREA-MAJORITY**: how 3–6 players pile Followers on a vendor, who wins (highest committed; define ties), and how it resolves.
-- [ ] Resolve the **lost-promotion-war** consequence as part of that core (losers' committed Followers **burned** = contention-scaled sink, and/or a **dial drop**) — now the norm.
-- [ ] **Re-scope scaling per count:** vendor slots per region, market + ticket supply, ticket draw, the **vendor-claims clock** (dusk / last-train per count), turn order / first-player.
-- [ ] Propose a **DOWNTIME mitigation** (the key 5–6p risk): simultaneous action selection, snappy turns, etc.
-- [ ] Fold the **carried-in v6.4 rules** (above) into the spec, re-scoped for N players.
-- [ ] Note the **hand-offs** (do NOT build yet): MAP = remove the across-the-table orientation only (light `regionmap` edit); THEME = re-frame "two rival agents" → a crowded market of agencies (bg-theme).
-- [ ] Define the **SIM scope**: which counts to run, and the probes Phase 1 must report.
-- [ ] Commit + push. Gut-check the CD **only** if a load-bearing fork appears; otherwise proceed.
+- [x] Set the **design-home count** (recommend **4**) and describe how **3 / 4 / 5** differ in feel; treat **6** as a validated stretch.
+- [x] **Re-architect the contested-vendor core** from 1v1 duel → **multiplayer AREA-MAJORITY**: how 3–6 players pile Followers on a vendor, who wins (highest committed; define ties), and how it resolves.
+- [x] Resolve the **lost-promotion-war** consequence as part of that core (losers' committed Followers **burned** = contention-scaled sink, and/or a **dial drop**) — now the norm.
+- [x] **Re-scope scaling per count:** vendor slots per region, market + ticket supply, ticket draw, the **vendor-claims clock** (dusk / last-train per count), turn order / first-player.
+- [x] Propose a **DOWNTIME mitigation** (the key 5–6p risk): simultaneous action selection, snappy turns, etc.
+- [x] Fold the **carried-in v6.4 rules** (above) into the spec, re-scoped for N players.
+- [x] Note the **hand-offs** (do NOT build yet): MAP = remove the across-the-table orientation only (light `regionmap` edit); THEME = re-frame "two rival agents" → a crowded market of agencies (bg-theme).
+- [x] Define the **SIM scope**: which counts to run, and the probes Phase 1 must report.
+- [x] Commit + push. Gut-check the CD **only** if a load-bearing fork appears; otherwise proceed.
 
 ## PHASE 1 — the CD-GATED multi-count re-sim  *(kicking off this plan IS the go)*
 
@@ -60,11 +60,11 @@ Output: a new `design/v7.0-content-draft.md` (the v6.3-content-draft stays as hi
 - [ ] **Guardian sweep — bg-critic:** multiplayer politics, kingmaking, downtime, take-that.
 - [ ] **Guardian sweep — bg-elegance:** keyword count ≤ budget, rulebook word count ≤ cap.
 - [ ] Update `game-bible.md` + `decision-log.md`; commit + push.
-- [ ] Present the **FINAL locked v7.0 spec**.
+- [ ] Present the **FINAL locked V7 spec**.
 
 ## PHASE 3 — ⛔ STOP for CD sign-off
 
-- [ ] Present the sim verdict + the locked v7.0 spec to the CD and **WAIT** — do not start the rebuild until the CD signs off.
+- [ ] Present the sim verdict + the locked V7 spec to the CD and **WAIT** — do not start the rebuild until the CD signs off.
 
 ## PHASE 4 — component rebuild  *(only after Phase 3 sign-off)*
 
