@@ -10,6 +10,21 @@ solid, 6 as a validated stretch). 2p is dropped as a design target.
 
 ---
 
+## Character roster — ALWAYS refer to these by the ENGLISH name (in chat + docs)
+
+Never use the 繁體/Tâi-lô name alone — the human can't follow it. English first; original in parentheses only if precision needs it.
+
+| English name (USE THIS) | 繁體 (Tâi-lô) | Kit (post-V7) |
+|---|---|---|
+| **The Old Councillor** | 里長伯 (Lí-tiúⁿ-peh) | Home-region −1 ingredient discount; **+2 away-tax** (V7 trim) |
+| **The Homebody** | 媽寶 (Ma-pó) | Sole Travel-sourcer — on a Travel draws **2** cards of the region she LEFT (V7 re-theme) |
+| **The Big Eater** | 大胃王 (Tuā-uī-ông) | Keep all 3 on a Visit + a Greedy-Grab 4th; hazards fire twice on his Visit |
+| **The Influencer** | 網紅 (Bāng-âng) | Followers-max **starts at 4**; goes last in turn order |
+| **The Big Brother** | 大哥 (Tuā-ko) | Wins a Buzz-fight on a tie (≥ lead, not majority) |
+| **A-má / "the Granny"** *(English name pending bg-theme bless)* | 阿嬤 (A-má) | Reaches any region in one Travel + Maintenance-immune; **+1 Followers-max per space moved** (V7 buff) |
+
+---
+
 ## Decisions carried in — LOCKED, do NOT re-litigate (re-scope them for N players)
 
 These are signed off by the CD. Re-validate/re-scale them for multiplayer; do not reopen the decision.
