@@ -505,6 +505,7 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   | Tuā-uī-ông | **The Big Eater** | 大胃王 | Celebrated competitive-eater / food-challenge figure. Neutral-warm, fits a food game joyfully. PASS (clean). |
   | Bāng-âng | **The Influencer** | 網紅 | Contemporary, neutral role; framed as genuinely loving the food (affectionate self-aware wink). PASS (clean). |
   | Tuā-ko | **The Big Brother** | 大哥 | The warm elder / neighbourhood-figure 大哥 (a lovable rogue every stall-owner is glad to see), NOT a menacing gangster or an Orwellian "Big Brother". PASS **only while the warm portrayal stays load-bearing.** |
+  | A-má | **The Regular** *(bg-theme pick, 2026-08-08 — CD to bless the English; alt "The Free Rider")* | 阿嬤 | The NEW 6th character (mobility/tempo agent). Beloved spry grandma, everywhere-at-once on her 敬老卡 elder transit pass. **Warm by construction — her age is her superpower, not frailty.** 阿嬤 is the correct **Taigi/Hokkien** term for grandma (matches the Tâi-lô cast, warmer + more Taiwan-native than Mandarin 奶奶). PASS-WITH-NOTES — the spry/sharp portrayal is **load-bearing** (guard the frail/forgetful-granny stereotype, sibling to 媽寶/大哥); native review of 阿嬤 + 敬老卡. |
   - **Dignity verdict: all five BLESS.** The two edge cases (**The Homebody**, **The Big Brother**) pass *on
     their portrayals*, not on the English alone — so their warmth is now **binding & load-bearing** (like the
     "Bribe = marketing opportunity" reframe): every surface (blurb, art note, rulebook voice) must keep 媽寶
@@ -951,6 +952,25 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
     gag, the vendor *chooses* him gladly) is **load-bearing.** **The single consultant question:** does he
     read as **affectionate Taiwanese-cinema comedy**, or a **crime stereotype of Taiwan**? Native review
     of 大哥 / 角頭.
+  - **The Regular 阿嬤 (A-má)** *(CD addition, 2026-08-08 — the NEW sixth character, the mobility/tempo
+    agent → sim; bg-theme name pick, CD to bless the English).* Everyone's favourite grandma, and she is
+    *everywhere* — sharp as a tack and quicker than agents half her age, she works her **敬老卡** (the real,
+    secular free/discounted **elder transit pass**) to ride the island's buses, trains and ferries for next
+    to nothing — breakfast in Tainan, the Taipei night market by dusk. She travels light — a little market
+    basket, room for the day's best few bites and not a scrap more — and she's generous to a fault, pressing
+    her finds on everyone at the table. *Ability (proposed) = **敬老卡 / the Elder Pass*** — she reaches any
+    region in one Travel (the free-riding, everywhere-at-once elder). *Flaw (proposed) = **A Little Basket***
+    — a low Larder cap; she buys fresh and carries little. **Bind the framing (load-bearing, sibling to
+    媽寶 / 大哥):** her age is her **superpower**, not a weakness — spry, sharp, joyful, in charge; **never**
+    doddering, forgetful, frail, or a helpless-cute-granny gag, and the small basket reads as
+    **travels-light-by-choice / eats fresh**, never *too weak to carry*. **SECULAR + real:** 敬老卡 is a
+    genuine everyday Taiwan elder benefit — read it as **warm pride** (she earned that pass and rides the
+    island like she owns it), never freeloading. **Roster bonus:** she adds a **senior woman**, balancing the
+    male-coded 大哥 / 里長伯 toward the ~3:2 gender aim and widening the range of faces. ⚑ **Consultant
+    watch-item (NEW):** does *"spry mobile elder + small basket"* read **charming**, or tip **ageist-frail**?
+    Native review of 阿嬤 (warm Taigi term for grandma) and 敬老卡 (natural wording; and a light accuracy note
+    — the pass is free/discounted *access*, so the "reaches anywhere fast" is the game's warm abstraction of a
+    well-travelled elder, not a claim the HSR is free on it).
   - **Roster variety (a respect signal — spans age + gender + ethnicity):** the cast now spans **age**
     (senior 里長伯 · young 媽寶 & 網紅 · mid 大胃王 & 大哥), **gender** and **ethnicity**. **Gender
     (art-flexible, aim ~3:2):** the **大哥** register is male-coded — so balance the rest toward women;
