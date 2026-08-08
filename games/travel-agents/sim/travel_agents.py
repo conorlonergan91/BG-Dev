@@ -184,7 +184,14 @@ LARDER_CAP   = int(os.environ.get("TA_LARDER_CAP", "7"))
 # tempo character + the natural anti-hoard predator of the glutton 大胃王.
 AMA_CAP      = int(os.environ.get("TA_AMA_CAP", "7"))          # V7 CD-LOCKED buff-the-weak: basket 7 (= standard
 #     Larder cap; retires 阿嬤's small-basket flaw). Was v6.4d 6 (cap-5 was too harsh); the V7 buff-the-weak
-#     ladder landed on 7 = the character no longer carries a basket drawback at all.
+#     ladder landed on 7 = the character no longer carries a basket drawback at all. The basket stays retired
+#     (a dignity win); her REAL balance lever is now the mobility→fuel buff below, NOT the basket.
+# V7 阿嬤 MOBILITY→FUEL BUFF: on a Travel she gains +AMA_FUEL_PER_SPACE Follower-max PER SPACE MOVED —
+# the GEOGRAPHIC ring-distance from her origin to her destination (+1 for an adjacent hop, +2 for a
+# cross-map hop, since the 4-region ring's diameter is 2). Everyone else's Travel is a flat +1 (REACH_TRAVEL).
+# This turns her go-anywhere 敬老卡 pass into engine fuel: she alone reaches the far region in ONE Travel AND
+# banks the +2 for it. Knob (default 1 = on; 0 = off → falls back to the flat +1 like everyone).
+AMA_FUEL_PER_SPACE = int(os.environ.get("TA_AMA_FUEL_PER_SPACE", "1"))  # +Follower-max per ring-space on a Travel
 # v6.4d kit-strength dials (the "tweak ideas" sweep): 大胃王's Visit keep-amount (his glutton edge — the
 # dominant character; test nerfing 3→2) and 媽寶's Visit keep-amount (her gatherer edge — test buffing 2→3).
 DAGU_KEEP    = int(os.environ.get("TA_DAGU_KEEP", "3"))        # 大胃王 keeps N on a Visit (default 3)
@@ -1904,7 +1911,15 @@ class TravelAgentsGame:
         pl["pos"] = dest
         s["travels"] += 1
         s["inter_moves"] += 1
-        self._gain_reach(s, p, REACH_TRAVEL, "travel")       # v6.3: Travel is the engine's fuel line
+        # V7 阿嬤 mobility→fuel: she banks +AMA_FUEL_PER_SPACE Follower-max PER GEOGRAPHIC space moved
+        # (ring-distance src→dest: 1 adjacent / 2 cross-map, HSR-independent — the physical distance she
+        # covers on her 敬老卡 pass). Everyone else gets the flat REACH_TRAVEL (+1).
+        if pl["char"] == "ama" and AMA_FUEL_PER_SPACE > 0:
+            spaces = _dist(src, dest, None, hsr_open=False)  # geographic ring-distance (ignore HSR shortcut)
+            fuel = AMA_FUEL_PER_SPACE * max(1, spaces)
+        else:
+            fuel = REACH_TRAVEL
+        self._gain_reach(s, p, fuel, "travel")               # v6.3: Travel is the engine's fuel line
         # v6.4 CHANGE 5: base Travel sources NO ingredient — it is move + +1 Followers-max ONLY. The
         # Homebody (office/媽寶) is the SOLE Travel-sourcer: she draws the region she LEFT (event whiffs).
         # (TRAVEL_NO_SOURCE=0 recovers the v6.3 behaviour — everyone sources the arriving region — for the A/B.)
@@ -2202,7 +2217,11 @@ def _est_actions(s, p, vid):
     bz = _buzz_short_real(s, p, vid, pl)
     py = GAME._promote_yield(pl)
     reg = VENDORS[vid]["region"]
-    travel = 1 if pl["pos"] != reg else 0
+    # BOT-FIDELITY (V7 阿嬤 read): model the TRUE travel cost — a cross-map target is 2 hops for a normal
+    # character (or 1 via HSR for an N/S player) but ONE hop for 阿嬤 (go-anywhere 敬老卡). The old flat
+    # `1 if off-region` hid her mobility edge (every char looked equally mobile); the real hop-distance
+    # gives an honest read of who can cheaply reach a far stall.
+    travel = 0 if pl["pos"] == reg else _dist(pl["pos"], reg, pl["char"], _hsr_is_open(s))
     return 0.7 * ing + (bz / py) + travel + 1.0
 
 
@@ -2240,6 +2259,13 @@ def _pick_target(s, p, prefs):
                 score += 1.2
         if prefs.get("ramp_first") and not v["is_drink"] and v["region"] == pl.get("home_region"):
             score += 1.2                                     # 里長伯: build the engine in the home region
+        if prefs.get("ama_mobile") and v["region"] != pl["pos"]:
+            # 阿嬤's 敬老卡 makes the WHOLE board local — she reaches any region in one Travel, so a far
+            # stall costs her the same one hop a rival needs two for, AND a cross-map hop fuels her
+            # (+per-space Follower-max). Value the strong far target she alone can cheaply reach. This is
+            # an HONEST read of her mobility kit — she now plays the whole map, not just her own region.
+            gdist = _dist(pl["pos"], v["region"], None, hsr_open=False)  # geographic spaces (1 adj / 2 cross)
+            score += 0.6 * gdist
         if score > bscore:
             bscore, best = score, vid
     return best
@@ -2338,10 +2364,14 @@ def _any_travel(s, p, legal, toward=None):
         hop = _next_hop(pl["pos"], toward, pl["char"], _hsr_is_open(s))
         if ("travel", hop) in legal:
             return ("travel", hop)
-    for a in legal:
-        if a[0] == "travel":
-            return a
-    return None
+    travels = [a for a in legal if a[0] == "travel"]
+    if not travels:
+        return None
+    # V7 阿嬤: when travelling purely to FARM fuel (no fixed target), a cross-map hop banks +2 Follower-max
+    # vs +1 for an adjacent hop — so she takes the farthest reachable region (her mobility→fuel spine).
+    if pl["char"] == "ama" and AMA_FUEL_PER_SPACE > 0 and toward is None:
+        return max(travels, key=lambda a: _dist(pl["pos"], a[1], None, hsr_open=False))
+    return travels[0]
 
 
 def _plan(s, p, legal, rng, prefs):
@@ -2471,7 +2501,7 @@ INFL_STYLE    = {**BAL, "w_drink": 1.4, "travel_early": True,             # 網�
 OFFICE_STYLE  = {**BAL, "w_food": 1.3, "avoid_contest": True}             # 媽寶: heads-down gatherer, straight wins
 COUNCIL_STYLE = {**BAL, "w_ramp": 1.8, "ramp_first": True, "opportunistic": True}  # 里長伯: engine-first → cheap wins
 DAGU_STYLE    = {**BAL, "w_val": 1.3, "marquee": True}                    # 大胃王: glutton marquee-hunter (keep-3 gluts)
-AMA_STYLE     = {**BAL, "cheap_early": True}                              # 阿嬤: mobility/tempo — cheap just-in-time wins (kit carries)
+AMA_STYLE     = {**BAL, "cheap_early": True, "ama_mobile": True}          # 阿嬤: mobility/tempo — plays the WHOLE board via her go-anywhere pass + mobility→fuel
 CHAR_STYLE = {"dage": DAGE_STYLE, "influencer": INFL_STYLE, "office": OFFICE_STYLE,
               "councillor": COUNCIL_STYLE, "dagushi": DAGU_STYLE, "ama": AMA_STYLE, "neutral": BAL}
 PURE_DRINKS = {"w_val": 1.0, "w_food": 0.0, "w_drink": 1.0, "w_ramp": 0.0, "pure_drinks": True, "w_ticket": 1.0}
@@ -2867,8 +2897,10 @@ if __name__ == "__main__":
 
         _out(f"# {TITLE}")
         _out(f"# V7 buff-the-weak SPOT-CHECK — six-character band, 4p + 6p, N={N}/seating (seed-matched)\n")
-        _out(f"V7 close-out config: AMA_CAP={AMA_CAP} (阿嬤 basket) · OFFICE_KEEP={OFFICE_KEEP} (媽寶 keep-on-Visit, "
-             f"reverted 3→2) · OFFICE_TRAVEL_DRAW={OFFICE_TRAVEL_DRAW} (媽寶 Travel-draw-left re-theme) · "
+        _out(f"V7 close-out config: AMA_CAP={AMA_CAP} (阿嬤 basket, flaw stays retired) · "
+             f"AMA_FUEL_PER_SPACE={AMA_FUEL_PER_SPACE} (阿嬤 +Follower-max/space on Travel + bot mobility heuristic) · "
+             f"OFFICE_KEEP={OFFICE_KEEP} (媽寶 keep-on-Visit, reverted 3→2) · "
+             f"OFFICE_TRAVEL_DRAW={OFFICE_TRAVEL_DRAW} (媽寶 Travel-draw-left re-theme) · "
              f"COUNCILLOR_AWAY_TAX={COUNCILLOR_AWAY_TAX} (里長伯 away-tax stiffened 1→2). Everything else V7 canon.\n")
 
         seed = 1                                              # FIXED base seed → seed-matched, reproducible
