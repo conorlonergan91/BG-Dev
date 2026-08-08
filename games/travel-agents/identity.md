@@ -555,6 +555,17 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     markers (a "departed/brochure" tick vs a soft "cancelled" mark — dual-coded, not colour-alone).
     *(Historical: v6.2 locked "Published Tours" 成團 / "The Ones That Got Away" 遺珠 — see the dated log below;
     only the English + the lose-pile 繁體 moved, the 成團 win 繁體 is unchanged.)*
+  - **BOOKING = 開團 *kāi-tuán* (v6.4 bless — bg-theme, 2026-08-08; → native review).** v6.4 renames the
+    objective cards **Tour Tickets → Bookings** and the claim action to **"Book a Tour."** Blessed 繁體
+    anchor: **開團** — the real Taiwan 旅行社 operator's verb, *"to open a group tour for departure."* It
+    threads the **團** through the whole lifecycle the game already owns: you **開團** (open/commit a tour)
+    → it either **成團** (fills and runs) or **取消** (called off) → milestone **好評**. Operator's verb, and
+    the player *is* the agency, so it fits the fiction better than the customer-side 預訂 (the plain
+    fallback if native review finds 開團 reads as the offering rather than the commitment). English keyword
+    stays **Booking**; 開團 is the flavour anchor. Consultant/native-review watch is **low** — plain
+    secular travel-trade vocab; confirm 開團 → 成團/取消 reads as a clean, natural triad. **Note the English
+    "Bookings" is REVIVED cleanly:** the old retired "Bookings" score-track referent no longer exists, so
+    the noun is free — and "booking a tour" is *more* diegetic than the retired abstract score ever was.
   - **Vendor** + **Bribe** = the stall/cook you win over, and the action of doing so (pay ingredients +
     hold the Buzz majority → they feature on your tour). ***v4 spine word — replaces "Court." LOCKED by
     the CD (2026-08-06), chosen over bg-theme's "Schmooze" rec for the funnier, spicier word.*** *Flavour
