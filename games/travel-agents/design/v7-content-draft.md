@@ -1,6 +1,11 @@
 # Travel Agents: Taiwan — V7 — the MULTIPLAYER RE-HOME (3–6 players, area-majority) — DRAFT
 
-> **STATUS: V7 Phase-0 DRAFT (bg-architect + bg-design, 2026-08-08).** This is the build-ready
+> **STATUS: V7 Phase-1.5 DRAFT (bg-design, 2026-08-08) — layered on the Phase-0 shape below.** The
+> Phase-1 re-sim landed **3–5p healthy, 6p broken** (0% last-train / 71% stall / 34.6 turns/player /
+> supply_min 7.5; economy loose: gain ≈2.5–3× sink, slack_night ~5). The CD's fix — a **self-scaling
+> DECK-DRIVEN clock** + a **DIAL-DROP lost-war sink** — is specced in the new **§11**, which is now
+> **canon for pacing and the lost-war consequence** and **supersedes** the fixed vendor-claims clock
+> (§4 clock rows) and the BURN sink (§3). Everything else in §0–§10 stands. This is the build-ready
 > **multiplayer** shape. It **supersedes the 2-player framing** of `v6.4-content-draft.md` /
 > `v6.3-content-draft.md` (both stay as immutable history — read them for every mechanic V7 does not
 > restate). The pivot is CD-signed (decision-log ★★ V7). **Numbers here are Phase-1 sim knobs** unless
@@ -71,8 +76,10 @@ active-claim.
 > ingredient cost (− your region discounts). On a Bribe: the vendor joins your tour as an engine piece
 > (region-icon feeds the discount ramp; may complete a held Booking → tick your Tours-Completed counter,
 > freeing a Booking slot); **your** Followers on it return to your supply (freeing your dial); the
-> **losers' crowd disperses** (§3); refill the vendor slot; advance the vendor-claims clock +1. **A
-> vendor never scores** — it is pure engine (tickets-only, §6).
+> **losers' crowd disperses** (§3 → **superseded by §11d: each loser returns their Followers to their own
+> supply AND their Followers-max dial drops −1 by day / −2 at night**); refill the vendor slot.
+> ~~advance the vendor-claims clock +1~~ **← REMOVED (§11a: the clock is now deck-driven, not
+> claim-driven).** **A vendor never scores** — it is pure engine (tickets-only, §6).
 
 **"Highest committed present agent wins" — stated for N players:** among all agents with Followers on
 that vendor, the one with the most may claim it (by spending the Bribe action + paying). You must be
@@ -114,7 +121,13 @@ tie rule and the 大哥 exception (his mat gets a "wins ties" icon — bg-infode
 When an agent Bribes a contested vendor, the **losers** are every other agent with Followers committed
 there. In the duel this fired ~5% of games; in MP it is the default, so its economy weight is central.
 
-> **LOCKED recommendation — BURN the losers' committed Followers (the crowd disperses).** A loser's
+> **⚠ SUPERSEDED by §11d (CD direction 2026-08-08).** The Phase-1 sweep showed burn / dropmax / both all
+> within noise (slack_night stuck ~5 at every count), so the CD replaced burn with a **DIAL-DROP** sink
+> (Followers-max −1 by day / −2 at night). Read §11d for the canon lost-war consequence; the burn
+> recommendation below is kept as history (and as the reserve fallback if the dial-drop over-suppresses
+> contention).
+>
+> **~~LOCKED recommendation — BURN the losers' committed Followers (the crowd disperses).~~** A loser's
 > committed Followers on that vendor are **spent, not returned** — removed from play back to the general
 > supply pool but **lost to that agent** for the campaign (they must re-earn dial headroom by Promoting
 > again). The winner's own Followers return to *their* supply as normal.
@@ -148,12 +161,12 @@ arithmetic pattern cleanly up through 6.
 | **Day vendor slots** N / C / S / E | 2 / 2 / 1 / 1 (**6**) | 2 / 2 / 2 / 1 (**7**) | 2 / 2 / 2 / 2 (**8**) | 3 / 2 / 2 / 2 (**9**) |
 | **Face-up vendors ÷ players** | 2.0 | 1.75 | 1.6 | 1.5 | 
 | **Followers supply** (table pool) | 33 | 42 | 51 | 60 |
-| **Booking deck depth** (DAY / NIGHT) | 20 / 25 | 20 / 25 | +dup commons → ~26 / ~32 | +dup commons → ~28 / ~35 |
+| **Booking deck depth** (DAY / NIGHT) — **now the CLOCK, see §11b** | 15 / 20 | 18 / 24 | 21 / 28 | 24 / 32 |
 | **Booking face-up row** (shared) | 3 | 4 | 4 | 4 |
 | **Booking hand-limit** (per player) | 3 | 3 | 3 | 3 |
 | **Ingredient market depth** per region | ×1.4 | ×1.8 | ×2.2 | ×2.6 (vs 2p base) |
-| **Vendor-claims clock — dusk** (table-wide claim #) | 7 | 9 | 11 | 13 |
-| **Vendor-claims clock — last train** (table-wide claim #) | 14 | 18 | 22 | 26 |
+| ~~**Vendor-claims clock — dusk** (table-wide claim #)~~ **REMOVED — §11a** | ~~7~~ | ~~9~~ | ~~11~~ | ~~13~~ |
+| ~~**Vendor-claims clock — last train** (table-wide claim #)~~ **REMOVED — §11a** | ~~14~~ | ~~18~~ | ~~22~~ | ~~26~~ |
 | **Turn order** | fixed, clockwise from start player; **網紅 always last** | | | |
 
 **How to read it (design intent, all sim knobs):**
@@ -343,6 +356,242 @@ one Travel" mobility ability (she already exists in the sim from v6.4d explorati
 - **Lost-war sink** → chose **burn** as default, dropmax as reserve (§3).
 - **6p downtime** → chose **one-action turns** as primary; simultaneous-select held as a 6p-only variant
   (§5).
+
+---
+
+## 11. PHASE 1.5 — the DECK-DRIVEN CLOCK + the DIAL-DROP lost-war sink (CD direction 2026-08-08)
+
+> **This section is canon for pacing and the lost-war consequence.** It supersedes the fixed
+> vendor-claims clock (§4 clock rows, now struck through) and the BURN sink (§3, now flagged). Written
+> against the Phase-1 verdict: **3–5p healthy, 6p broken** — 6p ran **0% last-train / 29% deck-out /
+> 71% STALL**, dragged to **34.6 turns/player** (vs ~28–30 at 3–5p), and **exhausted Followers supply**
+> (supply_min 7.5, max_committed 10.2). The economy stayed **loose at every count** (slack_night ~5.0–6.5;
+> gain ≈2.5–3× sink). Two design moves fix both, and they reinforce each other.
+
+### 11a. ONE clock, deck-driven — REPLACES the vendor-claims clock (recommend)
+
+**The BOOKING (Tour-Ticket) deck is the clock.** The day/night booking deck depletes as players draw
+Bookings, and its exhaustion drives the day→night→end transitions:
+
+> **DUSK** fires when the **DAY booking deck** is exhausted (flip the board to night).
+> **LAST TRAIN** fires when the **NIGHT booking deck** is exhausted (the game ends).
+
+**Why the booking deck (and not the ingredient market or the vendor deck):**
+- **It is stall-proof by construction.** The Phase-1 stall (71% at 6p) happened because the *claim*-clock
+  only advanced on a Bribe — and when supply exhausted, bribes dried up, so the clock froze short of its
+  26th claim. A booking-drawn clock advances on the action **tickets-only scoring structurally forces**:
+  you score *only* by completing Bookings, so you *must* keep drawing new ones — the deck depletes no
+  matter how the fight is going. **The clock can no longer get stuck behind a stalled fight.**
+- **It is monotonic** — the booking deck never reshuffles, so it strictly decreases and is **guaranteed
+  to reach zero.** No stall backstop is needed; the 71%-firing backstop is deleted.
+- **It is already a single clean DAY deck + NIGHT deck** (no per-region fragmentation like the ingredient
+  market), so it maps 1:1 onto a two-phase clock with zero new bookkeeping.
+- **It is thematically exact:** the day's tours **book out** → dusk falls; the night's last tours are
+  gone → the **last train** leaves. The clock *is* the fiction.
+
+**Exhaustion = a self-announcing boundary card (recommend over "pile empty").** Seed a **黃昏 DUSK** card
+at the bottom of the day booking deck and a **末班車 LAST TRAIN** card at the bottom of the night booking
+deck. When a refill turns up the boundary card, the transition is called — **no one counts cards, the
+clock announces itself**, and nothing is telegraphed early. (The boundary card *is* the "fixed reserve of
+1" the CD asked about; a raw empty-pile trigger works too but needs a glance-count.)
+
+**Trigger resolution (exactly what happens on the turn it fires):**
+- **DUSK:** finish the triggering player's turn, then flip to night at the start of the next turn — return
+  any remaining face-up DAY Bookings to the box, deal the NIGHT Booking row from the night deck, bring
+  night vendors/markets online. Bookings already in players' hands are kept and can still be completed.
+- **LAST TRAIN:** finish the **current round** so every player has taken an equal number of turns, then
+  end. Final scoring: each player completes/cancels their remaining hand as normal, then tickets-only
+  scoring (§6).
+
+**Reconciliation (CD directive 4) — REPLACE, do not double up.** The deck-clock is the **sole**
+end-mechanism. **Delete** the vendor-claims counter, the dusk@/last-train@ claim thresholds (§4), the
+"+1 clock on Bribe" step (§2), and the stall backstop. One clock, self-scaling, guaranteed to fire —
+elegance says do not keep a second competing clock when one provably suffices.
+
+> **FORK 1 (recommend A):** **(A)** booking-deck clock, replace the claims-clock *(recommended — stall-proof,
+> single, thematic)*. **(B)** keep a per-count-scaled claims-clock as a backstop alongside deck-out *(rejected:
+> two clocks to teach; the deck-clock cannot stall, so a backstop is dead weight)*. **(C)** drive the clock off
+> the ingredient MARKET deck instead *(rejected: 4 regional decks → a fragmented trigger, and it would force
+> consolidating region-specific sourcing).* Reserve: if the re-sim finds booking-draw too lumpy a clock at some
+> count, switch the clock deck to a consolidated phase market deck.
+
+### 11b. Deck sizes per count — the self-scaling rule (CD directive 1)
+
+The booking deck is a **single shared deck** drawn by all N players, so **more players deplete it faster**
+— pacing self-adjusts. Sizes (clock cards; the boundary card sits below these):
+
+| | 3p | 4p (HOME) | 5p | 6p |
+|---|---|---|---|---|
+| **DAY booking deck** = 3·(N+2) | **15** | **18** | **21** | **24** |
+| **NIGHT booking deck** = 4·(N+2) | **20** | **24** | **28** | **32** |
+| clock cards **÷ players** (day+night) | 11.7 | 10.5 | 9.8 | 9.3 |
+
+**Rule: DAY = 3·(N+2), NIGHT = 4·(N+2)** — a flat **+3 day / +4 night per extra player**, a constant 3:4
+day:night ratio. Design intent:
+- **It self-scales the length.** Because the deck grows *roughly linearly* with N while it is drawn by N
+  players, **clock-cards-per-player stays nearly flat and even ticks DOWN** (11.7 → 9.3). That is the
+  direct fix for 6p's runaway length: instead of the fixed claims-clock forcing ~34.6 turns/player, the
+  shared deck empties faster the more players draw it, pulling 6p back toward the ~28-turn band.
+- **Night is the longer, tenser act** (4·(N+2) > 3·(N+2)) — the climax you build toward (carries §4 intent
+  + CD-4's night-cost curve), while §11d makes the night sink twice the day's.
+- These are grounded in the sim's own booking depths (Phase-1 listed 20/25 → dup-to-~28/~35) but are now
+  **the #1 re-sim knob**, since the deck *is* the clock: the re-sim tunes the two constants to land
+  turns/player ~26–30 and DUSK ≈ half the game at every count.
+
+### 11c. The night "shift gears" (CD directive 3) — symmetric trigger, distinct FEEL (recommend)
+
+**Recommend: symmetric deck-out for BOTH transitions** (day-deck-out → dusk, night-deck-out → last train),
+and make the night *feel* different through **tuning, not a different end-mechanism**:
+- a **longer** night deck (4·(N+2) vs 3·(N+2)) — the climax runs longer;
+- a **tenser** night — the **−2 dial-drop** (double the day's, §11d) + the carried **CD-4 cross-region
+  night-cost curve** (marquees cost more and demand a two-region engine).
+
+That is four real gear-shifts (length, sink weight, cost, cross-region) with **no second mechanism to
+teach**. Directive 4 asked for one clean model; a *different* night end-trigger would reintroduce exactly
+the elegance cost we just removed.
+
+> **FORK 2 (recommend A):** **(A)** symmetric deck-out, night distinguished by tuning *(recommended)*.
+> **(B)** night ends on **night-deck-out OR all ★ apex/marquee night vendors claimed, whichever first** —
+> a "the best stalls are gone, nothing left to stay up for" beat; thematic, but adds a second end-condition
+> to track. **(C)** night ends purely when all night-apex vendors are claimed *(rejected: claim-driven →
+> re-imports the stall risk we just designed out).*
+
+### 11d. The lost-war sink: the FOLLOWERS-MAX DIAL DROPS (CD directive 5) — REPLACES burn
+
+When a contested vendor is claimed (someone Bribes it), every **loser** is an agent who had Followers
+committed there (Promote places a fixed 2, so a loser always had **≥2** committed). For each loser:
+
+> **1. Return** — the loser's Followers on that vendor go back to **their own supply** (the vendor left
+> the board into the winner's tour; nothing is burned — this is the change from §3). This frees that much
+> dial headroom.
+> **2. Dial drop** — the loser's **Followers-max dial drops by 1 if it is DAY, by 2 if it is NIGHT**
+> (night = the higher-stakes climax).
+> **3. Floor** — the dial never drops below the **character's START value** (base characters = 2; 網紅 = 4).
+> **4. Reconcile** — if, after steps 1–3, the loser's total *committed* Followers still exceed their new
+> dial, they return Followers to supply (**their choice which**) until committed ≤ dial.
+
+**Where the dial floors — recommend the character's START value, and this is mechanically load-bearing:**
+- **Below 2, Promote breaks.** Promote places a **fixed 2** within your dial. A dial of **1 or 0 makes
+  Promote illegal** (you cannot place 2 within a max of 1) — a player floored that low is **locked out of
+  the fight entirely** = a runaway-loser death spiral, the opposite of a catch-up valve. **The floor must
+  be ≥ 2 for the game to keep working**, and every character's start value is already ≥ 2 (2 base, 4 網紅).
+- Flooring at **start value** claws back **exactly the ramp you earned** (Travel +1, Trending +1, Rave +1
+  — the gain-heavy top half of the dial the economy audit flagged as dead weight) while **never pushing
+  you below where you began.** It punishes overreach, not existence.
+- It also gives **網紅 a start-value floor of 4** — a deliberate protection of her kit (she is the
+  goes-last flaw character). *This is itself a fork — see §11g #6, because a higher floor makes her
+  more sink-immune and she is already 6p-hot.*
+- **Reject** floor at 1 or 0 (both break Promote / death-spiral) and a flat floor of 2 for everyone (drops
+  網紅 below her start).
+
+**The committed-over-max clause is provably DORMANT under return-first (but spec it anyway).** With step 1
+returning ≥2 and step 2 dropping ≤2, you can show it never fires from a lost war alone: let the loser hold
+dial `D`, total committed `C ≤ D`, with `k ≥ 2` on the lost vendor. After return, committed = `C − k`;
+after drop `d ∈ {1,2}`, dial = `D − d` (before floor). Since `k ≥ 2 ≥ d`, we have `C − k ≤ D − k ≤ D − d`
+— committed is **already within the new dial**, and the floor only raises the dial further. So step 4 is a
+**safety net, not a live rule** in normal play; it becomes live only if a *future* lever ever drops the
+dial from a non-war source (e.g. a "bad review" event). It also directly answers the CD's "confirm it
+stacks with area-majority": it does — cleanly, and without a mid-resolution cap violation.
+
+**Full Bribe/claim sequence (stacks with §2 area-majority resolution):**
+1. Claimant pays the ingredient cost, takes the vendor into their tour (engine), **their** Followers on it
+   return to their supply; may complete a held Booking → tick Tours-Completed, free a Booking slot.
+2. **Each loser:** return their Followers on that vendor to their supply → **dial −1 (day) / −2 (night)**
+   → floor at start value → reconcile if needed.
+3. Refill the vendor slot. **No clock advance** (the clock is the booking deck, §11a).
+
+**Worked example (night):** You hold dial **8**, committed 4-on-A / 2-on-B / 2-on-C (total 8). A rival
+out-commits you and Bribes **A**. It is night. → (1) your 4 on A return to supply (committed now 4). (2)
+dial 8 → **6**. (3) 6 > start 2, no floor. (4) committed 4 ≤ 6, no reconcile. Net: you got 4 Followers back
+but your ceiling fell to 6 — you can no longer re-escalate to 8 on a future war until you re-earn the ramp.
+That is the sink: **it taxes your future capacity, scaled to how many wars you lose.**
+
+**Why the dial-drop fixes what burn couldn't:** burn removed *tokens* (which recycle) and tested within
+noise (slack_night stuck ~5). The dial-drop removes *capacity* — it lowers the ceiling itself, so in the
+back half dials sit **below** the ~7–10 they ramped to, `slack_night` (dial − committed) is squeezed from
+both ends, and — critically for 6p — **lower dials mean less simultaneous commitment, so Followers supply
+stops exhausting** (the supply_min 7.5 collapse eases). It is a **contention-scaled capacity sink**: the
+more you fight and lose, the lower your ceiling.
+
+> **FORK 3 (recommend A):** the lost-vendor Followers **(A) return to the loser's supply**, dial-drop is
+> the sole sink *(recommended — the CD said "replaces burn")*. **(B)** *also* burn them (dial-drop + burn)
+> *(rejected as default: double sink risks over-suppressing the fight — held as the §3 reserve if
+> contention craters).*
+
+### 11e. Expected effect on the Phase-1 problems
+
+- **6p COMPLETES.** The deck-clock is monotonic and drawn by the forced booking action → **LAST TRAIN
+  fires reliably**; STALL 71% → ~0%. Shared-deck depletion self-scales length → 6p turns/player pulls from
+  34.6 back toward ~26–30. And the dial-drop suppresses back-half dials → less simultaneous commitment →
+  **supply_min recovers** off 7.5. The two fixes compound: shorter game *and* lower peak commitment.
+- **Economy TIGHTENS.** The dial-drop is a real capacity sink scaling with the very contention that drives
+  the gains → **slack_night should fall** (target: off ~5.0–6.5 toward ~2–4) and the gain-vs-sink gap
+  narrows. `capbind night` should rise (dials bind more often once they stop ramping unchecked).
+- **阿嬤 (the floor) re-read.** She sits ≈ fair share at every count (idx ~0.98–1.06), i.e. lowest of six
+  but essentially in-band, not broken. Her "reach any region in one Travel" kit lets her **pick which wars
+  to enter and grab quiet cross-region stalls** — under a punishing lost-war sink, *avoiding* bad wars is
+  worth more, so expect her to **hold or tick up**. Watch she doesn't overshoot. If out of band, **tune her
+  kit, don't drop her** (CD ruling §9).
+- **網紅 / 大哥 (6p-hot) re-read — the key new watch.** A *punishing* lost-war sink **relatively buffs the
+  characters who lose fewest wars**: **大哥 wins ties** (he rarely "loses" a contested vendor → eats fewer
+  drops), and **網紅's start-value floor of 4** makes her more sink-immune than base characters. So the
+  dial-drop could **worsen** their 6p hotness (Phase-1: 網紅 idx 1.74, 大哥 idx 1.79) rather than cool it.
+  Because 6p now *completes*, Phase-1's 6p bands (measured on broken games) are re-measured honestly for
+  the first time — treat 大哥's tie-immunity and 網紅's floor as the two most likely tuning targets (reserve
+  levers in §11g #6–7).
+
+### 11f. Re-sim knobs & probes (for the CD-gated Phase-1.5 re-sim)
+
+**Knobs to encode (before the run):**
+1. **Deck-clock:** DAY deck = 3·(N+2), NIGHT deck = 4·(N+2) [3p 15/20 · 4p 18/24 · 5p 21/28 · 6p 24/32] as
+   the sole clock; DUSK on day-deck-out, LAST TRAIN on night-deck-out (boundary-card or empty-pile).
+   **Remove** the vendor-claims counter, the dusk@/last-train@ thresholds, the +1-on-Bribe step, and the
+   stall backstop.
+2. **Dial-drop sink:** `LOSTWAR=dialdrop`, `DROP_DAY=1`, `DROP_NIGHT=2`, `FLOOR=start_value` (2 base / 4 網紅);
+   lost-vendor Followers **return to the loser's supply** (not burned); committed-over-max reconcile coded
+   (expected dormant).
+3. **Market decks** sized as an ample per-N resource pool that **reshuffles on empty** (NOT the clock) —
+   confirm they never gate progress.
+4. Carry all Phase-1 config otherwise (strict plurality, 大哥 wins ties, hand-limit 3, 網紅 start-max 4,
+   base-Travel de-sourced + 媽寶 sole sourcer, Trending +1).
+
+**Probes to report, per count (focus 6p):**
+1. **6p completes?** end-condition breakdown — LAST TRAIN % (target ~100), STALL % (target ~0), deck-out %.
+2. **Length** — turns/player (6p off 34.6 toward ~26–30) and dusk_turn ≈ half of last_turn.
+3. **Economy tightens?** `slack_night` per count (falls off ~5–6.5), gain-vs-sink gap, `capbind night`.
+4. **Supply** — `supply_min` per count (6p recovers off 7.5, stays clear of 0).
+5. **Six-character band** on *completed* games — all six idx 0.9–1.1: does 阿嬤 hold/rise, and do **網紅 &
+   大哥 cool at 6p or stay hot** (the sink-buffs-tie-winners watch)?
+6. **Seat / turn-order fairness** per count (deck-clock changes pacing; re-confirm no first/last skew;
+   網紅 goes-last).
+7. **Tickets-only health** — `ignore_obj` stays dead per count.
+8. **Dial-drop diagnostics** — drops/game; avg dial in the back half (day vs night); how often the
+   committed-over-max clause actually fires (expect ~0); how often a player hits the floor.
+9. **Contention not over-suppressed** — `contested_frac` / `lost_wars/gm` don't crater vs Phase-1 (the
+   §3 worry: a sink so harsh players stop contesting). If it craters, reserve = night drop −2 → −1.
+10. **Deck-clock robustness / kingmaking** — does the boundary card always get drawn (no full-hand
+    booking deadlock, no new stall path)? Does controlling *when* to trigger dusk/last-train (booking to
+    end the game while ahead) swing who wins beyond a threshold?
+
+### 11g. CD SIGN-OFF CHECKLIST — the forks/numbers to confirm before the gated re-sim
+
+1. **Clock driver = the BOOKING deck** (§11a Fork 1-A). Confirm, or pick market/consolidated.
+2. **Replace the vendor-claims clock** (drop the counter + stall backstop; single clock). Confirm A over
+   keeping a backstop.
+3. **Exhaustion trigger = a seeded 黃昏 DUSK / 末班車 LAST TRAIN boundary card** (self-announcing) vs raw
+   empty-pile. Confirm.
+4. **Deck-size constants — DAY 3·(N+2), NIGHT 4·(N+2)** [15/20 · 18/24 · 21/28 · 24/32]. Confirm as the
+   re-sim starting knobs (the sim tunes to ~26–30 t/p).
+5. **Night = symmetric deck-out, distinguished by tuning** (§11c Fork 2-A) vs a distinct night trigger.
+6. **Dial-drop floor = each character's START value** (≥2 keeps Promote legal; anti-death-spiral) — and
+   the sub-fork: **網紅's floor = 4 (protect her kit) or capped at base 2** (remove her sink-immunity,
+   the lever if she reads 6p-hot). Confirm the default (floor = start value, i.e. 網紅 = 4) and hold the
+   cap-to-2 as the reserve.
+7. **Dial-drop magnitude −1 day / −2 night** (§11d) vs symmetric. Confirm; hold night −1 as the reserve
+   if contention craters (probe 9). And hold **大哥's all-game tie-win** as canon but flag it as the other
+   likely 6p tuning target (reserve: scope his tie-win / add a small drop on a tie-win).
+8. **Lost-vendor Followers return to the loser's supply** (dial-drop is the sole sink) vs also-burn
+   (§11d Fork 3-A). Confirm A.
 
 ---
 
