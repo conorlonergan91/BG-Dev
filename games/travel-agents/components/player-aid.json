@@ -25,7 +25,7 @@
       "heading": "Reach = your Buzz cap  (not a score)",
       "lines": [
         "Your total committed Buzz can never exceed your Reach (start 2). Travel +1, some events ±. Winning a vendor frees its Buzz.",
-        "Greedy Grab: keep 1 extra ingredient → −1 Reach (only if it won't drop Reach below your committed Buzz)."
+        "Greedy Grab: keep 1 extra ingredient → -1 Reach (only if it won't drop Reach below your committed Buzz)."
       ]
     },
     {
@@ -45,8 +45,8 @@
     {
       "heading": "Rave Reviews & scoring",
       "lines": [
-        "Tours Completed 2nd → +1 Reach; 4th → 1 ingredient of choice + next Bribe −1 (each agent earns their own).",
-        "SCORE = tickets only: + value in your 成團 WIN pile, − floor(value/2) in your 遺珠 LOSE pile. Most = TOP AGENT."
+        "Tours Completed 2nd → +1 Reach; 4th → 1 ingredient of choice + next Bribe -1 (each agent earns their own).",
+        "SCORE = tickets only: + value in your 成團 WIN pile, - floor(value/2) in your 遺珠 LOSE pile. Most = TOP AGENT."
       ]
     }
   ]

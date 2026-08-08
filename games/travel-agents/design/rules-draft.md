@@ -52,7 +52,7 @@ Take **ONE** action. Then, if your Larder holds more than **7** ingredients, dis
   already completed. It scores later (§8).
 
 > **Greedy Grab.** On a Visit or a Convenience Store you may grab **one extra ingredient** beyond your
-> limit — for **−1 Reach** (§4).
+> limit — for **-1 Reach** (§4).
 
 > **Agent Characters bend the rules.** Each mat has one ability and one flaw for that agent alone — where a
 > mat disagrees with these rules, the mat wins.
@@ -69,7 +69,7 @@ Buzz lives only **in the supply** or **on a vendor** — never in your hand. To 
 > Buzz off it**, freeing the cap again. To out-escalate a contested vendor, you first need the Reach to
 > cover the whole stack.
 
-**Reach also gets spent:** a Greedy Grab costs −1, and a couple of events (a bad review, a mix-up) ding it
+**Reach also gets spent:** a Greedy Grab costs -1, and a couple of events (a bad review, a mix-up) ding it
 too. It never drops below 0. (If Reach would fall below your committed Buzz, see the FAQ.)
 
 ## 5. Bribing a vendor
@@ -140,7 +140,7 @@ It's one eating day, and the **day-clock climbs +1 every time anyone Bribes a ve
 
 Reveal both piles and tally **once**:
 - **+ the printed value** of each ticket in your **WIN pile (成團)** — the tours that ran.
-- **− floor(value ÷ 2)** for each ticket in your **LOSE pile (遺珠)** — the ones that got away.
+- **- floor(value ÷ 2)** for each ticket in your **LOSE pile (遺珠)** — the ones that got away.
 
 Vendors, Draw, and Reach score **nothing**. Most points is **Top Agent**. **Ties:** most vendors, then most
 regions covered, then fewest tickets in your lose pile.
