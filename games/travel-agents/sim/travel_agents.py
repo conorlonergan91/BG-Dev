@@ -188,7 +188,10 @@ AMA_CAP      = int(os.environ.get("TA_AMA_CAP", "6"))          # v6.4d: basket 6
 DAGU_KEEP    = int(os.environ.get("TA_DAGU_KEEP", "3"))        # 大胃王 keeps N on a Visit (default 3)
 OFFICE_KEEP  = int(os.environ.get("TA_OFFICE_KEEP", "2"))      # 媽寶 keeps N on a Visit (default 2)
 STAR_BONUS_P = int(os.environ.get("TA_STAR_P", "2"))           # dynamic ★ token +Bookings (no more +Rep)
-STALL_CAP    = int(os.environ.get("TA_STALL_CAP", "34"))       # hard per-player turn cap (drag backstop)
+STALL_CAP    = int(os.environ.get("TA_STALL_CAP", "50"))       # V7 P1.5: SAFETY net only (the designed
+#     stall backstop is REMOVED — the deck-clock is monotonic & guaranteed to fire). Raised 34→50 so a
+#     healthy deck-clock game (~26–30 t/p) is never clipped, and a genuine deadlock (probe 10) shows as a
+#     clear stall% spike rather than being masked. Under CLOCK=deck this should fire ~0%.
 
 # --- REACH (v6.3 Change 1 — the live Buzz cap) ---------------------------------------------------
 REACH_START  = int(os.environ.get("TA_REACH_START", "2"))      # starting Reach (sim knob — start generous)
@@ -219,8 +222,26 @@ SCOPE_SELF   = float(os.environ.get("TA_SCOPE_SELF", "0.40"))
 SCOPE_REGION = float(os.environ.get("TA_SCOPE_REGION", "0.40"))
 SCOPE_NEIGH  = float(os.environ.get("TA_SCOPE_NEIGH", "0.20"))
 
-# --- THE CLOCK (v6.3: keep the v6.2 vendor-claims clock) -----------------------------------------
-CLOCK_MODE = os.environ.get("TA_CLOCK", "vendor")             # "vendor" (v6.3 default) | "mission"
+# --- THE CLOCK ------------------------------------------------------------------------------------
+# V7 PHASE-1.5 (§11a) — the DECK-DRIVEN clock REPLACES the vendor-claims clock. The shared BOOKING
+# (Tour-Ticket) deck IS the clock: the DAY booking deck exhausts → DUSK (flip to night); the NIGHT
+# booking deck exhausts → LAST TRAIN (game end). Exhaustion = a seeded boundary card at each deck's
+# bottom (modelled as "the refill draw finds the reserve empty"). The vendor-claims counter, the
+# dusk@/last-train@ thresholds, the +1-clock-on-Bribe step, and the vendor-deck-dry end are all
+# INERT under "deck". "vendor" recovers the Phase-1 claims-clock for the A/B; "mission" = the old
+# completions clock.
+CLOCK_MODE = os.environ.get("TA_CLOCK", "deck")               # "deck" (V7 P1.5 default) | "vendor" | "mission"
+# §11b self-scaling deck sizes: DAY = DAY_DECK_MULT·(N+DECK_OFFSET); NIGHT = NIGHT_DECK_MULT·(N+DECK_OFFSET).
+# §11b SPECCED 3·(N+2)/4·(N+2) [15/20·18/24·21/28·24/32] as the STARTING knobs and flagged them "the #1
+# re-sim knob, tune to ~26–30 t/p". THE RE-SIM TUNED THEM: at +2 the decks ran long (t/p 32–36) and 6p
+# still stalled 8%; DECK_OFFSET=1 (→ DAY 3·(N+1)/NIGHT 4·(N+1) = 3p 12/16 · 4p 15/20 · 5p 18/24 · 6p 21/28)
+# lands every count at t/p 26.5–29.7 with LAST-TRAIN 97–100% / stall 0–3%. The 3:4 day:night ratio holds
+# (night = the longer, tenser climax, §11c → dusk lands ~35–41% of the game). More players still draw the
+# SHARED deck faster, so clock-cards-per-player stays ~flat (11.7→9.3). The FLAT +3 day / +4 night per
+# extra player is preserved; only the constant offset moved 2→1.
+DAY_DECK_MULT   = int(os.environ.get("TA_DAY_DECK_MULT", "3"))
+NIGHT_DECK_MULT = int(os.environ.get("TA_NIGHT_DECK_MULT", "4"))
+DECK_OFFSET     = int(os.environ.get("TA_DECK_OFFSET", "1"))   # tuned 2→1 (see above)
 M_DUSK = int(os.environ.get("TA_M_DUSK", "3"))
 M_END  = int(os.environ.get("TA_M_END",  "5"))
 V_DUSK = int(os.environ.get("TA_V_DUSK", "5"))                # dusk @ 5th table-wide vendor claim @2p
@@ -300,6 +321,10 @@ DAGE_FLAW   = os.environ.get("TA_H2_FLAW", "none")            # "none"|"tab"|"pr
 # DEPRECATED under V7: the v6.4b NIGHT-SCOPED edge is dropped (§2b — 大哥's tie-win is now all-game via
 # DAGE_THRESH=0). _margin_for no longer reads this knob; kept only so an env override doesn't KeyError.
 DAGE_NIGHT_THRESH = int(os.environ.get("TA_H2_NIGHT_THRESH", "0"))   # (unused under V7 canon)
+# §11g #7 reserve lever: SCOPE 大哥's tie-win to the NIGHT only (by day he needs strict plurality like
+# everyone; at night he wins ties). Default OFF = his tie-win is all-game (V7 canon §2b). The lever if he
+# reads 6p-hot under the punishing dial-drop (a sink relatively buffs the character who loses fewest wars).
+DAGE_NIGHT_SCOPE = os.environ.get("TA_H2_NIGHT_SCOPE", "0") == "1"    # (default OFF: all-game tie-win)
 # 媽寶 buff. v6.3 lock = "keep2". "none"|"keep2"|"travel2".
 OFFICE_BUFF = os.environ.get("TA_OFFICE", "keep2")
 # 網紅 flaw. CHARACTER RE-PASS default = "none" (Late-to-the-Party RETIRED — see the re-pass note in the
@@ -360,10 +385,21 @@ TRAVEL_NO_SOURCE = os.environ.get("TA_TRAVEL_NO_SOURCE", "1") == "1"
 #     the LOSER's committed Followers currently just RETURN to supply (no sting, a missing sink). Modes:
 #       "off"     = v6.3 behaviour (return to supply, no penalty)
 #       "burn"    = the crowd disperses — the loser's committed Followers are SPENT (not returned)
-#       "dropmax" = the loser's Followers-max drops by LOSTWAR_DROP (you overreached and lost face)
+#       "dropmax" = the loser's Followers-max drops by LOSTWAR_DROP, floored at 0 (legacy, kept for A/B)
 #       "both"    = burn + dropmax
-LOSTWAR      = os.environ.get("TA_LOSTWAR", "burn")   # V7 canon (§3): burn the losers' committed Followers
-LOSTWAR_DROP = int(os.environ.get("TA_LOSTWAR_DROP", "1"))
+#       "dialdrop"= V7 PHASE-1.5 CANON (§11d, REPLACES burn): the lost-vendor Followers RETURN to the
+#                   loser's supply (nothing burned), AND the loser's Followers-max dial drops DROP_DAY by
+#                   day / DROP_NIGHT at night, FLOORED at the character's START value (2 base / 4 網紅 —
+#                   ≥2 keeps Promote legal, no death-spiral). Committed-over-max reconcile coded (dormant).
+LOSTWAR      = os.environ.get("TA_LOSTWAR", "dialdrop")  # V7 P1.5 canon (§11d): dial-drop, followers return
+LOSTWAR_DROP = int(os.environ.get("TA_LOSTWAR_DROP", "1"))   # legacy dropmax/both magnitude (floored at 0)
+# --- V7 PHASE-1.5 DIAL-DROP magnitudes (§11d): −1 by day, −2 at night (the higher-stakes climax) -----
+DROP_DAY   = int(os.environ.get("TA_DROP_DAY", "1"))          # Followers-max drop on a lost DAY war
+DROP_NIGHT = int(os.environ.get("TA_DROP_NIGHT", "2"))        # Followers-max drop on a lost NIGHT war
+# 網紅's dial-drop FLOOR (§11g #6 reserve lever): "start" (=her start-max 4, protects her kit — the
+# DEFAULT) | "base" (=2, removes her sink-immunity — the reserve if she reads 6p-hot). Base characters
+# always floor at their start value 2 regardless.
+INFL_FLOOR = os.environ.get("TA_INFL_FLOOR", "start")         # "start" (=4, default) | "base" (=2, reserve)
 #   (b) raise NIGHT / APEX Follower DEMAND (need a bigger committed presence to win a night/apex vendor →
 #       the ramped cap actually gets SPENT + binds late) + lift the ceiling (REACH_TOP, above).
 NIGHT_DEMAND = int(os.environ.get("TA_NIGHT_DEMAND", "0"))     # extra Followers to win a NIGHT vendor
@@ -679,6 +715,23 @@ DAY_POOL = DAY_TICKETS + ["g_travel3"]                        # base 13 / expand
 NIGHT_POOL = NIGHT_TICKETS + GEN_TICKETS                       # base 15 / expanded ~25
 
 
+def _build_booking_deck(pool, size, rng):
+    """V7 PHASE-1.5 (§11a/b): build the DECK-CLOCK booking deck of exactly `size` cards. The distinct
+    pattern set (~20 day / ~25 night) is smaller than the per-count deck at 4p+, so the §4 "duplicate
+    the common/easy patterns" data step is modelled by cycling the shuffled pool until `size` is reached.
+    (The sim only reads pattern + value; duplicated patterns are the intended fix for the shared row
+    emptying too fast at 5–6p.) The boundary card is NOT a deck member — it is the empty-reserve state:
+    when a refill finds the deck empty, the transition fires (see _booking_deck_out)."""
+    deck = []
+    while len(deck) < size:
+        chunk = list(pool)
+        rng.shuffle(chunk)
+        deck.extend(chunk)
+    deck = deck[:size]
+    rng.shuffle(deck)
+    return deck
+
+
 def _mprog(key, st):
     """(done, needed) — monotonic partial credit for the planner."""
     t = TICKETS.get(key)
@@ -861,9 +914,19 @@ class TravelAgentsGame:
 
         # V7 §4 shared face-up Booking row: 3 at ≤3p, widens to 4 at 4p+ so the crowd doesn't strip it bare.
         mrow_w = MROW if n_players < 4 else max(MROW, 4)
-        drawn = rng.sample(DAY_POOL, min(mdraw, len(DAY_POOL)))
-        mrow = drawn[:mrow_w]
-        mreserve = drawn[mrow_w:]
+        # V7 PHASE-1.5 (§11a/b): the DAY booking deck IS the clock. Size = DAY_DECK_MULT·(N+DECK_OFFSET)
+        # → 3p15 4p18 5p21 6p24. Deal the face-up row from the top; the rest is the reserve (= the clock
+        # cards). When a claim's refill finds the reserve empty (the boundary card), DUSK fires (§11a).
+        day_deck_size  = DAY_DECK_MULT * (n_players + DECK_OFFSET)
+        night_deck_size = NIGHT_DECK_MULT * (n_players + DECK_OFFSET)
+        if CLOCK_MODE == "deck":
+            _deck = _build_booking_deck(DAY_POOL, day_deck_size, rng)
+            mrow = [_deck.pop() for _ in range(min(mrow_w, len(_deck)))]
+            mreserve = _deck
+        else:                                                # legacy vendor/mission clock (Phase-1 A/B)
+            drawn = rng.sample(DAY_POOL, min(mdraw, len(DAY_POOL)))
+            mrow = drawn[:mrow_w]
+            mreserve = drawn[mrow_w:]
 
         players = []
         for p in range(n_players):
@@ -912,6 +975,7 @@ class TravelAgentsGame:
             "clock_mode": CLOCK_MODE, "completions": 0, "vendor_claims": 0,
             "m_dusk": m_dusk, "m_end": m_end, "v_dusk": v_dusk, "v_end": v_end,
             "mrow": mrow, "mreserve": mreserve, "mdraw": mdraw, "mrow_w": mrow_w,
+            "day_deck_size": day_deck_size, "night_deck_size": night_deck_size,   # §11b deck-clock sizes
             "sig_supply": sig_supply, "k_supply": k_supply,   # V7 §4 per-count ingredient market depth
             "players": players, "turn": 0, "cur": 0,
             "end_turn": None, "end_cause": None, "done": False,
@@ -958,6 +1022,10 @@ class TravelAgentsGame:
             "promote_want_day": 0, "promote_want_night": 0,     # turns the bot wanted to Promote, by half
             # v6.4 lost-promotion-war probes
             "lost_wars": 0, "lostwar_committed": 0,             # #lost wars + Σ loser committed Followers
+            # V7 PHASE-1.5 dial-drop diagnostics (§11f probe 8): drops by half; the committed-over-max
+            # clause firing (expect ~0 — provably dormant §11d); floor hits (a loser bottomed out).
+            "dialdrop_day": 0, "dialdrop_night": 0,
+            "dialdrop_overcap": 0, "dialdrop_floor_hits": 0,
             # v6.4 Bookings hand-limit probes
             "cancels": 0, "book_capbind": 0,                    # cancel-to-claims + times at the hand-limit
         }
@@ -987,6 +1055,17 @@ class TravelAgentsGame:
 
     def _committed(self, s, p):
         return sum(b[p] for b in s["buzz"].values())
+
+    def _char_start_reach(self, pl):
+        """A character's STARTING Followers-max — the DIAL-DROP floor (§11d). Mirrors the new_state
+        seed: 網紅 = INFL_MAX_START (4); 里長伯 = COUNCILLOR_REACH when set; everyone else REACH_START (2).
+        Every start value is ≥2, so the floor keeps Promote (a fixed 2) legal — no death-spiral. §11g #6
+        reserve lever: INFL_FLOOR=='base' caps 網紅's floor at 2 (removes her sink-immunity)."""
+        if pl["char"] == "influencer":
+            return 2 if INFL_FLOOR == "base" else INFL_MAX_START
+        if pl["char"] == "councillor" and COUNCILLOR_REACH >= 0:
+            return COUNCILLOR_REACH
+        return REACH_START
 
     # -------- cost / affordability --------
     def _pay_plan(self, s, p, vid):
@@ -1044,7 +1123,9 @@ class TravelAgentsGame:
         demands a bigger committed presence, so the ramped Followers-max actually gets spent + binds late."""
         is_night = vid is not None and VENDORS[vid]["phase"] == 2
         if pl["char"] == "dage":
-            m = DAGE_THRESH                                   # V7: win-on-tie all-game (night-scoping dropped)
+            # V7 canon: win-on-tie ALL GAME (DAGE_THRESH=0). §11g #7 reserve lever DAGE_NIGHT_SCOPE
+            # scopes the tie-win to the NIGHT only — by day he needs strict plurality like everyone.
+            m = BUZZ_MARGIN if (DAGE_NIGHT_SCOPE and not is_night) else DAGE_THRESH
         else:
             m = BUZZ_MARGIN
         if is_night and (NIGHT_DEMAND or APEX_DEMAND):
@@ -1182,11 +1263,12 @@ class TravelAgentsGame:
         got = pl["reach"] - before
         s[f"reach_gain_{kind}"] += got
 
-    def _lose_reach(self, s, p, amt, kind):
-        """Forced/voluntary Reach loss. Floors at 0; if committed > Reach, return Buzz to supply."""
+    def _lose_reach(self, s, p, amt, kind, floor=0):
+        """Forced/voluntary Reach loss. Floors at `floor` (0 normally; the character's START value for a
+        §11d dial-drop); if committed > Reach after the drop, return Buzz to supply (the §11d reconcile)."""
         pl = s["players"][p]
         before = pl["reach"]
-        pl["reach"] = max(0, pl["reach"] - amt)
+        pl["reach"] = max(floor, pl["reach"] - amt)
         lost = before - pl["reach"]
         s[f"reach_loss_{kind}"] += lost
         # enforce the cap invariant: pull Buzz back off the board (bot's choice) until committed ≤ Reach
@@ -1291,6 +1373,9 @@ class TravelAgentsGame:
         s["claims"] += 1
         if s["mreserve"]:
             s["mrow"].append(s["mreserve"].pop(0))
+        elif s["clock_mode"] == "deck":
+            # V7 P1.5 (§11a): the reserve is empty → the refill reveals the boundary card → transition.
+            self._booking_deck_out(s)
 
     def _do_bribe(self, s, p, vid, rng):
         pl = s["players"][p]
@@ -1338,14 +1423,33 @@ class TravelAgentsGame:
             s["lost_wars"] += 1
             s["lostwar_committed"] += s["buzz"][vid][q]
         # winning clears YOUR Buzz off it → frees your cap. Losers' Followers RETURN to supply (v6.3
-        # "off") UNLESS the lost-war lever burns them (crowd disperses → SPENT, not returned).
+        # "off" / V7 P1.5 dialdrop) UNLESS the burn lever spends them (crowd disperses → NOT returned).
         ret = sum(s["buzz"][vid])
         if LOSTWAR in ("burn", "both"):
             ret -= sum(s["buzz"][vid][q] for q in losers)     # losers' committed Followers are spent
         s["supply"] += ret
         s["buzz"][vid] = [0] * s["n"]
-        if LOSTWAR in ("dropmax", "both"):
-            for q in losers:                                  # the loser overreached → Followers-max drops
+        # V7 PHASE-1.5 (§11d) DIAL-DROP (canon, REPLACES burn): the loser's dial drops −1 day / −2 night,
+        # FLOORED at their START value; the lost-vendor Followers already RETURNED above (in `ret`), and
+        # the committed-over-max reconcile (in _lose_reach) is instrumented (expect ~0 fires).
+        if LOSTWAR == "dialdrop":
+            drop = DROP_NIGHT if v["phase"] == 2 else DROP_DAY
+            for q in losers:
+                lpl = s["players"][q]
+                floor = self._char_start_reach(lpl)
+                before_reach = lpl["reach"]
+                before_ret = s["reach_forced_return"]
+                self._lose_reach(s, q, drop, "lostwar", floor=floor)
+                if before_reach - drop < floor and before_reach > floor:
+                    s["dialdrop_floor_hits"] += 1             # the drop bottomed out at the start-value floor
+                if s["reach_forced_return"] > before_ret:
+                    s["dialdrop_overcap"] += 1                # the committed-over-max clause actually fired
+                if v["phase"] == 2:
+                    s["dialdrop_night"] += 1
+                else:
+                    s["dialdrop_day"] += 1
+        elif LOSTWAR in ("dropmax", "both"):
+            for q in losers:                                  # legacy: Followers-max drops, floored at 0 (A/B)
                 self._lose_reach(s, q, LOSTWAR_DROP, "lostwar")
         s["claim_by_region"][v["region"]] += 1
         if v["is_drink"]:
@@ -1447,19 +1551,34 @@ class TravelAgentsGame:
             up.append(nv)
             s["buzz"].setdefault(nv, [0] * s["n"])
 
-    # -------- the clock (vendor-claims default) --------
+    # -------- the clock (V7 PHASE-1.5: DECK-DRIVEN default; vendor/mission legacy) --------
     def _on_claim_clock(self, s, p):
+        # Called on every Bribe. `vendor_claims` is kept as a DIAGNOSTIC counter (inert under deck).
+        # _check_mission_completions ALWAYS runs — it marks counted_done, which frees hand slots.
         s["vendor_claims"] += 1
         self._check_mission_completions(s, p)
-        if s["clock_mode"] == "vendor":
+        if s["clock_mode"] == "vendor":                      # legacy Phase-1 claims-clock (A/B only)
             if s["act"] == 1 and s["vendor_claims"] >= s["v_dusk"]:
                 self._dusk(s)
             if s["vendor_claims"] >= s["v_end"]:
                 self._trigger_end(s, "lasttrain")
-        if s["act"] == 1 and self._all_day_decks_dry(s) and s["end_turn"] is None:
+            if s["act"] == 1 and self._all_day_decks_dry(s) and s["end_turn"] is None:
+                self._dusk(s)
+            if s["act"] == 2 and self._all_night_decks_dry(s) and s["end_turn"] is None:
+                self._trigger_end(s, "deck")
+        # CLOCK_MODE=="deck" (V7 P1.5 §11a): the clock is the BOOKING deck — driven by _booking_deck_out
+        # on a row refill, NOT by vendor claims and NOT by the vendor-deck-dry. Nothing to do on a Bribe.
+
+    def _booking_deck_out(self, s):
+        """V7 PHASE-1.5 (§11a): a booking-row refill found the reserve empty → the seeded boundary card
+        is revealed. DAY deck out → DUSK (flip to night); NIGHT deck out → LAST TRAIN. This is the SOLE
+        end-mechanism under CLOCK_MODE=deck — monotonic and guaranteed to fire (the deck never reshuffles)."""
+        if s["clock_mode"] != "deck":
+            return
+        if s["act"] == 1:
             self._dusk(s)
-        if s["act"] == 2 and self._all_night_decks_dry(s) and s["end_turn"] is None:
-            self._trigger_end(s, "deck")
+        elif s["end_turn"] is None:
+            self._trigger_end(s, "lasttrain")
 
     def _check_mission_completions(self, s, p):
         pl = s["players"][p]
@@ -1542,13 +1661,20 @@ class TravelAgentsGame:
             s["ing_discard"][r] = Counter()
         # the ticket row switches to the NIGHT pool
         rng = s.get("_rng")
-        if rng is not None:
-            drawn = rng.sample(NIGHT_POOL, min(s["mdraw"], len(NIGHT_POOL)))
-        else:
-            drawn = NIGHT_POOL[:s["mdraw"]]
         _mw = s.get("mrow_w", MROW)                          # V7 §4 per-count face-up Booking row width
-        s["mrow"] = drawn[:_mw]
-        s["mreserve"] = drawn[_mw:]
+        if s["clock_mode"] == "deck" and rng is not None:
+            # V7 P1.5 (§11a/b): deal the NIGHT booking deck = NIGHT_DECK_MULT·(N+DECK_OFFSET). Its
+            # exhaustion (a refill finding the reserve empty) is the LAST TRAIN.
+            _nd = _build_booking_deck(NIGHT_POOL, s["night_deck_size"], rng)
+            s["mrow"] = [_nd.pop() for _ in range(min(_mw, len(_nd)))]
+            s["mreserve"] = _nd
+        else:                                                # legacy vendor/mission clock (Phase-1 A/B)
+            if rng is not None:
+                drawn = rng.sample(NIGHT_POOL, min(s["mdraw"], len(NIGHT_POOL)))
+            else:
+                drawn = NIGHT_POOL[:s["mdraw"]]
+            s["mrow"] = drawn[:_mw]
+            s["mreserve"] = drawn[_mw:]
         if NIGHT_SPRINT > 0:
             if s["clock_mode"] == "mission":
                 s["m_end"] = max(s["completions"] + 1, s["m_end"] - NIGHT_SPRINT)
@@ -1929,6 +2055,12 @@ class TravelAgentsGame:
             # lost-promotion-war probes
             "lost_wars_per_game": float(s["lost_wars"]),
             "followers_per_lost_war": float(s["lostwar_committed"] / s["lost_wars"]) if s["lost_wars"] else 0.0,
+            # V7 PHASE-1.5 dial-drop diagnostics (§11f probe 8)
+            "dialdrop_day_per_game": float(s["dialdrop_day"]),
+            "dialdrop_night_per_game": float(s["dialdrop_night"]),
+            "dialdrop_per_game": float(s["dialdrop_day"] + s["dialdrop_night"]),
+            "dialdrop_floor_hits_per_game": float(s["dialdrop_floor_hits"]),
+            "dialdrop_overcap_per_game": float(s["dialdrop_overcap"]),
             # Bookings hand-limit probes
             "cancels_per_game": float(s["cancels"]),
             "book_capbind_per_game": float(s["book_capbind"]),
@@ -1971,9 +2103,10 @@ class TravelAgentsGame:
 
 
 GAME = TravelAgentsGame()
-TITLE = ("Travel Agents: Taiwan (V7 — MULTIPLAYER 3–6 area-majority · strict plurality [tie blocks] · "
-         "大哥 wins ties all-game · lost-war BURN · hand-limit N=3 · 網紅 start-max 4 · base Travel "
-         "de-sourced [媽寶 sole sourcer] · Trending +1 Followers-max · six characters incl. 阿嬤)")
+TITLE = ("Travel Agents: Taiwan (V7 PHASE-1.5 — MULTIPLAYER 3–6 area-majority · DECK-DRIVEN clock · "
+         "strict plurality [tie blocks] · 大哥 wins ties all-game · lost-war DIAL-DROP (−1 day/−2 night, "
+         "floor=start) · hand-limit N=3 · 網紅 start-max 4 · base Travel de-sourced [媽寶 sole sourcer] · "
+         "Trending +1 Followers-max · six characters incl. 阿嬤)")
 
 
 # ==================================================================================================
@@ -2132,6 +2265,9 @@ def _claim_window(s, p):
             remaining = max(0, s["v_dusk"] - s["vendor_claims"])
         else:
             remaining = max(0, s["v_end"] - s["vendor_claims"])
+    elif s["clock_mode"] == "deck":
+        # V7 P1.5: claims-left-to-transition ≈ the booking cards still in the deck + face-up row.
+        remaining = len(s.get("mreserve", [])) + len(s.get("mrow", []))
     else:
         remaining = 6
     return max(1, (remaining + s["n"] - 1) // s["n"])       # my ~fair share of the remaining claims
@@ -2156,11 +2292,19 @@ def _should_claim(s, p, legal, prefs):
     pl = s["players"][p]
     incomplete = [k for k in pl["tickets"] if not _mdone(k, pl["won"])]
     # v6.4: the `collect` breadth line pushes right up to the hand-limit; others self-limit lower.
-    limit = HAND_LIMIT if prefs.get("collect") else (3 if prefs.get("speed") else 2)
+    # V7 PHASE-1.5: under the DECK-CLOCK, drawing bookings IS the scoring engine AND the clock, so a
+    # rational player keeps their hand full to the hand-limit (the CD's "you must keep drawing bookings"
+    # premise — the old self-limit-to-2 under-drew the deck and was the sim's clock-stall artifact).
+    if s["clock_mode"] == "deck":
+        limit = HAND_LIMIT
+    else:
+        limit = HAND_LIMIT if prefs.get("collect") else (3 if prefs.get("speed") else 2)
     if s["clock_mode"] == "mission":
         room = s["completions"] < s["m_end"] - 1
-    else:
+    elif s["clock_mode"] == "vendor":
         room = s["vendor_claims"] < s["v_end"] - 1
+    else:  # deck: keep claiming while the booking deck/row still holds cards (this drives the clock)
+        room = bool(s["mreserve"]) or bool(s["mrow"])
     if not (len(incomplete) < limit and room):
         return False
     # only claim if the row holds a ticket we can realistically FINISH in this phase's window
@@ -2509,12 +2653,15 @@ if __name__ == "__main__":
                 globals()[k] = v
 
         _out(f"# {TITLE}")
-        _out(f"# CD-GATED V7 RE-SIM (Phase 1) — per-count probes, N={N}/seating\n")
-        _out(f"Config: BUZZ_MARGIN={BUZZ_MARGIN} (strict plurality; tie blocks) · 大哥 thr={DAGE_THRESH} "
-             f"(wins ties) · LOSTWAR={LOSTWAR} · HAND_LIMIT={HAND_LIMIT} · 網紅 start-max={INFL_MAX_START} · "
-             f"TRAVEL_NO_SOURCE={int(TRAVEL_NO_SOURCE)} · TRENDING={TRENDING}(+{TREND_MAX}) · "
-             f"NIGHT_DECK_CAP={NIGHT_DECK_CAP} · NIGHT_SLOTS={NIGHT_SLOTS_OVERRIDE!r} · "
-             f"里長伯 home_disc={COUNCILLOR_HOME_DISC}/away={COUNCILLOR_AWAY_TAX}/reach={COUNCILLOR_REACH}\n")
+        _out(f"# CD-GATED V7 PHASE-1.5 RE-SIM — per-count probes, N={N}/seating\n")
+        _out(f"Config: CLOCK={CLOCK_MODE} (DAY={DAY_DECK_MULT}·(N+{DECK_OFFSET}) / NIGHT={NIGHT_DECK_MULT}·(N+{DECK_OFFSET}) "
+             f"→ 3p{3*(3+DECK_OFFSET)}/{4*(3+DECK_OFFSET)}·4p{3*(4+DECK_OFFSET)}/{4*(4+DECK_OFFSET)}·"
+             f"5p{3*(5+DECK_OFFSET)}/{4*(5+DECK_OFFSET)}·6p{3*(6+DECK_OFFSET)}/{4*(6+DECK_OFFSET)}) · "
+             f"LOSTWAR={LOSTWAR} (−{DROP_DAY} day/−{DROP_NIGHT} night, "
+             f"floor={INFL_FLOOR}) · BUZZ_MARGIN={BUZZ_MARGIN} (tie blocks) · 大哥 thr={DAGE_THRESH} "
+             f"(wins ties{'; NIGHT-scoped' if DAGE_NIGHT_SCOPE else ' all-game'}) · HAND_LIMIT={HAND_LIMIT} · "
+             f"網紅 start-max={INFL_MAX_START} · TRAVEL_NO_SOURCE={int(TRAVEL_NO_SOURCE)} · "
+             f"TRENDING={TRENDING}(+{TREND_MAX})\n")
 
         # -------- per-count probe suite --------
         seed = 1
@@ -2546,9 +2693,10 @@ if __name__ == "__main__":
             mt = _field(c, max(500, N), seed); seed += max(500, N)
             _out(f"\n### (3) downtime proxy: avg_legal_actions {mt['avg_legal_actions']:.2f}  "
                  f"forced_turn_frac {mt['forced_turn_frac']:.3f}  turns/player {mt['turns_per_player']:.1f}")
-            _out(f"### (4) length: end LASTTRAIN {mt['end_by_lasttrain']*100:.0f}% / deck "
-                 f"{mt['end_by_deck']*100:.0f}% / STALL {mt['end_by_stall']*100:.0f}%  · dusk_turn "
-                 f"{mt['dusk_turn']:.0f}  last_turn {mt['last_turn']:.0f}")
+            _out(f"### (4) length/clock: end LASTTRAIN {mt['end_by_lasttrain']*100:.0f}% / STALL "
+                 f"{mt['end_by_stall']*100:.0f}%  · turns/plyr {mt['turns_per_player']:.1f} (target ~26–30)  "
+                 f"dusk_turn {mt['dusk_turn']:.0f} (~½ of {mt['last_turn']:.0f})  claims/gm {mt['claims_per_game']:.1f}  "
+                 f"empty_mkt_draws/gm {mt['empty_draws_per_game']:.2f}")
             _out(f"### (5) contested/economy: contested_frac {mt['contested_frac']*100:.1f}%  "
                  f"lost_wars/gm {mt['lost_wars_per_game']:.2f}  followers/lostwar {mt['followers_per_lost_war']:.2f}")
             _out(f"        gain {mt['followers_gain_total']:.1f} vs sink {mt['followers_sink_total']:.1f}  "
@@ -2556,6 +2704,9 @@ if __name__ == "__main__":
                  f"slack_night {mt['slack_night_mean']:.2f}  capbind day {mt['capbind_day']:.2f}/night {mt['capbind_night']:.2f}")
             _out(f"        max_committed {mt['max_committed']:.2f}  reach_end {mt['reach_end_mean']:.2f}  "
                  f"supply_min {mt['buzz_supply_min']:.1f}  night_contested {mt['night_contested_wins_per_game']:.2f}")
+            _out(f"        dial-drops/gm {mt['dialdrop_per_game']:.2f} (day {mt['dialdrop_day_per_game']:.2f} / "
+                 f"night {mt['dialdrop_night_per_game']:.2f})  floor_hits/gm {mt['dialdrop_floor_hits_per_game']:.2f}  "
+                 f"over-max fires/gm {mt['dialdrop_overcap_per_game']:.3f} (expect ~0)")
             _out(f"### (6) night sourcing: night:day ratio {mt['night_day_src_ratio']*100:.0f}%  "
                  f"(day {mt['src_day_per_turn']:.2f}/turn  night {mt['src_night_per_turn']:.2f}/turn)  "
                  f"night_claims/plyr {mt['night_claims_per_player']:.2f}  free_night_bribes/gm {mt['free_night_bribes_per_game']:.2f}")
@@ -2568,31 +2719,82 @@ if __name__ == "__main__":
             _out(f"### (8) kingmaking/take-that proxy: takethat_hits/gm {mt['takethat_hits_per_game']:.2f}  "
                  f"cs_rival_hits/gm {mt['cs_rival_hits_per_game']:.2f}  (bot floor — real politics = table)")
 
-        # -------- LOST-WAR SINK SWEEP (at the 4p home + a 5p check) --------
-        _out(f"\n\n## LOST-WAR SINK SWEEP " + "=" * 70)
-        _out("Each cell: contested% · lost_wars/gm · foll/war · GAIN vs SINK · capfill_night · "
-             "slack_night · end_LT% · turns/plyr")
+        # -------- §11f FOLLOW-UPS: the 大哥/網紅 6p watch + economy-sink sensitivity --------
         _CFGSAVE = {k: globals()[k] for k in
-                    ("LOSTWAR", "LOSTWAR_DROP", "NIGHT_DEMAND", "APEX_DEMAND", "SINK_BOOST", "REACH_TOP")}
-        sweep = [
-            ("off               ", dict(LOSTWAR="off")),
-            ("burn (canon)      ", dict(LOSTWAR="burn")),
-            ("dropmax1          ", dict(LOSTWAR="dropmax", LOSTWAR_DROP=1)),
-            ("both (burn+drop1) ", dict(LOSTWAR="both", LOSTWAR_DROP=1)),
-            ("burn+leverB(nd1,top14)", dict(LOSTWAR="burn", NIGHT_DEMAND=1, REACH_TOP=14)),
-            ("burn+leverC(sink.12)  ", dict(LOSTWAR="burn", SINK_BOOST=0.12)),
-        ]
-        for c in (4, 5):
-            _out(f"\n### {c}p sweep")
-            for lbl, cfg in sweep:
-                _setcfg(**_CFGSAVE)                          # reset to canon baseline
-                _setcfg(**cfg)
+                    ("LOSTWAR", "DROP_DAY", "DROP_NIGHT", "INFL_FLOOR", "DAGE_NIGHT_SCOPE")}
+
+        # (A) The 大哥/網紅 reserve-lever follow-up at 6p — a punishing dial-drop relatively BUFFS the
+        #     characters who lose fewest wars (大哥 wins ties → eats fewer drops; 網紅's start-4 floor makes
+        #     her sink-immune). If they read out the top of the 6p band, the reserve levers are: cap 網紅's
+        #     floor at 2, and/or night-scope 大哥's tie-win. Report the 6p band delta for the hot pair.
+        _out(f"\n\n## §11f 6p 大哥/網紅 WATCH — reserve levers " + "=" * 44)
+        _out("6p win% [char vs 5 neutrals, avg first+last seat]; fair share 16.7%, in-band idx 0.90–1.10.")
+        seed6 = seed
+        for lbl, cfg in (
+                ("defaults  (網紅 floor=start / 大哥 tie-win all-game)", dict(INFL_FLOOR="start", DAGE_NIGHT_SCOPE=False)),
+                ("網紅 floor→2  (drop her sink-immunity)            ", dict(INFL_FLOOR="base",  DAGE_NIGHT_SCOPE=False)),
+                ("大哥 tie-win NIGHT-only                           ", dict(INFL_FLOOR="start", DAGE_NIGHT_SCOPE=True)),
+                ("both reserve levers                               ", dict(INFL_FLOOR="base",  DAGE_NIGHT_SCOPE=True))):
+            globals().update({**_CFGSAVE, **cfg})
+            iavg, _i0, _il = _char_wr_mp("influencer", 6, N, seed6); seed6 += 4 * N
+            davg, _d0, _dl = _char_wr_mp("dage", 6, N, seed6); seed6 += 4 * N
+            _out(f"    {lbl}  網紅 {iavg*100:5.1f}% (idx {iavg/(1/6):4.2f})   大哥 {davg*100:5.1f}% (idx {davg/(1/6):4.2f})")
+        globals().update(_CFGSAVE)
+        seed = seed6
+
+        # (B) Economy-sink sensitivity (§11f probe 9): is contention OVER-suppressed by the dial-drop?
+        #     Compare canon dialdrop −1/−2 vs the −1/−1 night reserve vs OFF (no sink), at 4p + 6p.
+        _out(f"\n\n## §11f ECONOMY-SINK SENSITIVITY " + "=" * 53)
+        _out("Each cell: contested% · lost_wars/gm · slack_night · supply_min · capbind_n · end_LT% · turns/plyr")
+        for c in (4, 6):
+            _out(f"\n### {c}p")
+            for lbl, cfg in (
+                    ("dialdrop −1/−2 (canon)  ", dict(LOSTWAR="dialdrop", DROP_DAY=1, DROP_NIGHT=2)),
+                    ("dialdrop −1/−1 (reserve) ", dict(LOSTWAR="dialdrop", DROP_DAY=1, DROP_NIGHT=1)),
+                    ("off (no sink)           ", dict(LOSTWAR="off"))):
+                globals().update({**_CFGSAVE, **cfg})
                 mt = _field(c, max(400, N), seed); seed += max(400, N)
-                _out(f"    {lbl:24} {mt['contested_frac']*100:4.1f}%  {mt['lost_wars_per_game']:4.2f}  "
-                     f"{mt['followers_per_lost_war']:4.2f}  G{mt['followers_gain_total']:4.1f}/S{mt['followers_sink_total']:4.1f}  "
-                     f"cf-n {mt['capfill_night']:.2f}  sl-n {mt['slack_night_mean']:4.2f}  "
-                     f"LT {mt['end_by_lasttrain']*100:3.0f}%  t/p {mt['turns_per_player']:.1f}")
-        _setcfg(**_CFGSAVE)                                  # restore canon
+                _out(f"    {lbl}  {mt['contested_frac']*100:4.1f}%  {mt['lost_wars_per_game']:4.2f}  "
+                     f"sl-n {mt['slack_night_mean']:4.2f}  sup {mt['buzz_supply_min']:4.1f}  "
+                     f"cb-n {mt['capbind_night']:.2f}  LT {mt['end_by_lasttrain']*100:3.0f}%  t/p {mt['turns_per_player']:.1f}")
+        globals().update(_CFGSAVE)
+
+        # (C) ESCALATION LADDER (CD steer 2026-08-08) — if the battlers read 6p-hot, compare THREE
+        #     band-tightening approaches: (1) NERF-the-battlers (both reserve levers); (2) REMOVE-ALL-FLAWS
+        #     (isolate whether the battlers only look OP because the others carry real drawbacks — 里長伯's
+        #     away-tax, 大胃王's Visit-hazards-twice, 阿嬤's small basket; 大哥/媽寶 already flawless);
+        #     (3) BUFF-THE-WEAK (阿嬤 basket + 媽寶 keep, up toward the battlers). Full six-char band at 4p +
+        #     6p under each; report band SPREAD (hi−lo idx) so the CD can pick nerf vs subtract vs level-up.
+        _out(f"\n\n## §CD ESCALATION LADDER — band-tightening approaches " + "=" * 28)
+        _out("Full six-char band [char vs neutrals, avg first+last seat], idx×fair. SPREAD = hi−lo idx "
+             "(tighter = better; target all in 0.90–1.10).")
+        _LADSAVE = {k: globals()[k] for k in
+                    ("INFL_FLOOR", "DAGE_NIGHT_SCOPE", "COUNCILLOR_AWAY_TAX", "H1", "AMA_CAP", "OFFICE_KEEP")}
+
+        def _band6(c, n, seed):
+            out = {}
+            for ch in CH6:
+                avg, _, _ = _char_wr_mp(ch, c, n, seed); seed += 4 * n
+                out[ch] = avg
+            return out, seed
+
+        regimes = (
+            ("defaults (canon dial-drop)  ", dict()),
+            ("(1) nerf-battlers (levers)   ", dict(INFL_FLOOR="base", DAGE_NIGHT_SCOPE=True)),
+            ("(2) remove-ALL-flaws         ", dict(COUNCILLOR_AWAY_TAX=0, H1="none", AMA_CAP=7)),
+            ("(3) buff-the-weak (阿嬤+媽寶) ", dict(AMA_CAP=7, OFFICE_KEEP=3)),
+        )
+        for c in (4, 6):
+            fair = 100.0 / c
+            _out(f"\n### {c}p  (fair {fair:.1f}%)")
+            for lbl, cfg in regimes:
+                globals().update({**_LADSAVE, **cfg})
+                b, seed = _band6(c, N, seed)
+                idxs = {ch: b[ch] / (fair / 100) for ch in CH6}
+                lo, hi = min(idxs.values()), max(idxs.values())
+                body = "  ".join(f"{ZH[ch]} {idxs[ch]:.2f}" for ch in CH6)
+                _out(f"    {lbl}  {body}   [spread {hi-lo:.2f}]")
+        globals().update(_LADSAVE)
 
         if OUT:
             os.makedirs(os.path.dirname(OUT), exist_ok=True)
