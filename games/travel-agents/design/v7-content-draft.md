@@ -595,6 +595,162 @@ more you fight and lose, the lower your ceiling.
 
 ---
 
+## 12. V7 BUFF-THE-WEAK KIT SPEC (CD-chosen band fix — 阿嬤 + 媽寶) — 2026-08-08
+
+**Context.** After the Phase-1.5 re-sim, the balance story changed: 6p is fixed, the economy is
+tightened, the battlers (大哥/網紅) cooled into mid-pack (so their reserve nerfs are **not** needed),
+and the new outliers are **里長伯 (TOP, idx ~1.4 @6p)** and **阿嬤 (FLOOR, idx 0.91–0.97 every count)**.
+The CD ran the escalation ladder and **chose (3) buff-the-weak**, which gave the tightest six-character
+band of the four approaches — **spread 0.23 @4p / 0.32 @6p** (beating defaults 0.31/0.63,
+nerf-battlers 0.57/0.42, and remove-all-flaws 0.34/0.77). This section specs the concrete kit buffs.
+
+### 12a. Reverse-engineered — exactly what the winning sim scenario buffed
+
+The `buff-the-weak (阿嬤+媽寶)` regime in the escalation ladder
+(`sim/travel_agents.py`, the `regimes` tuple) applied **two knobs and nothing else**:
+
+```
+("(3) buff-the-weak (阿嬤+媽寶) ", dict(AMA_CAP=7, OFFICE_KEEP=3)),
+```
+
+| Character | Knob | Default (canon) | Buffed | What it does in-engine |
+|---|---|---|---|---|
+| **阿嬤** (A-má) | `AMA_CAP` | **6** | **7** | Her per-player **Larder cap** (`_larder_cap`). Default 6 is **one below the standard `LARDER_CAP=7`** — her "small basket" flaw. Setting it to 7 gives her the **standard cap** = the flaw is fully removed. Magnitude **+1**. |
+| **媽寶** (Homebody) | `OFFICE_KEEP` | **2** | **3** | How many of the 3 revealed tokens she keeps on a **Visit** (`_keep_cap`). Default 2 = same as every base character. 3 = she keeps **all three revealed**. Magnitude **+1**. |
+
+Both are pure floor-lifts (nothing else moves). Note the ladder rows are **not seed-matched across
+regimes** (the RNG seed threads forward), and 里長伯/網紅/大胃王/大哥 idxs are **untouched by these two
+knobs** — so their apparent movement between the defaults row and the buff row (esp. 里長伯 6p
+1.60→1.26) is **seed variance, not effect**. The honest signal is: **阿嬤 lifts (4p 0.96→1.16,
+6p ~0.95), 媽寶 lifts (4p 1.16→1.23, 6p 0.98→1.24), and the band SPREAD tightens** to 0.23/0.32.
+
+### 12b. Concrete, thematic kit changes (exact numbers — these MATCH the tested knobs)
+
+**阿嬤 (A-má) — RETIRE the small-basket flaw. Standard Larder cap 7.**
+- **Ability (UNCHANGED):** *敬老卡 Elder Pass* — your **Travel** reaches **ANY region in a single
+  action** (the free go-anywhere transit pass; she is never more than one Travel from any market).
+- **Flaw (REMOVED):** the "small basket" (Larder cap **6**, one below standard) is **retired**. 阿嬤 now
+  holds the **standard Larder cap = 7**, same as everyone. She becomes an **ability-only, flaw-light**
+  character (the same shape as 大哥 and post-buff 媽寶).
+- **Exact number:** 阿嬤 Larder cap **6 → 7** (= no character-specific cap; she uses `LARDER_CAP`).
+- **Why it reads clean as an icon:** the retirement *removes* an icon rather than adding one — her
+  character board carries a **single ability line** (Travel → any-region glyph) and **no flaw row**.
+  Cleaner than before.
+- **Sensitivity read (a WIN under the Taiwan rails):** the identity rails make 阿嬤's **age her
+  superpower, not frailty** and explicitly guard the *frail granny* stereotype. The "small basket"
+  was the one kit element that flirted with "granny can't carry much." Removing it **strengthens** the
+  dignified read: a spry granny with a free transit pass and a perfectly normal shopping basket, who
+  simply out-*ranges* everyone. This is the rare buff that is both the balance fix and the sensitivity fix.
+
+**媽寶 (The Homebody) — ADD a Visit gatherer edge: "Mum Packed Extra."**
+- **Ability (UNCHANGED):** *Mum's Packed Lunch* — on a **Travel** you draw the top card of the region
+  you **LEFT** (an event on that draw whiffs). She remains the **sole Travel-sourcer**.
+- **Ability (NEW — the buff):** *Mum Packed Extra* — on a **Visit** you keep **3** of the 3 revealed
+  tokens (one more than the standard **2**). Mum always over-packs the lunchbox; he never leaves a
+  market empty-handed.
+- **Exact number:** 媽寶 Visit-keep **2 → 3**.
+- **Flaw:** still **none** (she was already flaw-light; unchanged).
+- **Why it reads clean as an icon:** a single extra icon line — **Visit → keep 3** (or a "+1" badge on
+  the Visit-keep glyph). Her board now shows **two ability rows** (Travel-draw-left · Visit-keep-3) and
+  no flaw row. bg-infodesign watch: two ability rows is slightly busier than the one-liners, but each is
+  a single clean glyph.
+- **Sensitivity read:** extends the existing affectionate *mum-packed-lunchbox* motif (he phones home,
+  swears the food back home tastes better). Warm, not mocking — on the blessed "Homebody" portrayal.
+
+**⚠ Signature-adjacency flag for the guardian sweep (bg-theme + bg-elegance).** Visit-keep-3 is the
+**same number** as 大胃王's signature *Bottomless (keep all 3)*. This is the one thing the buff touches
+that needs a coherence look:
+- **They are still distinct** on two axes: (a) **fiction** — 大胃王 devours the haul (competitive
+  eater); 媽寶 is handed an over-packed lunchbox (mum's doing, not his appetite); (b) **risk profile** —
+  大胃王's keep-3 is **coupled to his flaw** (*hazards fire TWICE on his Visit*), so his haul is a gamble
+  that often nets fewer; 媽寶's keep-3 is **unconditional and flaw-free** but sits on an otherwise
+  ordinary Visit (his real signature is the Travel-draw-left). So they *feel* different at the table
+  (gamble-the-haul vs reliably-pocket-an-extra), even though the printed keep-number matches.
+- **Do NOT diverge to de-overlap in this pass.** The sim tested plain keep-3; changing 媽寶's buff to a
+  conditional keep-3 (e.g. "only on a turn you also Travelled") is an **untested scenario** that would
+  break the validated 0.23/0.32 band. Keep the exact number; if a blind test reads the two as muddy,
+  the cheapest later differentiator is exactly that Travel-conditional keep-3 (or letting 大胃王 keep a
+  **4th** on a Greedy Grab), specced then and re-checked.
+
+### 12c. Does a confirm re-sim run? — LOCK-READY (light spot-check recommended, not required)
+
+**The concrete buffs MATCH the tested scenario exactly** (阿嬤 cap 6→7 = `AMA_CAP=7`; 媽寶 keep 2→3 =
+`OFFICE_KEEP=3`) — no design divergence. **The existing escalation-ladder result already validates
+them:** spread **0.23 @4p / 0.32 @6p**, the tightest of the four approaches. On divergence grounds a
+re-sim is **not needed** — this is **lock-ready**.
+
+**Recommended anyway: one LIGHT confirm spot-check** (cheap, and it answers a genuinely open question —
+the 里長伯 read, §12d). Not a full sweep:
+- **Config:** V7 Phase-1.5 canon **+ `AMA_CAP=7`, `OFFICE_KEEP=3`** (bake the two buffs as the new
+  defaults). Everything else unchanged.
+- **Run:** the seed-matched **six-character band at 4p and 6p only**, at **N ≥ 800/seating** (the
+  ladder ran at the coarser N=250 and its regime rows aren't seed-matched — this fixes both).
+- **Probes / pass-conditions:**
+  1. **Re-band all six** (idx×fair). Target: everyone tighter than the 0.63 default 6p spread; floor
+     lifted.
+  2. **阿嬤 rises toward fair without overshoot** — expect idx ~0.95–1.16; **flag if > ~1.15 @4p** (the
+     ladder's 1.16 is already the top of comfortable).
+  3. **媽寶 rises without overshoot** — expect ~1.23–1.24; **flag if she is pushed to the top of the
+     pack (> ~1.27)**. Watch especially because the honest per-count table already had her *above* fair
+     (idx 1.07–1.25) — her buff is the **lower-confidence half**. Reserve if she overshoots: drop her
+     keep back to **2** (= buff 阿嬤 only) and re-band.
+  4. **里長伯 seed-matched idx @6p** — the one number the ladder can't give honestly (§12d). This is the
+     real reason to spend the spot-check.
+  5. Sanity: 大哥/網紅 still mid-pack (they should be untouched); tickets-only still dead;
+     6p still completes.
+
+### 12d. The 里長伯-hot watch — buff-only holds, trim held as a reserve (recommend NO trim now)
+
+The per-count probes (seed-independent, the honest run) put **里長伯 at idx 1.39 / 1.12 / 1.38 / 1.40**
+(3p/4p/5p/6p) — the **TOP at every count**, and clearly hot at 6p. The buff-the-weak knobs **do not
+touch 里長伯** (they only change 阿嬤's cap and 媽寶's keep), so **his true idx after the buffs is still
+~1.40 @6p.** The ladder's flattering 6p 里長伯 1.26 in the buff row is **seed variance**, not a real
+cool-off — do not read the 0.32 spread as "里長伯 is now in band."
+
+**So, honestly: lifting the floor tightens the band (best of the four approaches, and it lifts rather
+than drags) but does NOT by itself bring 里長伯 into the 0.90–1.10 target at 6p — he stays ~1.40.**
+The realistic post-buff 6p spread is closer to **~0.45** (里長伯 ~1.40 − 阿嬤 ~0.95) than the 0.32 the
+single seeded row shows.
+
+**Recommendation (the CD chose buff-only → default to no trim):**
+- **Hold buff-only for the confirm spot-check.** Do **NOT** bake a 里長伯 trim into this spec. The
+  floor-lift is the single biggest band win and is what the CD chose.
+- There are two legitimate reasons his 1.40 may be tolerable at ship: (a) it's partly a **6p-specific**
+  artifact of the punishing dial-drop *relatively* buffing the character who loses fewest wars (his
+  home-region discount lets him pick clean wars), and 6p is the validated stretch, not the design home
+  (4p, where he is a milder 1.12); (b) N=250 6p single-char idx carries ~±0.15 variance.
+- **Carry a small 里長伯 trim as a RESERVE lever**, to deploy **only if** the seed-matched re-band
+  (§12c probe 4) confirms him **≥ ~1.30 @6p** with the floor lifted. Cheapest thematic trims, in order:
+  **away-tax scaling** (his *Off His Patch* +1 ingredient becomes +1 *per region away from home*, or a
+  flat +1 that he pays **even at 6p** where more wars are away from his one borough), or a **home-discount
+  cap** (−1 home applies to the first 2 home vendors only). Both keep his home-turf silhouette intact.
+  This is a paired trim, so it would need its own re-band — hence hold it in reserve, not in the buff.
+
+### 12e. SIGN-OFF CHECKLIST — the buff numbers + the re-sim call
+
+1. **阿嬤:** Larder cap **6 → 7** (retire the small-basket flaw; standard cap). `AMA_CAP=7`. **Confirm.**
+2. **媽寶:** Visit-keep **2 → 3** ("Mum Packed Extra"); flaw stays none. `OFFICE_KEEP=3`. **Confirm.**
+3. **These match the tested scenario exactly → the 0.23/0.32 band result already validates them.**
+   **Lock-ready.** Confirm you accept lock-ready (vs requiring the spot-check first).
+4. **Light confirm spot-check (recommended, not required):** seed-matched six-char band, **4p + 6p,
+   N ≥ 800**, with the two buffs baked. Probes: re-band all six · 阿嬤 no overshoot (>~1.15 @4p) ·
+   媽寶 no overshoot (>~1.27) · **里長伯 seed-matched idx @6p** · battlers still mid-pack. **Confirm: run
+   it, or lock without it?**
+5. **里長伯:** **buff-only, NO trim** baked now. Trim held as a **reserve** (away-tax scaling or
+   home-discount cap), deployed only if the re-band confirms him **≥ ~1.30 @6p**. **Confirm.**
+6. **媽寶-overshoot reserve:** if she reads **> ~1.27**, drop keep back to **2** (= 阿嬤-only buff) and
+   re-band. **Confirm the reserve.**
+
+**Guardian-sweep note (→ Director):** this pass moves two kits — **retires 阿嬤's only flaw** (a
+sensitivity *win*, but a coherence change worth a bg-theme confirm) and **adds a Visit-keep-3 edge to
+媽寶 that is signature-adjacent to 大胃王's Bottomless** (§12b flag). Neither touches the **signature
+twist** (tickets-only scoring / the Buzz-fight), which is unmoved. Recommend **bg-theme** run a
+coherence/resonance check on the two kit changes (esp. the 媽寶↔大胃王 keep-3 adjacency and 阿嬤's
+now-flawless silhouette) and **bg-elegance** confirm the roster stays within the complexity budget
+(retiring a flaw is a net simplification; adding 媽寶's second ability row is the only additive bit).
+
+---
+
 ## 10. Provenance & status
 
 Folds the CD-signed V7 pivot (decision-log ★★) onto the v6.4 CD-LOCKED spec and the v6.3.1 spine.
