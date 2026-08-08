@@ -469,7 +469,7 @@ def render_regionmap(theme, spec, phase="day"):
     parts.append(zone(rc_x, 120, rc_w, 128, "Reach — your Buzz cap",
                       f'<circle cx="{rc_x+rc_w-44}" cy="168" r="26" fill="{reach_teal}"/>'
                       f'<text x="{rc_x+rc_w-44}" y="177" font-size="26" fill="#fff" text-anchor="middle" font-family="{tfont}" font-weight="bold">及</text>',
-                      "committed Buzz ≤ Reach · +1 each Travel · NOT a score"))
+                      "committed Buzz ≤ Reach · NOT a score"))
     parts.append(zone(rc_x, 268, rc_w, 128, "Tours Completed — Rave Reviews",
                       emblem_svg("crowd", rc_x + rc_w - 46, 316, 24, reach_teal),
                       "a completions meter — NOT your score"))
@@ -484,7 +484,7 @@ def render_regionmap(theme, spec, phase="day"):
     parts.append(zone(rc_x, 564, pw, 150, "成團 · Win pile",
                       emblem_svg("stamp", rc_x + pw - 40, 636, 24, gold), "tours that ran → +value"))
     parts.append(zone(rc_x + pw + 16, 564, pw, 150, "遺珠 · Lose pile",
-                      emblem_svg("stamp", rc_x + pw + 16 + pw - 40, 636, 24, taupe), "got away: lose half value"))
+                      emblem_svg("stamp", rc_x + pw + 16 + pw - 40, 636, 24, taupe), "got away → half value"))
     # supply
     violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
     parts.append(zone(rc_x, 730, pw, 150, "Buzz supply",
@@ -502,11 +502,13 @@ def render_regionmap(theme, spec, phase="day"):
     # tickets
     parts.append(zone(60, by, 840, 400, "Tour-Ticket decks", desc="reveal a face-up ROW OF 3; refill when claimed"))
     tdw, tdh = 232, 250
-    tspacing = (840 - 40 - 3 * tdw) / 2
-    tlabels = [("day", "日 DAY", ground[1]), ("night", "夜 NIGHT", "#3A2E52"), ("general", "通 ANY", gold)]
+    # v6.3.1 pools collapsed 3→2: missions.csv has day+night phases only (no ANY pool) — see game-bible.
+    tlabels = [("day", "日 DAY", ground[1]), ("night", "夜 NIGHT", "#6A4C93")]
+    n = len(tlabels)
+    tspacing = (840 - 40 - n * tdw) / (n + 1)
     for i, (pk, lab, cc) in enumerate(tlabels):
-        tx = 60 + 20 + i * (tdw + tspacing)
-        parts.append(facedown_deck(tx, by + 90, tdw, tdh, cc if pk != "night" else "#6A4C93", lab, "draw 5 / phase"))
+        tx = 60 + 20 + tspacing + i * (tdw + tspacing)
+        parts.append(facedown_deck(tx, by + 90, tdw, tdh, cc, lab, "draw 5 / phase"))
     # character mats
     parts.append(zone(940, by, 840, 400, "Character mats", desc="one per agent — ability + flaw, public"))
     mw = (840 - 40 - 20) / 2
