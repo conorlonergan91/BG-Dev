@@ -2652,6 +2652,58 @@ if __name__ == "__main__":
         print("  actually pays off played that way (the design goal) — vs the same character played generic.")
         sys.exit(0)
 
+    # ==============================================================================================
+    #  --matchups — v6.4c COUNTER-STRATEGY grid: every character (on ITS tailored line) vs every other,
+    #  so we can see how the playstyles pair up and confirm each has a COUNTER (rock-paper-scissors, no
+    #  dominant line). Usage: ...travel_agents.py --matchups [N]. Runs at the locked v6.4b config.
+    # ==============================================================================================
+    if "--matchups" in sys.argv:
+        _args = [a for a in sys.argv[1:] if a.isdigit()]
+        N = int(_args[0]) if _args else 800
+        chars = ["dage", "influencer", "office", "councillor", "dagushi"]
+        zh = {"dage": "大哥", "influencer": "網紅", "office": "媽寶", "councillor": "里長伯", "dagushi": "大胃王"}
+
+        def wr(a, b, n, seed):   # char a (its style) vs char b (its style), both seatings averaged
+            sa, sb = CHAR_STYLE[a], CHAR_STYLE[b]
+            aa, ab = _make(sa), _make(sb)
+            w0, t0, _, _ = _run({0: aa, 1: ab}, n=n, seed=seed, characters=[a, b], prefs=[sa, sb])
+            w1, t1, _, _ = _run({0: ab, 1: aa}, n=n, seed=seed + n, characters=[b, a], prefs=[sb, sa])
+            return ((w0[0] + 0.5 * t0) + (w1[1] + 0.5 * t1)) / 2
+
+        G = {a: {} for a in chars}
+        seed = 1
+        for i, a in enumerate(chars):
+            G[a][a] = 0.5
+            for b in chars[i + 1:]:
+                v = wr(a, b, n=N, seed=seed); seed += 2 * N
+                G[a][b] = v; G[b][a] = 1.0 - v
+
+        print(f"# {TITLE}")
+        print(f"# v6.4c COUNTER-STRATEGY GRID — each character on its tailored line, vs each other (N={N})\n")
+        hdr = "        " + "".join(f"{zh[b]:>8}" for b in chars) + "   AVG"
+        print(hdr)
+        for a in chars:
+            row = "".join(f"{G[a][b]*100:7.1f}%" for b in chars)
+            avg = sum(G[a][b] for b in chars if b != a) / (len(chars) - 1)
+            print(f"  {zh[a]:5} {row}  {avg*100:5.1f}%")
+        print("\n  Counters (who beats each character most — its natural predator):")
+        dominant = []
+        for a in chars:
+            opp = max((b for b in chars if b != a), key=lambda b: G[b][a])
+            worst_vs_a = G[opp][a]
+            avg_a = sum(G[a][b] for b in chars if b != a) / (len(chars) - 1)
+            has_counter = worst_vs_a >= 0.52
+            if not has_counter and avg_a > 0.55:
+                dominant.append(a)
+            print(f"    {zh[a]:5} (avg {avg_a*100:4.1f}%)  ← countered by {zh[opp]} ({worst_vs_a*100:.1f}%)  "
+                  f"{'✓ has a counter' if has_counter else '⚠ NO strong counter'}")
+        # intransitivity (rock-paper-scissors triangle)
+        rps = any(G[a][b] > 0.5 and G[b][c] > 0.5 and G[c][a] > 0.5
+                  for a in chars for b in chars for c in chars if len({a, b, c}) == 3)
+        print(f"\n  VERDICT: {'✓ rock-paper-scissors present (a counter-cycle exists)' if rps else '⚠ no RPS cycle'}"
+              f"{' — but ' + '/'.join(zh[d] for d in dominant) + ' has no counter (dominant)' if dominant else '; no dominant character'}.")
+        sys.exit(0)
+
     N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 1200
     print(f"# {TITLE} — v6.3.1 probe suite ({N} games/cell)\n")
     print(f"  KNOBS: NIGHT_CURVE={int(NIGHT_CURVE)} MIN1_FLOOR={int(MIN1_FLOOR)} "
