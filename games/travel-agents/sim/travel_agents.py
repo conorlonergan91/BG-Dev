@@ -178,6 +178,10 @@ LARDER_CAP   = int(os.environ.get("TA_LARDER_CAP", "7"))
 # (2-hop reach on this 4-ring+HSR map), but a small basket → a low Larder cap (can't hoard). A mobility/
 # tempo character + the natural anti-hoard predator of the glutton 大胃王.
 AMA_CAP      = int(os.environ.get("TA_AMA_CAP", "5"))          # 阿嬤's reduced Larder cap (small basket)
+# v6.4d kit-strength dials (the "tweak ideas" sweep): 大胃王's Visit keep-amount (his glutton edge — the
+# dominant character; test nerfing 3→2) and 媽寶's Visit keep-amount (her gatherer edge — test buffing 2→3).
+DAGU_KEEP    = int(os.environ.get("TA_DAGU_KEEP", "3"))        # 大胃王 keeps N on a Visit (default 3)
+OFFICE_KEEP  = int(os.environ.get("TA_OFFICE_KEEP", "2"))      # 媽寶 keeps N on a Visit (default 2)
 STAR_BONUS_P = int(os.environ.get("TA_STAR_P", "2"))           # dynamic ★ token +Bookings (no more +Rep)
 STALL_CAP    = int(os.environ.get("TA_STALL_CAP", "34"))       # hard per-player turn cap (drag backstop)
 
@@ -325,6 +329,10 @@ HAND_LIMIT = int(os.environ.get("TA_HAND_LIMIT", "3"))
 # (2) 網紅 Influencer — Followers-max STARTS at 4 (baseline 2 +2); Promote is a flat 2 like everyone
 #     (the old "Promote places 3" is DROPPED — promote_bonus goes to 0 for all).
 INFL_MAX_START = int(os.environ.get("TA_INFL_MAX_START", "3"))   # v6.4b: start-4 read hot (58%) → locked 3
+# v6.4d CD steer: 網紅 gets a HIGHER CEILING (not just start) — if she builds a big following unchecked she
+# out-commits everyone in fights and steamrolls; her counter is being "taken down a peg" early (a lost-war
+# Followers-max drop / early aggression). Her personal cap; everyone else caps at REACH_TOP. -1 = off (=REACH_TOP).
+INFL_TOP = int(os.environ.get("TA_INFL_TOP", "-1"))
 # (3) TRENDING marker — winning a Trending-marked vendor grants a NEW gain. v6.4 = "+1 Followers-max"
 #     ("max"); the old dynamic-★ payoff was "+2 Bookings/Draw" ("draw"). Kept as an A/B knob.
 TRENDING     = os.environ.get("TA_TRENDING", "max")            # "max" (v6.4 default) | "draw" (old)
@@ -843,6 +851,9 @@ class TravelAgentsGame:
                 "reach": (INFL_MAX_START if ch == "influencer"
                           else COUNCILLOR_REACH if (ch == "councillor" and COUNCILLOR_REACH >= 0)
                           else REACH_START),
+                # v6.4d: per-player Followers-max CEILING. 網紅 can build HIGHER (INFL_TOP) — an unchecked
+                # following steamrolls fights; everyone else caps at REACH_TOP.
+                "reach_top": (INFL_TOP if (ch == "influencer" and INFL_TOP >= 0) else REACH_TOP),
                 # v6.4 CHANGE 4c: "Promote places 3" DROPPED — everyone Promotes a flat 2.
                 "promote_bonus": 0,
                 # CD-1: 里長伯 declares ONE home region at setup (bot heuristic). None for everyone else.
@@ -1137,7 +1148,7 @@ class TravelAgentsGame:
     def _gain_reach(self, s, p, amt, kind):
         pl = s["players"][p]
         before = pl["reach"]
-        pl["reach"] = min(REACH_TOP, pl["reach"] + amt)
+        pl["reach"] = min(pl.get("reach_top", REACH_TOP), pl["reach"] + amt)   # v6.4d per-player ceiling
         got = pl["reach"] - before
         s[f"reach_gain_{kind}"] += got
 
@@ -1633,9 +1644,9 @@ class TravelAgentsGame:
     # -------- sourcing --------
     def _keep_cap(self, pl):
         if pl["char"] == "dagushi":
-            return 3
+            return DAGU_KEEP                              # v6.4d tunable (default 3 = his glutton edge)
         if pl["char"] == "office":
-            return 2 if OFFICE_BUFF == "keep2" else 1
+            return OFFICE_KEEP if OFFICE_BUFF == "keep2" else 1   # v6.4d tunable (default 2)
         return 2
 
     def _bump_src(self, s):
@@ -2724,6 +2735,87 @@ if __name__ == "__main__":
                   for a in chars for b in chars for c in chars if len({a, b, c}) == 3)
         print(f"\n  VERDICT: {'✓ rock-paper-scissors present (a counter-cycle exists)' if rps else '⚠ no RPS cycle'}"
               f"{' — but ' + '/'.join(zh[d] for d in dominant) + ' has no counter (dominant)' if dominant else '; no dominant character'}.")
+        sys.exit(0)
+
+    # ==============================================================================================
+    #  --kittweak — v6.4d "a bunch of ideas per character, see how the sim reacts". Sweeps each
+    #  character's key kit dials (one at a time) and reports its ceiling = tailored line vs neutral-BAL.
+    #  Goal: land every character ~45–55, invert the charplay (kit should BEAT generic), and set up the
+    #  網紅 steamroll + "taken down a peg" counter. Usage: ...travel_agents.py --kittweak [N].
+    # ==============================================================================================
+    if "--kittweak" in sys.argv:
+        _args = [a for a in sys.argv[1:] if a.isdigit()]
+        N = int(_args[0]) if _args else 500
+
+        def ceil(ch):   # the character's optimized ceiling = its tailored line vs a neutral generalist
+            return _char_winrate(ch, n=N, prefs=CHAR_STYLE[ch]) * 100
+
+        def setg(**kw):
+            for k, v in kw.items():
+                globals()[k] = v
+
+        print(f"# {TITLE}")
+        print(f"# v6.4d KIT-TWEAK SWEEP — each character's tailored ceiling vs neutral (N={N}/cell)\n")
+        base = {ch: ceil(ch) for ch in ("dage", "influencer", "office", "councillor", "dagushi", "ama")}
+        lo, hi = min(base.values()), max(base.values())
+        print("  BASELINE (current kits) — tailored ceiling vs neutral:")
+        print("    大哥 %.1f · 網紅 %.1f · 媽寶 %.1f · 里長伯 %.1f · 大胃王 %.1f · 阿嬤 %.1f   [band %.1f–%.1f]"
+              % (base["dage"], base["influencer"], base["office"], base["councillor"], base["dagushi"],
+                 base["ama"], lo, hi))
+        print("    → outliers: 大胃王 (dominant, needs a nerf) + 阿嬤 (floor, needs a buff)\n")
+
+        print("  網紅 — CD idea: HIGHER CEILING (steamroll if unchecked) + 'taken down a peg' counter (lost-war)")
+        for lbl, top, start in (("ceiling 12 (base)", -1, 3), ("ceiling 14", 14, 3),
+                                ("ceiling 16", 16, 3), ("ceiling 16 + start-4", 16, 4)):
+            setg(INFL_TOP=top, INFL_MAX_START=start)
+            print(f"    {lbl:24} 網紅 {ceil('influencer'):5.1f}%")
+        print("    + COUNTER test — 網紅(ceiling 16) vs 大哥 the early aggressor, lost-war drop OFF vs −1 vs −2")
+        print("      (the 'taken down a peg' check only shows vs a real fighter, not vs a passive neutral):")
+
+        def vs(a, sa, b, sb, n=N, seed=1):   # a's win-rate (a on style sa) vs b (on style sb), both seatings
+            aa, ab = _make(sa), _make(sb)
+            w0, t0, _, _ = _run({0: aa, 1: ab}, n=n, seed=seed, characters=[a, b], prefs=[sa, sb])
+            w1, t1, _, _ = _run({0: ab, 1: aa}, n=n, seed=seed + n, characters=[b, a], prefs=[sb, sa])
+            return ((w0[0] + 0.5 * t0) + (w1[1] + 0.5 * t1)) / 2 * 100
+        for lbl, lw, dr in (("lost-war OFF", "off", 1), ("dropmax −1", "dropmax", 1), ("dropmax −2", "dropmax", 2)):
+            setg(INFL_TOP=16, INFL_MAX_START=3, LOSTWAR=lw, LOSTWAR_DROP=dr)
+            wr = vs("influencer", INFL_STYLE, "dage", DAGE_STYLE)
+            print(f"      {lbl:22} 網紅 {wr:5.1f}% vs 大哥  ({'checked' if wr < 52 else 'STILL STEAMROLLS'})")
+        setg(INFL_TOP=-1, INFL_MAX_START=3, LOSTWAR="off")
+
+        print("\n  大胃王 — NERF the dominant glutton (keep-amount + flaw severity)")
+        for lbl, keep, h1 in (("keep 3 / flaw twice (base)", 3, "twice"), ("keep 2 / flaw twice", 2, "twice"),
+                              ("keep 3 / flaw keep2", 3, "keep2")):
+            setg(DAGU_KEEP=keep, H1=h1)
+            print(f"    {lbl:26} 大胃王 {ceil('dagushi'):5.1f}%")
+        setg(DAGU_KEEP=3, H1="twice")
+
+        print("\n  阿嬤 — BUFF the mobility floor (basket size)")
+        for cap in (5, 6, 7):
+            setg(AMA_CAP=cap)
+            print(f"    larder cap {cap:16} 阿嬤 {ceil('ama'):5.1f}%")
+        setg(AMA_CAP=5)
+
+        print("\n  大哥 — fight-edge depth (night tie + day threshold)")
+        for lbl, nt, dt in (("night≥0 day≥1 (base)", 0, 1), ("night≥0 day≥0 (all-tie)", 0, 0),
+                            ("night≥1 day≥1 (no night edge)", 1, 1)):
+            setg(DAGE_NIGHT_THRESH=nt, DAGE_THRESH=dt)
+            print(f"    {lbl:28} 大哥 {ceil('dage'):5.1f}%")
+        setg(DAGE_NIGHT_THRESH=0, DAGE_THRESH=1)
+
+        print("\n  媽寶 — gatherer edge (Visit keep-amount)")
+        for keep in (2, 3):
+            setg(OFFICE_KEEP=keep)
+            print(f"    keep {keep:19} 媽寶 {ceil('office'):5.1f}%")
+        setg(OFFICE_KEEP=2)
+
+        print("\n  里長伯 — engine depth (home discount)")
+        for disc in (1, 2):
+            setg(COUNCILLOR_HOME_DISC=disc)
+            print(f"    home −{disc:16} 里長伯 {ceil('councillor'):5.1f}%")
+        setg(COUNCILLOR_HOME_DISC=1)
+        print("\n  Read: pick per-character dials that compress the band to ~45–55 and reward the kit; then")
+        print("  re-run --matchups to confirm soft counters (esp. 網紅 steamroll checked by an early loss).")
         sys.exit(0)
 
     N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 1200
