@@ -1588,3 +1588,155 @@ blocker):
 "Late to the Party" (keeps Going-Viral + goes-last); 里長伯's Old-Favours applies in one region (option A)
 or one region + start-Reach-1 (option B). No Draw-value / vendor-data edits. The 媽寶 watch + the East/
 Central region-data pull stay open bg-developer/table items from prior passes.
+
+---
+
+# v6.3.1 — RE-SIM of the four CD changes (2026-08-08)
+
+The gated re-sim of the four v6.3.1 CD reworks (design/v6.3-content-draft.md "FOUR CD CHANGES"), folded
+ON TOP of the tickets-only lock (SCORING=tickets_only · TICKETS=expanded · MS_MODE=perplayer) and the
+whole Reach economy — **all held FIXED**. All four change the economy, so they were validated **together**
+in one gated run, then each probe isolated **one variable at a time**. New sim knobs: `TA_NIGHT_CURVE`
+(0/1/2), `TA_MIN1_FLOOR`, `TA_START_SPLIT`, `TA_COUNCILLOR_KIT`, `TA_COUNCILLOR_HOME_DISC`,
+`TA_COUNCILLOR_AWAY_TAX`, `TA_MAINT_COUNT/REGION/PHASE`. New instrumentation: the day/night sourcing
+split (★ probe #1), free-(night-)bribe counter, night claims/player, maint fire/closed-turns, councillor
+home-pick + away-tax incidence. Authoritative cells run at N=1500 (characters) / N=500 (playstyle + arc).
+
+## Isolation — which change drives what (N=600 each, one variable on at a time)
+| config (on top of tickets-only) | turns/p | LT% | stall% | night:day-src | free-night-bribes/gm | contested |
+|---|---:|---:|---:|---:|---:|---:|
+| raw v6.3 (no curve / split start / no maint) | 24.7 | 98 | 2 | **96%** | **1.73** | 2.9% |
+| + common Taipei start only (CD-3) | 25.4 | 98 | 2 | 90% | 1.57 | **3.9%** |
+| + Scheduled Maintenance only (CD-2) | 24.7 | 98 | 2 | 96% | 1.73 | 2.8% |
+| + SOFT night curve only (CD-4 lvl1) | 26.5 | 96 | 4 | 123% | 0.95 | 2.6% |
+| + STEEP night curve only (CD-4 lvl2) | 28.7 | 83 | **17** | 150% | 0.60 | 2.4% |
+| **ALL v6.3.1 defaults (soft)** | 27.0 | 94 | 6 | 113% | 0.95 | 4.2% |
+
+Reads cleanly: **CD-3 lifts collisions** (contested 2.9→3.9% at 2p, exactly the design's want), **CD-2 is a
+rare spice** (negligible on the arc), and **CD-4 is the only load-bearing lever** — and the SHAPE-SPEC's
+steep curve **over-corrects** (17% stall).
+
+## ★ PROBE #1 — night-half sourcing (the load-bearing call) + the CD-4 backstop
+The headline surprise: **night sourcing was never collapsing.** Even in raw v6.3 (no curve) the greedy
+field sources at **96% of its day rate** at night — the "discount zeroes night costs → sourcing dies"
+failure mode the CD flagged **does not manifest for the bots.** BUT the free-bribe counter shows the
+exploit is real: raw v6.3 leaves **1.73 fully-free (all-ingredient-discounted) night bribes/game.** So the
+concern is legitimate; it just shows up as *free marquee claims*, not as *dead sourcing*.
+
+**Curve-level A/B (2p, one variable):**
+| NIGHT_CURVE | night:day-src | night-clm/p | free-night/gm | 1st-night turn | LT% | stall% | turns/p | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| 0 off (raw v6.3) | 96% | 2.73 | 1.73 | ~34 | 98 | 2 | 24.7 | free bribes too easy |
+| **1 SOFT (+1, cross-biased) — DEFAULT** | **113%** | **2.64** | **0.95** | ~35 | 94 | 6 | 27.0 | **kept** |
+| 1 SOFT + MIN1_FLOOR | 114% | 2.64 | **0.00** | ~35 | 93 | 7 | 28.0 | floor not needed |
+| 2 STEEP (+2) | 141–150% | 2.45 | 0.60 | ~36 | 83 | **17** | 28.7 | **REJECTED (stall)** |
+
+**Verdict — SOFT curve, curve-only (MIN1_FLOOR OFF):**
+- **Night sourcing stays solidly alive** (113% of day — night is now the *more* sourcing-heavy half; the
+  GOAL was ~60–100%, so this clears it with room). Night claims/player 2.64 (the climax still fires),
+  first-night-Bribe ~turn 35, LT 94%.
+- **The free-bribe exploit is cut 1.73 → 0.95**, and — this is the key point — **every night marquee is now
+  cross-region biased**, so the ~0.95 residual free bribes require a genuine **dual-region ramp** (you had
+  to build *two* icon stacks to zero a `{N:3,S:1}`-shaped cost). That converts the *cheap single-region
+  zero-out* into a *legitimate deep-engine reward* — a healthier outcome than a blanket floor.
+- **MIN1_FLOOR is NOT needed.** It drives free bribes to 0.00 but adds a rule + lifts stall 6→7% for
+  little gain, and it also taxes the legitimate dual-region payoff. Keep it as a reserve knob only.
+- **The STEEP curve is rejected:** it meets the shape-spec's "≥2 mandatory residual" principle to the
+  letter, but pushes ~16–17% of games past the last-train into the stall backstop (failure mode B — the
+  vendor-claims clock can't reach its 10th claim before the drag cap). turns/player 28.7.
+- **One watch:** the soft curve lifts 2p stall from 2% → **6%** (turns/player 24.7 → 27.0). Modest and
+  acceptable (94% still end cleanly on the last train), but flagged — if the FTUE table reads games as
+  "dragging" at the back half, the lightest recovery is a one-notch clock nudge (`V_END` 10→9 @2p) or a
+  higher `STALL_CAP`; **do not** reach for the steep curve. (Recommendation only — clock NOT touched here.)
+
+## CD-3 — common Taipei start: seat balance + the collision bonus
+No catastrophic seat skew at any count now everyone launches from N/Taipei (seat_balance all **ok**, none
+suspect): **2p 52/48 · 3p 39/31/30 · 4p 25/29/23/23** (n≈500 each). The 3p first-seat edge (39% vs 33%
+fair = 1.18× — under the 1.5× smell threshold) is mild and pre-existing, not a common-start artifact.
+**Bonus, as the CD hoped:** co-locating both agents in North from turn 1 lifts the 2p contested-Buzz rate
+**2.7% → 4.2%** (and it climbs with count: 3p 5.3%, 4p 7.0%) — earlier collisions, the thing the design
+wants. It's still the sim's known concession-heuristic floor (whether a ~4–7% fight is *fun* when it fires
+is the FTUE's question), but common-start moved it the right direction. **網紅 going last from a shared
+start is NOT newly punishing** — influencer lands 51.2% (below), squarely in band.
+
+## CD-2 — Scheduled Maintenance: symmetric, no dead stretch, but RARE as specced
+Fires cleanly and **symmetrically** (table-wide HSR closure hits everyone; closed-turns/gm 0.07 = a brief
+one-go-around, no dead early stretch, no seat skew). The finding is **frequency**: seeded as **1 copy in
+the North night deck it fires in only ~7% of games** (after a fidelity fix so a Travel flyby doesn't waste
+the card — a Visit/CStore must surface it; with the common Taipei start players pass through N constantly).
+**2 copies → ~12%.** So as written it is a near-invisible spice event (≈13 of 14 games never see it).
+**Surfaced to the CD (design rec, not made):** if Scheduled Maintenance should be a *felt* beat, seed **2
+copies** or **both** HSR-endpoint night decks (N *and* S); if it's meant as a rare surprise, 1 copy is
+fine. No fairness problem either way. *(Sim ASSUMPTION: the marker rides the region's night ingredient
+deck and only fires on a Visit/CStore draw; a Travel flyby returns it unfired.)*
+
+## CD-1 — 里長伯 home-region kit: lands top-of-band; the away-tax bites; watch the camp
+The reworked HOME-REGION kit (−1 home / +1 away, HSR restored) lands **55.2%** char-vs-neutral (N=1500) —
+**top edge of the 45–55 band, essentially tied with 大胃王's accepted 54.8%.** Unlike the retired kit,
+there is **no under-count excuse now** (he uses HSR, and the away-tax is fully modelled — it's paid on
+26–33% of his food bribes and is worth ~8.6pt: dropping it → 64.9%). So 55% is a genuine slightly-hot
+reading. **Levers (N=1500, one at a time):**
+| 里長伯 config | win% | note |
+|---|---:|---|
+| home −1 / +1 (CD-1 canon default) | **55.2%** | top-of-band; kept as sim default (= spec) |
+| home −1 / **+2 away-tax** | 49.8% | dead-centre, single lever — but deepens home-camping |
+| home −1 / +1 **+ start-Reach 1** | 45.5% | in-band, clean offsetting flaw, doesn't worsen camping |
+| home **−2** / +1 (disc+2) | 59.7% | hotter — rejected |
+| legacy first-region-only kit (KIT=regions) | 60.7% | the retired kit runs hotter still under v6.3.1 |
+
+**The camp watch (CD-3 interaction):** with the common Taipei start he picks **North home 60%** of the time
+(N's 2 day-slots + the shared start pull him there) and bribes **home 3.39 vs away 1.13** — a home-centric
+"borough boss" who rarely leaves. Thematic, but the greedy bot *minimises* the tax so it may over-camp;
+`+2 away-tax` would deepen this, `start-Reach 1` would not. **Recommendation:** keep the canon **−1 / +1**
+default (55%, playable, ceiling of band); if the CD wants dead-centre, prefer **start-Reach 1** (→45.5%,
+a clean second flaw that doesn't worsen the camp) over **+2 away-tax** (→50% but more camping). CD call.
+
+## Carried characters (N=1500) + the final bands
+| Character | recommended kit (v6.3.1) | win% | verdict |
+|---|---|---:|---|
+| 網紅 influencer | Going-Viral (Promote-3) + goes-last, flaw retired | **51.2%** | ✓ (goes-last still under-counted → real a touch lower) |
+| 大胃王 dagushi | UNCHANGED (H1 hazards-twice) | 54.8% | ✓ top-of-band |
+| 大哥 dage | UNCHANGED (lead-by-1, no flaw) | 50.7% | ✓ dead-centre |
+| 里長伯 councillor | HOME-REGION kit −1/+1 (CD-1) | 55.2% | top-of-band (CD lever above) |
+| 媽寶 office | UNCHANGED | **43.5%** | carried WATCH (floor; flexibility ability under-counted) |
+
+**媽寶 43.5% is the pre-existing tickets-only drift, NOT caused by this pass** (43.7% untouched in the
+re-pass baseline; 45.0% at N=500 here). Its Travel-flexibility ability is a documented greedy-bot blind
+spot → 43.5% is a floor; carry to FTUE with the watch-flag, don't shotgun a third kit change on the number.
+
+**Final FIVE-CHARACTER band (N=1500):** 43.5% (媽寶, floor/watch) – 55.2% (里長伯, ceiling/CD-lever).
+Three dead-centre (influencer 51.2 · dage 50.7 · dagushi 54.8); the two edges are both **known,
+under-counted** cases, not new breaks.
+
+**Final FIVE-PLAYSTYLE band (N=500, character-neutral):** mix 53.1 · balanced 52.3 · opportunistic 51.3 ·
+disruptive 48.8 · endgame 46.0 — a **~7pt pack, no Condorcet crusher, objective-aware lines on top**;
+`mix`/`balanced` beat the `ignore_obj` naive line 65% h2h; `pure_drinks` dies (2.9%); every real line
+crushes `random`. endgame ~46% stays the softest (a pre-existing tickets-only property, viable not a trap).
+The `ignore_obj` exploit stays structurally dead — the tickets-only lock holds under all four reworks.
+
+## VERDICT — v6.3.1 HOLDS; ready for the data rebuild + FTUE, with two CD calls (neither blocking)
+All four reworks are balance-clean **as long as CD-4 ships the SOFT curve, not the steep one the shape-spec
+sketched.** The tickets-only health (band, no crusher, `ignore_obj` dead) survives all four changes.
+
+- **CD call 1 — CD-4 curve depth (the important one).** Adopt the **SOFT (+1, cross-region-biased) night
+  curve, curve-only** (recommended): night sourcing alive, free bribes cut ~45% and converted to a
+  dual-region reward, +4pt stall (2p). The **steep +2 curve is rejected** (17% stall) and **MIN1_FLOOR is
+  not needed.** *(If the CD wants zero free bribes on principle, MIN1_FLOOR is the clean guarantee at
+  +1pt stall — but the soft curve's cross-region residual is the better design.)*
+- **CD call 2 — 里長伯 ceiling.** Canon −1/+1 lands 55% (top-of-band, tied with 大胃王). Accept as-is, or
+  take it dead-centre with **start-Reach 1** (→45.5%, preferred — doesn't worsen his North-camping) or
+  **+2 away-tax** (→50%, but more camping).
+- **Carry to FTUE as watch-flags (none blocking):** the 6% 2p stall (does the back half *drag*?); 媽寶 43.5%
+  (flexibility the bot can't wield); 里長伯 North-camping 60% + home-centric 75% of bribes (does he feel like
+  a stuck "borough boss"?); Scheduled Maintenance rarity (~7% at 1 copy — felt beat or rare surprise?);
+  the ~4–7% contested Buzz fight (fun when it fires?); endgame the softest playstyle (~46%).
+
+**Surfaced for the CD / bible / mats rebuild (recommendations only — design docs + CSVs NOT edited this
+pass):** (1) CD-4 = SOFT curve, not steep — NIGHT "both" foods → 3 and apex ★ → 4 (top apex 5), **every
+night marquee cross-region biased** (the cross component, not the raw magnitude, is what kills the free
+bribe); DAY costs held as printed; MIN1_FLOOR not adopted. (2) 里長伯 = −1 home / +1 away (+ optional
+start-Reach 1 if a dead-centre seat is wanted). (3) Scheduled Maintenance = consider 2 copies or both
+HSR-endpoint night decks if it should be *felt*. (4) The value-referencing tickets (`d_prestige8`,
+`n_prestige14`, `g_prestige12`) held up under the pricier night — night claims/player 2.64 stayed healthy,
+so **no threshold retune needed** at the soft curve (they would have needed one at the steep curve). The
+媽寶 watch + the East/Central region-data pull remain open bg-developer/table items from prior passes.
