@@ -1740,3 +1740,25 @@ HSR-endpoint night decks if it should be *felt*. (4) The value-referencing ticke
 `n_prestige14`, `g_prestige12`) held up under the pricier night — night claims/player 2.64 stayed healthy,
 so **no threshold retune needed** at the soft curve (they would have needed one at the steep curve). The
 媽寶 watch + the East/Central region-data pull remain open bg-developer/table items from prior passes.
+
+## CD DECISIONS — LOCKED (2026-08-08, Creative Director sign-off on the re-sim report)
+
+The CD read the re-sim verdict above and locked the two open calls + the one minor knob. The sim now
+encodes these as its defaults (the data rebuild inherits them):
+
+1. **CD-4 night cost → SOFT curve, curve-only.** `TA_NIGHT_CURVE=1` (soft, already default), `MIN1_FLOOR`
+   stays OFF. Steep +2 rejected. The cross-region-biased soft curve's dual-region residual is the accepted
+   guard against the free-marquee bribe; the ~4pt 2p-stall lift carries to FTUE as a watch, not a blocker.
+2. **CD-4 → 里長伯 pulled DEAD-CENTRE via start-Reach 1.** Locked `TA_COUNCILLOR_REACH=1` as the sim
+   default (was the -1 reserve brake). The home-region kit alone ran 55.2% (top edge); start-Reach 1 lands
+   him 45.5% with a clean second flaw ("his name doesn't carry across the island") that does NOT deepen the
+   North-home camping tendency. The +2-away-tax alternative was rejected (it worsens camping).
+3. **CD-2 Scheduled Maintenance → 1 copy, rare surprise.** `TA_MAINT_COUNT=1` (already default). Kept as a
+   ~7%-of-games occasional disruption — a texture beat, not a planned-around mechanic. Revisit only if FTUE
+   says the outage should be felt.
+
+**Still carried to the data rebuild + FTUE (unchanged by these locks):** the 6% 2p-stall drag watch; 媽寶
+43.5% (bot under-count of routing flexibility); 里長伯 North-camping feel; the ~4–7% contested-Buzz-fight
+fun question; no ticket-threshold retune needed at the soft curve. **Next gated step: bg-developer bakes the
+soft curve + start-Reach-1 + 1-copy Maintenance into the component CSVs + design docs + a decision-log
+entry, then the human FTUE.**

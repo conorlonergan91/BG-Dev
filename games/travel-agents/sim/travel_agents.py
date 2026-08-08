@@ -277,9 +277,11 @@ COUNCILLOR_HOME_DISC = int(os.environ.get("TA_COUNCILLOR_HOME_DISC", "1"))  # ho
 COUNCILLOR_AWAY_TAX  = int(os.environ.get("TA_COUNCILLOR_AWAY_TAX", "1"))   # away-tax magnitude
 # (legacy "regions" kit knob — how many regions the old first-region discount covers; unused under KIT=home)
 COUNCILLOR_REGIONS = int(os.environ.get("TA_COUNCILLOR_REGIONS", "1"))
-# 里長伯 reserve BRAKE (CD-1 lever / the old option B): a thin island-wide name → less START Reach.
-# Default -1 = OFF (start = REACH_START). Set 1 ("start Reach 1") if the home-region kit still runs hot.
-COUNCILLOR_REACH = int(os.environ.get("TA_COUNCILLOR_REACH", "-1"))
+# 里長伯 second FLAW (CD-LOCKED 2026-08-08): a thin island-wide name → he STARTS with 1 Reach, not 2.
+# The home-region kit alone ran top-of-band (55.2%); the CD locked start-Reach 1 to land him dead-centre
+# (45.5%) with a clean ability+flaw silhouette that does NOT worsen his North-home camping tendency.
+# -1 = OFF (start = REACH_START) for an A/B; the LOCKED default is 1.
+COUNCILLOR_REACH = int(os.environ.get("TA_COUNCILLOR_REACH", "1"))
 
 # ==================================================================================================
 #  MAP
