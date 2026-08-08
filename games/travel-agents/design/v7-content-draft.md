@@ -280,9 +280,10 @@ all-game; tie blocks); the lost-war **burn** default (sweep dropmax/both); the c
 with 媽寶 sole sourcer + the `_bump_src` fix; Trending +1 Followers-max on win).
 
 **Probes Phase-1 must report, per count:**
-1. **Character band** — the 5 locked chars (+ 阿嬤 if the CD adopts it, §9): **no crusher**; 媽寶 lifts
-   off its ~43% floor as sole Travel-sourcer without overshooting ~55%; 網紅 lands **≥45% / ≤~55%** at
-   start-max 4 (reserve dial to 3 only if hot in MP); 大哥's win-on-a-tie edge stays in band.
+1. **Character band** — all **SIX locked chars** (incl. 阿嬤, adopted as canon §9): **no crusher**; 媽寶
+   lifts off its ~43% floor as sole Travel-sourcer without overshooting ~55%; 網紅 lands **≥45% / ≤~55%**
+   at start-max 4 (reserve dial to 3 only if hot in MP); 大哥's win-on-a-tie edge stays in band; 阿嬤's
+   mobility kit bands in 45–55% too (she's LOCKED in — if out of band, **tune her kit, don't drop her**).
 2. **Seat / turn-order fairness** — per count; specifically whether the shared Taipei start + fixed
    order + **網紅 goes-last** creates a first/last-seat skew that worsens as N rises (the 5–6p gate).
 3. **Downtime proxy** — legal actions / decision load per turn (`avg_legal_actions`, `forced_turn_frac`)
@@ -306,21 +307,34 @@ with 媽寶 sole sourcer + the `_bump_src` fix; Trending +1 Followers-max on win
 
 ---
 
-## 9. ⚠ The ONE CD gut-check — roster size for 3–6 players (阿嬤 / A-má)
+## 9. CD RULING — roster = SIX characters (阿嬤 / A-má adopted as the canonical 6th)
 
-The five v6.4 characters (**里長伯 · 媽寶 · 大胃王 · 網紅 · 大哥**) are the **canonical locked core**, right
-for a 3–5 player game. But a **6-player game plausibly wants a 6th face** so every seat can hold a unique
-character (identical twin 大哥s in one area-majority reads badly). A 6th character — **阿嬤 (A-má, granny;
-a gentle mobility kit: reach any region in one Travel) — already exists in the sim** as unblessed
-exploration, so it is *cheap to validate* rather than *expensive to invent*.
+**CD decision (2026-08-08): adopt 阿嬤 (A-má) as the canonical 6th character NOW** — Travel Agents V7 is
+a **six-character** game, one unique face per seat up to a full 6-player table. This resolves the roster
+fork by *committing* rather than *validating-then-blessing*: the CD chose six unique characters over the
+"5 + duplicates at 6p" fallback, so the identical-twin problem in the area-majority fight never arises.
 
-**My recommendation (for the CD to rule on — I am not deciding it):** **provisionally adopt 阿嬤 as the
-candidate 6th, gated on Phase-1 banding** — run all six across 3–6, and bless 阿嬤 as canon **only if**
-she bands cleanly (45–55%, no crusher) and adds no complexity the budget can't absorb. If she reads out
-of band or bloats the teach, **fall back to "5 characters, duplicates allowed at the 6p stretch"** (6p is
-a stretch anyway, so a shared/duplicated face there is an acceptable compromise). Net: **5 is the right
-roster for the 3–5 solid band; a 6th is a 6p-completeness question, and 阿嬤 is the low-cost way to answer
-it.** This is the single fork I'm handing back for a gut-check — everything else in this draft I've called.
+The canonical roster is now: **里長伯 (The Old Councillor) · 媽寶 (The Homebody) · 大胃王 (The Big Eater) ·
+網紅 (The Influencer) · 大哥 (The Big Brother) · 阿嬤 (A-má)** — 阿嬤's kit: a gentle "reach any region in
+one Travel" mobility ability (she already exists in the sim from v6.4d exploration).
+
+**What adoption-now changes for the pipeline (vs the validate-first path):**
+- **Phase 1 bands all six as LOCKED members** — if 阿嬤 (or any of the six) reads out of band, the lever
+  is to **TUNE her kit to fit, not to drop her**. She is in the game; the sim tunes the numbers.
+- **Phase 2 owes 阿嬤 a bg-theme identity + dignity bless** under the Taiwan sensitivity rails (a granny
+  character must read warm and dignified, never a caricature). bg-theme framed her in v6.4d exploration
+  (commit `0b46eef`); that framing must be re-confirmed as canon in the guardian sweep, alongside her
+  naming (English name + 繁體) coherence with the other five.
+- **Phase 4 builds a 6th character board** + her icon-only ability/flaw; component counts scale to six
+  characters (a *quantity* bump, not a new component type — cheap for the cost budget).
+
+**Other forks I hit and CALLED (noted so the CD can veto, not left open):**
+- **Active-claim vs end-of-round majority** → chose **active-claim** (keeps tempo; §2a).
+- **Tie rule** → chose **tie blocks the claim** (self-fuelling war, zero extra state; §2b).
+- **大哥 edge** → chose **wins ties all-game** (dropped the unblessed night-scoping; §2b).
+- **Lost-war sink** → chose **burn** as default, dropmax as reserve (§3).
+- **6p downtime** → chose **one-action turns** as primary; simultaneous-select held as a 6p-only variant
+  (§5).
 
 **Other forks I hit and CALLED (noted so the CD can veto, not left open):**
 - **Active-claim vs end-of-round majority** → chose **active-claim** (keeps tempo; §2a).
