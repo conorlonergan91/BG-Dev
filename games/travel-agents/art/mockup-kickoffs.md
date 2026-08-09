@@ -50,14 +50,14 @@ Generate a mock-up illustration of THE BIG BROTHER (大哥) for the board game T
 
 ## The island MAP — `FIG-MAP-*`
 
-**Shared rails (this section):** cite the uploaded `art/art-style.md`; attach a liked earlier
-card/character as a **style-reference image** and say *match this art style*. The map is a **backdrop
-behind functional zones** (region panels + vendor slots, HSR spine + 停 slot, the central Booking deck +
-face-up Booking row are rendered by code on top) — so it is a **full-bleed illustration, NOT a cut-out**:
-keep the centre + spine + region furniture **calm / low-contrast**, save the warmth for the frame, the
-island relief, and the four region vignettes. **Neutral 3–6-player table — read upright from ANY seat, no
-across-the-table mirror.** Region colours warm in BOTH states; **secular only.** Mock-up only; final art
-human-illustrated.
+**Shared rails (this section):** cite the uploaded `art/art-style.md`; attach a liked earlier card as a
+**style-reference image**. **Keep the map SIMPLE and SOFT — mostly nice colours + a gentle glow, with only
+ONE or TWO simple illustrations.** It is NOT a busy detailed scene: **no crowds, no people, no dense stalls,
+no lantern-clutter.** The four regions read as **soft colour-zones**; a **single clean HSR line** runs down
+the spine. **Leave the whole CENTRE clean and open, and draw NO card slots, NO Booking box, and NO 停
+marker** — the vendor/Booking slots and the event card sit physically (or are drawn by code) ON TOP, so the
+art stays uncluttered underneath. **Neutral 3–6-player table — reads upright from ANY seat.** Region colours
+warm in both states; **secular only.** Mock-up only; final art human-illustrated.
 
 **⚑ Two faces = two images.** The board is **DOUBLE-SIDED** — the DAY face and the NIGHT face are printed
 separately and glued to opposite sides of the cardboard cut-out. So generate the two prompts below as
@@ -68,106 +68,106 @@ composition, night lighting"* so they register.
 
 ### DAY face — `FIG-MAP-ISLAND-day`  ⚑ full-bleed, ~1.36:1 landscape (2280×1680)
 ```
-Generate a MOCK-UP whole-table map backdrop (DAY FACE) for the board game Travel Agents: Taiwan, in the art style of the uploaded art-style.md and the attached style reference. A warm travel-poster island of Taiwan tying four regions into one place: a gentle relief map (Central mountains, western plain, east coast), a drawn HSR double-rail running N↔S down the spine (leave the 停 Scheduled-Maintenance slot on it clear), and a string-of-lanterns night-market border framing the table. Four soft region vignettes at the diamond points: 北 NORTH (top) a Taipei night-market lane + pork-bun cart (the START·台北 hub); 中 CENTRAL (side) tea terraces + a hand-shaken-drink stand; 南 SOUTH (bottom) a Tainan/Kaohsiung quayside + oyster omelette on the griddle; 東 EAST (side) the Hualien–Taitung coast/valley + rice and bamboo-tube fare (generic, dignified, NO tribal iconography). Reads UPRIGHT FROM EVERY SEAT (shared 3–6-player table, no across-the-table orientation). FULL-BLEED, not a cut-out; keep the centre + spine + region furniture calm and low-contrast so the code UI sits on top. DAY CHROME: warm rising-sun light, gold market bulbs, bright dawn palette. Secular only (no temple/deity/ghost-month). ~1.36:1 landscape (2280×1680), full background. Save build/mockups/FIG-MAP-ISLAND-day.png.
+Generate a SIMPLE, SOFT mock-up map (DAY FACE) for the board game Travel Agents: Taiwan, in the art style of the uploaded art-style.md and the attached style reference. Mostly BEAUTIFUL SOFT COLOURS with a gentle warm GLOW — a stylised island of Taiwan with the four regions as soft colour-zones (北 top / 中 left / 南 bottom / 東 right) and a single clean HSR line running down the N–S spine. Add ONLY ONE OR TWO simple illustrations as light accents (e.g. a single paper lantern and a little steaming bowl) — nothing else. NO crowds, NO people, NO dense stalls, NO lantern-clutter, NO card slots, NO Booking box, NO 停 marker — keep the whole centre CLEAN and open (cards get placed on top). Reads upright from every seat (no across-the-table orientation). DAY: warm dawn glow, soft gold light. Secular only. ~1.36:1 landscape (2280×1680), full background. Save build/mockups/FIG-MAP-ISLAND-day.png.
 ```
 
 ### NIGHT face — `FIG-MAP-ISLAND-night`  ⚑ full-bleed, MATCH the day face exactly
 ```
-Generate a MOCK-UP whole-table map backdrop (NIGHT FACE) for the board game Travel Agents: Taiwan — the SAME COMPOSITION as the day face (attach the day image as a reference: identical island shape, region positions, HSR spine, lantern border and framing, same size — only the lighting changes), in the art style of the uploaded art-style.md. Same four region vignettes in the same spots (北 Taipei lane + pork-bun cart / 中 tea terraces + drink stand / 南 quayside + oyster omelette / 東 Hualien–Taitung coast + rice & bamboo-tube fare, generic & dignified, NO tribal iconography), reads upright from every seat. FULL-BLEED, not a cut-out; centre + spine + region furniture calm and low-contrast for the code UI. NIGHT CHROME: festive lantern-NEON glow, a moon, glowing neon signage, deep dusk palette — region identity colours stay warm, only the light flips. Secular only. ~1.36:1 landscape (2280×1680), full background, aligned to the day face for a double-sided board. Save build/mockups/FIG-MAP-ISLAND-night.png.
+Generate the NIGHT FACE of the same SIMPLE, SOFT map for Travel Agents: Taiwan — the SAME COMPOSITION as the day face (attach the day image as a reference: identical island shape, region colour-zones, single HSR line, the same one-or-two simple accents, same framing and size — only the light changes), in the art style of the uploaded art-style.md. Still SIMPLE and SOFT: mostly nice colours + a gentle glow; NO crowds, NO people, NO dense stalls, NO clutter, NO card slots, NO Booking box, NO 停 marker; clean open centre; reads upright from any seat. NIGHT: soft lantern-NEON glow + a moon; region colours stay warm, only the light flips. Secular only. ~1.36:1 landscape (2280×1680), full background, aligned to the day face for a double-sided board. Save build/mockups/FIG-MAP-ISLAND-night.png.
 ```
-*(Optional: tighter single-region vignettes `FIG-MAP-NORTH / -CENTRAL / -SOUTH / -EAST` — the signature
-scene above for one region, generic, NEVER a named business; East consultant-gated placeholder.)*
+*(Keep it minimal — resist adding more illustrations. If a face still feels too busy, cut accents, not add them.)*
 
 ---
 
 ## The 24 VENDORS — `FIG-VEND-*` (grouped North / Central / South / East)
 
 **Shared rails (this section):** cite the uploaded `art/art-style.md` + `design/vendor-places.md`; attach a
-liked earlier card as a **style-reference image**. Each vendor is a **FULL poker-card FACE** — 750×1050,
-~0.71:1, 54 px safe margin, full-bleed: the **hero dish/stall fills the UPPER ~55%** of the card; keep the
-**LOWER ~45% calmer / darker** so the card's translucent PAY / DRAW / ICON UI stays legible on top.
-**Every vendor visually DISTINCT** — no two dishes, stalls, or compositions alike. **Real dishes rendered
-faithfully; secular only** (no temple/deity/ghost-month, even where a place sits near a temple). 繁體字.
-Mock-up only. Save `build/mockups/FIG-VEND-<id>.png`.
+liked earlier card/character as a **style-reference image**. **NO HUMANS. NO BACKGROUND.** Each vendor is a
+**clean CUT-OUT on a plain flat pale background — exactly like the character art**: render **the signature
+DISH as the hero** (big, warm, appetising), optionally its own little vessel or stall-cart / steamer /
+clay-oven — **the food is the star**. The place name below is just the dish's **real source** — illustrate
+the FOOD faithfully, **do NOT draw the location, the market, a scene, or people.** **Every vendor visually
+DISTINCT** (different dish, vessel, presentation, colour). Real dishes faithful; secular; 繁體字. Single
+subject, plain flat pale-cream background, NO scenery, NO people. Save `build/mockups/FIG-VEND-<id>.png`.
 
 ### North 北 (Meat signature · vermilion ▲)
 ```
-FIG-VEND-N01 — 肉包 pork bao (bah-pau), 後龍 Houlong, Miaoli. Coastal-Hakka morning: a steamer-cart splitting open a fluffy pork bun, 好望角 wind-turbines + silver-grass on the horizon behind. Warm, distinctly NOT-Taipei small-town light.
+FIG-VEND-N01 — 肉包 pork bao (bah-pau), from 後龍 Houlong. A fluffy split pork bun on a little bamboo steamer-basket, soft steam rising.
 ```
 ```
-FIG-VEND-N02 — 蛋餅 egg crepe (tàn-piánn), 迪化街 Dihua St, 大稻埕 Taipei. Old red-brick shophouse arcade at dawn: a griddle rolling a golden egg crepe, dried-goods sacks + baroque façades behind.
+FIG-VEND-N02 — 蛋餅 egg crepe (tàn-piánn), from 迪化街 大稻埕. A golden rolled egg crepe on a plate, a spatula lifting one slice.
 ```
 ```
-FIG-VEND-N03 — 豆漿 soy milk (tāu-tsiunn), 阜杭豆漿 華山市場 Taipei. The famous 2F market-hall counter: a warm bowl of soy milk + a crisp 油條, 燒餅 griddle steam rising. (A drink vendor — plainer, cosy.)
+FIG-VEND-N03 — 豆漿 soy milk (tāu-tsiunn), from 阜杭豆漿. A warm bowl of soy milk with a crisp 油條 leaning on it. (drink)
 ```
 ```
-FIG-VEND-N04 — 胡椒餅 pepper bun (hôo-tsio-piánn), 饒河街夜市 Taipei. A glowing charcoal clay-oven with sesame peppered-pork buns stuck to the oven wall, Songshan neon behind.
+FIG-VEND-N04 — 胡椒餅 pepper bun (hôo-tsio-piánn), from 饒河街夜市. A sesame-crusted peppered-pork bun, one split open to show the juicy pork-and-scallion filling.
 ```
 ```
-FIG-VEND-N05 — 牛肉麵 beef noodle (gû-bah-mī), 永康街 Taipei. A cosy Da'an backstreet bowl: beef-shank noodles with a chili-oil sheen, a leafy Yongkang lane behind.
+FIG-VEND-N05 — 牛肉麵 beef noodle (gû-bah-mī), from 永康街. A steaming bowl of beef-shank noodles with a chili-oil sheen, chopsticks lifting a tangle of noodles.
 ```
 ```
-FIG-VEND-N06 ★ — 大香腸 big sausage (tuā-iân-tshiâng), 士林夜市 Taipei. The island's most-famous market: an oversized char-grilled sausage + raw garlic clove, dense neon — an apex TROPHY vendor, give it the biggest wow.
+FIG-VEND-N06 ★ — 大香腸 big sausage (tuā-iân-tshiâng), from 士林夜市. An oversized glossy char-grilled sausage on a stick with a raw garlic clove — apex TROPHY, the biggest, juiciest wow.
 ```
 ```
-FIG-VEND-N07 — 珍奶 bubble tea, 大稻埕碼頭 Dadaocheng Wharf Taipei. Riverside golden-hour→neon: a pearl-milk-tea cup against the Tamsui sunset, container-bar string-lights. (Drink; distinct from C03's teahouse.)
+FIG-VEND-N07 — 珍奶 bubble tea, from 大稻埕碼頭. A pearl-milk-tea cup with tapioca pearls and a fat straw, beaded with condensation. (drink; distinct from C03)
 ```
 
 ### Central 中 (Tea signature · jade ◆)
 ```
-FIG-VEND-C01 — 肉圓 ba-wan (bah-uân), 彰化 Changhua. A translucent chewy dumpling split to show pork + bamboo shoot in a shallow red-sauce dish, a small-city storefront behind.
+FIG-VEND-C01 — 肉圓 ba-wan (bah-uân), from 彰化. A translucent chewy dumpling split to show pork + bamboo shoot, in a shallow dish of red sauce.
 ```
 ```
-FIG-VEND-C02 — 麵線 misua (mī-suànn), 臺中第二市場 Taichung. The 1917 ring-market hall: thread-noodles in a glossy brown broth, wooden stalls behind.
+FIG-VEND-C02 — 麵線 misua (mī-suànn), from 臺中第二市場. A bowl of fine thread-noodles in a glossy brown broth, a spoon resting in it.
 ```
 ```
-FIG-VEND-C03 — 珍珠奶茶 bubble tea (tsin-tsu-ni-tê), 春水堂 Taichung — the birthplace. A refined teahouse counter (NOT a street stall): shaken pearl-milk-tea over a wooden bar — the ORIGINAL, distinct from N07's riverside cup.
+FIG-VEND-C03 — 珍珠奶茶 bubble tea (tsin-tsu-ni-tê), from 春水堂 — the birthplace. A tall shaken pearl-milk-tea glass, frothy, half-lid — the ORIGINAL (distinct from N07).
 ```
 ```
-FIG-VEND-C04 — 大腸包小腸 sausage-in-sausage, 一中街 Taichung student market. Youthful, loud, cheap: a grilled sausage tucked in a split sticky-rice sausage with garlic + pickle, student-crowd energy.
+FIG-VEND-C04 — 大腸包小腸 sausage-in-sausage, from 一中街. A grilled sausage tucked into a split sticky-rice sausage, topped with garlic + pickle, on a paper tray.
 ```
 ```
-FIG-VEND-C05 ★ — 逢甲名物 signature plate, 逢甲夜市 Taichung — Taiwan's biggest market. A loaded signature plate under a wall of neon — an apex HUB feast, give it abundance.
+FIG-VEND-C05 ★ — 逢甲名物 signature plate, from 逢甲夜市. A loaded, abundant signature plate piled high — apex HUB feast, give it generous abundance.
 ```
 ```
-FIG-VEND-C06 — 冬瓜茶 wintermelon tea (tang-kue-tê), 第五市場 太空紅茶冰 Taichung. A 古早味 drink-stall: amber wintermelon tea in a retro plastic bag + straw, Fifth-Market nostalgia. (Drink.)
+FIG-VEND-C06 — 冬瓜茶 wintermelon tea (tang-kue-tê), from 太空紅茶冰. Amber wintermelon tea in a retro plastic bag with a straw — 古早味 nostalgia. (drink)
 ```
 
 ### South 南 (Seafood signature · amber ●)
 ```
-FIG-VEND-S01 — 虱目魚粥 milkfish congee (sat-ba̍k-hî-muê), 臺南 Tainan. A boneless-belly breakfast: congee + milkfish + ginger threads at an early-morning 府城 counter.
+FIG-VEND-S01 — 虱目魚粥 milkfish congee (sat-ba̍k-hî-muê), from 臺南. A bowl of milkfish-belly congee with ginger threads and a spoon.
 ```
 ```
-FIG-VEND-S02 — 碗粿 rice bowl cake (uánn-kué), 富盛號 國華街 Tainan. A savoury steamed rice-cake, dark braise + shrimp, sauce drizzled over, in a 國華街 old-market alley.
+FIG-VEND-S02 — 碗粿 rice bowl cake (uánn-kué), from 富盛號 國華街. A savoury steamed rice-cake in its little bowl, dark braise + a shrimp, sauce drizzled over.
 ```
 ```
-FIG-VEND-S03 — 木瓜牛奶 papaya milk (bo̍k-kua-gû-ni), 六合夜市 Kaohsiung. A frothy orange papaya-milk shake at the famous port-city corner, harbour neon behind. (Drink.)
+FIG-VEND-S03 — 木瓜牛奶 papaya milk (bo̍k-kua-gû-ni), from 六合夜市. A tall glass of frothy orange papaya-milk shake, a straw. (drink)
 ```
 ```
-FIG-VEND-S04 — 火雞肉飯 turkey rice (hóe-ke-bah-pn̄g → consultant), 文化路夜市 Chiayi. A bowl of rice topped with shredded turkey + braise + pickled daikon at a Chiayi night-market street — Chiayi's true signature (a Meat dish).
+FIG-VEND-S04 — 火雞肉飯 turkey rice (hóe-ke-bah-pn̄g → consultant), from 文化路夜市 Chiayi. A bowl of rice topped with shredded turkey + braise + pickled daikon — Chiayi's signature (a Meat dish).
 ```
 ```
-FIG-VEND-S05 — 棺材板 coffin bread (kuan-tsâ-pán), 沙卡里巴/康樂市場 Tainan. A deep-fried bread bowl of creamy seafood chowder with a bread lid on top, in a vintage 沙卡里巴 arcade.
+FIG-VEND-S05 — 棺材板 coffin bread (kuan-tsâ-pán), from 沙卡里巴. A deep-fried thick-toast bread bowl filled with creamy seafood chowder, a bread lid propped on top.
 ```
 ```
-FIG-VEND-S06 ★ — 擔仔麵 tan-tsú-mī (tànn-á-mī), 度小月 Tainan (est. 1895). A small shrimp-pork noodle bowl under a single hanging lamp, a squat clay stove + low-stool ritual — a century-old apex, quietly iconic.
+FIG-VEND-S06 ★ — 擔仔麵 tan-tsú-mī (tànn-á-mī), from 度小月. A small shrimp-pork noodle bowl with a single prawn on top, warm and quietly iconic — a century-old apex.
 ```
 
 ### East 東 (Pantry signature · indigo ■)
 ```
-FIG-VEND-E01 — 竹筒飯 bamboo-tube rice, 東大門夜市 Hualien.  ⚑ CONSULTANT-GATED EVEN FOR MOCK-UPS. Show a split bamboo tube of sticky mountain rice — celebratory, warm, GENERIC and RESPECTFUL only: NO specific tribal iconography, NO AI-invented Indigenous-language text. Placeholder pending the paid community consultant.
+FIG-VEND-E01 — 竹筒飯 bamboo-tube rice, from 東大門夜市.  ⚑ CONSULTANT-GATED EVEN FOR MOCK-UPS. A split bamboo tube of sticky mountain rice — warm, GENERIC and RESPECTFUL only: NO tribal iconography, NO AI-invented Indigenous-language text. Placeholder pending the paid community consultant.
 ```
 ```
-FIG-VEND-E02 — 米糕 rice cake (bí-ko), 羅東夜市 Luodong, Yilan. Glutinous rice + braise + pork floss, a damp green-country covered-market feel.
+FIG-VEND-E02 — 米糕 rice cake (bí-ko), from 羅東夜市. A small bowl of glutinous rice topped with braise + pork floss.
 ```
 ```
-FIG-VEND-E03 — 麻糬 mochi (muâ-tsî), 曾記/阿美麻糬 Hualien. A tray of dusted pastel glutinous-rice mochi (Hualien's souvenir), gift-shop warmth.
+FIG-VEND-E03 — 麻糬 mochi (muâ-tsî), from 曾記 Hualien. A little tray of dusted pastel glutinous-rice mochi.
 ```
 ```
-FIG-VEND-E04 ★ — 石板烤肉 stone-slab BBQ, 排灣族/魯凱族 highland, Taitung.  ⚑⚑ #1 CONSULTANT-GATED EVEN FOR MOCK-UPS. Show pork grilling on a hot slate over embers, a dignified mountain-village celebration — GENERIC and RESPECTFUL only: NO specific tribal iconography, NO AI-invented Indigenous-language text. Apex placeholder; the paid community consultant on community + dish + naming + framing binds BEFORE any real art.
+FIG-VEND-E04 ★ — 石板烤肉 stone-slab BBQ, Taitung highland.  ⚑⚑ #1 CONSULTANT-GATED EVEN FOR MOCK-UPS. Pork grilling on a hot stone slate over embers — GENERIC and RESPECTFUL only: NO tribal iconography, NO AI-invented Indigenous-language text. Apex placeholder; the paid community consultant on community + dish + naming + framing binds BEFORE any real art.
 ```
 ```
-FIG-VEND-E05 — 洛神花茶 roselle tea (lo̍k-sîn-hue-tê), 太麻里/金峰 Taitung. A deep-crimson roselle tea + a hibiscus calyx, a Taitung roselle-harvest hillside + coastal light. (Drink.)
+FIG-VEND-E05 — 洛神花茶 roselle tea (lo̍k-sîn-hue-tê), from 太麻里. A deep-crimson roselle tea in a glass with a hibiscus calyx beside it. (drink)
 ```
 
 ---
