@@ -465,17 +465,9 @@ def render_regionmap(theme, spec, phase="day"):
     parts.append(f'<rect x="26" y="26" width="{W-52}" height="{H-52}" rx="22" fill="none" '
                  f'stroke="{frame}" stroke-width="2" opacity="0.5"/>')
 
-    # ------------------------------------------------------------------ TITLE band (+ phase badge)
-    title = spec.get("title", "")
-    parts.append(f'<rect x="0" y="0" width="{W}" height="74" fill="{ink}"/>')
-    parts.append(f'<rect x="0" y="74" width="{W}" height="5" fill="{frame}"/>')
-    parts.append(f'<text x="40" y="50" font-size="38" fill="#fff" '
-                 f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(title)}</text>')
-    bx = W - 150
-    parts.append(f'<rect x="{bx}" y="16" width="110" height="42" rx="21" fill="{frame}"/>')
-    parts.append(emblem_svg(badge_emblem, bx + 34, 37, 15, "#fff"))
-    parts.append(f'<text x="{bx + 78}" y="48" font-size="30" fill="#fff" text-anchor="middle" '
-                 f'font-family="{tfont}" font-weight="bold">{esc(badge_char)}</text>')
+    # ------------------------------------------------------------------ TITLE band REMOVED (CD steer):
+    # no title band / phase badge on the map. Day vs night reads from the warm-gold vs lantern-neon
+    # chrome (frame + central glow) that already flips per --phase. The freed top area is clean margin.
 
     # ------------------------------------------------------------------ BOOKING (single-phase clock)
     # ONE face-down Booking deck → the shared face-up Booking row. Icons only; no explainer text.
