@@ -12,7 +12,10 @@ Shared framing: each is a **single character, waist-up or full-figure**, mid-act
 strong readable silhouette, filling the board's portrait frame. **NO background scenery — just the
 character and their own props (what they hold, wear, or ride), on a plain flat background: a clean cut-out
 for the card.** Lovable, expressive personalities, laughing *with* the world — lively and appealing in the
-**polished original cartoon style** (not an over-caricatured big-head look).
+**polished original cartoon style** (not an over-caricatured big-head look). **Crank the ENERGY: this is a
+fast RACE-AND-BATTLE game, so give them dynamic, slightly CHAOTIC competitive poses — mid-dash, mid-scramble,
+snatching a prize, elbows out, motion/speed lines — urgency and glee, warm but never mean.**
+**Best results: attach a liked earlier character as a style reference alongside the prompt.**
 
 ---
 

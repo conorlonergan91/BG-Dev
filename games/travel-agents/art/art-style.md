@@ -26,9 +26,11 @@ characterful **Taiwanese street-food & neighbourhood personalities**, a bustling
   a character, a dish, a region must read instantly at component size.
 - **One cohesive cast:** the six characters and the vendors all look like they belong to the same charming,
   slightly-exaggerated world — same linework weight, same colour language, same level of stylisation.
-- **Dial the energy UP — over-the-top & wacky** (CD steer). Characters and **events** especially: big
-  expressions, dynamic/comedic poses, exaggerated reactions, a bit of visual slapstick — lean into the fun.
-  This amplifies the exaggeration; it does **NOT** loosen the dignity guardrail below (wacky ≠ mocking).
+- **Dial the ENERGY up — dynamic, competitive, a little CHAOTIC** (CD steer; **this is a race-and-battle
+  game**). Characters and **events** especially: high-energy action poses, a sense of urgency and scramble,
+  competitive fire and glee, motion / speed lines — capture the frantic contest of rivals racing the island
+  and battling over vendors. Keep the **polished original style** (NOT an over-caricatured big-head look)
+  and the dignity guardrail (competitive/chaotic ≠ mean or mocking).
 
 ## The characters (the six)
 Warm, affectionate, instantly-distinct **personalities** — lovable street-food/travel types, each exaggerated
@@ -165,6 +167,10 @@ a raster in its art slot; we never needed per-item SVGs. Ask the tool for a **ra
   tools add by default: it is *not* a flat colour, so it can't be keyed cleanly and forces a re-gen.
   (This is exactly why the Councillor and the Globetrotter came back hard to cut out.)
 - Keep the subject **fully inside the frame** with a little margin, so trimming doesn't clip a hand.
+- **Attach a style reference image** (CD's finding — big quality win). Alongside the text prompt, attach
+  one of the already-generated characters you're happy with and tell the tool to **match that art style**.
+  A reference image locks the look far more reliably than words alone, and keeps the whole cast cohesive.
+  Build the set outward from your favourite one.
 
 **Prep the export into a drop-in slot asset — `tools/mockup/prep_mockup.py` (stdlib + Pillow):**
 It (1) splits a grid into individual cells, (2) keys a flat background to transparent via a
