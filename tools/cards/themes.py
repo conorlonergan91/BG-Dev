@@ -134,28 +134,34 @@ THEMES = {
             # checker can only ever downgrade a colour-clash to INFO (never an ERROR); boarding-pass blue
             # is off the four region hues + the gold prize + the violet Followers. (bg-infodesign) ---
             "booking":    {"color": "#3A6EA5", "emblem": "ticket"},    # boarding-pass blue — the 開團 scoring deck
-            # --- ingredient tokens: colour = region, emblem distinct per specialty within its region.
-            # NB: beef/tea/rice deliberately DON'T reuse their region's own emblem (north=triangle,
-            # central=diamond, east=square) — a same-colour + same-emblem clash reads as two meanings for
-            # one glyph and trips the CVD checker. Canonicalised so nothing renders a conflicting emblem. ---
-            "beef":       {"color": "#D64545", "emblem": "square"},    # (region north = triangle)
+            # --- v7 LOCKED 6-category generic ingredient taxonomy (source of truth:
+            # components/recipe-glyphs.csv). These are keyed off the `ingredient` column, so the big
+            # ingredient-card glyph, the vendor recipe chip, and the token all render the SAME
+            # colour+emblem for a category. Every category is dual-coded — a DISTINCT colour AND a
+            # DISTINCT emblem — so no two share colour+emblem. Colours are EXACTLY recipe-glyphs.csv.
+            # veg (green) is deliberately shape-distinct from meat (red): red/green is the classic
+            # protan/deutan confusable, so the leaf-vs-hex SHAPE is the required redundant encoding
+            # (accessibility.md). Each category's colour matches its home REGION suit hue but carries a
+            # different emblem than that region's frame emblem, so a same-colour+same-emblem clash never
+            # arises (meat/north, tea/central, seafood/south, pantry/east). ---
+            "meat":       {"color": "#D64545", "emblem": "hex"},       # 肉 red   — North signature (region north = triangle)
+            "tea":        {"color": "#1F8A7A", "emblem": "triangle"},  # 茶 teal  — Central signature (region central = diamond)
+            "seafood":    {"color": "#E6A930", "emblem": "square"},    # 海鮮 amber — South signature (region south = circle)
+            "pantry":     {"color": "#26324D", "emblem": "circle"},    # 糧 indigo — East signature (region east = square)
+            "sugar":      {"color": "#B5835A", "emblem": "beam"},      # 糖 caramel — the COMMON (Central & South)
+            "veg":        {"color": "#4C9A5A", "emblem": "leaf"},      # 菜 green  — the COMMON (North & East); leaf shape-distinct from meat-hex (CVD)
+            # --- LEGACY per-specialty ingredient keys (pre-v7). NOT in any current component data — the
+            # generic render keys off the 6 categories above — but retained (harmless dead keys) in case a
+            # legacy render path or archived build still references them. Do not add new data on these. ---
+            "beef":       {"color": "#D64545", "emblem": "square"},
             "pork":       {"color": "#D64545", "emblem": "hex"},
-            "chicken":    {"color": "#D64545", "emblem": "diamond"},   # v3 NEW North specialty
-            "egg":        {"color": "#D64545", "emblem": "circle"},    # v3 NEW North specialty
-            "tea":        {"color": "#1F8A7A", "emblem": "triangle"},   # (region central = diamond) — v6.2: was hex; shape-distinct from seafood
+            "chicken":    {"color": "#D64545", "emblem": "diamond"},
+            "egg":        {"color": "#D64545", "emblem": "circle"},
             "pearls":     {"color": "#1F8A7A", "emblem": "circle"},
             "oysters":    {"color": "#E6A930", "emblem": "hex"},
             "milkfish":   {"color": "#E6A930", "emblem": "diamond"},
-            "rice":       {"color": "#26324D", "emblem": "circle"},    # (region east = square)
+            "rice":       {"color": "#26324D", "emblem": "circle"},
             "greens":     {"color": "#26324D", "emblem": "triangle"},
-            # --- v6.2 5-ingredient palette: pork/tea/rice reuse the region signatures above;
-            # seafood (South) + sugar (the COMMON) are the two new palette glyphs. seafood reuses the
-            # amber-hex of the retired `oysters`; sugar gets its own caramel + beam so the common reads
-            # apart from the four region hues. NB (-> bg-access): these two glyphs are NEW to the theme
-            # and want a CVD re-check (check_access.py) on the next palette pass. ---
-            "seafood":    {"color": "#E6A930", "emblem": "square"},   # South amber — v6.2: was hex; shape-distinct from tea/pork (bg-access dual-coding)
-            "sugar":      {"color": "#B5835A", "emblem": "beam"},     # caramel — the COMMON 糖 (C & S only)
-            "pantry":     {"color": "#8A8F98", "emblem": "beam"},      # slate — convenience store, anywhere (legacy)
             # --- v3 second currency: Buzz (its own colour, off the four region hues + the CVD checker) ---
             "buzz":       {"color": "#6A4C93", "emblem": "spark"},     # violet — promotional Buzz
             "_default":   {"color": "#26324D", "emblem": "circle"},
@@ -415,5 +421,17 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
                 f'stroke="{color}" stroke-width="{max(2, r*0.16)}" opacity="0.6"/>'
                 f'<rect x="{cx-inner}" y="{cy-inner}" width="{2*inner}" height="{2*inner}" '
                 f'rx="{inner*0.28}" fill="{color}"/>')
+    if kind == "leaf":  # 菜 Vegetables — a pointed leaf silhouette with a carved midrib vein
+        # (fill-rule evenodd: the thin sliver becomes a hole showing the ground). Shape-distinct from
+        # meat's hex so the veg-green / meat-red pair — the classic protan/deutan confusable — is
+        # dual-coded by SHAPE, not colour alone (bg-access). New/additive: no existing theme references
+        # 'leaf', so Beacon and every other theme render byte-identically. Degrades gracefully — at token
+        # scale the hairline vein may close up, leaving a solid, still-leaf-shaped glyph.
+        body = (f"M {cx} {cy-r} "
+                f"C {cx+r*0.92} {cy-r*0.28}, {cx+r*0.58} {cy+r*0.82}, {cx} {cy+r} "
+                f"C {cx-r*0.58} {cy+r*0.82}, {cx-r*0.92} {cy-r*0.28}, {cx} {cy-r} Z")
+        vein = (f"M {cx-r*0.07} {cy-r*0.52} L {cx+r*0.07} {cy-r*0.52} "
+                f"L {cx+r*0.07} {cy+r*0.70} L {cx-r*0.07} {cy+r*0.70} Z")
+        return f'<path fill-rule="evenodd" fill="{color}" d="{body} {vein}" {sw}/>'
     # fallback
     return f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{color}" {sw}/>'
