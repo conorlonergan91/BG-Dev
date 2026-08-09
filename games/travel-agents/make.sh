@@ -84,22 +84,24 @@ done
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --out build/map-day.png
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --out build/map-night.png
 
-# Per-player CHARACTER BOARDS (6 A4-LANDSCAPE mats, one per characters.csv row) — CD REDESIGN 2026-08.
-# Each board carries: English name TOP-LEFT + 漢字 TOP-RIGHT with the Tâi-lô romanisation beneath it; a
-# full-height character IMAGE on the RIGHT with ICON-ONLY ability/flaw medallions under it (no keyword
-# text — the rulebook carries the words); a short funny PROSE one-liner; and three card-EXACT-footprint
-# zones (63.5×88.9 mm) left→right — FOLLOWERS (the Followers-max dial, start 2 / 4 for the Influencer) ·
-# CANCELLED 取消 · COMPLETE 成團. The Rave-Reviews track and the "Your Bookings" hand section were REMOVED
-# from the board (they live in the rulebook now). TA-only: --type playerboard renders only rows with
+# Per-player CHARACTER BOARDS (6 A4-LANDSCAPE mats, one per characters.csv row) — CD REDESIGN 2026-08 v2.
+# Each board carries: English name TOP-LEFT + 漢字 TOP-RIGHT with the Tâi-lô romanisation beneath it, and
+# the ICON-ONLY ability/flaw medallions CENTRED in the gold title band (no keyword text — the rulebook
+# carries the words); a full-height character IMAGE on the LEFT with the Followers DIAL (an actual 0–8
+# notched dial face, start 2 / 4 for the Influencer, ready for a 3D-printed rotating knob) beneath it; a
+# short funny PROSE one-liner; and the TWO card-EXACT-footprint scoring zones (63.5×88.9 mm) on the RIGHT
+# — CANCELLED 取消 · COMPLETE 成團. The bottom footer (scoring/hand-limit/Rave/dial-rule text) was REMOVED
+# from the board (it lives in the rulebook now). TA-only: --type playerboard renders only rows with
 # ability_code+flaw_code, so Beacon et al. are untouched.
 #
 # ART EMBED (opt-in mock-ups — NEVER committed): prep the six committed finals from art/mockups/ into the
-# gitignored build/mockups/ at the board's new image-slot size (900×1700 px), keyed to transparent + fit.
-# The board auto-embeds build/mockups/FIG-CHAR-<slug>.png (base64 data-URI) when present, else a placeholder.
+# gitignored build/mockups/ at the board's image-slot size (900×1380 px — the v2 LEFT-column image slot),
+# keyed to transparent + fit. The board auto-embeds build/mockups/FIG-CHAR-<slug>.png (base64 data-URI)
+# when present, else a placeholder.
 mkdir -p build/mockups
 for slug in old-councillor homebody big-eater influencer big-brother globetrotter; do
     python3 $T/mockup/prep_mockup.py --image art/mockups/FIG-CHAR-$slug.png --key-bg \
-        --fit 900x1700 --pad --outdir build/mockups --out FIG-CHAR-$slug.png
+        --fit 900x1380 --pad --outdir build/mockups --out FIG-CHAR-$slug.png
 done
 # WARM boards (art embedded) → build/boards/ ONLY — the CD-preview set. build/ is gitignored: no AI final
 # art is ever committed (the binding rail). Default --mockups-dir is build/mockups, so these embed the finals.
