@@ -77,6 +77,28 @@ Then add the component-specific subject, composition, and the reserved size/figu
 
 ---
 
+## Locked vs Fluid (living — art-director pass 2026-08)
+
+**LOCKED (the house look, set by the six approved character finals — every asset matches this hand):**
+- Polished **stylised cartoon** — clean confident linework, bold mostly-flat colour with soft cel-shading,
+  **dignified adult proportions (NOT big-head chibi)**, expressive warm faces.
+- **Cut-out on a plain flat pale-cream ground** with a soft contact shadow; **no baked background, no dark
+  vignette/glow.** This is now the house composition for **characters AND vendors.**
+- Night-market palette: lantern vermilion `#D64545`, jade teal `#1F8A7A`, golden amber `#E6A930`, dusk
+  indigo `#26324D`, on bao-paper cream `#F7F1E3`.
+- **Vendors = dish-hero cut-outs** (the dish alone, no people/stall/scene) — CD steer, locked.
+- **Map = SOFT & SIMPLE, double-sided** (matched day + night faces): soft colour-zones, one clean HSR
+  spine, clean open centre, 1–2 tiny accents only; no card slots / Booking box / 停 (physical/code, on top).
+- Style-reference-image technique: build every new asset by attaching an approved piece and matching it.
+
+**FLUID (still open):**
+- Whether **final human-illustrated** vendor art keeps the rich per-place backgrounds in `vendor-art.md`
+  or goes dish-hero cut-out like the mock-ups (→ flagged to CD / `bg-continuity`).
+- Tour / Booking ticket faces (boarding-pass treatment) — not yet mocked; still full-bleed in the table.
+- Cover / box composition — not yet briefed.
+
+---
+
 ## AI mock-up prompts (playtest props — NOT final art)
 
 > **What this section is.** A **permitted, opt-in** use of AI: quick **high-fidelity mock-ups** so the CD
@@ -122,22 +144,26 @@ image drops cleanly into its SVG slot. Background: **transparent** for cut-out c
 |---|---|---|---|---|---|---|
 | Character-board image | `FIG-CHAR-<slug>` | **900 × 1380** | 76.2 × 116.8 mm | **~0.65:1 TALL PORTRAIT** | transparent | full-figure hero standing tall; the slot is the **LEFT column** at (70,308) on the **A4-landscape 3508×2480 board**, with the Followers dial beneath it (CD redesign 2026-08 **v2** — was 900×1700 on the RIGHT in v1; 490×600 on the old 1680×1380 board). **Compose TALL** — a standing full-figure reads best. Auto-embedded when `build/mockups/FIG-CHAR-<slug>.png` exists (data-URI), else a dashed placeholder renders. `preserveAspectRatio=meet` letterboxes (never crops), so any tall crop drops in cleanly; exact 900×1380 fills edge-to-edge. Prep to size: `--fit 900x1380 --pad` |
 | Ingredient card art | `FIG-ING-<id>` | **642 × 560** | 54.4 × 47.4 mm | **~1.15:1** | simple | on a 750×1050 poker card at (54,168); shows a **MIX** of that generic category (e.g. Meat = pork belly + beef + sausage + poultry together) |
-| Vendor card face | `FIG-VEND-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px (4.5 mm) safe margin**; see drop-in note below |
+| Vendor card face | `FIG-VEND-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | plain pale-cream | **dish-hero CUT-OUT** — the signature dish alone on a plain warm ground, exactly like the character cut-outs (NO people, NO stall/market scene, NO background). Keep the hero dish in the **upper ~55%** so the translucent UI panels stay legible below; **54 px safe margin**; see drop-in note below |
 | Tour / Booking card face | `FIG-TOUR-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px safe margin**; see drop-in note below |
-| Region map (full board) | `FIG-MAP-ISLAND` | **2280 × 1680** | 193 × 142.2 mm | **~1.36:1** | full | per-region vignettes optional |
+| Region map (double-sided board) | `FIG-MAP-ISLAND-day` / `-night` | **2280 × 1680** | 193 × 142.2 mm | **~1.36:1** | full | **SOFT & SIMPLE** — mostly soft colour + gentle glow, four regions as soft colour-zones, a single clean HSR spine, clean open centre, only **1–2 tiny accents**. **Double-sided:** matched DAY + NIGHT faces (generate day first, reference it for night). NO card slots / Booking box / 停 marker (those are physical/code, on top). |
 
 **Vendor & Tour card drop-in (read `render_vendor_svg` in `tools/cards/build_cards.py`).** The vendor
 face is **UI-dense**: a region-colour **header band** (Tâi-lô title + 繁體 subtitle) with a **tier pill**
 top-right, then a **region strip + English dish name**, then the **PAY** row (ingredient chips + the
 violet **Followers** badge), the **DRAW 人氣** crowd-gauge, and an **ICON 圖示** box filling the lower
 card. Those UI elements are drawn as **translucent white boxes (opacity ~0.45–0.9) that sit on top** of
-whatever art is behind them. So the cleanest mock-up is **(b) a full-bleed card face the UI overlays** —
-paint the whole 750×1050 face, but **keep the hero dish/stall as the focal point in the upper ~55% of the
-card** (under the header band, above the PAY/DRAW/ICON stack) and keep that lower region calmer/darker so
-the translucent PAY/DRAW/ICON panels stay legible on top. Same approach for Tour tickets: full-bleed
-boarding-pass face with the icon-motif read in a clear upper window, the name band and requirement text
-overlaid. (Option (a) a boxed central hero-window that clears the UI is available if a face gets too busy —
-but full-bleed reads warmer and is what these prompts assume.)
+whatever art is behind them.
+
+**Vendors are DISH-HERO CUT-OUTS (CD steer 2026-08 — this replaces the old full-bleed painted-scene
+approach).** The signature **dish is the hero, rendered alone on a plain warm pale-cream ground — exactly
+like the character cut-outs**: NO people, NO stall, NO market scene, NO background. This is both a warmth
+and a **legibility** win: a clean dish on a calm ground sits far better under the translucent PAY/DRAW/ICON
+panels than a busy painted scene did. **Compose the dish in the upper ~55%** of the face (under the header
+band, above the PAY/DRAW/ICON stack) and leave the lower area as calm plain ground so the panels stay
+legible. The place a dish comes from is provenance only — **illustrate the food, never the location.**
+Tour tickets keep the full-bleed **boarding-pass** treatment: the icon-motif read in a clear upper window,
+the name band + requirement overlaid.
 
 ### Sensitivity rails for mock-ups (BINDING — same rails as final art)
 

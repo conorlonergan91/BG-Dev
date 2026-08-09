@@ -110,31 +110,30 @@
 > the **gitignored** `games/travel-agents/build/mockups/`, filename = the FIG code (e.g.
 > `FIG-MAP-ISLAND.png`); **never committed, never moved to `exports/`, never shipped.**
 >
-> **Each prompt = STYLE ANCHOR (paste verbatim from `art/art-style.md`) + the subject below + the closing
-> line.** The board is a **backdrop underlay**: the functional zones (region panels + vendor slots, HSR
-> spine + 停 slot, the central Booking deck + face-up Booking row) are rendered by code and sit **on top** —
-> so keep the mock-up **low-contrast / calm where the play furniture lands** and save the warmth for the
-> frame, the island relief, and the region vignettes. Region identity colours stay **warm in BOTH states**
-> (only the chrome flips). Compose **upright from any seat** (no across-the-table orientation). **Secular
-> only.**
+> **SOFT & SIMPLE direction (CD steer 2026-08 — this supersedes the busy island brief for the mock-up).**
+> The earlier mock-up direction (relief map + four detailed region vignettes + a full string-of-lanterns
+> border) **came back far too busy and is retired for the mock-up.** The board is a **backdrop underlay**:
+> the functional zones (region panels + vendor slots, HSR spine + 停 slot, the central Booking deck +
+> face-up Booking row) are rendered by code and sit **on top**, so the art must stay **quiet and open** —
+> mostly **soft colour + a gentle glow**, four regions as soft **colour-zones**, a **single clean HSR line**
+> down the spine, a **clean open centre**, and only **ONE or TWO tiny accents.** Region identity colours
+> stay **warm in BOTH states** (only the light flips). **Double-sided:** a matched **DAY** and **NIGHT**
+> face — generate the day face first, then reference it for the night face so they register back-to-back.
+> Compose **upright from any seat** (no across-the-table orientation). **Secular only.**
+>
+> **The paste-ready DAY + NIGHT prompts live in `art/mockup-kickoffs.md` (the file the CD generates from).**
+> Use those. The bullet below is the same direction in brief form.
 
-- **`FIG-MAP-ISLAND` — the whole-table backdrop (the main warmth prop; day + night).** A warm travel-poster
-  view of a stylised **island of Taiwan** tying four regions into one place — a gentle relief map (Central
-  mountains, the western plain, the east coast), a drawn **HSR double-rail** running N↔S down the spine
-  (with the **停 Scheduled-Maintenance** slot kept clear on it), a **string-of-lanterns night-market border**
-  framing the table like a night-market street. Four soft region vignettes glowing at the diamond points:
-  **北 NORTH (top)** a Taipei night-market lane with a pork-bun cart (the START·台北 hub — a subtle
-  "head-office / departure" cue); **中 CENTRAL (side)** tea terraces + a hand-shaken-drink stand; **南 SOUTH
-  (bottom)** a Tainan/Kaohsiung quayside with an oyster omelette on the griddle; **東 EAST (side)** the
-  Hualien–Taitung coast/valley with rice + bamboo-tube fare. Warm dusk-gold light, the whole thing glowing
-  and inviting; **compose so it reads upright from every seat** (a shared 3–6-player table, no across-the-
-  table mirror). **Generate a warm-DAY pass (rising sun, gold bulbs) and a lantern-NEON-NIGHT pass (moon,
-  glowing neon) sharing one composition** — the day/night state rides on this chrome flip since there is no
-  printed clock. *Closing: framed for a 2280×1680 board, ~1.36:1 aspect, full background, keep the centre
-  (Booking deck + row) + the region/spine furniture calm and low-contrast, save as
-  build/mockups/FIG-MAP-ISLAND.png (night pass: FIG-MAP-ISLAND-night.png).*
-- **Optional per-region vignettes** (`FIG-MAP-NORTH` / `FIG-MAP-CENTRAL` / `FIG-MAP-SOUTH` / `FIG-MAP-EAST`)
-  — if a tighter mock-up of one region's warmth helps, generate the single signature scene above for that
-  region, **dish-typed and generic, NEVER a real named business.** East is Indigenous-forward — keep it
-  **generic and respectful, no tribal iconography, consultant-gated** (placeholder only). *Closing: framed
-  as a soft region vignette, transparent or simple background, save as build/mockups/FIG-MAP-<region>.png.*
+- **`FIG-MAP-ISLAND-day` / `FIG-MAP-ISLAND-night` — the whole-table backdrop (the main warmth prop).**
+  A softly stylised **island of Taiwan** with the four regions as **soft colour-zones** (北 top / 中 left /
+  南 bottom / 東 right) and a single clean **HSR line** down the N↔S spine (keep the **停** slot area clear).
+  **Add only ONE or TWO tiny accents** (e.g. one paper lantern + one little steaming bowl) — **no crowds,
+  no people, no buildings, no dense stalls, no lantern strings, no card slots/boxes/grid, no 停 marker, no
+  text.** Keep the whole **centre clean and open** (cards get placed on top). **DAY:** warm dawn glow, soft
+  gold. **NIGHT:** soft lantern-neon glow + a moon, region colours stay warm — only the light flips.
+  *Closing: one image, framed 2280×1680, ~1.36:1, full background, high-res PNG (not SVG); reads upright
+  from every seat; save build/mockups/FIG-MAP-ISLAND-day.png (then the matched night as
+  FIG-MAP-ISLAND-night.png).*
+- **Per-region vignettes** (`FIG-MAP-NORTH` etc.) are **NOT part of the soft/simple mock-up** — the regions
+  read as plain colour-zones, not illustrated scenes. (The richer per-region briefs above remain as options
+  for a future human-illustrated board only, and are consultant-gated where East is concerned.)

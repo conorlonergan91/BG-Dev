@@ -66,108 +66,117 @@ HSR spine, same framing, same size) — only the light/colour chrome differs —
 **Tip: generate the DAY face first, then attach it as a reference for the NIGHT face** and say *"same
 composition, night lighting"* so they register.
 
-### DAY face — `FIG-MAP-ISLAND-day`  ⚑ full-bleed, ~1.36:1 landscape (2280×1680)
+### DAY face — `FIG-MAP-ISLAND-day`  ⚑ generate this ONE FIRST · full-bleed, ~1.36:1 landscape (2280×1680)
 ```
-Generate a SIMPLE, SOFT mock-up map (DAY FACE) for the board game Travel Agents: Taiwan, in the art style of the uploaded art-style.md and the attached style reference. Mostly BEAUTIFUL SOFT COLOURS with a gentle warm GLOW — a stylised island of Taiwan with the four regions as soft colour-zones (北 top / 中 left / 南 bottom / 東 right) and a single clean HSR line running down the N–S spine. Add ONLY ONE OR TWO simple illustrations as light accents (e.g. a single paper lantern and a little steaming bowl) — nothing else. NO crowds, NO people, NO dense stalls, NO lantern-clutter, NO card slots, NO Booking box, NO 停 marker — keep the whole centre CLEAN and open (cards get placed on top). Reads upright from every seat (no across-the-table orientation). DAY: warm dawn glow, soft gold light. Secular only. ~1.36:1 landscape (2280×1680), full background. Save build/mockups/FIG-MAP-ISLAND-day.png.
+Generate ONE SIMPLE, SOFT mock-up map (the DAY FACE) for the board game Travel Agents: Taiwan, in the art style of the uploaded art-style.md and the attached style reference. This is mostly BEAUTIFUL SOFT COLOUR and a gentle warm GLOW — not a detailed scene. A softly stylised island of Taiwan; the four regions read as four SOFT COLOUR-ZONES (北 North top / 中 Central left / 南 South bottom / 東 East right); a single clean thin HSR line runs down the N–S spine. Add ONLY ONE OR TWO tiny simple illustration accents in a corner (e.g. one paper lantern and one little steaming bowl) — nothing more. NEGATIVE (important): NO crowds, NO people, NO buildings, NO dense stalls, NO lantern strings, NO card slots, NO boxes, NO grid, NO 停 marker, NO text or labels — keep the whole CENTRE clean and open (game cards get placed physically on top). Must read upright from EVERY seat (no across-the-table orientation, no single "front"). DAY light: warm dawn glow, soft gold. Secular only. One image, ~1.36:1 landscape (2280×1680), full background, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-day.png.
 ```
 
-### NIGHT face — `FIG-MAP-ISLAND-night`  ⚑ full-bleed, MATCH the day face exactly
+### NIGHT face — `FIG-MAP-ISLAND-night`  ⚑ generate AFTER the day face, and attach it
 ```
-Generate the NIGHT FACE of the same SIMPLE, SOFT map for Travel Agents: Taiwan — the SAME COMPOSITION as the day face (attach the day image as a reference: identical island shape, region colour-zones, single HSR line, the same one-or-two simple accents, same framing and size — only the light changes), in the art style of the uploaded art-style.md. Still SIMPLE and SOFT: mostly nice colours + a gentle glow; NO crowds, NO people, NO dense stalls, NO clutter, NO card slots, NO Booking box, NO 停 marker; clean open centre; reads upright from any seat. NIGHT: soft lantern-NEON glow + a moon; region colours stay warm, only the light flips. Secular only. ~1.36:1 landscape (2280×1680), full background, aligned to the day face for a double-sided board. Save build/mockups/FIG-MAP-ISLAND-night.png.
+Generate the NIGHT FACE of the SAME map for Travel Agents: Taiwan. ATTACH the day face you just made as a reference and MATCH IT EXACTLY: identical island shape, identical four region colour-zones and their positions, identical single HSR line, the SAME one-or-two tiny accents, identical framing and size — ONLY the lighting changes (so the two faces register back-to-back on a double-sided board). Keep it just as SIMPLE and SOFT: mostly soft colour + a gentle glow. NEGATIVE (important): NO crowds, NO people, NO buildings, NO dense stalls, NO lantern strings, NO card slots, NO boxes, NO grid, NO 停 marker, NO text or labels; clean open centre; reads upright from any seat. NIGHT light: soft lantern-NEON glow and a moon; the region colours stay WARM — only the light flips. Secular only. One image, ~1.36:1 landscape (2280×1680), full background, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-night.png.
 ```
-*(Keep it minimal — resist adding more illustrations. If a face still feels too busy, cut accents, not add them.)*
+*(Keep it minimal — resist adding illustrations. If a face feels busy, CUT accents, never add. The earlier map came back far too busy; the whole point of this pass is soft-and-simple.)*
 
 ---
 
 ## The 24 VENDORS — `FIG-VEND-*` (grouped North / Central / South / East)
 
-**Shared rails (this section):** cite the uploaded `art/art-style.md` + `design/vendor-places.md`; attach a
-liked earlier card/character as a **style-reference image**. **NO HUMANS. NO BACKGROUND.** Each vendor is a
-**clean CUT-OUT on a plain flat pale background — exactly like the character art**: render **the signature
-DISH as the hero** (big, warm, appetising), optionally its own little vessel or stall-cart / steamer /
-clay-oven — **the food is the star**. The place name below is just the dish's **real source** — illustrate
-the FOOD faithfully, **do NOT draw the location, the market, a scene, or people.** **Every vendor visually
-DISTINCT** (different dish, vessel, presentation, colour). Real dishes faithful; secular; 繁體字. Single
-subject, plain flat pale-cream background, NO scenery, NO people. Save `build/mockups/FIG-VEND-<id>.png`.
+**The big idea for vendors (CD steer):** **the DISH is the hero.** No people, no stall, no market scene,
+no background — a **clean food CUT-OUT on a plain flat pale-cream ground, exactly like the character art**.
+The place named in each block is only the dish's **real source** — **illustrate the FOOD faithfully; do NOT
+draw the place, the market, or any scene.** Every dish visually **distinct** (its own vessel, presentation,
+colour). Think of the beautiful, faithfully-rendered bowls in the approved character art — that quality,
+isolated on the cream.
+
+**Before you paste (do once):** upload the art-context `.md` files, then **attach an approved character
+mock-up as a STYLE-REFERENCE image** and tell the tool to *match that art style* — it locks the look and
+keeps all 24 cohesive. Then paste **one block at a time.** Each block below is **complete and self-contained**
+— it already carries every constraint, so you can paste it as-is.
+
+**Every block ends with the same guardrails** (baked into each so nothing drifts): *NO people, NO stall or
+market scene, NO background, NO text or labels. Single dish, centred, a soft contact shadow beneath (like
+the character art), plain flat pale-cream background, NO dark vignette or glow. Real dish rendered
+faithfully; secular. High-resolution PNG (not SVG).* The star marks apex vendors — render those the
+**biggest / most abundant** of their region. Save each to `build/mockups/FIG-VEND-<id>.png`.
 
 ### North 北 (Meat signature · vermilion ▲)
 ```
-FIG-VEND-N01 — 肉包 pork bao (bah-pau), from 後龍 Houlong. A fluffy split pork bun on a little bamboo steamer-basket, soft steam rising.
+FIG-VEND-N01 · Pork Bao 肉包 (from Houlong 後龍) — art style of the attached reference. HERO, big and appetising: a fluffy split pork bun revealing seasoned minced pork, soft steam curling, resting on a small round bamboo steamer-basket. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N01.png.
 ```
 ```
-FIG-VEND-N02 — 蛋餅 egg crepe (tàn-piánn), from 迪化街 大稻埕. A golden rolled egg crepe on a plate, a spatula lifting one slice.
+FIG-VEND-N02 · Egg Crepe 蛋餅 (from Dihua St 迪化街, 大稻埕) — art style of the attached reference. HERO, big and appetising: a golden rolled savoury egg crepe on a plate, a spatula lifting one cut slice to show the layers. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N02.png.
 ```
 ```
-FIG-VEND-N03 — 豆漿 soy milk (tāu-tsiunn), from 阜杭豆漿. A warm bowl of soy milk with a crisp 油條 leaning on it. (drink)
+FIG-VEND-N03 · Soy Milk 豆漿 (drink; from 阜杭豆漿) — art style of the attached reference. HERO, big and appetising: a warm bowl of fresh soy milk with a crisp golden 油條 (fried dough stick) leaning on the rim. NO people, NO stall or market scene, NO background, NO text or labels. Single item, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N03.png.
 ```
 ```
-FIG-VEND-N04 — 胡椒餅 pepper bun (hôo-tsio-piánn), from 饒河街夜市. A sesame-crusted peppered-pork bun, one split open to show the juicy pork-and-scallion filling.
+FIG-VEND-N04 · Pepper Bun 胡椒餅 (from 饒河街夜市) — art style of the attached reference. HERO, big and appetising: a sesame-crusted charcoal-baked peppered-pork bun, one split open to show the juicy pork-and-scallion filling. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N04.png.
 ```
 ```
-FIG-VEND-N05 — 牛肉麵 beef noodle (gû-bah-mī), from 永康街. A steaming bowl of beef-shank noodles with a chili-oil sheen, chopsticks lifting a tangle of noodles.
+FIG-VEND-N05 · Beef Noodle 牛肉麵 (from 永康街) — art style of the attached reference. HERO, big and appetising: a steaming bowl of beef-shank noodle soup with a chili-oil sheen and pickled greens, chopsticks lifting a tangle of noodles. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N05.png.
 ```
 ```
-FIG-VEND-N06 ★ — 大香腸 big sausage (tuā-iân-tshiâng), from 士林夜市. An oversized glossy char-grilled sausage on a stick with a raw garlic clove — apex TROPHY, the biggest, juiciest wow.
+FIG-VEND-N06 ★ APEX · Big Sausage 大香腸 (from 士林夜市) — art style of the attached reference. HERO, make it the BIGGEST, juiciest wow of the North: an oversized glossy char-grilled Taiwanese sausage on a stick with a raw garlic clove beside it. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N06.png.
 ```
 ```
-FIG-VEND-N07 — 珍奶 bubble tea, from 大稻埕碼頭. A pearl-milk-tea cup with tapioca pearls and a fat straw, beaded with condensation. (drink; distinct from C03)
+FIG-VEND-N07 · Bubble Tea 珍奶 (drink; from 大稻埕碼頭) — art style of the attached reference. HERO, big and appetising: a tall pearl-milk-tea cup packed with dark tapioca pearls, a fat straw, beaded with condensation (the riverside night cup — distinct from C03). NO people, NO stall or market scene, NO background, NO text or labels. Single item, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N07.png.
 ```
 
 ### Central 中 (Tea signature · jade ◆)
 ```
-FIG-VEND-C01 — 肉圓 ba-wan (bah-uân), from 彰化. A translucent chewy dumpling split to show pork + bamboo shoot, in a shallow dish of red sauce.
+FIG-VEND-C01 · Ba-wan 肉圓 (from Changhua 彰化) — art style of the attached reference. HERO, big and appetising: a translucent chewy dumpling split open to show minced pork + bamboo shoot, sitting in a shallow dish of glossy red sauce. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-C01.png.
 ```
 ```
-FIG-VEND-C02 — 麵線 misua (mī-suànn), from 臺中第二市場. A bowl of fine thread-noodles in a glossy brown broth, a spoon resting in it.
+FIG-VEND-C02 · Misua 麵線 (from 臺中第二市場) — art style of the attached reference. HERO, big and appetising: a bowl of fine thread-noodles in a glossy thick brown broth, a spoon resting in it, a little coriander on top. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-C02.png.
 ```
 ```
-FIG-VEND-C03 — 珍珠奶茶 bubble tea (tsin-tsu-ni-tê), from 春水堂 — the birthplace. A tall shaken pearl-milk-tea glass, frothy, half-lid — the ORIGINAL (distinct from N07).
+FIG-VEND-C03 · Bubble Tea 珍珠奶茶 (drink; from 春水堂, the birthplace) — art style of the attached reference. HERO, big and appetising: a tall shaken pearl-milk-tea glass, frothy with a half-lid — the poised ORIGINAL teahouse cup (a shade more refined than N07's street cup). NO people, NO stall or market scene, NO background, NO text or labels. Single item, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-C03.png.
 ```
 ```
-FIG-VEND-C04 — 大腸包小腸 sausage-in-sausage, from 一中街. A grilled sausage tucked into a split sticky-rice sausage, topped with garlic + pickle, on a paper tray.
+FIG-VEND-C04 · Sausage-in-Sausage 大腸包小腸 (from 一中街) — art style of the attached reference. HERO, big and appetising: a grilled pork sausage tucked into a split grilled glutinous-rice sausage, topped with garlic slices + pickle, on a little paper tray. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-C04.png.
 ```
 ```
-FIG-VEND-C05 ★ — 逢甲名物 signature plate, from 逢甲夜市. A loaded, abundant signature plate piled high — apex HUB feast, give it generous abundance.
+FIG-VEND-C05 ★ APEX · Fengjia Signature Plate 逢甲名物 (from 逢甲夜市) — art style of the attached reference. HERO, make it the MOST ABUNDANT of the Central region: a loaded signature night-market plate piled generously high with a mix of fried and grilled bites. NO people, NO stall or market scene, NO background, NO text or labels. Single plate, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-C05.png.
 ```
 ```
-FIG-VEND-C06 — 冬瓜茶 wintermelon tea (tang-kue-tê), from 太空紅茶冰. Amber wintermelon tea in a retro plastic bag with a straw — 古早味 nostalgia. (drink)
+FIG-VEND-C06 · Wintermelon Tea 冬瓜茶 (drink; from 太空紅茶冰) — art style of the attached reference. HERO, big and appetising: amber wintermelon tea in a retro clear plastic bag knotted around a straw — nostalgic 古早味 charm. NO people, NO stall or market scene, NO background, NO text or labels. Single item, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-C06.png.
 ```
 
 ### South 南 (Seafood signature · amber ●)
 ```
-FIG-VEND-S01 — 虱目魚粥 milkfish congee (sat-ba̍k-hî-muê), from 臺南. A bowl of milkfish-belly congee with ginger threads and a spoon.
+FIG-VEND-S01 · Milkfish Congee 虱目魚粥 (from Tainan 臺南) — art style of the attached reference. HERO, big and appetising: a bowl of rice congee with tender boneless milkfish belly and fine ginger threads, a spoon resting in it. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-S01.png.
 ```
 ```
-FIG-VEND-S02 — 碗粿 rice bowl cake (uánn-kué), from 富盛號 國華街. A savoury steamed rice-cake in its little bowl, dark braise + a shrimp, sauce drizzled over.
+FIG-VEND-S02 · Rice Bowl Cake 碗粿 (from 富盛號, 國華街) — art style of the attached reference. HERO, big and appetising: a savoury steamed rice-cake set in its own little bowl, topped with dark braise and a shrimp, sauce drizzled over. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-S02.png.
 ```
 ```
-FIG-VEND-S03 — 木瓜牛奶 papaya milk (bo̍k-kua-gû-ni), from 六合夜市. A tall glass of frothy orange papaya-milk shake, a straw. (drink)
+FIG-VEND-S03 · Papaya Milk 木瓜牛奶 (drink; from 六合夜市) — art style of the attached reference. HERO, big and appetising: a tall glass of thick frothy orange papaya-milk shake, a straw, bright and creamy. NO people, NO stall or market scene, NO background, NO text or labels. Single item, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-S03.png.
 ```
 ```
-FIG-VEND-S04 — 火雞肉飯 turkey rice (hóe-ke-bah-pn̄g → consultant), from 文化路夜市 Chiayi. A bowl of rice topped with shredded turkey + braise + pickled daikon — Chiayi's signature (a Meat dish).
+FIG-VEND-S04 · Turkey Rice 火雞肉飯 (from 文化路夜市, Chiayi 嘉義) — art style of the attached reference. HERO, big and appetising: a bowl of rice topped with shredded turkey and a spoonful of braise, pickled daikon on the side — Chiayi's signature. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-S04.png.
 ```
 ```
-FIG-VEND-S05 — 棺材板 coffin bread (kuan-tsâ-pán), from 沙卡里巴. A deep-fried thick-toast bread bowl filled with creamy seafood chowder, a bread lid propped on top.
+FIG-VEND-S05 · Coffin Bread 棺材板 (from 沙卡里巴) — art style of the attached reference. HERO, big and appetising: a thick deep-fried toast "bread bowl" filled with creamy seafood chowder, its crisp bread lid propped on top (playful, appetising — never morbid). NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-S05.png.
 ```
 ```
-FIG-VEND-S06 ★ — 擔仔麵 tan-tsú-mī (tànn-á-mī), from 度小月. A small shrimp-pork noodle bowl with a single prawn on top, warm and quietly iconic — a century-old apex.
+FIG-VEND-S06 ★ APEX · Tan-tsú-mī 擔仔麵 (from 度小月) — art style of the attached reference. HERO, quietly iconic (a century-old apex — warm and refined rather than huge): a small shrimp-and-pork minced-meat noodle bowl with a single plump prawn on top. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-S06.png.
 ```
 
 ### East 東 (Pantry signature · indigo ■)
 ```
-FIG-VEND-E01 — 竹筒飯 bamboo-tube rice, from 東大門夜市.  ⚑ CONSULTANT-GATED EVEN FOR MOCK-UPS. A split bamboo tube of sticky mountain rice — warm, GENERIC and RESPECTFUL only: NO tribal iconography, NO AI-invented Indigenous-language text. Placeholder pending the paid community consultant.
+FIG-VEND-E01 ⚑ CONSULTANT-GATED EVEN FOR MOCK-UPS · Bamboo-Tube Rice 竹筒飯 (from 東大門夜市) — art style of the attached reference. HERO, big and appetising: a split length of bamboo tube revealing steamed sticky mountain rice inside. Keep it GENERIC and RESPECTFUL only — NO tribal iconography, NO patterns, NO Indigenous-language text of any kind (this is a placeholder pending the paid community consultant). NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-E01.png.
 ```
 ```
-FIG-VEND-E02 — 米糕 rice cake (bí-ko), from 羅東夜市. A small bowl of glutinous rice topped with braise + pork floss.
+FIG-VEND-E02 · Rice Cake 米糕 (from 羅東夜市) — art style of the attached reference. HERO, big and appetising: a small bowl of savoury glutinous rice topped with dark braise and a little pork floss. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-E02.png.
 ```
 ```
-FIG-VEND-E03 — 麻糬 mochi (muâ-tsî), from 曾記 Hualien. A little tray of dusted pastel glutinous-rice mochi.
+FIG-VEND-E03 · Mochi 麻糬 (from 曾記, Hualien 花蓮) — art style of the attached reference. HERO, big and appetising: a little tray of soft dusted pastel glutinous-rice mochi, gift-shop sweet. NO people, NO stall or market scene, NO background, NO text or labels. Single tray, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-E03.png.
 ```
 ```
-FIG-VEND-E04 ★ — 石板烤肉 stone-slab BBQ, Taitung highland.  ⚑⚑ #1 CONSULTANT-GATED EVEN FOR MOCK-UPS. Pork grilling on a hot stone slate over embers — GENERIC and RESPECTFUL only: NO tribal iconography, NO AI-invented Indigenous-language text. Apex placeholder; the paid community consultant on community + dish + naming + framing binds BEFORE any real art.
+FIG-VEND-E04 ★ TOP APEX · ⚑⚑ #1 CONSULTANT-GATED EVEN FOR MOCK-UPS · Stone-Slab BBQ 石板烤肉 (Taitung highland) — art style of the attached reference. HERO, make it the warmest, most abundant apex of the deck: pork grilling on a hot stone slate over glowing embers. Keep it GENERIC and RESPECTFUL only — NO tribal iconography, NO patterns, NO Indigenous-language text of any kind. This is a PLACEHOLDER; a paid Paiwan/Rukai community consultant on community + dish + naming + framing binds BEFORE any real art — a mock-up is NOT sign-off. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-E04.png.
 ```
 ```
-FIG-VEND-E05 — 洛神花茶 roselle tea (lo̍k-sîn-hue-tê), from 太麻里. A deep-crimson roselle tea in a glass with a hibiscus calyx beside it. (drink)
+FIG-VEND-E05 · Roselle Tea 洛神花茶 (drink; from 太麻里) — art style of the attached reference. HERO, big and appetising: a glass of deep-crimson roselle tea with a single hibiscus (roselle) calyx resting beside it — crimson is the hero colour. NO people, NO stall or market scene, NO background, NO text or labels. Single item, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-E05.png.
 ```
 
 ---
