@@ -94,14 +94,13 @@ Then add the component-specific subject, composition, and the reserved size/figu
 
 ### STYLE ANCHOR (paste this verbatim at the start of EVERY mock-up prompt)
 
-> A **bold, exaggerated, over-the-top CARTOON CARICATURE** — a lively modern animated-feature / comic
-> character, **NOT a realistic or semi-realistic portrait**. Push the exaggeration hard: **slightly
-> oversized head, big expressive eyes and hands, snappy stylised proportions, a wacky dynamic pose and a
-> huge expression** — visible comic energy, a bit of playful slapstick. The fun, characterful *look* of
-> Agent Avenue, with a **travel-agent, Taiwanese street-food theme (no spies)**. Clean, confident bold
-> linework; bright, mostly-flat cartoon colour with simple stylised shading; a strong readable
-> silhouette. **Wacky in the CHARMING, animated-ensemble sense — never ethnic caricature or mockery; still
-> warm, likeable, and dignified.** Cohesive **night-market palette**: warm daytime golds and
+> A warm, lighthearted, **over-the-top-but-dignified stylised cartoon** illustration — the fun,
+> characterful *look* of Agent Avenue but with a **travel-agent, Taiwanese street-food theme (no spies)**.
+> Clean, confident linework; bold, mostly-flat colour with simple stylised shading; strong readable
+> silhouettes; expressive, affectionate faces — lively and appealing, **NOT an over-caricatured big-head
+> style**. **Compose the character and their own props ONLY — a clean cut-out with NO background scenery
+> (no maps, flags, HSR lines, region labels, or speech bubbles), on a plain flat background.** Cohesive
+> **night-market palette**: warm daytime golds and
 > ambers glowing into neon-lit night-market violets and teals — lantern vermilion `#D64545`, jade teal
 > `#1F8A7A`, golden amber `#E6A930`, dusk indigo `#26324D`, on bao-paper cream `#F7F1E3`. Cozy, inviting,
 > celebratory. **The single most important goal: convey the WARMTH at the heart of this game** — the

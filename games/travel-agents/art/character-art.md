@@ -9,9 +9,10 @@ consultant** reviews the cast before final art (watch-items: the Big Brother's w
 spryness).
 
 Shared framing: each is a **single character, waist-up or full-figure**, mid-action, big expressive face, a
-strong readable silhouette, filling the board's portrait frame; a hint of their signature setting behind
-them (a night-market glow, a stall, the HSR). Push the energy — these are lovable, slightly-exaggerated
-personalities, laughing *with* the world.
+strong readable silhouette, filling the board's portrait frame. **NO background scenery — just the
+character and their own props (what they hold, wear, or ride), on a plain flat background: a clean cut-out
+for the card.** Lovable, expressive personalities, laughing *with* the world — lively and appealing in the
+**polished original cartoon style** (not an over-caricatured big-head look).
 
 ---
 
@@ -29,8 +30,7 @@ sun-sleeves, comfy trainers), maybe a small crossbody bag stuffed with snacks sh
 **quick, canny, delighted** — the granny who knows every shortcut and every vendor by name.
 
 **Do:** upright, energetic, confident, twinkling; a sense of *motion* (speed lines, a scarf/bag mid-swish).
-Behind her, a faint island-spanning cue — the HSR line or four little region-lights, nodding to her
-go-anywhere reach.
+**No background scenery — just her, her scooter, the EasyCard and her snack bag, on a plain background.**
 **Don't:** hunched, cane-dependent, passive, confused, or a butt-of-the-joke. Not a frail stereotype — she's
 the one *winning the race*. (Consultant + blind-test watch: reads warm/spry, never mocking of elders.)
 
@@ -40,13 +40,13 @@ the one *winning the race*. (Consultant + blind-test watch: reads warm/spry, nev
 
 A **cheerful neighbourhood elder with real local clout** — the borough warden everyone knows. Warm, sharp-eyed,
 mid-handshake or waving you over like a favourite uncle; apron-over-shirt or a tidy vest, a lanyard/sash hinting
-at office. Behind: his home-turf lane of shops. **Dignified community figure, never a pompous politician gag.**
+at office. **Dignified community figure, never a pompous politician gag. No background scenery — just him and his props.**
 
 ## `[FIG-CHAR-homebody]` — The Homebody (Ma-pó / 媽寶)
 
 An **earnest young office worker** clutching a **mum-packed lunchbox (便當)**, phone to ear ("Ma, which stall
-again?"), tie slightly askew, a sheepish happy grin — swears the food back home tastes better. Behind: a
-familiar neighbourhood corner. Warm and relatable, self-teasing — **affectionate, not a mocking "mama's boy."**
+again?"), tie slightly askew, a sheepish happy grin — swears the food back home tastes better. Warm and
+relatable, self-teasing — **affectionate, not a mocking "mama's boy." No background scenery — just him and his props.**
 
 ## `[FIG-CHAR-big-eater]` — The Big Eater (Tuā-uī-ông / 大胃王)
 
@@ -58,14 +58,14 @@ abundance — **a lovable glutton, never gross-out.**
 
 A **stylish food blogger** framing the perfect bowl for the feed — phone/ring-light up, one eye on the shot,
 trendy fit, a delighted grin because they *genuinely* love the food. A little ring of hearts/📈 "going viral"
-sparkle. Behind: a photogenic neon stall. **Affectionate wink at influencer culture, never sneering.**
+sparkle. **Affectionate wink at influencer culture, never sneering. No background scenery — just them and their props.**
 
 ## `[FIG-CHAR-big-brother]` — The Big Brother (Tuā-ko / 大哥) ⚑ #1 dignity watch
 
-The **warm neighbourhood big-brother** — a lovable rogue in a bomber jacket, **greeting a delighted stall-owner
-like an old friend**, arms open, big cinema-charm smile; the vendor is *pleased to see him*. Behind: a lane
-where everyone waves. **Must read warm-elder-mate, NEVER gangster/menacing/Orwellian** (the load-bearing
-dignity item — art carries the warmth; consultant + blind-test confirm).
+The **warm neighbourhood big-brother** — a lovable rogue in a bomber jacket (a tiger patch + 大哥), a big
+warm cinema-charm laugh and a friendly thumbs-up, holding a takeaway bag of night-market food. **Solo — no
+stall-owner, no background scenery, just him and his props.** **Must read warm-elder-mate, NEVER
+gangster/menacing/Orwellian** (the load-bearing dignity item — art carries the warmth; consultant + blind-test confirm).
 
 ---
 
