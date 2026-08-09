@@ -710,7 +710,18 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
     value = str(row.get("value", "")).strip()
     recipe = (row.get("recipe") or "").strip()          # dishes: semicolon-separated ingredient ids
     target = (row.get("target") or "").strip()          # assignments: machine-readable win condition
-    is_objective = bool(target)                          # assignment-style: value is a completion bonus
+    # TA-only V7-M event gate: events.csv gained a `verb` column (rally/pinch/gift/…) plus `target`
+    # (a verb PARAMETER, e.g. block→draw) and a magnitude `value`. Those two columns collide with the
+    # generic objective/value read (a `target` would render an event as an assignment card; a `value`
+    # would stamp a stray VP numeral). An event is any row carrying a `verb` — a column NO other deck
+    # (Beacon ships/signals, TA bookings/vendors/ingredients/characters) has — so this fires ONLY for
+    # TA scoped events and leaves every other deck byte-identical. It keeps events rendering exactly as
+    # they did before this data pass (plain effect card + scope chip); the verb/scope/duration/target
+    # ICONOGRAPHY is a SEPARATE presentation pass (see the render-pass flags in the dev handoff).
+    is_event = bool((row.get("verb") or "").strip())
+    is_objective = bool(target) and not is_event        # assignment-style: value is a completion bonus
+    if is_event:
+        value = ""                                       # don't stamp a stray VP numeral/pips on events
 
     # --- title: wraps; the header band GROWS to fit, so single-line titles are pixel-unchanged ---
     title_lines = wrap(row.get("name", ""), max_chars=TITLE_WRAP) or [""]

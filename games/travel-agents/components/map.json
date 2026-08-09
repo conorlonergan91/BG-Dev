@@ -37,6 +37,13 @@
     "5": {"N": 2, "C": 1, "S": 1, "E": 1},
     "6": {"N": 2, "C": 2, "S": 1, "E": 1}
   },
+  "event_deck_mix": {
+    "_note": "V7-M EVENT SYSTEM (2026-08, §15.4/§15.6-B): events.csv is the POOL; ingredients.csv fixes each region deck's ingredient cards. At setup, per region+phase, shuffle the matching event pool (rows whose `deck` = <region>-<phase>) and deal this many events into that region's deck; the rest go back to the box. Different mix every game — free replayability. Event pressure rises GENTLY with player count (interaction payoff + faster deck churn under more players); capped so per-player swing stays bounded — night N/E at 6p (~40% events) is the #1 density knob to watch. Scheduled Maintenance / island (board-scope) banners live inside night decks and fire board-scope when drawn — no separate deck.",
+    "3": {"day": 1, "night": 2},
+    "4": {"day": 2, "night": 3},
+    "5": {"day": 2, "night": 3},
+    "6": {"day": 3, "night": 4}
+  },
   "regions": [
     {
       "key": "north", "name": "NORTH 北", "color": "#D64545", "emblem": "triangle", "slots_n": 2,

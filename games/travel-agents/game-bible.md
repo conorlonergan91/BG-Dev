@@ -242,6 +242,14 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
   night marquee is cross-region biased** (needs a two-region engine to zero — the load-bearing guard). Steep
   +2 curve and the min-1 floor both rejected. Canon night-cost table + the placed Central tea-export fix (胡椒餅
   {N:2,C:1}, 麻糬 {E:2,C:1}) in `design/v6.3-content-draft.md` §CD-4; bg-developer bakes it into `vendors.csv`.
+  **★ V7-M UPDATE (2026-08, IN DATA):** every vendor is now a **multi-ingredient, mostly cross-region dish**
+  (recipes revised per `followers-meeples-redesign.md` §12.7 — 20/24 force a cross-region ingredient; avg
+  cost 2.71, range 2–5), and each vendor carries **two new printed numbers**: a **`min_followers`
+  crowd-floor** (= star tier, 1/2/3 — you must have at least this many of your own followers on the stall to
+  claim it) and a **`vp`** (= ingredient_cost + min_followers − 2, range **1–6**). **Vendors now SCORE that
+  VP** (two-track scoring — see Win condition). `buzz_cost` and `draw` stay dropped; `min_followers`/`vp` are
+  the new second/third axes. Data live in `components/vendors.csv`. *(RENDER: the vendor-card face does not
+  yet draw the VP pip or the crowd-floor number — a separate presentation pass owns that.)*
 - **~44 Tour-Ticket cards (the EXPANDED deck — the sole scoring vector)** — **DAY deck ~20 + NIGHT deck ~25**
   (patterns: region pairs, cross-region →X dishes, single-region depth, deeper collections, food-count
   ladders, plus the base coverage/thrift/contest/value patterns — full list in `design/v6.3-content-draft.md`
@@ -259,6 +267,18 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
   ~7% near-invisible; ⚠ the sim module's `TA_MAINT_COUNT=1` default is NOT canon). Fires on a Visit / CStore
   draw (a Travel flyby returns it unfired). Re-homes the retired 里長伯 no-HSR flaw as a warm, symmetric,
   table-wide friction.
+  **★ V7-M UPDATE (2026-08, IN DATA):** the event set is rebuilt to the **VERB · SCOPE · DURATION** framework
+  (`design-doc.md` §15) — a **~46-design pool (52 physical cards)** spanning every locked mechanic (crowd /
+  pantry / street). `events.csv` gains columns **`scope`** (self ⦿ · rival ✦ · region ⬢ · neighbour ➤ ·
+  board ▦), **`duration`** (now · turn · round · phase), **`verb`** (12: rally/disperse/gift/pinch/spoil/
+  swipe/sink/wash/restock/trend/block/detour), **`target`** (verb parameter) and **`value`** (magnitude,
+  almost always 1); the old `kind` column is retired into the tags + verb. Direct-attack cards
+  (**rival-facing ✦ losses**) auto-target the **current leader** (rule A, leader-locked), are **magnitude 1**
+  and **tax-not-destroy** (dispersed followers go to the loser's OWN supply) — a **small minority (~7)** of
+  the pool. `map.json → event_deck_mix` deals a per-count subset into each region+phase deck at setup
+  (3p 1/2 · 4p 2/3 · 5p 2/3 · 6p 3/4 day/night), so the mix differs every game. *(RENDER: event cards do not
+  yet draw the verb/scope/duration icons — a separate presentation pass owns that; cards currently render as
+  plain effect-text + the shipped ⦿/⬢/➤ scope chip.)*
 - **~24 Buzz tokens** (@2p; committed, public, contested — placed on vendors, cleared on a win).
 - **6 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥 · 阿嬤**; V7 balance CLOSED —
   all six band across 3–6p, no crusher, no cold outlier).
@@ -286,7 +306,14 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
 a 3-ticket row — confirm the table stays parseable.
 
 ## Win condition & scoring
-**v6.3 (TICKETS-ONLY LOCKED — ONE scoring vector; neither vendors nor Reputation score).** The game ends at
+**★ V7-M TWO-TRACK SCORING (2026-08, IN DATA — supersedes the v6.3 tickets-only line below):** at game end
+you score **two ways** — the **`vp` printed on every stall (vendor) you won** (1–6 each) **plus** the
+**value of every tour (Booking) you completed** (retuned to **3–11**, `value = 2×old − 3`). **Completed tours
+score far more and remain your main path to victory; won stalls are a steady bonus on top** (a vendor-only
+hoard tops out ~22 VP and is structurally dominated by a tour game ~35–57 — `followers-meeples-redesign.md`
+§14). Vendor VP tables in `components/vendors.csv`; retuned Booking values in `components/bookings.csv`.
+
+**v6.3 (TICKETS-ONLY — historical; the vendor-scoring line above now overrides "vendors do NOT score").** The game ends at
 the **last train home** (the **10th table-wide vendor claim** @2p), **highest total wins** (no
 sudden-death). **Score = your Tour Tickets, and nothing else:** each claimed ticket is judged at the end of
 its deck's phase (DAY at dusk, NIGHT at the last train) into your **WIN pile COMPLETED 成團** / **LOSE pile CANCELLED 取消**,
