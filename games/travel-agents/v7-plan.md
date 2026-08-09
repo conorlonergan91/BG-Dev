@@ -8,6 +8,13 @@ top) — this file is the *do-list*; the log is the *why*.
 **★ The pivot:** Travel Agents is no longer a 2-player duel. **Design home = MULTIPLAYER 3–6** (tune 3–5
 solid, 6 as a validated stretch). 2p is dropped as a design target.
 
+**★ CD DELEGATION (2026-08-09):** once the Granny confirm re-sim lands, **drive this plan autonomously as
+far as it goes** — close V7 balance → Phase-2 lock + guardian sweep + the naming-bless → the Phase-4
+component rebuild (character boards, the neutral N-player map, ingredients-as-pictorial-cards, the stripped
+player aid, the icon-first / language-agnostic RA-clarity icon system with SVG placeholders + human
+art-prompts). **Auto-accept sensible design recommendations** instead of pausing for each; keep committing +
+pushing after every meaningful step; surface to the CD only a genuine blocker or a choice only they can make.
+
 ---
 
 ## Character roster — ALWAYS refer to these by the ENGLISH name (in chat + docs)
