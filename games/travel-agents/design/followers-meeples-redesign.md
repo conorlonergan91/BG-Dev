@@ -723,3 +723,449 @@ DUSK/LAST-TRAIN tie-resolver, and the win-return direction.**
   fights** (N=0 floor as the cool-down; N=2 degenerate). All wired into §9.
 - **`bg-elegance` — the rulebook-headroom flag:** scarcity's two baseline rules (~40 words) exceed the
   7-word headroom → recover ~40 words at the rewrite OR log a conscious 1850→1900 cap raise (§10 note).
+
+---
+
+# 12. VENDOR ECONOMY REWORK — two coupled cost axes (CD steer, 2026-08-09)
+
+> **Status: SPEC, appended after the LOCKED §§0–11.** A fresh CD steer reworks the vendor economy on
+> top of the locked meeple + scarcity model. **This REOPENS the win-a-vendor economy a second time** —
+> §§9–10's re-sim scope and data list are extended here (§12.7). Nothing in §§0–11 is deleted; this
+> section *amends* three earlier decisions and says so explicitly:
+> - **Amends §5 ("no threshold").** §5 dropped the flat vestigial `buzz_cost=2` and locked "pure
+>   most-followers-wins, no threshold." The CD now REINTRODUCES a threshold — but a **tier-scaled
+>   `min_followers` floor (1/2/3)**, NOT a flat constant. This is not a revival of `buzz_cost`; it is a
+>   new, varied *second axis* (§12.2). §5's reserve ("hold a threshold only if the 1-follower sweep is
+>   dominant") is now **promoted to baseline**, tier-scaled.
+> - **Amends §6 (prestige Bookings).** The cost thresholds there assumed the OLD flat day cost (all
+>   cost-1). Day stalls are no longer cost-1, so those targets are retuned (§12.6).
+> - **Amends §1.5 / §9 probe #2 (sourcing "invariant").** Multi-ingredient recipes deliberately shift
+>   per-category demand and raise aggregate demand ~30%. Sourcing shares are **no longer expected to be
+>   invariant** — they should track the NEW demand vector (§12.5). Probe #2's targets are updated.
+
+## 12.0 The two CD steers, folded into one lever
+
+1. **Costs are too flat / boring.** Day was uniformly single-ingredient cost-1. Spread the whole curve
+   so ingredient cost is a real decision.
+2. **Add a tier-scaled `min_followers` floor** to CLAIM a stall — the plurality leader must ALSO hold at
+   least the stall's floor, or nobody claims (stays contested).
+3. **(Follow-on steer) No single-ingredient stalls.** Every recipe needs **≥2 ingredients, ideally
+   spanning ≥2 of the 6 categories**, with a meaningful share spanning **≥2 regions** — a single-
+   ingredient dish gives no reason to spread across the board; a multi-type/multi-region dish is what
+   forces the sourcing-travel game.
+
+**Steers 1 and 3 are the SAME lever.** Requiring ≥2 ingredients per recipe is *what* raises and varies
+the cost (cost = recipe token count), and choosing ingredient *types* that aren't all local is what
+forces cross-region sourcing. So the redesign is a single pass over all 24 recipes, producing two
+numbers per card: **(a) `ingredient_cost`** (now 2–5, from the multi-token recipes) and **(b)
+`min_followers`** (the tier floor). The floor (steer 2) stacks on top: a marquee now demands **both a
+varied ingredient spread AND a real crowd.**
+
+## 12.1 Axis A — the ingredient-cost curve (multi-ingredient, cross-region)
+
+**Design rules applied to every recipe:**
+- **≥2 ingredient tokens** (so `ingredient_cost ≥ 2` everywhere — the old cost-1 single-ingredient day
+  stall is gone).
+- **≥2 distinct categories** wherever the dish plausibly allows (24/24 achieve ≥2 types).
+- **Gradient by tier:** day ≈ 2 (a couple of hearty day foods at 3), night mains = 3, apex = 4, top
+  apex = 5. Full deck spans **cost 2–5**.
+- **Cross-region by construction:** each stall keeps its home-region signature where the real dish has
+  it, and picks up cross-region tokens for the second/third type. **20 of 24 recipes now require an
+  ingredient not local to the stall's region → they force travel.** The 4 fully-local stalls are simple
+  day items (a deliberate handful of no-travel quick grabs).
+- **Keyword/taxonomy discipline:** unchanged 6-category taxonomy (Meat 肉 / Tea 茶 / Seafood 海鮮 /
+  Pantry 糧 / Sugar 糖 / Veg 菜) and the region-local map (North = Meat+Veg, Central = Tea+Sugar,
+  South = Seafood+Sugar, East = Pantry+Veg). Recipes are thematically faithful — **flag `bg-theme` to
+  sanity-check the reflavoured recipes** (a few dishes gained an authentic second ingredient).
+
+**Within-tier variety, not just a shifted-flat curve.** Two day foods (S02 Rice Bowl Cake, C02 Misua)
+are **cost 3**, the rest of day cost 2 — so day itself spans 2–3, and the deck shows the payoff of the
+second axis cleanly: **S02/C02 cost 3 with floor 1** sit right next to the **night mains at cost 3 with
+floor 2** — same ingredient cost, different crowd demand. That contrast is exactly "the meaningful
+second number" the CD asked for.
+
+## 12.2 Axis B — the `min_followers` floor (tier-scaled)
+
+> **Rule.** To CLAIM a stall you must be the follower leader (strict plurality; **Big Brother 大哥** by
+> his margin dial N, §6.7) **AND** have at least the stall's `min_followers` of **your own** followers on
+> it. If the plurality leader is below the floor, **nobody claims** — the stall stays contested/empty
+> until someone meets it.
+
+**Floor = tier** (the mnemonic: crowd floor = star tier):
+
+| Tier | Stalls | `min_followers` |
+|---|---|:--:|
+| **1** (all 13 day + N07 night drink) | 14 | **1** |
+| **2** (6 night mains) | 6 | **2** |
+| **3** (4 night apex) | 4 | **3** |
+
+**Floor range chosen: 1 → 3** (with a held 4th step on the top trophy — §12.7 reserve). Rationale, tuned
+against the pool (field `max` **6**, Influencer **8**, start **2**, Travel grows **+1/turn**, slow refill):
+- **Floor 1 = a near-no-op that PRESERVES the closed day economy.** Leading a stall already needs ≥1
+  follower (1 > 0), so a floor of 1 changes nothing on day stalls — they stay frictionless single-
+  follower quick grabs. This is the CD's "cheap day stalls a low floor," and it protects the day
+  throughput the V7 sim closed.
+- **Floor 2 (night mains) = a third of a 6-pool.** Ties up 2 followers until the contest resolves — a
+  real tempo cost, and it lets a 6-pool spread **2+2+2** across three simultaneous night-main fights.
+- **Floor 3 (apex) = half a 6-pool.** A serious "big crowd." A 6-pool can only fund **two** apex
+  commitments (3+3), so spreading vs concentrating genuinely trades off — the whole point of the floor.
+  Reachable (Travel +1/turn builds you there; wins return followers to redeploy) but a heavy commitment.
+- **Why not the CD's example ceiling of 4?** With field `max` 6 and three stacking throttles (scarcity +
+  floors + higher costs, §12.4), a floor-4 on the single hardest, region-locked apex risks a permanent
+  below-floor block that strands its Booking value. Baseline apex floor = **3** (uniform, teachable);
+  **E04 floor 3→4 is held as the "crown the top trophy" reserve** (§12.7), to be pulled only if the
+  re-sim shows apex fights resolve too cheaply.
+
+The floor is a **per-contest COMMITMENT, not a permanent spend** (see §12.3, interaction 3): meeting it
+ties up followers only until you win (→ they come home to your board, reusable) or lose (→ your own
+supply, re-grow). Its cost is tempo/opportunity, never attrition.
+
+**Note — this floor is the tier-scaled promotion of §5's reserve.** It directly answers §5's worry: the
+1-follower uncontested sweep is now impossible on night/apex (need 2/3), while day (floor 1) is
+untouched.
+
+## 12.3 The three interactions the CD flagged — RESOLVED
+
+1. **min_followers × Big Brother 大哥 margin dial (§6.7).** The floor is an **absolute personal minimum**;
+   the margin dial governs the **relative** contest. **Big Brother must still MEET the floor** — his edge
+   only wins the relative fight with fewer followers than a rival, it never waives the floor. Worked
+   cases on an apex (floor 3): rivals A=3, BB=3 → tie, BB wins by margin, **BB has 3 ≥ floor → claims.**
+   A=3, BB=2 → A leads and meets floor → **A claims.** A=2, BB=2 → tie, BB would win the margin **but BB=2
+   < floor 3 → nobody claims**, stays contested. So the floor can block even the plurality/margin winner —
+   exactly the CD's "leader below the floor ⇒ not claimed."
+2. **min_followers × tie-block × the endgame tie-resolver (§2.6).** A tie among leaders still blocks; the
+   floor adds "a below-floor leader also blocks." At **DUSK / LAST TRAIN**, the resolver force-resolves
+   **ties among floor-MEETING leaders** (most followers, then earliest committer). **The floor still
+   applies at the resolver:** a stall whose top committer is **below the floor** does NOT get force-
+   claimed — it **clears UNCLAIMED** (followers → owners' boards at DUSK / lie unscored at LAST TRAIN),
+   like any unclaimed stall. This closes the loop without reopening the deadlock/stranding HOLE (§2.6,
+   §1.5): the only new case is "nobody invested enough," which is not a denied prize — it clears clean,
+   no follower is stranded (DUSK sends them home to boards, not supply).
+3. **min_followers × win-keeps-followers.** The floor is committed *per contest*: you place ≥floor over
+   one or more Promotes, **win → your followers return to your board** (kept, redeploy free), **lose →
+   your followers to your OWN supply** (re-grow). The floor never permanently drains the pool — it is a
+   temporary tie-up, so the pool binds through **tempo** (those followers can't be elsewhere meanwhile),
+   which is precisely what makes spreading vs concentrating a live decision.
+
+## 12.4 ⚠ THREE THROTTLES NOW STACK — the load-bearing flag
+
+The CD has now stacked **three** independent brakes on claiming a stall, all pointing the same way:
+1. **Scarcity** (§1) — fewer face-up slots + slow per-round refill → fewer stalls available.
+2. **Higher/varied ingredient cost** (§12.1) — avg vendor cost rises **2.08 → 2.71** (+30%); every claim
+   costs more ingredients, so more sourcing turns per claim.
+3. **Follower floors** (§12.2) — night/apex claims now require 2–3 committed followers, not 1.
+
+Individually each is intended. **Together they compound and could over-throttle throughput** — Bookings
+(esp. the cost-targeted prestige Bookings, §12.6) becoming hard to finish is the #1 risk of this rework.
+The re-sim must measure the **combined** effect and be ready to **loosen the cheapest-to-loosen lever
+first** — that is **the scarcity slot counts** (§1.3), which were always the "amplifier," not the load-
+bearing lever. Do NOT loosen the floors or costs first (they are the CD's actual asks). Explicit re-sim
+guard in §12.7.
+
+## 12.5 Sourcing-coherence check — how demand shifts (state + flag, per the CD)
+
+Cost = recipe token count, so the new recipes change per-category demand. Aggregate rises **50 → 65
+(+30%)**; **proportions stay close to the validated old ones** (the multi-ingredient rework scaled the
+economy up more than it re-weighted it):
+
+| Category | Old demand (Σ50) | Old share | **New demand (Σ65)** | **New share** | Deck depth | Deck share |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|
+| Meat 肉 | 11 | 22% | **14** | **21.5%** | 11 | 17.7% |
+| Tea 茶 | 8 | 16% | **10** | **15.4%** | 11 | 17.7% |
+| Seafood 海鮮 | 10 | 20% | **11** | **16.9%** | 11 | 17.7% |
+| Pantry 糧 | 13 | 26% | **16** | **24.6%** | 11 | 17.7% |
+| Sugar 糖 | 4 | 8% | **7** | **10.8%** | 12 | 19.4% |
+| Veg 菜 | 4 | 8% | **7** | **10.8%** | 6 | 9.7% |
+
+**Reads:**
+- **Proportions hold within a few points** — biggest moves are Seafood −3.1pts and Sugar/Veg +2.8pts;
+  Meat/Tea/Pantry within ~1.5pts. So the sourcing character the V7 sim validated is preserved; only the
+  *volume* scales up.
+- **Pantry stays the tightest category** — 24.6% demand vs 17.7% deck-share. This is the **same risk
+  profile as the old game** (pantry was 26% demand vs 17.7% supply and the sim handled it fine, because
+  the market decks reshuffle — `supply_min` never hit 0). No new structural break; just watch it under
+  the +30% aggregate.
+- **Sugar remains over-supplied** (10.8% demand vs 19.4% deck-share) — harmless idle supply, same as
+  before, now slightly less idle.
+
+**Deck decision: do NOT pre-change `ingredients.csv`.** Because proportions hold and decks reshuffle, the
+existing decks should absorb the higher volume. **Flag the re-sim to VERIFY** (probe #2 retargeted to the
+NEW shares above, ±2pt). **Conditional fix, only if the re-sim shows Pantry/Meat starvation under the
++30% load:** swap idle Sugar depth toward Pantry/Meat — e.g. Central/South sugar 12→7 (−5), East pantry
+11→14 (+3), North meat 11→13 (+2), keeping deck total ~62. Held, not baked.
+
+## 12.6 Prestige-Booking retune (amends §6)
+
+The §6 prestige targets assumed day = all cost-1. Day is now cost 2–3, so `ingredient_cost` totals are
+reached with far fewer claims. Recommended retune (validate in re-sim):
+
+| Booking | §6 target | Why it breaks | **Recommended** |
+|---|---|---|---|
+| `d_prestige8` (day) | `ingredient_cost_day ≥ 4` | day now cost 2–3 → 2 day claims hit 4 (was ≈4 claims) | **`≥ 7`** (≈3 day claims; day cost-total is now 28) |
+| `n_prestige14` (night) | `ingredient_cost_total ≥ 9` | night cost-total barely moved (36→37) | **hold `≥ 9`**; drop to `≥ 8` only if floors throttle night claims |
+| `g_prestige12` (night) | `ingredient_cost_total ≥ 7` | as above | **hold `≥ 7`**; drop to `≥ 6` if needed |
+
+This is a recommendation flagged for the re-sim, not a silent change — `bg-developer` applies the day
+retune (`≥7`) and the re-sim confirms all three against the new cost economy + the three-throttle stack.
+
+## 12.7 The full 24-vendor table (authoritative spec)
+
+`cost` = `ingredient_cost` (recipe token count). `floor` = `min_followers`. Categories: M=Meat, T=Tea,
+S=Seafood, P=Pantry, K=Sugar, V=Veg. **✱ = forces cross-region travel** (needs a non-home-local
+category). Home-local: N={M,V}, C={T,K}, S={S,K}, E={P,V}.
+
+| id | Dish (EN) | tier | phase | OLD recipe (cost) | **NEW recipe** | **cost** | **floor** | ✱ cross-region |
+|---|---|:--:|:--:|---|---|:--:|:--:|:--:|
+| N01 | Pork Bao | 1 | day | meat (1) | **M;P** | 2 | 1 | ✱ (P→E) |
+| N02 | Egg Crepe | 1 | day | meat (1) | **M;V** | 2 | 1 | — (local) |
+| N03 | Soy Milk | 1 | day | sugar (1) | **P;K** | 2 | 1 | ✱ (P→E, K→C/S) |
+| N04 | Pepper Bun | 2 | night | meat;meat;tea (3) | **M;M;T** | 3 | 2 | ✱ (T→C) |
+| N05 | Beef Noodle | 2 | night | meat;pantry;veg (3) | **M;P;V** | 3 | 2 | ✱ (P→E) |
+| N06 | ★ Big Sausage | 3 | night | meat;meat;meat;seafood (4) | **M;M;S;V** | 4 | 3 | ✱ (S→S) |
+| N07 | Bubble Tea | 1 | night | sugar (1) | **T;K** | 2 | 1 | ✱ (T→C) |
+| C01 | Ba-wan | 1 | day | tea (1) | **M;T** | 2 | 1 | ✱ (M→N) |
+| C02 | Misua | 1 | day | tea (1) | **T;S;P** | 3 | 1 | ✱ (S→S, P→E) |
+| C03 | Bubble Tea (orig) | 1 | day | sugar (1) | **T;K** | 2 | 1 | — (local) |
+| C04 | Sausage-in-Sausage | 2 | night | tea;tea;pantry (3) | **M;P;T** | 3 | 2 | ✱ (M→N, P→E) |
+| C05 | ★ Fengjia Signature | 3 | night | tea;tea;seafood;seafood (4) | **T;S;S;P** | 4 | 3 | ✱ (S→S, P→E) |
+| C06 | Wintermelon Tea | 1 | day | veg (1) | **T;K** | 2 | 1 | — (local) |
+| S01 | Milkfish Congee | 1 | day | seafood (1) | **S;P** | 2 | 1 | ✱ (P→E) |
+| S02 | Rice Bowl Cake | 1 | day | seafood (1) | **S;S;P** | 3 | 1 | ✱ (P→E) |
+| S03 | Papaya Milk | 1 | day | sugar (1) | **V;K** | 2 | 1 | ✱ (V→N/E) |
+| S04 | Turkey Rice | 2 | night | meat;pantry;veg (3) | **M;P;V** | 3 | 2 | ✱ (M→N, P→E) |
+| S05 | Coffin Bread | 2 | night | seafood;seafood;pantry (3) | **S;S;P** | 3 | 2 | ✱ (P→E) |
+| S06 | ★ Tan-tsú-mī | 3 | night | seafood;seafood;seafood;pantry (4) | **S;S;M;P** | 4 | 3 | ✱ (M→N, P→E) |
+| E01 | Bamboo Rice | 1 | day | pantry;pantry (2) | **P;V** | 2 | 1 | — (local) |
+| E02 | Rice Cake | 1 | day | pantry (1) | **P;M** | 2 | 1 | ✱ (M→N) |
+| E03 | Mochi | 2 | night | pantry;pantry;tea (3) | **P;K;T** | 3 | 2 | ✱ (T→C, K→C/S) |
+| E04 | ★ Stone-Slab BBQ | 3 | night | pantry;pantry;pantry;meat;meat (5) | **P;P;M;M;V** | 5 | 3 | ✱ (M→N) |
+| E05 | Roselle Tea | 1 | day | veg (1) | **T;K** | 2 | 1 | ✱ (T→C) |
+
+**Cost distribution:** 2 ×14 · 3 ×6 · 4 ×3 · 5 ×1 → wait, day-3s (C02,S02) + mains-3 (6) = 8 at cost 3;
+cost 2 ×12, cost 3 ×8, cost 4 ×3, cost 5 ×1. Range **2–5**, avg **2.71** (was 2.08).
+**Floor distribution:** 1 ×14, 2 ×6, 3 ×4.
+**The 2-D space (cost, floor):** (2,1) quick grabs · (3,1) pricey solo day (S02, C02) · (2,1) night drink
+N07 · (3,2) night mains · (4,3) apex · (5,3) top apex — six profiles, and the (3,1) vs (3,2) pair proves
+the two numbers carry independent information.
+**Cross-region:** 20/24 force travel; the 4 local stalls (N02, C03, C06, E01) are the deliberate easy
+day grabs.
+
+## 12.8 DATA-change list (for `bg-developer` — extends §10)
+
+**`vendors.csv`** (this supersedes the §10 line that kept `ingredient_cost`/`recipe` unchanged):
+- **REVISE `recipe` + `ingredient_cost` for all 24 rows** to the "NEW recipe / cost" columns in §12.7.
+  (Every day stall changes; several night rows reflavoured for ≥2 types.)
+- **ADD a new column `min_followers`** to all 24 rows = the `floor` column in §12.7 (tier 1→1, 2→2, 3→3).
+- The §10 drops still stand: **DROP `buzz_cost`** and **DROP `draw`**. `min_followers` is the NEW,
+  tier-scaled second axis — it does NOT restore the flat vestigial `buzz_cost`.
+- `icon`, `trending`, `tier`, `phase`, `region`, `quantity`, `tags`, `place` unchanged.
+- **Flag `bg-theme`** to sanity-check the reflavoured recipes (a few dishes gained an authentic 2nd/3rd
+  ingredient — e.g. Misua as oyster-tea-noodle, wintermelon/roselle "teas" carrying a Tea token).
+
+**`bookings.csv`** — apply the §12.6 retune: `d_prestige8` → **`ingredient_cost_day ≥ 7`**; hold
+`n_prestige14` (`≥ 9`) and `g_prestige12` (`≥ 7`) pending re-sim.
+
+**`ingredients.csv`** — **NO change now.** Conditional deck-rebalance (§12.5) held for the re-sim.
+
+**`map.json`** — no change from this steer (slots/refill are §1.4).
+
+Run `tools/lint/check_game.py` after (new column + recipe edits). Cost gauge / complexity unaffected by
+values.
+
+## 12.9 SIM re-encode additions (the re-encode is IN FLIGHT — extend its scope)
+
+The scarcity+meeple re-encode (§9) must additionally:
+- **Add the min-follower GATE to contest resolution:** a stall claims only if the plurality/margin leader
+  holds ≥ its `min_followers`; a below-floor leader = **no claim, stays contested**. Apply the floor at
+  the endgame resolver too (§12.3 interaction 2): below-floor top crowd → clears **unclaimed**.
+- **Re-read `ingredient_cost` from the new recipes** (avg 2.71) and the retargeted prestige Bookings.
+- **Retarget probe #2** to the NEW demand shares (§12.5), ±2pt — sourcing shares are **no longer
+  invariant**; they should track the new vector. Pantry is the tight category to watch.
+
+## 12.10 RULEBOOK additions (the rewrite is IN FLIGHT — add these)
+
+- Teach the claim rule in one line: **"To claim a stall you must be the follower leader (Big Brother by
+  his margin) AND have at least the stall's minimum followers of your own on it — below the floor, no one
+  claims; it stays contested."**
+- Teach the two card numbers: **ingredient-cost chips** + the **crowd-floor** (min-followers) number, and
+  the mnemonic **floor = star tier (1/2/3)**.
+- Add the endgame-resolver floor clause (a below-floor tied stall clears unclaimed).
+- **Presentation note (NOT design — for `bg-infodesign`):** the vendor card shows ingredient chips + a
+  min-follower number/icon, **no prose**.
+
+## 12.11 What the re-sim must NOW ALSO verify (this reopens the economy)
+
+Fold into §9's scoped re-sim (already CD-gated):
+- **Cost-curve variety is LIVE:** cost decisions actually bind — players don't grab indiscriminately;
+  higher-cost stalls are meaningfully harder to afford, and the (3,1)-vs-(3,2) profiles play differently.
+- **min_followers makes the fight BIND without making marquees UNCLAIMABLE:** track apex/night-main CLAIM
+  rate (must stay > 0 — marquees still get won), **below-floor block frequency** (transient, not a
+  permanent barricade), and **Booking + prestige-Booking completion** (must hold ≥ ~90%).
+- **The three-throttle stack (§12.4) does not over-choke throughput:** claims/gm, Last-Train completion,
+  turns/player. If it chokes, **loosen the scarcity slot counts first** (§1.3), not floors or costs.
+- **Sourcing tracks the NEW demand (§12.5):** shares within ±2pt of the new vector; **Pantry** is the
+  starvation watch — if it starves, apply the conditional deck-rebalance (§12.5).
+- **The spread/travel game is real:** with 20/24 recipes cross-region, confirm travel/sourcing turns rise
+  and single-region hoarding is no longer viable (the CD's core intent).
+
+## 12.12 Handoff / coherence flag (extends §11)
+
+Two mechanics moved this pass: **(1) every vendor is now a multi-ingredient, mostly cross-region dish**
+(the signature twist's *spread* engine — sourcing-travel now matters far more), and **(2) claiming gained
+a tier-scaled follower FLOOR** (the crowd-fight now has a minimum-crowd gate). Flag the Director to run:
+- **`bg-theme`** — do the reflavoured recipes still read as faithful real dishes (the ≥2-type additions),
+  and does the fiction explain "a stall won't sell to you until enough of your crowd is there" (the
+  floor)? The Taiwan cultural rails are untouched (E04 Stone-Slab BBQ still the #1 consultant item;
+  Indigenous dishes E01/E04 unchanged in framing).
+- **`bg-elegance`** — the floor adds one printed number per card + one claim clause (~15 words); folds
+  into the same rulebook-headroom re-gauge already flagged (§10). The `min_followers` = tier mnemonic
+  keeps it cheap.
+- **`bg-critic`** — the floor interacts with every character lane (§12.11): Influencer's deep pool meets
+  floors easiest (watch hot → reserve `max` 7), Big Eater's follower-sink weakens her at floors (leans on
+  floor-1 day), Globetrotter's Travel-cost + floors compound (watch over-nerf), Homebody's banked board
+  is worth more when floors demand crowds (reserve g′ more likely), Councillor's ingredient-rush is now
+  floor-gated on high tiers (can't buy-and-snipe an apex with 1 follower). All wired into the §9 probes.
+
+---
+
+# 13. DIFFICULTY → REWARD COUPLING — the payoff half (CD steer, 2026-08-09)
+
+> **Status: SPEC + a clean A / B / hybrid RECOMMENDATION for the CD's final call** (scoring architecture
+> is the CD's decision). This is the REWARD half of the difficulty added in §12: if hard vendors aren't
+> worth more, players grab the easy day stalls and skip the marquees, and the whole §12 difficulty becomes
+> pure friction. The reward must scale with the difficulty.
+
+## 13.0 The critical finding — Route A is ALREADY BUILT and validated
+
+Reading `bookings.csv`: the scoring is **tickets-only** (score ONLY from completed Bookings 開團; the sim
+validated this — `ignore_obj` winrate 1–5%, DEAD), **and the Booking deck already channels difficulty →
+reward through dedicated cards.** The slope exists today:
+
+| Booking type | Examples | Value | What difficulty it rewards |
+|---|---|:--:|---|
+| Cheap / pair / mix | `d_cheap2`, `d_pairNC`, `d_mix1`, `d_deep2` | **3** | easy day grabs |
+| Coverage / collection / single-region | `d_travel3`, `d_collect4`, `d_north2` | **4–5** | breadth |
+| **Expensive-cost** | `n_expensive1` (cost≥3), `n_expensive2` (2×cost≥3) | **4 / 6** | pricey stalls |
+| **Apex** | `n_star1` (win a ★) | **5** | the marquee |
+| **Contested (the signature twist!)** | `d_contest1` (1 contested win), `n_contest2` (2) | **4 / 5** | winning the crowd-fight |
+| **Cross-region** | `n_cross1`, `n_cross2` | **4 / 6** | the spread |
+| **Cost-total prestige** | `d_prestige8`, `n_prestige14`, `g_prestige12` | **4 / 6 / 6** | leaning into pricey night names |
+| Big collection / all-regions | `n_collect6` (6), `n_all4` (4 regions) | **7** | grand tour |
+
+**So the marquee is ALREADY worth fighting for — via these Bookings.** The mechanism the CD floated as
+"Route A" is the existing, sim-validated architecture. There are contested-win Bookings that reward the
+signature twist *directly*. The residual gaps are only two: **(i) the value SLOPE is a bit flat** (an apex
+Booking at 5 ≈ a 4-cheap-grab collection at 5, even though winning an apex is far harder now), and **(ii)
+CONTINGENCY** — whether a marquee is "worth it" this game depends on your Booking draw (bounded, because
+the deck is dense with difficulty-Bookings and players hold several).
+
+## 13.1 ⚠ Coherence ripple — the new cost curve mis-calibrates the cost-referencing Bookings
+
+Independent of the A/B/hybrid choice, §12's cost change **breaks the calibration of every Booking that
+references `ingredient_cost`** (they were written for the old flat all-cost-1 day tier). Must retune:
+
+| Booking | Target | Old behaviour | New behaviour under §12 | Fix |
+|---|---|---|---|---|
+| `d_cheap2` / `d_cheap3` | `cheap_vendors` = cost ≤2 | caught cost-1 day stalls | now catches the **12 cost-2 stalls** (not the cost-3 day S02/C02) | keep ≤2 (still "the cheap grabs"); note semantics shifted |
+| `n_expensive1` | cost ≥3 | night mains + apex only (10) | now also catches **day S02/C02** (cost 3) | **raise to cost ≥4** to stay "marquee" (else 2 day stalls read as splurges) |
+| `n_expensive2` | 2× cost ≥3 | as above | as above | **raise to cost ≥4** likewise |
+| `d_prestige8` | `ingredient_cost_day ≥4` | ≈4 day claims | ≈2 day claims (day now 2–3) | **≥7** (§12.6) |
+| `n_prestige14` / `g_prestige12` | ≥9 / ≥7 | — | night cost-total barely moved | hold (§12.6) |
+
+This retune is mandatory regardless of route — flag to `bg-developer` + re-sim.
+
+## 13.2 The three routes — crisp trade-off for the CD
+
+**Route A — Booking-payout scaling (RECOMMENDED).** Keep tickets-only. Do two things: (1) the §13.1
+retune, and (2) **widen the value slope** so the hard Bookings clearly out-score the easy ones now that
+the difficulty rose — modest bumps, nothing new:
+- `n_star1` (apex) **5 → 6**
+- `n_contest2` (2 contested wins) **5 → 6**
+- `n_expensive2` (2× cost≥4) **6 → 7**
+- keep easy Bookings (pairs/mix/cheap) at **3–4**.
+- *Optional density lever (hold):* add one `apex_wins≥2` Booking (value 7) if the re-sim shows a single
+  apex incentive isn't enough to make the fight reliably fire.
+- **Pros:** zero scoring-architecture change; the validated single axis is preserved; **`ignore_obj`
+  stays dead by construction** (scoring is still 100% Bookings — a grab-only player scores 0); the
+  contested/apex/expensive Bookings already reward the exact §12 difficulty; **no added complexity**
+  (critical against the tight 1850-word budget). **Cons:** reward stays *indirect* — a marquee is worth
+  it only if you hold a Booking that wants it (bounded by deck density, but real).
+
+**Route B — full vendor points (ADVISE AGAINST).** Vendors score directly, scaled by difficulty (e.g. VP
+= `ingredient_cost`, 2–5 each). **Cons dominate:** a player claiming 6–8 stalls banks 12–30 VP, *rivalling*
+the Booking axis → revives the two-axis dilution the CD deliberately dropped, and directly threatens the
+validated `ignore_obj`-dead result (grab-spam could win). It also adds a full second scoring pass. The
+CD's hypothesis (vendor points failed only because vendors were flat) is plausible, but the fix for
+"marquees aren't worth it" does **not** require making vendor-collection a co-equal win condition — that
+is a bigger, riskier redesign than the problem needs. Reconsider only if the CD wants to *re-centre* the
+game on vendor-collection scoring.
+
+**Route H — hybrid: Route A backbone + a small capped prestige token (RECOMMENDED FALLBACK).** Keep
+Bookings dominant (Route A), AND add a **small, tier-scaled, capped** direct vendor bonus so the marquee
+carries intrinsic stakes *every* game (kills Route A's contingency gap and makes the signature apex-fight
+fire unconditionally):
+
+| Tier | Direct prestige points (`vp`) |
+|---|:--:|
+| 1 (day + N07) | **0** — the easy sink stays "grab for Bookings/ingredients only" |
+| 2 (night main) | **1** |
+| 3 (apex) | **2** |
+| (E04 top apex) | **3** (optional) |
+
+- **Difficulty → payoff mapping** (difficulty := `ingredient_cost + min_followers`): day (3) → 0 VP;
+  night main (5) → 1 VP; apex (7) → 2 VP; top apex (8) → 3 VP — plus each still feeds the Bookings. So
+  committing a wide spread + a 3-crowd to a marquee pays **2–3 intrinsic points AND** unlocks the value-6
+  prestige/apex Bookings, versus 0 intrinsic for a cheap grab. The curve ties together.
+- **Dominance guard (why `ignore_obj` stays dead):** realistic per-player VP under scarcity ≈ 1 apex + 2
+  mains ≈ **4** (ceiling ~7 for an all-marquee hoarder, near-impossible under §12's three throttles),
+  against a competitive Booking score of **~15–20** → VP is **~20–25%** of the total, Bookings
+  clearly dominant. A grab-only player nets ~5–7 VP + 0 Bookings → loses to any ~15+ Booking score.
+  **Bookings remain the win condition; VP is spice, not a second meal.**
+- **Cost:** one printed number on night/apex cards + one end-scoring line. Small, but non-zero against the
+  budget — hence *fallback*, not baseline.
+
+## 13.3 RECOMMENDATION
+
+**Ship Route A now; hold Route H as a re-sim-gated fallback.** Reasoning: the difficulty→reward mechanism
+already exists and is validated, the only real work is the §13.1 retune (mandatory anyway) plus a modest
+slope-widen, and it keeps the single scoring axis + the dead `ignore_obj` line the sim proved healthy —
+at **zero architecture and near-zero complexity cost**. **Trigger for Route H:** if the re-sim (which is
+already measuring apex/contested contested-rate) shows that **even with Route A's widened slope, the apex/
+marquee fight does NOT fire** (players still skip marquees because no Booking happened to want them that
+game) — then add the capped tier-scaled `vp` (H) to give the marquee unconditional stakes. Route B is not
+recommended.
+
+**Clean decision for the CD:**
+- **A** (recommended): retune + slope-widen; no vendor points. Safest, simplest, preserves the validated
+  architecture.
+- **H** (recommended fallback): A + a capped `vp` {0/1/2/3} for reliable marquee stakes; small complexity
+  add; needs the dominance guard confirmed in sim.
+- **B** (advise against): full vendor scoring; reopens the two-axis dilution the CD already dropped.
+
+## 13.4 Data / sim / rulebook changes each route implies
+
+**Route A (`bookings.csv` only):**
+- Retune (§13.1): `n_expensive1`/`n_expensive2` cost≥3 → **≥4**; `d_prestige8` → **≥7**; note `d_cheap*`
+  semantics shift (no value change).
+- Slope-widen: `n_star1` 5→**6**, `n_contest2` 5→**6**, `n_expensive2` 6→**7**.
+- *(optional)* add one `apex_wins>=2` Booking (value 7).
+- **Sim:** re-read Booking values/targets; confirm `ignore_obj` stays dead and **no single Booking becomes
+  a forced must-chase**; confirm apex/contested claim-rate rises (the §12.11 marquee probe).
+- **Rulebook:** no scoring rule change; just the retuned target text on the affected Booking cards.
+
+**Route H (adds to A):**
+- `vendors.csv`: add column **`vp`** = {tier1 0, tier2 1, tier3 2, E04 3}.
+- Rulebook/player-aid: add an end-scoring line "score your Bookings, then +VP printed on each won night/
+  apex stall"; player aid shows the VP pip.
+- **Sim:** add VP to final score; **make-or-break guard — `ignore_obj` winrate must stay <~10% AND
+  Bookings ≥ ~70% of the winning score** (else VP is over-weighted → drop tier values). Report VP-share of
+  winning score per count.
+
+**Route B (not recommended):** `vendors.csv` `vp` = `ingredient_cost`; full end-scoring; **sim must
+re-prove the entire `ignore_obj`-dead result from scratch** (highest risk).
+
+## 13.5 Handoff note
+The scoring architecture is the CD's call — I've made it a clean A/H/B decision. Whichever route, the
+§13.1 cost-Booking retune is **mandatory** (the §12 cost curve broke those targets). Flag `bg-elegance`
+(Route H adds a scoring line — budget), `bg-critic` (no forced-chase Booking; VP dominance guard under H),
+and `bg-theme` (VP reads as "winning the famous stall is its own prestige 人氣" — coherent with the twist).
