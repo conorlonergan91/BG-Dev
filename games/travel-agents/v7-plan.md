@@ -21,14 +21,17 @@ pushing after every meaningful step; surface to the CD only a genuine blocker or
 
 Never use the 繁體/Tâi-lô name alone — the human can't follow it. English first; original in parentheses only if precision needs it.
 
+> **Canonical name/term table now lives in `games/travel-agents/names.md`** (`bg-continuity`, 2026-08-09).
+> The roster below is kept current for convenience; `names.md` is the authority if the two ever disagree.
+
 | English name (USE THIS) | 繁體 (Tâi-lô) | Kit (post-V7) |
 |---|---|---|
 | **The Old Councillor** | 里長伯 (Lí-tiúⁿ-peh) | Home-region −1 ingredient discount; **+2 away-tax** (V7 trim) |
 | **The Homebody** | 媽寶 (Ma-pó) | Sole Travel-sourcer — on a Travel draws **2** cards of the region she LEFT (V7 re-theme) |
 | **The Big Eater** | 大胃王 (Tuā-uī-ông) | Keep all 3 on a Visit + a Greedy-Grab 4th; hazards fire twice on his Visit |
 | **The Influencer** | 網紅 (Bāng-âng) | Followers-max **starts at 4**; goes last in turn order |
-| **The Big Brother** | 大哥 (Tuā-ko) | Wins a Buzz-fight on a tie (≥ lead, not majority) |
-| **A-má / "the Granny"** *(English name pending bg-theme bless)* | 阿嬤 (A-má) | Reaches any region in one Travel + Maintenance-immune; **+1 Followers-max per space moved** (V7 buff) |
+| **The Big Brother** | 大哥 (Tuā-ko) | Wins a Follower-fight on a **tie** (needs only to *match* the biggest crowd, not exceed it) |
+| **The Globetrotter** | 阿嬤 (A-má) | Reaches any region in one Travel + Scheduled-Maintenance-immune; flaw-free *(the fuel buff was NOT adopted — see `characters.csv` C6)* |
 
 ---
 

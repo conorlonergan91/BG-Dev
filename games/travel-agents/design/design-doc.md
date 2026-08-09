@@ -900,40 +900,32 @@ v6.1 delta ledger.)
 
 ## Keywords / glossary
 
-> Re-curated for v6.3.1 (2026-08-08, bg-elegance) — the true player term set (15). Stale v6.1/v6.2 vocab
-> dropped because it no longer exists in the game: Prestige, Bookings/VP track, perk, the central Ladder,
-> region beverage slot, the three venue types (早餐店/夜市攤/飲料店), signature/common ingredient (now plain
-> board terms), signature Mission (objectives are Tour Tickets), and Code Red. One bolded head-term per
-> entry (definitions plain) so the count reads true.
+> **⚠ Historical v6 design doc — superseded for V7 by `design/rules-draft.md` (rules) and
+> `games/travel-agents/names.md` (the canonical name/term table).** Continuity-scrubbed 2026-08-09
+> (`bg-continuity`): the retired terms **Buzz / Reach / Draw / Tour Ticket / ★ Star / day-clock** were
+> removed from this glossary and the 成團/取消 double-entry collapsed to one, so the complexity gauge (which
+> reads this section) reports the true current keyword count. Surviving entries carry the pure V7 renames
+> (Buzz → Followers, Reach → Followers-max) aligned to `rules-draft.md`; the current V7 term set with 繁體 +
+> retired-vs-current status lives in `names.md`. One bolded head-term per entry (definitions plain) so the
+> count reads true.
 
 - **Larder** — your sourced ingredient cards, kept face-up; cap 7.
-- **Vendor** — a face-up card you Bribe to win; carries a Draw number and either one region icon or none.
-  Once won it is a stop on your tours and an engine piece — it never scores directly.
-- **Draw** (人氣) — a vendor's printed value attribute (crowd-pulling power). NOT a score; it only feeds the
-  few Tour Tickets that reference vendor value and marks the ★ apex as the marquee get.
-- **Bribe** — the one unified action to win a face-up vendor: be with it in its region, hold a ≥2 Buzz
-  majority, and pay its ingredients minus your region discounts. Winning moves the day-clock +1.
-- **Buzz** — the committed, public, contested resource placed by Promote; never discounted; sits only in the
-  supply or on a vendor; clears back to supply when the vendor is won.
-- **Promote** — the action that places 2 Buzz on vendor(s) you are with in your current region, so long as
-  your total committed Buzz stays within your Reach.
-- **Reach** — your live Buzz cap (committed Buzz ≤ Reach); a track marker starting at 2. Built by Travel
-  (+1) and some events; dinged by greed (the Greedy Grab) and a couple of events. It does NOT score.
+- **Vendor** — a face-up card you Bribe to win; carries one region icon or none. Once won it is a stop on
+  your tours and an engine piece — it never scores directly.
+- **Bribe** — the one unified action to win a face-up vendor: be with it in its region, hold the biggest
+  committed-Followers majority (a tie claims nothing — the Big Brother 大哥 aside), and pay its ingredients
+  minus your region discounts.
+- **Promote** — the action that places 2 Followers on vendor(s) you are with in your current region, so long
+  as your total committed Followers stays within your Followers-max dial.
 - **region discount icon** — a vendor's region badge; each one you hold makes that region's ingredients 1
   cheaper on future vendors (floored at 0). The compounding engine; drinks and the ★ apex carry none.
-- **★ Star** — the apex night-market trophy: a printed ★, the top Draw, no region icon (one per region). A
-  boon can also drop a ★ Star token on a vendor, worth +2 Draw to whoever wins it.
-- **Tour Ticket** — the objective you book from the shared row (DAY / NIGHT pools); the sole scoring vector.
-  Judged at its phase end into your win-pile or lose-pile.
-- **成團 / 取消** — your two ticket piles: **COMPLETED 成團** (WIN, tours that ran, +value) and **CANCELLED 取消**
-  (LOSE, tours that didn't run in time, −floor(value ÷ 2)); tallied once at game end.
+- **COMPLETED 成團 / CANCELLED 取消** — your two Booking piles: the tours that ran (COMPLETED 成團, +value) and
+  the tours that didn't run in time (CANCELLED 取消, −floor(value ÷ 2)); tallied once at game end.
 - **Rave Reviews** (好評) — the two per-player milestone boons on the Tours Completed counter, earned the
   first time YOU reach your 2nd and 4th completed tour (never pumps the leader).
-- **market deck** — a region's face-down deck of its signature ingredient (+ the common K, in two regions)
+- **market deck** — a region's face-down deck of its signature ingredient (+ the common, in two regions)
   and a few events. Events carry a scope (⦿ self / ⬢ region / ➤ next-door) and fire on a Visit or
   Convenience Store; a card flipped on Travel arrival does nothing.
-- **day-clock** — the Day→Night track; climbs +1 on every vendor win. At dusk the day layer is swept for the
-  night decks (and day tickets are judged); at the last-train mark the game ends.
 - **Scheduled Maintenance** (排班保養) — a table-wide event (its own island-wide banner, not a scope glyph):
   the HSR is down for everyone until the drawer's next turn; North and South take the long way. Two copies,
   seeded in the North and South NIGHT ingredient decks.

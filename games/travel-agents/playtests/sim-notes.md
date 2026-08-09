@@ -1432,7 +1432,7 @@ and far tighter than raise-values' 18–20). **The v6.3 shape HOLDS with this fi
   (~61%)** (cheaper claiming is worth more when claiming = the whole game) and **網紅 influencer drifts
   COLD (~39%)** (its Buzz-heavy kit + full lost-turn flaw is over-taxed when the fight matters less); 大哥
   dage sits **in band (~50%)** — the v6.3 "大哥 drifts up" worry does **not** materialise here, and the
-  "can we drop 網紅's flaw?" question flips to "网红's flaw now looks too harsh." **If the CD adopts
+  "can we drop 網紅's flaw?" question flips to "網紅's flaw now looks too harsh." **If the CD adopts
   tickets-only, a fresh character re-pass is needed** (exactly like the v3→v3.1 deck-re-cost knock-on) —
   flagged, not touched.
 - **Bookings-band retune.** Vendor Bookings values were set to matter as points; as pure engine pieces

@@ -65,8 +65,10 @@
     "head-office / departure" cue.
   - **中 CENTRAL (Tea 茶 signature · jade ◆):** tea terraces + a 手搖飲 hand-shaken-drink stand; the region
     that *exports* tea.
-  - **南 SOUTH (Seafood 海鮮 signature · amber ●):** a Tainan/Kaohsiung quayside, oyster omelette on the
-    griddle.
+  - **南 SOUTH (Seafood 海鮮 signature · amber ●):** a Tainan/Kaohsiung quayside seafood counter — milkfish,
+    oysters and shrimp on ice (a generic **海鮮 Seafood** scene). *(Continuity note: the old "oyster
+    omelette on the griddle" was retired — 蚵仔煎 was displaced from the 24 vendors when S04 became 火雞肉飯
+    turkey rice; keep the South scene a generic seafood spread, not a single displaced dish.)*
   - **東 EAST (Pantry 糧 signature · indigo ■):** the Hualien–Taitung coast/valley, rice + bamboo-tube fare.
     **Indigenous-forward — the paid Taiwanese/Indigenous consultant sign-off binds here** (dish, naming,
     framing) BEFORE art; warm, specific, dignified, never exotic-punchline; **no tribal iconography** in any

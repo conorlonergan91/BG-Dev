@@ -18,6 +18,18 @@
 | **Buzz** | **Followers** | The committed, contested hype you pile ON a vendor (a **Promote places 2 Followers**). Your *following* — the audience/crowd you steer to a stall. |
 | **Reach** | **Followers-max (the dial)** | Your live ceiling on total committed Followers, shown by a per-player **dial**. Earned by Travelling + events; the lost-war sink drops it. **Never scores.** |
 | ~~the Queue~~ | *(retired)* | The old flavour-skin for the Buzz stack — **dropped**; *Followers* is self-flavouring. |
+| **Tour Tickets** / **Tour-Ticket** / **missions** | **Bookings (開團 *kāi-tuán*)** | The tour cards you book and run — the sole scoring vector (hand-limit 3, cancel-to-claim; the Booking decks are the deck-driven clock). Where older prose says "Tour Tickets" read **Bookings**; the analysis holds. *Claim action → "Book a Tour."* |
+| **Draw** (人氣) | *(retired as a vendor value — status FLAGGED)* | Was a vendor's printed crowd-pull value. **`rules-draft.md` has no Draw**; the `draw` column still lives in `vendors.csv` + Draw-target Bookings — a **data-vs-rules contradiction for `bg-design`/`bg-elegance` to resolve** (see `names.md` §4). Read current-state prose's "Draw" as *pending confirmation*, not canon. |
+
+> **⚠ Continuity note (`bg-continuity`, 2026-08-09 — first sweep).** This reconciliation table above was
+> extended to also cover **Tour Tickets → Bookings** and to flag **Draw**. The historical **Re-theme log**
+> (bottom of file) is a dated record — **left as-is on purpose.** Two current-tense felt-identity items are
+> **flagged for a `bg-theme` re-prose pass** (not editable as pure term-swaps): **(a)** the **North star +
+> Concept** still stage a **2-player duel** ("*two* rival agents", "*your* rival", "one shared table") —
+> V7 is a crowded **3–6-player** market (the 2p across-the-table board is retired); **(b)** current-tense
+> Concept/resonance prose still uses "Tour Tickets" and "Draw" as live terms. Reading them through this
+> table keeps every downstream reader on V7 terms until the re-prose lands. The canonical V7 term set with
+> 繁體 + retired-vs-current status now lives in **`games/travel-agents/names.md`**.
 
 **The funnel (re-lettered):** **Travel → Followers-max → Followers → win Vendors → run Tours (成團).**
 Audience-reach → the following you can rally → the vendors you win → the tours that actually depart (the
