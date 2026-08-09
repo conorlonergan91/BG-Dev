@@ -222,6 +222,7 @@ WebSearch). Offline-testable via `--thing-xml`.
 - `trends-2026.md` — what's current (cozy games, solo, crowdfunding shift, market pressures).
 - `manufacturing-specs.md` — card sizes, bleed, DPI, POD specs, TTS export limits.
 - `publishing-ip.md` — IP/copyright/trademark/compliance for IE/UK/US (general info, not legal advice).
+- `ai-mockup-workflow.md` — the proven loop for high-fidelity **playtest** mock-ups: one-look briefs → upload-once context → thin per-asset kickoffs → **pose dramatizes the ability** → style-reference image → `prep_mockup.py` (key/fit) → commit to `art/mockups/` → auto-embed into renders (mock-ups only; final art stays human-illustrated). Owned by `bg-theme` + `bg-infodesign`.
 
 ---
 
