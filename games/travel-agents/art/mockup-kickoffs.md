@@ -56,12 +56,24 @@ behind functional zones** (region panels + vendor slots, HSR spine + 停 slot, t
 face-up Booking row are rendered by code on top) — so it is a **full-bleed illustration, NOT a cut-out**:
 keep the centre + spine + region furniture **calm / low-contrast**, save the warmth for the frame, the
 island relief, and the four region vignettes. **Neutral 3–6-player table — read upright from ANY seat, no
-across-the-table mirror.** Region colours warm in BOTH states; **secular only.** The day/night beat rides
-on the **chrome flip** (there is no printed clock). Mock-up only; final art human-illustrated.
+across-the-table mirror.** Region colours warm in BOTH states; **secular only.** Mock-up only; final art
+human-illustrated.
 
-### The whole-table backdrop (day + night) — `FIG-MAP-ISLAND`  ⚑ full-bleed
+**⚑ Two faces = two images.** The board is **DOUBLE-SIDED** — the DAY face and the NIGHT face are printed
+separately and glued to opposite sides of the cardboard cut-out. So generate the two prompts below as
+**separate images that share the EXACT SAME composition** (same island shape, same region positions, same
+HSR spine, same framing, same size) — only the light/colour chrome differs — so they line up back-to-back.
+**Tip: generate the DAY face first, then attach it as a reference for the NIGHT face** and say *"same
+composition, night lighting"* so they register.
+
+### DAY face — `FIG-MAP-ISLAND-day`  ⚑ full-bleed, ~1.36:1 landscape (2280×1680)
 ```
-Generate a MOCK-UP whole-table map backdrop for the board game Travel Agents: Taiwan, in the art style of the uploaded art-style.md and the attached style reference. A warm travel-poster island of Taiwan tying four regions into one place: a gentle relief map (Central mountains, western plain, east coast), a drawn HSR double-rail running N↔S down the spine (leave the 停 Scheduled-Maintenance slot on it clear), and a string-of-lanterns night-market border framing the table like a night-market street. Four soft region vignettes glowing at the diamond points: 北 NORTH (top) a Taipei night-market lane + pork-bun cart (the START·台北 hub, a subtle head-office/departure cue); 中 CENTRAL (side) tea terraces + a hand-shaken-drink stand; 南 SOUTH (bottom) a Tainan/Kaohsiung quayside + oyster omelette on the griddle; 東 EAST (side) the Hualien–Taitung coast/valley + rice and bamboo-tube fare (generic, dignified, NO tribal iconography). Compose so it reads UPRIGHT FROM EVERY SEAT (a shared 3–6-player table, no across-the-table orientation). FULL-BLEED illustration, not a cut-out; keep the centre (Booking deck + row) and the region/spine furniture calm and low-contrast so the code UI sits on top. Generate TWO passes sharing one composition — a warm DAY pass (rising sun, gold bulbs) and a lantern-NEON NIGHT pass (moon, glowing neon) — this chrome flip is the day/night cue since there is no printed clock. Secular only (no temple/deity/ghost-month). ~1.36:1 landscape (2280×1680), full background. Save build/mockups/FIG-MAP-ISLAND.png (night pass: FIG-MAP-ISLAND-night.png).
+Generate a MOCK-UP whole-table map backdrop (DAY FACE) for the board game Travel Agents: Taiwan, in the art style of the uploaded art-style.md and the attached style reference. A warm travel-poster island of Taiwan tying four regions into one place: a gentle relief map (Central mountains, western plain, east coast), a drawn HSR double-rail running N↔S down the spine (leave the 停 Scheduled-Maintenance slot on it clear), and a string-of-lanterns night-market border framing the table. Four soft region vignettes at the diamond points: 北 NORTH (top) a Taipei night-market lane + pork-bun cart (the START·台北 hub); 中 CENTRAL (side) tea terraces + a hand-shaken-drink stand; 南 SOUTH (bottom) a Tainan/Kaohsiung quayside + oyster omelette on the griddle; 東 EAST (side) the Hualien–Taitung coast/valley + rice and bamboo-tube fare (generic, dignified, NO tribal iconography). Reads UPRIGHT FROM EVERY SEAT (shared 3–6-player table, no across-the-table orientation). FULL-BLEED, not a cut-out; keep the centre + spine + region furniture calm and low-contrast so the code UI sits on top. DAY CHROME: warm rising-sun light, gold market bulbs, bright dawn palette. Secular only (no temple/deity/ghost-month). ~1.36:1 landscape (2280×1680), full background. Save build/mockups/FIG-MAP-ISLAND-day.png.
+```
+
+### NIGHT face — `FIG-MAP-ISLAND-night`  ⚑ full-bleed, MATCH the day face exactly
+```
+Generate a MOCK-UP whole-table map backdrop (NIGHT FACE) for the board game Travel Agents: Taiwan — the SAME COMPOSITION as the day face (attach the day image as a reference: identical island shape, region positions, HSR spine, lantern border and framing, same size — only the lighting changes), in the art style of the uploaded art-style.md. Same four region vignettes in the same spots (北 Taipei lane + pork-bun cart / 中 tea terraces + drink stand / 南 quayside + oyster omelette / 東 Hualien–Taitung coast + rice & bamboo-tube fare, generic & dignified, NO tribal iconography), reads upright from every seat. FULL-BLEED, not a cut-out; centre + spine + region furniture calm and low-contrast for the code UI. NIGHT CHROME: festive lantern-NEON glow, a moon, glowing neon signage, deep dusk palette — region identity colours stay warm, only the light flips. Secular only. ~1.36:1 landscape (2280×1680), full background, aligned to the day face for a double-sided board. Save build/mockups/FIG-MAP-ISLAND-night.png.
 ```
 *(Optional: tighter single-region vignettes `FIG-MAP-NORTH / -CENTRAL / -SOUTH / -EAST` — the signature
 scene above for one region, generic, NEVER a named business; East consultant-gated placeholder.)*
