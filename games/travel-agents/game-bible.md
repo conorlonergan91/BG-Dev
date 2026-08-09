@@ -47,6 +47,27 @@
 > signatures + 1 common), the **five Taiwanese-social-type characters**, and the sensitivity rails. Full
 > current spec: `design/v6.2-content-draft.md`. (v6.1 detail retained in `design/design-doc.md` as history.)
 
+> ---
+> ## ⚠ V7 NAMING CANON (2026-08-09 — bg-theme naming-bless)
+> The game has since pivoted to **V7** (multiplayer 3–6, six characters, a deck-driven clock, an
+> area-majority *Followers* fight — see `design/v7-content-draft.md` + `decision-log.md`, V7 balance
+> CLOSED). The full V7 rewrite of the v6.3.1-framed body below is a later encode-phase job; **until then,
+> apply these blessed naming canons over the prose below:**
+> - **Currency rename (CD v6.4):** **Buzz → Followers** · **Reach → Followers-max (the dial)** · the
+>   **"the Queue"** stack-skin is **retired** (*Followers* is self-flavouring). Funnel re-lettered:
+>   **Travel → Followers-max → Followers → win Vendors → run Tours (成團).** **Promote** and **Complete 成團 /
+>   Cancelled 取消** unchanged. Wording rail: a lost-war dial-drop is *the crowd drifting to the rival*,
+>   never a bare "−N Followers".
+> - **Bookings 繁體 BLESSED: 開團 *kāi-tuán*** — the 旅行社 operator's verb; threads 團 → 開團 → 成團 / 取消 →
+>   好評 (chosen over 行程 / 預約 / 訂單). English keyword **Booking** / "Book a Tour" (objective cards:
+>   Tour Tickets → **Bookings**).
+> - **★ apex vs Trending — DISTINCT:** the *printed* ★ apex keeps its **Michelin / Bib-Gourmand / top-Draw**
+>   identity; **Trending** is only the *dynamic* going-viral marker (own icon; winning it grants +1
+>   Followers-max).
+> - **Roster = SIX** (see the refreshed tri-lingual table under Components). Rails BINDING: **Traditional
+>   characters only, dignified, secular; a paid Taiwanese cultural + language consultant before art/print is
+>   still required.**
+
 ## One-liner
 <!-- The hook a stranger would repeat. -->
 You and your rival run competing **travel agencies** racing to build the best Taiwan food **tour** — ride
@@ -227,14 +248,19 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
   draw (a Travel flyby returns it unfired). Re-homes the retired 里長伯 no-HSR flaw as a warm, symmetric,
   table-wide friction.
 - **~24 Buzz tokens** (@2p; committed, public, contested — placed on vendors, cleared on a win).
-- **5 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥**; validated by the gated
-  character re-pass re-sim (DONE — five-char band 43.5–55.2%, all in band).
-  **English names LOCKED & BLESSED (v6.3.2, CD "adopt as proposed"; dignity-passed by `bg-theme`)** — each
+- **6 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥 · 阿嬤**; V7 balance CLOSED —
+  all six band across 3–6p, no crusher, no cold outlier).
+  **English names LOCKED & BLESSED (v6.3.2 for the first five, v7 2026-08-09 for the Granny; CD "adopt as
+  proposed"; dignity-passed by `bg-theme`)** — each
   mat prints the name in three scripts (Tâi-lô · English · 繁體): **Lí-tiúⁿ-peh / The Old Councillor / 里長伯 ·
   Ma-pó / The Homebody / 媽寶 · Bāng-âng / The Influencer / 網紅 · Tuā-uī-ông / The Big Eater / 大胃王 ·
-  Tuā-ko / The Big Brother / 大哥**. The warm portrayals of **The Homebody** (media 媽寶) and **The Big
+  Tuā-ko / The Big Brother / 大哥 · A-má / The Globetrotter / 阿嬤**. The warm portrayals of **The Homebody**
+  (media 媽寶) and **The Big
   Brother** (大哥, warm elder/community figure — NOT a gangster) are binding/load-bearing; **The Big Brother**
-  is the #1 character-name consultant watch-item. All 繁體 are Traditional characters. **里長伯 REWORKED (v6.3.1 CD-1,
+  is the #1 character-name consultant watch-item. **The Globetrotter** (阿嬤, the go-anywhere elder-pass
+  granny) is likewise blessed with a binding **spry / dignified, age-as-superpower** portrayal — never frail
+  or doddering — and is **flaw-free by design** (the V7 close-out retired her small-basket flaw, a dignity
+  win); native review of 阿嬤 + 敬老卡. All 繁體 are Traditional characters. **里長伯 REWORKED (v6.3.1 CD-1,
   LOCKED −1/+1 as-is, 55%):** picks a **home region** at setup — his −1 discount works only there, and he
   pays a **+1-ingredient away-tax** to Bribe anywhere else; the old no-HSR flaw is **removed** (re-homed as
   the table-wide "Scheduled Maintenance" event). **Starts Reach 2 like everyone — NO start-Reach change**
