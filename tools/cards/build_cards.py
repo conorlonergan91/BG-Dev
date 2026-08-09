@@ -36,6 +36,7 @@ Specs (see knowledge/manufacturing-specs.md)
 from __future__ import annotations
 
 import argparse
+import base64
 import csv
 import html
 import math
@@ -523,6 +524,30 @@ def _render_character_svg(row: dict, theme: dict) -> str:
 </svg>"""
 
 
+# TA-only art-mock embed for ingredient cards. Set in main() from the CSV location; a module global so
+# the Beacon-shared render_card_svg / _render_ingredient_svg signatures stay untouched (Beacon cards
+# never hit _is_ingredient, so this path is dead for every non-TA deck → byte-identical output).
+_ING_MOCKUPS_DIR = None
+
+
+def _embed_fig_png(fig_id, x, y, w, h, rx=20):
+    """If `<_ING_MOCKUPS_DIR>/<fig_id>.png` exists, return an SVG <image> for it — a base64 **data URI**
+    (so the render stays self-contained through cairosvg→PNG; a file-path href would not survive
+    rasterisation), clipped to a rounded rect and sized to the slot with preserveAspectRatio meet (never
+    crops). Returns None when there is no mock-up on disk, so the caller keeps the byte-identical
+    placeholder — a mock-up-free ingredient card renders exactly as before."""
+    if not _ING_MOCKUPS_DIR:
+        return None
+    p = Path(_ING_MOCKUPS_DIR) / f"{fig_id}.png"
+    if not p.is_file():
+        return None
+    b64 = base64.b64encode(p.read_bytes()).decode("ascii")
+    cid = "ingclip-" + re.sub(r'[^A-Za-z0-9]+', '-', fig_id).strip('-').lower()
+    return (f'<clipPath id="{cid}"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}"/></clipPath>'
+            f'<image href="data:image/png;base64,{b64}" x="{x}" y="{y}" width="{w}" height="{h}" '
+            f'preserveAspectRatio="xMidYMid meet" clip-path="url(#{cid})"/>')
+
+
 def _render_ingredient_svg(row: dict, theme: dict) -> str:
     """A PICTORIAL ingredient/food card (Travel Agents, V7 language-agnostic).
 
@@ -575,15 +600,23 @@ def _render_ingredient_svg(row: dict, theme: dict) -> str:
         for (cxx, cyy, dx, dy) in [(px+18, py+18, 1, 1), (px+pw-18, py+18, -1, 1),
                                    (px+18, py+ph-18, 1, -1), (px+pw-18, py+ph-18, -1, -1)])
     fig = str(row.get("ingredient", "")).strip().lower()
-    plate = (f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" opacity="0.45" '
-             f'stroke="{scol}" stroke-width="3" stroke-dasharray="14 9"/>' + corners
-             + f'<circle cx="{pcx}" cy="{pcy}" r="150" fill="{scol}" opacity="0.14"/>'
-             + emblem_svg(semb, pcx, pcy, 118, scol, stroke=ink)
-             + f'<text x="{pcx}" y="{py+42}" font-size="22" fill="{muted}" text-anchor="middle" '
-               f'font-family="{bfont}" font-style="italic">illustration placeholder · human-illustrated (no AI final art)</text>'
-             + f'<rect x="{pcx-150}" y="{py+ph-64}" width="300" height="42" rx="21" fill="{ink}"/>'
-             + f'<text x="{pcx}" y="{py+ph-35}" font-size="24" fill="#ffffff" text-anchor="middle" '
-               f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[FIG-ING-{esc(fig)}]</text>')
+    _mock = _embed_fig_png(f"FIG-ING-{fig}", px, py, pw, ph)
+    if _mock:
+        # a real illustration mock-up on disk → embed it (self-contained data URI) inside a solid frame
+        plate = (f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" opacity="0.55"/>'
+                 + _mock
+                 + f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="none" '
+                   f'stroke="{scol}" stroke-width="3"/>')
+    else:
+        plate = (f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" opacity="0.45" '
+                 f'stroke="{scol}" stroke-width="3" stroke-dasharray="14 9"/>' + corners
+                 + f'<circle cx="{pcx}" cy="{pcy}" r="150" fill="{scol}" opacity="0.14"/>'
+                 + emblem_svg(semb, pcx, pcy, 118, scol, stroke=ink)
+                 + f'<text x="{pcx}" y="{py+42}" font-size="22" fill="{muted}" text-anchor="middle" '
+                   f'font-family="{bfont}" font-style="italic">illustration placeholder · human-illustrated (no AI final art)</text>'
+                 + f'<rect x="{pcx-150}" y="{py+ph-64}" width="300" height="42" rx="21" fill="{ink}"/>'
+                 + f'<text x="{pcx}" y="{py+ph-35}" font-size="24" fill="#ffffff" text-anchor="middle" '
+                   f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[FIG-ING-{esc(fig)}]</text>')
 
     # foot: big English name (the at-a-glance label) + a terse "into your Larder" line
     fy = py + ph + 64
@@ -943,6 +976,10 @@ def main() -> int:
 
     theme = get_theme(args.theme)
     slug = args.slug or args.csv.stem
+    # TA art-mock embed dir for ingredient cards: <game>/build/mockups next to the components CSV
+    # (game dir = the CSV's parent's parent). Absent dir/file → the byte-identical placeholder path.
+    global _ING_MOCKUPS_DIR
+    _ING_MOCKUPS_DIR = args.csv.resolve().parent.parent / "build" / "mockups"
     rows = load_rows(args.csv)
     if not rows:
         print(f"No rows in {args.csv}", file=sys.stderr)

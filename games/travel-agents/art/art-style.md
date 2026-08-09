@@ -115,7 +115,7 @@ image drops cleanly into its SVG slot. Background: **transparent** for cut-out c
 
 | Slot | FIG code | Size (px) | Physical | Aspect | Background | Composition note |
 |---|---|---|---|---|---|---|
-| Character-board portrait | `FIG-CHAR-<slug>` | **604 × 286** | 51.1 × 24.2 mm | **~2.11:1 wide letterbox** | transparent | waist-up hero in a passport/dossier frame; sits on the 1680×1380 board at top-left (44,176) — **compose for a WIDE band** |
+| Character-board portrait | `FIG-CHAR-<slug>` | **490 × 600** | 41.5 × 50.8 mm | **~0.82:1 PORTRAIT (≈4:5)** | transparent | full-figure / waist-up hero standing tall; the slot is now a **large PORTRAIT** at top-left (44,176) on the 1680×1380 board (was a wide letterbox) — **compose TALL**. Auto-embedded when `build/mockups/FIG-CHAR-<slug>.png` exists (data-URI), else a dashed placeholder renders. `preserveAspectRatio=meet` letterboxes, so exact 490×600 is ideal but any ~4:5 crop drops in cleanly |
 | Ingredient card art | `FIG-ING-<id>` | **642 × 560** | 54.4 × 47.4 mm | **~1.15:1** | simple | on a 750×1050 poker card at (54,168); shows a **MIX** of that generic category (e.g. Meat = pork belly + beef + sausage + poultry together) |
 | Vendor card face | `FIG-VEND-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px (4.5 mm) safe margin**; see drop-in note below |
 | Tour / Booking card face | `FIG-TOUR-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px safe margin**; see drop-in note below |
@@ -173,19 +173,20 @@ to a slot's **exact px size**, writing to the gitignored `build/mockups/<FIG-COD
 # Split a 2×2 grid of four characters, key the white bg, fit each to the board portrait slot:
 python tools/mockup/prep_mockup.py --grid ~/Downloads/cast.png --rows 2 --cols 2 \
     --names homebody,big-eater,influencer,big-brother \
-    --key-bg --fit 604x286 --pad --game games/travel-agents --prefix FIG-CHAR-
+    --key-bg --fit 490x600 --pad --game games/travel-agents --prefix FIG-CHAR-
 
 # Clean one already-cropped portrait (e.g. the Globetrotter) to the same slot:
 python tools/mockup/prep_mockup.py --image ~/Downloads/granny.png --key-bg \
-    --fit 604x286 --pad --game games/travel-agents --out FIG-CHAR-globetrotter.png
+    --fit 490x600 --pad --game games/travel-agents --out FIG-CHAR-globetrotter.png
 ```
 
-Use the **SCALE TABLE** `--fit` value for the slot you're filling (char `604x286`, ingredient `642x560`,
+Use the **SCALE TABLE** `--fit` value for the slot you're filling (char `490x600`, ingredient `642x560`,
 card `750x1050`, map `2280x1680`). A heavy vignette will only *partly* key — regenerate those flat.
 
-**Aspect note (portraits vs the board slot).** The board portrait slot is a **wide 604×286 letterbox**,
-but full-figure character art is **taller than it is wide** — fit into the wide slot it shrinks with big
-transparent side-bars. Two ways to reconcile: (a) generate/crop the portrait as a **wide waist-up band**
-to match the slot, or (b) **widen the board's portrait slot to a portrait/square** so the full-figure art
-shows big (a `render_playerboard` layout change, owned by `bg-infodesign`). If we keep loving the
-full-figure look, (b) is the better fix — flagged for the next board pass.
+**Aspect note (portraits & the board slot).** The board portrait slot is now a **large ~4:5 PORTRAIT
+(490×600)** — reshaped from the old wide letterbox precisely so **full-figure character art shows big**.
+Compose TALL (full-figure or waist-up hero standing). `render_playerboard` embeds
+`build/mockups/FIG-CHAR-<slug>.png` as a self-contained data-URI (`preserveAspectRatio=meet`, so it
+letterboxes rather than crops — an exact 490×600 fills edge-to-edge); with no file present the dashed
+placeholder renders. Ingredient cards (`FIG-ING-<id>`) auto-embed the same way. (Board layout owned by
+`bg-infodesign`.)

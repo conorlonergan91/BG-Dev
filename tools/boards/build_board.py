@@ -21,6 +21,7 @@ Usage
 from __future__ import annotations
 
 import argparse
+import base64
 import html
 import json
 import math
@@ -728,7 +729,26 @@ def _pb_headline(txt):
     return head, rest
 
 
-def render_playerboard(theme, row):
+def _embed_fig_png(fig_id, x, y, w, h, mockups_dir, rx=16):
+    """TA-only art-mock embed. If a mock-up PNG `<mockups_dir>/<fig_id>.png` exists, return an SVG
+    <image> for it — base64 **data URI** (so the render stays self-contained through cairosvg→PNG; a
+    file-path href would not survive rasterisation), clipped to a rounded rect and sized to the slot
+    with preserveAspectRatio="xMidYMid meet" (letterboxes, never crops the character). Returns None
+    when there is no mock-up on disk, so the caller falls back to the dashed placeholder — this keeps a
+    mock-up-free board byte-for-byte the pre-existing behaviour (aside from the reshaped slot)."""
+    if not mockups_dir:
+        return None
+    p = Path(mockups_dir) / f"{fig_id}.png"
+    if not p.is_file():
+        return None
+    b64 = base64.b64encode(p.read_bytes()).decode("ascii")
+    cid = "figclip-" + re.sub(r'[^A-Za-z0-9]+', '-', fig_id).strip('-').lower()
+    return (f'<clipPath id="{cid}"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}"/></clipPath>'
+            f'<image href="data:image/png;base64,{b64}" x="{x}" y="{y}" width="{w}" height="{h}" '
+            f'preserveAspectRatio="xMidYMid meet" clip-path="url(#{cid})"/>')
+
+
+def render_playerboard(theme, row, mockups_dir=None):
     """One landscape CHARACTER BOARD per agent (V7 · icon-first, language-agnostic). Layout:
        • header band — the name in THREE scripts (Tâi-lô · English · 繁體);
        • LEFT column — a reserved ART placeholder ([FIG-CHAR-<slug>]) + a warm blurb, then the ICON-FIRST
@@ -780,84 +800,103 @@ def render_playerboard(theme, row):
 
     top = 18 + hh + 26   # = 176
 
-    # ============================ LEFT COLUMN: art + icon-first ABILITY / FLAW ============================
-    lx, lw = 44, 604
-    ax, ay, aw, ah = lx, top, lw, 286
-    P.append(f'<rect x="{ax}" y="{ay}" width="{aw}" height="{ah}" rx="16" fill="#ffffff" opacity="0.4" '
-             f'stroke="{gold}" stroke-width="3" stroke-dasharray="12 8"/>')
-    for (tx, ty, dx, dy) in [(ax+16, ay+16, 1, 1), (ax+aw-16, ay+16, -1, 1),
-                             (ax+16, ay+ah-16, 1, -1), (ax+aw-16, ay+ah-16, -1, -1)]:
-        P.append(f'<path d="M{tx} {ty+dy*24} L{tx} {ty} L{tx+dx*24} {ty}" fill="none" '
-                 f'stroke="{muted}" stroke-width="3"/>')
-    scx, scy = ax+aw/2, ay+ah/2 - 6
-    P.append(f'<circle cx="{scx}" cy="{scy-30}" r="42" fill="{muted}" opacity="0.28"/>')
-    P.append(f'<path d="M{scx-72} {scy+86} q72 -98 144 0 z" fill="{muted}" opacity="0.28"/>')
-    P.append(f'<text x="{ax+aw/2}" y="{ay+28}" font-size="17" fill="{muted}" text-anchor="middle" '
-             f'font-family="{bfont}" font-style="italic">illustration placeholder · human-illustrated (no AI final art)</text>')
-    P.append(f'<rect x="{ax+aw/2-158}" y="{ay+ah-52}" width="316" height="36" rx="18" fill="{ink}"/>')
-    P.append(f'<text x="{ax+aw/2}" y="{ay+ah-27}" font-size="23" fill="#ffffff" text-anchor="middle" '
-             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[FIG-CHAR-{esc(slug)}]</text>')
-    by0 = ay + ah + 32
-    for i, ln in enumerate(textwrap.wrap(blurb, 48)[:2]):
+    # ==================== LEFT COLUMN: PORTRAIT character-art slot (was a wide letterbox) ================
+    # Full-figure character art reads TALL, so the slot is now a large ~4:5 PORTRAIT that dominates the
+    # left column. The ability/flaw kit, the Booking hand and the Completed/Cancelled piles all reflow to
+    # the RIGHT of it (below). When a mock-up PNG is on disk it is embedded in place of the placeholder.
+    lx = 44
+    ax, ay, aw, ah = lx, top, 490, 600          # PORTRAIT slot ~4:5
+    fig_id = f"FIG-CHAR-{slug}"
+    embedded = _embed_fig_png(fig_id, ax, ay, aw, ah, mockups_dir)
+    if embedded:
+        # a real illustration mock-up on disk → embed it (self-contained data URI) inside a warm frame
+        P.append(f'<rect x="{ax}" y="{ay}" width="{aw}" height="{ah}" rx="16" fill="#ffffff" opacity="0.6"/>')
+        P.append(embedded)                       # clipPath + <image> data URI (self-contained)
+        P.append(f'<rect x="{ax}" y="{ay}" width="{aw}" height="{ah}" rx="16" fill="none" '
+                 f'stroke="{gold}" stroke-width="4"/>')
+    else:
+        # empty state: dashed placeholder frame + corner ticks + a portrait silhouette + caption + label
+        P.append(f'<rect x="{ax}" y="{ay}" width="{aw}" height="{ah}" rx="16" fill="#ffffff" opacity="0.4" '
+                 f'stroke="{gold}" stroke-width="3" stroke-dasharray="12 8"/>')
+        for (tx, ty, dx, dy) in [(ax+18, ay+18, 1, 1), (ax+aw-18, ay+18, -1, 1),
+                                 (ax+18, ay+ah-18, 1, -1), (ax+aw-18, ay+ah-18, -1, -1)]:
+            P.append(f'<path d="M{tx} {ty+dy*28} L{tx} {ty} L{tx+dx*28} {ty}" fill="none" '
+                     f'stroke="{muted}" stroke-width="3"/>')
+        scx, scy = ax+aw/2, ay+ah/2 + 26
+        P.append(f'<circle cx="{scx}" cy="{scy-96}" r="74" fill="{muted}" opacity="0.28"/>')
+        P.append(f'<path d="M{scx-138} {scy+150} q138 -196 276 0 z" fill="{muted}" opacity="0.28"/>')
+        P.append(f'<text x="{scx}" y="{ay+34}" font-size="16" fill="{muted}" text-anchor="middle" '
+                 f'font-family="{bfont}" font-style="italic">illustration placeholder · human-illustrated (no AI final art)</text>')
+        P.append(f'<rect x="{scx-166}" y="{ay+ah-56}" width="332" height="38" rx="19" fill="{ink}"/>')
+        P.append(f'<text x="{scx}" y="{ay+ah-30}" font-size="23" fill="#ffffff" text-anchor="middle" '
+                 f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[{esc(fig_id)}]</text>')
+    # character blurb, tucked under the portrait
+    by0 = ay + ah + 36
+    for i, ln in enumerate(textwrap.wrap(blurb, 44)[:2]):
         P.append(f'<text x="{lx}" y="{by0 + i*30}" font-size="22" fill="{text}" '
                  f'font-family="{bfont}" font-style="italic">{esc(ln)}</text>')
 
+    # ==================== RIGHT REGION: icon-first ABILITY/FLAW, then Bookings + Score piles =============
+    rx0 = 560
+    RW = W - 44 - rx0                            # width of the reflowed right region
+    kw = (RW - 24) / 2                           # ABILITY | FLAW side by side
+
     # ICON-FIRST kit blocks: big glyph + KEYWORD; the rulebook carries the words.
-    def kit_block(y0, label, code, txt, col):
+    def kit_block(x0, y0, w, label, code, txt, col):
         head, sub = _pb_headline(txt)
         bh = 138
-        s = [f'<rect x="{lx}" y="{y0}" width="{lw}" height="{bh}" rx="18" fill="#ffffff" '
+        s = [f'<rect x="{x0}" y="{y0}" width="{w}" height="{bh}" rx="18" fill="#ffffff" '
              f'opacity="0.55" stroke="{col}" stroke-width="3"/>',
-             f'<text x="{lx+118}" y="{y0+40}" font-size="24" fill="{col}" font-family="{tfont}" '
+             f'<text x="{x0+118}" y="{y0+40}" font-size="24" fill="{col}" font-family="{tfont}" '
              f'font-weight="bold" letter-spacing="2">{esc(label)}</text>',
              # glyph medallion on the left
-             f'<circle cx="{lx+58}" cy="{y0+bh/2}" r="46" fill="#ffffff" stroke="{col}" stroke-width="3"/>',
-             _pb_kit_glyph(lx+58, y0+bh/2, code, col, ink, tfont)]
-        s.append(f'<text x="{lx+118}" y="{y0+80}" font-size="27" fill="{ink}" font-family="{tfont}" '
-                 f'font-weight="bold">{esc(head[:34])}</text>')
-        for i, ln in enumerate(textwrap.wrap(sub, 42)[:1]):
-            s.append(f'<text x="{lx+118}" y="{y0+114}" font-size="21" fill="{muted}" '
+             f'<circle cx="{x0+58}" cy="{y0+bh/2}" r="46" fill="#ffffff" stroke="{col}" stroke-width="3"/>',
+             _pb_kit_glyph(x0+58, y0+bh/2, code, col, ink, tfont)]
+        s.append(f'<text x="{x0+118}" y="{y0+80}" font-size="26" fill="{ink}" font-family="{tfont}" '
+                 f'font-weight="bold">{esc(head[:28])}</text>')
+        for i, ln in enumerate(textwrap.wrap(sub, 32)[:1]):
+            s.append(f'<text x="{x0+118}" y="{y0+114}" font-size="20" fill="{muted}" '
                      f'font-family="{bfont}">{esc(ln)}</text>')
-        return "".join(s), y0 + bh + 22
-    ky = by0 + 34
-    ab_svg, ky = kit_block(ky, "ABILITY 能力", acode, ability, teal)
-    fl_svg, ky = kit_block(ky, "FLAW 弱點", fcode, flaw, vermilion)
-    P.append(ab_svg)
-    P.append(fl_svg)
+        return "".join(s)
+    ky = top
+    P.append(kit_block(rx0, ky, kw, "ABILITY 能力", acode, ability, teal))
+    P.append(kit_block(rx0+kw+24, ky, kw, "FLAW 弱點", fcode, flaw, vermilion))
+    ny = ky + 138 + 28
     if acode == "discount_home":
-        P.append(f'<text x="{lx+4}" y="{ky+6}" font-size="21" fill="{muted}" font-family="{bfont}" '
+        P.append(f'<text x="{rx0}" y="{ny}" font-size="20" fill="{muted}" font-family="{bfont}" '
                  f'font-style="italic">Setup: pick ONE home region (open).</text>')
-    P.append(f'<text x="{lx+4}" y="{ky+34}" font-size="19" fill="{muted}" font-family="{bfont}" '
+    P.append(f'<text x="{rx0}" y="{ny+24}" font-size="19" fill="{muted}" font-family="{bfont}" '
              f'font-style="italic">Icons are reminders — the rulebook carries the exact rule.</text>')
 
-    # ============================ RIGHT COLUMN: Booking hand + Completed/Cancelled ========================
-    rx0 = 692
-    P.append(f'<text x="{rx0}" y="{top+18}" font-size="27" fill="{booking_col}" font-family="{tfont}" '
+    # Booking hand (max 3) — card-scale slots
+    bhead_y = ny + 62
+    P.append(f'<text x="{rx0}" y="{bhead_y}" font-size="27" fill="{booking_col}" font-family="{tfont}" '
              f'font-weight="bold" letter-spacing="1">YOUR BOOKINGS — hand max 3</text>')
-    P.append(f'<text x="{W-44}" y="{top+18}" font-size="20" fill="{muted}" text-anchor="end" '
+    P.append(f'<text x="{W-44}" y="{bhead_y}" font-size="20" fill="{muted}" text-anchor="end" '
              f'font-family="{bfont}" font-style="italic">line one up → refill the row</text>')
-    sw_, sh_ = 168, 234
+    sw_, sh_ = 156, 218
     sgap = 26
-    sy = top + 40
+    sy = bhead_y + 20
     for i in range(3):
         sx = rx0 + i*(sw_+sgap)
         P.append(f'<rect x="{sx}" y="{sy}" width="{sw_}" height="{sh_}" rx="12" fill="#ffffff" '
                  f'opacity="0.5" stroke="{booking_col}" stroke-width="2" stroke-dasharray="9 6"/>')
-        P.append(emblem_svg("ticket", sx+sw_/2, sy+sh_/2-14, 34, booking_col))
-        P.append(f'<text x="{sx+sw_/2}" y="{sy+sh_-26}" font-size="18" fill="{muted}" text-anchor="middle" '
+        P.append(emblem_svg("ticket", sx+sw_/2, sy+sh_/2-14, 32, booking_col))
+        P.append(f'<text x="{sx+sw_/2}" y="{sy+sh_-24}" font-size="18" fill="{muted}" text-anchor="middle" '
                  f'font-family="{bfont}" font-style="italic">Booking {i+1}</text>')
     # Completed / Cancelled — card-shaped drop zones
-    py = sy + sh_ + 44
+    py = sy + sh_ + 46
     def pile(x0, en, han, emcol, note):
+        ph_ = 210
         return "".join([
-            f'<rect x="{x0}" y="{py}" width="248" height="230" rx="14" fill="#ffffff" opacity="0.5" '
+            f'<rect x="{x0}" y="{py}" width="248" height="{ph_}" rx="14" fill="#ffffff" opacity="0.5" '
             f'stroke="{emcol}" stroke-width="3" stroke-dasharray="10 7"/>',
             emblem_svg("stamp", x0+40, py+46, 24, emcol, stroke=ink),
             f'<text x="{x0+76}" y="{py+40}" font-size="26" fill="{ink}" font-family="{tfont}" '
             f'font-weight="bold" letter-spacing="1">{esc(en)}</text>',
             f'<text x="{x0+76}" y="{py+72}" font-size="30" fill="{emcol}" font-family="{tfont}" '
             f'font-weight="bold">{esc(han)}</text>',
-            f'<text x="{x0+20}" y="{py+210}" font-size="19" fill="{muted}" '
+            f'<text x="{x0+20}" y="{py+ph_-20}" font-size="19" fill="{muted}" '
             f'font-family="{bfont}">{esc(note)}</text>'])
     P.append(f'<text x="{rx0}" y="{py-14}" font-size="22" fill="{muted}" font-family="{tfont}" '
              f'font-weight="bold" letter-spacing="1">YOUR SCORE PILES</text>')
@@ -1068,6 +1107,9 @@ def main():
     # playerboard: characters CSV → one landscape board per (character) row into --out (a DIRECTORY)
     ap.add_argument("--csv", type=Path, default=None,
                     help="playerboard: characters CSV (renders one board per row carrying ability+flaw)")
+    ap.add_argument("--mockups-dir", type=Path, default=None,
+                    help="playerboard: dir of art-mock PNGs (FIG-CHAR-<slug>.png) to embed in the portrait "
+                    "slot; defaults to <game>/build/mockups next to the characters CSV. Absent → placeholder.")
     # regionmap day/night state (mirrors the dusk flip)
     ap.add_argument("--phase", default="day", choices=["day", "night"],
                     help="regionmap: render the day (warm) or night (neon) state of the board")
@@ -1090,8 +1132,13 @@ def main():
             return 0
         # --out is a DIRECTORY for playerboard (one file per character).
         outdir = args.out if args.out.suffix == "" else args.out.parent
+        # Art-mock embed dir: explicit --mockups-dir, else <game>/build/mockups (the characters CSV lives
+        # in <game>/components/, so its parent's parent is the game dir). Absent dir → placeholder path.
+        mockups_dir = args.mockups_dir
+        if mockups_dir is None:
+            mockups_dir = args.csv.resolve().parent.parent / "build" / "mockups"
         for r in rows:
-            svg, W, H = render_playerboard(theme, r)
+            svg, W, H = render_playerboard(theme, r, mockups_dir=mockups_dir)
             slug = _slugify(str(r.get("name_en", "")).strip() or r.get("id", ""))
             _save(svg, outdir / f"board-{slug}.png", W, H)
         return 0
