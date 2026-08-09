@@ -451,9 +451,14 @@ His edge is no longer on/off. It is a graduated **margin dial N**:
   keeps his identity ("the market yields to Big Brother") intact across the whole range; only the *degree*
   moves. The critic's concern (he runs hot; scarcity strengthens the match-edge as fights get frequent) is
   now a single knob the playtester can dial down to 0.
-- *Secondary note (optional, only if N=0 guts his identity but N=1 still overshoots):* a night-scoped N
-  (e.g. N=1 night / N=0 day) remains available as a fine-grain fallback — but it re-introduces the exception
-  the dial was meant to delete, so hold it below the plain 0/1/2 dial.
+- **Second dial — SCOPE (CD steer).** Independently of N, his edge can be scoped by phase: **all-phases**
+  (baseline) or **night-only** (by day he is a normal contestant on strict plurality; after dark his margin
+  N applies). The two dials **combine** — e.g. *N=1, night-only* is milder than either alone (he only wins
+  ties, and only after dark). This is the CD's preferred cool-down path if he runs hot: **first drop N, then
+  (if still hot) restrict to night.** It fits his fiction — the night market is his turf, the warm rogue
+  everyone's glad to see after dark — and pairs with the Big Eater's day-only greed (§6.5 / reserve h) as the
+  studio's consistent **phase-scoping** cooling knob: the same lever, opposite signs, thematic rather than an
+  arbitrary nerf. (Held as reserve a — specified, not baked.)
 
 
 ## 7. Self red-team (for `bg-critic` — reconfirmed under scarcity)
@@ -483,13 +488,14 @@ These are specified now so the re-sim can turn them on cleanly, but they are **n
 
 | # | Reserve | Exact change | Trigger condition |
 |---|---|---|---|
-| **a** | *(retired — folded into the §6.7 margin dial)* | The night-scope reserve is **replaced** by the Big Brother's first-class **margin dial N (0/1/2)** — no exception to teach; pull him down to N=0 rather than night-scoping. | — (dial N is the lever now; night-scope survives only as the §6.7 secondary fallback) |
+| **a** | **Big Brother 大哥 night-scope** (§6.7 second dial — CD steer; combinable with margin N) | His margin edge applies **night-only** — by day he is a normal contestant (strict plurality); after dark his margin N applies. Combines with the N dial (e.g. N=1 night-only = mildest live edge). | Re-sim / playtest shows 大哥 still hot after dialing N down; night-scoping cools him further without gutting the edge, and fits his night-market fiction. |
 | **b** | **Endgame-tie resolver** (closes the stranding/denial HOLE — **load-bearing under scarcity**) | At **DUSK** and at **LAST TRAIN**, any tied contested stall force-resolves to **most followers, then earliest committer**; that agent claims it (pays ingredients if able), losers → own supply | Always specified as the phase-boundary rule (one FAQ line). Fires whenever a contested stall is still tied when DUSK / LAST-TRAIN triggers. Prevents perpetual re-tie freezes and permanent stranding. |
 | **c** | **Influencer 網紅 `max` 7** | Drop her pool 8 → 7 | Re-sim seat-delta / `idx` shows 網紅 above band (reads hot). |
 | **d** | **Non-refilling apex marquees** (§1.6) | Tier-3 apex stalls (N06/C05/S06/E04) never refill once claimed | Overall contested_frac rises but the *apex* contested rate stays flat AND the CD wants the famous-stall brawl sharpened. |
 | **e** | **`max` knob** | Field `max` 5 or 7 (sweep) | Re-sim: if the fight over-floods (too many followers per stall) → 5; if it under-fires / can't spread → 7. |
 | **f** | **Globetrotter 阿嬤 scarcity cost** (§6.5b) | Larder cap 7→6, OR Travel-anywhere costs 1 follower to supply | Re-sim shows 阿嬤 `idx` above band under scarcity (go-anywhere is buffed when slots are region-locked). |
 | **g** | **Homebody 媽寶 spread trim** (§6.5a) | `travel_draw_left` 2 → 1 | Re-sim shows the "ignore-the-contest" dodge line is a **dominant** winrate (not merely viable). |
+| **h** | **Big Eater 大胃王 day-only greed** (flaw scope — CD steer) | Greedy Grab (keep a 4th on a Visit) works **by day only** — after dark she is too full to grab a fourth (normal keep-3 at night) | Re-sim / playtest shows 大胃王 leans on greedy-4th too hard / over-sources. Phase-scoped flaw; pairs with the Big Brother night-scope (reserve a) as the thematic phase-scoping cooling knob (same lever, opposite sign). |
 
 ### 8.1 CONSOLIDATED PLAYTEST-LEVER TABLE (all dials in one place)
 
@@ -503,9 +509,11 @@ Everything the playtester can turn, baseline → range, folding the scarcity, me
 | **start-on-board** | 2 | 2 (raise if a lane reads cold) | §3 |
 | **Influencer 網紅 `max`** | 8 | 7 / 8 | §4, reserve c |
 | **Big Brother 大哥 margin N** | **1** | **0 / 1 / 2** (0 = no edge · 1 = wins ties · 2 = survives −1) | §6.7 |
+| **Big Brother 大哥 scope** | all-phases | all-phases / **night-only** (combines with N) | §6.7, reserve a |
 | **Old Councillor 里長伯 kit** | *CD choice pending* | REPLACE-A / BLEND-B (+ draw knob: 0 / +1 / +1&event-hook) | §6.6 |
 | **Homebody 媽寶 forage** | draw 2 | 2 / 1 | §6.5a, reserve g |
-| **Big Eater 大胃王 greedy-4th cost** | −1 follower to supply | −1 / −2 (if he over-sources) | §6.5, §2.1 |
+| **Big Eater 大胃王 greedy-4th cost** | −1 follower to supply | −1 / −2 (if she over-sources) | §6.5, §2.1 |
+| **Big Eater 大胃王 greed scope** | all-phases | all-phases / **day-only** (too full at night) | §6.5, reserve h |
 | **Globetrotter 阿嬤 cost** | none (flaw-free) | none / cap 6 / −1 follower per Travel | §6.5b, reserve f |
 | **Endgame-tie resolver** | ON (load-bearing) | on / off | reserve b |
 | **Non-refill apex marquees** | off | off / on | §1.6, reserve d |
