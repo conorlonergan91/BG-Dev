@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
-# Per-game build script for Travel Agents: Taiwan — v6.3.1 (TICKETS-ONLY scoring; soft night-cost curve).
+# Per-game build script for Travel Agents: Taiwan — V7 (multiplayer 3–6; area-majority; TICKETS-ONLY scoring).
+# V7 DATA NOTE: missions.csv→bookings.csv (the 開團 Bookings deck); ingredient TOKENS dropped (ingredients are
+# CARDS now — components/ingredients.csv); the vendor recipe-chip glyph key moved to components/recipe-glyphs.csv
+# (tokens.csv is now the pure physical-token list: Followers / the Followers-max dial / Trending / pile+Rave
+# markers / 停 / pawns). The vendor-claims clock is RETIRED (the Booking deck is the deck-driven clock now).
+# RENDER REBUILD OWED → bg-infodesign: the icon system (6 character-board ability/flaw glyphs incl. new
+# start_max_4 / win_ties / travel_anywhere codes), the neutral N-player regionmap (render_regionmap still draws
+# the stale 2p across-the-table layout), and the pictorial ingredient/food cards. Those renders are STUBS here.
 # Regenerates build/ (scratch) from data and snapshots the shareable deliverables into exports/ (committed).
 # Run: ./make.sh   (from games/travel-agents/)  — needs the 2D pipeline deps (see tools/cards/requirements.txt).
 #
@@ -21,10 +28,11 @@ rm -rf build
 # play-ready sheets come from the day/night SPLITS below (top-level PnP + Screentop), so the mixed
 # full-CSV screentop sheet (one NEUTRAL back) is deliberately NOT produced: it would hide the
 # day/night back distinction the identity requires. `png` keeps per-card art + the PnP print PDF.
-# Vendor decks (24 vendors, day+night, drinks mixed in). tokens.csv feeds the recipe chip glyphs.
-python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build --theme "$theme" --formats png --tokens-csv components/tokens.csv
-# Tour Tickets (20 DAY + 25 NIGHT = 45 cards / 44 patterns — the SOLE scoring vector; win-pile / lose-pile).
-python3 $T/cards/build_cards.py --csv components/missions.csv    --out build --theme "$theme" --formats png
+# Vendor decks (24 vendors, day+night, drinks mixed in). recipe-glyphs.csv feeds the recipe chip glyphs
+# (the 5 ingredient ids → 繁體 label; decoupled from tokens.csv now that ingredient tokens are dropped).
+python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build --theme "$theme" --formats png --tokens-csv components/recipe-glyphs.csv
+# Bookings (開團) — 20 DAY + 25 NIGHT = 45 cards / 44 patterns — the SOLE scoring vector (成團 / 取消).
+python3 $T/cards/build_cards.py --csv components/bookings.csv    --out build --theme "$theme" --formats png
 # Ingredient market decks (5-palette; K in C/S) — the Visit / CS / Travel draw.
 python3 $T/cards/build_cards.py --csv components/ingredients.csv  --out build --theme "$theme" --formats png --tokens-csv components/tokens.csv
 # Scoped EVENT cards (⦿/⬢/➤) — shuffled into the matching region+phase ingredient deck (night event-heavier).
@@ -42,11 +50,11 @@ python3 $T/cards/split_decks.py --out build/decks --prefix market --key deck \
     --csv components/ingredients.csv --csv components/events.csv
 # 8 vendor decks split by region + phase (face-up: North 2, others 1 — see the setup note).
 python3 $T/cards/split_decks.py --out build/decks --prefix vend --key type,phase --csv components/vendors.csv
-# 2 Tour-Ticket decks by phase (DAY / NIGHT — draw 5/phase, reveal a row of 3).
-python3 $T/cards/split_decks.py --out build/decks --prefix ticket --key phase --csv components/missions.csv
+# 2 Bookings decks by phase (DAY / NIGHT — the deck-driven clock; reveal a face-up row).
+python3 $T/cards/split_decks.py --out build/decks --prefix booking --key phase --csv components/bookings.csv
 for d in build/decks/*.csv; do
     tok=""
-    case "$d" in *market_*|*vend_*) tok="--tokens-csv components/tokens.csv";; esac
+    case "$d" in *market_*|*vend_*) tok="--tokens-csv components/recipe-glyphs.csv";; esac
     python3 $T/cards/build_cards.py --csv "$d" --out build --theme "$theme" --formats screentop --tight-grid $tok
 done
 
@@ -64,10 +72,10 @@ rm -rf build/top
 python3 $T/cards/split_decks.py --out build/top/decks --prefix vendors --key phase --csv components/vendors.csv
 python3 $T/cards/split_decks.py --out build/top/decks --prefix market  --key phase \
     --csv components/ingredients.csv --csv components/events.csv
-python3 $T/cards/split_decks.py --out build/top/decks --prefix tickets --key phase --csv components/missions.csv
+python3 $T/cards/split_decks.py --out build/top/decks --prefix bookings --key phase --csv components/bookings.csv
 for d in build/top/decks/*.csv; do
     tok=""
-    case "$d" in *vendors_*|*market_*) tok="--tokens-csv components/tokens.csv";; esac
+    case "$d" in *vendors_*|*market_*) tok="--tokens-csv components/recipe-glyphs.csv";; esac
     python3 $T/cards/build_cards.py --csv "$d" --out build/top --theme "$theme" --formats screentop --tight-grid $tok
 done
 
@@ -76,7 +84,7 @@ done
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --out build/map-day.png
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --out build/map-night.png
 
-# Per-player CHARACTER BOARDS (5 landscape mats, one per characters.csv row) — REPLACES the character
+# Per-player CHARACTER BOARDS (6 landscape mats, one per characters.csv row) — REPLACES the character
 # cards. Each board carries: name in THREE scripts (Tâi-lô · English · 繁體), an art placeholder
 # [FIG-CHAR-<slug>] + a warm blurb, the ABILITY/FLAW icon blocks, the BUZZ zone with a movable REACH cap
 # marker (this FOLDS IN the old standalone reach-track — committed Buzz ≤ Reach enforced at a glance), the
@@ -85,17 +93,10 @@ python3 $T/boards/build_board.py --type regionmap --spec components/map.json --t
 # are untouched.
 python3 $T/boards/build_board.py --type playerboard --csv components/characters.csv --theme "$theme" --out build/boards/
 
-# Live in-game tracks (v6.3.1 — TICKETS-ONLY scoring: there is NO score/VP track; your score is your Tour-Ticket tally).
-# NOTE: the standalone REACH track and TOURS-COMPLETED track are RETIRED — both are per-player instruments
-# and now live ON the character boards above (Reach = the movable cap marker on the Buzz slot row 0→12;
-# Tours-Completed = the 好評 Rave-Reviews mini-track). Only the TABLE-WIDE vendor-claims clock stays a
-# shared track (it will move onto the MAP in the next map pass — a board↔map interface note).
-# The VENDOR-CLAIMS day-clock. +1 each time ANY agent Bribes a vendor.
-python3 $T/boards/build_board.py --type scoretrack --max 10 --per-row 11 \
-    --title "Vendor-claims clock (2p)" --start-label "START" \
-    --milestones "5:DUSK — flip to night;10:LAST TRAIN — end game" \
-    --note "Advance +1 each time ANY agent Bribes a vendor (food or drink). 2p: DUSK = the 5th claim, LAST TRAIN = the 10th. Marks GROW with player count (~7-8/15 at 3p, ~10/20 at 4p)." \
-    --theme "$theme" --out build/clock-track.png
+# Live in-game tracks: V7 has NO shared clock track — the clock is DECK-DRIVEN (the Booking deck IS the
+# clock: DAY-deck-out → 黃昏 DUSK, NIGHT-deck-out → 末班車 LAST TRAIN, via seeded boundary cards). The old
+# vendor-claims clock-track render is RETIRED. The per-player Followers-max DIAL + the 好評 Rave-Reviews /
+# Tours-Completed counter live ON the character boards (rendered above). So there is NO scoretrack render.
 
 # Token key + player aid.
 python3 $T/boards/build_board.py --type tokens --from-csv components/tokens.csv --shape circle --legend \
@@ -103,8 +104,8 @@ python3 $T/boards/build_board.py --type tokens --from-csv components/tokens.csv 
 python3 $T/boards/build_board.py --type aid    --spec components/player-aid.json --theme "$theme" --out build/player-aid.png
 
 # Cover + rulebook.
-python3 $T/cards/build_cover.py --title "$title" --subtitle "Court the island's vendors — a warm Taiwan food-tour duel" \
-    --theme "$theme" --players "2–4" --time "25–30 min" --weight 2.2 --out build/cover.png
+python3 $T/cards/build_cover.py --title "$title" --subtitle "A crowded market of rival agencies — a warm Taiwan food-tour scrum" \
+    --theme "$theme" --players "3–6" --time "30–45 min" --weight 2.2 --out build/cover.png
 python3 $T/rulebook/build_rulebook.py --md design/rules-draft.md --title "$title" --theme "$theme" --out build/rulebook.pdf
 
 echo "→ snapshotting deliverables into exports/ (committed)"
@@ -125,16 +126,15 @@ cp build/top/sheets/market_day_sheet_*.png     exports/ 2>/dev/null || true
 cp build/top/sheets/market_day_back.png        exports/ 2>/dev/null || true
 cp build/top/sheets/market_night_sheet_*.png   exports/ 2>/dev/null || true
 cp build/top/sheets/market_night_back.png      exports/ 2>/dev/null || true
-cp build/top/sheets/tickets_day_sheet_*.png    exports/ 2>/dev/null || true
-cp build/top/sheets/tickets_day_back.png       exports/ 2>/dev/null || true
-cp build/top/sheets/tickets_night_sheet_*.png  exports/ 2>/dev/null || true
-cp build/top/sheets/tickets_night_back.png     exports/ 2>/dev/null || true
+cp build/top/sheets/bookings_day_sheet_*.png    exports/ 2>/dev/null || true
+cp build/top/sheets/bookings_day_back.png       exports/ 2>/dev/null || true
+cp build/top/sheets/bookings_night_sheet_*.png  exports/ 2>/dev/null || true
+cp build/top/sheets/bookings_night_back.png     exports/ 2>/dev/null || true
 # Character BOARDS — 5 landscape player mats (replaces the old characters_sheet). Reach + Tours-Completed
 # now live on these, so the standalone reach-track / tours-track exports are gone.
 cp build/boards/board-*.png               exports/ 2>/dev/null || true
 cp build/map-day.png                      exports/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/map-night.png 2>/dev/null || true
-cp build/clock-track.png                  exports/clock-track.png 2>/dev/null || true
 cp build/token-key.png                    exports/token-key.png 2>/dev/null || true
 cp build/player-aid.png                   exports/player-aid.png 2>/dev/null || true
 cp build/rulebook.pdf                     exports/rulebook.pdf 2>/dev/null || true
@@ -148,8 +148,8 @@ cp build/sheets/market_*_sheet_*.png      exports/screentop/ 2>/dev/null || true
 cp build/sheets/market_*_back.png         exports/screentop/ 2>/dev/null || true
 cp build/sheets/vend_*_sheet_*.png        exports/screentop/ 2>/dev/null || true
 cp build/sheets/vend_*_back.png           exports/screentop/ 2>/dev/null || true
-cp build/sheets/ticket_*_sheet_*.png      exports/screentop/ 2>/dev/null || true
-cp build/sheets/ticket_*_back.png         exports/screentop/ 2>/dev/null || true
+cp build/sheets/booking_*_sheet_*.png     exports/screentop/ 2>/dev/null || true
+cp build/sheets/booking_*_back.png        exports/screentop/ 2>/dev/null || true
 # Character BOARDS go into the Screentop set too — each uploads as a per-player board image.
 cp build/boards/board-*.png               exports/screentop/ 2>/dev/null || true
 # The shared TABLE map (both day/night states) — the Screentop module stands the play area up from these.
