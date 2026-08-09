@@ -1569,3 +1569,201 @@ rail.)*
 - **bg-rulebook** — teach the framework **once** (the three-question block: verb / scope / duration), then
   let cards self-explain; one worked example (a ⬢ region hazard + a ⏳ lingering marker); the scope/duration
   icon legend on the player aid.
+
+---
+
+# 16. DECK-FLOW — per-region discard piles + reshuffle (the self-sustaining market)
+
+> **Status: SPEC (bg-design, 2026-08-09).** CD brief: make the region MARKET decks self-sustaining so events
+> (and ingredients) recur, without letting a concluded phase's cards leak into the next phase. This section
+> pins the card-flow that the earlier sections *assumed* (design-doc §15 "Recycling: fired hazards return";
+> §12.5 "the market decks reshuffle — `supply_min` never hit 0") but never fully specified. **Spec-only — no
+> data/code/sim touched here; the change lists are §16.5–16.8.** Scope = the region **market decks**
+> (ingredients + events, `ingredients.csv` + `events.csv`). Vendor cards are a **separate** system governed by
+> the §1 slow-refill scarcity model and are explicitly out of scope here (§16.2 note).
+
+## 16.1 The physical model (what's on the table)
+
+Each region has, at any moment, **one live draw deck** (its current-phase market deck, face-down) **and one
+face-up discard pile** (loose, beside the deck — no printed board zone; see §16.6). Because day and night are
+separate physical decks (`ingredients.csv` day/night rows; night set aside until DUSK), there are 8 market
+decks in the box but only **4 live** at once (the current phase). So the table shows **4 live decks + 4
+face-up discards** — one pair per region — full stop. The discard is **face-up all game** — a mild, fair
+push-your-luck read (you can see what will cycle back when the deck reshuffles).
+
+## 16.2 The flow rules (stated tightly)
+
+**A card enters a region discard when it is spent, used, forced, or passed over — always to ITS OWN region's
+current-phase discard.** Four feeders, in descending volume:
+
+1. **Passed over on a Visit** (the highest-volume feeder). A Visit flips 3, keeps ≤2; the **un-kept revealed
+   ingredient(s)** go face-up to that region's discard. (Same for a Larder over-limit dump: over 7 → discard
+   the excess to the region each card came from.)
+2. **Spent — an ingredient PAID to a vendor.** When you pay a recipe, each ingredient card leaves your Larder
+   to **its own** region's current-phase discard (a North meat card → North's discard; an East pantry card →
+   East's discard). *Phase check applies — see §16.3 destination 3.*
+3. **Used — an EVENT that just FIRED.** After it resolves, the event card goes face-up to the discard of the
+   region whose deck it was drawn from. **A fired event that fizzles still goes to the discard** — it *fired*
+   (see the leader-fizzle FAQ, §16.8). This is what makes events **recur**.
+4. **Forced out — a card effect that discards a market card** (SPOIL a held ingredient; PINCH's un-kept
+   card). Goes to the relevant region's current-phase discard. *Phase check applies.*
+
+**Reshuffle (one line):** **when a region's live draw deck runs out, shuffle that region's face-up
+current-phase discard to form the new draw deck.** No card is added or removed; the pool just cycles. Fired
+events return with it, so the island keeps reacting; ingredients return, so a category deeper in demand than
+its deck-depth can still be sourced (§16.4).
+
+> **Out of scope (say it once):** **vendor** cards are not part of this. A claimed / washed / cleared vendor
+> slot follows the §1 **slow-refill** rule (stays empty; refill from the vendor deck at end of round). Vendors
+> never touch a region *market* discard. SINK / WASH / RESTOCK that read like "deck" verbs are disambiguated
+> in §16.3.
+
+## 16.3 The THREE "away" destinations — disambiguated, no path ambiguous
+
+Every card that leaves the players' hands or the top of a deck resolves to **exactly one** of three places.
+The sort is a two-question read off marks already on the card (§16.6): **"Is this a SINK? → bottom of deck.
+Otherwise: is the card's phase the CURRENT phase? → region discard, else → the box."**
+
+| Destination | One-line rule | Reshuffles back? | Trigger | Reads the… |
+|---|---|:--:|---|---|
+| **Bottom of the live deck** — **SINK** | The card goes to the **bottom of its own region's live draw deck**. It never leaves the deck — it's just **deferred**; you'll meet it again this phase. | Stays in-deck (n/a) | **Only** the SINK event verb (e.g. #22 Picked Clean), invoked **by name** by a card. | — (named effect) |
+| **Region discard** — spent / used / forced / passed over | A **current-phase** market card that is paid, fired, forced, or passed over goes **face-up to its region's current-phase discard**. | **Yes** — on that region's next deck-out. | The four feeders of §16.2. | region **+** phase (phase = current) |
+| **The box** — phase-expired | When a phase ends, that phase's decks **and** discards leave the game. And any market card spent **after** its phase has concluded (a day card paid during the night) goes **to the box, not the discard**. | **Never** — permanently out. | DUSK / LAST TRAIN (§16.5); or a stale-phase card leaving a Larder. | phase (phase = concluded) |
+
+**Why no path collides:** SINK is the *only* thing that sends a card in-deck, and it is only ever invoked by
+an event's printed text — you never SINK by default. Everything else reads the **phase stamp**: current →
+discard, concluded → box. That single check is also what guarantees the CD's requirement — **a reshuffle only
+ever recycles current-phase cards** — because a stale card can never reach a current-phase discard.
+
+## 16.4 Phase-expiry — the single clean DUSK / LAST-TRAIN rule
+
+> **Rule (one line).** At **DUSK** and at **LAST TRAIN**, the concluding phase's **market decks and their
+> discards go to the box**; the next phase's decks (and fresh empty discards) take over. **Cards already in a
+> player's Larder are NOT swept** — they stay; but when a *concluded-phase* card is later spent, it goes to
+> the **box** (§16.3), never a current-phase discard.
+
+- **At DUSK** (day Booking deck out — the deck-driven clock, `map.json.clock_model`): the **4 day market
+  decks + 4 day discards → box**; the pre-built **4 night decks** go live with **4 fresh empty discards**.
+  (This runs alongside the existing dusk vendor sweep in §1 — vendors are separate.)
+- **At LAST TRAIN** (night Booking deck out): the game ends; the night decks + discards are irrelevant (score
+  and pack up).
+- **The Larder-at-dusk call (the one real design choice — see §16.9):** RECOMMENDED = **Larder cards
+  survive** (Option A). It removes a feel-bad wipe and a sorting chore at the busiest beat, it is **already
+  what the sim assumes** (the Larder is face-up all game and ingredients are fungible-by-type), and the
+  uniform "stale card → box on exit" rule keeps night decks pure regardless. A day meat card carried into
+  night still pays a night recipe, then quietly goes to the **box** when spent — never polluting the night
+  discard.
+
+## 16.5 Sourcing-loop analysis — is pantry-tightness solved? (VERDICT + the new sim guard)
+
+**Verdict: the renewable loop MITIGATES but does not ELIMINATE the +30%-demand pantry risk — and it is not
+new economy; it is the mechanism §12.5 already relied on.** Reasoning from the closed numbers:
+
+- **The loop is *why* deck-depth < demand is survivable.** New aggregate demand is 65 tokens (§12.4/§12.5);
+  Pantry is the tight category at **16 demanded vs 11 physical** (E-day 6 + E-night 5). Without a reshuffle,
+  East's deck empties and pantry starves; **with** the reshuffle, the 11 physical pantry cards cycle
+  (~1.5×) to cover 16 demand. §12.5 already assumed exactly this ("the market decks reshuffle — `supply_min`
+  never hit 0"). So §16 **does not change** the expected economy; it **specifies** the loop that economy
+  leaned on. The +30% aggregate load rides on top unchanged.
+- **It doesn't *eliminate* the risk, because the loop is uneven.** A card only re-enters the draw pool when
+  it is **spent/forced/passed-over → discard → the deck empties and reshuffles.** Ingredients **held in
+  Larders are withheld from the loop.** So the effective renewal rate depends on (a) the **Visit rate into
+  that region** (draw-down speed) and (b) how much of the category is **hoarded** vs spent.
+- **The NEW second-order risk the loop introduces — reshuffle-thinning enrichment.** Events **always** return
+  to the discard (you can't hold an event), but ingredients get **siphoned into Larders** (kept, not
+  discarded). So over a phase a hot region's live deck becomes progressively **event-enriched** — ingredients
+  leave the loop into hands, events keep cycling back. This bites hardest in the **small night N/E decks**
+  (6 ingredients) at high counts, and it **couples to §15.4's density knob** (see §16.9 / point 5).
+
+**What the re-sim sourcing guard must NOW additionally check** (folds into §9 / §12.9 / §15.6-SIM, one CD-gated run):
+1. **Deck cycle-rate per region per phase per count** — reshuffles/game per live deck. Flag any deck cycling
+   so **fast** its dealt events over-recur (couples to §15.4), or so **slow** that a tight category (pantry)
+   never realises its renewable benefit (`supply_min` → 0 despite the loop existing on paper).
+2. **Reshuffled-deck size** (the thinning proxy) — the average card count when a deck reshuffles. A thin
+   reshuffle = a fast, event-dense cycle.
+3. **Live-deck event-fraction over the phase** — does it climb materially above the §15.4 *dealt* ratio as
+   ingredients siphon into Larders? Report per region per count; **night N/E at 6p is the predicted hot
+   corner.**
+4. **Pantry `supply_min` under the loop** — must stay > 0 across 3–6p; if it starves, apply the §12.5
+   conditional deck-rebalance (idle Sugar depth → Pantry/Meat), **not** a change to §16's flow.
+
+## 16.6 Change list — COMPONENT / MANIFEST (placement confirmed)
+
+- **No new printed components and no board-art change.** The four discards are **loose, face-up piles beside
+  each region's live deck** — confirmed against the CD's minimal-map steer (`map.json._note`: keep the shared
+  board uncluttered). The piles are **self-sorting** because every market card carries its region + phase
+  (§16.7), so a loose pile needs no printed frame or label.
+- **`map.json` — add three `legend_notes` lines** (data, presentation-neutral): (i) *"Each region has a
+  FACE-UP discard beside its deck: cards spent, fired, forced, or passed-over go there. When a deck runs out,
+  shuffle its discard to make the new deck."* (ii) *"SINK = to the BOTTOM of the deck (stays live), not the
+  discard."* (iii) *"At DUSK / LAST TRAIN the ending phase's decks AND discards go to the box — a reshuffle
+  only ever recycles current-phase cards."*
+- **Optional (hold):** a tiny "↻ reshuffle when empty" hint could sit in each region's deck footprint on the
+  board render — but per the minimal-map steer, keep it in the legend, not on the map. Decision to
+  `bg-infodesign`.
+
+## 16.7 Change list — bg-infodesign (region + phase UNMISTAKABLE on every card)
+
+This is the **load-bearing readability requirement** — the entire three-destination sort (§16.3) depends on
+reading two marks off any market card at a glance:
+- **Region** — already dual-coded and CVD-checked: **N red / triangle, C teal / diamond, E navy / square,
+  S gold / circle** (`map.json.regions`). Reuse verbatim on **every** market card (ingredient **and** event),
+  so a discarded card sorts to the right pile instantly.
+- **Phase** — must be **equally unmistakable and dual-coded** (NOT day-gold-vs-night-neon colour alone —
+  that risks a CVD collision). Add a **sun ☀ (day) / moon ☾ (night) glyph** to every market card. Phase is
+  what the DUSK "→ discard or → box?" check reads (§16.3–16.4); if it's ambiguous, stale cards leak into the
+  night pool and the guarantee breaks. **Flag `bg-access`** to confirm the phase glyph passes redundant-
+  encoding.
+- **Consistency:** the SINK / discard / box legend icons on the player aid must match the card marks (region
+  emblem + ☀/☾). One legend line: *"region + ☀/☾ = which pile this card belongs to."*
+
+## 16.8 Change list — SIM (an ADDITION to the in-flight baseline re-encode)
+
+The baseline re-encode (§9 / §12.9 / §15.6-SIM) **already assumes reshuffle** for `supply_min`; this makes
+the loop **explicit and adds the phase-to-box path + new metrics**. Fold into the same CD-gated run:
+- **Model the four discard feeders** (passed-over, paid, fired, forced) → a per-region **current-phase
+  discard**; **reshuffle** the discard into the deck on deck-out.
+- **Model phase-to-box:** at DUSK the day decks + day discards → box; a **concluded-phase card leaving a
+  Larder → box** (Option A baseline; if the CD picks Option B, model the dusk Larder wipe instead — §16.9).
+  Night deck/discard reshuffles must contain **only** night-stamped cards (the guarantee — assert it).
+- **New metrics** (the §16.5 guard): reshuffles/game per region per count; reshuffled-deck size (thinning);
+  **live-deck event-fraction over the phase** (enrichment); Pantry `supply_min`. These are *additions*, not a
+  re-baseline — the taxonomy/pacing bands are unaffected by making an assumed loop explicit.
+
+## 16.9 Follow-ups — top-3 open questions + the human's call
+
+**Top-3 balance / open questions for playtesting:**
+1. **Reshuffle-thinning enrichment at high counts** (§16.5 risk). Do the small night N/E decks (6 ingredients
+   + up to 4 events) become event-dense as ingredients siphon into 6 Larders, cycling fast? **The #1 knob** —
+   couples to §15.4; loosen the §15.4 **night-event count at 5–6p first** (cheapest-to-loosen, per §12.4's
+   philosophy) if phase-end event-fraction climbs.
+2. **Does explicit reshuffle keep Pantry alive under the +30% load** across 3–6p (`supply_min` > 0), or does
+   the uneven loop (hoarding withholds pantry) still starve it → the §12.5 conditional rebalance?
+3. **Deck predictability from a face-up discard.** A face-up discard telegraphs what will reshuffle back —
+   is that a satisfying read or does it flatten the push-your-luck dread on a fast-cycling deck? (Reserve
+   fix: keep the reshuffled pile face-**down** while cycling; costs nothing.)
+
+**Decision for the human (the one real design choice) — day cards in the Larder at DUSK:**
+- **Option A (RECOMMENDED) — Larder cards survive dusk.** Only decks + discards go to the box; a carried
+  day-card pays a night recipe, then goes to the box when spent. Simplest, kindest, sim-consistent, guarantee
+  preserved. Enables legitimate day→night pre-sourcing (a feature, capped by the Larder ≤7 limit).
+- **Option B — day Larder cards expire to the box at DUSK.** A "use-it-or-lose-it" pressure (spend before
+  dusk); thematically "the breakfast ingredients don't keep." Cost: a feel-bad wipe + a sorting chore at the
+  busy dusk beat, and it **deviates from the current sim assumption** (needs new modelling).
+- *(My call: A — but this is the CD's to make; it changes the felt end-of-day pressure.)*
+
+## 16.10 Handoff / coherence flag (per the contract)
+
+Mechanics that moved this pass: **(1) the market decks became an explicit renewable loop** (per-region
+face-up discard → reshuffle) and **(2) a hard phase-to-box gate** (concluded-phase cards leave the game).
+Neither touches the **signature twist** (the follower crowd-fight over scarce vendors) directly — but both
+feed its inputs: the loop keeps **events** (which RALLY/TREND the crowd, §15) and **ingredients** (which pay
+scarce vendors, §12) flowing, so the twist is *supplied* by this loop. Flag the Director to run:
+- **`bg-theme`** — does the fiction explain a *face-up, recycling* market (the stall restocks; yesterday's
+  passed-over produce comes back around) and the phase-to-box ("breakfast is over, those stalls are gone for
+  the day")? Confirm the recycling reads warm/mundane, not wasteful.
+- **`bg-elegance`** — the net rules add: one "spent/fired/forced/passed → region discard; deck-out →
+  reshuffle" clause + one "phase ends → decks & discards to box" clause + the SINK-vs-discard-vs-box
+  disambiguation. Argue it *replaces* vaguer prose already scattered across §15/§12.5 (a consolidation, near
+  weight-neutral) and folds into the same rulebook-headroom re-gauge (§10 flag).
+- **`bg-access`** — the new **phase glyph** (§16.7) must pass redundant-encoding (sun/moon, not colour-only).
