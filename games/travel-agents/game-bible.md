@@ -67,6 +67,18 @@
 > - **Roster = SIX** (see the refreshed tri-lingual table under Components). Rails BINDING: **Traditional
 >   characters only, dignified, secular; a paid Taiwanese cultural + language consultant before art/print is
 >   still required.**
+> - **★ V7+ GENERIC INGREDIENT TAXONOMY (2026-08-09 — supersedes the 5-specific palette below).** The five
+>   specific ingredients are replaced by **SIX generic categories** whose card art shows a MIX, opening the
+>   deck to far more Taiwan dishes: **肉 Meat (North sig) · 茶 Tea (Central sig) · 海鮮 Seafood (South sig) ·
+>   糧 Pantry (East sig) · 糖 Sugar (common — C&S) · 菜 Vegetables (common — N&E, NEW 2nd axis).** The
+>   signature+common skeleton is preserved and made **symmetric** (every region = signature + one common;
+>   two common cross-axes: Sugar↔C/S, Vegetables↔N/E). **62-card total + every deck depth held exactly**;
+>   per-dish cost/span/CD-4-tier byte-preserved, demand *redistributed* (East Pantry is now the cross-demand
+>   hub; South Seafood eased). **S04 = 火雞肉飯 Chiayi turkey rice** (a 肉 Meat dish — the resolved "free B";
+>   蚵仔煎 displaced). **⚠ Balance: a genuine sourcing-demand shift → a CD-gated re-sim is RECOMMENDED before
+>   lock** (narrow scope: sourcing rates + night affordability + the homeless-turkey-rice claim; the
+>   clock/scoring/fight/character-bands are ingredient-identity-independent and untouched). Full taxonomy +
+>   old→new conversion table + re-sim scope: `design/ingredient-taxonomy.md` §FINAL.
 
 ## One-liner
 <!-- The hook a stranger would repeat. -->

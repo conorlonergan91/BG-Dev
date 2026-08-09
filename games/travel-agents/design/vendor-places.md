@@ -28,7 +28,7 @@ imagery (secular rail), even where a place sits near a temple.
 | S01 | S (Tainan) | 臺南 (阿憨鹹粥) | 虱目魚粥 milkfish congee · *sat-ba̍k-hî-muê* | Boneless-belly breakfast; congee + milkfish + ginger threads; early-morning 府城 counter. |
 | S02 | S (Tainan) | 富盛號, 國華街 | 碗粿 rice bowl cake · *uánn-kué* | Savoury steamed rice-cake, dark braise + shrimp, drizzled sauce; 國華街 old-market alley. |
 | S03 | S (Kaohsiung) | 六合夜市 · 鄭老牌木瓜牛奶 (1965) | 木瓜牛奶 papaya milk · *bo̍k-kua-gû-ni* | Port-city market; frothy orange papaya-milk shake at the famous corner; harbour neon. |
-| S04 | S (Chiayi) | **嘉義 · 文化路夜市** ⚑ | 蚵仔煎 oyster omelette · *ô-á-tsian* | Chiayi night-market street; griddled oyster omelette glossed red; **art nods to 噴水雞肉飯 turkey-rice nearby.** See decision. |
+| S04 | S (Chiayi) | **嘉義 · 文化路夜市** ⚑ | 火雞肉飯 turkey rice · *hóe-ke-bah-pn̄g* (⚑rom. → consultant) | Chiayi night-market street; a bowl of rice topped with shredded turkey + braise + pickled daikon — **Chiayi's true signature.** (V7+ taxonomy: recipe = 肉 Meat · 糧 Pantry · 菜 Veg. Was 蚵仔煎 oyster omelette — now displaced.) |
 | S05 | S (Tainan) | 沙卡里巴/康樂市場 (1942) | 棺材板 coffin bread · *kuan-tsâ-pán* | Deep-fried bread bowl of creamy seafood chowder, lid on top; vintage 沙卡里巴 arcade. |
 | S06 ★ | S (Tainan) | 度小月 (1895) | 擔仔麵 tan-tsú-mī · *tànn-á-mī* | Century-old low-stool ritual; small shrimp-pork noodle bowl under a single hanging lamp, squat clay stove — apex. |
 | E01 | E (Hualien) | 東大門夜市 · 原住民一條街 ⚑Indigenous | 竹筒飯 bamboo-tube rice · *tik-tâng-pn̄g* | Indigenous-food lane (Amis-forward); split bamboo tube of sticky mountain rice — celebratory, not exoticised. **Consultant.** |
@@ -40,7 +40,15 @@ imagery (secular rail), even where a place sits near a temple.
 All 24 distinct. Dishes as already in `vendors.csv`; the two bubble-teas (N07 珍奶 riverside vs C03 春水堂 origin) split by place/framing.
 
 ## Decisions
-- **S04 Chiayi / turkey-rice — CD's call.** **(A) ADOPTED (auto-drive default):** place = Chiayi 文化路夜市, keep the oyster-omelette dish, art nods to 噴水雞肉飯 — honors the anchor, **zero data change, no balance reopen.** **(B) flagged for the CD** (personal — Chiayi = family): add a **poultry ingredient + a 火雞肉飯 vendor** — faithful, but a real design change (ingredients/economy/cross-map → **re-sim**, reopens closed balance). **(C)** drop Chiayi → move S04 to 安平 Tainan (oyster-honest). *Standing at A until the CD asks for B.*
+- **S04 Chiayi / turkey-rice — RESOLVED as "free B" (V7+ generic-taxonomy redesign, 2026-08-09).** The
+  generic-ingredient taxonomy made a **肉 Meat** dish trivially expressible, so **S04 is now 火雞肉飯 turkey
+  rice** (recipe 肉 Meat · 糧 Pantry · 菜 Veg — turkey + rice + pickled daikon), cost 3 / both-tier /
+  span-2, faithful to the family Chiayi anchor **without a bespoke poultry ingredient** (B's cost was the
+  ingredient-system reopen; the taxonomy paid that already). It is **homeless-in-South** (no South seafood —
+  its South icon still feeds the ramp) — a small sourcing-effort delta folded into the taxonomy re-sim
+  recommendation (see `design/ingredient-taxonomy.md` §5). *Superseded: (A) keep oyster omelette + art-nod;
+  (C) drop Chiayi → 安平.* **蚵仔煎 (oyster omelette) is displaced** — a top candidate for a future South
+  slot / expansion. Rom. *hóe-ke-bah-pn̄g* is best-effort → **consultant confirms Tâi-lô** (binding).
 - **E04 slate BBQ (石板烤肉)** — Paiwan/Rukai slate culture straddling Pingtung(S)/Taitung(E); anchored Taitung to stay in East. **The #1 pre-art consultant item** — confirm the specific community + framing; no generic "tribal" iconography; consultant supplies any Indigenous-language terms (don't ship AI romanisation for E01/E04).
 
 ## Watch-list (consultant, before final art)
