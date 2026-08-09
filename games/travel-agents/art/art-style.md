@@ -26,6 +26,9 @@ characterful **Taiwanese street-food & neighbourhood personalities**, a bustling
   a character, a dish, a region must read instantly at component size.
 - **One cohesive cast:** the six characters and the vendors all look like they belong to the same charming,
   slightly-exaggerated world — same linework weight, same colour language, same level of stylisation.
+- **Dial the energy UP — over-the-top & wacky** (CD steer). Characters and **events** especially: big
+  expressions, dynamic/comedic poses, exaggerated reactions, a bit of visual slapstick — lean into the fun.
+  This amplifies the exaggeration; it does **NOT** loosen the dignity guardrail below (wacky ≠ mocking).
 
 ## The characters (the six)
 Warm, affectionate, instantly-distinct **personalities** — lovable street-food/travel types, each exaggerated
@@ -38,6 +41,20 @@ for **charm and readability**:
   delighted stall-owner like an old friend — **cinema-charm, never a threat** (the #1 dignity watch-item).
 - **The Globetrotter** (阿嬤 / A-má) — a spry, sharp-eyed granny with her elder travel-pass, already at the
   next market before everyone else — **age as her superpower, never frail**.
+
+## Vendors — anchored to REAL Taiwan food places, and ALL distinct (CD steer)
+Vendors are not generic stalls. Each references a **real, famous Taiwan night-market / street / food-area**
+known for good eats, and its art **reflects that specific place** (its signature dish, stall look, and
+neighbourhood character). **No two vendors look the same** — distinct dish, distinct stall, distinct place,
+distinct composition; the vendor deck should feel like a tour across the island's real food scene.
+- **`bg-research` curates the accurate real-place set** across the game's four regions (North / Central /
+  South / East), with **correct place names + signature dishes** (rails: real dishes never mangled; secular;
+  Traditional characters; consultant-verified before final art).
+- **Anchor places the CD wants in (personal / family):** **Dadaocheng 大稻埕 + Dihua Street 迪化街 & the
+  Dadaocheng Wharf 大稻埕碼頭** (Taipei — Datong); **Miaoli 苗栗** (near the place the CD wrote "Huolong" —
+  **confirm the exact town + 繁體: likely 後龍 Houlong, possibly the 火炎山 Huoyanshan area — DO NOT guess the
+  characters, verify**); and **Chiayi 嘉義** (famous for 火雞肉飯 turkey-rice). Weave these in respectfully as
+  real, warm places — never a tourist-gaze postcard.
 
 ## ⚠ The sensitivity guardrail (BINDING — read before writing any character prompt)
 "**Caricature**" here means **charming personality exaggeration** — the warm, expressive stylisation of a
