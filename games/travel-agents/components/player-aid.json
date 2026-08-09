@@ -1,16 +1,16 @@
 {
-  "_note": "V7 quick-glance aid for build_board.py --type aid. STRIPPED to the ON-YOUR-TURN section ONLY (CD auto-drive Phase-4): the dial rules, the lost-war dial-drop, events, the deck-driven clock, Rave Reviews, and scoring now live in the RULEBOOK, not the aid. V7 vocabulary: Followers / Followers-max (the dial) / Bookings / Promote (no Buzz / Reach / Ticket). One action per turn.",
+  "_note": "V7-M quick-glance aid for build_board.py --type aid. STRIPPED to the ON-YOUR-TURN section ONLY: scarcity/refill timing, the boundary tie-resolver, events, the deck-driven clock, Rave Reviews, and scoring live in the RULEBOOK, not the aid. V7-M vocabulary: Followers are physical meeples in your colour (max 6 / Influencer 8); zones = your supply / your board / on a stall. Actions keep Travel + Promote (no dial / Buzz / Reach / Draw). One action per turn.",
   "title": "Travel Agents: Taiwan — Player Aid",
   "subtitle": "On your turn: do ONE action · then trim your Larder to 7",
   "sections": [
     {
       "heading": "Do ONE action",
       "lines": [
-        "VISIT (here): flip 3 from this region's market — the event fires by scope, keep 2 ingredients (大胃王 keeps 3).",
+        "VISIT (here): flip 3 from this region's market — the event fires by scope, keep 2 ingredients (Big Eater 大胃王 keeps 3).",
         "CONVENIENCE STORE (anywhere): flip 1 from any region's market — take the ingredient, or the event fires.",
-        "TRAVEL: move 1 region (HSR = 北↔南); flip 1 on arrival (event whiffs). Nudge your Followers-max dial +1. (媽寶 draws 2 from the region she LEFT; 阿嬤 reaches ANY region.)",
-        "PROMOTE (here): place 2 Followers on co-located face-up vendor(s) — public; keep your TOTAL committed Followers ≤ your Followers-max dial.",
-        "BRIBE A VENDOR (here): claim it if you hold STRICTLY MORE committed Followers than every rival (大哥 wins ties) + pay its ingredients - your region discounts. It joins your tour + may complete a Booking; your Followers return; each loser's dial drops (-1 day / -2 night).",
+        "TRAVEL: move 1 region (HSR = 北↔南); flip 1 on arrival (event whiffs). Then GROW: 1 follower, supply → your board. (Homebody 媽寶 draws 2 from the region she LEFT; Globetrotter 阿嬤 reaches ANY region, tiring 1 follower to supply.)",
+        "PROMOTE (here): place up to 2 followers FROM YOUR BOARD onto face-up stall(s) here — stacked or spread, in full view.",
+        "BRIBE A STALL (here): win it if you hold STRICTLY MORE followers on it than every rival (Big Brother 大哥 wins ties) + pay its ingredients − your region discounts (no follower cost). It joins your tour + may complete a Booking. Your followers come HOME to your board; each loser's scatter to their OWN supply. Leave the slot empty.",
         "LINE UP A BOOKING: take 1 from the face-up row, then refill. Your Bookings are your whole score (成團 completed / 取消 cancelled)."
       ]
     }

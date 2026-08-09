@@ -1,12 +1,11 @@
 # Travel Agents: Taiwan — Rules
 
-<!-- Canon: design/v7-content-draft.md + components/*.csv (V7). -->
+<!-- Canon: design/followers-meeples-redesign.md (V7-M) + components/*.csv. -->
 
-A crowded market of rival travel agencies, all chasing the same food stalls in one eating day. Ride
-between four regions, gather ingredients, and pile **Followers** on the stalls you want. Win a stall by
-drawing the **biggest crowd** — out-committing every rival there — and it joins your tour and makes the
-next one cheaper. Your only points are the **Bookings** you run: complete the most before the **last
-train** and you're **Top Agent**.
+Rival travel agencies chase the same food stalls through one eating day. Ride between four regions, gather
+ingredients, and pile **Followers** on the stalls you want: win a stall by drawing the **biggest crowd**
+and it joins your tour, making the next one cheaper. Your only points are the **Bookings** you run —
+complete the most before the **last train** to be **Top Agent**.
 
 > These are real Taiwanese dishes and night markets — celebrated with care. Eat them with a grin.
 
@@ -15,9 +14,8 @@ train** and you're **Top Agent**.
 ## 1. What you're going for
 
 Your score is your **Bookings, and nothing else.** A Booking is a little tour you promise to run — *three
-breakfast stalls*, *a ★ marquee name*. Complete it and it scores its value; leave it unfinished and it
-costs you. Vendors, Followers, and your dial are pure engine and never score. Most Booking points when the
-last train leaves is **Top Agent** (§9).
+breakfast stalls*, *a ★ marquee name*. Complete it to score its value; leave it unfinished and it costs
+you. Vendors and Followers never score. Most Booking points at the last train is **Top Agent** (§9).
 
 ## 2. Setup
 
@@ -28,22 +26,20 @@ Everything sits on **one shared board, readable from any seat. Everyone starts i
 - **The map** — four regions in a ring: **North 北 · Central 中 · South 南 · East 東**. Ring-neighbours
   are linked; the **HSR** also links **North and South** directly.
 - **Ingredient markets** — each region has a face-down market deck. Split each into **DAY** and **NIGHT**
-  piles; shuffle the DAY into place, set the NIGHT aside for dusk. Six kinds of ingredient grow across the
-  island (§3).
+  piles; shuffle the DAY into place, set the NIGHT aside for dusk.
 - **Vendor stalls** — fill the face-up slots from each region's DAY vendor deck (counts below); set the
   NIGHT vendor decks aside for dusk.
-- **Booking decks** — shuffle the **DAY 開團** and **NIGHT 開團** decks *separately* to your count's size,
-  then seed the **黃昏 DUSK** card at the DAY deck's bottom and **末班車 LAST TRAIN** at the NIGHT deck's
-  bottom — your clock (§8). Deal a face-up **Booking row** from the DAY deck.
-- **Followers** — a shared supply pool (below). Set every **Followers-max dial** to its start value **2**
-  (the Influencer 網紅 starts at **4**).
+- **Booking decks** — shuffle the **DAY 開團** and **NIGHT 開團** decks *separately* to your count's size;
+  seed the **黃昏 DUSK** card at the DAY deck's bottom and **末班車 LAST TRAIN** at the NIGHT deck's — your
+  clock (§8). Deal a face-up **Booking row** from the DAY deck.
+- **Followers** — take your full pool in your colour (**6**; the Influencer 網紅 owns **8**): put **2 on
+  your board**, the rest in your own **supply**.
 - Each player takes a **character board** (read its ability and flaw aloud), a pawn in Taipei, an empty
   **Larder** face-up, and their **COMPLETED 成團** and **CANCELLED 取消** pile markers.
 
-The **setup chart on the board** gives, for your player count, the vendor slots per region, the Followers
-supply, and the DAY / NIGHT Booking-deck sizes. There are deliberately **fewer stalls than agents**, so
-you'll collide over them. First player is whoever ate street food most recently, then clockwise; the
-Influencer 網紅 always takes the **last** seat.
+The **setup chart on the board** gives, for your count, the vendor slots per region and the Booking-deck
+sizes. There are deliberately **fewer stalls than agents** — so you'll collide over them. First player is
+whoever ate street food most recently, then clockwise; the Influencer 網紅 takes the **last** seat.
 
 ## 3. Your turn
 
@@ -54,58 +50,60 @@ Take **ONE** action. Then, if your Larder holds more than **7** ingredients, dis
 - **CONVENIENCE STORE** *(anywhere)* — flip the top **1** of **any** market: take the ingredient, or its
   **event** fires.
 - **TRAVEL** — move to a neighbour (or North↔South by HSR), then flip the top **1** where you arrive (an
-  event on arrival does nothing). Raise your **dial +1**.
-- **PROMOTE** *(with a vendor here)* — place **2 Followers** from the supply onto vendor(s) you stand with
-  (§4).
+  event on arrival does nothing). Then **grow your crowd**: 1 follower, supply → your board.
+- **PROMOTE** *(with a vendor here)* — place **up to 2** followers **from your board** onto stall(s) here,
+  stacked or spread (§4).
 - **BRIBE a vendor** *(with it)* — win a stall you've drawn the biggest crowd for (§5).
 - **BOOK a tour** — take a Booking into your hand (§6).
 
-> **Greedy Grab.** On a Visit or Convenience Store, keep **one extra** ingredient beyond your limit — your
-> **dial drops 1** (the crowd tuts and drifts; never below your start value).
+> **Greedy Grab.** On a Visit or Convenience Store, keep **one extra** ingredient beyond your limit —
+> **send 1 follower back to your supply** (the crowd tuts and drifts).
 
 > **Characters bend the rules.** Each board has one ability and one flaw for that player alone; where a
 > board disagrees with these rules, the board wins. Some agents are flaw-free by design.
 
-## 4. Followers & the dial
+## 4. Followers — your crowd
 
-**Followers** are the hype you pile on a stall. They live only in the **supply** or stacked **on a
-vendor** — never in hand — and everyone may pile onto the same stall, in full view.
-
-> **Your crowd can't outrun your dial.** Your **total committed Followers, across every vendor, can never
-> pass your Followers-max** — the number on your dial (a ceiling, not a score). **Travel** and some events
-> raise it; **winning a vendor returns those Followers** to the supply, freeing the ceiling; losing a
-> fight lowers it (§5).
+**Followers** are the hype you pile on a stall — never in hand, always in full view. Each is in one of
+three places: your **supply** (un-rallied), **your board** (rallied), or **on a stall** (committed). You
+own a fixed pool in your colour — **6**, or **8** for the Influencer 網紅 — and can never commit more than
+you own. They flow supply → board (**grow**, on Travel) → stall (**Promote**), then **home to your board**
+on a win or back to your **own supply** on a loss (§5).
 
 ## 5. Bribing a vendor — the biggest crowd wins
 
 A face-up vendor goes to whoever draws the **biggest crowd** for it. To Bribe a vendor you stand with:
 
-1. hold **strictly more committed Followers on it than any other agent** — an outright majority (a *tie*
-   claims nothing; the Big Brother 大哥 alone wins on a tie);
-2. **pay its ingredients**, minus your region discounts.
+1. hold **strictly more of your followers on it than any single rival** — an outright plurality (a *tie*
+   claims nothing; the Big Brother 大哥 alone wins by matching);
+2. **pay its ingredients**, minus your region discounts (the crowd decides only *who* pays — there is
+   **no follower cost**).
 
-Take the vendor onto your tour. If it satisfies a **Booking** you hold, complete it now (§6). Then
-**return your Followers** on it to the supply — and, the instant a *contested* stall is claimed, **each
-losing agent takes their Followers back to supply and drops their dial: −1 by day, −2 at night** (the
-crowd drifts to your rival's stall; never below your start value). Refill the slot.
+Take it onto your tour and complete any **Booking** it satisfies (§6). Your followers come **home to your
+board**; each loser's scatter to their **own supply** (the crowd drifts to the rival's stall, never onto
+it) — the whole cost of losing. **Leave the slot empty** for now.
 
-**A tie just blocks.** Level for the biggest crowd? None may claim it (the Big Brother aside) — Promote
-again to break it, or walk away and let your Followers ride.
+**A tie just blocks.** Level for the lead (no Big Brother present)? None may claim; the crowds **ride** —
+Promote again to break it, or walk away and leave them.
 
-**A won vendor is pure engine; it never scores.** Most show a **region icon**: each icon you hold makes
+**Stalls are scarce and refill slowly.** A claimed or emptied slot stays **empty**; all empty slots refill
+only at the **end of the round**. So a stall may be the region's only one — out-commit a rival, or Travel
+on and risk it being gone.
+
+**A won vendor is pure engine.** Most show a **region icon**: each icon you hold makes
 that region's ingredients **1 cheaper** to Bribe — your ramp. Drinks and ★ apex stalls carry no icon.
 Night stalls cost more and often want two regions' ingredients.
 
-> **Trending 爆紅.** An event can drop a **Trending** marker on a stall; win it and your dial rises **+1**
-> (it went viral). The printed **★ apex** stalls are a separate, permanent thing — a region's top table.
+> **Trending 爆紅.** An event can drop a **Trending** marker on a stall; win it and your crowd **grows +1**
+> — it went viral. The printed **★ apex** stalls are a separate, permanent thing — a region's top table.
 
-> **Rave Reviews 好評.** The first time you complete your **2nd** tour, raise your dial **+1**; at your
+> **Rave Reviews 好評.** The first time you complete your **2nd** tour, **grow your crowd +1**; at your
 > **4th**, take **1 ingredient of choice** and your **next Bribe costs 1 less**. Once each, per player.
 
 ## 6. Bookings — your tours
 
-A **Booking (開團)** is a tour you line up and try to run. **Book a tour** takes one card from the face-up
-row into your hand, then refills it. Hold at most **3**.
+A **Booking (開團)** is a tour you line up to run. **Book a tour** takes one card from the face-up row
+into your hand, then refills it. Hold at most **3**.
 
 - **Complete it (成團).** The moment your won vendors satisfy a held Booking, flip it to your **COMPLETED
   成團** pile — it scores its full value, nudges your **Tours-Completed** meter, and frees a hand slot.
@@ -121,15 +119,15 @@ Visit or a Convenience Store — fires any event you flip, at once.** A card fli
 Travel does nothing.
 
 - **Hazards** tax or delay — they never take what you already hold, nor cost a whole turn.
-- **Boons** hand out an ingredient or Followers, nudge your dial, or send a stall **Trending**.
+- **Boons** hand out an ingredient, grow your crowd, or send a stall **Trending**.
 
-> **Who an event hits** — read from the region the card came out of: **⦿ You** · **⬢ This region**
-> (everyone standing there) · **➤ Next door** (a neighbour). At a Convenience Store you may be elsewhere,
-> so ⬢ can land on a rival — not an attack, just the island living its day.
+> **Who an event hits** — read from the region the card came from: **⦿ You** · **⬢ This region** (everyone
+> there) · **➤ Next door** (a neighbour). At a Convenience Store you may be elsewhere, so ⬢ can land on a
+> rival — not an attack, just the island living its day.
 
-> **排班保養 Scheduled Maintenance** *(island-wide — its own banner).* The HSR is down for everyone. Until
-> the start of your next turn, North and South aren't linked — everyone travels the long way round the
-> ring. Then it reopens. (The Globetrotter 阿嬤 is immune.)
+> **排班保養 Scheduled Maintenance** *(island-wide — its own banner).* The HSR is down for everyone: until
+> the start of your next turn, North and South aren't linked — travel the long way round the ring. Then it
+> reopens. (The Globetrotter 阿嬤 is immune.)
 
 ## 8. The day-clock — dusk & the last train
 
@@ -143,6 +141,10 @@ It's one eating day, and the **Booking decks are the clock**: the day's tours bo
 - **末班車 LAST TRAIN** — when the NIGHT deck runs out, its **末班車 LAST TRAIN** card surfaces: finish the
   current round so all have had equal turns, then the game ends.
 
+> **At each boundary (DUSK and the last train).** First break any still-**tied** stall — to **most
+> followers, then earliest committer** (paying if able); losers scatter to their supply. Then followers on
+> **unclaimed** stalls return **home to their boards** — the stall simply closed, unwon.
+
 ## 9. Scoring
 
 Total each player once:
@@ -151,32 +153,31 @@ Total each player once:
 - **− half the value** (rounded down) of every Booking in your **CANCELLED 取消** pile; any Booking still
   unfinished in hand at the last train is cancelled too.
 
-Vendors, Followers, and your dial score nothing. Most points is **Top Agent**; ties break to most
-vendors, then most regions covered, then fewest cancelled Bookings.
+Vendors and Followers score nothing. Most points is **Top Agent**; ties break to most vendors, then most
+regions covered, then fewest cancelled Bookings.
 
 ## The six agents
 
 Everyone plays the same game with one twist. Each board states its agent's exact ability and flaw; in
 short:
 
-- **The Old Councillor 里長伯** — pick one **home region**; Bribing there costs **1 less**, elsewhere **2
-  more** (the away tax).
+- **The Old Councillor 里長伯** — name one **home region**; while there, start each turn drawing **1
+  ingredient** from any market, free (neighbours look after their beloved local); away, it sleeps.
 - **The Homebody 媽寶** — sole on-the-move sourcer: on a **Travel**, draw the top **2** of the region you
   **left** and keep both (event whiffs).
-- **The Big Eater 大胃王** — on a **Visit**, keep all **3** (may grab a 4th). Flaw: hazards fire **twice**
-  on his Visit.
-- **The Influencer 網紅** — dial **starts at 4**, never drops below 4. Flaw: takes the **last** seat.
-- **The Big Brother 大哥** — he **wins ties** (need only **match** the biggest crowd).
+- **The Big Eater 大胃王** — on a **Visit**, keep all **3** (may grab a 4th, but **send 1 follower back to
+  your supply**). Flaw: hazards fire **twice** on his Visit.
+- **The Influencer 網紅** — a deeper crowd: **8** followers, not 6. Flaw: takes the **last** seat.
+- **The Big Brother 大哥** — he **wins ties** (need only to **match** the biggest crowd).
 - **The Globetrotter 阿嬤** — her **Travel reaches any region** in one action; **immune** to Scheduled
-  Maintenance.
+  Maintenance. Each trip **tires her crowd**: 1 follower back to supply.
 
 ## FAQ
 
-- **A lost fight would drop my dial below my committed Followers.** After the −1 / −2 drop (floored at
-  your start value), return Followers from the board — **your choice which** — until your committed total
-  is within your dial. A bad-review event works the same way.
+- **My board is empty — can I Promote?** No — you can only commit followers already on your board. Grow
+  more first; every **Travel** grows one.
+- **A rival won a stall my followers were on.** They go back to your **own supply** (never to the rival),
+  to rally again. A bad-review event works the same way.
 - **A market or Booking deck runs out.** Reshuffle a *market's* discard — ingredients never leave the
   game. The **Booking** decks never reshuffle: their boundary card is the clock (§8).
-- **DUSK trips while I still hold day Bookings.** Keep them — they carry into the night and can still be
-  completed.
-- **Can a vendor, a full dial, or a ★ apex stall score?** No. Only Bookings score.
+- **Can a vendor or a ★ apex stall score?** No. Only Bookings score.
