@@ -666,8 +666,8 @@ def _pb_kit_glyph(cx, cy, code, col, ink, tfont):
     e = emblem_svg
     if code == "discount_home":       # house + '-1' → cheaper on home turf
         return e("home", cx, cy, 27, col, stroke=ink) + _pb_chip(cx+32, cy+24, "-1", col, tfont)
-    if code == "away_tax":            # out-of-home arrow + '+1' → costs more off your patch
-        return e("arrow", cx, cy, 25, col, stroke=ink) + _pb_chip(cx+32, cy+24, "+1", col, tfont)
+    if code == "away_tax":            # out-of-home arrow + '+2' → costs +2 ingredients off your patch
+        return e("arrow", cx, cy, 25, col, stroke=ink) + _pb_chip(cx+32, cy+24, "+2", col, tfont)
     if code == "travel_draw_left":    # ring + back-chevron → draw the region you LEFT
         return (f'<circle cx="{cx}" cy="{cy}" r="27" fill="none" stroke="{col}" stroke-width="4"/>'
                 f'<polyline points="{cx+8},{cy-13} {cx-9},{cy} {cx+8},{cy+13}" fill="none" '
