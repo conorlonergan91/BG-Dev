@@ -13,8 +13,8 @@ strong readable silhouette, filling the board's portrait frame. **NO background 
 character and their own props (what they hold, wear, or ride), on a plain flat background: a clean cut-out
 for the card.** Lovable, expressive personalities, laughing *with* the world — lively and appealing in the
 **polished original cartoon style** (not an over-caricatured big-head look). **Crank the ENERGY: this is a
-fast RACE-AND-BATTLE game, so give them dynamic, slightly CHAOTIC competitive poses — mid-dash, mid-scramble,
-snatching a prize, elbows out, motion/speed lines — urgency and glee, warm but never mean.**
+fast RACE-AND-BATTLE game. Each character's POSE should DRAMATIZE their game ability (NOT a generic run) —
+dynamic, zany, slightly CHAOTIC and competitive, with motion/speed lines; urgency and glee, warm but never mean.**
 **Best results: attach a liked earlier character as a style reference alongside the prompt.**
 
 ---
@@ -30,7 +30,8 @@ triumphant "**beat you here again!**" grin and a knowing wink, her **悠遊卡 E
 fingers like a winning card** — ideally the **senior 敬老悠遊卡** (the instantly-recognisable local
 stored-value card, which doubles as her free-elder-travel hook; NOT a generic train/elder card). Silver hair (a neat perm or bun), bright practical clothes (a floral blouse, a visor or
 sun-sleeves, comfy trainers), maybe a small crossbody bag stuffed with snacks she's already bought. She is
-**quick, canny, delighted** — the granny who knows every shortcut and every vendor by name.
+**quick, canny, delighted** — the granny who knows every shortcut and every vendor by name. **Push it
+ZANY: the scooter popping a wheelie, curls and scarf flying, a manic gleeful grin, snacks flying from the basket.**
 
 **Do:** upright, energetic, confident, twinkling; a sense of *motion* (speed lines, a scarf/bag mid-swish).
 **No background scenery — just her, her scooter, the EasyCard and her snack bag, on a plain background.**
@@ -41,21 +42,27 @@ the one *winning the race*. (Consultant + blind-test watch: reads warm/spry, nev
 
 ## `[FIG-CHAR-old-councillor]` — The Old Councillor (Lí-tiúⁿ-peh / 里長伯)
 
-A **cheerful neighbourhood elder with real local clout** — the borough warden everyone knows. Warm, sharp-eyed,
-mid-handshake or waving you over like a favourite uncle; apron-over-shirt or a tidy vest, a lanyard/sash hinting
-at office. **Dignified community figure, never a pompous politician gag. No background scenery — just him and his props.**
+A **cheerful borough boss with real local clout**. **Ability-pose (Old Favours / home-turf king):** one
+foot planted triumphantly up on a crate like claiming his patch, his **megaphone BLARING a rally**
+("鄉親作伙來!"), free arm flung wide to gather his neighbours in — a comic, chest-out "this whole lane is
+MINE!" pride; apron + lanyard/sash. **Dignified and folksy, never a pompous or corrupt-politician gag. No
+background scenery — just him and his props.**
 
 ## `[FIG-CHAR-homebody]` — The Homebody (Ma-pó / 媽寶)
 
-An **earnest young office worker** clutching a **mum-packed lunchbox (便當)**, phone to ear ("Ma, which stall
-again?"), tie slightly askew, a sheepish happy grin — swears the food back home tastes better. Warm and
-relatable, self-teasing — **affectionate, not a mocking "mama's boy." No background scenery — just him and his props.**
+An **earnest young office worker**. **Ability-pose (Mum's Packed Lunch / sole travel-sourcer):** staggering
+under a comically **teetering tower of mum-packed lunchboxes (便當) and grocery bags** (spring onions and
+drinks poking out, about to topple), tie flapping, **phone wedged against his shoulder** ("Ma — which stall
+next?!"), glasses askew, a delighted-but-overloaded grin — impossibly over-provisioned wherever he goes.
+Warm, self-teasing — **affectionate, not a mocking "mama's boy." No background scenery — just him and his props.**
 
 ## `[FIG-CHAR-big-eater]` — The Big Eater (Tuā-uī-ông / 大胃王)
 
-A **joyful competitive eater**, all appetite and no brakes — mid-huge-bite, chopsticks in each hand, a tower of
-empty bowls stacked beside/behind, cheeks full, eyes sparkling. Big wacky energy. Celebratory of Taiwan's
-abundance — **a lovable glutton, never gross-out.**
+A **SLIM, PETITE YOUNG WOMAN** — true to Taiwan's famous tiny-but-bottomless competitive eaters (a small
+frame with an impossibly huge appetite). **Ability-pose (Bottomless / keep all + greedy 4th):** cheeks
+bulging mid-enormous mouthful, one hand shovelling noodles with chopsticks while the OTHER **snatches a 4th
+bowl** off a towering, wobbling stack of empties; a "挑戰極限" headband, sparkling delighted eyes,
+sauce-splash motion. Joyful and celebratory of Taiwan's abundance — **never gross-out or shaming.**
 
 ## `[FIG-CHAR-influencer]` — The Influencer (Bāng-âng / 網紅)
 
