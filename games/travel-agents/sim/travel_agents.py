@@ -191,7 +191,7 @@ AMA_CAP      = int(os.environ.get("TA_AMA_CAP", "7"))          # V7 CD-LOCKED bu
 # cross-map hop, since the 4-region ring's diameter is 2). Everyone else's Travel is a flat +1 (REACH_TRAVEL).
 # This turns her go-anywhere 敬老卡 pass into engine fuel: she alone reaches the far region in ONE Travel AND
 # banks the +2 for it. Knob (default 1 = on; 0 = off → falls back to the flat +1 like everyone).
-AMA_FUEL_PER_SPACE = int(os.environ.get("TA_AMA_FUEL_PER_SPACE", "1"))  # +Follower-max per ring-space on a Travel
+AMA_FUEL_PER_SPACE = int(os.environ.get("TA_AMA_FUEL_PER_SPACE", "0"))  # DIAL-BACK (CD 2026-08-09): dropped — she overshot @6p (idx 1.43); keep the bot-mobility fix + basket-7 (the honest read). 0 = flat +1 like everyone; set >0 to re-enable the per-space buff.
 # v6.4d kit-strength dials (the "tweak ideas" sweep): 大胃王's Visit keep-amount (his glutton edge — the
 # dominant character; test nerfing 3→2) and 媽寶's Visit keep-amount (her gatherer edge — test buffing 2→3).
 DAGU_KEEP    = int(os.environ.get("TA_DAGU_KEEP", "3"))        # 大胃王 keeps N on a Visit (default 3)
