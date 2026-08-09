@@ -1,366 +1,466 @@
-# Travel Agents: Taiwan — V7 → V7-M: Follower MEEPLES redesign (DESIGN PROPOSAL)
+# Travel Agents: Taiwan — V7 → V7-M: Follower MEEPLES + VENDOR SCARCITY (SIGN-OFF-READY SPEC)
 
-> **Status: PROPOSAL ONLY.** No data, rules, or code touched. No sim run (CD-gated). This spec is for
-> the CD to sign off the new model before `bg-developer` executes the data and `bg-playtest` re-sims.
-> Canon it will amend on approval: `design/rules-draft.md` §§3–5, `components/*.csv`, `map.json`.
+> **Status: SIGN-OFF-READY SPEC.** No data, rules, or code touched. No sim run (CD-gated). This folds the
+> guardian sweep (bg-theme + bg-elegance + bg-critic, 2026-08-09) into a single locked model AND adds the
+> new **vendor-scarcity** lever the CD called for. On the CD's "go" it amends `design/rules-draft.md`
+> §§3–5, `components/*.csv`, and `map.json`, then `bg-playtest` re-sims.
 >
-> **The change (CD mandate, 2026-08-09):** replace the abstract **Followers-max DIAL** with physical,
-> collectable, colour-coded **Follower MEEPLES**. The dial "didn't feel natural"; meeples make the
-> area-majority fight legible and turn *losing* into a real tempo cost.
+> **Two coupled changes:**
+> 1. **MEEPLES (CD mandate):** replace the abstract Followers-max DIAL with physical, collectable,
+>    colour-coded **Follower meeples**. The dial "didn't feel natural"; meeples make the area-majority
+>    fight legible and turn *losing* into a real tempo cost. (Guardians GREEN-LIT this — feel/elegance/
+>    theme all improve. Locked parameters below.)
+> 2. **SCARCITY (CD decision, this pass):** the V7 sim proved the contested crowd-fight — the signature
+>    twist — fires in only **~5% of vendor claims** (`contested_frac` 3.3/5.3/4.6/4.9% at 3–6p). The CD
+>    wants a **"race AND battle"** game, not a 5%-of-the-time sideshow. The critic located the lever:
+>    **vendor scarcity** (a map/setup knob, NOT a meeple rule). §1 designs it.
 >
-> **This reopens the economy the V7 sim CLOSED.** Said plainly: the taxonomy/pacing/character bands in
-> `playtests/sim-results.md` were validated against the *dial*. This proposal changes the win-a-vendor
-> economy (win now KEEPS your meeples; loss now sends them to supply to re-collect), so those bands are
-> provisional until a fresh per-count 3–6 re-sim (scoped in §8) and the CD's flagged human 6p session.
+> **This reopens the economy the V7 sim CLOSED.** The taxonomy/pacing/character bands in
+> `playtests/sim-results.md` were validated against the *dial* at the *old* vendor availability. Both
+> changes here move the win-a-vendor economy, so those bands are provisional until the fresh per-count
+> 3–6 re-sim scoped in §9.
 
 ---
 
-## 0. Executive read (the model in a paragraph)
+## 0. Executive read (the whole model in two paragraphs)
 
-Every player owns a fixed pool of **Follower meeples in their own colour** — `max` of them, and that
-count *is* the old Followers-max ceiling, now physical (no dial, no tracked number). At any instant each
-meeple is in exactly one of three places: your character's **central supply** (uncollected), your
-**player board** (collected, idle, ready to deploy), or **on a vendor** (committed, contesting). You
-**COLLECT** meeples from your supply onto your board — chiefly on **Travel** (+1), the heir of the old
-"+1 Followers-max" ramp; this is the **pace** lever. You **DEPLOY** (the old *Promote*) by placing up to
-**2** meeples from your board onto vendor(s) you stand with — and you may **spread** them across several
-co-located vendors, not all onto one. A vendor goes to whoever has the **most meeples on it** (pure
-plurality; a tie blocks; the Big Brother 大哥 wins ties by matching — lever iii). **Win → your meeples
-come home to your board** (kept, redeploy for free next round). **Lose a contested vendor → your meeples
-on it go back to the central supply** (you must re-collect them) — this single rule *replaces the
-day/night dial-drop penalty*. Nothing else about the game (regions, ingredients, bookings, the
-deck-driven clock, tickets-only scoring) changes. The three CD-named balance levers are: **(i) `max`
-per character**, **(ii) collection pace**, **(iii) the tie-break** — and only two characters carry a
-meeple-native edge (Influencer = higher `max`; Big Brother = wins ties); the other four kits are
-ingredient/mobility-side and untouched.
+**Scarcity (the new work).** The reason the crowd-fight is rare is not the meeples and not the tie-rule —
+it is that **claiming a stall instantly conjures a substitute.** With ~1.5–2.0 face-up stalls per agent
+and *immediate* refill, a rival who wants "your" stall just takes the fresh one that pops up: opening a
+contest is −EV, so nobody does. The fix is two coordinated knobs. **(A) Slow refill — the load-bearing
+lever:** a claimed or cleared slot stays **empty** and all empty slots refill **once per round** (after
+every player has taken a turn), not instantly. This turns every stall into a non-substitutable prize for
+the rest of the round — walk away and you pay a whole Travel to reach a region that may itself be barren.
+**(B) Tighter face-up counts — the amplifier:** cut slots to ~1.0–1.33 per agent, floor **1 per region**,
+so most regions hold a single contestable stall and two co-located agents must fight or leave. Crucially,
+**sourcing is untouched** — ingredients come from the region MARKET decks, not from vendors — so the §6b
+sourcing shares should be invariant; the only economy risk is on the *sink/throughput* side (fewer/slower
+stalls → fewer total claims → Bookings harder to finish). The design keeps that risk small (per-round
+restock, not per-phase; floor 1/region) and the re-sim's dual make-or-break probe verifies it (§9).
+
+**Meeples (locked).** Every player owns a fixed pool of Follower meeples in their colour — `max` of them,
+the physical heir of the old ceiling (component count enforces it; zero tracking). A follower is always
+in one of two named zones — your **supply** (un-rallied) or **your board** (rallied, ready) — or placed
+**on a stall** (committing to a contest). **Travel** now also grows your following (take 1 follower from
+supply to your board); **Promote** sends up to 2 followers from your board onto stall(s) you stand with
+(may spread). A stall goes to whoever has the **most followers on it** (pure plurality; a tie blocks; the
+Big Brother 大哥 wins ties by matching). **Win → your followers come home to your board** (kept, redeploy
+free). **Lose a contested stall → your followers go back to YOUR OWN supply** to be re-rallied — this one
+rule replaces the day/night dial-drop. Locked parameters: field `max` **6**, Influencer 網紅 **8** / start
+**2** (no head-start), pace = Travel +1, tie-break = 大哥 matches; vendor cost = **pure most-meeples-wins,
+no threshold, `buzz_cost` dropped**; prestige Bookings retargeted to total `ingredient_cost`.
 
 ---
 
-## 1. The full ruleset for the new mechanic
+## 1. THE VENDOR-SCARCITY LEVER (the new work)
 
-### 1.1 The supply model — `max` = **how many you OWN in total**, enforced physically
+### 1.1 Why the fight is rare — and why it is a refill problem, not a count problem
 
-**`max` is the number of meeples that exist in your colour**, full stop. `(in supply) + (on board) + (on
-vendors) = max`, always. There is **no separate "board hold limit"** and **no tracked ceiling number** —
-the cap is the component count, so it needs zero bookkeeping. At setup you take exactly your character's
-`max` meeples (printed on your board) in your colour; the rest of that colour stays in the box.
+The map's own note claimed the old counts (~1.5–2.0 stalls/agent) "force collisions — the area-majority
+engine." **The sim falsified that:** `contested_frac` sat at 3.3/5.3/4.6/4.9%. The mechanism is subtle and
+worth stating precisely, because it decides which knob is load-bearing:
 
-*Why own-total, not board-capacity:* it is the faithful, physical heir of the old **Followers-max
-ceiling** ("your total committed can never pass your dial"). Board-capacity would let a player deploy an
-unbounded number over the game (only limiting the buffer); own-total keeps the exact old invariant —
-**you can never have more Followers working than your `max`** — while erasing the abstract number.
+- The fight is **local** (per-region, per-phase, among co-located agents), not global. A table-wide ratio
+  of 1.75 stalls/agent still leaves any given region with an open stall for each of the 1–2 agents standing
+  in it → they each take one → no contest.
+- **Immediate refill defeats a pure count-cut.** Even at 1 slot per region, if claiming triggers an instant
+  refill, a co-located rival simply takes the fresh card. A count-cut only bites when there is **no instant
+  substitute**. So the load-bearing lever is the **refill timing**, and the count is the amplifier.
+- Contests today only happen on **non-fungible** stalls (a specific vendor that completes a held Booking,
+  or an apex trophy) where a fresh refill is *not* a substitute. That is the ~5%. To lift it, we must make
+  **ordinary** stalls non-substitutable too — for a while.
 
-The three locations, and how meeples move between them:
+### 1.2 Lever A (primary, load-bearing): SLOW / per-round refill
+
+> **Rule.** When a stall is claimed, or cleared unclaimed at DUSK, its slot stays **empty**. At the **end of
+> each round** — after every player has taken one turn — refill all empty face-up slots from their region
+> decks. Refill is **never immediate.**
+
+- **Why it works:** within a round the board only thins. The next agent into a region cannot count on a
+  fresh substitute appearing — the stall in front of them is, for now, the only one. Walking away costs a
+  full **Travel** into a region that may itself be barren this round. That flips the −EV that kept contests
+  rare: out-committing a rival (one **Promote**, +1 follower) becomes the competitive line.
+- **Night-weighting for free:** more followers are committed at night (bigger night deck, higher-value
+  stalls) → the thinned board bites harder at night → night carries the bulk of the fights *emergently*.
+  So we **keep ONE slot table for day and night** (no separate night table) — preserving the map's existing
+  one-table elegance (bg-elegance-friendly) while still concentrating the brawl at night.
+- **Elegance honesty:** this is a net rule-*add* on the scarcity side (~2 lines: "slots stay empty; refill
+  all at end of round"). It is partially offset by the meeple swap's net *trim* (deletes the dial, the
+  day/night drop asymmetry, two vestigial columns). Flag to bg-elegance for the combined re-gauge (§10).
+
+### 1.3 Lever B (amplifier, pure data): tighter face-up counts, floor 1/region
+
+With slow refill in place, tightening counts turns "most regions hold a single stall" into a genuine
+squeeze. Concrete per-count face-up slots (DAY = NIGHT, one table):
+
+| Players | N | C | S | E | Total | Stalls/agent | Was (total) |
+|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| **3p** | 1 | 1 | 1 | 1 | **4** | 1.33 | 6 |
+| **4p** | 2 | 1 | 1 | 1 | **5** | 1.25 | 7 |
+| **5p** | 2 | 1 | 1 | 1 | **5** | 1.00 | 8 |
+| **6p** | 2 | 2 | 1 | 1 | **6** | 1.00 | 9 |
+
+**Reasoning per knob-position:**
+- **Floor 1 per region** (never 0): every region must stay alive for sourcing geography and for Bookings
+  that require that region — a 0-slot region would strand its Bookings. One slot + slow refill is the
+  tightest a region can go and still function.
+- **North keeps 2 at 4p+:** North (台北) is the start hub, everyone's turn-1 position, and carries the
+  highest-demand ingredient (Meat 22%). A single North slot at high counts would lock the hub instantly
+  and could starve the meat line; 2 gives the hub breathing room while still forcing a squeeze when 3+
+  agents cluster there.
+- **Central gets the 6p 2nd slot:** Central is the other 2-vendor-demand region (Tea + Sugar) and the
+  natural place to absorb the 6th agent without over-thinning.
+- **Held at 5 total for 5p and 6→6:** I deliberately do **not** scale slots linearly with players — the
+  whole point is demand > supply, so slots grow slower than the player count (1.33 → 1.0 stalls/agent as
+  the table fills). 6p at 1.0/agent is the sharpest squeeze and the CD's stress count.
+
+`map.json` also carries a per-region `slots_n` (the 4p HOME default the render draws). Update it to the 4p
+column: **N 2, C 1, S 1, E 1** (was N 2, C 2, S 2, E 1).
+
+### 1.4 The exact `map.json` change
+
+Replace the `vendor_slots` block (per hard constraint, this is the SPEC of the change — `bg-developer`
+executes it after CD sign-off):
+
+```json
+"vendor_slots": {
+    "_note": "face-up vendor slots per region (N/C/S/E); DAY = NIGHT (one table). V7-M SCARCITY (2026-08): counts tightened to ~1.0-1.33 stalls/agent AND refill is now SLOW (see `refill`). The V7 sim proved the old ~1.5-2.0/agent with IMMEDIATE refill left contested_frac at only 3-5%: claiming a stall instantly conjured a substitute, so opening a contest was -EV. Tighter counts + per-round (not instant) refill remove the cheap substitute and force the crowd-fight. `slots_n` on each region is the 4p HOME default for the render.",
+    "refill": "SLOW / per-round: a claimed or cleared slot stays EMPTY; refill ALL empty slots from the region decks at the END of each round (after every player has taken one turn). NEVER immediate. This is the load-bearing scarcity lever - it makes each stall a non-substitutable prize for the rest of the round.",
+    "3": {"N": 1, "C": 1, "S": 1, "E": 1},
+    "4": {"N": 2, "C": 1, "S": 1, "E": 1},
+    "5": {"N": 2, "C": 1, "S": 1, "E": 1},
+    "6": {"N": 2, "C": 2, "S": 1, "E": 1}
+},
+```
+
+And in `regions[]`: `north.slots_n` stays **2**, `central.slots_n` **2 → 1**, `south.slots_n` **2 → 1**,
+`east.slots_n` stays **1**. The bottom-band setup table on the rendered board picks these up automatically.
+
+### 1.5 The collision with the closed sourcing economy — what breaks, what holds
+
+This is the crux the CD demanded. Reasoning from the sim's closed numbers:
+
+**HOLDS — sourcing rate (gain).** Ingredients are drawn from the region **MARKET decks**, not from
+vendors. Vendor scarcity does not touch the source at all. So the §6b sourcing-by-type shares (Meat
+22–27%, Pantry 24–26%, Tea 12–15%, Seafood 14–16%, Sugar 11–13%, Veg 10–11% — all tracking demand) should
+be **invariant**. This is the anchor: if a sourcing share moves materially in the re-sim, the encoding is
+wrong, not the design.
+
+**HOLDS (with a watch) — the ingredient SINK.** Fewer/slower stalls could reduce total claims (the sink),
+but the sim shows `gain` ≫ `sink` (2–2.4×) and the binding constraint on claims was **one-action-per-turn
++ ingredient availability**, never the face-up slot *count*. Slow refill still refills (once per round),
+so total throughput is only mildly reduced (the board is thinner on average, not starved). Expected effect:
+a small dip in claims/gm, ingredients pile up a little more (supply_min rises, hand-limit `capbind` binds
+slightly more often — mild wasted sourcing, not a break).
+
+**THE REAL RISK — tie-block freezes throttling throughput.** Under scarcity, more contests → more
+tie-blocks → more **frozen** slots (a tied slot does not refill until resolved). At single-slot regions a
+frozen stall can barricade a whole region for a round or more, and a trailing kingmaker can perpetually
+re-tie a leader's Booking-critical stall to freeze it *and* strand the leader's followers (the critic's
+endgame-denial HOLE). Left unchecked this could drop Booking completion below the sim's 95–98% floor. **The
+mitigation is the pre-specified DUSK / LAST-TRAIN tie-resolver** (§8 reserve b) — scarcity makes that
+resolver load-bearing, not optional. It guarantees every frozen stall clears at each phase boundary.
+
+**WATCH — the prestige Bookings.** The retargeted prestige Bookings (§6) need enough high-cost night-marquee
+claims. Those marquees are exactly the stalls that will be fought hardest under scarcity. If apex fights
+deadlock, prestige Bookings could become hard — the re-sim tracks prestige-Booking completion specifically.
+
+**Net:** sourcing (source side) is structurally untouched and should read invariant; all risk is on the
+sink/throughput side and is bounded by (a) per-round (not per-phase) restock, (b) floor 1/region, and (c)
+the DUSK/LAST-TRAIN tie-resolver. The re-sim's job (§9) is to confirm **contested_frac goes UP for real**
+while **Booking completion and claim throughput HOLD**.
+
+### 1.6 Reserve amplifier (hold, do NOT bake): non-refilling apex marquees
+
+If the re-sim shows the **marquee/apex** fights specifically are not materialising (top-apex contested
+rate stays flat) even as overall contested_frac rises — or the CD wants the *famous-stall* drama sharpened
+— add: **tier-3 apex stalls (N06 士林大香腸, C05 逢甲名物, S06 擔仔麵, E04 石板烤肉) do not refill at all
+once claimed — gone for the game.** This makes the four trophies true one-shot prizes (a pure race-and-
+battle) while leaving the tier-1 sink stalls fungible so throughput is unaffected. Held in reserve because
+it is an extra rule and narrows the top-tier sink; trigger = flat apex-contest rate AND CD wants marquee
+drama.
+
+---
+
+## 2. THE MEEPLE RULESET (locked — keyword discipline enforced)
+
+**Keyword discipline (bg-elegance, BINDING).** The only action keywords are the existing **Travel** and
+**Promote** — we do **not** mint COLLECT or DEPLOY. There are exactly **two zone-words**, *supply* and
+*your board*; a committed follower is *on the stall* (a placed state, not a third named zone). Below,
+"grow/take/send/place" are plain-language verbs, never capitalised keywords.
+
+### 2.1 The pool model — `max` = how many you OWN, enforced physically
+
+**`max` is the number of followers that exist in your colour.** `(in supply) + (on your board) + (on
+stalls) = max`, always. There is no separate board-hold limit and no tracked ceiling — the cap *is* the
+component count, so it needs zero bookkeeping. At setup you take exactly your character's `max` followers
+in your colour; the rest of that colour stays in the box. This is the faithful physical heir of the old
+Followers-max ceiling ("your total committed can never pass your dial") with the abstract number erased.
+
+The two zones and the placed state, and how followers move:
 
 | From → To | Trigger |
 |---|---|
-| **Supply → Board** (COLLECT) | Travel (+1); Trending win (+1); 2nd-tour Rave Review (+1); the "+1 Followers-max" events (+1) |
-| **Board → Vendor** (DEPLOY) | Promote (place up to 2, may spread); certain events |
-| **Vendor → Board** (WIN / keep) | you win the vendor it sits on; or the day layer clears it unclaimed at dusk |
-| **Vendor → Supply** (LOSE / re-collect) | a *rival* wins a vendor you had meeples on; a bad-review event; Greedy Grab |
+| **supply → your board** (grow) | **Travel** (+1); Trending win (+1); 2nd-tour Rave Review (+1); the "+1" events (+1) |
+| **your board → on the stall** (commit) | **Promote** (place up to 2, may spread); certain events |
+| **on the stall → your board** (win / keep) | you win the stall it sits on; or DUSK clears it unclaimed |
+| **on the stall → your OWN supply** (lose / re-rally) | a *rival* wins a stall you had followers on; a bad-review event; Greedy Grab |
 
-### 1.2 Setup
+> **Wording-rail honesty guard (bg-theme, BINDING).** On a loss your followers disperse back to **your own
+> colour's supply** to be re-rallied — they do **NOT** defect *to* the rival. The flavour line "the crowd
+> drifts to the rival's stall" describes the **stall's new allegiance**, not a transfer of your meeples.
+> Keep the word "meeple" out of all flavour voice — always "followers / your crowd."
 
-- Each player takes their character's `max` meeples in their colour, placing **`start` of them on their
-  board** (baseline **2**; Influencer **2** — see §3) and the rest in their colour's **central supply**
-  (a labelled tray/zone by the board — six small colour bins, or one shared tray sorted by colour).
-- Everything else in setup is unchanged (§2 of the rules-draft): map, markets, vendor slots, DAY/NIGHT
-  Booking decks with their boundary cards, characters, Larders.
-- The board's per-count SETUP chart's "Followers supply" line becomes **"meeples per colour" = your
-  character's `max`** (it is per-player, not a shared scaled pool — so the chart entry simplifies).
+### 2.2 Setup
 
-### 1.3 The turn (one action; unchanged list, two re-expressed)
+- Each player takes their character's `max` followers in their colour, placing **`start` of them on their
+  board** (baseline **2**; Influencer 網紅 also **2** — no head-start, §4) and the rest in their colour's
+  **own supply** (a labelled per-colour bin/zone by their board — six colour bins, or one shared tray
+  sorted by colour). *There is no shared/central follower pool — supply is per player.*
+- Everything else in setup is unchanged (rules-draft §2): map, market decks, the **tightened** vendor
+  slots (§1.3), DAY/NIGHT Booking decks with their boundary cards, characters, Larders.
+- The per-count setup line on the board becomes **"followers per colour = your character's `max`"** (per
+  player, not a shared scaled pool — the old shared-supply line is retired).
+
+### 2.3 The turn (one action; unchanged list, two re-expressed)
 
 - **VISIT / CONVENIENCE STORE / BOOK a tour** — unchanged.
-- **TRAVEL** — move + reveal, then **COLLECT 1 meeple** from your supply to your board (was: raise dial
-  +1). If your supply is empty you're at full pool; you still move.
-- **PROMOTE (DEPLOY)** — place **up to 2** of your meeples **from your board** onto vendor(s) you stand
-  with. You may split the 2 across two co-located face-up vendors (**spread**) or stack both on one. If
-  your board holds fewer than 2, place what you have. **You cannot deploy meeples you have not
-  collected** — an empty board means Promote does nothing, exactly as an under-raised dial once blocked
-  further commitment. (This Travel→collect / Promote→deploy coupling is the faithful heir of the old
-  Travel-raises-dial / Promote-commits coupling.)
-- **BRIBE a vendor** — resolve the crowd (§1.4).
+- **TRAVEL** — move + reveal, then **grow your following: take 1 follower from your supply to your board**
+  (was: raise dial +1). If your supply is empty you are at full pool; you still move.
+- **PROMOTE** — place **up to 2** of your followers **from your board** onto stall(s) you stand with. You
+  may split the 2 across two co-located face-up stalls (spread) or stack both on one. If your board holds
+  fewer than 2, place what you have. **You cannot place followers you have not yet grown** — an empty board
+  means Promote does nothing, exactly as an under-raised dial once blocked commitment.
+- **BRIBE a stall** — resolve the crowd (§2.4).
 
-### 1.4 Win / lose resolution flow (colours visible, plurality)
+### 2.4 Win / lose resolution (colours visible, plurality)
 
-To **Bribe** a vendor you stand with:
+To **Bribe** a stall you stand with:
 
-1. **Majority check** — you must have **strictly more of your meeples on it than any single other agent
-   has** (an outright plurality). *A tie claims nothing* (see below). **Big Brother 大哥** needs only to
-   **match** the highest present (lever iii).
-2. **Pay ingredients** — its recipe minus your region-icon discounts (and the Councillor's home
-   discount / away tax), exactly as today. (There is **no meeple threshold** — see §5.)
-3. **Take the vendor** onto your tour; complete any held Booking it satisfies.
-4. **Your meeples on it → your board** — kept, redeploy for free later. (Was: return to supply.)
-5. **Each losing agent's meeples on that vendor → the central supply** — they must re-collect them.
-   This is the **entire lost-war penalty** (replaces the −1/−2 dial-drop).
-6. **Refill** the vendor slot.
+1. **Majority check** — you must have **strictly more of your followers on it than any single other agent**
+   (an outright plurality). *A tie claims nothing.* **Big Brother 大哥** needs only to **match** the highest
+   present (lever iii).
+2. **Pay ingredients** — its recipe minus your region-icon discounts (Councillor home discount / away tax
+   as today). **There is no follower threshold** — the ingredient cost is the only gate (§5).
+3. **Take the stall** onto your tour; complete any held Booking it satisfies.
+4. **Your followers on it → your board** — kept, redeploy free later.
+5. **Each losing agent's followers on that stall → their OWN colour's supply** — they must re-grow them.
+   This is the entire lost-contest penalty (replaces the −1/−2 dial-drop). *Losers go home to their own
+   supply — they never join the winner.*
+6. **Do NOT refill the slot now** — it stays empty until the end-of-round refill (§1.2).
 
-- **A tie just blocks.** Level for the biggest crowd (and no Big Brother present to break it)? No one
-  claims it; every agent's meeples **ride** (stay on the vendor). Promote again to take the lead, or
-  walk away and leave them committed.
-- **Uncontested** = you have majority with even a single meeple (1 > 0); you may claim if you can pay
-  the ingredients. (Same as the old model; the ingredient cost is the real gate — see §5.)
+- **A tie just blocks.** Level for the biggest crowd (no Big Brother present to break it)? No one claims;
+  every agent's followers **ride** (stay on the stall). Promote again to take the lead, or walk away and
+  leave them committed. *(At DUSK / LAST-TRAIN a tie is force-resolved — §8 reserve b.)*
+- **Uncontested** = you have a majority with even a single follower (1 > 0); claim it if you can pay the
+  ingredients.
 
-### 1.5 Spread & re-commit across rounds
+### 2.5 Spread, re-commit, and the clock
 
-- **Spread** is placing your Promote's meeples on different co-located vendors. Spreading *across
-  regions* still requires travelling — so the per-region face-up count (North 2, others 1–2 by player
-  count) naturally bounds how thin you can spread. This continues the existing rule (old Promote already
-  read "onto vendor(s)") — meeples just make it legible.
-- **Re-commit:** meeples on an unresolved vendor stay put between your turns; you add to them with
-  further Promotes. You never *move* a committed meeple sideways — it stays until the vendor is claimed
-  (→ winner's board / losers' supply) or the layer clears at dusk.
-
-### 1.6 Interaction with the DUSK / LAST TRAIN clock and the day→night flip
-
-- **At 黃昏 DUSK** (day Booking deck exhausted): unclaimed day vendors are cleared as today. **Meeples
-  sitting on those cleared, unclaimed vendors return to their owners' BOARDS** — the stall simply closed
-  un-won; no contest was lost, so no one is sent to supply. (Kept, non-punishing; redeploy at night.)
-- **At 末班車 LAST TRAIN** (game end): meeples score nothing and are irrelevant; leave them where they
-  lie.
-- The clock, decks, and boundary cards are entirely unchanged (meeples don't touch pacing).
+- **Spread** = placing a Promote's followers on different co-located stalls. Spreading *across regions*
+  still needs travelling, so the per-region face-up count (§1.3) bounds how thin you can spread.
+- **Re-commit:** followers on an unresolved stall stay put between your turns; add to them with further
+  Promotes. You never move a committed follower sideways — it stays until the stall is claimed (→ winner's
+  board / losers' own supply) or the layer clears at DUSK.
+- **黃昏 DUSK:** unclaimed day stalls clear as today; followers on those cleared, *unclaimed* stalls return
+  to their owners' **boards** (the stall closed un-won; no contest was lost, so no one goes to supply). A
+  tied contested stall at DUSK is force-resolved first (§8 reserve b).
+- **末班車 LAST TRAIN:** a tied contested stall is force-resolved (§8 reserve b); then followers score
+  nothing and are left where they lie. The deck-driven clock, decks, and boundary cards are unchanged.
 
 ---
 
-## 2. Re-expressing everything the dial did — before → after
+## 3. The three CD-named balance levers (locked)
 
-Nothing silently vanishes. Every dial function maps to a meeple function:
+**Field baseline:** `max` **6**, start-on-board **2**, pace = Travel +1 (+ Trending / 2nd-Rave / the three
+"+1" events, each +1), tie-break = tie blocks.
 
-| # | Old (dial) | New (meeples) | Note |
-|---|---|---|---|
-| **(a)** | Base **Travel = +1 Followers-max** (raise the ceiling) | **Travel = COLLECT 1** meeple (supply→board) | 1:1. The ramp is now the physical accumulation of your pool. Ceiling-growth and collect merge into one act. |
-| **(b)** | **Promote = place a fixed 2** Followers from supply onto vendor(s), capped by dial | **Promote = DEPLOY up to 2** meeples from your **board** onto co-located vendor(s); may spread | Same rate; the new precondition is that they must already be collected (board buffer). |
-| **(c)** | **Influencer 網紅 start-dial 4** (+ floor-4 sink-immunity) | **Influencer `max` = 8** (owns 2 more than the field); start-on-board **2** like everyone | Re-expressed as the CD named: a higher cap. The deeper pool is the soft heir of floor-4 (losses sting proportionally less). Head-start deliberately dropped — see §3. |
-| **(d)** | **Trending win → +1 Followers-max** | **Trending win → COLLECT 1** meeple | 1:1 (EV-N09 reword). |
-| **(e)** | **Big Eater 大胃王 Greedy Grab → keep a 4th ingredient, dial −1** | Greedy Grab → keep the extra, **return 1 of your meeples (board or vendor, your choice) to supply**; if you have none out, you may not Greedy-Grab | Mirrors the −1 tempo cost as a re-collect cost. |
-| **(f)** | **Lost-war dial-drop −1 day / −2 night** (floor = start) | **Lose a contested vendor → your meeples on it → supply** (re-collect) | The day/night severity is **dropped as an explicit rule** — night losses hurt more *emergently* (you commit more meeples at night, so more return to supply). Bad-review events (EV-N15/16) become "return 1 meeple to supply." Net elegance trim. |
-| **(g1)** | **Rave Review, 2nd tour → +1 Followers-max** | 2nd tour → **COLLECT 1** meeple | 1:1. 4th-tour boon (ingredient + next Bribe −1) unchanged. |
-| **(g2)** | Kits: **里長伯** home −1 / away +2 · **媽寶** Travel-draw-2 · **大胃王** keep-3 · **大哥** wins ties · **阿嬤** go-anywhere + Maintenance-immune | Ingredient- and mobility-side kits are **untouched** (never referenced the dial). Only Influencer (c) and Big Brother tie-break carry meeple-native edges. | 大哥's tie-win now reads "match the most meeples"; 阿嬤/媽寶/里長伯/大胃王 as today, plus (e) for the Big Eater's greed sink. |
+*Why `max` 6:* the old ceiling ended ~7.5 but peak commitment (`max_committed`) was only ~3–4.5 and the cap
+rarely bound. Followers are now **kept on wins** (more efficient than the old return-and-re-Promote), so an
+equal ceiling would loosen the fight; **6** is deliberately tighter than the old effective ~7.5 — enough to
+spread 2+2+2 or stack 3+3 across a real fight, tight enough that you cannot flood every stall. `max` is the
+#1 re-sim knob (sweep 5 / 6 / 7).
 
-**Watch surfaced by (g2):** Travel now *collects a meeple*, and the **Homebody 媽寶** is the
-travel-heaviest kit (her whole engine) — she incidentally ramps her Follower pool faster than the field.
-She already ran warm (idx 1.30→1.45 at 4–6p). Flagged in §7 and §8.
-
----
-
-## 3. First-pass REBALANCE MODEL (the three CD levers)
-
-**Field baseline:** `max` **6**, **start-on-board 2**, collection pace = **Travel +1** (plus Trending /
-2nd-Rave / the three dial-gain events, each +1), tie-break = **tie blocks**.
-
-*Why `max` 6:* the old ceiling ended ~7.5 (`reach_end`) but peak commitment was only ~3–4.5
-(`max_committed`) and the cap rarely bound. Meeples are now **kept on wins** (more efficient than the old
-"return to supply, re-Promote"), so an equal ceiling would loosen the fight. **6** is deliberately tighter
-than the old effective ~7.5 — enough to spread 2+2+2 or stack 3+3 across a real fight, tight enough that
-you cannot flood every vendor. `max` is the **#1 re-sim knob** (sweep 5 / 6 / 7).
-
-*Why start-on-board 2:* the old start-dial 2 let you commit 2 on turn one; 2 pre-collected meeples give
-the same immediate Deploy. Empty-board-can't-Promote ≈ old low-dial-can't-commit.
-
-| Character | `max` (i) | start on board | collection pace (ii) | tie-break (iii) | meeple-native edge? |
+| Character | `max` (i) | start | pace (ii) | tie-break (iii) | meeple-native edge? |
 |---|:--:|:--:|---|---|---|
 | **Old Councillor 里長伯** | 6 | 2 | baseline | tie blocks | No — home-discount/away-tax is ingredient-side |
-| **Homebody 媽寶** | 6 | 2 | baseline *(travels most → de-facto faster collect — **WATCH**)* | tie blocks | No — Travel-draw sourcer |
-| **Big Eater 大胃王** | 6 | 2 | baseline; **Greedy Grab returns 1 meeple to supply** | tie blocks | No — the greed sink is the only touchpoint |
-| **Influencer 網紅** | **8** | 2 | baseline | tie blocks | **Yes — higher `max`** (the start-4 edge, re-expressed) |
+| **Homebody 媽寶** | 6 | 2 | baseline *(travels most → de-facto faster grow — **WATCH**)* | tie blocks | No — Travel-draw sourcer |
+| **Big Eater 大胃王** | 6 | 2 | baseline; **Greedy Grab returns 1 follower to own supply** | tie blocks | No — the greed sink is the only touchpoint |
+| **Influencer 網紅** | **8** | 2 | baseline | tie blocks | **Yes — higher `max`** (deeper pool; §4) |
 | **Big Brother 大哥** | 6 | 2 | baseline | **WINS ties (match the most)** | **Yes — the tie-break** |
-| **Globetrotter 阿嬤** | 6 | 2 | baseline | tie blocks | No — go-anywhere/Maintenance-immune is mobility-side |
-
-**Influencer reasoning (the one genuine judgement call):** the CD said re-express start-4 as a *higher
-cap*. Her old edge was two-part — start-dial-4 (early tempo) **and** floor-4 (sink-immunity, which the
-critic flagged as *possibly too strong*). I propose **`max` 8, start 2**: her edge becomes a **deeper
-late-game pool** (she can keep 8 meeples working once collected; the field caps at 6), which is the soft
-heir of floor-4 *without* the exception, and I **drop the early head-start** so she isn't double-buffed
-onto an already top-of-band kit whose "goes last" flaw is secretly a perk on an open board. Net: she
-becomes a coherent **late-game** character (goes-last + deep pool both bite late). Trim/buff levers held
-in reserve: if COLD, add start 3–4; if HOT, `max` 7.
-
-**What the re-sim should check:**
-- Six-character band re-closes across 3–6p (esp. 4p and 6p stress), idx spread comparable to the closed
-  0.20–0.26.
-- **Influencer** (`max` 8) does not overshoot; **Big Brother** (match-under-spread, §7) does not
-  overshoot; **Homebody** (Travel-collect compounding) does not overheat.
-- **Runaway brake:** does *win-keeps-meeples* snowball the leader? (score margin, leader-change count,
-  lost-war frequency vs the old 0.32→1.00/gm).
-- **Contested frac** under spreading — does spread raise collisions (the goal) or scatter them below the
-  old ~5%?
-- Sourcing/pacing bands (§6/§6b) should be **stable** — meeple-independent — and serve as the anchor
-  that the non-meeple economy is untouched.
+| **Globetrotter 阿嬤** | 6 | 2 | baseline | tie blocks | No — go-anywhere / Maintenance-immune is mobility-side |
 
 ---
 
-## 4. Vendor cost translation — the crux
+## 4. Influencer 網紅 — the one judgement call (locked A), re-expressed as reach/viral
 
-**Recommendation: pure MOST-MEEPLES-WINS, no fixed threshold. Retire `buzz_cost`.**
+**Locked: `max` 8, start 2 (no head-start).** Her old edge was two parts — start-dial-4 (early tempo) and
+floor-4 (sink-immunity, critic-flagged as possibly too strong). We re-express it as a single clean edge: a
+**deeper pool** — she can keep **8** followers working once grown while the field caps at 6 — the soft heir
+of floor-4 *without* the exception, and we drop the early head-start so she isn't double-buffed.
 
-The V7 rules already resolve a vendor by **plurality** ("strictly more committed Followers than any
-rival"), *not* by clearing a per-vendor number. Confirming this in the data: **`buzz_cost` = 2 for all
-24 vendors and is referenced nowhere in `rules-draft.md`.** It is vestigial (a fossil of the pre-V7
-"≥2-more-than-rival margin"). So the honest translation of "the closed economy" is: **the follower fight
-is purely relative — out-commit your rivals — and a vendor's real cost is its INGREDIENTS
-(`ingredient_cost`, unchanged).**
+**Felt identity (bg-theme, re-expressed):** the Influencer is **reach / viral — she commands the biggest
+crowd and arrives fashionably late**, not a slow grinder. Her deep pool is *the size of her following*;
+"goes last" is *fashionably late* — she reads the room, then drops the largest crowd on the stall that
+matters. Late-game character: goes-last + deep pool both bite at the end.
 
-Keeping it pure-plurality:
-- **preserves the exact economy the sim closed** (which never used a threshold);
-- keeps the fight **legible at a glance** — count coloured meeples, no hidden number to clear;
-- adds **no per-vendor number** for players to parse against their pool.
-
-→ **Drop `buzz_cost`** alongside `draw` (§5). The meeple count needed to win is emergent (rival + 1;
-Big Brother = rival).
-
-*Considered and rejected:* a **minimum-N-to-claim threshold** (e.g. "≥2 meeples to win even
-uncontested"). It would change the closed economy (uncontested vendors currently fall to a single
-Follower) and add a number to track. Hold it **in reserve** only if the re-sim shows the 1-meeple
-uncontested sweep (§7) is dominant — but the ingredient cost is expected to be the true throttle (you
-cannot win vendors faster than you can source their recipes), so I do not recommend it up front.
+*Reserve:* if she reads **hot** in the re-sim, drop `max` **8 → 7** (§8 reserve c). If she reads **cold**,
+add start 3.
 
 ---
 
-## 5. Draw retirement + prestige-booking re-target
+## 5. Vendor cost (locked A): pure most-followers-wins, no threshold
 
-**Drop the `draw` column** from `vendors.csv` (and the DRAW references in the art docs, per the mandate).
+The V7 rules already resolve a stall by **plurality** ("strictly more committed followers than any rival"),
+not by clearing a per-vendor number. Confirmed in data: **`buzz_cost` = 2 for all 24 vendors and is
+referenced nowhere in `rules-draft.md`** — vestigial. So:
 
-`draw` (人氣 popularity) was a per-vendor prestige number that tracked tier/cost almost exactly (day
-foods 1–2 & cost 1; night "both" 5–6 & cost 3; apex 6–8 & cost 4–5). The three prestige Bookings ask you
-to **accumulate high-prestige (pricey, marquee) vendors** as a summed-value axis, distinct from the
-count / coverage / pair Bookings.
+- **DROP `buzz_cost`.** The follower fight is purely relative (out-commit your rivals); a stall's real cost
+  is its **ingredients** (`ingredient_cost`, unchanged). The count needed to win is emergent (rival + 1; Big
+  Brother = rival).
+- Preserves the exact economy the sim closed (which never used a threshold), keeps the fight legible (count
+  coloured followers, no hidden number), and adds no per-vendor number to parse.
 
-**Recommended surviving metric: total `ingredient_cost` of your won vendors** — the tightest structural
-heir (both rise with tier), a metric that *survives* on every vendor, and it reflavours cleanly from
-"popularity 人氣" to **"the priciest, most-sought tables"** (expensive marquee dishes *are* the
-prestigious ones). This keeps the three as the game's **"go tall on value"** axis.
+*Reserve (hold):* a minimum-N-to-claim threshold. It would change the closed economy (uncontested stalls
+currently fall to a single follower) and add a number to track. Hold **only** if the re-sim shows the
+1-follower uncontested sweep is dominant — but the ingredient cost is expected to be the true throttle.
 
-| Booking | Old target | New target | Difficulty check |
+---
+
+## 6. Draw retirement + prestige-Booking retarget (locked A)
+
+**Drop the `draw` column** from `vendors.csv` (and DRAW references in the art docs). The three prestige
+Bookings retarget to **total `ingredient_cost` of your won stalls** — the tightest structural heir (both
+rise with tier), survives on every vendor, and reflavours cleanly from "popularity 人氣" to "the priciest,
+most-sought tables."
+
+| Booking | Old target | New target | Check |
 |---|---|---|---|
-| `d_prestige8` (day, val 4) | `draw_total_day >= 8` | **`ingredient_cost_day >= 4`** | day vendors are all cost 1, so ≈ 4 daytime vendors — faithful to draw≥8 (≈4–5 day stalls). Reflavour "the daytime spots worth queueing for." |
-| `n_prestige14` (night, val 6) | `draw_total >= 14` | **`ingredient_cost_total >= 9`** | night draw ≈ cost+2/vendor, so draw14 ≈ ~3 marquees ≈ cost ~8–9 → **9** forces leaning into pricey night stalls. |
-| `g_prestige12` (night, val 6) | `draw_total >= 12` | **`ingredient_cost_total >= 7`** | draw12 < draw14 → set 7 < 9, preserving the relative easier target (≈2 marquees). |
+| `d_prestige8` (day, val 4) | `draw_total_day >= 8` | **`ingredient_cost_day >= 4`** | day stalls all cost 1 → ≈ 4 day stalls (faithful to draw≥8). "The daytime spots worth queueing for." |
+| `n_prestige14` (night, val 6) | `draw_total >= 14` | **`ingredient_cost_total >= 9`** | night draw ≈ cost+2/vendor → draw14 ≈ cost ~8–9 → **9** forces leaning into pricey night stalls. |
+| `g_prestige12` (night, val 6) | `draw_total >= 12` | **`ingredient_cost_total >= 7`** | draw12 < draw14 → 7 < 9, preserving the relatively easier target (≈2 marquees). |
 
-*Flavour note:* to hit ≥9 you effectively must include night marquees (there aren't enough day slots to
-reach 9 on cost-1 stalls), so cheap-vendor-spam can't satisfy the tall targets — the "揮金如土 money no
-object / marquee" flavour holds.
-
-*Alternatives considered:* **vendor count** (too blunt — loses the prestige/tall flavour, collides with
-the collection Bookings); **regions spanned** (a different axis, already the coverage Bookings);
-**most-Followers-committed** (a live meeple-native idea, but transient and unscoreable at game end —
-rejected). If the CD prefers maximum simplicity over flavour, **vendor-count** thresholds (day ≥4 / total
-≥5 / total ≥4) are the fallback.
+To hit ≥9 you must include night marquees (not enough day slots to reach 9 on cost-1 stalls), so
+cheap-stall-spam can't satisfy the tall targets — the "揮金如土 money-no-object / marquee" flavour holds.
+**Note the interaction with scarcity (§1.5 WATCH):** these targets require winning marquees, which are the
+hardest-fought stalls under scarcity — re-sim tracks their completion.
 
 ---
 
-## 6. Self red-team (hand these to `bg-critic`)
+## 7. Self red-team (for `bg-critic` — reconfirmed under scarcity)
 
-Degenerate-play risks I am introducing by reopening a closed economy **and** adding spread + kept-on-win:
+The guardian critic already downgraded #1 (runaway) and reframed the goal (→ scarcity, now designed). The
+live risks, sharpened by scarcity:
 
-1. **★ Weakened runaway brake (biggest economy shift).** The old brake was "win → Followers to supply →
-   you must re-Promote each time." Now **win keeps your meeples on your board → redeploy for free.** A
-   serial winner cycles their whole pool at no re-cost while a loser keeps dumping to supply and
-   re-collecting. This can **snowball the leader** — the exact brake the V7 close relied on (the fight
-   being undiscounted and re-paid) is softened. *Top re-sim watch.*
-2. **★ Tie-block deadlock-vacuum with visible colours.** Ties block (Big Brother aside). Open meeple
-   counts make it cheap and deliberate to **match a rival to freeze a key vendor nobody can take** —
-   spite/denial. At a Big-Brother table others can't freeze *him*, but everyone can freeze everyone
-   else; end-game key vendors may never resolve.
-3. **★ Big Brother match-to-win under spreading.** He needs only to *match*. With spread + open info he
-   can drop **1 meeple onto many vendors** and win each tied-or-uncontested one — cheap omnipresent
-   contesting that is stronger under spreading than in the old single-pile model. (He was already
-   top-of-band.)
-4. **1-meeple uncontested sweep.** No threshold + kept-on-win means winning uncontested vendors costs a
-   single meeple each, redeployed free. Could trivialise vendor accumulation — throttled *only* by
-   ingredient cost (the intended gate; confirm in sim).
-5. **Last-committer / minimum-overcommit snipe.** Open counts + spread let the last player in a round
-   place exactly rival+1 to steal a contested vendor for minimal meeples. The **Influencer's "goes last"
-   flaw becomes a sniping perk** on the open board (prior critic flag, now sharper with meeples).
-6. **Kingmaking-by-denial at 5–6p.** An out-of-contention player tie-blocks or out-commits to deny the
-   leader a booking-critical vendor, choosing the winner. Colours make targeted denial legible and easy;
-   the meeple-to-supply cost is small if they merely tie-block (1 meeple to match).
-7. **Homebody collection-compounding** (from §2): Travel-collect rewards her travel-heavy engine twice.
-8. **Idle-board-eats-cap feel-bad / spread scatters the fight below the old ~5% contested** — either
-   direction is possible; sim + table only.
-
-**Top 3 to feature:** #1 (weakened runaway brake), #2 (tie-block deadlock with visible colours), #3
-(Big Brother match-under-spread) — plus #4/#5 as the sniping cluster.
+1. **Tie-block deadlock-vacuum — now MORE likely.** Scarcity + visible colours make it cheap to match a
+   rival and freeze a single-slot region's stall. *Mitigation baked into the plan:* the DUSK/LAST-TRAIN
+   tie-resolver (§8 reserve b) is now **load-bearing**, not optional.
+2. **Endgame denial + follower-stranding — the rules HOLE, worsened by scarcity.** A trailing kingmaker
+   re-ties a leader's Booking-critical single stall to freeze the Booking and strand ~half the leader's
+   pool. Same mitigation (reserve b).
+3. **Throughput throttle → Bookings uncompletable.** Fewer/slower stalls could drop Last-Train completion
+   below the 95–98% floor. *The make-or-break sink guard in §9.*
+4. **Big Brother 大哥 scales with contest frequency.** His match-to-win edge gets stronger the more the
+   fight happens — and scarcity makes it happen more. Reserve = night-scope his tie-win (§8 reserve a).
+5. **Influencer 網紅 goes-last + deep pool = a sniping double-buff** on exactly the axis scarcity amplifies.
+   Reserve = `max` 7 (§8 reserve c).
+6. **Homebody 媽寶 grow-compounding** — Travel now grows her following, and she travels most (mild).
 
 ---
 
-## 7. Precise "what changes in DATA" list (for `bg-developer` LATER — do NOT execute now)
+## 8. Pre-specified RESERVES (do NOT bake — each with its trigger)
 
-- **`characters.csv`**
-  - Add columns **`max`** and **`start_meeples`**. Field: `max=6, start_meeples=2`. **Influencer 網紅:
-    `max=8, start_meeples=2`.**
-  - Recode `ability_code` **`start_max_4` → `max_8`** (or a generic `max`/`start` pair the render reads);
-    rewrite the Influencer ability text: dial-starts-4 → **owns 8 meeples (field owns 6)**, drop the
-    floor-4 wording.
-  - **Big Eater 大胃王** effect: greed sink "dial −1" → **"return 1 of your meeples to supply."**
-  - Scrub "Followers-max / dial" from every `ability`/`blurb`/`effect` string → "Follower meeples / your
-    pool." No kit *values* change for 里長伯 / 媽寶 / 大胃王(ingredient) / 大哥 / 阿嬤.
-- **`vendors.csv`** — **DROP `draw`**; **DROP `buzz_cost`** (both vestigial under the new model). Keep
-  `ingredient_cost`, `icon`, `trending`, `recipe`, tier, phase, etc. unchanged.
-- **`bookings.csv`** — retarget the 3 prestige rows (§5): `d_prestige8` → `ingredient_cost_day>=4`;
-  `n_prestige14` → `ingredient_cost_total>=9`; `g_prestige12` → `ingredient_cost_total>=7`. Reword each
-  `effect` from "Draw (人氣)" to the cost/marquee flavour; keep `value`, ids, art_note.
-- **`tokens.csv`**
-  - **Replace** the single grey `followers` row (qty 60, one colour) with **six per-colour Follower
-    meeple entries** matching the pawn colours (pawnA–F): provide **8 per colour = 48 meeples** (so any
-    colour can play the Influencer's `max` 8; other characters simply use 6).
-  - **DROP the `dial` row** (no more dial).
-  - Keep `trending`, `mkTours`, `hsrClosed`, `pileWin`, `pileLose`, pawns.
-- **`events.csv`**
-  - `EV-D09 / EV-N13 / EV-N14` (+1 Followers-max) → **collect 1 meeple (supply→board).**
-  - `EV-N09` Gone Viral / Trending win → **collect 1 meeple.**
-  - `EV-N15 / EV-N16` bad-review / mix-up (dial-drop) → **return 1 of your meeples (board or vendor) to
-    supply** (keep the "crowd drifts to a rival" wording rail — binding).
-  - `EV-N08` (place 2 Followers on co-located vendor) → **deploy 2 meeples from your board** (place what
-    you have if short). `EV-N11` (next Promote places +1) → **your next Promote deploys +1 meeple (3).**
-  - Scrub "Followers-max / dial" everywhere → meeple/pool wording.
-- **`map.json`** — replace the shared scaled "Followers supply" with a **per-colour meeple supply zone**
-  (six bins); the per-count SETUP chart line becomes "meeples per colour = your character's `max`";
-  remove any dial-track element.
+These are specified now so the re-sim can turn them on cleanly, but they are **not** in the baseline data.
 
-**Not data (separate passes, flag on hand-off):** `rules-draft.md` §§3–5 rewrite (dial → meeple pool;
-collect/deploy; win-keeps/lose-to-supply; FAQ dial questions) is an **editorial pass** (`bg-elegance` /
-`bg-rulebook`). The player-board **dial zone → collected-meeple pool zone** and the supply tray are
-**`bg-infodesign`**. Neither touches values.
+| # | Reserve | Exact change | Trigger condition |
+|---|---|---|---|
+| **a** | **大哥 night-scope** | Big Brother wins ties **at night only** (day ties block for him too) | Re-sim shows 大哥 `idx` above band (> ~1.10 relative spread) — expected to worsen as contests get more frequent under scarcity (sim-proven 1.25 → in-band when night-scoped). |
+| **b** | **Endgame-tie resolver** (closes the stranding/denial HOLE — **load-bearing under scarcity**) | At **DUSK** and at **LAST TRAIN**, any tied contested stall force-resolves to **most followers, then earliest committer**; that agent claims it (pays ingredients if able), losers → own supply | Always specified as the phase-boundary rule (one FAQ line). Fires whenever a contested stall is still tied when DUSK / LAST-TRAIN triggers. Prevents perpetual re-tie freezes and permanent stranding. |
+| **c** | **Influencer 網紅 `max` 7** | Drop her pool 8 → 7 | Re-sim seat-delta / `idx` shows 網紅 above band (reads hot). |
+| **d** | **Non-refilling apex marquees** (§1.6) | Tier-3 apex stalls (N06/C05/S06/E04) never refill once claimed | Overall contested_frac rises but the *apex* contested rate stays flat AND the CD wants the famous-stall brawl sharpened. |
+| **e** | **`max` knob** | Field `max` 5 or 7 (sweep) | Re-sim: if the fight over-floods (too many followers per stall) → 5; if it under-fires / can't spread → 7. |
 
 ---
 
-## 8. Scope of the re-sim I would want (NOT run — CD-gated)
+## 9. Re-sim scope (NOT run — CD-gated ~50 min; CD signs off THIS spec first)
 
-This reopens the win-a-vendor economy, so re-run the standard V7 rig **per-count 3–6, N≥250/seating**,
-plus meeple-specific probes:
+Two changes reopen the win-a-vendor economy (meeples + scarcity), so re-run the standard V7 rig **per-count
+3–6, N≥250/seating**, with these probes.
 
-- **Encode:** meeples as a per-player pool (supply/board/vendor); Travel = collect 1; Promote = deploy 2
-  from board (spread allowed); win → board; lost-contest → supply; `max` 6 (Influencer 8), start 2; Big
-  Brother match; Greedy-Grab & bad-review = return 1 to supply; Trending / 2nd-Rave / dial-events =
-  collect 1. Retire `buzz_cost` / `draw` (plurality + cost-based prestige Bookings).
-- **Anchor probes (must stay stable — meeple-independent):** sourcing-by-type vs demand (§6b),
-  night:day ratio, Last-Train completion %, turns/player, tickets-only stays dead.
-- **New / reopened probes:** six-character band 3–6p (Influencer/Big-Brother/Homebody watch);
-  **contested_frac** under spread; **runaway** (leader margin, leader-change frequency, lost-war/gm);
-  **1-meeple uncontested-sweep rate**; **`max` knob sweep 5/6/7**; deadlock/tie-block frequency proxy.
+**Encode:** followers as a per-player pool (own supply / board / on-stall); Travel = grow 1; Promote = place
+up to 2 from board (spread allowed); win → board; lost contest → own supply; `max` 6 (網紅 8), start 2; 大哥
+matches; Greedy-Grab & bad-review = return 1 to own supply; Trending / 2nd-Rave / "+1" events = grow 1.
+Retire `buzz_cost` / `draw` (plurality + cost-based prestige Bookings). **Scarcity:** tightened slot counts
+(§1.3) + **slow refill (empty until end-of-round restock)**. Have reserves a–e switchable.
+
+**★ MAKE-OR-BREAK PROBE #1 — does the battle actually happen more (the whole point):** `contested_frac`
+must go **UP** toward roughly **2–3× the old 3–5%** (target ~10–15%). **Report the numerator and
+denominator separately** — absolute contested-claims/gm AND total claims/gm — to prove the rise is **more
+real fights** (numerator up), not a throughput artifact (denominator collapsing). If contested_frac rises
+only because total claims fell, the scarcity failed and we escalate to reserve d / a tighter refill (phase-
+boundary).
+
+**★ MAKE-OR-BREAK PROBE #2 — sourcing/throughput health guard (the economy must survive the scarcity):**
+- **Sourcing shares (§6b) stay INVARIANT** — Meat/Pantry/Tea/Seafood/Sugar/Veg within ~±2pts of the closed
+  values (they are market-deck-driven; movement = encoding error).
+- **Last-Train completion ≥ ~90%** and **turns/player ~26–32** (Bookings still finish; no grind).
+- **claims/gm holds** (a mild dip is fine; a collapse means the sink is throttled → back off counts or
+  soften refill).
+- **Prestige-Booking completion** specifically (the marquee targets vs the marquee fights).
+- **gain vs sink, supply_min, capbind** — confirm ingredients don't overflow into dead sourcing.
+
+**New / reopened balance probes:** six-character band 3–6p (Influencer / Big Brother / Homebody watch);
+runaway (leader margin, leader-change frequency, lost-contest/gm); 1-follower uncontested-sweep rate;
+`max` knob sweep 5/6/7; **tie-block / frozen-slot frequency** (does the deadlock-vacuum bite? does reserve
+b clear it?); Big Brother idx under night-scope (reserve a); Influencer idx under `max` 7 (reserve c).
+
+**Sequencing (critic's rec B):** run this scoped re-sim FIRST, then the human 6p judges fun / denial-feel /
+"did the scrum materialise."
 
 ---
 
-## 9. Decisions for the CD (A/B/C)
+## 10. Precise DATA changes (for `bg-developer` LATER — do NOT execute now)
 
-1. **Influencer's edge** — **(A, rec)** `max` 8 / start 2 (deeper late pool; no head-start double-buff) ·
-   (B) `max` 8 / start 4 (pool + early tempo, faithful to both old halves but risks overshoot) · (C)
-   `max` 7 / start 3 (split the difference).
-2. **Vendor cost** — **(A, rec)** pure most-meeples-wins, drop `buzz_cost` · (B) keep a minimum-2
-   threshold to claim.
-3. **Prestige metric** — **(A, rec)** total `ingredient_cost` (keeps the tall/marquee flavour) · (B)
-   vendor-count (simplest, blunter).
+- **`map.json`** — replace `vendor_slots` per §1.4 (tightened counts + `refill: SLOW/per-round` + updated
+  `_note`); update `regions[].slots_n` (C 2→1, S 2→1). Replace the shared "Followers supply" line with a
+  per-colour follower supply zone; the setup-chart line becomes "followers per colour = your `max`"; remove
+  any dial-track element.
+- **`characters.csv`** — add `max`, `start_meeples` (field 6/2; **網紅 8/2**); recode `start_max_4` → the
+  `max`/`start` pair; rewrite 網紅 ability text (dial-starts-4 → owns 8 followers; drop floor-4; reach/viral
+  voice); 大胃王 greed sink "dial −1" → "return 1 follower to your supply"; scrub "Followers-max / dial" →
+  "Follower / your pool" in all strings. No kit *values* change for 里長伯 / 媽寶 / 大胃王(ingredient) / 大哥
+  / 阿嬤.
+- **`vendors.csv`** — DROP `draw`; DROP `buzz_cost`. Keep `ingredient_cost`, `icon`, `trending`, `recipe`,
+  tier, phase, etc.
+- **`bookings.csv`** — retarget the 3 prestige rows (§6): `d_prestige8` → `ingredient_cost_day>=4`;
+  `n_prestige14` → `ingredient_cost_total>=9`; `g_prestige12` → `ingredient_cost_total>=7`; reword effects
+  from "Draw (人氣)" to the cost/marquee flavour; keep `value`, ids, art_note.
+- **`tokens.csv`** — replace the single grey `followers` row with six per-colour follower entries (8 per
+  colour = 48, so any colour can play 網紅's `max` 8; others use 6); DROP the `dial` row. Keep `trending`,
+  `mkTours`, `hsrClosed`, `pileWin`, `pileLose`, pawns.
+- **`events.csv`** — the "+1 Followers-max" events (EV-D09 / EV-N13 / EV-N14) → "grow 1 follower (supply →
+  board)"; EV-N09 Trending win → grow 1; EV-N15 / EV-N16 bad-review → "return 1 follower to your supply"
+  (keep the crowd-drifts-to-a-rival flavour rail — describes allegiance, not transfer); EV-N08 (place 2 on
+  a co-located stall) → place 2 from your board; EV-N11 (next Promote +1) → next Promote places +1; scrub
+  dial wording throughout.
+
+**Not data (separate passes, flag on hand-off):** `rules-draft.md` §§3–5 rewrite (dial → follower pool;
+grow/place; win-keeps / lose-to-own-supply; slow-refill scarcity; DUSK/LAST-TRAIN tie-resolver; FAQ dial
+questions) — an editorial pass (`bg-elegance` / `bg-rulebook`), **must land as a net cut** (7 words
+headroom) and be re-gauged. The board's dial zone → follower-pool zone + per-colour supply tray →
+`bg-infodesign`. Neither touches values.
 
 ---
 
-## 10. Handoff — trigger the coherence check
+## 11. Handoff — trigger the coherence check
 
-This is a mechanic swap: the **signature twist moved** — the contested Follower majority is now a
-physical, colour-coded meeple fight; **winning keeps your meeples, losing sends them home to re-collect**
-(replacing the dial-drop). Flag the Director to run **`bg-theme`** (does the fiction still explain "your
-crowd comes home when you win, scatters when you lose"? the "dial" is gone from identity/lore) and
-**`bg-elegance`** (net *trim* expected — deletes the dial keyword, the day/night drop asymmetry, and two
-vestigial columns; adds the meeple lifecycle) on the change. Mechanics that moved: **Promote→Deploy,
-Travel-ramp→collect, the lost-war penalty, Trending/Rave/Greedy sinks, and the win-return direction.**
+Two mechanics moved: **(1) the signature twist got a scarcity engine** — slow-refill + tighter slots make
+the contested crowd-fight frequent (the "race AND battle" the CD wants); **(2) the fight became physical
+coloured followers** — win keeps them on your board, loss sends them home to your own supply. Flag the
+Director to run **`bg-theme`** (does the fiction still explain "the market restocks between passes" and
+"your crowd comes home on a win / disperses to your own supply on a loss"? the "dial" is gone from lore)
+and **`bg-elegance`** (combined re-gauge: the meeple swap is a net *trim*, the slow-refill rule is a net
+*add* — confirm the two net out within budget, and re-gauge the §§3–5 rulebook rewrite against the 7-word
+headroom). Mechanics that moved for the guardian sweep to check: **the vendor slot counts + refill timing,
+Promote (now spread onto scarce stalls), Travel-ramp → grow, the lost-contest penalty (→ own supply), the
+DUSK/LAST-TRAIN tie-resolver, and the win-return direction.**
