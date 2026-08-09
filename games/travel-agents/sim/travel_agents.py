@@ -226,6 +226,15 @@ GRAB_HEADROOM = int(os.environ.get("TA_GRAB_HEADROOM", "2"))   # only grab if Re
 # PHASE. Larger = denial is weaker. Common (K) supply in C&S is K_SUPPLY.
 SIG_SUPPLY = int(os.environ.get("TA_SIG_SUPPLY", "10"))
 K_SUPPLY   = int(os.environ.get("TA_K_SUPPLY", "6"))
+# V7+ GENERIC-INGREDIENT TAXONOMY (ingredient-taxonomy.md §FINAL): 菜 Vegetables is a NEW 2nd common,
+# sourced in N & E (mirroring 糖 Sugar in C & S). Its per-phase pool supply in N/E. The card depths are
+# N/E day sig6/veg2, night sig5/veg1 (thinner than sugar's 6:3) — so veg is a LIGHT dilution of the N/E
+# signature draw (§FINAL §2: signature share drops 100% → ~75% day / ~83% night). A per-phase pool of
+# sig 10 : veg 3 gives ~77% signature share, matching that target. (K_SUPPLY 6 keeps sugar heavier in C/S.)
+VEG_SUPPLY = int(os.environ.get("TA_VEG_SUPPLY", "3"))       # 菜 supply added to N & E pools
+# §FINAL §5 reserve lever (bg-design option C, if East Pantry starves): drop East's veg supply so the
+# East pool skews harder to Pantry (the demand hub). Default 0 = East veg = VEG_SUPPLY like North.
+EAST_VEG_SUPPLY = int(os.environ.get("TA_EAST_VEG_SUPPLY", str(VEG_SUPPLY)))
 
 # Event density (the "hotter night" knob): fraction of market draws that are events, day vs night.
 DAY_EVENT_FRAC   = float(os.environ.get("TA_DAY_EVENT", "0.25"))
@@ -433,8 +442,25 @@ SINK_BOOST   = float(os.environ.get("TA_SINK_BOOST", "0.0"))  # +fraction of eve
 REGIONS = ("N", "C", "S", "E")
 RING = {"N": ["C", "E"], "C": ["N", "S"], "S": ["C", "E"], "E": ["S", "N"]}
 HSR = ("N", "S")
-COMMON = "K"
-COMMON_REGIONS = {"C", "S"}                          # where the common 糖 lives (locally sourceable)
+COMMON = "K"                                         # 糖 Sugar
+COMMON_REGIONS = {"C", "S"}                          # where 糖 Sugar lives (locally sourceable)
+# V7+ TAXONOMY: 菜 Vegetables — the NEW 2nd common, sourced in N & E (a DIFFERENT source-region pair to
+# sugar's C/S → a second cross-axis). Everything that special-cased the single common ("K") now iterates
+# COMMONS so both commons behave: no icon discount, type-aware sourcing regions, return-to-home.
+VEG = "V"                                            # 菜 Vegetables (2nd common)
+VEG_REGIONS = {"N", "E"}                             # where 菜 Vegetables lives (locally sourceable)
+COMMONS = {COMMON: COMMON_REGIONS, VEG: VEG_REGIONS}  # common token -> set of regions it is sourceable in
+COMMON_HOME = {COMMON: "C", VEG: "N"}                # deterministic region a returned/discarded common goes to
+
+
+def _is_common(tok):
+    """Is this token one of the two commons (糖 / 菜)? Commons carry no region icon → never discounted,
+    and are sourceable in a PAIR of regions (see COMMONS)."""
+    return tok in COMMONS
+
+
+def _common_home(tok):
+    return COMMON_HOME.get(tok, "C")
 
 
 def neighbours(pos, char=None, hsr_open=True):
@@ -547,10 +573,10 @@ CENTRAL_TEA_FIX = os.environ.get("TA_TEA_FIX", "1") == "1"    # re-point 牛肉�
 def _build_vendors():
     V = []
 
-    def add(region, phase, is_drink, cost, bookings, icon, star=False):
+    def add(region, phase, is_drink, cost, bookings, icon, star=False, tag=None):
         V.append({"id": len(V), "region": region, "phase": phase, "is_drink": is_drink,
                   "cost": Counter(cost), "bookings": bookings, "icon": icon,
-                  "star": star, "total_cost": sum(cost.values())})
+                  "star": star, "total_cost": sum(cost.values()), "tag": tag})
 
     # CD-4: NIGHT costs escalate (cross-region biased) so a night marquee EXCEEDS the max single-region
     # ramp; the region-discount defrays but never zeroes it. DAY costs held as printed (unless DAY_CURVE).
@@ -563,42 +589,55 @@ def _build_vendors():
     def dc(base, escalated):
         return escalated if DAY_CURVE else base
 
-    # --- North 北 (pork · 2 slots · no local K) ---
-    add("N", 1, False, dc({"N": 1}, {"N": 1}), 2, True)   # 肉包 Pork Bao (discount-only)
-    add("N", 1, False, dc({"N": 1}, {"N": 1}), 1, True)   # 蛋餅 Egg Crepe (discount-only)
-    add("N", 1, True,  {"K": 1}, 2, False)                # 豆漿 Soy Milk (drink · none)
-    add("N", 2, False, nc({"N": 2}, {"N": 2, "C": 1}, {"N": 3, "C": 1}), 5, True)  # 胡椒餅 (both, +C export)
-    # 牛肉麵 Beef Noodle (both). v6.3 table = {N:2, S:1}→S. CENTRAL_TEA_FIX re-points it →C.
-    if CENTRAL_TEA_FIX:
-        add("N", 2, False, nc({"N": 2, "C": 1}, {"N": 2, "C": 1}, {"N": 3, "C": 1}), 6, True)  # 牛肉麵 →C
-    else:
-        add("N", 2, False, nc({"N": 2, "S": 1}, {"N": 2, "S": 1}, {"N": 3, "S": 1}), 6, True)  # 牛肉麵 →S
-    add("N", 2, False, nc({"N": 3}, {"N": 3, "S": 1}, {"N": 4, "S": 1}), 7, False, True)  # ★ 大香腸 (apex, cross)
-    add("N", 2, True,  {"K": 1}, 2, False)                # 珍奶 Bubble Tea (drink · none)
-    # --- Central 中 (tea · 1 slot · local K) ---
-    add("C", 1, False, dc({"C": 1}, {"C": 1}), 2, True)   # 肉圓 Ba-wan (discount-only)
-    add("C", 1, False, dc({"C": 1}, {"C": 1}), 1, True)   # 麵線 Misua (discount-only)
-    add("C", 1, True,  {"K": 1}, 2, False)                # 珍珠奶茶 Bubble Tea (drink · none)
-    add("C", 2, False, nc({"C": 2}, {"C": 2, "S": 1}, {"C": 3, "S": 1}), 5, True)  # 大腸包小腸 (both, cross)
-    add("C", 2, False, nc({"C": 2, "S": 1}, {"C": 3, "S": 1}, {"C": 4, "S": 1}), 6, False, True)  # ★ 逢甲名物 →S
-    add("C", 2, True,  {"K": 1}, 2, False)                # 冬瓜茶 Wintermelon Tea (drink · none)
-    # --- South 南 (seafood · 1 slot · local K) ---
-    add("S", 1, False, dc({"S": 1}, {"S": 1}), 2, True)   # 虱目魚粥 Milkfish Congee (discount-only)
-    add("S", 1, False, dc({"S": 1}, {"S": 1}), 1, True)   # 碗粿 Rice Bowl Cake (discount-only)
-    add("S", 1, True,  {"K": 1}, 2, False)                # 木瓜牛奶 Papaya Milk (drink · none)
-    add("S", 2, False, nc({"S": 2}, {"S": 2, "E": 1}, {"S": 3, "E": 1}), 5, True)  # 蚵仔煎 (both, cross)
-    add("S", 2, False, nc({"S": 2, "E": 1}, {"S": 3, "E": 1}, {"S": 3, "E": 1}), 6, True)  # 棺材板 →E (both)
-    add("S", 2, False, nc({"S": 3}, {"S": 3, "C": 1}, {"S": 4, "C": 1}), 7, False, True)  # ★ 擔仔麵 (apex, cross)
-    # --- East 東 (rice · 1 slot · no local K · Indigenous-forward) ---
-    add("E", 1, False, dc({"E": 2}, {"E": 2}), 2, True)   # 竹筒飯 Bamboo-Tube Rice (discount-only)
-    add("E", 1, False, dc({"E": 1}, {"E": 1}), 2, True)   # 米糕 Rice Cake (discount-only)
-    add("E", 1, True,  {"K": 1}, 2, False)                # 洛神花茶 Roselle Tea (drink · none)
-    add("E", 2, False, nc({"E": 2}, {"E": 2, "N": 1}, {"E": 3, "N": 1}), 5, True)  # 麻糬 (both, cross)
-    add("E", 2, False, nc({"E": 2, "N": 1}, {"E": 3, "N": 1}, {"E": 4, "N": 2}), 8, False, True)  # ★ 石板烤肉 →N (top apex)
+    # ============================================================================================
+    #  V7+ GENERIC-INGREDIENT TAXONOMY (ingredient-taxonomy.md §FINAL §3). Six categories, mapped to
+    #  regions: Meat 肉=N sig · Tea 茶=C sig · Seafood 海=S sig · Pantry 糧=E sig · Sugar 糖 (K)=common
+    #  in C&S · Vegetables 菜 (V)=common in N&E. The CSV recipes are the SOURCE OF TRUTH (§5 resolves the
+    #  old sim↔CSV drift): each night dish's SOFT-curve cost = its §3 canonical recipe, so with NIGHT_CURVE
+    #  default (soft) the printed CSV costs run. RAW = pre-escalation (soft minus a cross token); STEEP =
+    #  soft plus one. Soft targets held: night "both"→3, apex ★→4, TOP apex 石板烤肉→5 (the doc's curve).
+    #  Cost total, cross-region span-COUNT, tier and drink/icon status are byte-preserved per §3.
+    # --- North 北 (Meat 肉 sig · 2 slots · local common = 菜 Veg) ---
+    add("N", 1, False, dc({"N": 1}, {"N": 1}), 2, True)   # N01 肉包 Bao — meat [R]
+    add("N", 1, False, dc({"N": 1}, {"N": 1}), 1, True)   # N02 蛋餅 Egg Crepe — meat [R]
+    add("N", 1, True,  {"K": 1}, 2, False)                # N03 豆漿 Soy Milk — sugar (drink · none) [R]
+    add("N", 2, False, nc({"N": 2}, {"N": 2, "C": 1}, {"N": 3, "C": 1}), 5, True)  # N04 胡椒餅 — meat·meat·tea (both, →C tea-export) [R]
+    # N05 牛肉麵 Beef Noodle — DIVERSIFIED to meat·pantry·veg (beef + hand-pulled noodles + pickled greens);
+    # span N,E; cost 3. (Supersedes the old CENTRAL_TEA_FIX →C/→S choice — tea-export now rides N04+E03.)
+    add("N", 2, False, nc({"N": 1, "E": 1, "V": 1}, {"N": 1, "E": 1, "V": 1}, {"N": 2, "E": 1, "V": 1}), 6, True, tag="veg_food")  # N05 牛肉麵
+    add("N", 2, False, nc({"N": 3}, {"N": 3, "S": 1}, {"N": 4, "S": 1}), 7, False, True)  # N06 ★ 大香腸 — meat·meat·meat·seafood (apex, cross N,S) [R]
+    add("N", 2, True,  {"K": 1}, 2, False)                # N07 珍奶 Bubble Tea — sugar (drink · none) [R]
+    # --- Central 中 (Tea 茶 sig · 1 slot · local common = 糖 Sugar) ---
+    add("C", 1, False, dc({"C": 1}, {"C": 1}), 2, True)   # C01 肉圓 Ba-wan — tea [R]
+    add("C", 1, False, dc({"C": 1}, {"C": 1}), 1, True)   # C02 麵線 Misua — tea [R]
+    add("C", 1, True,  {"K": 1}, 2, False)                # C03 珍珠奶茶 Bubble Tea — sugar (drink · none) [R]
+    add("C", 2, False, nc({"C": 2}, {"C": 2, "E": 1}, {"C": 3, "E": 1}), 5, True)  # C04 大腸包小腸 — tea·tea·pantry (both, cross C,E) DIVERSIFIED (S→E)
+    add("C", 2, False, nc({"C": 2, "S": 1}, {"C": 2, "S": 2}, {"C": 3, "S": 2}), 6, False, True)  # C05 ★ 逢甲名物 — tea·tea·seafood·seafood (apex, cross C,S) [R canon]
+    add("C", 2, True,  {"V": 1}, 2, False, tag="veg_drink")   # C06 冬瓜茶 Wintermelon Tea — veg (drink · none) DIVERSIFIED (sugar→veg)
+    # --- South 南 (Seafood 海 sig · 1 slot · local common = 糖 Sugar) ---
+    add("S", 1, False, dc({"S": 1}, {"S": 1}), 2, True)   # S01 虱目魚粥 Milkfish Congee — seafood [R]
+    add("S", 1, False, dc({"S": 1}, {"S": 1}), 1, True)   # S02 碗粿 Rice Bowl Cake — seafood [R]
+    add("S", 1, True,  {"K": 1}, 2, False)                # S03 木瓜牛奶 Papaya Milk — sugar (drink · none) [R]
+    # S04 火雞肉飯 TURKEY RICE (Chiayi; was 蚵仔煎) — meat·pantry·veg; cost 3; both-tier; region=S (its icon
+    # still feeds the South ramp) but demands NO local seafood → HOMELESS-IN-SOUTH (§4 the "free B"). Its
+    # ingredients live in N+E, so it forces the most travel of any 3-cost night dish — the §5 stall probe.
+    add("S", 2, False, nc({"N": 1, "E": 1, "V": 1}, {"N": 1, "E": 1, "V": 1}, {"N": 2, "E": 1, "V": 1}), 5, True, tag="turkey")  # S04 火雞肉飯
+    add("S", 2, False, nc({"S": 2}, {"S": 2, "E": 1}, {"S": 3, "E": 1}), 6, True)  # S05 棺材板 — seafood·seafood·pantry (both, cross S,E) [R canon]
+    add("S", 2, False, nc({"S": 3}, {"S": 3, "E": 1}, {"S": 4, "E": 1}), 7, False, True)  # S06 ★ 擔仔麵 — seafood·seafood·seafood·pantry (apex, cross S,E) [R canon]
+    # --- East 東 (Pantry 糧 sig · 1 slot · local common = 菜 Veg · Indigenous-forward) ---
+    add("E", 1, False, dc({"E": 2}, {"E": 2}), 2, True)   # E01 竹筒飯 Bamboo-Tube Rice — pantry·pantry [R]
+    add("E", 1, False, dc({"E": 1}, {"E": 1}), 2, True)   # E02 米糕 Rice Cake — pantry [R]
+    add("E", 1, True,  {"V": 1}, 2, False, tag="veg_drink")   # E05 洛神花茶 Roselle Tea — veg (drink · none) DIVERSIFIED (sugar→veg)
+    add("E", 2, False, nc({"E": 2}, {"E": 2, "C": 1}, {"E": 3, "C": 1}), 5, True)  # E03 麻糬 — pantry·pantry·tea (both, →C tea-export) [R canon]
+    add("E", 2, False, nc({"E": 3, "N": 1}, {"E": 3, "N": 2}, {"E": 4, "N": 2}), 8, False, True, tag="topapex")  # E04 ★ 石板烤肉 — pantry·pantry·pantry·meat·meat (TOP apex, cross E,N, cost 5) [R canon]
     return V
 
 
 VENDORS = _build_vendors()
+
+
+def _tag_ids(tag):
+    return [v["id"] for v in VENDORS if v.get("tag") == tag]
 
 
 def _rebuild_vendors():
@@ -609,8 +648,9 @@ def _rebuild_vendors():
 
 
 def _is_cross(vid):
-    """A cross-region (→X) dish: its cost spans >1 distinct signature region (K/common ignored)."""
-    return len([r for r in VENDORS[vid]["cost"] if r != COMMON]) >= 2
+    """A cross-region (→X) dish: its cost spans >1 distinct SIGNATURE region (BOTH commons 糖/菜 ignored,
+    since a common is sourceable in either of its two regions and doesn't pin a cross-region trip)."""
+    return len([r for r in VENDORS[vid]["cost"] if not _is_common(r)]) >= 2
 
 
 def _region_deck(region, phase):
@@ -920,11 +960,15 @@ class TravelAgentsGame:
         ing_factor = 1.0 + 0.4 * (n_players - 2)
         sig_supply = int(round(SIG_SUPPLY * ing_factor))
         k_supply   = int(round(K_SUPPLY * ing_factor))
+        veg_supply = int(round(VEG_SUPPLY * ing_factor))          # 菜 in N & E (2nd common)
+        east_veg_supply = int(round(EAST_VEG_SUPPLY * ing_factor))  # §5 reserve lever (East veg thin-out)
         ing_pool, ing_discard = {}, {}
         for r in REGIONS:
             pool = Counter({r: sig_supply})
             if r in COMMON_REGIONS:
                 pool[COMMON] += k_supply
+            if r in VEG_REGIONS:                                  # V7+ taxonomy: 菜 sourceable in N & E
+                pool[VEG] += east_veg_supply if r == "E" else veg_supply
             # CD-2: seed the Scheduled-Maintenance marker into the DAY deck only if MAINT_PHASE==1 (day).
             if MAINT_COUNT > 0 and r == MAINT_REGION and MAINT_PHASE == 1:
                 pool[MAINT] += MAINT_COUNT
@@ -996,6 +1040,7 @@ class TravelAgentsGame:
             "mrow": mrow, "mreserve": mreserve, "mdraw": mdraw, "mrow_w": mrow_w,
             "day_deck_size": day_deck_size, "night_deck_size": night_deck_size,   # §11b deck-clock sizes
             "sig_supply": sig_supply, "k_supply": k_supply,   # V7 §4 per-count ingredient market depth
+            "veg_supply": veg_supply, "east_veg_supply": east_veg_supply,  # V7+ 菜 depth (N/E; §5 East lever)
             "players": players, "turn": 0, "cur": 0,
             "end_turn": None, "end_cause": None, "done": False,
             # milestones (Rave Reviews). ms{7,14}_by = FIRST crosser (runaway diagnostic); ms{7,14}_earn
@@ -1006,7 +1051,8 @@ class TravelAgentsGame:
             "star_placed": 0, "star_wins": {p: 0 for p in range(n_players)},
             "max_buzz_on_vendor": 0, "max_committed": 0,
             "claim_by_region": {r: 0 for r in REGIONS},
-            "src_by_region": {r: 0 for r in REGIONS}, "src_common": 0,
+            "claim_by_vid": Counter(),                        # V7+ per-vendor claims (turkey/veg-drink probes)
+            "src_by_region": {r: 0 for r in REGIONS}, "src_common": 0, "src_veg": 0,
             "travels": 0, "visits": 0, "cstores": 0, "promotes": 0, "inter_moves": 0,
             # --- v6.3.1 CD-4 probe #1: day/night SOURCING split (Visit+CStore+Travel per turn) ---
             "turns_day": 0, "turns_night": 0,
@@ -1092,8 +1138,8 @@ class TravelAgentsGame:
         v = VENDORS[vid]
         pay = {}
         for r, c in v["cost"].items():
-            if r == COMMON:
-                pay[COMMON] = c                          # common carries no icon → never discounted
+            if _is_common(r):
+                pay[r] = c                               # a common (糖/菜) carries no icon → never discounted
             else:
                 pay[r] = max(0, c - pl["icons"].get(r, 0))
         # 里長伯 CD-1 HOME-REGION kit (default): −HOME_DISC in his home region, +AWAY_TAX everywhere else.
@@ -1109,9 +1155,10 @@ class TravelAgentsGame:
                     # vendor's local signature is the cheapest-to-add type (ASSUMPTION — a human might pay
                     # it in a surplus type; this keeps the tax reliably biting where he sources anyway).
                     tax_type = v["region"]
-                    if tax_type == COMMON or tax_type not in pay:
-                        # cross-region/common edge: fall back to the largest existing region cost entry
-                        cands = [r for r in pay if r != COMMON] or list(pay)
+                    if _is_common(tax_type) or tax_type not in pay:
+                        # cross-region/common edge (e.g. homeless-in-South turkey rice): fall back to the
+                        # largest existing SIGNATURE cost entry (commons carry no region → can't tax there)
+                        cands = [r for r in pay if not _is_common(r)] or list(pay)
                         tax_type = max(cands, key=lambda r: pay.get(r, 0)) if cands else v["region"]
                     pay[tax_type] = pay.get(tax_type, 0) + COUNCILLOR_AWAY_TAX
             else:  # legacy "regions" kit — first vendor courted in each of the first N regions costs 1 fewer
@@ -1127,11 +1174,12 @@ class TravelAgentsGame:
                     pay[r] -= 1; break
         # 大哥 tab flaw (only if a "tab"/"nocontest" variant is being probed; v6.3 lock = no flaw)
         if pl["char"] == "dage" and DAGE_FLAW in ("tab", "nocontest"):
-            tgt = COMMON if v["is_drink"] else v["region"]
+            # tax the common the drink actually uses (糖 or 菜) — else the vendor's signature region
+            tgt = (next(iter(v["cost"]), v["region"]) if v["is_drink"] else v["region"])
             pay[tgt] = pay.get(tgt, 0) + 1
         # CD-4 BACKSTOP: after ALL discounts, every Bribe still costs ≥1 ingredient of the vendor's cost.
         if MIN1_FLOOR and v["total_cost"] > 0 and sum(pay.values()) <= 0:
-            r0 = min(v["cost"], key=lambda k: (k == COMMON, v["cost"][k]))  # a type in the vendor's cost
+            r0 = min(v["cost"], key=lambda k: (_is_common(k), v["cost"][k]))  # a type in the vendor's cost
             pay[r0] = 1
         return pay
 
@@ -1471,6 +1519,7 @@ class TravelAgentsGame:
             for q in losers:                                  # legacy: Followers-max drops, floored at 0 (A/B)
                 self._lose_reach(s, q, LOSTWAR_DROP, "lostwar")
         s["claim_by_region"][v["region"]] += 1
+        s["claim_by_vid"][vid] += 1                          # V7+ per-vendor (turkey/veg-drink claim probes)
         if v["is_drink"]:
             s["drink_wins"] += 1
         else:
@@ -1672,6 +1721,8 @@ class TravelAgentsGame:
             pool = Counter({r: s.get("sig_supply", SIG_SUPPLY)})   # V7 §4 per-count market depth (night refresh)
             if r in COMMON_REGIONS:
                 pool[COMMON] += s.get("k_supply", K_SUPPLY)
+            if r in VEG_REGIONS:                                  # V7+ 菜 night refresh (thin: 1 card each in N/E)
+                pool[VEG] += s.get("east_veg_supply", VEG_SUPPLY) if r == "E" else s.get("veg_supply", VEG_SUPPLY)
             # CD-2: seed the Scheduled-Maintenance marker into the NIGHT deck (default MAINT_PHASE==2).
             if MAINT_COUNT > 0 and r == MAINT_REGION and MAINT_PHASE == 2:
                 pool[MAINT] += MAINT_COUNT
@@ -1750,7 +1801,7 @@ class TravelAgentsGame:
         return tok
 
     def _return_token(self, s, tok):
-        home = tok if tok != COMMON else "C"
+        home = _common_home(tok) if _is_common(tok) else tok
         s["ing_pool"][home][tok] += 1
         s["ing_pool"][home] = +s["ing_pool"][home]
 
@@ -1825,6 +1876,17 @@ class TravelAgentsGame:
             return OFFICE_KEEP if OFFICE_BUFF == "keep2" else 1   # v6.4d tunable (default 2)
         return 2
 
+    def _count_src(self, s, tok):
+        """V7+ taxonomy: tally a sourced ingredient by TYPE. Signatures → src_by_region[region letter];
+        the two commons → src_common (糖 Sugar) / src_veg (菜 Veg). (Token-based, so 菜 drawn in N or E is
+        counted as veg, not mis-attributed to that region's signature.)"""
+        if tok == COMMON:
+            s["src_common"] += 1
+        elif tok == VEG:
+            s["src_veg"] += 1
+        else:
+            s["src_by_region"][tok] += 1
+
     def _bump_src(self, s):
         """CD-4 probe #1: a SOURCING action counted per game-half. v6.4: Visit + Convenience Store +
         ONLY the Homebody's Travel-draw (base Travel no longer sources, so it is NOT bumped here — else
@@ -1865,10 +1927,7 @@ class TravelAgentsGame:
         kept = toks[:keep]
         for c in kept:
             pl["larder"][c] += 1
-            if c == COMMON:
-                s["src_common"] += 1
-            else:
-                s["src_by_region"][c] += 1
+            self._count_src(s, c)
         for c in toks[keep:]:
             self._return_token(s, c)
 
@@ -1882,10 +1941,7 @@ class TravelAgentsGame:
             got = self._apply_tempo_tax(pl, 1)
             if got > 0:
                 pl["larder"][c] += 1
-                if c == COMMON:
-                    s["src_common"] += 1
-                else:
-                    s["src_by_region"][c] += 1
+                self._count_src(s, c)
                 grabbed = True
             else:
                 self._return_token(s, c)
@@ -1896,10 +1952,7 @@ class TravelAgentsGame:
             c2 = self._draw_market(s, r, rng)
             if isinstance(c2, str):
                 pl["larder"][c2] += 1
-                if c2 == COMMON:
-                    s["src_common"] += 1
-                else:
-                    s["src_by_region"][c2] += 1
+                self._count_src(s, c2)
                 self._lose_reach(s, p, 1, "grab")
                 s["greedy_cs"] += 1
             elif isinstance(c2, tuple):
@@ -1943,10 +1996,7 @@ class TravelAgentsGame:
                 got = self._apply_tempo_tax(pl, 1)
                 if got > 0:
                     pl["larder"][c] += 1
-                    if c == COMMON:
-                        s["src_common"] += 1
-                    else:
-                        s["src_by_region"][draw_region] += 1
+                    self._count_src(s, c)
                 else:
                     self._return_token(s, c)
             elif isinstance(c, tuple) and c[1] == "maint":
@@ -1963,7 +2013,7 @@ class TravelAgentsGame:
             tok = max((k for k in pl["larder"] if pl["larder"][k] > 0),
                       key=lambda k: pl["larder"][k])
             pl["larder"][tok] -= 1
-            home = tok if tok != COMMON else "C"
+            home = _common_home(tok) if _is_common(tok) else tok
             s["ing_discard"][home][tok] += 1
         pl["larder"] = +pl["larder"]
 
@@ -1999,7 +2049,12 @@ class TravelAgentsGame:
         winner = winners[0]
         wp = s["players"][winner]
         total_wins = s["food_wins"] + s["drink_wins"]
-        src = s["src_by_region"]; src_tot = sum(src.values()) + s["src_common"]
+        src = s["src_by_region"]; src_tot = sum(src.values()) + s["src_common"] + s["src_veg"]
+        cbv = s["claim_by_vid"]
+        _turkey = sum(cbv[i] for i in _tag_ids("turkey"))
+        _vegdrink = sum(cbv[i] for i in _tag_ids("veg_drink"))
+        _vegfood = sum(cbv[i] for i in _tag_ids("veg_food"))
+        _topapex = sum(cbv[i] for i in _tag_ids("topapex"))
         claim = s["claim_by_region"]; claim_tot = sum(claim.values()) or 1
         ev = s["events_fired"] or 1
         end_reach = [s["players"][p]["reach"] for p in range(s["n"])]
@@ -2043,6 +2098,13 @@ class TravelAgentsGame:
             "src_share_N": ssh(src["N"]), "src_share_C": ssh(src["C"]),
             "src_share_S": ssh(src["S"]), "src_share_E": ssh(src["E"]),
             "src_share_common": float(s["src_common"] / src_tot) if src_tot else 0.0,
+            "src_share_veg": float(s["src_veg"] / src_tot) if src_tot else 0.0,
+            # V7+ taxonomy claim-rate probes (claims/game): the DIVERSIFIED vendors — turkey rice
+            # (homeless-in-South), the two 菜 veg-drinks, the 菜 beef-noodle, the cost-5 top apex.
+            "claim_turkey_per_game": float(_turkey),
+            "claim_vegdrink_per_game": float(_vegdrink),
+            "claim_vegfood_per_game": float(_vegfood),
+            "claim_topapex_per_game": float(_topapex),
             "avg_legal_actions": float(statistics.mean(s["legal_counts"])) if s["legal_counts"] else 0.0,
             "forced_turn_frac": float(s["forced_turns"] / len(s["legal_counts"])) if s["legal_counts"] else 0.0,
             "events_fired_per_game": float(s["events_fired"]),
@@ -2274,8 +2336,8 @@ def _pick_target(s, p, prefs):
 def _token_source(s, p, tok, legal, prefs):
     pl = s["players"][p]
     ho = _hsr_is_open(s)
-    if tok == COMMON:
-        targets = list(COMMON_REGIONS)
+    if _is_common(tok):
+        targets = list(COMMONS[tok])           # 糖 → {C,S} · 菜 → {N,E}
     else:
         targets = [tok]
     if pl["pos"] in targets and ("visit",) in legal:
@@ -2424,7 +2486,8 @@ def _plan(s, p, legal, rng, prefs):
         pos = pl["pos"]
         if need.get(pos, 0) > 0 and ("visit",) in legal:
             return ("visit",)
-        if need.get(COMMON, 0) > 0 and pos in COMMON_REGIONS and ("cstore", pos) in legal:
+        # a common (糖/菜) needed AND locally sourceable where we stand → grab it via a Convenience Store
+        if any(need.get(k, 0) > 0 and pos in COMMONS[k] for k in COMMONS) and ("cstore", pos) in legal:
             return ("cstore", pos)
         hop = _next_hop(pos, eff, pl["char"], _hsr_is_open(s))
         if ("travel", hop) in legal:
@@ -2759,6 +2822,15 @@ if __name__ == "__main__":
             _out(f"### (6) night sourcing: night:day ratio {mt['night_day_src_ratio']*100:.0f}%  "
                  f"(day {mt['src_day_per_turn']:.2f}/turn  night {mt['src_night_per_turn']:.2f}/turn)  "
                  f"night_claims/plyr {mt['night_claims_per_player']:.2f}  free_night_bribes/gm {mt['free_night_bribes_per_game']:.2f}")
+            # (6b) V7+ TAXONOMY sourcing-by-TYPE (§5 probes): does East Pantry / North Meat starve, does
+            #      South Seafood trivialise, is 菜 Veg a LIVE axis? Shares of all sourced ingredients.
+            _out(f"### (6b) sourcing by type: Meat[N] {mt['src_share_N']*100:4.1f}%  Tea[C] {mt['src_share_C']*100:4.1f}%  "
+                 f"Seafood[S] {mt['src_share_S']*100:4.1f}%  Pantry[E] {mt['src_share_E']*100:4.1f}%  "
+                 f"Sugar {mt['src_share_common']*100:4.1f}%  Veg {mt['src_share_veg']*100:4.1f}%  "
+                 f"(demand shares: Meat 22 · Tea 16 · Seafood 20 · Pantry 26 · Sugar 8 · Veg 8 %)")
+            _out(f"### (6c) diversified-vendor claims/gm: turkey-rice(S04,homeless) {mt['claim_turkey_per_game']:.2f}  "
+                 f"veg-drinks(冬瓜/洛神) {mt['claim_vegdrink_per_game']:.2f}  veg beef-noodle(N05) {mt['claim_vegfood_per_game']:.2f}  "
+                 f"top-apex(石板烤肉,cost5) {mt['claim_topapex_per_game']:.2f}  (dead if ≈0)")
 
             # (7) TICKETS-ONLY: ignore_obj must stay dead
             io = _strat_wr_mp("ignore_obj", IGNORE_OBJ, c, N, seed); seed += 4 * N
