@@ -171,14 +171,17 @@ python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build/pnp
 python3 $T/cards/build_cards.py --csv components/bookings.csv    --out build/pnp/bookings    --theme "$theme" --formats png
 python3 $T/cards/build_cards.py --csv components/ingredients.csv --out build/pnp/ingredients --theme "$theme" --formats png --tokens-csv components/tokens.csv
 python3 $T/cards/build_cards.py --csv components/events.csv      --out build/pnp/events      --theme "$theme" --formats png
-cardblurb="All play cards: 24 Vendors, 45 Bookings + 2 boundary cards, 16 Ingredients, 27 Events (day + night)."
+cardblurb="All play cards, in real deck quantities: 24 Vendors, 45 Bookings + 2 boundary cards, 62 Ingredients (16 faces × copies), 27 Events (day + night)."
 carddecks="build/pnp/vendors/png build/pnp/bookings/png build/pnp/ingredients/png build/pnp/events/png"
+# Repeat each card by its deck `quantity` (so e.g. the 16 ingredient faces print as the real 62-card
+# deck). No-op for vendors/bookings/events (all quantity 1).
+cardqty="components/vendors.csv components/bookings.csv components/ingredients.csv components/events.csv"
 # Cards — A4 (9 per sheet, 3×3) AND A3 (16 per sheet, 4×4). Both required.
 python3 $T/print/build_pnp.py --mode cards --page A4 --theme "$theme" \
-    --title "$title — Cards (A4)" --blurb "$cardblurb" \
+    --title "$title — Cards (A4)" --blurb "$cardblurb" --quantities-csv $cardqty \
     --out exports/print/pnp-cards-A4.pdf $carddecks
 python3 $T/print/build_pnp.py --mode cards --page A3 --theme "$theme" \
-    --title "$title — Cards (A3)" --blurb "$cardblurb" \
+    --title "$title — Cards (A3)" --blurb "$cardblurb" --quantities-csv $cardqty \
     --out exports/print/pnp-cards-A3.pdf $carddecks
 # Character / player boards — 2 per A4 at true 142×117 mm.
 python3 $T/print/build_pnp.py --mode images --page A4 --per-page 2 --theme "$theme" \

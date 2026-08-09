@@ -104,6 +104,33 @@ def expand_inputs(patterns: list[str]) -> list[str]:
     return uniq
 
 
+def apply_quantities(files: list[str], csv_paths: list[str]) -> list[str]:
+    """Repeat each card PNG by its deck `quantity` so the printed deck matches the real composition.
+
+    The PNG filename stem is the card `id` (build_cards.py renders <id>.png), so we map id→quantity
+    from the component CSVs and repeat each path that many times (preserving order). Any card with no
+    matching id — or a deck whose quantities are all 1 (vendors/bookings/events) — defaults to 1, so
+    this is a no-op for them and only expands the ingredient deck (16 faces → 62 by quantity)."""
+    import csv as _csv
+    qty: dict[str, int] = {}
+    for cp in csv_paths:
+        if not Path(cp).exists():
+            continue
+        for row in _csv.DictReader(open(cp, newline="")):
+            cid = str(row.get("id", "")).strip()
+            if not cid:
+                continue
+            try:
+                q = int(str(row.get("quantity", "")).strip() or 1)
+            except ValueError:
+                q = 1
+            qty[cid] = max(1, q)
+    out: list[str] = []
+    for f in files:
+        out.extend([f] * qty.get(Path(f).stem, 1))
+    return out
+
+
 # ---- page CSS ---------------------------------------------------------------------------
 
 def base_css(page: str, landscape: bool, pal: dict) -> str:
@@ -327,6 +354,9 @@ def main() -> int:
     ap.add_argument("--theme", default="night-market")
     ap.add_argument("--title", default="Print-and-Play")
     ap.add_argument("--blurb", default="", help="what components are in this file")
+    ap.add_argument("--quantities-csv", nargs="*", default=[],
+                    help="component CSVs (cards mode): repeat each card PNG by its `quantity` "
+                         "(filename stem == card id) so the printed deck matches the real composition")
     ap.add_argument("--out", type=Path, required=True)
     args = ap.parse_args()
 
@@ -334,6 +364,8 @@ def main() -> int:
     files = expand_inputs(args.inputs)
     if not files:
         raise SystemExit(f"[pnp] no input files matched: {args.inputs}")
+    if args.mode == "cards" and args.quantities_csv:
+        files = apply_quantities(files, args.quantities_csv)
 
     if args.mode == "cards":
         content, n_pages, per = build_card_pages(args.page, pal, files)
