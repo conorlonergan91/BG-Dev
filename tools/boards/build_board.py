@@ -353,7 +353,12 @@ def render_regionmap(theme, spec, phase="day"):
     PAWN_R = 26                    # 15 mm agent pawn
 
     parts = [f'<defs>{page_gradient(theme, "pg", ground)}</defs>',
-             f'<rect width="{W}" height="{H}" rx="30" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>']
+             f'<rect width="{W}" height="{H}" rx="30" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>',
+             # inner hairline frame — the SAME house treatment as the character boards (render_playerboard),
+             # so the shared table reads as the same illustrated hand. Uses the phase `frame` colour so the
+             # hairline is warm gold by day / neon by night; its top edge is hidden under the title band.
+             f'<rect x="26" y="26" width="{W-52}" height="{H-52}" rx="22" fill="none" stroke="{frame}" '
+             f'stroke-width="2" opacity="0.5"/>']
 
     # ------------------------------------------------------------------ helpers
     def _star(cx, cy, r, fill, stroke="none"):
@@ -485,21 +490,32 @@ def render_regionmap(theme, spec, phase="day"):
             ty = sy + (ey - sy) * i / 11
             parts.append(f'<line x1="{x1-(off+5)}" y1="{ty}" x2="{x1+(off+5)}" y2="{ty}" '
                          f'stroke="{steel}" stroke-width="4"/>')
+        # region STOPS — a stop node where the spine meets North (top) and South (bottom), so the HSR reads
+        # as a track WITH stops, not just a decorative rail.
+        for sty in (sy, ey):
+            parts.append(f'<circle cx="{x1}" cy="{sty}" r="11" fill="#ffffff" stroke="{steel}" stroke-width="5"/>')
         my = (sy + ey) / 2
-        parts.append(f'<rect x="{x1-150}" y="{my-96}" width="300" height="44" rx="22" '
+        parts.append(f'<rect x="{x1-150}" y="{my-104}" width="300" height="44" rx="22" '
                      f'fill="{steel}" stroke="#fff" stroke-width="2"/>')
-        parts.append(f'<text x="{x1}" y="{my-66}" font-size="23" fill="#fff" text-anchor="middle" '
+        parts.append(f'<text x="{x1}" y="{my-74}" font-size="23" fill="#fff" text-anchor="middle" '
                      f'font-family="{tfont}" font-weight="bold">HSR 高鐵 · 北–南</text>')
         if spec.get("hsr_closed_marker"):
             slate = "#8A8F98"
-            mky = my - 6
-            parts.append(f'<rect x="{x1-150}" y="{mky-24}" width="300" height="86" rx="12" fill="#ffffff" '
-                         f'opacity="0.6" stroke="{slate}" stroke-width="3" stroke-dasharray="9 7"/>')
-            parts.append(f'<circle cx="{x1}" cy="{mky+2}" r="22" fill="{slate}" stroke="{ink}" stroke-width="2"/>')
-            parts.append(f'<text x="{x1}" y="{mky+11}" font-size="26" fill="#fff" text-anchor="middle" '
+            # NO separate drop-slot placeholder (CD steer): the Scheduled-Maintenance EVENT CARD is played
+            # ONTO the track itself. Draw a small printed 停 badge ON the spine + a caption saying the event
+            # sits here — a LABEL on the track, never an empty dashed slot that reads as "place a card box".
+            mky = my - 2
+            # translucent scrim under the caption so it stays high-contrast where it crosses the rails
+            # (the map-board legibility rail: drop a scrim under text over busy track art).
+            parts.append(f'<rect x="{x1-176}" y="{mky+34}" width="352" height="52" rx="12" '
+                         f'fill="#ffffff" opacity="0.82"/>')
+            parts.append(f'<circle cx="{x1}" cy="{mky}" r="23" fill="{slate}" stroke="#fff" stroke-width="3"/>')
+            parts.append(f'<text x="{x1}" y="{mky+11}" font-size="27" fill="#fff" text-anchor="middle" '
                          f'font-family="{tfont}" font-weight="bold">停</text>')
-            parts.append(f'<text x="{x1}" y="{mky+46}" font-size="15" fill="{ink}" text-anchor="middle" '
-                         f'font-family="{tfont}" font-weight="bold">Scheduled Maintenance</text>')
+            parts.append(f'<text x="{x1}" y="{mky+56}" font-size="17" fill="{ink}" text-anchor="middle" '
+                         f'font-family="{tfont}" font-weight="bold">Scheduled-Maintenance event</text>')
+            parts.append(f'<text x="{x1}" y="{mky+78}" font-size="15" fill="{muted}" text-anchor="middle" '
+                         f'font-family="{bfont}" font-style="italic">played onto the HSR track</text>')
 
     hub_hanzi = spec.get("hub_hanzi", "台北")
     for r in spec.get("regions", []):

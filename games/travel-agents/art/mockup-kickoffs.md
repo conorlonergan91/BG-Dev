@@ -48,34 +48,27 @@ Generate a mock-up illustration of THE BIG BROTHER (大哥) for the board game T
 
 ---
 
-## The island MAP — `FIG-MAP-*`
+## The shared MAP — NOT an AI mock-up (code-rendered functional board)
 
-**Shared rails (this section):** cite the uploaded `art/art-style.md`; attach a liked earlier card as a
-**style-reference image**. **Keep the map SIMPLE and SOFT — mostly nice colours + a gentle glow, with only
-ONE or TWO simple illustrations.** It is NOT a busy detailed scene: **no crowds, no people, no dense stalls,
-no lantern-clutter.** The four regions read as **soft colour-zones**; a **single clean HSR line** runs down
-the spine. **Leave the whole CENTRE clean and open, and draw NO card slots, NO Booking box, and NO 停
-marker** — the vendor/Booking slots and the event card sit physically (or are drawn by code) ON TOP, so the
-art stays uncluttered underneath. **Neutral 3–6-player table — reads upright from ANY seat.** Region colours
-warm in both states; **secular only.** Mock-up only; final art human-illustrated.
+**There is NO map kickoff to paste.** The shared table map is the **code-rendered functional board**
+`tools/boards/build_board.py --type regionmap` (two states, `--phase day|night`), rendered by `make.sh`
+into `build/map-day.png` / `build/map-night.png` and committed to `exports/map-day.png` /
+`exports/map-night.png`. It is **not generated from an AI prompt.**
 
-**⚑ Two faces = two images.** The board is **DOUBLE-SIDED** — the DAY face and the NIGHT face are printed
-separately and glued to opposite sides of the cardboard cut-out. So generate the two prompts below as
-**separate images that share the EXACT SAME composition** (same island shape, same region positions, same
-HSR spine, same framing, same size) — only the light/colour chrome differs — so they line up back-to-back.
-**Tip: generate the DAY face first, then attach it as a reference for the NIGHT face** and say *"same
-composition, night lighting"* so they register.
+**Why (CD steer 2026-08).** The earlier freeform DAY/NIGHT AI map came back a **soft watercolour** that was
+**off-style** with the bold stylised-cartoon character/player boards AND — fatally — had **nowhere to place
+the cards, decks, and tokens** that must physically sit on the board. A freeform illustration can't hold
+precise play positions. So the map is a **functional board first**, styled to match the house hand (bold
+vector linework, bold flat colour, night-market palette, day/night chrome, inner gold hairline frame). It
+already carries a real, correctly-scaled home for every component: the four-region diamond with per-region
+vendor-card slots + market decks, the deck-driven clock band + face-up Booking row, the HSR spine with the
+on-track 停 Scheduled-Maintenance event label, the Taipei pawn start, the Followers/Trending supply, and the
+per-count setup table.
 
-### DAY face — `FIG-MAP-ISLAND-day`  ⚑ generate this ONE FIRST · full-bleed, ~1.36:1 landscape (2280×1680)
-```
-Generate ONE SIMPLE, SOFT mock-up map (the DAY FACE) for the board game Travel Agents: Taiwan, in the art style of the uploaded art-style.md and the attached style reference. This is mostly BEAUTIFUL SOFT COLOUR and a gentle warm GLOW — not a detailed scene. A softly stylised island of Taiwan; the four regions read as four SOFT COLOUR-ZONES (北 North top / 中 Central left / 南 South bottom / 東 East right); a single clean thin HSR line runs down the N–S spine. Add ONLY ONE OR TWO tiny simple illustration accents in a corner (e.g. one paper lantern and one little steaming bowl) — nothing more. NEGATIVE (important): NO crowds, NO people, NO buildings, NO dense stalls, NO lantern strings, NO card slots, NO boxes, NO grid, NO 停 marker, NO text or labels — keep the whole CENTRE clean and open (game cards get placed physically on top). Must read upright from EVERY seat (no across-the-table orientation, no single "front"). DAY light: warm dawn glow, soft gold. Secular only. One image, ~1.36:1 landscape (2280×1680), full background, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-day.png.
-```
-
-### NIGHT face — `FIG-MAP-ISLAND-night`  ⚑ generate AFTER the day face, and attach it
-```
-Generate the NIGHT FACE of the SAME map for Travel Agents: Taiwan. ATTACH the day face you just made as a reference and MATCH IT EXACTLY: identical island shape, identical four region colour-zones and their positions, identical single HSR line, the SAME one-or-two tiny accents, identical framing and size — ONLY the lighting changes (so the two faces register back-to-back on a double-sided board). Keep it just as SIMPLE and SOFT: mostly soft colour + a gentle glow. NEGATIVE (important): NO crowds, NO people, NO buildings, NO dense stalls, NO lantern strings, NO card slots, NO boxes, NO grid, NO 停 marker, NO text or labels; clean open centre; reads upright from any seat. NIGHT light: soft lantern-NEON glow and a moon; the region colours stay WARM — only the light flips. Secular only. One image, ~1.36:1 landscape (2280×1680), full background, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-night.png.
-```
-*(Keep it minimal — resist adding illustrations. If a face feels busy, CUT accents, never add. The earlier map came back far too busy; the whole point of this pass is soft-and-simple.)*
+**If you want to change the map,** edit `render_regionmap` in `build_board.py` (owned by `bg-infodesign`,
+laid out with `bg-art-director`) and/or the spec `components/map.json` — never paste an AI map prompt.
+A *future* human-illustrated backdrop would paint **behind** the fixed functional zones, never move or bury
+them (see the Practicality rail in `art/art-style.md`).
 
 ---
 

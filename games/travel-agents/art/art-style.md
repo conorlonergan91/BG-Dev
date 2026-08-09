@@ -58,6 +58,27 @@ distinct composition; the vendor deck should feel like a tour across the island'
   characters, verify**); and **Chiayi 嘉義** (famous for 火雞肉飯 turkey-rice). Weave these in respectfully as
   real, warm places — never a tourist-gaze postcard.
 
+## Practicality rail (art serves function) — BINDING
+
+**Function first, then style — never style over substance.** Every board and component layout must provide
+**real, correctly-scaled spaces for what physically goes on it** — card-exact footprints where cards sit,
+token wells sized to the token, dial faces the knob seats into, pawn spaces at the start. A freeform AI
+illustration **cannot** hold precise play positions, so it is never the shipped layout for anything cards or
+tokens rest on.
+
+- **The shared map is a FUNCTIONAL BOARD, not a freeform illustration.** It is the **code-rendered**
+  `build_board.py --type regionmap` board (two states, `--phase day|night`) — a clean, un-cluttered layout
+  with a real home for every component (region vendor-card slots, market decks, the deck-driven clock band +
+  face-up Booking row, the HSR spine + on-track 停 event label, the Taipei pawn start, the Followers/Trending
+  supply, the per-count setup table). It is **styled to match** the character/player-board house hand (bold
+  confident linework, bold flat colour, night-market palette, day/night chrome, the inner gold hairline
+  frame), but **legibility of the functional zones always wins**. The retired soft-watercolour AI map came
+  back off-style AND with nowhere to place cards — the exact failure this rail exists to prevent.
+- **`bg-art-director` coordinates layout with `bg-infodesign`** on any board/component before art goes on it,
+  so the functional skeleton (slots, decks, tracks, supply) is fixed *first* and art is a backdrop/underlay
+  *behind* it — never a scene that buries or displaces the play positions. If a gorgeous choice eats a slot
+  or a contrast the play needs, function wins and the art gets the rest.
+
 ## ⚠ The sensitivity guardrail (BINDING — read before writing any character prompt)
 "**Caricature**" here means **charming personality exaggeration** — the warm, expressive stylisation of a
 great animated ensemble — **NOT ethnic caricature, racial stereotype, or mockery.** This is a real culture
@@ -87,8 +108,15 @@ Then add the component-specific subject, composition, and the reserved size/figu
 - Night-market palette: lantern vermilion `#D64545`, jade teal `#1F8A7A`, golden amber `#E6A930`, dusk
   indigo `#26324D`, on bao-paper cream `#F7F1E3`.
 - **Vendors = dish-hero cut-outs** (the dish alone, no people/stall/scene) — CD steer, locked.
-- **Map = SOFT & SIMPLE, double-sided** (matched day + night faces): soft colour-zones, one clean HSR
-  spine, clean open centre, 1–2 tiny accents only; no card slots / Booking box / 停 (physical/code, on top).
+- **Map = the CODE-RENDERED FUNCTIONAL BOARD** (`build_board.py --type regionmap`, two states via
+  `--phase day|night`), styled to match the character/player-board house hand — bold vector linework, bold
+  flat colour, night-market palette, day/night chrome, inner gold hairline frame. It carries a real,
+  correctly-scaled home for every component (region vendor-card slots + market decks, the deck-driven clock
+  band + face-up Booking row, the HSR spine with the on-track 停 event label, the Taipei pawn start, the
+  Followers/Trending supply, the per-count setup table). **This is a functional board, not a freeform
+  illustration** — the earlier soft-watercolour AI map is RETIRED (off-style + no component spaces). Any
+  future human-illustrated art is a quiet backdrop *behind* the fixed functional zones, never a scene that
+  moves or buries them (see the Practicality rail above).
 - Style-reference-image technique: build every new asset by attaching an approved piece and matching it.
 
 **FLUID (still open):**
@@ -146,7 +174,7 @@ image drops cleanly into its SVG slot. Background: **transparent** for cut-out c
 | Ingredient card art | `FIG-ING-<id>` | **642 × 560** | 54.4 × 47.4 mm | **~1.15:1** | simple | on a 750×1050 poker card at (54,168); shows a **MIX** of that generic category (e.g. Meat = pork belly + beef + sausage + poultry together) |
 | Vendor card face | `FIG-VEND-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | plain pale-cream | **dish-hero CUT-OUT** — the signature dish alone on a plain warm ground, exactly like the character cut-outs (NO people, NO stall/market scene, NO background). Keep the hero dish in the **upper ~55%** so the translucent UI panels stay legible below; **54 px safe margin**; see drop-in note below |
 | Tour / Booking card face | `FIG-TOUR-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px safe margin**; see drop-in note below |
-| Region map (double-sided board) | `FIG-MAP-ISLAND-day` / `-night` | **2280 × 1680** | 193 × 142.2 mm | **~1.36:1** | full | **SOFT & SIMPLE** — mostly soft colour + gentle glow, four regions as soft colour-zones, a single clean HSR spine, clean open centre, only **1–2 tiny accents**. **Double-sided:** matched DAY + NIGHT faces (generate day first, reference it for night). NO card slots / Booking box / 停 marker (those are physical/code, on top). |
+| Region map (shared board) | **code-rendered — NOT an AI mock-up** | **2280 × 1680** | 193 × 142.2 mm | **~1.36:1** | — | The map is the **code board** `build_board.py --type regionmap` (two states, `--phase day\|night`), styled to match the house hand — **it is not generated from an AI prompt.** It already carries every component's real, scaled slot (vendor cards, market decks, clock band + Booking row, HSR spine + on-track 停 event, pawn start, supply, setup table). Any future *human-illustrated* backdrop paints *behind* those fixed zones. See the Practicality rail. |
 
 **Vendor & Tour card drop-in (read `render_vendor_svg` in `tools/cards/build_cards.py`).** The vendor
 face is **UI-dense**: a region-colour **header band** (Tâi-lô title + 繁體 subtitle) with a **tier pill**
