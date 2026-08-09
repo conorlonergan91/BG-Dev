@@ -118,7 +118,7 @@ def render_tokens(theme, tokens, shape, diameter_px, cols, legend=False):
     if legend:
         # A TRUE KEY (not a punch-grid): one row per token TYPE — swatch + glyph, its name (what it MEANS),
         # and the ×qty count — so a player can decode 及/團/成/遺/鐘/停 from this sheet alone (bg-infodesign).
-        ink, muted = theme["ink"], theme["muted"]
+        ink, muted, accent = theme["ink"], theme["muted"], theme["accent"]
         tfont, bfont = theme["title_font"], theme["body_font"]
         default = theme["suits"].get("_default", {}).get("color", theme["accent"])
         d = min(diameter_px, 92)
@@ -126,28 +126,75 @@ def render_tokens(theme, tokens, shape, diameter_px, cols, legend=False):
         row_h = d + gap
         name_x = pad + d + 28
         W = 1320
-        H = pad + len(tokens) * row_h + pad
+        # V7-M: the six per-colour Follower MEEPLE rows and the six Agent PAWN rows read as 12 near-identical
+        # circles in a flat key. For Travel Agents ONLY (guarded by the theme's bespoke `back` wordmark),
+        # collapse each into ONE grouped entry — a header + a strip of the six colour swatches — so the
+        # follower POOLS (8 per colour) read as a family, clearly distinct from the one-per-player pawns.
+        # Any other game (no TA wordmark) renders exactly as before — byte-identical.
+        is_ta = theme.get("back", {}).get("wordmark") == "TRAVEL AGENTS"
+        followers = [t for t in tokens if str(t.get("id", "")).lower().startswith("follower")]
+        pawns = [t for t in tokens if str(t.get("id", "")).lower().startswith("pawn")]
+        grouped = is_ta and (followers or pawns)
+        ds = 66                                    # group-strip swatch size
+        group_h = 44 + ds + gap                    # header + swatch strip
+        if grouped:
+            singles = [t for t in tokens
+                       if not str(t.get("id", "")).lower().startswith(("follower", "pawn"))]
+            H = (pad + len(singles) * row_h
+                 + (group_h if followers else 0) + (group_h if pawns else 0) + pad)
+        else:
+            singles = tokens
+            H = pad + len(tokens) * row_h + pad
         parts = [f'<defs>{page_gradient(theme, "pg")}</defs>',
                  f'<rect width="{W}" height="{H}" rx="26" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>']
-        for i, t in enumerate(tokens):
-            cy = pad + i * row_h + d / 2
-            cx = pad + d / 2
-            color = t.get("color") or default
-            rad = d / 2
+
+        def _swatch(cx, cy, dd, color, label):
+            rad = dd / 2
+            out = []
             if shape == "square":
-                parts.append(f'<rect x="{cx-rad}" y="{cy-rad}" width="{d}" height="{d}" rx="{d*0.14}" fill="{color}" stroke="{ink}" stroke-width="4"/>')
+                out.append(f'<rect x="{cx-rad}" y="{cy-rad}" width="{dd}" height="{dd}" rx="{dd*0.14}" fill="{color}" stroke="{ink}" stroke-width="4"/>')
             elif shape == "hex":
                 pts = " ".join(f"{cx+rad*math.cos(math.radians(a))},{cy+rad*math.sin(math.radians(a))}" for a in range(0, 360, 60))
-                parts.append(f'<polygon points="{pts}" fill="{color}" stroke="{ink}" stroke-width="4"/>')
+                out.append(f'<polygon points="{pts}" fill="{color}" stroke="{ink}" stroke-width="4"/>')
             else:
-                parts.append(f'<circle cx="{cx}" cy="{cy}" r="{rad}" fill="{color}" stroke="{ink}" stroke-width="4"/>')
+                out.append(f'<circle cx="{cx}" cy="{cy}" r="{rad}" fill="{color}" stroke="{ink}" stroke-width="4"/>')
             tcol = pick_text_color(color, dark=ink, light="#ffffff")
-            parts.append(f'<text x="{cx}" y="{cy+d*0.11}" font-size="{d*0.34}" fill="{tcol}" text-anchor="middle" '
-                         f'font-family="{tfont}" font-weight="bold">{esc(t.get("label",""))}</text>')
+            out.append(f'<text x="{cx}" y="{cy+dd*0.11}" font-size="{dd*0.34}" fill="{tcol}" text-anchor="middle" '
+                       f'font-family="{tfont}" font-weight="bold">{esc(label)}</text>')
+            return "".join(out)
+
+        y = pad
+        for t in singles:
+            cy = y + d / 2
+            cx = pad + d / 2
+            color = t.get("color") or default
+            parts.append(_swatch(cx, cy, d, color, t.get("label", "")))
             parts.append(f'<text x="{name_x}" y="{cy+10}" font-size="30" fill="{ink}" '
                          f'font-family="{bfont}">{esc(t.get("name","") or t.get("label",""))}</text>')
             parts.append(f'<text x="{W-pad}" y="{cy+10}" font-size="28" fill="{muted}" text-anchor="end" '
                          f'font-family="{tfont}" font-weight="bold">×{int(t.get("qty",1) or 1)}</text>')
+            y += row_h
+
+        def _group(members, title, subtitle, qty_label):
+            nonlocal y
+            parts.append(f'<text x="{pad}" y="{y+32}" font-size="30" fill="{accent}" '
+                         f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(title)}</text>')
+            parts.append(f'<text x="{W-pad}" y="{y+32}" font-size="26" fill="{muted}" text-anchor="end" '
+                         f'font-family="{tfont}" font-weight="bold">{esc(qty_label)}</text>')
+            scy = y + 44 + ds / 2
+            for i, m in enumerate(members):
+                scx = pad + ds / 2 + i * (ds + 16)
+                parts.append(_swatch(scx, scy, ds, m.get("color") or default, m.get("label", "")))
+            strip_right = pad + len(members) * (ds + 16) + 18
+            parts.append(f'<text x="{strip_right}" y="{scy+9}" font-size="26" fill="{ink}" '
+                         f'font-family="{bfont}">{esc(subtitle)}</text>')
+            y += group_h
+
+        if grouped and followers:
+            _group(followers, "FOLLOWER MEEPLE POOLS · 粉",
+                   "one pool per player colour (網紅 8; others 6)", "×8 per colour")
+        if grouped and pawns:
+            _group(pawns, "AGENT PAWNS", "one mover per player — NOT a follower", "×1 per colour")
         return _svg(W, H, parts), W, H
     expanded = []
     for t in tokens:
@@ -329,8 +376,10 @@ def render_regionmap(theme, spec, phase="day"):
       • MARKET deck  → a face-down DECK glyph badged with a BOWL (ingredients), region hue.
       • Taipei start → a PAWN glyph in dashed pawn spaces (North hub).
       • regions      → colour + emblem + a single 繁體 glyph (▲北 / ◆中 / ●南 / ■東) — NO English words.
-    Followers 粉 + Trending 爆紅 are OFF the board (loose tokens on the table); the how-to-read legend +
-    the setup-by-player-count table live in the RULEBOOK, not here.
+    Follower supplies + Trending 爆紅 are OFF the board (loose tokens beside each player's OWN board);
+    a compact off-board LEGEND band in the free bottom strip carries the V7-M scarcity facts (SLOW /
+    per-round refill timing, the per-count face-up slot totals, and the win→board / lose→own-supply +
+    阿嬤 Travel-cost notes from map.json). The full setup-by-player-count detail lives in the RULEBOOK.
 
     BARE HSR. A double-rail spine runs N↔S with a stop node at each end; the Scheduled-Maintenance
     EVENT card is simply placed on the track (self-evident — no 停 badge, no label). A tiny train ICON
@@ -356,11 +405,11 @@ def render_regionmap(theme, spec, phase="day"):
     steel = "#4A5A72"
     booking_col = theme["suits"].get("booking", {}).get("color", "#3A6EA5")
 
-    # FIXED, COUNT-AGNOSTIC vendor spaces per region (bg-infodesign choice): the live slot count scales
-    # by player count (N2/C2/S1/E1 at 4p … 3/2/2/2 at 6p) but a per-count table on the board is clutter.
-    # Two card-exact spaces per region is the modal count (matches C/S at 4p, N at 3–5p) and reads clean;
-    # the exact per-count setup lives in the rulebook. Count-agnostic: use as many as the round needs.
-    FIXED_VENDOR = 2
+    # PER-REGION vendor footprints (V7-M SCARCITY, bg-infodesign 2026-08): the tightened single-slot model
+    # draws each region's OWN slot count from map.json `regions[].slots_n` (the 4p HOME default: N 2, C/S/E
+    # 1) instead of a flat 2 everywhere. This shows the scarce single-slot regions honestly — most regions
+    # hold ONE contestable stall. The full per-count table (3p:4 / 4p:5 / 5p:5 / 6p:6, floor 1/region) and
+    # the SLOW-refill timing live in the off-board LEGEND panel + the rulebook, not as per-space clutter.
 
     CARD_R = 0.714                 # 63.5 : 88.9 poker footprint ratio
     VW, VH = 120, 168             # a card-exact vendor / market / face-up footprint at board scale
@@ -564,15 +613,20 @@ def render_regionmap(theme, spec, phase="day"):
             parts.append(f'<text x="{cx}" y="{ccy+8:.0f}" font-size="24" fill="{tcol}" text-anchor="middle" '
                          f'font-family="{bfont}" font-weight="bold">{esc(sp.get("label",""))}</text>')
 
-        # bottom row: FIXED vendor spaces + the region MARKET deck (single phase this face)
+        # bottom row: this region's OWN vendor slots (slots_n) + the region MARKET deck (single phase)
         gap = 16
-        n_cells = FIXED_VENDOR + 1
+        try:
+            nslots = int(r.get("slots_n", 1) or 1)
+        except (TypeError, ValueError):
+            nslots = 1
+        nslots = max(1, nslots)                    # floor 1 per region
+        n_cells = nslots + 1
         block_w = n_cells * VW + (n_cells - 1) * gap
         x_start = X + PWc - 26 - block_w
         row_y = Y + PH - VH - 18
-        for i in range(FIXED_VENDOR):
+        for i in range(nslots):
             parts.append(_vendor_space(x_start + i*(VW+gap), row_y, VW, VH, rcol))
-        parts.append(_deck(x_start + FIXED_VENDOR*(VW+gap), row_y, VW, VH, rcol, _bowl))
+        parts.append(_deck(x_start + nslots*(VW+gap), row_y, VW, VH, rcol, _bowl))
 
         # North is the shared START (Taipei) — dashed PAWN spaces with the pawn glyph (no text)
         if r.get("start"):
@@ -582,6 +636,59 @@ def render_regionmap(theme, spec, phase="day"):
                 parts.append(f'<circle cx="{px}" cy="{py:.0f}" r="{PAWN_R}" fill="#ffffff" opacity="0.5" '
                              f'stroke="{rcol}" stroke-width="2" stroke-dasharray="6 5"/>')
                 parts.append(_pawn(px, py-2, PAWN_R*0.9, rcol))
+
+    # ------------------------------------------------------------------ OFF-BOARD LEGEND (scarcity + meeples)
+    # A clearly-delineated KEY band in the free bottom strip (NOT a play space — the textless-space rule
+    # governs spaces, not the key). Surfaces the V7-M map.json fields the render must now carry: the SLOW /
+    # per-round `refill` timing + the human-facing `legend_notes` (阿嬤 Travel-cost; win → followers home /
+    # lose → your own supply) + the per-count face-up totals derived from `vendor_slots`. Per the CD steer,
+    # follower SUPPLIES are NOT drawn as a board zone — they sit loose by each player's own board; the band
+    # only NOTES the lifecycle. A map.json on-map follower_supply block is deliberately NOT rendered.
+    lx, ly = 60, 1360
+    lw = W - 120
+    lh = H - 30 - ly
+    parts.append(f'<rect x="{lx}" y="{ly}" width="{lw}" height="{lh}" rx="18" fill="#ffffff" opacity="0.28" '
+                 f'stroke="{frame}" stroke-width="2.5"/>')
+    parts.append(f'<text x="{lx+24}" y="{ly+42}" font-size="28" fill="{ink}" '
+                 f'font-family="{tfont}" font-weight="bold" letter-spacing="2">LEGEND 圖例</text>')
+    cy = ly + 80
+    vs = spec.get("vendor_slots", {})
+    # SLOW-REFILL badge (a cycle/refresh glyph) — the load-bearing scarcity lever's timing
+    if vs.get("refill"):
+        gx = lx + 40
+        parts.append(f'<path d="M{gx-15} {cy-6} A 15 15 0 1 1 {gx+10} {cy+8}" fill="none" '
+                     f'stroke="{accent}" stroke-width="4" stroke-linecap="round"/>')
+        parts.append(f'<path d="M{gx+2} {cy-4} l 9 8 l -12 4" fill="none" stroke="{accent}" '
+                     f'stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>')
+        parts.append(f'<text x="{lx+72}" y="{cy}" font-size="24" fill="{accent}" '
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="1">SLOW REFILL</text>')
+        parts.append(f'<text x="{lx+300}" y="{cy}" font-size="22" fill="{text}" font-family="{bfont}">'
+                     f'empty slots refill at the END of each round — never instant.</text>')
+        cy += 42
+    # per-count face-up slot totals, derived from vendor_slots (floor 1 per region)
+    counts = []
+    for pc in ("3", "4", "5", "6"):
+        blk = vs.get(pc)
+        if isinstance(blk, dict):
+            try:
+                counts.append(f"{pc}p {sum(int(v) for v in blk.values())}")
+            except (TypeError, ValueError):
+                pass
+    if counts:
+        parts.append(f'<circle cx="{lx+30}" cy="{cy-8}" r="5" fill="{frame}"/>')
+        parts.append(f'<text x="{lx+50}" y="{cy}" font-size="22" fill="{text}" font-family="{bfont}">'
+                     f'Face-up stalls by players: {esc(" · ".join(counts))} (floor 1 per region).</text>')
+        cy += 40
+    # the human-facing legend_notes (skip the refill note — already shown as the badge above)
+    notes = [n for n in spec.get("legend_notes", []) if not str(n).upper().lstrip().startswith("SLOW REFILL")]
+    for n in notes:
+        segs = textwrap.wrap(str(n), 132)
+        parts.append(f'<circle cx="{lx+30}" cy="{cy-8}" r="5" fill="{frame}"/>')
+        for seg in segs:
+            parts.append(f'<text x="{lx+50}" y="{cy}" font-size="22" fill="{text}" '
+                         f'font-family="{bfont}">{esc(seg)}</text>')
+            cy += 32
+        cy += 8
 
     return _svg(W, H, parts), W, H
 
@@ -601,52 +708,64 @@ def _pb_chip(cx, cy, txt, col, tfont, r=19):
             f'font-family="{tfont}" font-weight="bold">{esc(txt)}</text>')
 
 
-def _pb_kit_glyph(cx, cy, code, col, ink, tfont):
+def _pb_follower_cost(cx, cy, n, fcol, tfont):
+    """A small SECONDARY sub-marker for a follower COST: one follower dot (the follower/crowd hue) badged
+    with a '-N' chip. Used to hint the V7-M meeple costs baked into two abilities (阿嬤's Travel-anywhere,
+    大胃王's greedy-4th) without crowding the primary read."""
+    return (f'<circle cx="{cx}" cy="{cy}" r="11" fill="{fcol}"/>'
+            + _pb_chip(cx+18, cy+7, f"-{n}", fcol, tfont, r=14))
+
+
+def _pb_kit_glyph(cx, cy, code, col, ink, tfont, follower_col="#6A4C93"):
     """The Travel-Agents CHARACTER icon vocabulary — ONE consistent drawn glyph per ability/flaw code,
     the same meaning everywhere. Icons are memory anchors; the block TEXT carries the precise rule.
-    Every shape is DRAWN (no font glyphs) so nothing renders tofu (bg-infodesign / bg-access)."""
+    Every shape is DRAWN (no font glyphs) so nothing renders tofu (bg-infodesign / bg-access).
+
+    V7-M meeple/scarcity recode: the dead dial/discount codes (discount_home / away_tax / start_max_4 /
+    win_ties) are RETIRED; the new roster codes are favours_home_draw (里長伯), deep_pool (網紅) and
+    margin_win:N (大哥, param-driven off the retired two-bars glyph), plus the follower-cost sub-markers on
+    travel_anywhere (阿嬤) and visit_keep3 (大胃王)."""
     e = emblem_svg
-    if code == "discount_home":       # house + '-1' → cheaper on home turf
-        return e("home", cx, cy, 27, col, stroke=ink) + _pb_chip(cx+32, cy+24, "-1", col, tfont)
-    if code == "away_tax":            # out-of-home arrow + '+2' → costs +2 ingredients off your patch
-        return e("arrow", cx, cy, 25, col, stroke=ink) + _pb_chip(cx+32, cy+24, "+2", col, tfont)
+    base = code.split(":")[0]         # strip a ':N' parameter (e.g. margin_win:1)
+    if code == "favours_home_draw":   # 里長伯: a home + an INBOUND card → goodwill drawn to you AT HOME
+        house = e("home", cx-16, cy, 26, col, stroke=ink)
+        card = (f'<rect x="{cx+18}" y="{cy-17}" width="27" height="37" rx="5" '
+                f'fill="#ffffff" stroke="{col}" stroke-width="3"/>')
+        arrow = (f'<path d="M{cx+16} {cy+2} l -13 0 m 6 -6 l -6 6 l 6 6" fill="none" '
+                 f'stroke="{col}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>')
+        return house + card + arrow
     if code == "travel_draw_left":    # ring + back-chevron → draw the region you LEFT
         return (f'<circle cx="{cx}" cy="{cy}" r="27" fill="none" stroke="{col}" stroke-width="4"/>'
                 f'<polyline points="{cx+8},{cy-13} {cx-9},{cy} {cx+8},{cy+13}" fill="none" '
                 f'stroke="{col}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>')
-    if code == "visit_keep3":         # three stacked cards + '3' → keep all 3 on a Visit
+    if code == "visit_keep3":         # 大胃王: three stacked cards + '3' → keep all 3 on a Visit;
         cards = "".join(f'<rect x="{cx-26+i*10:.0f}" y="{cy-22-i*6:.0f}" width="32" height="44" rx="6" '
                         f'fill="#ffffff" stroke="{col}" stroke-width="3"/>' for i in range(3))
-        return cards + _pb_chip(cx+40, cy+22, "3", col, tfont)
+        # + a secondary follower-cost marker: the greedy 4th returns 1 follower to your supply
+        return (cards + _pb_chip(cx+40, cy-16, "3", col, tfont)
+                + _pb_follower_cost(cx+22, cy+30, "1", follower_col, tfont))
     if code == "hazard_twice_visit":  # warning triangle + '×2' → hazards fire twice on his Visit
         return e("triangle", cx, cy, 25, col, stroke=ink) + _pb_chip(cx+34, cy+24, "×2", col, tfont)
-    if code == "promote3":            # (legacy v6.4) buzz sparkle + '3' → Promote places 3 Buzz
-        return e("spark", cx, cy, 26, col) + _pb_chip(cx+34, cy+24, "3", col, tfont)
-    if code == "start_max_4":         # 網紅: the Followers-max DIAL starts HIGH — a gauge reading '4'
-        arc = (f'<path d="M{cx-26} {cy+10} A 26 26 0 0 1 {cx+26} {cy+10}" fill="none" '
-               f'stroke="{col}" stroke-width="5" stroke-linecap="round"/>')
-        needle = f'<line x1="{cx}" y1="{cy+10}" x2="{cx+17}" y2="{cy-16}" stroke="{col}" stroke-width="5" stroke-linecap="round"/>'
-        hub = f'<circle cx="{cx}" cy="{cy+10}" r="5" fill="{col}"/>'
-        return arc + needle + hub + _pb_chip(cx+38, cy+22, "4", col, tfont)
-    if code == "win_ties":            # 大哥: two EQUAL committed stacks + '=' → a tie is enough to claim
-        bars = (f'<rect x="{cx-24}" y="{cy-16}" width="17" height="44" rx="3" fill="{col}" opacity="0.5"/>'
-                f'<rect x="{cx+7}" y="{cy-16}" width="17" height="44" rx="3" fill="{col}"/>')
-        return bars + _pb_chip(cx+46, cy-2, "=", col, tfont)
+    if code == "deep_pool":           # 網紅: a big crowd + '8' → she owns 8 followers (the field owns 6)
+        return e("crowd", cx, cy, 30, col) + _pb_chip(cx+42, cy+22, "8", col, tfont)
     if code == "travel_anywhere":     # 阿嬤 elder pass: a hub linked to all FOUR regions → go anywhere in one Travel
         s = f'<circle cx="{cx}" cy="{cy}" r="9" fill="{col}"/>'
         for dx, dy in [(1, -1), (-1, -1), (1, 1), (-1, 1)]:
             ex, ey = cx + dx*27, cy + dy*22
             s += f'<line x1="{cx}" y1="{cy}" x2="{ex}" y2="{ey}" stroke="{col}" stroke-width="3.5" opacity="0.85"/>'
             s += e("diamond", ex, ey, 9, col, stroke=ink)
-        return s
+        # + a secondary follower-cost marker: each Travel-anywhere costs 1 follower to supply (baseline)
+        return s + _pb_follower_cost(cx+40, cy+34, "1", follower_col, tfont)
     if code == "goes_last":           # a queue of 3 dots, last one ringed → take the last seat
         dots = "".join(f'<circle cx="{cx-26+i*26:.0f}" cy="{cy}" r="9" fill="{col}" '
                        f'opacity="{0.38 if i<2 else 1}"/>' for i in range(3))
         return dots + f'<circle cx="{cx+26}" cy="{cy}" r="15" fill="none" stroke="{col}" stroke-width="3"/>'
-    if code == "bribe_margin1":       # two bars, yours taller by one + '1' → win the fight at a 1 lead
+    if base in ("margin_win", "bribe_margin"):   # 大哥: two bars, yours taller + 'N' → win a contest by margin N
+        m = re.search(r'(\d+)', code)
+        n = m.group(1) if m else "1"
         return (f'<rect x="{cx-22}" y="{cy-4}" width="15" height="30" rx="3" fill="{col}" opacity="0.42"/>'
                 f'<rect x="{cx+3}" y="{cy-20}" width="15" height="46" rx="3" fill="{col}"/>'
-                + _pb_chip(cx+42, cy-2, "1", col, tfont))
+                + _pb_chip(cx+42, cy-2, n, col, tfont))
     if code == "none":                # a struck-through ring → no drawback
         return (f'<circle cx="{cx}" cy="{cy}" r="23" fill="none" stroke="{col}" stroke-width="3" opacity="0.6"/>'
                 f'<line x1="{cx-13}" y1="{cy}" x2="{cx+13}" y2="{cy}" stroke="{col}" '
@@ -695,23 +814,23 @@ def render_playerboard(theme, row, mockups_dir=None):
 
     A4-LANDSCAPE (297×210 mm @ 300 DPI = 3508×2480 px). Two TRUE poker-card footprints
     (63.5×88.9 mm = 750×1050 px each) sit on the right so real Booking cards stack on them, with a
-    full-height character image + the Followers dial down the left column.
+    full-height character image + the FOLLOWER POOL/SUPPLY lifecycle panel down the left column.
 
-    Layout (v2):
+    Layout (v2 · V7-M meeples):
        • TITLE band — English name TOP-LEFT (e.g. "The Globetrotter"); 漢字 TOP-RIGHT with the Tâi-lô
          romanisation as a subtitle directly under it (阿嬤 / A-má); the ABILITY + FLAW ICON-ONLY medallions
          (drawn glyphs, NO keyword/explainer text) sit CENTRED in the band — ability teal LEFT, flaw
          vermilion RIGHT (fixed position + hue tells which-is-which without a label).
        • LEFT column, full height — the character IMAGE (embedded mock-up when present, else placeholder)
-         at top, and UNDER it the FOLLOWERS DIAL: an actual dial FACE (a 0–8 notched arc with a detent at
-         each number, a centre pivot + dashed groove ring where a 3D-printed rotating knob seats, and a
-         per-character MAX/START marker at the start value — 2, or 4 for 網紅 via start_max_4).
+         at top, and UNDER it the FOLLOWER lifecycle panel: three bins showing the meeple states left→right
+         — SUPPLY (un-rallied) → grow on a Travel → YOUR BOARD (rallied) → place on a Promote → ON A STALL
+         (committed). The character's `max` (網紅 8, field 6) and `start_meeples` (2) are surfaced in a pill
+         and by the drawn meeple counts. REPLACES the retired 0–8 Followers dial.
        • RIGHT column — a short funny PROSE one-liner (from `blurb`) under the banner, then the TWO
          card-EXACT-footprint drop zones CANCELLED 取消 · COMPLETE 成團 (a real Booking card stacks on each).
 
     REMOVED in this v2 (all moved to the rulebook): the bottom footer (scoring line + hand-limit-3 +
-    Rave-Reviews + the dial +1/Travel & lost-war drop rule), the "icons are reminders" caption, and the
-    old FOLLOWERS card-zone (Followers is no longer a card zone — it is the dial under the image).
+    Rave-Reviews), the "icons are reminders" caption, and the old FOLLOWERS card-zone.
 
     TA-specific: only games/travel-agents/make.sh calls --type playerboard, and it renders only rows that
     carry ability_code + flaw_code — so Beacon and every other game are untouched."""
@@ -734,7 +853,18 @@ def render_playerboard(theme, row, mockups_dir=None):
     acode = str(row.get("ability_code", "")).strip().lower()
     fcode = str(row.get("flaw_code", "")).strip().lower()
     slug = _slugify(name_en or row.get("id", ""))
-    dial_start = 4 if acode == "start_max_4" else 2   # 網紅 starts at 4; the dial floors here too
+    # V7-M meeples: surface each character's OWN pool from the data — `max` followers exist in your colour
+    # (網紅 8, field 6), `start_meeples` of them start on your board (the rest in your supply).
+    try:
+        pool_max = int(float(row.get("max") or 6))
+    except (TypeError, ValueError):
+        pool_max = 6
+    try:
+        start_n = int(float(row.get("start_meeples") or 2))
+    except (TypeError, ValueError):
+        start_n = 2
+    start_n = max(0, min(start_n, pool_max))
+    supply_n = pool_max - start_n
 
     M = 70                                         # outer margin
     P = [f'<defs>{page_gradient(theme, "pg")}</defs>',
@@ -767,7 +897,7 @@ def render_playerboard(theme, row, mockups_dir=None):
     def icon_medallion(cx, code, col):
         return "".join([
             f'<circle cx="{cx}" cy="{med_cy}" r="{med_r}" fill="#ffffff" stroke="{col}" stroke-width="6"/>',
-            _pb_kit_glyph(cx, med_cy, code, col, ink, tfont)])
+            _pb_kit_glyph(cx, med_cy, code, col, ink, tfont, follower_col=violet)])
     P.append(icon_medallion(med_cx_a, acode, teal))
     P.append(icon_medallion(med_cx_f, fcode, vermilion))
 
@@ -802,60 +932,109 @@ def render_playerboard(theme, row, mockups_dir=None):
         P.append(f'<text x="{scx}" y="{img_y+IMG_H-38}" font-size="27" fill="#ffffff" text-anchor="middle" '
                  f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[{esc(fig_id)}]</text>')
 
-    # --- FOLLOWERS DIAL: an actual rotating-insert dial FACE (0–8 notched arc) UNDER the image -----------
-    # Represents the BOARD FACE only; the physical knob is a separate 3D-printed component. A number arc
-    # with a detent at each value, a centre pivot + dashed groove ring (where the knob seats), and the
-    # per-character MAX/START marker (2, or 4 for 網紅) shown by a pointer + a highlighted notch.
-    dial_top = img_y + IMG_H + 40                  # 1728
-    P.append(emblem_svg("spark", img_x+52, dial_top+42, 24, violet))
-    P.append(f'<text x="{img_x+92}" y="{dial_top+54}" font-size="34" fill="{violet}" '
-             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">FOLLOWERS 粉 · the dial</text>')
-    P.append(f'<text x="{img_x+92}" y="{dial_top+92}" font-size="23" fill="{muted}" '
-             f'font-family="{bfont}" font-style="italic">a 3D-printed knob clicks into the notches · points at Followers-max</text>')
-    n_dial = 9
-    dcx = img_x + IMG_W/2                           # 520 — centred under the image
-    dcy = dial_top + 512                            # 2240 pivot
-    R = 280                                         # number-arc radius
-    # arc track (value 0 left → 8 right, sweeping over the top)
-    P.append(f'<path d="M{dcx-R:.0f} {dcy:.0f} A {R} {R} 0 0 0 {dcx+R:.0f} {dcy:.0f}" '
-             f'fill="none" stroke="{violet}" stroke-width="7" opacity="0.45"/>')
-    # groove ring — where the rotating 3D insert seats — + centre pivot dot
-    P.append(f'<circle cx="{dcx:.0f}" cy="{dcy:.0f}" r="104" fill="#ffffff" opacity="0.5" '
-             f'stroke="{violet}" stroke-width="3" stroke-dasharray="10 8"/>')
-    P.append(f'<circle cx="{dcx:.0f}" cy="{dcy:.0f}" r="12" fill="{violet}"/>')
-    # the per-character START/MAX pointer FIRST (under the notches), from the pivot toward the start value
-    a0 = math.pi * (1 - dial_start/(n_dial-1))
-    px = dcx + (R-46)*math.cos(a0)
-    py = dcy - (R-46)*math.sin(a0)
-    P.append(f'<line x1="{dcx:.0f}" y1="{dcy:.0f}" x2="{px:.0f}" y2="{py:.0f}" stroke="{violet}" '
-             f'stroke-width="9" stroke-linecap="round"/>')
-    for i in range(n_dial):
-        a = math.pi * (1 - i/(n_dial-1))
-        nx = dcx + R*math.cos(a)
-        ny = dcy - R*math.sin(a)
-        # detent notch: a short radial tick across the arc at each value
-        t1x, t1y = dcx + (R-16)*math.cos(a), dcy - (R-16)*math.sin(a)
-        t2x, t2y = dcx + (R+16)*math.cos(a), dcy - (R+16)*math.sin(a)
-        P.append(f'<line x1="{t1x:.0f}" y1="{t1y:.0f}" x2="{t2x:.0f}" y2="{t2y:.0f}" '
-                 f'stroke="{violet}" stroke-width="3" opacity="0.6"/>')
-        if i < dial_start:                          # inside the reachable range
-            fill, stroke, ncol, sw, dash = "#ffffff", violet, ink, 4, ""
-        elif i == dial_start:                       # the MAX / start notch
-            fill, stroke, ncol, sw, dash = violet, violet, "#ffffff", 5, ""
-        else:                                       # above the start ceiling
-            fill, stroke, ncol, sw, dash = "#E7E1D4", muted, muted, 2, ' stroke-dasharray="6 5"'
-        P.append(f'<circle cx="{nx:.0f}" cy="{ny:.0f}" r="33" fill="{fill}" stroke="{stroke}" '
-                 f'stroke-width="{sw}"{dash}/>')
-        P.append(f'<text x="{nx:.0f}" y="{ny+11:.0f}" font-size="32" fill="{ncol}" text-anchor="middle" '
-                 f'font-family="{tfont}" font-weight="bold">{i}</text>')
-    # MAX tag just outside the arc at the start angle
-    tgx = dcx + (R+78)*math.cos(a0)
-    tgy = dcy - (R+78)*math.sin(a0)
-    P.append(f'<rect x="{tgx-60:.0f}" y="{tgy-28:.0f}" width="120" height="56" rx="14" fill="{violet}"/>')
-    P.append(f'<text x="{tgx:.0f}" y="{tgy-3:.0f}" font-size="24" fill="#ffffff" text-anchor="middle" '
-             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">MAX</text>')
-    P.append(f'<text x="{tgx:.0f}" y="{tgy+20:.0f}" font-size="19" fill="#ffffff" text-anchor="middle" '
-             f'font-family="{tfont}" font-weight="bold">start {dial_start}</text>')
+    # --- FOLLOWER POOL + SUPPLY lifecycle panel (V7-M meeples) — REPLACES the retired 0–8 dial ------------
+    # The dial is gone (it "didn't feel natural"). Followers are now physical, colour-coded meeples that
+    # live in one of three states, and the panel shows that LIFECYCLE left→right in the dial's old
+    # footprint: your SUPPLY (un-rallied) → grow on a Travel → YOUR BOARD (rallied, ready) → place on a
+    # Promote → ON A STALL (committed to a crowd-fight). `max` and `start_meeples` are surfaced from the
+    # data (網紅 owns 8, the field 6; start 2 on the board). Colour-agnostic on the board: drawn in the
+    # follower hue (violet) since any player may take any colour.
+    panel_x, panel_w = img_x, IMG_W                 # 70, 900
+    panel_y = img_y + IMG_H + 40                    # 1728
+    panel_bottom = H - M                            # 2410
+    panel_h = panel_bottom - panel_y                # 682
+
+    def _follower(cx, cy, s, filled):
+        """A small follower MEEPLE glyph (round head + flared body). filled → rallied (solid);
+        hollow → un-rallied (white fill, violet outline)."""
+        fill = violet if filled else "#ffffff"
+        head = (f'<circle cx="{cx:.0f}" cy="{cy-s*0.62:.0f}" r="{s*0.34:.0f}" '
+                f'fill="{fill}" stroke="{violet}" stroke-width="3"/>')
+        body = (f'<path d="M{cx-s*0.62:.0f} {cy+s:.0f} '
+                f'C {cx-s*0.62:.0f} {cy-s*0.08:.0f} {cx-s*0.3:.0f} {cy-s*0.2:.0f} {cx:.0f} {cy-s*0.2:.0f} '
+                f'C {cx+s*0.3:.0f} {cy-s*0.2:.0f} {cx+s*0.62:.0f} {cy-s*0.08:.0f} {cx+s*0.62:.0f} {cy+s:.0f} Z" '
+                f'fill="{fill}" stroke="{violet}" stroke-width="3"/>')
+        return head + body
+
+    # header: title + a max/start pill
+    P.append(_follower(panel_x+26, panel_y+42, 22, True))
+    P.append(f'<text x="{panel_x+62}" y="{panel_y+52}" font-size="34" fill="{violet}" '
+             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">FOLLOWERS 粉 · your crowd</text>')
+    P.append(f'<text x="{panel_x+62}" y="{panel_y+90}" font-size="22" fill="{muted}" '
+             f'font-family="{bfont}" font-style="italic">your colour&#8217;s pool — grow to your board, then out onto a stall</text>')
+    pill_w = 300
+    pill_x = panel_x + panel_w - pill_w
+    P.append(f'<rect x="{pill_x}" y="{panel_y+14}" width="{pill_w}" height="58" rx="16" fill="{violet}"/>')
+    P.append(f'<text x="{pill_x+pill_w/2}" y="{panel_y+51}" font-size="30" fill="#ffffff" text-anchor="middle" '
+             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">POOL {pool_max} · START {start_n}</text>')
+
+    # three lifecycle bins
+    bins_top = panel_y + 122
+    bins_bot = panel_bottom - 66
+    bin_w, gap = 250, 75
+    xs = [panel_x + i*(bin_w+gap) for i in range(3)]
+    labels = [("SUPPLY 補給", "un-rallied"), ("YOUR BOARD 待命", "rallied · ready"),
+              ("ON A STALL 出攤", "committed")]
+
+    def _bin_box(bx, dashed):
+        d = ' stroke-dasharray="12 8"' if dashed else ""
+        return (f'<rect x="{bx}" y="{bins_top}" width="{bin_w}" height="{bins_bot-bins_top}" rx="18" '
+                f'fill="#ffffff" opacity="0.42" stroke="{violet}" stroke-width="3"{d}/>')
+
+    def _bin_header(bx, en_han, desc):
+        return (f'<text x="{bx+bin_w/2}" y="{bins_top+44}" font-size="26" fill="{violet}" text-anchor="middle" '
+                f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(en_han)}</text>'
+                f'<text x="{bx+bin_w/2}" y="{bins_top+78}" font-size="21" fill="{muted}" text-anchor="middle" '
+                f'font-family="{bfont}" font-style="italic">{esc(desc)}</text>')
+
+    def _lay_followers(bx, count, filled):
+        if count <= 0:
+            return (f'<text x="{bx+bin_w/2}" y="{(bins_top+96+bins_bot)/2:.0f}" font-size="30" fill="{muted}" '
+                    f'text-anchor="middle" font-family="{bfont}">—</text>')
+        cols = min(4, count)
+        rows = math.ceil(count / 4)
+        dx, dy, s = 52, 66, 18
+        gw = cols * dx
+        x0 = bx + (bin_w - gw) / 2 + dx/2
+        area_top, area_bot = bins_top + 96, bins_bot - 24
+        gh = rows * dy
+        y0 = area_top + (area_bot - area_top - gh) / 2 + dy/2
+        out = []
+        for k in range(count):
+            r_, c_ = divmod(k, 4)
+            # last row: centre a short row
+            in_row = min(4, count - r_*4)
+            rx0 = bx + (bin_w - in_row*dx) / 2 + dx/2
+            out.append(_follower(rx0 + c_*dx, y0 + r_*dy, s, filled))
+        return "".join(out)
+
+    # bins 1 & 2 hold meeples; bin 3 is the destination (a dashed target with a stall awning + one hollow follower)
+    P.append(_bin_box(xs[0], False) + _bin_header(xs[0], *labels[0]) + _lay_followers(xs[0], supply_n, False))
+    P.append(_bin_box(xs[1], False) + _bin_header(xs[1], *labels[1]) + _lay_followers(xs[1], start_n, True))
+    P.append(_bin_box(xs[2], True) + _bin_header(xs[2], *labels[2]))
+    # stall awning glyph + a lone standing follower inside bin 3
+    sx, sy = xs[2] + bin_w/2, (bins_top + 96 + bins_bot) / 2
+    P.append(f'<path d="M{sx-64} {sy-6} L{sx-50} {sy-46} L{sx+50} {sy-46} L{sx+64} {sy-6} Z" fill="{gold}"/>')
+    P.append(f'<line x1="{sx-58}" y1="{sy-6}" x2="{sx-58}" y2="{sy+46}" stroke="{gold}" stroke-width="6"/>'
+             f'<line x1="{sx+58}" y1="{sy-6}" x2="{sx+58}" y2="{sy+46}" stroke="{gold}" stroke-width="6"/>'
+             f'<line x1="{sx-72}" y1="{sy+46}" x2="{sx+72}" y2="{sy+46}" stroke="{gold}" stroke-width="7" stroke-linecap="round"/>')
+    P.append(_follower(sx, sy+30, 18, True))
+
+    # grow / place flow arrows in the gaps, with keyword labels above
+    arr_y = (bins_top + bins_bot) / 2
+    for gi, (kw, act) in enumerate([("grow", "Travel"), ("place", "Promote")]):
+        gx = panel_x + bin_w + gi*(bin_w+gap) + gap/2
+        P.append(f'<path d="M{gx-26:.0f} {arr_y:.0f} h 44 m -14 -12 l 14 12 l -14 12" fill="none" '
+                 f'stroke="{violet}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>')
+        P.append(f'<text x="{gx:.0f}" y="{arr_y-30:.0f}" font-size="22" fill="{violet}" text-anchor="middle" '
+                 f'font-family="{tfont}" font-weight="bold">{esc(kw)}</text>')
+        P.append(f'<text x="{gx:.0f}" y="{arr_y+46:.0f}" font-size="19" fill="{muted}" text-anchor="middle" '
+                 f'font-family="{bfont}" font-style="italic">({esc(act)})</text>')
+
+    # footnote: win / lose return direction (the lost-contest penalty that replaced the dial-drop)
+    P.append(f'<text x="{panel_x}" y="{panel_bottom-24}" font-size="21" fill="{ink}" '
+             f'font-family="{bfont}">Win a stall &#8594; your crowd comes home to your board.  '
+             f'Lose &#8594; back to your own supply.</text>')
 
     # ==================== RIGHT COLUMN: prose one-liner + the two SCORING-PILE card zones ================
     # Prose banner and the pile tray share ONE centred width so they stack as a tidy module (rather than a
@@ -1087,7 +1266,8 @@ def main():
             import csv
             with args.from_csv.open(newline="", encoding="utf-8") as f:
                 for row in csv.DictReader(f):
-                    tokens.append({"label": row.get("label", ""), "color": row.get("color") or None,
+                    tokens.append({"id": row.get("id", ""), "label": row.get("label", ""),
+                                   "color": row.get("color") or None,
                                    "qty": row.get("qty", 1), "name": row.get("name", "")})
         else:
             tokens = [{"label": l, "qty": 1} for l in labels] or [{"label": "?", "qty": 1}]

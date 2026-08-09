@@ -163,19 +163,14 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
     page_cols = pstyle["page"] if pstyle else None
     ribbon = phase_ribbon_svg(pstyle, CARD_W, CARD_H, MARGIN, tfont)
     gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
-    teal = theme["suits"].get("central", {}).get("color", "#1F8A7A")
-    violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
-    # V7 LANGUAGE-AGNOSTIC rename: the promotional currency's on-card mechanical label is now "Followers"
-    # (drops the old CJK mechanical tag "讚 BUZZ" — a name→picture policy call, bg-infodesign). GUARDED to
-    # the Travel-Agents theme (its bespoke `back` wordmark) so any other game rendering a vendor keeps the
-    # old label byte-for-byte. Beacon has no vendor cards at all, so this branch never fires for it anyway.
-    followers_label = ("Followers"
-                       if theme.get("back", {}).get("wordmark") == "TRAVEL AGENTS"
-                       else "讚 BUZZ")
 
+    # V7-M MEEPLE/SCARCITY MODEL (bg-infodesign render rebuild 2026-08): a vendor's cost is its INGREDIENTS
+    # only (the recipe chips) and it is won by MOST FOLLOWERS on the stall (pure plurality — no printed
+    # number). Both the old violet Buzz badge (from the dropped `buzz_cost`) and the gold DRAW 人氣 gauge
+    # (from the dropped `draw`) are REMOVED — they now draw empty. The face carries: recipe chips + region +
+    # tier/apex marker + place/flavour + a textless "won by the biggest crowd" reminder. buzz/draw are not
+    # read at all now.
     recipe = [s.strip() for s in (row.get("recipe") or "").split(";") if s.strip()]
-    buzz = str(row.get("buzz_cost", "")).strip()
-    draw = str(row.get("draw", "")).strip()          # v6.3: the vendor's Draw (人氣) ATTRIBUTE — not a score
     tier = str(row.get("tier", "")).strip()
     icon = str(row.get("icon", "")).strip().upper()  # v6.3: N/C/S/E discount icon, or blank (trophy/drink)
     tags = str(row.get("tags", "")).lower()
@@ -221,14 +216,21 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
     if eng:
         eng_line = (f'<text x="{MARGIN}" y="{strip_y + 40}" font-size="30" fill="{text}" '
                     f'font-family="{bfont}" font-style="italic">{esc(eng)}</text>')
+    # place / flavour — the real-world stall location (data `place`), small muted subtitle under the dish
+    place = str(row.get("place", "")).strip()
+    place_line = ""
+    if place:
+        for pl in wrap(place, max_chars=42)[:1]:
+            place_line = (f'<text x="{MARGIN}" y="{strip_y + 76}" font-size="22" fill="{muted}" '
+                          f'font-family="{bfont}" font-style="italic">{esc(pl)}</text>')
 
-    # --- PAY row: ingredient chips (emblem-shaped, region colour, 繁體) + Buzz ----
+    # --- PAY row: ingredient chips only (V7-M: cost = ingredients; the Buzz badge is DROPPED) ---
     # v6.3.1 CD-4: every NIGHT marquee is CROSS-REGION — a chip whose ingredient belongs to a DIFFERENT
     # signature region than this vendor is flagged with an out-of-region "→" badge (and a header
     # CROSS-REGION tag) so the two-region bill parses at a glance, not just as a differently-coloured chip.
     ING_REGION = {"pork": "N", "tea": "C", "seafood": "S", "rice": "E"}   # sugar = common (never foreign)
     card_letter = {"north": "N", "central": "C", "south": "S", "east": "E"}.get(region, "")
-    pay_label_y = strip_y + 104
+    pay_label_y = strip_y + 132
     chips_cy = pay_label_y + 66
     r = 34
     x = MARGIN + 6
@@ -252,17 +254,7 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
                       f'<text x="{bx + 8}" y="{by + 7}" font-size="20" fill="{icol}" text-anchor="middle" '
                       f'font-family="{tfont}" font-weight="bold">{esc(foreign)}</text>')
         x += 2 * r + 20
-    # plus + Buzz badge
-    plus_x = x + 6
-    x2 = plus_x + 40
-    buzz_badge = (
-        f'<text x="{plus_x}" y="{chips_cy + 14}" font-size="46" fill="{muted}" '
-        f'font-family="{tfont}" font-weight="bold">+</text>'
-        f'<circle cx="{x2 + r}" cy="{chips_cy}" r="{r}" fill="{violet}" stroke="{ink}" stroke-width="3"/>'
-        f'<text x="{x2 + r}" y="{chips_cy + 12}" font-size="40" fill="#ffffff" text-anchor="middle" '
-        f'font-family="{tfont}" font-weight="bold">{esc(buzz)}</text>'
-        f'<text x="{x2 + r}" y="{chips_cy + 62}" font-size="24" fill="{violet}" text-anchor="middle" '
-        f'font-family="{tfont}" font-weight="bold">{esc(followers_label)}</text>')
+    # (V7-M: no "+" and no Buzz badge — the recipe chips ARE the whole cost.)
     # CROSS-REGION tag riding the PAY label — reads the two-region requirement without decoding chip colours
     cross_tag = ""
     if cross_letters:
@@ -277,32 +269,27 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
     pay_block = (
         f'<text x="{MARGIN}" y="{pay_label_y}" font-size="28" fill="{accent}" '
         f'font-family="{tfont}" font-weight="bold" letter-spacing="3">PAY 付</text>'
-        + cross_tag + chips + buzz_badge)
+        + cross_tag + chips)
 
-    # --- DRAW row: the vendor's Draw (人氣) ATTRIBUTE — a printed number, NOT a score --
-    # v6.3 tickets-only: vendors give no points. Draw only feeds the value-referencing
-    # tickets and marks the ★ apex the marquee get. So the old GAIN(Prestige+Rep) +
-    # PERK blocks are gone — a vendor face is just Draw + (region icon | none).
-    # The Draw number is deliberately DE-SCORED: a crowd/人氣 glyph (never the gold ★-spark, which reads
-    # as VP) and the number set inside a rounded "meter" gauge so it parses as a crowd-pull ATTRIBUTE, not
-    # a points value. Kept mid-card (not the bottom-right VP corner) with an explicit "not points" caption.
-    draw_label_y = chips_cy + 118
-    draw_cy = draw_label_y + 62
-    dx = MARGIN + 42
-    gauge_x, gauge_w, gauge_h = dx + 60, 108, 60
-    draw_block = (
-        f'<text x="{MARGIN}" y="{draw_label_y}" font-size="28" fill="{accent}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">DRAW 人氣</text>'
-        + emblem_svg("crowd", dx, draw_cy, 34, gold) +
-        f'<rect x="{gauge_x}" y="{draw_cy - gauge_h/2}" width="{gauge_w}" height="{gauge_h}" '
-        f'rx="{gauge_h/2}" fill="#ffffff" opacity="0.55" stroke="{gold}" stroke-width="3"/>'
-        f'<text x="{gauge_x + gauge_w/2}" y="{draw_cy + 16}" font-size="46" fill="{gold}" '
-        f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(draw)}</text>'
-        f'<text x="{gauge_x + gauge_w + 20}" y="{draw_cy + 14}" font-size="23" fill="{muted}" '
-        f'font-family="{bfont}" font-style="italic">crowd-pull · engine value, not points</text>')
+    # --- WON BY row: pure plurality (V7-M) — the stall goes to the biggest crowd; NO printed number ------
+    # The old DRAW 人氣 gauge and Buzz threshold are gone: winning is purely relative (out-commit your
+    # rivals). A crowd glyph + a short reminder line encodes "most followers on the stall wins" WITHOUT
+    # printing any win-count (the count needed is emergent — rival + 1). Same on every vendor; it is a
+    # memory anchor, the rulebook carries the tie/大哥 detail.
+    won_label_y = chips_cy + 120
+    won_cy = won_label_y + 56
+    wx = MARGIN + 40
+    wonby_block = (
+        f'<text x="{MARGIN}" y="{won_label_y}" font-size="28" fill="{accent}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">WON BY 得標</text>'
+        + emblem_svg("crowd", wx, won_cy, 34, gold) +
+        f'<text x="{wx + 62}" y="{won_cy - 4}" font-size="30" fill="{text}" '
+        f'font-family="{bfont}" font-weight="bold">most followers on the stall</text>'
+        f'<text x="{wx + 62}" y="{won_cy + 32}" font-size="23" fill="{muted}" '
+        f'font-family="{bfont}" font-style="italic">a plurality — no set number to reach</text>')
 
     # --- ICON box: region discount icon, or NONE (trophy / drink) ---------------
-    icon_label_y = draw_cy + 108
+    icon_label_y = won_cy + 96
     box_y = icon_label_y + 18
     box_h = CARD_H - MARGIN - box_y
     if icon:
@@ -312,7 +299,7 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
         icon_txt = f"{icon} discount icon — each you hold makes this region's ingredients 1 cheaper."
     elif is_apex:
         iemb, icol = "spark", gold
-        icon_txt = "★ trophy — top Draw, NO discount icon (a get, not an engine piece)."
+        icon_txt = "★ apex marquee — the most-sought stall, NO discount icon (a trophy, not an engine piece)."
     else:
         iemb, icol = "circle", muted
         icon_txt = "Drink — cheap filler, NO discount icon."
@@ -339,8 +326,9 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
   {tier_pill}
   {region_strip}
   {eng_line}
+  {place_line}
   {pay_block}
-  {draw_block}
+  {wonby_block}
   {icon_block}
   {ribbon}
 </svg>"""
