@@ -103,15 +103,25 @@ def wrap(text: str, max_chars: int) -> list[str]:
 # (ingredients + the Buzz majority reminder) + a printed DRAW (人氣) attribute + a
 # region discount ICON or none. The old GAIN(Prestige/Reputation) + PERK reward
 # vectors are RETIRED (vendors don't score; the perk field is gone). Dispatch is
-# guarded by `_is_vendor` (needs BOTH `tier` and `buzz_cost`), so decks without
+# guarded by `_is_vendor` (needs BOTH `tier` and `recipe`), so decks without
 # those columns — Beacon, missions, events, characters — are byte-unchanged.
+# V7-M (2026-08): the vendor `buzz_cost` column was DROPPED from data (vestigial —
+# the crowd-fight is pure plurality now, no threshold). Detection re-keyed off
+# `recipe` (present on every vendor row, absent from Beacon/missions/events/
+# characters) so vendors still dispatch to the vendor face. NOTE for the render/
+# presentation pass: render_vendor_svg still draws a Buzz badge (from the dropped
+# `buzz_cost`) and a DRAW gauge (from the dropped `draw`) — both now empty; that
+# pass must remove those two widgets and rework the face for the meeple/plurality
+# model. This is the ONLY shared-tool change in the data pass; it fires only for
+# rows carrying both `tier` and `recipe` (Travel-Agents vendors), so Beacon renders
+# byte-identical.
 TIER_FICTION = {"1": "攤 STALL", "2": "小吃 EATERY", "3": "名店 MARQUEE"}
 REGION_LABEL = {"north": "NORTH 北", "central": "CENTRAL 中",
                 "south": "SOUTH 南", "east": "EAST 東"}
 
 
 def _is_vendor(row: dict) -> bool:
-    return bool(str(row.get("tier", "")).strip()) and bool(str(row.get("buzz_cost", "")).strip())
+    return bool(str(row.get("tier", "")).strip()) and bool(str(row.get("recipe", "")).strip())
 
 
 def _english_name(effect: str) -> str:

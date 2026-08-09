@@ -1,7 +1,11 @@
 id,name,label,color,qty
-followers,Followers 粉 (committed public on vendors; capped by your Followers-max dial),粉,#6A4C93,60
-dial,Followers-max dial (ONE per player — your live ceiling on committed Followers; start 2 · 網紅 starts 4; the lost-war sink drops it; NOT a score),盤,#6A4C93,6
-trending,Trending marker (爆紅 — the DYNAMIC going-viral marker; Gone Viral drops it on a vendor; winning that vendor grants +1 Followers-max; DISTINCT from the printed ★ apex),紅,#C9A227,4
+followerA,Follower meeple — colour A (粉 · your crowd; lives in your supply / on your board / committed on a stall; 8 per colour so any player can field their pool max — 網紅 8; everyone else 6),粉,#5B4FB0,8
+followerB,Follower meeple — colour B (粉 · that player's crowd; 8 per colour),粉,#C2185B,8
+followerC,Follower meeple — colour C (粉 · that player's crowd; 8 per colour),粉,#00838F,8
+followerD,Follower meeple — colour D (粉 · that player's crowd; 8 per colour),粉,#EF6C00,8
+followerE,Follower meeple — colour E (粉 · that player's crowd; 8 per colour),粉,#2E7D32,8
+followerF,Follower meeple — colour F (粉 · that player's crowd; 8 per colour),粉,#455A64,8
+trending,Trending marker (爆紅 — the DYNAMIC going-viral marker; Gone Viral drops it on a vendor; whoever WINS that vendor grows 1 follower; DISTINCT from the printed ★ apex),紅,#C9A227,4
 mkTours,Rave-Review / Tours-Completed marker (per player; 好評 boons at your 2nd & 4th completed tour),團,#1F8A7A,6
 hsrClosed,HSR-closed reminder marker (Scheduled Maintenance — sits on the 停 HSR slot while active),停,#8A8F98,1
 pileWin,COMPLETED 成團 win-pile marker (per player),成,#C9A227,6

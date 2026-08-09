@@ -1,5 +1,5 @@
 {
-  "_note": "V7 NEUTRAL SHARED N-PLAYER board (3–6) for build_board.py --type regionmap. Data is the source of truth. RENDER REBUILT (bg-infodesign 2026-08): render_regionmap now draws the ONE neutral any-seat board — no 2p across-the-table mirror, no per-edge clock rails. The clock is DECK-DRIVEN (the 開團 Booking deck IS the clock): a full-width clock band carries the DAY deck (out → 黃昏 DUSK → flip to night), the NIGHT deck (out → 末班車 LAST TRAIN → finish round, end), and the shared FACE-UP Booking row — NO numbered vendor-claims track. The 4-region diamond (北 top · 中 left · 東 right · 南 bottom) carries colour + emblem + 繁體 (dual-coded), each with its FACE-UP vendor card slots (card-exact footprints; slots_n below is the 4p HOME default, per-count scaling in the setup table) + a MARKET deck; ingredients are CARDS in those market decks (components/ingredients.csv), so there is NO ingredient-supply section. The HSR spine runs N↔S with a region STOP at each end. hsr_closed_marker draws the 停 Scheduled-Maintenance EVENT as a printed LABEL on the track (the event card is played ONTO the track) — NOT a separate dashed drop-slot (CD steer 2026-08). Bottom band: shared Followers supply + Trending markers, a how-to-read legend, and the per-count setup table. Two states via --phase day|night (warm gold day / neon night chrome; region colours stay warm in both). Styled to match the character/player-board house hand (inner gold hairline frame, coloured header banners, drawn emblems) — NOT the retired soft-watercolour AI map mock-up. Per-count booking-deck + vendor-slot + Followers-supply tables below are DATA. Region colours: night-market (identity.md), CVD-checked.",
+  "_note": "V7 NEUTRAL SHARED N-PLAYER board (3–6) for build_board.py --type regionmap. Data is the source of truth. RENDER REBUILT (bg-infodesign 2026-08): render_regionmap now draws the ONE neutral any-seat board — no 2p across-the-table mirror, no per-edge clock rails. The clock is DECK-DRIVEN (the 開團 Booking deck IS the clock): a full-width clock band carries the DAY deck (out → 黃昏 DUSK → flip to night), the NIGHT deck (out → 末班車 LAST TRAIN → finish round, end), and the shared FACE-UP Booking row — NO numbered vendor-claims track. The 4-region diamond (北 top · 中 left · 東 right · 南 bottom) carries colour + emblem + 繁體 (dual-coded), each with its FACE-UP vendor card slots (card-exact footprints; slots_n below is the 4p HOME default, per-count scaling in the setup table) + a MARKET deck; ingredients are CARDS in those market decks (components/ingredients.csv), so there is NO ingredient-supply section. The HSR spine runs N↔S with a region STOP at each end. hsr_closed_marker draws the 停 Scheduled-Maintenance EVENT as a printed LABEL on the track (the event card is played ONTO the track) — NOT a separate dashed drop-slot (CD steer 2026-08). Bottom band: PER-COLOUR Follower supply trays (each player's own pool — no shared table pool) + Trending markers, a how-to-read legend, and the per-count setup table. Two states via --phase day|night (warm gold day / neon night chrome; region colours stay warm in both). Styled to match the character/player-board house hand (inner gold hairline frame, coloured header banners, drawn emblems) — NOT the retired soft-watercolour AI map mock-up. Per-count booking-deck + (V7-M tightened, slow-refill) vendor-slot tables + the per-colour follower supply below are DATA. Region colours: night-market (identity.md), CVD-checked.",
   "title": "Travel Agents: Taiwan — the table (V7 · 3–6 players)",
   "players": "3-6",
   "start_hub": "north",
@@ -18,16 +18,24 @@
     "5": {"day": 18, "night": 24},
     "6": {"day": 21, "night": 28}
   },
-  "followers_supply": {
-    "_rule": "shared table Followers pool ≈ round(24·(1+0.375·(N−2)))",
-    "3": 33, "4": 42, "5": 51, "6": 60
+  "follower_supply": {
+    "_rule": "V7-M MEEPLES: followers are a PER-PLAYER, per-colour pool — there is NO shared/central table pool (the old shared scaled block is retired). At setup each player takes their character's `max` followers in their OWN colour into a labelled per-colour supply zone by their board; `start_meeples` of them (baseline 2) start ON their board, the rest sit in their supply. A follower is only ever in your supply, on your board, or committed on a stall. `max` enforces the old Followers-max ceiling physically — component count, zero tracking.",
+    "per_colour_max": {"default": 6, "influencer": 8},
+    "start_on_board": 2,
+    "setup_line": "followers per colour = your character's max (6; 網紅 The Influencer = 8). Draw them from your colour's bin; put 2 on your board, the rest in your supply."
   },
+  "legend_notes": [
+    "SLOW REFILL (scarcity): a claimed or cleared vendor slot stays EMPTY; refill all empty slots from the region decks at the END of each round (never immediately).",
+    "阿嬤 The Globetrotter — her Travel-anywhere costs 1 follower to her supply (the trip tires her crowd).",
+    "Win a contested stall → your followers on it come home to YOUR BOARD (kept). Lose it → your followers go back to YOUR OWN supply (re-rally them); they never join the winner."
+  ],
   "vendor_slots": {
-    "_note": "face-up vendor slots per region (N/C/S/E). NIGHT uses the SAME per-count counts as DAY (§4 — one slot table). Slots stay BELOW the player count (~1.5–2.0 stalls/agent) so collisions are forced — the area-majority engine. `slots_n` on each region below is the 4p HOME default for the render.",
-    "3": {"N": 2, "C": 2, "S": 1, "E": 1},
-    "4": {"N": 2, "C": 2, "S": 2, "E": 1},
-    "5": {"N": 2, "C": 2, "S": 2, "E": 2},
-    "6": {"N": 3, "C": 2, "S": 2, "E": 2}
+    "_note": "face-up vendor slots per region (N/C/S/E); DAY = NIGHT (one table). V7-M SCARCITY (2026-08): counts tightened to ~1.0-1.33 stalls/agent AND refill is now SLOW (see `refill`). The V7 sim proved the old ~1.5-2.0/agent with IMMEDIATE refill left contested_frac at only 3-5%: claiming a stall instantly conjured a substitute, so opening a contest was -EV. Tighter counts + per-round (not instant) refill remove the cheap substitute and force the crowd-fight. `slots_n` on each region is the 4p HOME default for the render.",
+    "refill": "SLOW / per-round: a claimed or cleared slot stays EMPTY; refill ALL empty slots from the region decks at the END of each round (after every player has taken one turn). NEVER immediate. This is the load-bearing scarcity lever - it makes each stall a non-substitutable prize for the rest of the round.",
+    "3": {"N": 1, "C": 1, "S": 1, "E": 1},
+    "4": {"N": 2, "C": 1, "S": 1, "E": 1},
+    "5": {"N": 2, "C": 1, "S": 1, "E": 1},
+    "6": {"N": 2, "C": 2, "S": 1, "E": 1}
   },
   "regions": [
     {
@@ -36,7 +44,7 @@
       "chips": [{"id": "pork", "label": "豬", "en": "pork"}]
     },
     {
-      "key": "central", "name": "CENTRAL 中", "color": "#1F8A7A", "emblem": "diamond", "slots_n": 2,
+      "key": "central", "name": "CENTRAL 中", "color": "#1F8A7A", "emblem": "diamond", "slots_n": 1,
       "chips": [{"id": "tea", "label": "茶", "en": "tea"}, {"id": "sugar", "label": "糖", "en": "sugar"}]
     },
     {
@@ -44,7 +52,7 @@
       "chips": [{"id": "rice", "label": "米", "en": "rice"}]
     },
     {
-      "key": "south", "name": "SOUTH 南", "color": "#E6A930", "emblem": "circle", "slots_n": 2,
+      "key": "south", "name": "SOUTH 南", "color": "#E6A930", "emblem": "circle", "slots_n": 1,
       "chips": [{"id": "seafood", "label": "海", "en": "seafood"}, {"id": "sugar", "label": "糖", "en": "sugar"}]
     }
   ],
