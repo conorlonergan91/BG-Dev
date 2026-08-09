@@ -1,18 +1,14 @@
 id,name,label,color,qty
-pork,豬肉 Pork (North signature),豬,#D64545,14
-tea,茶 Tea (Central signature),茶,#1F8A7A,14
-seafood,海鮮 Seafood (South signature),海,#E6A930,14
-rice,米 Rice (East signature),米,#26324D,12
-sugar,糖 Sugar (the COMMON — C & S only),糖,#B5835A,16
-buzz,Buzz 讚 (committed on vendors; capped by your Reach),讚,#6A4C93,24
-star,★ Star token (accolade — +2 Draw 人氣 to whoever wins the vendor),★,#C9A227,4
-mkReach,Reach marker (your Buzz cap — start at 2; NOT a score),及,#6A4C93,4
-mkTours,Tours Completed marker (Rave Reviews at your 2nd & 4th tour),團,#1F8A7A,4
-mkClock,Vendor-claims day-clock marker,鐘,#D64545,1
-hsrClosed,HSR-closed reminder marker (Scheduled Maintenance),停,#8A8F98,1
-pileWin,COMPLETED 成團 win-pile marker,成,#C9A227,2
-pileLose,CANCELLED 取消 lose-pile marker,取,#7A6E58,2
+followers,Followers 粉 (committed public on vendors; capped by your Followers-max dial),粉,#6A4C93,60
+dial,Followers-max dial (ONE per player — your live ceiling on committed Followers; start 2 · 網紅 starts 4; the lost-war sink drops it; NOT a score),盤,#6A4C93,6
+trending,Trending marker (爆紅 — the DYNAMIC going-viral marker; Gone Viral drops it on a vendor; winning that vendor grants +1 Followers-max; DISTINCT from the printed ★ apex),紅,#C9A227,4
+mkTours,Rave-Review / Tours-Completed marker (per player; 好評 boons at your 2nd & 4th completed tour),團,#1F8A7A,6
+hsrClosed,HSR-closed reminder marker (Scheduled Maintenance — sits on the 停 HSR slot while active),停,#8A8F98,1
+pileWin,COMPLETED 成團 win-pile marker (per player),成,#C9A227,6
+pileLose,CANCELLED 取消 lose-pile marker (per player),取,#7A6E58,6
 pawnA,Agent pawn A,A,#5B4FB0,1
 pawnB,Agent pawn B,B,#C2185B,1
 pawnC,Agent pawn C,C,#00838F,1
 pawnD,Agent pawn D,D,#EF6C00,1
+pawnE,Agent pawn E,E,#2E7D32,1
+pawnF,Agent pawn F,F,#455A64,1
