@@ -1169,3 +1169,250 @@ The scoring architecture is the CD's call — I've made it a clean A/H/B decisio
 §13.1 cost-Booking retune is **mandatory** (the §12 cost curve broke those targets). Flag `bg-elegance`
 (Route H adds a scoring line — budget), `bg-critic` (no forced-chase Booking; VP dominance guard under H),
 and `bg-theme` (VP reads as "winning the famous stall is its own prestige 人氣" — coherent with the twist).
+
+---
+
+# 14. VP SCORING — Route B, full vendor points (CD-LOCKED, 2026-08-09)
+
+> **Status: SPEC. The CD LOCKED Route B (full vendor points), overriding §13's Route-A recommendation.**
+> Every vendor scores VP. The two-axis dilution §13.2 warned about is mitigated **by TUNING, not by
+> architecture** — the two levers are (a) a VENDOR VP curve whose top is deliberately held low (ceiling 6)
+> and whose totals are structurally bounded by the §12 three-throttle scarcity, and (b) a BOOKING value
+> curve widened so the tour ceiling clears the vendor ceiling and tour-per-game totals dominate. This
+> section supersedes §13.4's Route-B sketch (`vp = ingredient_cost`): that ignored the crowd-floor effort
+> axis and compressed VP to 2–5; the locked curve below uses **cost + floor** so reward tracks EFFORT and
+> the cheapest day grabs sit exactly at the 1-VP floor.
+
+## 14.1 The generating rules (two clean lines)
+
+1. **Vendor VP = `ingredient_cost` + `min_followers` − 2.** Range **1–6**.
+   - *Why this exact form:* the CD's difficulty = f(cost + floor + tier). But **floor = tier by
+     construction** (§12.2: tier 1→floor 1, 2→2, 3→3), so cost + floor already carries the tier signal;
+     adding tier as a third term would double-count it and steepen the apex to 8, pushing vendor VP into
+     Booking territory and **worsening the dilution the CD wants tuned away.** I keep the flatter
+     cost+floor curve and shift by −2 so the cheapest grab lands on **1** (the CD's "cheap day stalls
+     score LOW VP" — the floor) and the top trophy on **6**.
+   - *The two vendor numbers carry independent VP info:* a (cost 3, floor 1) day stall = **2 VP**; a
+     (cost 3, floor 2) night main = **3 VP** — same ingredient cost, different crowd effort, different
+     reward. That is the §12.1 "(3,1) vs (3,2)" contrast paying out on the scoreboard.
+2. **Booking value = 2 × (old value) − 3.** Maps the validated slope 3→3, 4→5, 5→7, 6→9, 7→11.
+   - *Why:* preserves the existing, sim-validated *relative* difficulty→reward ordering (§13.0) and simply
+     **doubles the spread**, anchored at the easy floor **3** (so it OVERLAPS the vendor scale) with the
+     ceiling lifted to **11** (clear of the vendor ceiling 6). This is the "tours score a LOT higher"
+     tuning — no new Booking types, no architecture change.
+
+## 14.2 The 24-vendor VP table (authoritative)
+
+`cost` = `ingredient_cost` (§12.7). `floor` = `min_followers` (§12.2). `vp` = cost + floor − 2.
+
+| id | Dish (EN) | tier | phase | cost | floor | **vp** |
+|---|---|:--:|:--:|:--:|:--:|:--:|
+| N01 | Pork Bao | 1 | day | 2 | 1 | **1** |
+| N02 | Egg Crepe | 1 | day | 2 | 1 | **1** |
+| N03 | Soy Milk | 1 | day | 2 | 1 | **1** |
+| N04 | Pepper Bun | 2 | night | 3 | 2 | **3** |
+| N05 | Beef Noodle | 2 | night | 3 | 2 | **3** |
+| N06 | ★ Big Sausage | 3 | night | 4 | 3 | **5** |
+| N07 | Bubble Tea | 1 | night | 2 | 1 | **1** |
+| C01 | Ba-wan | 1 | day | 2 | 1 | **1** |
+| C02 | Misua | 1 | day | 3 | 1 | **2** |
+| C03 | Bubble Tea (orig) | 1 | day | 2 | 1 | **1** |
+| C04 | Sausage-in-Sausage | 2 | night | 3 | 2 | **3** |
+| C05 | ★ Fengjia Signature | 3 | night | 4 | 3 | **5** |
+| C06 | Wintermelon Tea | 1 | day | 2 | 1 | **1** |
+| S01 | Milkfish Congee | 1 | day | 2 | 1 | **1** |
+| S02 | Rice Bowl Cake | 1 | day | 3 | 1 | **2** |
+| S03 | Papaya Milk | 1 | day | 2 | 1 | **1** |
+| S04 | Turkey Rice | 2 | night | 3 | 2 | **3** |
+| S05 | Coffin Bread | 2 | night | 3 | 2 | **3** |
+| S06 | ★ Tan-tsú-mī | 3 | night | 4 | 3 | **5** |
+| E01 | Bamboo Rice | 1 | day | 2 | 1 | **1** |
+| E02 | Rice Cake | 1 | day | 2 | 1 | **1** |
+| E03 | Mochi | 2 | night | 3 | 2 | **3** |
+| E04 | ★ Stone-Slab BBQ | 3 | night | 5 | 3 | **6** |
+| E05 | Roselle Tea | 1 | day | 2 | 1 | **1** |
+
+**VP distribution:** 1 VP ×12 (all cost-2 tier-1 — the cheap grabs, at the floor) · 2 VP ×2 (C02, S02, the
+pricey day pair) · 3 VP ×6 (night mains) · 5 VP ×3 (apex) · 6 VP ×1 (E04 top apex).
+**Total VP on the whole board if every stall were claimed = 55.** No player claims all 24 — this cap is
+load-bearing for the dominance argument (§14.4).
+
+## 14.3 The retuned Booking VP table (authoritative)
+
+Rule: new = 2×old − 3. The **target retunes** from §12.6 / §13.1 (mandatory regardless of route) are folded
+in here (marked †). Boundary cards carry no value.
+
+| id | Booking (EN) | phase | old | **new** | target (if changed) |
+|---|---|:--:|:--:|:--:|---|
+| d_cheap2 | Budget Bites | day | 3 | **3** | — |
+| d_east1 | Taroko Day Trip | day | 3 | **3** | — |
+| d_deep2 | Become a Regular | day | 3 | **3** | — |
+| d_pairNC | Taipei–Taichung Line | day | 3 | **3** | — |
+| d_pairSE | South-Link Coast Run | day | 3 | **3** | — |
+| d_drinks2 | Hand-Shaken Run | day | 3 | **3** | — |
+| d_mix1 | A Bite & a Sip | day | 3 | **3** | — |
+| d_daymix | The Breakfast Set | day | 3 | **3** | — |
+| d_breakfast3 | Morning Market Breakfast | day | 4 | **5** | — |
+| d_food3 | Dragon-Boat Food Run | day | 4 | **5** | — |
+| d_cheap3 | Coin-Snack Tour | day | 4 | **5** | keep cost ≤2 (semantics shift, §13.1) |
+| d_north2 | Concert Hall & Dadaocheng | day | 4 | **5** | — |
+| d_south2 | Tainan Old-Capital Walk | day | 4 | **5** | — |
+| d_central2 | Taichung City & Tea | day | 4 | **5** | — |
+| d_prestige8 | Check-in Trail | day | 4 | **5** | † `ingredient_cost_day >= 7` |
+| d_contest1 | Out-Hype the Rival | day | 4 | **5** | — |
+| d_travel3 | HSR Three-City Hop | day | 5 | **7** | — |
+| d_collect4 | Full-Day Itinerary | day | 5 | **7** | — |
+| d_early3 | Beat the Crowds | day | 5 | **7** | — |
+| g_travel3d | Round-Island Rail | day | 5 | **7** | — |
+| n_surfturf | Surf & Turf | night | 4 | **5** | — |
+| n_eastnorth | Taroko–Taipei | night | 4 | **5** | — |
+| n_censouth | Taichung–Kaohsiung | night | 4 | **5** | — |
+| n_cross1 | Border Dish | night | 4 | **5** | — |
+| n_drinks3 | One More Round | night | 4 | **5** | — |
+| n_expensive1 | Marquee Splurge | night | 4 | **5** | † cost `>= 4` (was ≥3, §13.1) |
+| g_cross1 | Fusion Plate | night | 4 | **5** | — |
+| n_nmfood2 | Neon Bites | night | 5 | **7** | — |
+| n_four | Four-Stop Night Run | night | 5 | **7** | — |
+| n_star1 | Chasing a Star | night | 5 | **7** | — |
+| n_east2 | Hualien–Taitung Line | night | 5 | **7** | — |
+| n_contest2 | Queue-for-it | night | 5 | **7** | — |
+| n_final2 | Closing-Time Sprint | night | 5 | **7** | — |
+| g_travel3n | Lantern-Festival Circuit | night | 5 | **7** | — |
+| g_collect5 | New-Year Market Haul | night | 5 | **7** | — |
+| n_nightfood3 | Mid-Autumn BBQ | night | 6 | **9** | — |
+| n_allfood5 | Big Eater's Feast | night | 6 | **9** | — |
+| n_expensive2 | Two-Marquee Feast | night | 6 | **9** | † 2× cost `>= 4` (was ≥3, §13.1) |
+| n_prestige14 | Top of the Charts | night | 6 | **9** | hold `>= 9` (§12.6) |
+| n_deep3 | True Local | night | 6 | **9** | — |
+| n_cross2 | Two Borders | night | 6 | **9** | — |
+| n_allvenue | Dawn-to-Dusk Full Day | night | 6 | **9** | — |
+| g_prestige12 | Money No Object | night | 6 | **9** | hold `>= 7` (§12.6) |
+| n_collect6 | The Grand Tour | night | 7 | **11** | — |
+| n_all4 | Round-Taiwan · Route No.1 | night | 7 | **11** | — |
+
+**Booking value distribution:** 3 ×8 · 5 ×13 · 7 ×14 · 9 ×8 · 11 ×2.
+
+## 14.4 The effort→VP curve, and the OVERLAP (CD requirement)
+
+Both tracks reward **effort**, on one shared VP scale, so the tracks OVERLAP — and the tour ceiling clears
+the vendor ceiling both per-item and per-game.
+
+| Effort band | Vendor (vp) | Tour / Booking (value) |
+|---|:--:|:--:|
+| easiest | cheap day grab = **1** | easy pair / mix / cheap-2 = **3** |
+| low | pricey day (C02/S02) = **2** | 3-food / single-region-2 / expensive-1 = **5** |
+| mid | night main = **3** | collection-4 / apex-Booking / contested-2 = **7** |
+| high | apex = **5** | cross-2 / 2-marquee / prestige / depth-3 = **9** |
+| highest | top apex E04 = **6** | grand tour / all-4-regions = **11** |
+
+- **Overlap is real:** vendor VP spans **1–6**, Booking VP spans **3–11**; the shared band is **3–6**. An
+  **easy tour (3) scores LOWER than a premium vendor (apex 5, top apex 6)** — exactly the CD's ask. A
+  mid tour (5) ties an apex vendor (5). Effort, not track, sets the number in the overlap.
+- **Ceilings separate:** the single best vendor is **6**; the single best tour is **11** — a **+5 per-item**
+  gap at the top. And because a player completes *several* tours, the per-game gap is far larger (§14.5).
+
+## 14.5 ★ THE MAKE-OR-BREAK ARGUMENT — vendor-only LOSES, tours DOMINATE
+
+This is the guard `bg-design` flagged for Route B. The claim: **a vendor-only strategy is strictly
+dominated** — it cannot win. The argument is numeric and rests on three structural facts.
+
+**Balance assumptions (state them; the sim must verify — §14.6):**
+- ~**28 turns/player** (mid of the §9 target 26–32), **one action/turn**.
+- Under the §12.4 three-throttle stack (scarcity slots + higher costs + follower floors), a claim costs
+  several actions (source 2–5 ingredients + Promote to floor + Travel + Bribe). **Realistic total claims/
+  player/game ≈ 6–9.** Anchor: the game's OWN collection Bookings treat 4–6 claims as a full-game haul —
+  `n_collect6` "The Grand Tour" = **6 vendors**; `g_collect5` = 5; `d_collect4`/`n_four` = 4.
+- **High-VP stalls are scarce board-wide:** exactly **4 apex** (N06/C05/S06/E04, one per region,
+  region-locked, single-slot, floor 3, most-contested) and **6 night mains** (3 VP). Realistically **1–2
+  apex and 2–3 mains per player** across a whole game.
+
+**Step 1 — the vendor-only CEILING is ~22 VP.** A vendor-only hoarder, freed of all Booking overhead,
+pushes claims to ~9–10 and skews premium. Best realistic hoard:
+
+| Claim | count | vp each | subtotal |
+|---|:--:|:--:|:--:|
+| apex / top apex | 1 | 5–6 | 5–6 |
+| night mains | 3 | 3 | 9 |
+| pricey day (C02/S02) | 2 | 2 | 4 |
+| cheap day | 4 | 1 | 4 |
+| **total (~10 claims)** | | | **~22** |
+
+A *near-impossible* extreme (2 apex + 3 mains + 5 cheap, ~12 claims — unreachable under single-slot
+scarcity) tops out **~27–29**. Call the vendor-only ceiling **~22, hard cap ~29.**
+
+**Step 2 — the tour-focused WINNER is ~50+ VP.** A tour player claims **the same kind of premium stalls**
+(they need apex/mains/cross to complete the high Bookings) — so those claims score their vendor VP **too**
+— and then banks the Booking values on top:
+
+| Source | detail | VP |
+|---|---|:--:|
+| vendor VP | 1 apex(5) + 2 mains(6) + 1 pricey-day(2) + 3 cheap(3), ~7 claims | **~16** |
+| completed tours | e.g. n_star1(7)+n_contest2(7)+n_cross2(9)+d_collect4(7)+n_collect6(11) — claims SHARED | **~41** |
+| **total** | | **~57** |
+
+A *modest* tour winner (3 Bookings 5+7+7 = 19, + ~14 vendor) still scores **~33.**
+
+**Step 3 — vendor-only is DOMINATED.** Line up the numbers:
+- Vendor-only ceiling **~22** (hard cap ~29) **< even a modest tour score ~33 < a strong tour score ~57.**
+- **Vendor share of a winning score ≈ 16 / 57 ≈ 28%** — vendors are a real, full-scoring **third** of your
+  points (the CD's "full points"), but Bookings are the clear **majority** and the win engine.
+- The clincher is structural, not just arithmetic: **every premium vendor a tour player claims ALSO scores
+  its vendor VP AND completes a value-7-to-11 Booking.** There is no claim the vendor-only player makes
+  that a tour player can't also make while additionally banking a tour. Vendor-only forgoes the larger
+  axis for claims it is already making → strictly dominated. Ignoring Bookings stays **non-winning.**
+
+**Why Route B's dilution is neutralised (the two tuning levers):**
+1. **Vendor VP is capped low and structurally bounded.** Ceiling 6/item; the high-VP stalls are physically
+   scarce (4 apex, 6 mains) and the three throttles cap claims at ~6–9 → a vendor total can't realistically
+   clear ~22.
+2. **Booking scale widened to 3–11.** The tour ceiling (11) clears the vendor ceiling (6) per-item, and
+   several completions put the tour-per-game total (~35–45 from Bookings alone) far above the vendor
+   total. `ignore_obj` stays dead by the same logic §13.0 validated, now with vendors merely *adding* a
+   minority.
+
+## 14.6 What breaks the argument — the SIM tripwires (tuning knobs, spec-only)
+
+The argument rests on two assumptions the sim must confirm; if either fails, tune (do NOT touch
+architecture):
+- **IF realistic claims/player ≫ 9, or a single player routinely lands 3+ apexes** → the vendor-only
+  ceiling rises. **Tuning fix, in order:** (a) compress the vendor top — change the rule to `min(cost +
+  floor − 2, 4)` or `cost + floor − 3` (apex→4, top→5); then (b) widen Bookings further (e.g. 2×old − 2).
+- **IF vendor VP share of the winning score creeps above ~40%** (vendors rivalling tours) → same fix.
+- **Target band:** vendor-only winrate **< ~10%** (ideally ~0); vendor-VP share of winning score
+  **~25–35%** (hard ceiling ~40%); Booking VP **≥ ~60%** of the winning score.
+
+## 14.7 DATA change list (for `bg-developer` — extends §12.8)
+
+**`vendors.csv`** — **ADD a new column `vp`**, 24 values per §14.2 (generating rule `vp = ingredient_cost
++ min_followers − 2`). This *supersedes* §13.4's Route-B sketch (`vp = ingredient_cost`). No other vendor
+field changes (recipe/cost/floor already set by §12.8).
+
+**`bookings.csv`** — **RETUNE `value` on all 45 Booking rows** per §14.3 (rule new = 2×old − 3), folding in
+the mandatory target changes: `d_prestige8` → `ingredient_cost_day >= 7` (value 5); `n_expensive1` → cost
+`>= 4` (value 5); `n_expensive2` → 2× cost `>= 4` (value 9); `n_prestige14` hold `>= 9` (value 9);
+`g_prestige12` hold `>= 7` (value 9); `d_cheap2`/`d_cheap3` keep `<= 2` target (values 3 / 5). Boundary cards
+unchanged. Run `tools/lint/check_game.py` after (new column + value edits); cost/complexity gauges
+unaffected by these values.
+
+## 14.8 FOLLOW-UP FLAGS
+
+**SIM (`bg-playtest`) — the re-encode must now score BOTH tracks.** The §9/§12.9 re-encode already scores
+Bookings; **ADD:** (1) sum vendor `vp` into each player's final score; (2) the **"vendor-only loses / tours
+dominate" probe** — a bot that ignores Bookings and hoards stalls; report its winrate (target < ~10%),
+plus the two assumption-checks that back §14.5: **realistic claims/player** and **apex-claims/player**, and
+**vendor-VP share of the winning score** (target ~25–35%, hard ceiling ~40%). Wire the §14.6 tuning fixes
+to those tripwires. *(Note: this is an ADDITION to the in-flight §12.9 re-encode, not a new run.)*
+
+**RULEBOOK (`bg-rulebook` / `bg-elegance`) — scoring section.** Teach in two lines: *"At game end you score
+**two ways**: the VP printed on **every stall you won**, plus the value of **every tour (Booking) you
+completed**. Completed tours are worth far more — they are your main path to victory; won stalls are a
+steady bonus on top."* Presentation note for `bg-infodesign`: the vendor card now shows a **third number,
+the VP** (alongside ingredient chips + the crowd-floor) — the player aid needs a VP pip. Folds into the
+§10 rulebook-headroom re-gauge (the scoring line is ~30 words — flag `bg-elegance`).
+
+## 14.9 Coherence flag (extends §11 / §12.12)
+One mechanic moved: **scoring is now two-track — every vendor scores VP, tours score higher.** Flag the
+Director to run **`bg-theme`** (VP reads as "winning a famous stall is its own 人氣 prestige" — coherent
+with the crowd-fight twist; the apex trophies now pay prestige directly) and **`bg-elegance`** (a third
+printed number on vendor cards + a two-line scoring rule — confirm within the complexity budget; it is the
+cost the CD accepted to lock Route B).
