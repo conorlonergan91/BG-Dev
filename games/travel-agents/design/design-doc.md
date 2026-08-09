@@ -1283,3 +1283,289 @@ bg-developer builds to CANON (v6.3-content-draft §CD-4 table), not the sim defa
   real named business.**
 - **Celebration, not extraction** — the agents are passionate local promoters showing off home; if a tour
   or event ever reads as outsiders packaging/harvesting the island, that's a re-theme flag.
+
+---
+
+# §15 — THE EVENT SYSTEM (V7-M) — "the island lives its day"
+
+> **Status: SPEC (bg-design, 2026-08-09).** A rich, mechanic-spanning event system for the LOCKED V7-M
+> meeple + scarcity + Bookings model (`design/followers-meeples-redesign.md`). CD brief: *"the more and the
+> more creative, the better."* The trick is a **tiny framework** so the card count can be generous while the
+> rulebook load stays flat. Events already sit **inside the region MARKET decks** and fire on a **worked
+> draw** (a Visit or a Convenience Store; a Travel fly-by whiffs) — that carrier is unchanged (rules-draft
+> §7); this section defines the framework the cards are written in, a generous proposed set, the per-count
+> draw ratio, and the take-that bounding. **Spec-only — no data touched here; the rebuild list is §15.6.**
+
+## 15.1 Design intent (and why events, per `knowledge/design-fundamentals.md`)
+
+Events are the game's **input-randomness texture** and its **cheapest source of per-game variety** — the
+push-your-luck spine ("a typhoon may be the next card") and, since v6.1, its **light interaction lever**
+(a scoped card can boon or tax a rival). Under V7-M's slow-refill scarcity the board is thin and tense;
+events are the warm, comic pressure-release and the shared drama that a bigger table wants more of. The
+whole point of a framework is that **per-card variety is free** (read-the-card), so we can span *every*
+mechanic — followers, hand ingredients, travel, actions, vendors, the board — without adding rules weight,
+**provided the framework teaches in a few lines.** It does: three questions, always the same order —
+**what does it do (a verb), who does it hit (a scope icon), how long (a duration).**
+
+## 15.2 THE FRAMEWORK — three primitives (this is the whole teach)
+
+Every event card is: **VERB · SCOPE · DURATION**, then plain read-the-card text. Teach it once; every card
+thereafter is self-explaining.
+
+### (a) Effect VERBS — a compact closed set, grouped in three families
+
+Plain-language verbs, **not** memorised keywords — the card text is always authoritative. Grouped so a
+player learns them as three intuitions ("my crowd / my pantry / the street"):
+
+| Family | Verb | What it does | Sign |
+|---|---|---|---|
+| **CROWD** (followers) | **RALLY n** | grow *n* followers (your supply → your board) | + |
+| | **DISPERSE n** | return *n* of your followers (board/on-stall) to **your OWN supply** — re-rally them | − |
+| **PANTRY** (ingredients) | **GIFT n [type]** | take *n* free named ingredient(s) into your Larder | + |
+| | **PINCH n** | keep *n* fewer ingredient(s) from *this* draw/Visit (the tempo tax — you lose nothing you hold) | − |
+| | **SPOIL n [type]** | *n* held ingredients of a named type go off → region discard | − |
+| | **SWIPE [type?]** | take **1** ingredient from a target → your Larder (the "playing dirty" verb — bounded, §15.5) | − |
+| | **SINK** | put a card (a market top card) to the **BOTTOM** of its region deck | ∼ |
+| **STREET** (board & tempo) | **WASH** | discard & refill the face-up vendor slot(s) in a region (neutral shakeup) | ∼ |
+| | **RESTOCK** | refill **1 empty** vendor slot early (a boon *against* slow-refill) | + |
+| | **TREND** | drop a **Trending** marker on a face-up vendor (its winner grows +1 follower) | + |
+| | **BLOCK [action]** | a named action (draw / Promote / Travel-grow) is unusable for the duration | − |
+| | **DETOUR [hsr / link]** | travel restriction — HSR down, or a ring link severed | − |
+
+*Twelve verbs, three families.* Magnitude `n` is almost always **1** (rival-facing losses are **always** 1
+— §15.5); a rare self-boon or shared-boon reads **2**. Every hazard is **tax-not-destroy**: it delays,
+reroutes, or taxes tempo — it **never** removes a won vendor, a completed Booking, or costs a whole turn,
+and dispersed followers go to **your own** supply (never to an attacker).
+
+### (b) SCOPE vocabulary — five icons, "who does it hit," read from the drawn region
+
+Extends the shipped ⦿/⬢/➤ set to five. Resolved **relative to the region the card was drawn from** (for a
+Visit that's your region; for a Convenience Store it can be a remote region you flipped).
+
+| Scope | Icon | Who / where | Read |
+|---|:--:|---|---|
+| **YOU** | **⦿** | the acting player only, wherever they stand | a personal boon/hazard |
+| **A RIVAL** | **✦** | **the current LEADER** (auto-targeted — §15.5), not the drawer's pick | the island's spotlight finds whoever's ahead |
+| **THIS REGION** | **⬢** | every agent standing in the drawn region (+ that region's board) | the island acting on a *place* |
+| **NEXT DOOR** | **➤** | agent(s) standing in a region **adjacent** to the drawn one (ring; HSR N↔S counts adjacent) | it spills next door |
+| **WHOLE BOARD** | **▦** | everyone / the whole map (its own banner, like Scheduled Maintenance) | island-wide day |
+
+### (c) DURATION — ONE persistence mechanic, four clock-anchored values
+
+**The rule (one line):** *most events fire and are discarded (**NOW**); a **lingering** event is left face-up
+as a marker in its scope location (on the region, on the ▦ board banner, or tucked under a player's board)
+and carries a printed **⏳ "until …"** clause. Discard it the instant its clause resolves.* The four "until"
+values **re-use the clock the game already has** — no new timing concept to teach:
+
+| Duration | Marker? | Ends when… |
+|---|:--:|---|
+| **NOW** | no | resolves immediately, discard |
+| **⏳ TURN** | yes | at the **start of the affected player's next turn** (e.g. Scheduled Maintenance today) |
+| **⏳ ROUND** | yes | at the **end-of-round refill step** (the same beat slow-refill already uses) |
+| **⏳ PHASE** | yes | at the next **DUSK** or **LAST TRAIN** boundary |
+
+That is the entire framework: **12 verbs / 5 scope icons / 4 durations.** Everything below is content written
+in it — cheap variety, flat rules load.
+
+## 15.3 THE PROPOSED EVENT SET (generous — day + night, all domains + creative additions)
+
+~46 cards spanning every locked mechanic. English name first, 繁體 in parallel. Effects are in framework
+primitives; the **card text is authoritative** and goes to the paid consultant before lock. Region = which
+deck it lives in (or ▦ = island banner, seeded into a night deck). "exists" = already in `events.csv`.
+
+### CROWD — going viral (RALLY) and getting cancelled (DISPERSE)
+
+| # | Name (英) | 繁體 | Verb | Scope | Dur | Phase/Region | Note |
+|---|---|---|---|---|---|---|---|
+| 1 | A Featured Spot | 打卡熱點 | RALLY 1 | ⦿ | NOW | day / N | exists |
+| 2 | In the News | 上了新聞 | RALLY 1 | ⦿ | NOW | night / C | exists |
+| 3 | Blogger's Pick | 部落客推薦 | RALLY 1 | ⦿ | NOW | night / E | exists |
+| 4 | The Reel Blew Up | 短片爆了 | **RALLY 2** | ⦿ | NOW | night / N | the big viral (rare, magnitude 2) |
+| 5 | Everyone's Filming | 全城打卡 | RALLY 1 to each agent **here** | ⬢ | NOW | night / C | shared boon |
+| 6 | The Blogger Arrives | 網紅來了 | each agent's next Promote places **+1** follower | ⬢ | ⏳ROUND | night / E | exists — lingering boon |
+| 7 | Gone Viral | 爆紅 | **TREND** the cheapest face-up vendor here | ⬢ | NOW | night / N | exists (dynamic Trending marker) |
+| 8 | Lantern Festival | 燈會 | RALLY 1 to **every** agent | ▦ | NOW | night / C | island boon; secular lanterns |
+| 9 | A Bad Review | 負評 | DISPERSE 1 | ⦿ | NOW | night / S | exists |
+| 10 | A Mix-Up | 出包 | DISPERSE 1 | ⦿ | NOW | night / N | exists |
+| 11 | The Comments Turned | 風向變了 | DISPERSE 1 | ⦿ | NOW | day / C | new self-loss |
+| 12 | Getting Cancelled | 被出征 | DISPERSE 1 | **✦ leader** | NOW | night / N | catch-up; leader-locked, bounded (§15.5) |
+
+### PANTRY — gifts, spoilage, and playing dirty
+
+| # | Name | 繁體 | Verb | Scope | Dur | Phase/Region | Note |
+|---|---|---|---|---|---|---|---|
+| 13 | The Aunty Insists | 阿姨招待 | GIFT 1 [北 pork] | ⦿ | NOW | day / N | exists |
+| 14 | She Won't Take No | 再吃一點啦 | GIFT 1 [南 seafood] | ⦿ | NOW | night / S | exists |
+| 15 | 24-Hour Convenience | 深夜便利商店 | GIFT 1 [糖 sugar] | ⦿ | NOW | day/E · night/C | exists ×2 |
+| 16 | Mango Season | 芒果季 | GIFT 1 [糖] to each agent here | ⬢ | NOW | day / S | exists |
+| 17 | Spring Tea Harvest | 春茶收成 | GIFT 1 [茶] to each agent here | ⬢ | NOW | day / C | new — parallels Mango |
+| 18 | Rice Comes In | 稻穫季 | GIFT 1 [糧 pantry] | ⦿ | NOW | day / E | new — secular valley warmth |
+| 19 | Oyster Glut | 蚵仔盛產 | GIFT 1 [海鮮] | ⦿ | NOW | night / S | new |
+| 20 | Heat Wave | 熱浪 | SPOIL 1 [any] for each agent here | ⬢ | NOW | day / S | CD's "ingredients go off" |
+| 21 | The Fridge Broke | 冰箱壞了 | SPOIL 1 [seafood/meat] | ⦿ | NOW | night / S | perishables only |
+| 22 | Picked Clean | 被掃光 | SINK the deck's top card | ⬢ | NOW | day / any | thins the good stuff |
+| 23 | Poached the Supplier | 挖角 | **SWIPE 1** | ✦ leader | NOW | night / N | steal-from-the-top, bounded (§15.5) |
+| 24 | Cut in Line | 插隊 | **SWIPE 1** from an agent **here** | ⬢ | NOW | night / S | co-location counterplay |
+| 25 | Borrowed the Recipe | 借了食譜 | **SWIPE 1** of a named type | ✦ leader | NOW | night / C | leader-locked |
+
+### STREET — weather/tempo (PINCH), locks (BLOCK), travel (DETOUR), stalls (WASH/RESTOCK)
+
+| # | Name | 繁體 | Verb | Scope | Dur | Phase/Region | Note |
+|---|---|---|---|---|---|---|---|
+| 26 | Typhoon Day | 颱風假 | PINCH 1 | ⬢ | NOW | day / S | exists |
+| 27 | Plum Rains | 梅雨 | PINCH 1 | ⬢ | NOW | day / C | exists |
+| 28 | Night-Market Crush | 人潮 | PINCH 1 | ⬢ | NOW | night / N | exists |
+| 29 | Sudden Squall | 西北雨 | PINCH 1 | ➤ | NOW | night / S | exists |
+| 30 | Sold Out | 完售 | PINCH 1 | ⦿ | NOW | day/C · night/N · night/E | exists ×3 |
+| 31 | The Long Queue | 排隊人龍 | PINCH 1 | ⦿ | NOW | day / S | exists |
+| 32 | Last-Bus Rush | 末班車人潮 | PINCH 1 | ⦿ | NOW | night / E | exists |
+| 33 | The Big Typhoon | 強颱來襲 | **BLOCK [draw]** here + RALLY 1 to each agent here (everyone's home doom-scrolling food pics) | ⬢ | **⏳TURN** | night / S | CD's "no card-draw in a typhoon"; warm catch-up pairing |
+| 34 | No Signal | 沒有訊號 | **BLOCK [Travel-grow]** — your next Travel grows no follower | ⦿ | ⏳TURN | night / E | CD's "no internet on Travel" |
+| 35 | The Boss Wants a Word | 老闆找你 | **BLOCK [Promote]** next turn | ⦿ | ⏳TURN | day / N | CD's "the boss wants to talk"; head-office gag |
+| 36 | Roadworks | 道路施工 | **DETOUR** — can't Travel *out* of this region | ⬢ | ⏳ROUND | day / C | region lock, tempo |
+| 37 | Scheduled Maintenance | 排班保養 | **DETOUR [hsr]** — N↔S link down | ▦ | ⏳TURN | night / N&S | exists ×2 (banner; 阿嬤 immune) |
+| 38 | Landslide on the Pass | 山路坍方 | **DETOUR [link]** — sever one ring link | ➤ | ⏳TURN | night / E | mountain flavour |
+| 39 | Pop-Up Stall | 快閃攤 | **RESTOCK** 1 empty slot here now | ⬢ | NOW | day / N | boon vs scarcity |
+| 40 | Fully Booked | 客滿 | **WASH** this region's face-up vendor(s) | ⬢ | NOW | day / C | neutral shakeup |
+| 41 | New Management | 換老闆 | **WASH** one face-up vendor here | ⬢ | NOW | night / E | reroute |
+| 42 | The Queue That Ate the Block | 快閃排隊 | **TREND** the cheapest face-up vendor here | ⬢ | NOW | day / N | day parallel to Gone Viral |
+| 43 | Market Anniversary | 夜市週年慶 | each agent here places up to 2 board followers onto a co-located vendor (free Promote) | ⬢ | NOW | night / C | exists |
+| 44 | Golden Week | 連假 | everyone's Visit keeps **+1** | ▦ | ⏳ROUND | day / N | island boon, lingering |
+| 45 | Scooter Gridlock | 機車陣 | **BLOCK [Travel]** next turn arrives with no ingredient (tempo toll) | ➤ | ⏳TURN | day/N · night/C | exists (re-expressed as BLOCK) |
+| 46 | The 3:47 to Zuoying | 高鐵衝刺 | free HSR move now (N↔S) | ⦿ | NOW | night / N | HSR-sprint boon |
+
+**Mix:** ~26 hazard / ~20 boon-or-neutral — hazard-leaning as specified, but the boon slice (and the warm
+catch-up pairing on #33) keeps the market-dig from being pure dread. **Rival-facing (✦/➤ hazard) is a small
+minority** (~7 of 46) by design — most pressure is ⦿ personal or ⬢ shared. Domains covered: followers
+(viral/cancel), hand ingredients (gift/spoil/steal/sink), travel (HSR/link/toll), action-locks (draw/
+Promote/Travel-grow), vendor board (trend/wash/restock), and whole-board festival/banner — every locked
+mechanic is reachable by an event.
+
+## 15.4 Per-count draw ratio (events vs ingredients per region deck)
+
+**Model.** `events.csv` is the **POOL**; `ingredients.csv` fixes each region deck's ingredient cards
+(day N8/C9/S9/E8, night N6/C8/S8/E6). At setup, for each region+phase, shuffle the matching event pool and
+deal the per-count number below into that region's deck; the rest of the pool stays in the box. **This
+gives a different event mix every game — free replayability, and the ratio is a clean per-count dial.**
+
+| Players | Day events / region | Night events / region | ≈ event share (night N/E) |
+|:--:|:--:|:--:|:--:|
+| **3p** | 1 | 2 | 2:6 ≈ 25% |
+| **4p** | 2 | 3 | 3:6 ≈ 33% |
+| **5p** | 2 | 3 | 3:6 ≈ 33% |
+| **6p** | 3 | 4 | 4:6 ≈ 40% |
+
+**Direction of the dial — event pressure rises GENTLY with player count.** Reasoning:
+1. **Interaction payoff scales with the table.** ⬢/➤/▦ events are the shared drama; a fuller region means
+   one card touches more agents — exactly the texture a bigger table wants, and the CD's "same or
+   surrounding areas" reach only pays off when people are *there*.
+2. **High counts churn decks faster** (more Visits/round → reshuffles sooner), so a thin event slice gets
+   diluted; a denser slice keeps the island reacting.
+3. **Scarcity concentrates agents** into fewer live regions, so shared events land harder — desirable.
+
+**Capped so per-player swing stays bounded:** events are tax-not-destroy, personal (⦿) hazards are
+magnitude 1, and the denser night mix is mostly shared texture, not repeated personal punishment. **Night
+N/E at 6p (~40% events) is the hot corner** — flagged as the #1 event-density sim/table knob (§15.7). Night
+stays event-heavier than day at every count (the map's existing "night event-heavier" intent), emergently
+reinforced by more followers committed at night.
+
+## 15.5 BOUNDING THE TAKE-THAT (the direct-attack verbs) — anti-feel-bad, anti-kingmaking
+
+Direct attacks — **SWIPE** (steal), **DISPERSE ✦** (cancel a rival), and rival-aimed **BLOCK/DETOUR (➤)** —
+are a spike of confrontation in an otherwise warm game. Seven rails keep them cheeky-caper, not spite,
+especially at 5–6p:
+
+1. **Magnitude is always 1.** Any rival-facing loss is exactly 1 (1 ingredient swiped, 1 follower
+   dispersed, 1 tempo beat). Only **self**-boons or **shared** boons ever read 2. No event takes 2+ from one
+   rival.
+2. **Losses target the LEADER, never the drawer's pick.** Every **✦** *hazard* auto-targets the current
+   **leader** — most Completed Bookings (the Tours-Completed meter) → tie: most vendors → then most board
+   followers (the game's own tiebreak order). The drawer never chooses the victim → **no ganging up, no
+   kingmaking.** If the drawer *is* the sole leader, a ✦ hazard fizzles ("you're already on top") — you
+   can't weaponise it by drawing it yourself. Ties for the lead → drawer picks **among the tied leaders
+   only.**
+3. **The nastiest steal needs co-location counterplay.** The unrestricted-target SWIPE ("Cut in Line", #24)
+   is **⬢ this region only** — the victim sees the thief standing there and can leave. The at-a-distance
+   SWIPEs (#23, #25) are **leader-locked** and steal-from-the-top, so they read as "the frontrunner's
+   supplier got poached," not "pick on the straggler."
+4. **Tax-not-destroy, absolute.** Never removes a won vendor or a completed Booking; never costs a whole
+   turn. Dispersed followers go to **your own** supply to re-rally — they **never** join the attacker; a
+   swiped ingredient is one Visit away from replacement.
+5. **Rival-facing is a small minority of the pool** (~7 of 46), and at 5–6p most of what fires is ⦿/⬢ —
+   so no one player eats a stream of targeted attacks.
+6. **No pile-on stacking.** A lingering ✦ marker can't be re-applied while one is already active on the
+   leader (one Getting Cancelled at a time).
+7. **Boon-facing rival scope is free-choice** (rare) — only *losses* are leader-locked; generosity you may
+   aim.
+
+**The one dynamic to watch (→ bg-critic):** does auto-leader-targeting create a perverse **"don't want to
+lead"** incentive, or feel bad for a narrow leader who then gets a Booking-poach? Magnitude-1 + tax-not-
+destroy is designed to keep it a nudge, not a swing — but this is exactly a sim-and-table question (§15.7).
+
+## 15.6 DATA CHANGE LIST (for `bg-developer` — spec only; NOT executed here)
+
+**A. Rebuild `components/events.csv`** to the framework. New/renamed columns:
+`id,name,hanzi,type,region,phase,deck,scope,duration,verb,target,value,quantity,tags,effect,art_note`
+- **`scope`** ∈ `self | rival | region | neighbour | board` (icons ⦿/✦/⬢/➤/▦ on the card).
+- **`duration`** ∈ `now | turn | round | phase` (⏳ marker on all but `now`).
+- **`verb`** (primary) ∈ `rally | disperse | gift | pinch | spoil | swipe | sink | wash | restock | trend |
+  block | detour` — the machine-readable hook for the sim; **`effect` text stays authoritative.**
+- **`target`** = verb parameter where needed: `block` → `draw|promote|travel|travel-grow`; `detour` →
+  `hsr|link`; `gift/spoil/swipe` → ingredient type; blank otherwise.
+- **`value`** = magnitude `n` (default 1; the two "big" boons read 2).
+- **`quantity`** = copies in the POOL (drive variety; a common PINCH/GIFT may be 2–3, a marquee 1).
+- Populate the ~46-card set of §15.3 (retains all "exists" rows, re-columned; adds the ~20 new/creative
+  cards). Retire the `kind` column into `verb`+sign, or keep `kind=boon|hazard` as a convenience tag.
+- **Rail:** every Chinese/Tâi-lô string + every rival-facing beat → paid consultant before lock; 繁體 only,
+  secular, dignified locals; keep "meeple" out of flavour (always "followers / your crowd").
+
+**B. `map.json` — add a per-count event-draw block** (the §15.4 ratio):
+```json
+"event_deck_mix": {
+    "_note": "events.csv is the POOL; ingredients.csv fixes each region deck's ingredient cards. At setup, per region+phase, shuffle the matching event pool and deal this many events into that region deck (rest to box). Different mix each game. Event pressure rises gently with player count (interaction payoff + faster churn under more players); capped so per-player swing stays bounded — night N/E at 6p (~40%) is the #1 density knob.",
+    "3": {"day": 1, "night": 2},
+    "4": {"day": 2, "night": 3},
+    "5": {"day": 2, "night": 3},
+    "6": {"day": 3, "night": 4}
+}
+```
+(Scheduled Maintenance / island ▦ banners live inside night decks and fire board-scope when drawn — no
+separate deck.)
+
+**C. `game-bible.md`** — refresh the components list (events grow from ~26 → ~46 pool cards; new
+scope/duration/verb columns) and the one-line event summary. *(Left for the CD/next pass per the spec-only
+rail.)*
+
+## 15.7 Open questions for playtesting / the sim (top of the list)
+
+1. **Event density at 6p night (N/E ~40%).** Is the hot corner fun-swingy or overload? The #1 knob — dial
+   the §15.4 night counts if per-turn swing reads too high.
+2. **Does auto-leader-targeting feel bad / discourage leading?** (bg-critic.) Test the narrow-leader
+   Booking-poach; fallback = ✦ losses hit "everyone tied for/near the lead" or convert to ⬢.
+3. **Lingering-marker overhead.** Four ⏳ durations + a physical marker — does the table track them cleanly,
+   or does one collapse into another? Cut toward NOW/⏳TURN if ⏳ROUND/⏳PHASE rarely earn their keep.
+
+## 15.8 Guardian & follow-up flags (per the handoff contract)
+
+- **bg-theme** — does *direct attack* fit the warm tone? Sign off the rival-facing register: SWIPE ("playing
+  dirty"), **Getting Cancelled 被出征** (brigading/cancelling can read harsh — needs a warm-comedic reframe),
+  and the ✦ "spotlight finds the leader" flavour. Confirm secular + dignified locals, **繁體 only**,
+  English-first; East events stay secular/scenic (no Indigenous specifics without the consultant); the
+  festival/banner cards (Lantern Festival, Golden Week) carry **no temple/deity content**. Signature-twist
+  note: events now **feed the follower crowd-fight** (RALLY/TREND grow the very meeples that win stalls) and
+  the **scarcity board** (RESTOCK/WASH move the slow-refill slots) — check the fiction still explains those.
+- **bg-critic** — feel-bad / kingmaking on the take-that (§15.5): the leader-target rule, the 6p pile-on,
+  the SWIPE/DISPERSE-on-leader, and the "don't want to lead" perverse incentive.
+- **bg-elegance** — the complexity argument: the card count is generous but the **rulebook load is one
+  framework block** (12 verbs / 5 icons / 4 durations, all read-the-card) + one reused clock for persistence.
+  Net add over the shipped ⦿/⬢/➤ system: **two scope icons (✦, ▦), one persistence mechanic, one draw-ratio
+  table** — argue this buys large per-game variety for a small, bounded teach. Re-gauge with the meeple
+  swap's trims folded in.
+- **THE SIM** — re-encode required: model the new verbs (esp. RALLY/DISPERSE feeding the meeple pool,
+  SWIPE/SPOIL on the Larder, TREND on vendor value) and the **⏳ persistence** state (a lingering marker that
+  expires on turn/round/phase). Track: event-fire rate per player per game, ✦-leader-target frequency and
+  the leader's post-hit win-rate delta, take-that swing, and whether the §15.4 ratio holds per-player swing
+  bounded across 3–6p. **Gated — do not run until the CD signs off this spec.**
+- **bg-rulebook** — teach the framework **once** (the three-question block: verb / scope / duration), then
+  let cards self-explain; one worked example (a ⬢ region hazard + a ⏳ lingering marker); the scope/duration
+  icon legend on the player aid.
