@@ -22,8 +22,9 @@ free elder travel-pass (敬老卡) is her superpower. **Age is her advantage, ne
 
 **Pose / energy (over-the-top, warm):** caught **mid-zip and loving it** — e.g. one foot up on a little
 電動代步車 (mobility scooter) or an electric bike, or striding in fast with a wheelie shopping-trolley, a
-triumphant "**beat you here again!**" grin and a knowing wink, her 敬老卡 / 悠遊卡 held up between two fingers
-like a winning card. Silver hair (a neat perm or bun), bright practical clothes (a floral blouse, a visor or
+triumphant "**beat you here again!**" grin and a knowing wink, her **悠遊卡 EasyCard held up between two
+fingers like a winning card** — ideally the **senior 敬老悠遊卡** (the instantly-recognisable local
+stored-value card, which doubles as her free-elder-travel hook; NOT a generic train/elder card). Silver hair (a neat perm or bun), bright practical clothes (a floral blouse, a visor or
 sun-sleeves, comfy trainers), maybe a small crossbody bag stuffed with snacks she's already bought. She is
 **quick, canny, delighted** — the granny who knows every shortcut and every vendor by name.
 
