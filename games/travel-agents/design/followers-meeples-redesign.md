@@ -1,9 +1,11 @@
-# Travel Agents: Taiwan — V7 → V7-M: Follower MEEPLES + VENDOR SCARCITY (SIGN-OFF-READY SPEC)
+# Travel Agents: Taiwan — V7 → V7-M: Follower MEEPLES + VENDOR SCARCITY (LOCKED — CD-SIGNED)
 
-> **Status: SIGN-OFF-READY SPEC.** No data, rules, or code touched. No sim run (CD-gated). This folds the
-> guardian sweep (bg-theme + bg-elegance + bg-critic, 2026-08-09) into a single locked model AND adds the
-> new **vendor-scarcity** lever the CD called for. On the CD's "go" it amends `design/rules-draft.md`
-> §§3–5, `components/*.csv`, and `map.json`, then `bg-playtest` re-sims.
+> **Status: LOCKED — CD-SIGNED (2026-08-09).** Spec-only; no data/rules/code touched yet, no sim run. The CD
+> has signed off; this is the FINAL model. §10 is the file-by-file data-change list `bg-developer` executes
+> next; `bg-playtest` then runs the scoped re-sim (§9). Folds the guardian sweep (bg-theme + bg-elegance +
+> bg-critic) AND the final-lock corrections: the Old Councillor is **locked as the home-gated favours
+> engine** (§6.6), the Big Brother's edge is a **margin dial N** (§6.7), and two former reserves are **baked
+> into baseline** — the DUSK/LAST-TRAIN tie-resolver (§2.6) and the Globetrotter's Travel-cost (§6.5b).
 >
 > **Two coupled changes:**
 > 1. **MEEPLES (CD mandate):** replace the abstract Followers-max DIAL with physical, collectable,
@@ -162,8 +164,9 @@ tie-blocks → more **frozen** slots (a tied slot does not refill until resolved
 frozen stall can barricade a whole region for a round or more, and a trailing kingmaker can perpetually
 re-tie a leader's Booking-critical stall to freeze it *and* strand the leader's followers (the critic's
 endgame-denial HOLE). Left unchecked this could drop Booking completion below the sim's 95–98% floor. **The
-mitigation is the pre-specified DUSK / LAST-TRAIN tie-resolver** (§8 reserve b) — scarcity makes that
-resolver load-bearing, not optional. It guarantees every frozen stall clears at each phase boundary.
+mitigation is the now-BASELINE DUSK / LAST-TRAIN tie-resolver** (§2.6) — scarcity makes that resolver
+load-bearing, so it ships as a baseline rule, not a switchable reserve. It guarantees every frozen stall
+clears at each phase boundary.
 
 **WATCH — the prestige Bookings.** The retargeted prestige Bookings (§6) need enough high-cost night-marquee
 claims. Those marquees are exactly the stalls that will be fought hardest under scarcity. If apex fights
@@ -244,8 +247,9 @@ To **Bribe** a stall you stand with:
 1. **Majority check** — you must have **strictly more of your followers on it than any single other agent**
    (an outright plurality). *A tie claims nothing.* **Big Brother 大哥** wins by the **margin dial N** (§6.7;
    baseline N=1 = wins ties).
-2. **Pay ingredients** — its recipe minus your region-icon discounts (Councillor discount per §6.6 — pending
-   the CD's REPLACE/BLEND choice). **There is no follower threshold** — the ingredient cost is the only gate (§5).
+2. **Pay ingredients** — its recipe minus your region-icon discounts. *(The Old Councillor no longer has a
+   home Bribe discount — his edge is the home-gated draw, §6.6.)* **There is no follower threshold** — the
+   ingredient cost is the only gate (§5).
 3. **Take the stall** onto your tour; complete any held Booking it satisfies.
 4. **Your followers on it → your board** — kept, redeploy free later.
 5. **Each losing agent's followers on that stall → their OWN colour's supply** — they must re-grow them.
@@ -255,7 +259,8 @@ To **Bribe** a stall you stand with:
 
 - **A tie just blocks.** Level for the biggest crowd (no Big Brother present to break it)? No one claims;
   every agent's followers **ride** (stay on the stall). Promote again to take the lead, or walk away and
-  leave them committed. *(At DUSK / LAST-TRAIN a tie is force-resolved — §8 reserve b.)*
+  leave them committed. *(At DUSK / LAST-TRAIN a tie is force-resolved — the **baseline** endgame-tie
+  resolver, §2.6.)*
 - **Uncontested** = you have a majority with even a single follower (1 > 0); claim it if you can pay the
   ingredients.
 
@@ -266,11 +271,25 @@ To **Bribe** a stall you stand with:
 - **Re-commit:** followers on an unresolved stall stay put between your turns; add to them with further
   Promotes. You never move a committed follower sideways — it stays until the stall is claimed (→ winner's
   board / losers' own supply) or the layer clears at DUSK.
-- **黃昏 DUSK:** unclaimed day stalls clear as today; followers on those cleared, *unclaimed* stalls return
-  to their owners' **boards** (the stall closed un-won; no contest was lost, so no one goes to supply). A
-  tied contested stall at DUSK is force-resolved first (§8 reserve b).
-- **末班車 LAST TRAIN:** a tied contested stall is force-resolved (§8 reserve b); then followers score
-  nothing and are left where they lie. The deck-driven clock, decks, and boundary cards are unchanged.
+- **黃昏 DUSK:** the **endgame-tie resolver** (§2.6) fires on any still-tied contested day stall first; then
+  unclaimed day stalls clear as today, and followers on those cleared, *unclaimed* stalls return to their
+  owners' **boards** (the stall closed un-won; no contest was lost, so no one goes to supply).
+- **末班車 LAST TRAIN:** the **endgame-tie resolver** (§2.6) fires on any still-tied contested stall; then
+  followers score nothing and are left where they lie. The deck-driven clock, decks, and boundary cards are
+  unchanged.
+
+### 2.6 Endgame-tie resolver (BASELINE rule — shipped, not a reserve)
+
+> **Rule.** At **DUSK** and at **LAST TRAIN**, any contested stall that is still **tied** force-resolves to
+> **most followers, then earliest committer**; that agent claims it (paying ingredients if able), and each
+> loser's followers → their own supply.
+
+This is a **baseline, shipped rule**, not a switchable dial. Under scarcity it is **load-bearing**: single
+non-refilling slots make it cheap for a trailing kingmaker to perpetually re-tie a leader's Booking-critical
+stall — freezing the Booking *and* stranding ~half the leader's pool — with no counter at LAST TRAIN. The
+resolver closes that HOLE and guarantees every frozen slot clears at each phase boundary. *(Sim note: run it
+ON vs OFF **once** to prove it is load-bearing — expect frozen-slot/denial frequency to spike with it OFF —
+then bake ON for all remaining runs.)*
 
 ---
 
@@ -365,11 +384,11 @@ one forages *around* the fight, one owns *position*.
 | # | Character | Lane (the plan) | Core mechanism | Starting knob | How scarcity touches it |
 |---|---|---|---|---|---|
 | 1 | **Influencer 網紅** | **Build-high battler** — out-mass the field, win the marquee stalls by raw crowd | `max` **8** (field 6); wins contests on sheer follower count | `max=8, start=2` | **THRIVES** — scarce contested stalls reward whoever commits most; deep pool is decisive. (Watch: too strong → reserve `max` 7.) |
-| 2 | **Old Councillor 里長伯** | **Resource-engine rush** — draw/favours → afford pricey dishes EARLY, before the Influencer's crowd builds; take stalls uncontested by getting there first | **DRAW engine** (see §6.6) — passive card trickle + a favour/event hook | REPLACE-A or BLEND-B (§6.6); draw knob **+1 card/turn from any region, no action** | Rewards **speed** — buying the pricey stall before the pack arrives beats fighting for it under scarcity. A REAL REWORK (reopens his closed balance). |
+| 2 | **Old Councillor 里長伯** | **Home-anchored resource rush** — front-load ingredients at home → afford pricey dishes EARLY, then range out to take them before the crowd builds | **HOME-GATED DRAW** (§6.6): *while in your home region*, start of turn draw 1 from any region, no action | home region (named at setup); draw = **+1/turn while home only** | The **gate IS the flaw** — camp home to run the engine vs range out to contest scarce stalls; buying a pricey stall before the pack arrives beats fighting under scarcity. REWORK (reopens his closed balance). |
 | 3 | **Homebody 媽寶** | **Mobile forager who picks his battles** — wide ingredient spread from moving → afford complex dishes → win stalls the pack isn't on | **FORAGE**: on TRAVEL, draw 2 from the region you LEFT (sole Travel-sourcer) | `travel_draw_left = 2` | **PRESSURED, not exempt** — scarcity thins the "quiet" stalls too (1 non-refilling slot/region), so he can dodge the *cheap* scrums but must still fight for the *pricey* marquees his spread unlocks (§6.5a). |
 | 4 | **Big Eater 大胃王** | **Greedy sourcing glut** — raw ingredient volume from Visits → afford anything, paced by a follower cost | **GLUT**: Visit keep ALL 3 + greedy 4th; hazards fire twice on his Visit | keep-3; greedy-4th = **return 1 follower to your supply**; hazard×2 | The greedy-4th follower cost pulls followers off his board → he is a **weaker battler**, so he wants cheap-to-win / uncontested stalls; scarcity makes him pace his greed. |
 | 5 | **Big Brother 大哥** | **Margin battler** — win contests on the MARGIN, not the mass; fewer followers per win | **MARGIN dial N** (§6.7) | `N = 1` (baseline; = current wins-ties) | **Edge scales UP** with contest frequency — the reason he gets a tunable dial (pull back to 0, or up to 2). |
-| 6 | **Globetrotter 阿嬤** | **Ubiquity** — reach any region in one Travel; chase whichever scarce slot just opened | `travel_anywhere`; immune to the HSR Maintenance outage | unchanged | **BUFFED by scarcity** — when each region has 1 region-locked, non-refilling slot, best positioning = best snipe. **Flag (§6.5b): may over-perform.** |
+| 6 | **Globetrotter 阿嬤** | **Ubiquity** — reach any region in one Travel; chase whichever scarce slot just opened | `travel_anywhere`; immune to the HSR Maintenance outage | **Travel-anywhere costs 1 follower to supply** (baseline ON — "the trip tires her crowd") | **BUFFED by scarcity** — when each region has 1 region-locked, non-refilling slot, best positioning = best snipe → the cost is baked into baseline (§6.5b). |
 
 ### 6.5a Homebody — viable dodge, NOT a dominant "ignore the contest" exploit
 
@@ -387,51 +406,57 @@ The tension the CD flagged is real: we added scarcity to *force* fights, and the
 3. **He commits no follower cost to source**, so if he *does* enter a fight his board is full — meaning a
    pure-dodge Homebody who banks followers is actually a *latent* battler, not a non-participant.
 
-**Re-sim must confirm** (§9): the "ignore-the-contest" line is a viable ~in-band alternative, **not** a
-dominant winrate. If his dodge winrate reads dominant, the knob is `travel_draw_left = 2 → 1` (narrow the
-spread), not a scarcity change.
+**The REAL exploit to hunt (bg-critic) — the "banked-board late-battler."** Point 3 above is also the risk:
+his **Travel does three jobs** (move + sole-sourcer draw-2 + grow a follower), and he **Travels most** — so
+he can bank a full board *and* out-source, then arrive at the marquee as the deepest-pool battler after all.
+**Re-sim must confirm** (§9) the "ignore-the-contest" line is viable but **not dominant**. The **preferred
+hot-fix is reserve g′** — **Travel grows a follower for everyone EXCEPT the Homebody** (deny his triple-dip
+on the correct axis); the old `travel_draw_left 2→1` (reserve g) trims his *sourcing spread*, the **wrong
+axis**, and is only a fallback.
 
-### 6.5b Globetrotter — scarcity is a buff; watch and hold a reserve
+### 6.5b Globetrotter — scarcity is a buff; the cost is now BASELINE
 
 Go-anywhere-in-one-Travel is worth *more* when stalls are scarce and region-locked: she can always be where
 the one open slot is, and snipe a quiet-region single slot before a Homebody walks over. Positioning becomes
-premium exactly as she has the best of it. She is currently flaw-free (the small-basket flaw was retired in
-the V7 close). **Reserve (hold, §8):** if she reads hot under scarcity, re-introduce a mild cost —
-Larder/basket cap 7→6, or her Travel-anywhere costs a follower to supply — chosen after the sim shows the
-magnitude. Do NOT pre-bake; flag for the re-sim's per-lane idx read.
+premium exactly as she has the best of it. She was already the **4p idx outlier**, and *both* headline
+changes (meeples + scarcity) buff her go-anywhere — so bg-critic pre-loads the cost into the **baseline**
+rather than holding it in reserve: **her Travel-anywhere costs 1 follower to supply** ("the trip tires her
+crowd"). *The re-sim runs it ON (baseline) **and** OFF to measure the delta*; if she is still hot with the
+cost ON, the fallback is Larder cap 7→6 (reserve f-alt). The small-basket flaw stays retired.
 
 ## 6.6 Old Councillor 里長伯 — the resource-engine REWORK (CD choice: REPLACE vs BLEND)
 
-The CD wants him to become a **resource-engine rush**: pull strings and call in favours so he can afford the
-high-value dishes *early* — getting to the pricey stalls before the Influencer's crowd builds, or taking
-them uncontested. This is a genuinely different identity from his current home-discount / away-tax kit, and
-**it reopens his balance** (his away-tax +2 was a balance-closed trim; removing or softening it must re-sim).
+**LOCKED (CD sign-off): the HOME-GATED FAVOURS ENGINE.** The CD chose the home-gated synthesis over both
+REPLACE and BLEND — it is the all-guardian-convergent answer: it gives bg-critic the *shaped* (non-free)
+draw and bg-theme the borough cushion in one mechanic, and keeps him clearly home-anchored (no free
+island-wide tick, no muddy double-engine).
 
-**The concrete DRAW knob (both options share it):** *"Old Favours"* — **at the start of your turn, draw 1
-card from ANY region's market (your choice) into hand, no action spent.** A steady, timing-independent
-trickle from anywhere → more ingredients, faster → early buying power for pricey dishes. Optional flavour
-layer / secondary knob: a **favour/event hook** — once per round he may resolve a face-up event to his
-benefit (a "favour" — a beneficial event stays beneficial; a harmful one he waves off). Draw is the primary,
-sim-clean knob; the event hook is the thematic garnish to tune only if the draw alone reads flat.
+> **FINAL KIT — 里長伯 The Old Councillor.**
+> **Ability — *Old Favours* (home-gated draw engine):** at setup, name ONE **home region** (open). **While
+> you are in your home region**, at the start of your turn **draw 1 ingredient card from any region's
+> market** into hand (no action spent). Away from home, the engine is dark.
+> **No home Bribe discount** (the draw is his *sole* home edge — bg-elegance: no double-engine).
+> **No away-tax** (dropped).
+> **The shaped flaw is emergent, not a printed penalty:** the engine only ticks at home, so he must choose
+> between **camping home to run the engine** and **ranging out to contest scarce stalls** — a real
+> positional tension (bg-critic's "shaped draw") that also re-earns his home identity (bg-theme's borough
+> cushion). Nothing is bolted on; the gate *is* the flaw.
 
-| | **(A) REPLACE** *(recommended for a clean lane)* | **(B) BLEND** |
-|---|---|---|
-| Home discount | **Dropped** | **Kept, lighter** — −1 in one home region only (no ramp-stack) |
-| Away tax (flaw) | **Dropped** | **Dropped** (the flaw that made him a home-camper) |
-| Draw engine | **+1 card/turn from any region** (the full engine) | **+1 card/turn from any region** (same) |
-| Identity | A pure **connections/favours** economy-rush — legible, distinct, no home-camping | A **well-connected local** — a little home edge *plus* connections |
-| Trade-off | Cleanest distinct lane; furthest from the closed V7 kit (biggest re-balance) | Familiar + incremental; risks a *muddy* double-engine (home edge + draw) that blurs the lane and stacks two advantages |
+*Why home-gated (fork resolved):* a free island-wide +1/turn (the old REPLACE knob) was unshaped and
+snowbally under the new economy; BLEND stacked two edges. Gating the draw to home makes it **conditional
+buying power** — he front-loads ingredients *when he holds his ground*, then must spend a Travel (and go
+dark) to cash them on the pricey stalls elsewhere. The tension is the balance.
 
-**Recommendation: (A) REPLACE** — the CD's aim is a *distinct* lane, and a home discount muddies "resource
-rush" (it pulls him back toward camping and stacks a second edge). REPLACE also removes the FTUE
-North-home-camping watch entirely. **(B) BLEND** is the conservative fallback if the CD wants continuity
-with the printed kit.
-
-**bg-theme flag:** does "pulls strings, calls in favours (events), has the connections to secure the fancy
-stalls first" still read as a *warm* local councillor? I think yes — a well-connected councillor who *gets
-things done for people* is squarely on-brand. **Rail:** keep it **favours / connections / clout**, never
-*bribery / corruption / intimidation* (dignified locals; secular). The current blurb ("real clout in his own
-borough") already carries it.
+**BINDING sensitivity rail (bg-theme + bg-publishing — the flagged #1 consultant item).** Re-theme the draw
+as **inbound goodwill**: people look after a beloved lifelong local public servant — neighbours and
+stall-owners bring him **the day's best** while he keeps his post in the borough (*gifts inbound*). It is
+**NEVER** string-pulling / patronage / favour-trading / bribery. This must go to the **paid Taiwanese
+cultural consultant BEFORE art/print** — a favours-politician theme sitting next to the game's own "Bribe"
+verb is the single highest sensitivity risk in the roster; the consultant confirms the framing reads as
+warm civic affection, secular and dignified, not machine-politics. **Copy edits flagged (do NOT edit here):**
+`identity.md` + `names.md` + `characters.csv` blurb — retire "clout / pulls strings" language, adopt the
+inbound-goodwill voice; the printed kit line changes from home-discount/away-tax to *Old Favours* (home-gated
+draw).
 
 ## 6.7 Big Brother 大哥 — the MARGIN dial (replaces the night-scope reserve)
 
@@ -442,23 +467,21 @@ His edge is no longer on/off. It is a graduated **margin dial N**:
 
 | N | Effect | Where |
 |:--:|---|---|
-| **0** | He **loses ties** — needs a strict plurality like everyone (no edge) | WEAK end |
+| **0** | He **loses ties** — needs a strict plurality like everyone (no edge) | WEAK end — **the real cool-down** |
 | **1** | He **wins ties** — a rival needs +1 to beat him | **BASELINE (= current "wins ties")** |
-| **2** | He also **shrugs off a one-follower deficit** — a rival needs +2 | STRONG end |
+| **2** | He also **shrugs off a one-follower deficit** — a rival needs +2 | **SWEEP CEILING — probe only, NOT a baseline candidate** |
 
-- **Baseline N = 1** (reproduces today's behaviour exactly). Playtest dial: **0 / 1 / 2.**
-- This **replaces reserve (a)** (the night-scope). It is cleaner — **no day/night exception to teach** — and
-  keeps his identity ("the market yields to Big Brother") intact across the whole range; only the *degree*
-  moves. The critic's concern (he runs hot; scarcity strengthens the match-edge as fights get frequent) is
-  now a single knob the playtester can dial down to 0.
-- **Second dial — SCOPE (CD steer).** Independently of N, his edge can be scoped by phase: **all-phases**
-  (baseline) or **night-only** (by day he is a normal contestant on strict plurality; after dark his margin
-  N applies). The two dials **combine** — e.g. *N=1, night-only* is milder than either alone (he only wins
-  ties, and only after dark). This is the CD's preferred cool-down path if he runs hot: **first drop N, then
-  (if still hot) restrict to night.** It fits his fiction — the night market is his turf, the warm rogue
-  everyone's glad to see after dark — and pairs with the Big Eater's day-only greed (§6.5 / reserve h) as the
-  studio's consistent **phase-scoping** cooling knob: the same lever, opposite signs, thematic rather than an
-  arbitrary nerf. (Held as reserve a — specified, not baked.)
+- **Baseline N = 1** (reproduces today's behaviour exactly). Playtest sweep: **0 / 1 / 2.** **N=2 is the
+  sweep ceiling, not a shipping candidate** — bg-critic: under *frequent* fights (the whole point of
+  scarcity) surviving a one-follower deficit compounds into a degenerate omnipresent-contest edge. Ship at
+  0 or 1; use 2 only to map the curve.
+- **The real cool-down is N → 0**, not phase-scoping. This dial **replaces** the old night-scope reserve.
+- **bg-critic finding — night-scope is INEFFECTIVE as a cool-down.** The old sim showed night-only ≈
+  neutral-to-*worse* (idx **1.25 night-only vs 1.19 all-game**) precisely because fights **concentrate at
+  night** — restricting his edge to the phase where almost all contests happen barely restricts it — and
+  **slow-refill worsens this** (it pushes even more of the fight into the busy night board). So a night-scope
+  is kept only as a **labelled harmless option**; **we do NOT rely on it** to cool him down. If N=1 still
+  overshoots, drop to **N=0** — do not reach for night-scope.
 
 
 ## 7. Self red-team (for `bg-critic` — reconfirmed under scarcity)
@@ -467,35 +490,46 @@ The guardian critic already downgraded #1 (runaway) and reframed the goal (→ s
 live risks, sharpened by scarcity:
 
 1. **Tie-block deadlock-vacuum — now MORE likely.** Scarcity + visible colours make it cheap to match a
-   rival and freeze a single-slot region's stall. *Mitigation baked into the plan:* the DUSK/LAST-TRAIN
-   tie-resolver (§8 reserve b) is now **load-bearing**, not optional.
+   rival and freeze a single-slot region's stall. *Mitigation now BAKED IN:* the DUSK/LAST-TRAIN
+   tie-resolver (§2.6) is a baseline rule, load-bearing under scarcity.
 2. **Endgame denial + follower-stranding — the rules HOLE, worsened by scarcity.** A trailing kingmaker
    re-ties a leader's Booking-critical single stall to freeze the Booking and strand ~half the leader's
-   pool. Same mitigation (reserve b).
+   pool. Same mitigation (baseline §2.6).
 3. **Throughput throttle → Bookings uncompletable.** Fewer/slower stalls could drop Last-Train completion
    below the 95–98% floor. *The make-or-break sink guard in §9.*
-4. **Big Brother 大哥 scales with contest frequency.** His match-to-win edge gets stronger the more the
-   fight happens — and scarcity makes it happen more. Reserve = night-scope his tie-win (§8 reserve a).
+4. **Big Brother 大哥 scales with contest frequency.** His margin edge gets stronger the more the fight
+   happens — and scarcity makes it happen more. Cool-down = **margin N → 0** (§6.7); night-scope is
+   ineffective (it restricts him to the phase where nearly all fights already are) and is NOT relied on.
 5. **Influencer 網紅 goes-last + deep pool = a sniping double-buff** on exactly the axis scarcity amplifies.
    Reserve = `max` 7 (§8 reserve c).
-6. **Homebody 媽寶 grow-compounding** — Travel now grows her following, and she travels most (mild).
+6. **Homebody 媽寶 grow-compounding → the banked-board late-battler** — Travel now grows his following, does
+   three jobs, and he travels most. Preferred fix = grow-tick OFF for him (reserve g′, §6.5a).
 
 ---
 
-## 8. Pre-specified RESERVES (do NOT bake — each with its trigger)
+## 8. BASELINE-baked rules + pre-specified RESERVES
 
-These are specified now so the re-sim can turn them on cleanly, but they are **not** in the baseline data.
+Two items that were reserves are now **baked into the baseline** (shipped rules, not switchable dials);
+the rest remain specified-but-not-baked, each with its trigger.
 
-| # | Reserve | Exact change | Trigger condition |
+**BAKED INTO BASELINE (no longer reserves):**
+- **Endgame-tie resolver (§2.6)** — a shipped rule. Load-bearing under scarcity (closes the re-tie
+  freeze / stranding HOLE). *Sim runs it ON vs OFF once to prove load-bearing, then bakes ON.*
+- **Globetrotter 阿嬤 Travel-cost (§6.5b)** — her Travel-anywhere now **costs 1 follower to supply** in the
+  **baseline sim config** ("the trip tires her crowd"). She was already the 4p outlier and *both* headline
+  changes (meeples + scarcity) buff her go-anywhere, so the cost ships ON by default. *Sim runs it ON and
+  OFF for the delta.*
+
+| # | Reserve (NOT baked) | Exact change | Trigger condition |
 |---|---|---|---|
-| **a** | **Big Brother 大哥 night-scope** (§6.7 second dial — CD steer; combinable with margin N) | His margin edge applies **night-only** — by day he is a normal contestant (strict plurality); after dark his margin N applies. Combines with the N dial (e.g. N=1 night-only = mildest live edge). | Re-sim / playtest shows 大哥 still hot after dialing N down; night-scoping cools him further without gutting the edge, and fits his night-market fiction. |
-| **b** | **Endgame-tie resolver** (closes the stranding/denial HOLE — **load-bearing under scarcity**) | At **DUSK** and at **LAST TRAIN**, any tied contested stall force-resolves to **most followers, then earliest committer**; that agent claims it (pays ingredients if able), losers → own supply | Always specified as the phase-boundary rule (one FAQ line). Fires whenever a contested stall is still tied when DUSK / LAST-TRAIN triggers. Prevents perpetual re-tie freezes and permanent stranding. |
 | **c** | **Influencer 網紅 `max` 7** | Drop her pool 8 → 7 | Re-sim seat-delta / `idx` shows 網紅 above band (reads hot). |
 | **d** | **Non-refilling apex marquees** (§1.6) | Tier-3 apex stalls (N06/C05/S06/E04) never refill once claimed | Overall contested_frac rises but the *apex* contested rate stays flat AND the CD wants the famous-stall brawl sharpened. |
 | **e** | **`max` knob** | Field `max` 5 or 7 (sweep) | Re-sim: if the fight over-floods (too many followers per stall) → 5; if it under-fires / can't spread → 7. |
-| **f** | **Globetrotter 阿嬤 scarcity cost** (§6.5b) | Larder cap 7→6, OR Travel-anywhere costs 1 follower to supply | Re-sim shows 阿嬤 `idx` above band under scarcity (go-anywhere is buffed when slots are region-locked). |
-| **g** | **Homebody 媽寶 spread trim** (§6.5a) | `travel_draw_left` 2 → 1 | Re-sim shows the "ignore-the-contest" dodge line is a **dominant** winrate (not merely viable). |
-| **h** | **Big Eater 大胃王 day-only greed** (flaw scope — CD steer) | Greedy Grab (keep a 4th on a Visit) works **by day only** — after dark she is too full to grab a fourth (normal keep-3 at night) | Re-sim / playtest shows 大胃王 leans on greedy-4th too hard / over-sources. Phase-scoped flaw; pairs with the Big Brother night-scope (reserve a) as the thematic phase-scoping cooling knob (same lever, opposite sign). |
+| **g′** | **Homebody 媽寶 triple-dip denial** (§6.5a — the *preferred* lever) | **Travel grows a follower for everyone EXCEPT the Homebody** (his Travel keeps its move + sole-sourcer draw, but no free follower-grow) | Re-sim shows the **banked-board late-battler** line reads hot — the real exploit: Travel does 3 jobs (move + source + grow) and he Travels most, so he banks a full board *and* out-sources. Denying his grow-tick targets the actual axis. |
+| **g** | **Homebody 媽寶 spread trim** (secondary — **wrong axis**) | `travel_draw_left` 2 → 1 | Held only as a fallback. bg-critic: this trims his *sourcing spread*, not the banked-board exploit — reach for **g′** first. |
+| **f-alt** | **Globetrotter 阿嬤 further cost** | If Travel-cost (now baseline) is insufficient: Larder cap 7 → 6 | Re-sim shows 阿嬤 still above band *with* the baseline Travel-cost ON. |
+| **h** | **Big Eater 大胃王 greedy-4th cost** | −1 follower to supply → −2 | Re-sim shows she leans on greedy-4th too hard / over-sources. |
+| — | **Big Brother 大哥 night-scope** | *(labelled harmless option, §6.7 — INEFFECTIVE as a cool-down; we do NOT rely on it. The real cool-down is margin **N → 0**.)* | Not a trigger — retained only as an available toggle for completeness. |
 
 ### 8.1 CONSOLIDATED PLAYTEST-LEVER TABLE (all dials in one place)
 
@@ -508,14 +542,14 @@ Everything the playtester can turn, baseline → range, folding the scarcity, me
 | **Field `max`** | 6 | 5 / 6 / 7 | §3, reserve e |
 | **start-on-board** | 2 | 2 (raise if a lane reads cold) | §3 |
 | **Influencer 網紅 `max`** | 8 | 7 / 8 | §4, reserve c |
-| **Big Brother 大哥 margin N** | **1** | **0 / 1 / 2** (0 = no edge · 1 = wins ties · 2 = survives −1) | §6.7 |
-| **Big Brother 大哥 scope** | all-phases | all-phases / **night-only** (combines with N) | §6.7, reserve a |
-| **Old Councillor 里長伯 kit** | *CD choice pending* | REPLACE-A / BLEND-B (+ draw knob: 0 / +1 / +1&event-hook) | §6.6 |
-| **Homebody 媽寶 forage** | draw 2 | 2 / 1 | §6.5a, reserve g |
-| **Big Eater 大胃王 greedy-4th cost** | −1 follower to supply | −1 / −2 (if she over-sources) | §6.5, §2.1 |
-| **Big Eater 大胃王 greed scope** | all-phases | all-phases / **day-only** (too full at night) | §6.5, reserve h |
-| **Globetrotter 阿嬤 cost** | none (flaw-free) | none / cap 6 / −1 follower per Travel | §6.5b, reserve f |
-| **Endgame-tie resolver** | ON (load-bearing) | on / off | reserve b |
+| **Big Brother 大哥 margin N** | **1** | 0 / 1 / **2 = sweep ceiling (not shippable)** — ship at 0 or 1 | §6.7 |
+| **Big Brother 大哥 scope** | all-phases | night-only = **labelled harmless option; INEFFECTIVE cool-down, not relied on** | §6.7 |
+| **Old Councillor 里長伯** | **home-gated draw** (LOCKED, §6.6) | draw fires while in home region only; no home Bribe discount, no away-tax | §6.6 |
+| **Homebody 媽寶 grow-tick** | ON (grows on Travel like everyone) | **OFF for Homebody only** (triple-dip denial — the preferred hot-fix) | §6.5a, reserve g′ |
+| **Homebody 媽寶 forage** | draw 2 | 2 / 1 (secondary, wrong axis) | §6.5a, reserve g |
+| **Big Eater 大胃王 greedy-4th cost** | −1 follower to supply | −1 / −2 (if she over-sources) | §6.5, §2.1, reserve h |
+| **Globetrotter 阿嬤 Travel-cost** | **1 follower to supply (baseline ON)** | ON (baseline) / OFF (delta run) / + cap 6 (f-alt) | §6.5b |
+| **Endgame-tie resolver** | **ON — BASELINE rule (§2.6)** | on (baseline) / off (one delta run to prove load-bearing) | §2.6 |
 | **Non-refill apex marquees** | off | off / on | §1.6, reserve d |
 
 ---
@@ -525,12 +559,16 @@ Everything the playtester can turn, baseline → range, folding the scarcity, me
 Two changes reopen the win-a-vendor economy (meeples + scarcity), so re-run the standard V7 rig **per-count
 3–6, N≥250/seating**, with these probes.
 
-**Encode:** followers as a per-player pool (own supply / board / on-stall); Travel = grow 1; Promote = place
-up to 2 from board (spread allowed); win → board; lost contest → own supply; `max` 6 (網紅 8), start 2; 大哥
-= **margin dial N** (baseline 1); **里長伯 = draw engine** (+1/turn from any region; run REPLACE-A and
-BLEND-B); Greedy-Grab & bad-review = return 1 to own supply; Trending / 2nd-Rave / "+1" events = grow 1.
-Retire `buzz_cost` / `draw` (plurality + cost-based prestige Bookings). **Scarcity:** tightened slot counts
-(§1.3) + **slow refill (empty until end-of-round restock)**. Have reserves a–e switchable.
+**Encode (BASELINE config):** followers as a per-player pool (own supply / board / on-stall); Travel = grow
+1; Promote = place up to 2 from board (spread allowed); win → board; lost contest → own supply; `max` 6
+(網紅 8), start 2; 大哥 = **margin dial N** (baseline 1); **里長伯 = HOME-GATED draw** (draw 1 from any
+region only while in his home region; no home Bribe discount, no away-tax); **阿嬤 Travel-anywhere costs 1
+follower to supply (baseline ON)**; **endgame-tie resolver ON (baseline §2.6)**; Greedy-Grab & bad-review =
+return 1 to own supply; Trending / 2nd-Rave / "+1" events = grow 1. Retire `buzz_cost` / `draw` (plurality +
+cost-based prestige Bookings). **Scarcity:** tightened slot counts (§1.3) + **slow refill (empty until
+end-of-round restock)**. **Switchable for deltas:** tie-resolver ON/OFF (prove load-bearing, once); 阿嬤
+Travel-cost ON/OFF; Big Brother N=0/1/2; 里長伯 home-gated vs the rejected island-wide & BLEND variants (for
+reference); Homebody grow-tick ON/OFF (g′); reserves c/d/e.
 
 **★ MAKE-OR-BREAK PROBE #1 — does the battle actually happen more (the whole point):** `contested_frac`
 must go **UP** toward roughly **2–3× the old 3–5%** (target ~10–15%). **Report the numerator and
@@ -549,9 +587,14 @@ boundary).
 - **gain vs sink, supply_min, capbind** — confirm ingredients don't overflow into dead sourcing.
 
 **New / reopened balance probes:** six-character band 3–6p (Influencer / Big Brother / Homebody watch);
-runaway (leader margin, leader-change frequency, lost-contest/gm); 1-follower uncontested-sweep rate;
-`max` knob sweep 5/6/7; **tie-block / frozen-slot frequency** (does the deadlock-vacuum bite? does reserve
-b clear it?); Influencer idx under `max` 7 (reserve c).
+**runaway sharpened to consecutive-WIN-STREAK length** (the win-keeps-followers brake removal — does a
+serial winner cycle their pool for free?) alongside leader margin / leader-change frequency / lost-contest
+/gm; 1-follower uncontested-sweep rate; `max` knob sweep 5/6/7; **tie-block / frozen-slot frequency with the
+resolver ON vs OFF** (does the deadlock-vacuum bite with it OFF? confirm §2.6 clears it — then bake ON);
+Influencer idx under `max` 7 (reserve c); **live-decision-density per lane** (each lane must keep meaningful
+choices, not collapse to a script); **seat-fairness under slow-refill (NEW re-open)** — per-round refill
+re-opens a *first-into-a-region-each-round* advantage the old immediate-refill board didn't have; re-check
+the s0…sN spread (was ok at ±few %).
 
 **★ NEW — the six LANES must be DISTINCT and BANDED (the Steer-2 goal):**
 - **Distinctness (not just balance):** per-character behavioural fingerprints should *diverge*, not just
@@ -560,59 +603,94 @@ b clear it?); Influencer idx under `max` 7 (reserve c).
   (Councillor draw-share vs Homebody Travel-share vs Big Eater Visit-share), and **time-to-first tier-2/3
   claim** (the Councillor rush must land *earlier* than the field — the whole point of his rework). If two
   lanes fingerprint the same, they've blurred (esp. the three resource engines).
-- **No dominant lane** — band idx 3–6p as before, with two sharp watches: **(i) Homebody dodge** — an
-  "ignore-the-contest" bot line must be viable but NOT dominant (→ reserve g); **(ii) Globetrotter ubiquity
-  under scarcity** — go-anywhere is buffed when slots are region-locked (→ reserve f). Report both idx
-  explicitly.
-- **Big Brother margin sweep N = 0 / 1 / 2** (the primary dial) — which N lands him in band *under scarcity*
-  (fights are now frequent, so his edge is worth more than at the sim's old 5%).
-- **Old Councillor REPLACE-A vs BLEND-B** — run both: does the draw-rush read in-band, does it actually hit
-  pricey stalls earlier (the time-to-tier-2/3 probe), and does BLEND's double-engine (home + draw) overshoot
-  or blur the fingerprint vs REPLACE's clean lane?
+- **No dominant lane** — band idx 3–6p, with three sharp per-lane probes:
+  - **(i) Homebody 媽寶 — the BANKED-BOARD late-battler bot** (the real exploit, not the dodge): a bot that
+    Travels most, banks a full board *and* out-sources, then arrives deepest at the marquee. Measure
+    **Travel-grow contribution** (how much of his board comes from the free grow-tick vs everyone) and
+    **followers-at-first-marquee**. If dominant → reserve **g′** (grow-tick OFF for him), not g.
+  - **(ii) Globetrotter 阿嬤 — snipe-rate** (how often she takes a just-opened scarce slot before a rival
+    reaches it) and the **reserve-f ON/OFF delta** (Travel-cost is baseline ON; the OFF run measures how
+    much the two headline changes buffed her).
+  - **(iii) Big Brother 大哥 — edge-fire-rate under frequent fights** (how often his margin actually decides
+    a claim now that fights are common) across the **N = 0 / 1 / 2** sweep; confirm the **N=0 floor** cools
+    him (night-scope is NOT relied on) and that N=2 is degenerate (ceiling only).
+- **Old Councillor 里長伯 — the home-gated engine:** is his tier-2/3 buying **front-loaded vs flat** (does he
+  actually reach pricey stalls *earlier* than the field — the whole point)? Report **free-cards/gm**, his
+  **turn-shape / action-mix** (does the home-gate visibly split his game into camp-then-range?), and run
+  **home-gated vs the rejected island-wide & BLEND variants** for reference (home-gated should be less
+  snowbally than island-wide and cleaner-fingerprinted than BLEND).
 
 **Sequencing (critic's rec B):** run this scoped re-sim FIRST, then the human 6p judges fun / denial-feel /
 "did the scrum materialise."
 
 ---
 
-## 10. Precise DATA changes (for `bg-developer` LATER — do NOT execute now)
+## 10. FINAL "what changes in DATA" list (CD-SIGNED — for `bg-developer` to EXECUTE next)
 
-- **`map.json`** — replace `vendor_slots` per §1.4 (tightened counts + `refill: SLOW/per-round` + updated
-  `_note`); update `regions[].slots_n` (C 2→1, S 2→1). Replace the shared "Followers supply" line with a
-  per-colour follower supply zone; the setup-chart line becomes "followers per colour = your `max`"; remove
-  any dial-track element.
-- **`characters.csv`** — add `max`, `start_meeples` (field 6/2; **網紅 8/2**); recode `start_max_4` → the
-  `max`/`start` pair; rewrite 網紅 ability text (dial-starts-4 → owns 8 followers; drop floor-4; reach/viral
-  voice); 大胃王 greed sink "dial −1" → "return 1 follower to your supply"; scrub "Followers-max / dial" →
-  "Follower / your pool" in all strings.
-  - **大哥 (Steer 1):** recode `win_ties` → a **`margin_win` dial with parameter N (baseline 1)**; rewrite
-    the ability to the §6.7 rule ("wins unless a rival exceeds his committed followers by N or more"; N=1 =
-    wins ties). *Reopens his balance — sweep N in the re-sim.*
-  - **里長伯 (Steer 2 — pending CD REPLACE/BLEND choice, §6.6):** REPLACE-A = drop `discount_home` +
-    `away_tax`, add the **`draw_any` engine** (+1 card/turn from any region, no action) and rewrite ability
-    + flaw + blurb to the connections/favours voice (rail: favours/clout, never bribery). BLEND-B = keep a
-    lighter home −1 (no ramp-stack), drop `away_tax`, add `draw_any`. *Reopens his balance (away-tax +2 was
-    closed) — do NOT execute until the CD picks A or B.*
-  - No kit *values* change for 媽寶 / 大胃王(ingredient) / 阿嬤 (baseline; reserves f/g held).
-- **`vendors.csv`** — DROP `draw`; DROP `buzz_cost`. Keep `ingredient_cost`, `icon`, `trending`, `recipe`,
-  tier, phase, etc.
-- **`bookings.csv`** — retarget the 3 prestige rows (§6): `d_prestige8` → `ingredient_cost_day>=4`;
-  `n_prestige14` → `ingredient_cost_total>=9`; `g_prestige12` → `ingredient_cost_total>=7`; reword effects
-  from "Draw (人氣)" to the cost/marquee flavour; keep `value`, ids, art_note.
-- **`tokens.csv`** — replace the single grey `followers` row with six per-colour follower entries (8 per
-  colour = 48, so any colour can play 網紅's `max` 8; others use 6); DROP the `dial` row. Keep `trending`,
-  `mkTours`, `hsrClosed`, `pileWin`, `pileLose`, pawns.
-- **`events.csv`** — the "+1 Followers-max" events (EV-D09 / EV-N13 / EV-N14) → "grow 1 follower (supply →
-  board)"; EV-N09 Trending win → grow 1; EV-N15 / EV-N16 bad-review → "return 1 follower to your supply"
-  (keep the crowd-drifts-to-a-rival flavour rail — describes allegiance, not transfer); EV-N08 (place 2 on
-  a co-located stall) → place 2 from your board; EV-N11 (next Promote +1) → next Promote places +1; scrub
-  dial wording throughout.
+The spec is **LOCKED**. Below is the file-by-file change set. Everything is a value/column/row change to
+component data or `map.json`; the rulebook/board/FAQ rewrites are the separate presentation passes noted at
+the end. Run `tools/lint/check_game.py` after.
 
-**Not data (separate passes, flag on hand-off):** `rules-draft.md` §§3–5 rewrite (dial → follower pool;
-grow/place; win-keeps / lose-to-own-supply; slow-refill scarcity; DUSK/LAST-TRAIN tie-resolver; FAQ dial
-questions) — an editorial pass (`bg-elegance` / `bg-rulebook`), **must land as a net cut** (7 words
-headroom) and be re-gauged. The board's dial zone → follower-pool zone + per-colour supply tray →
-`bg-infodesign`. Neither touches values.
+- **`characters.csv`** — add columns **`max`** and **`start_meeples`**; recode `ability_code` `start_max_4`
+  → the `max`/`start` pair; scrub "Followers-max / dial" → "Follower / your pool" in every string. Final six
+  kits:
+  1. **里長伯 The Old Councillor — HOME-GATED FAVOURS ENGINE (LOCKED, §6.6):** `max=6, start_meeples=2`.
+     **DROP** `discount_home` **and** `away_tax`. New ability `favours_home_draw`: *"Old Favours — name one
+     home region at setup; **while in your home region**, at the start of your turn draw 1 ingredient card
+     from any region's market (no action)."* Rewrite `ability` / `flaw` / `blurb` / `effect` to the
+     **inbound-goodwill** voice (neighbours bring a beloved local public servant the day's best) — **rail:
+     never string-pulling / patronage / bribery; secular, dignified.** *(Reopens his closed balance — the
+     away-tax +2 trim is gone; re-sim.)*
+  2. **媽寶 The Homebody:** `max=6, start_meeples=2`. Kit unchanged (`travel_draw_left`=2, flaw-free). *(Hot-fix
+     reserve g′ = grow-tick OFF for him — held, not baked.)*
+  3. **大胃王 The Big Eater:** `max=6, start_meeples=2`. `visit_keep3` + `hazard_twice_visit` unchanged;
+     **greedy-4th sink "dial −1" → "return 1 follower to your supply"**.
+  4. **網紅 The Influencer:** **`max=8`**, `start_meeples=2`. Rewrite ability: dial-starts-4 / floor-4 →
+     *"owns 8 followers (the field owns 6)"*; **drop floor-4**; **reach/viral** voice (biggest crowd,
+     fashionably late), not slow grinder. Keeps `goes_last`.
+  5. **大哥 The Big Brother — MARGIN DIAL (LOCKED, §6.7):** `max=6, start_meeples=2`. Recode `win_ties` →
+     **`margin_win` with parameter `N`, baseline `N=1`**. Ability text: *"wins a contested stall unless a
+     rival exceeds his committed followers by N or more (N=1 → wins ties)."* *(Ship at 0 or 1; N=2 is a
+     sweep ceiling only.)*
+  6. **阿嬤 The Globetrotter:** `max=6, start_meeples=2`. `travel_anywhere` + HSR-immune unchanged, **plus a
+     BASELINE cost: Travel-anywhere costs 1 follower to your supply** ("the trip tires her crowd"). *(Sim
+     also runs it OFF for the delta; further reserve f-alt = Larder cap 7→6, held.)*
+- **`vendors.csv`** — **DROP the `draw` column**; **DROP the `buzz_cost` column** (both vestigial). Keep
+  `ingredient_cost`, `icon`, `trending`, `recipe`, `tier`, `phase`, `region`, etc. unchanged.
+- **`bookings.csv`** — retarget the 3 prestige rows to **total `ingredient_cost`**: `d_prestige8` →
+  **`ingredient_cost_day >= 4`**; `n_prestige14` → **`ingredient_cost_total >= 9`**; `g_prestige12` →
+  **`ingredient_cost_total >= 7`**. Reword each `effect` from "Draw (人氣)" to the priciest/marquee-tables
+  flavour; keep `value`, ids, `art_note`.
+- **`tokens.csv`** — **DROP the single grey `followers` row** and **DROP the `dial` row**. Add **six
+  per-colour Follower meeple entries** (pawnA–F colours), **8 per colour = 48 total** (so any colour can play
+  網紅's `max` 8; other characters use 6). Keep `trending`, `mkTours`, `hsrClosed`, `pileWin`, `pileLose`,
+  pawns.
+- **`map.json`** — replace `vendor_slots` per **§1.4** (tightened per-count counts **3:4 / 4:5 / 5:5 / 6:6**
+  + new **`refill` = SLOW / per-round** field + updated `_note`); update `regions[].slots_n` (**central 2→1,
+  south 2→1**; north stays 2, east stays 1). Replace the shared "followers_supply" scaled block with a
+  **per-colour follower supply zone**; the per-count setup line becomes **"followers per colour = your
+  `max`"**; remove any dial-track element. Add a **Globetrotter note** to the setup/legend text
+  ("阿嬤's Travel-anywhere costs 1 follower to supply"). *(The DUSK/LAST-TRAIN tie-resolver and the
+  per-round refill are rules text, carried in `rules-draft.md`, not `map.json` fields — but the `refill`
+  field flags the timing for the render/legend.)*
+- **`events.csv`** — "+1 Followers-max" events (EV-D09 / EV-N13 / EV-N14) → **"grow 1 follower (supply →
+  board)"**; EV-N09 Trending win → **grow 1**; EV-N15 / EV-N16 bad-review → **"return 1 follower to your
+  supply"** (keep the *crowd-drifts-to-a-rival* flavour — vendor allegiance, **not** a meeple transfer to the
+  rival); EV-N08 (place 2 on a co-located stall) → **place 2 from your board**; EV-N11 (next Promote +1) →
+  **next Promote places +1**; scrub all "Followers-max / dial" wording.
+
+**Not data (separate presentation passes — flag on hand-off, do NOT do here):**
+- **`rules-draft.md` §§3–5 rewrite** (`bg-elegance` / `bg-rulebook`): dial → follower pool; grow/place;
+  win-keeps / lose-to-own-supply; **slow-refill scarcity (baseline)**; the **baseline DUSK/LAST-TRAIN
+  tie-resolver (§2.6)**; the Councillor home-gate; the Globetrotter Travel-cost; FAQ dial questions. **Must
+  keep only Travel/Promote as action keywords; two zone-words (supply / your board), "on the stall".**
+- **⚠ RULEBOOK-HEADROOM §-NOTE (bg-elegance — for the rulebook pass, NOT now):** scarcity's two new
+  *baseline* rules — slow / per-round refill + the now-baseline tie-resolver — are **≈40 words** and
+  **exceed the 7-word headroom** (1843/1850). At the rewrite, either **recover ~40 words** elsewhere (the
+  meeple swap's deletions — dial, day/night drop asymmetry — are the natural donor) **OR log a conscious cap
+  raise 1850 → 1900**. Record the choice in the elegance gauge; do not silently overrun.
+- **Board/player-board (`bg-infodesign`):** dial zone → collected-follower pool zone; per-colour supply
+  tray; the scarce single-slot region footprints. Touches no values.
 
 ---
 
@@ -629,13 +707,19 @@ headroom). Mechanics that moved for the guardian sweep to check: **the vendor sl
 Promote (now spread onto scarce stalls), Travel-ramp → grow, the lost-contest penalty (→ own supply), the
 DUSK/LAST-TRAIN tie-resolver, and the win-return direction.**
 
-**Steer-1/2 re-sweep (this pass):**
-- **`bg-theme`** — **(i) Old Councillor rework fit (§6.6):** does "pulls strings, calls in favours, has the
-  connections to secure the fancy stalls first" still read as a *warm, secular* local councillor? Guard the
-  rail (favours/clout, **never** bribery/corruption/intimidation; dignified locals). Confirm whichever of
-  REPLACE-A / BLEND-B the CD picks. **(ii) Influencer identity:** keep her *reach/viral — biggest crowd,
-  fashionably late*, not a slow grinder (§4).
-- **`bg-critic`** — **roster distinctness / no dominant lane:** are the six lanes mechanically distinct (the
-  three resource engines especially — DRAW vs FORAGE vs GLUT, §6.5), and is any lane dominant — the Homebody
-  **dodge** under scarcity (§6.5a) and the Globetrotter **ubiquity** buff (§6.5b) are the two to hunt, plus
-  the Big Brother margin at N=2. All flagged for the scoped re-sim (§9).
+**Final-lock re-sweep (this pass — LOCKED kit, CD-signed):**
+- **`bg-theme` — the #1 consultant item + identity guard.** The Old Councillor's **home-gated favours
+  engine** must read as **inbound goodwill** — neighbours look after a beloved lifelong local public servant,
+  bringing him the day's best — and **NEVER** string-pulling / patronage / bribery. A favours-politician
+  theme next to the game's own **"Bribe"** verb is the single highest sensitivity risk in the roster → this
+  goes to the **paid Taiwanese cultural consultant BEFORE art/print** (log as the #1 pre-art item). Also
+  guard the **Influencer** as *reach/viral — biggest crowd, fashionably late*, not a slow grinder (§4). Copy
+  edits to make (not here): `identity.md`, `names.md`, `characters.csv` blurb — retire clout/string-pulling
+  language for the inbound-goodwill voice.
+- **`bg-critic` — roster distinctness / no dominant lane:** are the six lanes mechanically distinct (the
+  three resource engines especially — home-gated DRAW vs FORAGE vs GLUT, §6.5), and is any lane dominant?
+  The three to hunt in the re-sim: the Homebody **banked-board late-battler** (§6.5a, fix g′), the
+  Globetrotter **ubiquity** buff (§6.5b, cost now baseline), and the Big Brother **margin under frequent
+  fights** (N=0 floor as the cool-down; N=2 degenerate). All wired into §9.
+- **`bg-elegance` — the rulebook-headroom flag:** scarcity's two baseline rules (~40 words) exceed the
+  7-word headroom → recover ~40 words at the rewrite OR log a conscious 1850→1900 cap raise (§10 note).
