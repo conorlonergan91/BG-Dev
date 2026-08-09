@@ -10,10 +10,14 @@
 >    colour-coded **Follower meeples**. The dial "didn't feel natural"; meeples make the area-majority
 >    fight legible and turn *losing* into a real tempo cost. (Guardians GREEN-LIT this — feel/elegance/
 >    theme all improve. Locked parameters below.)
-> 2. **SCARCITY (CD decision, this pass):** the V7 sim proved the contested crowd-fight — the signature
->    twist — fires in only **~5% of vendor claims** (`contested_frac` 3.3/5.3/4.6/4.9% at 3–6p). The CD
->    wants a **"race AND battle"** game, not a 5%-of-the-time sideshow. The critic located the lever:
->    **vendor scarcity** (a map/setup knob, NOT a meeple rule). §1 designs it.
+> 2. **SCARCITY (CD decision):** the V7 sim proved the contested crowd-fight — the signature twist — fires
+>    in only **~5% of vendor claims** (`contested_frac` 3.3/5.3/4.6/4.9% at 3–6p). The CD wants a **"race
+>    AND battle"** game, not a 5%-of-the-time sideshow. The critic located the lever: **vendor scarcity**
+>    (a map/setup knob, NOT a meeple rule). §1 designs it.
+> 3. **CHARACTER LANES (CD steers, this pass):** the Big Brother's tie-win becomes a tunable **margin dial
+>    N (0/1/2)** (§6.7), and each of the six characters is expressed as a **distinct strategic lane** in the
+>    new economy (§6.5) — including a **real rework of the Old Councillor** into a resource-engine rush
+>    (REPLACE-vs-BLEND for the CD, §6.6).
 >
 > **This reopens the economy the V7 sim CLOSED.** The taxonomy/pacing/character bands in
 > `playtests/sim-results.md` were validated against the *dial* at the *old* vendor availability. Both
@@ -238,10 +242,10 @@ The two zones and the placed state, and how followers move:
 To **Bribe** a stall you stand with:
 
 1. **Majority check** — you must have **strictly more of your followers on it than any single other agent**
-   (an outright plurality). *A tie claims nothing.* **Big Brother 大哥** needs only to **match** the highest
-   present (lever iii).
-2. **Pay ingredients** — its recipe minus your region-icon discounts (Councillor home discount / away tax
-   as today). **There is no follower threshold** — the ingredient cost is the only gate (§5).
+   (an outright plurality). *A tie claims nothing.* **Big Brother 大哥** wins by the **margin dial N** (§6.7;
+   baseline N=1 = wins ties).
+2. **Pay ingredients** — its recipe minus your region-icon discounts (Councillor discount per §6.6 — pending
+   the CD's REPLACE/BLEND choice). **There is no follower threshold** — the ingredient cost is the only gate (§5).
 3. **Take the stall** onto your tour; complete any held Booking it satisfies.
 4. **Your followers on it → your board** — kept, redeploy free later.
 5. **Each losing agent's followers on that stall → their OWN colour's supply** — they must re-grow them.
@@ -287,8 +291,12 @@ spread 2+2+2 or stack 3+3 across a real fight, tight enough that you cannot floo
 | **Homebody 媽寶** | 6 | 2 | baseline *(travels most → de-facto faster grow — **WATCH**)* | tie blocks | No — Travel-draw sourcer |
 | **Big Eater 大胃王** | 6 | 2 | baseline; **Greedy Grab returns 1 follower to own supply** | tie blocks | No — the greed sink is the only touchpoint |
 | **Influencer 網紅** | **8** | 2 | baseline | tie blocks | **Yes — higher `max`** (deeper pool; §4) |
-| **Big Brother 大哥** | 6 | 2 | baseline | **WINS ties (match the most)** | **Yes — the tie-break** |
+| **Big Brother 大哥** | 6 | 2 | baseline | **MARGIN dial N (baseline 1 = wins ties)** — §6.7 | **Yes — the tie margin** |
 | **Globetrotter 阿嬤** | 6 | 2 | baseline | tie blocks | No — go-anywhere / Maintenance-immune is mobility-side |
+
+The Big Brother's tie-break is no longer on/off — it is a graduated **margin dial N** (§6.7) so the
+playtester can pull him back (he runs hot, and scarcity strengthens his match-edge) or push him up,
+without any day/night exception to teach.
 
 ---
 
@@ -347,6 +355,107 @@ hardest-fought stalls under scarcity — re-sim tracks their completion.
 
 ---
 
+## 6.5 The six strategic LANES (each character wants to play the new economy differently)
+
+The meeple + scarcity economy should reward **six distinct plans**. The design goal is that a player picks
+a character and immediately knows a *different* answer to "how do I win the scarce crowd-fight and finish
+Bookings." Two lanes attack the contest head-on (build-high, margin), two are economy-rushes (draw, glut),
+one forages *around* the fight, one owns *position*.
+
+| # | Character | Lane (the plan) | Core mechanism | Starting knob | How scarcity touches it |
+|---|---|---|---|---|---|
+| 1 | **Influencer 網紅** | **Build-high battler** — out-mass the field, win the marquee stalls by raw crowd | `max` **8** (field 6); wins contests on sheer follower count | `max=8, start=2` | **THRIVES** — scarce contested stalls reward whoever commits most; deep pool is decisive. (Watch: too strong → reserve `max` 7.) |
+| 2 | **Old Councillor 里長伯** | **Resource-engine rush** — draw/favours → afford pricey dishes EARLY, before the Influencer's crowd builds; take stalls uncontested by getting there first | **DRAW engine** (see §6.6) — passive card trickle + a favour/event hook | REPLACE-A or BLEND-B (§6.6); draw knob **+1 card/turn from any region, no action** | Rewards **speed** — buying the pricey stall before the pack arrives beats fighting for it under scarcity. A REAL REWORK (reopens his closed balance). |
+| 3 | **Homebody 媽寶** | **Mobile forager who picks his battles** — wide ingredient spread from moving → afford complex dishes → win stalls the pack isn't on | **FORAGE**: on TRAVEL, draw 2 from the region you LEFT (sole Travel-sourcer) | `travel_draw_left = 2` | **PRESSURED, not exempt** — scarcity thins the "quiet" stalls too (1 non-refilling slot/region), so he can dodge the *cheap* scrums but must still fight for the *pricey* marquees his spread unlocks (§6.5a). |
+| 4 | **Big Eater 大胃王** | **Greedy sourcing glut** — raw ingredient volume from Visits → afford anything, paced by a follower cost | **GLUT**: Visit keep ALL 3 + greedy 4th; hazards fire twice on his Visit | keep-3; greedy-4th = **return 1 follower to your supply**; hazard×2 | The greedy-4th follower cost pulls followers off his board → he is a **weaker battler**, so he wants cheap-to-win / uncontested stalls; scarcity makes him pace his greed. |
+| 5 | **Big Brother 大哥** | **Margin battler** — win contests on the MARGIN, not the mass; fewer followers per win | **MARGIN dial N** (§6.7) | `N = 1` (baseline; = current wins-ties) | **Edge scales UP** with contest frequency — the reason he gets a tunable dial (pull back to 0, or up to 2). |
+| 6 | **Globetrotter 阿嬤** | **Ubiquity** — reach any region in one Travel; chase whichever scarce slot just opened | `travel_anywhere`; immune to the HSR Maintenance outage | unchanged | **BUFFED by scarcity** — when each region has 1 region-locked, non-refilling slot, best positioning = best snipe. **Flag (§6.5b): may over-perform.** |
+
+### 6.5a Homebody — viable dodge, NOT a dominant "ignore the contest" exploit
+
+The tension the CD flagged is real: we added scarcity to *force* fights, and the Homebody's whole lane is
+*avoiding* them. Three structural reasons scarcity keeps him honest rather than handing him an exploit:
+
+1. **Scarcity thins the quiet corners too.** His dodge relies on "stalls others aren't fighting over." Under
+   slow-refill + floor-1 counts, even a quiet region holds a *single* non-refilling slot — so a second
+   dodger, or the Globetrotter, contests it and he's in a fight anyway. The lever that forces the pack's
+   fights also closes his free lane.
+2. **His payoff dishes are the contested ones.** A wide ingredient spread's whole point is affording the
+   **complex, multi-ingredient** dishes — which are the tier-2/3 **night marquees**, i.e. the *most*-fought
+   stalls under scarcity. He can dodge the cost-1 scrums; he cannot dodge the marquee fight and still cash
+   his spread. His lane is *pick your battles*, not *skip them*.
+3. **He commits no follower cost to source**, so if he *does* enter a fight his board is full — meaning a
+   pure-dodge Homebody who banks followers is actually a *latent* battler, not a non-participant.
+
+**Re-sim must confirm** (§9): the "ignore-the-contest" line is a viable ~in-band alternative, **not** a
+dominant winrate. If his dodge winrate reads dominant, the knob is `travel_draw_left = 2 → 1` (narrow the
+spread), not a scarcity change.
+
+### 6.5b Globetrotter — scarcity is a buff; watch and hold a reserve
+
+Go-anywhere-in-one-Travel is worth *more* when stalls are scarce and region-locked: she can always be where
+the one open slot is, and snipe a quiet-region single slot before a Homebody walks over. Positioning becomes
+premium exactly as she has the best of it. She is currently flaw-free (the small-basket flaw was retired in
+the V7 close). **Reserve (hold, §8):** if she reads hot under scarcity, re-introduce a mild cost —
+Larder/basket cap 7→6, or her Travel-anywhere costs a follower to supply — chosen after the sim shows the
+magnitude. Do NOT pre-bake; flag for the re-sim's per-lane idx read.
+
+## 6.6 Old Councillor 里長伯 — the resource-engine REWORK (CD choice: REPLACE vs BLEND)
+
+The CD wants him to become a **resource-engine rush**: pull strings and call in favours so he can afford the
+high-value dishes *early* — getting to the pricey stalls before the Influencer's crowd builds, or taking
+them uncontested. This is a genuinely different identity from his current home-discount / away-tax kit, and
+**it reopens his balance** (his away-tax +2 was a balance-closed trim; removing or softening it must re-sim).
+
+**The concrete DRAW knob (both options share it):** *"Old Favours"* — **at the start of your turn, draw 1
+card from ANY region's market (your choice) into hand, no action spent.** A steady, timing-independent
+trickle from anywhere → more ingredients, faster → early buying power for pricey dishes. Optional flavour
+layer / secondary knob: a **favour/event hook** — once per round he may resolve a face-up event to his
+benefit (a "favour" — a beneficial event stays beneficial; a harmful one he waves off). Draw is the primary,
+sim-clean knob; the event hook is the thematic garnish to tune only if the draw alone reads flat.
+
+| | **(A) REPLACE** *(recommended for a clean lane)* | **(B) BLEND** |
+|---|---|---|
+| Home discount | **Dropped** | **Kept, lighter** — −1 in one home region only (no ramp-stack) |
+| Away tax (flaw) | **Dropped** | **Dropped** (the flaw that made him a home-camper) |
+| Draw engine | **+1 card/turn from any region** (the full engine) | **+1 card/turn from any region** (same) |
+| Identity | A pure **connections/favours** economy-rush — legible, distinct, no home-camping | A **well-connected local** — a little home edge *plus* connections |
+| Trade-off | Cleanest distinct lane; furthest from the closed V7 kit (biggest re-balance) | Familiar + incremental; risks a *muddy* double-engine (home edge + draw) that blurs the lane and stacks two advantages |
+
+**Recommendation: (A) REPLACE** — the CD's aim is a *distinct* lane, and a home discount muddies "resource
+rush" (it pulls him back toward camping and stacks a second edge). REPLACE also removes the FTUE
+North-home-camping watch entirely. **(B) BLEND** is the conservative fallback if the CD wants continuity
+with the printed kit.
+
+**bg-theme flag:** does "pulls strings, calls in favours (events), has the connections to secure the fancy
+stalls first" still read as a *warm* local councillor? I think yes — a well-connected councillor who *gets
+things done for people* is squarely on-brand. **Rail:** keep it **favours / connections / clout**, never
+*bribery / corruption / intimidation* (dignified locals; secular). The current blurb ("real clout in his own
+borough") already carries it.
+
+## 6.7 Big Brother 大哥 — the MARGIN dial (replaces the night-scope reserve)
+
+His edge is no longer on/off. It is a graduated **margin dial N**:
+
+> **Rule.** In a contested stall, the Big Brother claims it if the highest rival's committed followers
+> exceed his own by **fewer than N** (i.e. `max_rival − his ≤ N − 1`). N is the tuning knob.
+
+| N | Effect | Where |
+|:--:|---|---|
+| **0** | He **loses ties** — needs a strict plurality like everyone (no edge) | WEAK end |
+| **1** | He **wins ties** — a rival needs +1 to beat him | **BASELINE (= current "wins ties")** |
+| **2** | He also **shrugs off a one-follower deficit** — a rival needs +2 | STRONG end |
+
+- **Baseline N = 1** (reproduces today's behaviour exactly). Playtest dial: **0 / 1 / 2.**
+- This **replaces reserve (a)** (the night-scope). It is cleaner — **no day/night exception to teach** — and
+  keeps his identity ("the market yields to Big Brother") intact across the whole range; only the *degree*
+  moves. The critic's concern (he runs hot; scarcity strengthens the match-edge as fights get frequent) is
+  now a single knob the playtester can dial down to 0.
+- *Secondary note (optional, only if N=0 guts his identity but N=1 still overshoots):* a night-scoped N
+  (e.g. N=1 night / N=0 day) remains available as a fine-grain fallback — but it re-introduces the exception
+  the dial was meant to delete, so hold it below the plain 0/1/2 dial.
+
+
 ## 7. Self red-team (for `bg-critic` — reconfirmed under scarcity)
 
 The guardian critic already downgraded #1 (runaway) and reframed the goal (→ scarcity, now designed). The
@@ -374,11 +483,32 @@ These are specified now so the re-sim can turn them on cleanly, but they are **n
 
 | # | Reserve | Exact change | Trigger condition |
 |---|---|---|---|
-| **a** | **大哥 night-scope** | Big Brother wins ties **at night only** (day ties block for him too) | Re-sim shows 大哥 `idx` above band (> ~1.10 relative spread) — expected to worsen as contests get more frequent under scarcity (sim-proven 1.25 → in-band when night-scoped). |
+| **a** | *(retired — folded into the §6.7 margin dial)* | The night-scope reserve is **replaced** by the Big Brother's first-class **margin dial N (0/1/2)** — no exception to teach; pull him down to N=0 rather than night-scoping. | — (dial N is the lever now; night-scope survives only as the §6.7 secondary fallback) |
 | **b** | **Endgame-tie resolver** (closes the stranding/denial HOLE — **load-bearing under scarcity**) | At **DUSK** and at **LAST TRAIN**, any tied contested stall force-resolves to **most followers, then earliest committer**; that agent claims it (pays ingredients if able), losers → own supply | Always specified as the phase-boundary rule (one FAQ line). Fires whenever a contested stall is still tied when DUSK / LAST-TRAIN triggers. Prevents perpetual re-tie freezes and permanent stranding. |
 | **c** | **Influencer 網紅 `max` 7** | Drop her pool 8 → 7 | Re-sim seat-delta / `idx` shows 網紅 above band (reads hot). |
 | **d** | **Non-refilling apex marquees** (§1.6) | Tier-3 apex stalls (N06/C05/S06/E04) never refill once claimed | Overall contested_frac rises but the *apex* contested rate stays flat AND the CD wants the famous-stall brawl sharpened. |
 | **e** | **`max` knob** | Field `max` 5 or 7 (sweep) | Re-sim: if the fight over-floods (too many followers per stall) → 5; if it under-fires / can't spread → 7. |
+| **f** | **Globetrotter 阿嬤 scarcity cost** (§6.5b) | Larder cap 7→6, OR Travel-anywhere costs 1 follower to supply | Re-sim shows 阿嬤 `idx` above band under scarcity (go-anywhere is buffed when slots are region-locked). |
+| **g** | **Homebody 媽寶 spread trim** (§6.5a) | `travel_draw_left` 2 → 1 | Re-sim shows the "ignore-the-contest" dodge line is a **dominant** winrate (not merely viable). |
+
+### 8.1 CONSOLIDATED PLAYTEST-LEVER TABLE (all dials in one place)
+
+Everything the playtester can turn, baseline → range, folding the scarcity, meeple, and character knobs:
+
+| Dial | Baseline | Range / options | Owns |
+|---|---|---|---|
+| **Scarcity — refill cadence** | slow / per-round | immediate (off) · per-round · phase-boundary (harder) | §1.2 |
+| **Scarcity — face-up counts** | §1.3 (4/5/5/6) | looser (old 6/7/8/9) ↔ tighter | §1.3 |
+| **Field `max`** | 6 | 5 / 6 / 7 | §3, reserve e |
+| **start-on-board** | 2 | 2 (raise if a lane reads cold) | §3 |
+| **Influencer 網紅 `max`** | 8 | 7 / 8 | §4, reserve c |
+| **Big Brother 大哥 margin N** | **1** | **0 / 1 / 2** (0 = no edge · 1 = wins ties · 2 = survives −1) | §6.7 |
+| **Old Councillor 里長伯 kit** | *CD choice pending* | REPLACE-A / BLEND-B (+ draw knob: 0 / +1 / +1&event-hook) | §6.6 |
+| **Homebody 媽寶 forage** | draw 2 | 2 / 1 | §6.5a, reserve g |
+| **Big Eater 大胃王 greedy-4th cost** | −1 follower to supply | −1 / −2 (if he over-sources) | §6.5, §2.1 |
+| **Globetrotter 阿嬤 cost** | none (flaw-free) | none / cap 6 / −1 follower per Travel | §6.5b, reserve f |
+| **Endgame-tie resolver** | ON (load-bearing) | on / off | reserve b |
+| **Non-refill apex marquees** | off | off / on | §1.6, reserve d |
 
 ---
 
@@ -389,7 +519,8 @@ Two changes reopen the win-a-vendor economy (meeples + scarcity), so re-run the 
 
 **Encode:** followers as a per-player pool (own supply / board / on-stall); Travel = grow 1; Promote = place
 up to 2 from board (spread allowed); win → board; lost contest → own supply; `max` 6 (網紅 8), start 2; 大哥
-matches; Greedy-Grab & bad-review = return 1 to own supply; Trending / 2nd-Rave / "+1" events = grow 1.
+= **margin dial N** (baseline 1); **里長伯 = draw engine** (+1/turn from any region; run REPLACE-A and
+BLEND-B); Greedy-Grab & bad-review = return 1 to own supply; Trending / 2nd-Rave / "+1" events = grow 1.
 Retire `buzz_cost` / `draw` (plurality + cost-based prestige Bookings). **Scarcity:** tightened slot counts
 (§1.3) + **slow refill (empty until end-of-round restock)**. Have reserves a–e switchable.
 
@@ -412,7 +543,24 @@ boundary).
 **New / reopened balance probes:** six-character band 3–6p (Influencer / Big Brother / Homebody watch);
 runaway (leader margin, leader-change frequency, lost-contest/gm); 1-follower uncontested-sweep rate;
 `max` knob sweep 5/6/7; **tie-block / frozen-slot frequency** (does the deadlock-vacuum bite? does reserve
-b clear it?); Big Brother idx under night-scope (reserve a); Influencer idx under `max` 7 (reserve c).
+b clear it?); Influencer idx under `max` 7 (reserve c).
+
+**★ NEW — the six LANES must be DISTINCT and BANDED (the Steer-2 goal):**
+- **Distinctness (not just balance):** per-character behavioural fingerprints should *diverge*, not just
+  their winrates match. Report per character: contest-entry rate (Influencer/Big Brother high; Homebody
+  low), followers-per-win (Big Brother lowest — margin; Influencer highest — mass), sourcing method mix
+  (Councillor draw-share vs Homebody Travel-share vs Big Eater Visit-share), and **time-to-first tier-2/3
+  claim** (the Councillor rush must land *earlier* than the field — the whole point of his rework). If two
+  lanes fingerprint the same, they've blurred (esp. the three resource engines).
+- **No dominant lane** — band idx 3–6p as before, with two sharp watches: **(i) Homebody dodge** — an
+  "ignore-the-contest" bot line must be viable but NOT dominant (→ reserve g); **(ii) Globetrotter ubiquity
+  under scarcity** — go-anywhere is buffed when slots are region-locked (→ reserve f). Report both idx
+  explicitly.
+- **Big Brother margin sweep N = 0 / 1 / 2** (the primary dial) — which N lands him in band *under scarcity*
+  (fights are now frequent, so his edge is worth more than at the sim's old 5%).
+- **Old Councillor REPLACE-A vs BLEND-B** — run both: does the draw-rush read in-band, does it actually hit
+  pricey stalls earlier (the time-to-tier-2/3 probe), and does BLEND's double-engine (home + draw) overshoot
+  or blur the fingerprint vs REPLACE's clean lane?
 
 **Sequencing (critic's rec B):** run this scoped re-sim FIRST, then the human 6p judges fun / denial-feel /
 "did the scrum materialise."
@@ -428,8 +576,16 @@ b clear it?); Big Brother idx under night-scope (reserve a); Influencer idx unde
 - **`characters.csv`** — add `max`, `start_meeples` (field 6/2; **網紅 8/2**); recode `start_max_4` → the
   `max`/`start` pair; rewrite 網紅 ability text (dial-starts-4 → owns 8 followers; drop floor-4; reach/viral
   voice); 大胃王 greed sink "dial −1" → "return 1 follower to your supply"; scrub "Followers-max / dial" →
-  "Follower / your pool" in all strings. No kit *values* change for 里長伯 / 媽寶 / 大胃王(ingredient) / 大哥
-  / 阿嬤.
+  "Follower / your pool" in all strings.
+  - **大哥 (Steer 1):** recode `win_ties` → a **`margin_win` dial with parameter N (baseline 1)**; rewrite
+    the ability to the §6.7 rule ("wins unless a rival exceeds his committed followers by N or more"; N=1 =
+    wins ties). *Reopens his balance — sweep N in the re-sim.*
+  - **里長伯 (Steer 2 — pending CD REPLACE/BLEND choice, §6.6):** REPLACE-A = drop `discount_home` +
+    `away_tax`, add the **`draw_any` engine** (+1 card/turn from any region, no action) and rewrite ability
+    + flaw + blurb to the connections/favours voice (rail: favours/clout, never bribery). BLEND-B = keep a
+    lighter home −1 (no ramp-stack), drop `away_tax`, add `draw_any`. *Reopens his balance (away-tax +2 was
+    closed) — do NOT execute until the CD picks A or B.*
+  - No kit *values* change for 媽寶 / 大胃王(ingredient) / 阿嬤 (baseline; reserves f/g held).
 - **`vendors.csv`** — DROP `draw`; DROP `buzz_cost`. Keep `ingredient_cost`, `icon`, `trending`, `recipe`,
   tier, phase, etc.
 - **`bookings.csv`** — retarget the 3 prestige rows (§6): `d_prestige8` → `ingredient_cost_day>=4`;
@@ -464,3 +620,14 @@ and **`bg-elegance`** (combined re-gauge: the meeple swap is a net *trim*, the s
 headroom). Mechanics that moved for the guardian sweep to check: **the vendor slot counts + refill timing,
 Promote (now spread onto scarce stalls), Travel-ramp → grow, the lost-contest penalty (→ own supply), the
 DUSK/LAST-TRAIN tie-resolver, and the win-return direction.**
+
+**Steer-1/2 re-sweep (this pass):**
+- **`bg-theme`** — **(i) Old Councillor rework fit (§6.6):** does "pulls strings, calls in favours, has the
+  connections to secure the fancy stalls first" still read as a *warm, secular* local councillor? Guard the
+  rail (favours/clout, **never** bribery/corruption/intimidation; dignified locals). Confirm whichever of
+  REPLACE-A / BLEND-B the CD picks. **(ii) Influencer identity:** keep her *reach/viral — biggest crowd,
+  fashionably late*, not a slow grinder (§4).
+- **`bg-critic`** — **roster distinctness / no dominant lane:** are the six lanes mechanically distinct (the
+  three resource engines especially — DRAW vs FORAGE vs GLUT, §6.5), and is any lane dominant — the Homebody
+  **dodge** under scarcity (§6.5a) and the Globetrotter **ubiquity** buff (§6.5b) are the two to hunt, plus
+  the Big Brother margin at N=2. All flagged for the scoped re-sim (§9).
