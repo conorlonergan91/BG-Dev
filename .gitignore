@@ -18,7 +18,11 @@ games/**/build/
 # CD-APPROVED playtest mock-ups MAY be committed under games/<slug>/art/mockups/ (clearly labelled MOCKUP,
 # see that dir's README) so they persist across the ephemeral container and boards re-render warm — but
 # they are NEVER copied into exports/ and NEVER treated as final art (human illustration + the Taiwanese
-# consultant are still required before any real/print use).
+# consultant are still required before any real/print use). Ignore mockup scratch for ALL games by
+# default; un-ignore ONLY games with committed, CD-approved mock-ups.
+games/**/art/mockups/
+!games/travel-agents/art/mockups/
+!games/travel-agents/art/mockups/**
 tools/**/out/
 *.tmp
 
