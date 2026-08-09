@@ -80,3 +80,37 @@
 - Real component footprints are labelled in mm on the render (card 63×89mm, Ø20mm tokens, Ø12mm Buzz, 18mm
   ★, 15mm pawns); the final board is intended at **≈ 570 × 400 mm**. Keep painted detail from crowding the
   physical piece footprints.
+
+---
+
+## AI mock-up prompts (playtest props — NOT final art)
+
+> **Playtest prop only** — permitted so testers feel the island's warmth on the table during manual
+> playtesting. **Final art stays human-illustrated; NO AI final art.** Each PNG is a **MOCKUP** → save to
+> the **gitignored** `games/travel-agents/build/mockups/`, filename = the FIG code (e.g.
+> `FIG-MAP-ISLAND.png`); **never committed, never moved to `exports/`, never shipped.**
+>
+> **Each prompt = STYLE ANCHOR (paste verbatim from `art/art-style.md`) + the subject below + the closing
+> line.** The board is a **backdrop underlay**: the functional zones (region panels, HSR spine, clock
+> cells, supply corners, token wells) are rendered by code and sit **on top** — so keep the mock-up
+> **low-contrast / calm where the play furniture lands** and save the warmth for the frame, the island
+> relief, and the region vignettes. Region identity colours stay **warm in BOTH states** (only the chrome
+> flips). **Secular only.**
+
+- **`FIG-MAP-ISLAND` — the whole-table backdrop (the main warmth prop).** A warm travel-poster view of a
+  stylised **island of Taiwan** tying four regions into one place — a gentle relief map (Central mountains,
+  the western plain, the east coast), a drawn **HSR double-rail** running N↔S down the spine, a
+  **string-of-lanterns night-market border** framing the table like a night-market street. Four soft
+  region vignettes glowing at the diamond points: **北 NORTH** a Taipei night-market lane with a pork-bun
+  cart (the START·台北 hub — a subtle "head-office / departure" cue); **中 CENTRAL** tea terraces + a
+  hand-shaken-drink stand; **東 EAST** the Hualien–Taitung coast/valley with rice + bamboo-tube fare;
+  **南 SOUTH** a Tainan/Kaohsiung quayside with an oyster omelette on the griddle. Warm dusk-gold light,
+  the whole thing glowing and inviting. **Generate a warm-DAY pass and a lantern-NEON-NIGHT pass sharing
+  one composition** (only the chrome flips). *Closing: framed for a 2280×1680 board, ~1.36:1 aspect, full
+  background, keep the centre + edges calm for the play furniture, save as build/mockups/FIG-MAP-ISLAND.png
+  (night pass: FIG-MAP-ISLAND-night.png).*
+- **Optional per-region vignettes** (`FIG-MAP-NORTH` / `FIG-MAP-CENTRAL` / `FIG-MAP-EAST` / `FIG-MAP-SOUTH`)
+  — if a tighter mock-up of one region's warmth helps, generate the single signature scene above for that
+  region, **dish-typed and generic, NEVER a real named business.** East is Indigenous-forward — keep it
+  **generic and respectful, no tribal iconography, consultant-gated** (placeholder only). *Closing: framed
+  as a soft region vignette, transparent or simple background, save as build/mockups/FIG-MAP-<region>.png.*

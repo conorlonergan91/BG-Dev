@@ -69,3 +69,29 @@
   the sole canonical pair everywhere. The old English "SOLD" label and the retired 繁體 `遺珠` "the Ones
   That Got Away" are GONE; the board now renders **COMPLETED 成團 / CANCELLED 取消**. (繁體 成團 · 取消 →
   native reviewer to bless.)
+
+---
+
+## AI mock-up prompts (playtest props — NOT final art)
+
+> **Playtest props only** — permitted so testers feel each promoter's warmth during manual playtesting.
+> **Final art stays human-illustrated; NO AI final art.** Each PNG is a **MOCKUP** → save to the
+> **gitignored** `games/travel-agents/build/mockups/`, filename = the FIG code (e.g.
+> `FIG-CHAR-big-brother.png`); **never committed, never moved to `exports/`, never shipped.**
+>
+> **The portrait prompts live in [`art/character-art.md`](character-art.md) — do NOT duplicate them here.**
+> The six board portraits reserve the **same `FIG-CHAR-<slug>` slots**; generate them from the
+> character-art.md prompts. This section only adds the **board-integration** notes so a mock-up drops onto
+> the board's reserved passport frame at the right scale.
+
+- **Scale (canonical — supersedes this file's older "~560×320 px" estimate):** the portrait slot is
+  **604 × 286 px, ~2.11:1 wide letterbox** — a WIDE band sitting top-left (44,176) on the 1680×1380
+  landscape board. Generate at **2×** and export at that exact aspect so it drops into the slot without a
+  reflow. Keep the **face/expression in the upper-centre** so it survives the passport-frame crop.
+- **Background:** **transparent** — the board's passport/dossier frame, name plate, and the
+  **COMPLETED 成團 / CANCELLED 取消** pile labels, Reach 及 / Tours-Completed 好評 tracks and 成團/取消 piles
+  are all **rendered by code**, not by the mock-up. The mock-up supplies the cut-out character only; it
+  must not paint any board chrome, labels, or track furniture.
+- **Rails carry over unchanged:** the Big Brother's warmth (load-bearing — vendors *like* him, never
+  intimidated) and the Old Councillor's neighbourly-not-graft standing are the same dignity watch-items as
+  in the portrait briefs; secular throughout. English names on any label the mock-up hints at.

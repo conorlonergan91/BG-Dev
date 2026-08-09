@@ -174,3 +174,54 @@ Do not brief an illustrator on this card until that sign-off exists.
 **Subject:** a glass of **deep-crimson roselle tea** with a hibiscus calyx (洛神花). **Behind:** the
 **太麻里/金峰 Taitung roselle-harvest hillside** (Nov–Dec) under clear coastal light. Day frame; the crimson is
 the hero colour.
+
+---
+
+## AI mock-up prompts (playtest props — NOT final art)
+
+> **Playtest props only** — permitted so testers can feel the island's food scene during manual
+> playtesting. **Final art stays human-illustrated; NO AI final art.** Each PNG is a **MOCKUP** → save to
+> the **gitignored** `games/travel-agents/build/mockups/`, filename = the FIG code (e.g.
+> `FIG-VEND-N01.png`); **never committed, never moved to `exports/`, never shipped.**
+>
+> **Each prompt = STYLE ANCHOR (paste verbatim from `art/art-style.md`) + the subject line below + the
+> closing line.** The subjects distil the fuller per-vendor briefs above — read those for the details and
+> the named-stall / secular / Indigenous rails. All 24 use the **full vendor-card face: 750 × 1050 px,
+> ~0.71:1, 54 px safe margin, full-bleed** (the UI header/PAY/DRAW/ICON panels overlay on top — keep the
+> **dish + stall as the focal point in the upper ~55%** and the lower card calmer so the translucent
+> panels stay legible; see the drop-in note in `art-style.md`). **No two alike** — distinct dish, stall,
+> place, composition. Warmth is the goal: each card should feel like an inviting stop on the tour.
+> **Common closing for every card:** *framed for a 750×1050 vendor face, ~0.71:1 aspect, 54 px safe
+> margin, full-bleed with the hero in the upper ~55%, save as build/mockups/FIG-VEND-<id>.png.*
+
+### NORTH 北
+- **`FIG-VEND-N01`** (Pork Bao · Houlong 後龍, Miaoli): a warm coastal-Hakka morning steamer-cart pork bun, one split to show seasoned minced pork, steam curling; behind, the 好望角 Good Hope Cape wind-turbines on a silver-grass ridge. Humble small-township day frame (warm golds), deliberately not-Taipei.
+- **`FIG-VEND-N02`** (Egg Crepe · Dihua St 迪化街, Dadaocheng): dawn on Dihua Street, a griddle rolling and slicing a savoury egg crepe onto wax paper; behind, the red-brick baroque shophouse arcade and sacks of dried goods. Early-gold day frame.
+- **`FIG-VEND-N03`** (Soy Milk · Huashan Market 華山市場): the famous 2F market queue, a warm cup of soy milk beside a fried dough stick, 燒餅 griddle steam. Day frame, market interior only (secular — no temple).
+- **`FIG-VEND-N04`** (Pepper Bun · Raohe St 饒河街夜市): a charcoal clay-oven glowing, sesame peppered-pork buns stuck to the oven wall, one oozing peppery juice; behind, Songshan neon. Night frame (violets/teals) — the oven + street only, never the nearby temple.
+- **`FIG-VEND-N05`** (Beef Noodle · Yongkang St 永康街): a steaming bowl of beef-shank noodle soup, chili-oil sheen, pickled mustard greens; behind, a cosy leafy Da'an backstreet. Night frame, warm interior glow.
+- **`FIG-VEND-N06 ★ APEX`** (Big Sausage · Shilin Night Market 士林夜市): an oversized char-grilled sausage on a stick with raw garlic cloves — the capital's trophy; behind, the island's most-famous market, dense stacked neon. Night frame; give it the North's biggest, boldest silhouette.
+- **`FIG-VEND-N07`** (Bubble Tea · Dadaocheng Wharf 大稻埕碼頭): a tall pearl milk tea (dark tapioca, fat straw) against the Tamsui riverside sunset→neon, container-bar string-lights. Golden-hour into violet night frame — the *riverside night cup* (distinct from C03).
+
+### CENTRAL 中
+- **`FIG-VEND-C01`** (Ba-wan 肉圓 · Changhua 彰化): a translucent chewy dumpling split to show minced pork + bamboo shoot in a shallow red-sauce dish; behind, a small-city Changhua storefront. Day frame.
+- **`FIG-VEND-C02`** (Misua 麵線 · Taichung Second Market 臺中第二市場): a bowl of fine thread-noodles in glossy brown broth; behind, the 1917 hexagonal-roof ring-market hall with wooden stalls. Day frame.
+- **`FIG-VEND-C03`** (Bubble Tea · Chun Shui Tang 春水堂): the *original* shaken pearl milk tea over a refined wooden teahouse counter — the birthplace of bubble tea, poised and elevated, NOT a street stall. Calm day frame (distinct from N07).
+- **`FIG-VEND-C04`** (Sausage-in-Sausage 大腸包小腸 · Yizhong St 一中街): a grilled pork sausage nestled in a split glutinous-rice sausage, brushed with braise, garlic + pickle; behind, the youthful loud cheap student market with crowds. High-energy night frame.
+- **`FIG-VEND-C05 ★ APEX`** (Fengjia Signature · Fengjia Night Market 逢甲夜市): a loaded signature feast plate under a wall of neon at Taiwan's biggest market. Night frame, apex weight (a Central trophy pulling in Southern seafood).
+- **`FIG-VEND-C06`** (Wintermelon Tea 冬瓜茶 · Fifth Market 第五市場): amber wintermelon tea in a retro plastic bag with a straw at a 古早味 drink-stall (太空紅茶冰, 1966). Nostalgic warm day frame.
+
+### SOUTH 南
+- **`FIG-VEND-S01`** (Milkfish Congee · Tainan 臺南): a bowl of rice congee with boneless milkfish belly + ginger threads; behind, an early-morning 府城 counter. Soft-dawn day frame.
+- **`FIG-VEND-S02`** (Rice Bowl Cake 碗粿 · Guohua St 國華街): a steamed savoury rice-cake in a bowl, dark braise + a shrimp, drizzled sauce; behind, the 國華街 old-market alley. Day frame.
+- **`FIG-VEND-S03`** (Papaya Milk · Liuhe Night Market 六合夜市): a frothy orange papaya-milk shake at the famous corner (鄭老牌, 1965); behind, the Kaohsiung port-city market, harbour neon. Bright night frame.
+- **`FIG-VEND-S04`** (Chiayi Turkey Rice 火雞肉飯 · Wenhua Rd Market 文化路夜市): a bowl of rice topped with shredded turkey + braised sauce, pickled daikon on the side — Chiayi's true signature; behind, the 文化路夜市 street. Night frame. *(Family anchor — render warm and specific.)*
+- **`FIG-VEND-S05`** (Coffin Bread 棺材板 · Shakariba 沙卡里巴): a thick deep-fried bread bowl of creamy seafood chowder, lid propped on top; behind, the vintage 康樂市場 arcade with retro signage. Night frame — keep it appetising and fun, never morbid.
+- **`FIG-VEND-S06 ★ APEX`** (Tan-tsú-mī 擔仔麵 · Du Hsiao Yueh 度小月): the century-old low-stool ritual — a small shrimp-and-pork noodle bowl under a single hanging lamp, a squat clay stove beside it. Intimate iconic night frame, apex weight.
+
+### EAST 東
+- **`FIG-VEND-E01`** ⚑INDIGENOUS — CONSULTANT-GATED (Bamboo-Tube Rice 竹筒飯 · Dongdamen Market 東大門夜市): a split bamboo tube revealing sticky mountain rice, on a warm celebratory market lane. Day frame. **MOCK-UP RAIL: keep it generic and respectful — NO specific tribal iconography, no AI-invented Indigenous terms. Placeholder only; flag for the paid community consultant.**
+- **`FIG-VEND-E02`** (Rice Cake 米糕 · Luodong Night Market 羅東夜市): a bowl of savoury glutinous rice topped with braise + pork floss; behind, the damp green-country covered market. Day frame, cooler greens within the palette.
+- **`FIG-VEND-E03`** (Mochi 麻糬 · Hualien 花蓮): a tray of dusted pastel glutinous-rice mochi, Hualien's famous souvenir; gift-shop warmth. Sweet, bright night frame.
+- **`FIG-VEND-E04 ★ TOP APEX`** ⚑⚑INDIGENOUS — #1 CONSULTANT GATE (Stone-Slab BBQ 石板烤肉 · Taitung highland): pork grilling on a hot slate over embers, a mountain-village setting — a dignified celebration, the deck's heaviest warmest apex presence. Night/mountain frame. **MOCK-UP RAIL: generic and respectful ONLY — NO tribal iconography of any kind, no AI Indigenous romanisation. A placeholder pending a PAID Paiwan/Rukai community consultant sign-off; a mock-up is NOT sign-off.**
+- **`FIG-VEND-E05`** (Roselle Tea 洛神花茶 · Taimali 太麻里): a glass of deep-crimson roselle tea with a hibiscus calyx; behind, the Taitung roselle-harvest hillside under clear coastal light. Day frame — crimson is the hero colour.

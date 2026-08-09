@@ -109,3 +109,50 @@ flip in the middle (day layer sweeping away, night stalls arriving).
 
 **Notes:** warm, not alarm — dusk is a giddy payoff, the last train a fond wind-down. Day = amber/gold;
 night = festive lantern-neon (lavender/magenta), never a cold/red alarm register.
+
+---
+
+## AI mock-up prompts (playtest props — NOT final art)
+
+> **Playtest props only** — permitted so a first-time playtester can teach themselves from warm figures
+> during manual playtesting. **Final art stays human-illustrated; NO AI final art.** Each PNG is a
+> **MOCKUP** → save to the **gitignored** `games/travel-agents/build/mockups/`, filename = the FIG code
+> (e.g. `FIG-SETUP.png`); **never committed, never moved to `exports/`, never shipped.**
+>
+> **Each prompt = STYLE ANCHOR (paste verbatim from `art/art-style.md`) + the subject below + the closing
+> line.** The subjects distil the fuller figure briefs above — read those for the exact annotations. Every
+> figure MUST keep suits **dual-coded (colour + emblem)**, 繁體 labels, and stay a friendly figure a new
+> player relaxes at — never a technical schematic. **Rulebook figure boxes are flexible-size — any aspect
+> works, but recommend ~4:3** so they sit cleanly in the rules layout. **Common closing:** *drawn as a
+> warm rulebook figure, ~4:3 aspect (flexible), simple/transparent background, save as
+> build/mockups/FIG-<name>.png.*
+
+- **`FIG-SETUP`** (the hero figure): a top-down / gentle 3/4 view of a set-up 2-player game at dusk — the
+  Taiwan region-ring board, per-region ingredient + vendor decks, the Reach & Tours-Completed tracks, the
+  Buzz supply, two agent pawns together in Taipei; friendly numbered passport-stamp roundels ①–④ tagging
+  the region decks, the face-up vendor slots (2 North / 1 each elsewhere), the two tracks, and the Buzz
+  pool, with a "everyone starts in Taipei" callout. Region colours warm + dual-coded.
+- **`FIG-TURN`** (the six actions): six small warm icon tiles in a row (or 2×3) with keyword labels —
+  Visit the Local Market (a hand flipping 3 ingredient cards), Convenience Store (a 24-hr storefront, one
+  card), Travel (a pawn hopping the HSR, +1 Reach badge), Promote (2 Buzz dropping on a vendor), Bribe a
+  Vendor (an agent sliding a warm, cheeky "marketing opportunity" across a stall counter — the vendor
+  delighted, never sinister), Line Up a Tour Ticket (a hand taking a boarding-pass ticket). Icon first,
+  label second.
+- **`FIG-REACH`** (hype ≤ Reach): a vendor with a stack of the player's Buzz tokens beside the player's
+  Reach marker on its track — a friendly gauge showing one OK state (stack under the Reach line) and one
+  not-allowed state (a stack over the line, crossed out), plus a small inset: winning the vendor clears
+  its Buzz and frees the cap. Buzz in violet `#6A4C93`. A gauge, not a math diagram.
+- **`FIG-BRIBE`** (the three-step Bribe): a warm left-to-right three-panel strip — ① Be there (pawn in the
+  vendor's region), ② Out-Buzz by 2 (both stacks shown, a +2 gap), ③ Pay the ingredients (chips paid, a
+  region icon crossing out one chip) → payoff: the vendor sliding onto the player's tour as a stop, its
+  Buzz clearing, the day-clock ticking +1, a little "next one's cheaper" spark. Celebration, not a
+  transaction.
+- **`FIG-SCOPE`** (event scopes): three little region-map vignettes with **drawn** dual-coded glyphs —
+  ⦿ You (one figure highlighted), ⬢ This region (everyone in the drawn region), ➤ Next door (an arrow
+  spilling into a neighbour); plus a separate 排班保養 Scheduled Maintenance callout in its own island-wide
+  banner (HSR line crossed out, pawns rerouting the long way). Hazards warm/secular (a typhoon day, a
+  完售 sold-out sign, a festival crowd) — a shared groan, never a spiteful strike.
+- **`FIG-CLOCK`** (Day → Night): a horizontal day-clock climbing left→right, two labelled marks —
+  **DUSK** (the street flips warm-amber day → neon night market) and **LAST TRAIN** (a departing train,
+  "catch the last train home") — a "+1 each Bribe" badge on the track, the warm-amber Act I 白天 half and
+  the neon Act II 夜市 half with the dusk flip in the middle. Warm, not alarm.

@@ -150,3 +150,46 @@ the full 環島 lap. This is the deck's signature tour; give it the fullest, mos
 
 Each of the three would change what patterns are reachable and how the tickets economy scores → **re-sim
 required** before shipping. Until then the set stays as validated re-skins.
+
+---
+
+## AI mock-up prompts (playtest props — NOT final art)
+
+> **Playtest props only** — permitted so testers can feel the boarding-pass tickets' warmth during manual
+> playtesting. **Final art stays human-illustrated; NO AI final art.** Each PNG is a **MOCKUP** → save to
+> the **gitignored** `games/travel-agents/build/mockups/`, filename = the FIG code (e.g.
+> `FIG-TOUR-d_north2.png`); **never committed, never moved to `exports/`, never shipped.**
+>
+> **Each prompt = STYLE ANCHOR (paste verbatim from `art/art-style.md`) + the subject below + the closing
+> line.** Tickets are the sole scoring vector, so **at-a-glance readability wins**: one clear icon-motif,
+> tour name + requirement stay legible. All use the **full ticket face: 750 × 1050 px, ~0.71:1, 54 px safe
+> margin, full-bleed** boarding-pass shape language — keep the **motif in a clear upper window**, the name
+> band + requirement text overlaid (see the drop-in note in `art-style.md`). **Festivals stay SECULAR** —
+> food / market / lights / activity only, never worship. **Common closing:** *framed for a 750×1050 ticket
+> face, ~0.71:1 aspect, 54 px safe margin, boarding-pass frame, motif in the upper window, save as
+> build/mockups/FIG-TOUR-<id>.png.*
+
+### Reusable templates for the generic activity tickets
+Most tickets are generic activity tours (their concise motif is in `components/bookings.csv` `art_note`).
+Use the matching template + that `art_note` motif; keep them a tier plainer than the hero cards below.
+- **Route template** — a boarding-pass with a **rail/coast line** threading between the region emblems it
+  requires, a stamped ticket-stub edge, HSR or bicycle cue; warm day or neon night per the card's phase.
+- **Landmark-cluster template** — one **drawn landmark silhouette** for the region, region emblem stamped
+  in a passport-stamp roundel, the local dish hinted below.
+- **Activity/count template** — a clean icon-motif of the thing being counted (bowls, cups, stamps,
+  a queue, a clock) in a stamped ticket frame; readability over scenery.
+- **Festival template (SECULAR)** — the festival's **food/market/lights** motif only, warm and celebratory.
+
+### Hero tour prompts (the landmark / route / festival cards)
+- **`FIG-TOUR-d_north2`** (Concert Hall & Dadaocheng 兩廳院 & 大稻埕 · landmark-cluster): the twin swoop-roofs of the National Theater & Concert Hall beside a red-brick Dihua Street shophouse arcade, NORTH stamp. Warm day. **RAIL: render the Concert-Hall roofs — do NOT depict Liberty Square / the CKS Memorial.**
+- **`FIG-TOUR-d_south2`** (Tainan Old-Capital Walk 府城巡禮 · landmark-cluster): an Anping fort silhouette over a Tainan oyster-flat, SOUTH stamp. Warm day.
+- **`FIG-TOUR-d_central2`** (Taichung City & Tea 臺中舊城 · landmark-cluster): the Taichung station clock-tower over rolling tea terraces, CENTRAL stamp. Warm day.
+- **`FIG-TOUR-d_east1`** (Taroko Day Trip 太魯閣一日 · landmark-cluster): Taroko gorge marble cliffs over a rice-terrace coastline, EAST stamp. Warm day.
+- **`FIG-TOUR-d_pairNC`** (Taipei–Taichung Line 北中線 · route): the North + Central emblems stamped together with a straight inter-city rail running between them.
+- **`FIG-TOUR-d_pairSE`** (South-Link Coast Run 南迴線 · route): the South + East emblems stamped together with a winding south-coast 南迴 rail/coast line between them.
+- **`FIG-TOUR-n_all4`** (Round-Taiwan · Cycling Route No.1 環島 · flagship route): a bicycle over four regional stamps forming a ring around a stylised Taiwan — the full 環島 lap. **The deck's signature tour — give it the fullest, most joyful ticket art.**
+- **`FIG-TOUR-n_east2`** (Hualien–Taitung Line 花東線 · route): two EAST stamps down the 花東 rift-valley line — a gorge road + the roselle coast.
+- **`FIG-TOUR-d_food3`** (Dragon-Boat Food Run 端午美食 · festival, SECULAR): a dragon-boat prow on a river (the wharf races) + festival zongzi (粽) food parcels along the bank. No rites.
+- **`FIG-TOUR-n_nightfood3`** (Mid-Autumn BBQ 中秋烤肉 · festival, SECULAR): a night grill under a full moon, a pomelo (柚子) beside it. Secular cook-out. No rites.
+- **`FIG-TOUR-g_travel3n`** (Lantern-Festival Circuit 元宵燈會 · festival, SECULAR): lantern-lit stalls strung across a night map, sky-lanterns (Pingxi 平溪) rising — lights + food, a night out, not a wishing rite.
+- **`FIG-TOUR-g_collect5`** (New-Year Market Haul 年貨大街 · festival, SECULAR): the Dihua-Street New-Year market — red lanterns, dried-goods stalls, arms full of parcels. Secular shopping street.

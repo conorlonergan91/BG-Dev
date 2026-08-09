@@ -72,3 +72,78 @@ Open every brief with one line, e.g.:
 > not spy theme); clean linework, bold flat colour, night-market palette (warm day → neon night); warm,
 > dignified Taiwanese characters, charming not caricatured. Human-illustrated; no AI final art.*
 Then add the component-specific subject, composition, and the reserved size/figure code.
+
+---
+
+## AI mock-up prompts (playtest props — NOT final art)
+
+> **What this section is.** A **permitted, opt-in** use of AI: quick **high-fidelity mock-ups** so the CD
+> and playtesters can *feel* the game's warmth on the table during **manual playtesting**. These are
+> **props for playtesting only.**
+>
+> **The binding rail does NOT change: final art is human-illustrated. NO AI final art, ever.** Nothing
+> generated from these prompts is final, and none of it ships or is committed.
+>
+> **Where the PNGs go.** Every generated image is a **MOCKUP**: save it to the **gitignored** scratch dir
+> **`games/travel-agents/build/mockups/`**, filename = the **FIG code** (e.g. `FIG-CHAR-globetrotter.png`,
+> `FIG-VEND-N01.png`, `FIG-TOUR-d_north2.png`). Label it MOCKUP wherever it's shown. It is **never**
+> committed, **never** moved to `exports/`, and **never** shipped as final art.
+>
+> **This file is the canonical scaffolding.** The other art files' mock-up sections all cite the **STYLE
+> ANCHOR**, the **SCALE TABLE**, and the **sensitivity rails** below — they don't repeat them.
+
+### STYLE ANCHOR (paste this verbatim at the start of EVERY mock-up prompt)
+
+> A warm, lighthearted, **over-the-top-but-dignified stylised cartoon** illustration — the fun,
+> characterful *look* of Agent Avenue but with a **travel-agent, Taiwanese street-food theme (no spies)**.
+> Clean, confident linework; bold, mostly-flat colour with simple stylised shading; strong readable
+> silhouettes; expressive, affectionate faces. Cohesive **night-market palette**: warm daytime golds and
+> ambers glowing into neon-lit night-market violets and teals — lantern vermilion `#D64545`, jade teal
+> `#1F8A7A`, golden amber `#E6A930`, dusk indigo `#26324D`, on bao-paper cream `#F7F1E3`. Cozy, inviting,
+> celebratory. **The single most important goal: convey the WARMTH at the heart of this game** — the
+> friendly, food-loving, celebratory spirit of Taiwan's night markets should be *felt at a glance*.
+> Dignified Taiwanese locals and faithfully-rendered real dishes; **charming personality exaggeration,
+> never ethnic caricature or mockery**; **secular settings only** — no temple, deity, ghost-month or
+> funerary imagery.
+
+### SCALE TABLE (px @ 300 DPI — the exact slot each mock-up must drop into)
+
+Generate at **2× the pixel size below** for crispness, then **export at the exact aspect ratio** so the
+image drops cleanly into its SVG slot. Background: **transparent** for cut-out character portraits;
+**full/simple** for full-card faces and the map (noted per row). Save to
+`build/mockups/<FIG-CODE>.png`.
+
+| Slot | FIG code | Size (px) | Physical | Aspect | Background | Composition note |
+|---|---|---|---|---|---|---|
+| Character-board portrait | `FIG-CHAR-<slug>` | **604 × 286** | 51.1 × 24.2 mm | **~2.11:1 wide letterbox** | transparent | waist-up hero in a passport/dossier frame; sits on the 1680×1380 board at top-left (44,176) — **compose for a WIDE band** |
+| Ingredient card art | `FIG-ING-<id>` | **642 × 560** | 54.4 × 47.4 mm | **~1.15:1** | simple | on a 750×1050 poker card at (54,168); shows a **MIX** of that generic category (e.g. Meat = pork belly + beef + sausage + poultry together) |
+| Vendor card face | `FIG-VEND-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px (4.5 mm) safe margin**; see drop-in note below |
+| Tour / Booking card face | `FIG-TOUR-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px safe margin**; see drop-in note below |
+| Region map (full board) | `FIG-MAP-ISLAND` | **2280 × 1680** | 193 × 142.2 mm | **~1.36:1** | full | per-region vignettes optional |
+
+**Vendor & Tour card drop-in (read `render_vendor_svg` in `tools/cards/build_cards.py`).** The vendor
+face is **UI-dense**: a region-colour **header band** (Tâi-lô title + 繁體 subtitle) with a **tier pill**
+top-right, then a **region strip + English dish name**, then the **PAY** row (ingredient chips + the
+violet **Followers** badge), the **DRAW 人氣** crowd-gauge, and an **ICON 圖示** box filling the lower
+card. Those UI elements are drawn as **translucent white boxes (opacity ~0.45–0.9) that sit on top** of
+whatever art is behind them. So the cleanest mock-up is **(b) a full-bleed card face the UI overlays** —
+paint the whole 750×1050 face, but **keep the hero dish/stall as the focal point in the upper ~55% of the
+card** (under the header band, above the PAY/DRAW/ICON stack) and keep that lower region calmer/darker so
+the translucent PAY/DRAW/ICON panels stay legible on top. Same approach for Tour tickets: full-bleed
+boarding-pass face with the icon-motif read in a clear upper window, the name band and requirement text
+overlaid. (Option (a) a boxed central hero-window that clears the UI is available if a face gets too busy —
+but full-bleed reads warmer and is what these prompts assume.)
+
+### Sensitivity rails for mock-ups (BINDING — same rails as final art)
+
+A mock-up is still a picture of a real culture; the `art-style.md` guardrail above applies in full.
+
+- **Dignified locals** — charming personality exaggeration only; **never** ethnic caricature, racial
+  stereotype, or mockery. We laugh *with* this world, never *at* it. When in doubt, dial toward affection.
+- **Secular only** — no temple, deity, ghost-month or funerary imagery, even where a real place sits near
+  a temple.
+- **Real dishes rendered faithfully** — the food is the beloved; get it right.
+- **Indigenous items are consultant-gated even for mock-ups.** **E04 石板烤肉 (slate BBQ, Paiwan/Rukai)**
+  and **E01 竹筒飯 (bamboo-tube rice)** — keep any mock-up **generic and respectful**, **no specific tribal
+  iconography**, no AI-invented Indigenous-language terms. Treat these as placeholders and **flag for the
+  paid community consultant**; do not treat a mock-up as any kind of sign-off.

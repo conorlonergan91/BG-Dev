@@ -65,3 +65,59 @@ The **warm neighbourhood big-brother** — a lovable rogue in a bomber jacket, *
 like an old friend**, arms open, big cinema-charm smile; the vendor is *pleased to see him*. Behind: a lane
 where everyone waves. **Must read warm-elder-mate, NEVER gangster/menacing/Orwellian** (the load-bearing
 dignity item — art carries the warmth; consultant + blind-test confirm).
+
+---
+
+## AI mock-up prompts (playtest props — NOT final art)
+
+> **Playtest props only** — a permitted use so the CD/testers can feel the cast's warmth at the table.
+> **Final art stays human-illustrated; NO AI final art.** Each generated PNG is a **MOCKUP** → save to the
+> **gitignored** `games/travel-agents/build/mockups/`, filename = the FIG code (e.g.
+> `FIG-CHAR-globetrotter.png`); it is **never committed, never moved to `exports/`, never shipped.**
+>
+> Every prompt below is **STYLE ANCHOR** (paste it verbatim from `art/art-style.md`) **+ the subject
+> below + the closing line**. These extend the briefs above — read them for the full personality; the
+> prompts distil the hero pose. All six use the character-portrait slot: **604 × 286 px, ~2.11:1 wide
+> letterbox, waist-up hero in a passport/dossier frame, transparent background, generate at 2×** — compose
+> for the WIDE band (face/expression centred, signature-setting cue as a soft flank). Use **English
+> names**.
+
+**`FIG-CHAR-globetrotter` — The Globetrotter** ⚑ *the one to nail.* A spry, sharp-eyed grandma caught
+mid-zip and loving it — one foot up on a little mobility scooter (or striding in with a wheelie
+shopping-trolley), a triumphant "beat you here again!" grin and a knowing wink, holding her elder
+travel-pass up between two fingers like a winning card. Silver perm/bun, bright practical clothes (floral
+blouse, visor or sun-sleeves, comfy trainers), a snack-stuffed crossbody bag. Speed lines, scarf/bag
+mid-swish; behind her a faint island-spanning HSR line or four little region-lights. **Age is her
+superpower — quick, canny, delighted; never hunched, frail, cane-dependent or a butt of the joke.**
+*Closing: framed for a 604×286 slot, ~2.11:1 wide letterbox aspect, transparent background, save as
+build/mockups/FIG-CHAR-globetrotter.png*
+
+**`FIG-CHAR-old-councillor` — The Old Councillor.** A cheerful neighbourhood elder with real local clout,
+mid-handshake or waving you over like a favourite uncle; apron-over-shirt or a tidy vest, a lanyard/sash
+hinting at office; behind, his home-turf lane of shops. **Dignified community figure — never a pompous
+politician gag.** *Closing: framed for a 604×286 slot, ~2.11:1 wide letterbox aspect, transparent
+background, save as build/mockups/FIG-CHAR-old-councillor.png*
+
+**`FIG-CHAR-homebody` — The Homebody.** An earnest young office worker clutching a mum-packed lunchbox,
+phone to ear ("Ma, which stall again?"), tie slightly askew, a sheepish happy grin; a familiar
+neighbourhood corner behind. **Warm, relatable, self-teasing — affectionate, never a mocking "mama's
+boy."** *Closing: framed for a 604×286 slot, ~2.11:1 wide letterbox aspect, transparent background, save
+as build/mockups/FIG-CHAR-homebody.png*
+
+**`FIG-CHAR-big-eater` — The Big Eater.** A joyful competitive eater mid-huge-bite, chopsticks in each
+hand, a tower of empty bowls stacked beside him, cheeks full, eyes sparkling — big wacky energy
+celebrating Taiwan's abundance. **A lovable glutton, never gross-out.** *Closing: framed for a 604×286
+slot, ~2.11:1 wide letterbox aspect, transparent background, save as build/mockups/FIG-CHAR-big-eater.png*
+
+**`FIG-CHAR-influencer` — The Influencer.** A stylish food blogger framing the perfect bowl for the feed —
+phone/ring-light up, one eye on the shot, trendy fit, a delighted grin because they genuinely love the
+food; a little ring of hearts / "going viral" sparkle; a photogenic neon stall behind. **Affectionate
+wink at influencer culture, never sneering.** *Closing: framed for a 604×286 slot, ~2.11:1 wide letterbox
+aspect, transparent background, save as build/mockups/FIG-CHAR-influencer.png*
+
+**`FIG-CHAR-big-brother` — The Big Brother** ⚑ *#1 dignity watch.* A warm neighbourhood big-brother — a
+lovable rogue in a bomber jacket, greeting a **delighted** stall-owner like an old friend, arms open, big
+cinema-charm smile; the vendor is visibly pleased to see him; behind, a lane where everyone waves. **Must
+read warm-elder-mate — NEVER gangster, menacing, or a threat.** If a render leans cold or intimidating,
+it is off-rail; dial back to the grin. *Closing: framed for a 604×286 slot, ~2.11:1 wide letterbox aspect,
+transparent background, save as build/mockups/FIG-CHAR-big-brother.png*
