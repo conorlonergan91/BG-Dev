@@ -749,18 +749,32 @@ def _embed_fig_png(fig_id, x, y, w, h, mockups_dir, rx=16):
 
 
 def render_playerboard(theme, row, mockups_dir=None):
-    """One landscape CHARACTER BOARD per agent (V7 · icon-first, language-agnostic). Layout:
-       • header band — the name in THREE scripts (Tâi-lô · English · 繁體);
-       • LEFT column — a reserved ART placeholder ([FIG-CHAR-<slug>]) + a warm blurb, then the ICON-FIRST
-         ABILITY + FLAW blocks (a drawn glyph + a short keyword; the RULEBOOK carries the full words);
-       • RIGHT column — the 3 card-scale BOOKING hand slots (max 3) + the card-shaped COMPLETED 成團 /
-         CANCELLED 取消 pile zones;
-       • FULL-WIDTH — the FOLLOWERS dial (renamed from the old Reach track): committed Followers ≤ your
-         Followers-max, with the per-character START value marked (2, or 4 for 網紅) and the dial floor;
-       • FULL-WIDTH — the per-player RAVE-REVIEWS / TOURS-COMPLETED meter (boons at your 2nd & 4th tour).
+    """One landscape CHARACTER BOARD per agent (V7 · CD REDESIGN 2026-08 · icon-first, language-agnostic).
+
+    A4-LANDSCAPE (297×210 mm @ 300 DPI = 3508×2480 px) so three TRUE poker-card footprints
+    (63.5×88.9 mm = 750×1050 px each) sit side by side with a full-height character image beside them.
+
+    Layout:
+       • TITLE band — English name TOP-LEFT (e.g. "The Globetrotter"); 漢字 TOP-RIGHT with the Tâi-lô
+         romanisation as a subtitle directly under it (阿嬤 / A-má).
+       • RIGHT column, FULL HEIGHT — the character IMAGE (embedded mock-up when present, else placeholder),
+         and UNDER it the ABILITY + FLAW as ICON-ONLY medallions (drawn glyphs, NO keyword text — the
+         rulebook carries the words; a small "icons are reminders" caption remains).
+       • A PROSE strip between the image and the piles — a short, funny one-liner (from `blurb`).
+       • THREE card-EXACT-footprint zones, left→right: FOLLOWERS · CANCELLED 取消 · COMPLETE 成團. Each is
+         exactly one poker-card footprint. FOLLOWERS hosts the dial mechanic (a compact vertical Followers-
+         max gauge with the per-character START marker — 2, or 4 for 網紅 — floored at start); CANCELLED /
+         COMPLETE are card-shaped drop zones where a real Booking card is stacked.
+       • A footer strip carrying the scoring logic + the dial's +1/Travel & lost-war drop rule.
+
+    REMOVED in this redesign (moved to the rulebook): the Rave-Reviews / Tours-Completed track and the
+    "Your Bookings" hand section (hand-limit-3 + the Rave boons now live in the rulebook).
+
     TA-specific: only games/travel-agents/make.sh calls --type playerboard, and it renders only rows that
     carry ability_code + flaw_code — so Beacon and every other game are untouched."""
-    W, H = 1680, 1380
+    # A4 landscape at 300 DPI. mm() guarantees the card zones are EXACTLY one poker footprint.
+    W, H = mm(297), mm(210)                       # 3508 × 2480
+    CARD_W, CARD_H = mm(63.5), mm(88.9)           # 750 × 1050 — a real poker card sits on each zone
     ink, accent, muted, text = theme["ink"], theme["accent"], theme["muted"], theme["text"]
     tfont, bfont = theme["title_font"], theme["body_font"]
     gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
@@ -770,213 +784,182 @@ def render_playerboard(theme, row, mockups_dir=None):
     booking_col = theme["suits"].get("booking", {}).get("color", "#3A6EA5")
     gold_pile, taupe = gold, muted
 
-    name = row.get("name", "")
-    hanzi = row.get("hanzi", "")
-    name_en = str(row.get("name_en", "")).strip()
+    name = row.get("name", "")                    # Tâi-lô
+    hanzi = row.get("hanzi", "")                   # 漢字
+    name_en = str(row.get("name_en", "")).strip()  # English
     blurb = str(row.get("blurb", "")).strip()
-    ability = str(row.get("ability", "")).strip()
-    flaw = str(row.get("flaw", "")).strip()
     acode = str(row.get("ability_code", "")).strip().lower()
     fcode = str(row.get("flaw_code", "")).strip().lower()
     slug = _slugify(name_en or row.get("id", ""))
     dial_start = 4 if acode == "start_max_4" else 2   # 網紅 starts at 4; the dial floors here too
 
+    M = 70                                         # outer margin
     P = [f'<defs>{page_gradient(theme, "pg")}</defs>',
          f'<rect width="{W}" height="{H}" rx="34" fill="url(#pg)" stroke="{ink}" stroke-width="7"/>',
          f'<rect x="30" y="30" width="{W-60}" height="{H-60}" rx="24" fill="none" '
          f'stroke="{gold}" stroke-width="2" opacity="0.5"/>']
 
-    # --- header: THREE scripts (Tâi-lô · English · 繁體) ---
-    ox, hr, hh = 18, 24, 132
+    # ==================== TITLE band: English TOP-LEFT · 漢字 TOP-RIGHT + Tâi-lô subtitle ================
+    ox, hr, hh = 18, 28, 250
     P.append(f'<path d="M{ox} {18+hr} a {hr} {hr} 0 0 1 {hr} -{hr} h {W-2*ox-2*hr} '
              f'a {hr} {hr} 0 0 1 {hr} {hr} v {hh-hr} h -{W-2*ox} z" fill="{gold}"/>')
-    P.append(f'<text x="46" y="78" font-size="56" fill="#ffffff" font-family="{tfont}" '
-             f'font-weight="bold" letter-spacing="1">{esc(name)}</text>')
-    if name_en:
-        P.append(f'<text x="48" y="120" font-size="30" fill="#ffffff" opacity="0.93" '
-                 f'font-family="{tfont}" font-style="italic">{esc(name_en)}</text>')
-    P.append(f'<text x="{W-46}" y="96" font-size="66" fill="#ffffff" text-anchor="end" '
+    # English name — the hero, top-left
+    P.append(f'<text x="52" y="152" font-size="86" fill="#ffffff" font-family="{tfont}" '
+             f'font-weight="bold" letter-spacing="1">{esc(name_en)}</text>')
+    P.append(f'<text x="54" y="210" font-size="30" fill="#ffffff" opacity="0.9" '
+             f'font-family="{tfont}" font-style="italic" letter-spacing="3">CHARACTER BOARD · 角色板</text>')
+    # 漢字 top-right, Tâi-lô romanisation directly underneath it
+    P.append(f'<text x="{W-52}" y="140" font-size="100" fill="#ffffff" text-anchor="end" '
              f'font-family="{tfont}" font-weight="bold">{esc(hanzi)}</text>')
+    P.append(f'<text x="{W-52}" y="212" font-size="50" fill="#ffffff" text-anchor="end" '
+             f'font-family="{tfont}" font-style="italic" opacity="0.95">{esc(name)}</text>')
 
-    top = 18 + hh + 26   # = 176
+    content_top = 18 + hh + 40                     # = 308
 
-    # ==================== LEFT COLUMN: PORTRAIT character-art slot (was a wide letterbox) ================
-    # Full-figure character art reads TALL, so the slot is now a large ~4:5 PORTRAIT that dominates the
-    # left column. The ability/flaw kit, the Booking hand and the Completed/Cancelled piles all reflow to
-    # the RIGHT of it (below). When a mock-up PNG is on disk it is embedded in place of the placeholder.
-    lx = 44
-    ax, ay, aw, ah = lx, top, 490, 600          # PORTRAIT slot ~4:5
+    # ==================== RIGHT COLUMN (full height): character IMAGE + icon-only ABILITY/FLAW ===========
+    IMG_W = 900
+    img_x = W - M - IMG_W                          # = 2538 → right edge flush to W-M
+    img_y = content_top
+    IMG_H = 1700                                    # tall ~0.53:1 portrait slot; icons sit below
     fig_id = f"FIG-CHAR-{slug}"
-    embedded = _embed_fig_png(fig_id, ax, ay, aw, ah, mockups_dir)
+    embedded = _embed_fig_png(fig_id, img_x, img_y, IMG_W, IMG_H, mockups_dir)
     if embedded:
-        # a real illustration mock-up on disk → embed it (self-contained data URI) inside a warm frame
-        P.append(f'<rect x="{ax}" y="{ay}" width="{aw}" height="{ah}" rx="16" fill="#ffffff" opacity="0.6"/>')
-        P.append(embedded)                       # clipPath + <image> data URI (self-contained)
-        P.append(f'<rect x="{ax}" y="{ay}" width="{aw}" height="{ah}" rx="16" fill="none" '
-                 f'stroke="{gold}" stroke-width="4"/>')
+        P.append(f'<rect x="{img_x}" y="{img_y}" width="{IMG_W}" height="{IMG_H}" rx="18" fill="#ffffff" opacity="0.6"/>')
+        P.append(embedded)                          # clipPath + <image> data URI (self-contained)
+        P.append(f'<rect x="{img_x}" y="{img_y}" width="{IMG_W}" height="{IMG_H}" rx="18" fill="none" '
+                 f'stroke="{gold}" stroke-width="5"/>')
     else:
         # empty state: dashed placeholder frame + corner ticks + a portrait silhouette + caption + label
-        P.append(f'<rect x="{ax}" y="{ay}" width="{aw}" height="{ah}" rx="16" fill="#ffffff" opacity="0.4" '
-                 f'stroke="{gold}" stroke-width="3" stroke-dasharray="12 8"/>')
-        for (tx, ty, dx, dy) in [(ax+18, ay+18, 1, 1), (ax+aw-18, ay+18, -1, 1),
-                                 (ax+18, ay+ah-18, 1, -1), (ax+aw-18, ay+ah-18, -1, -1)]:
-            P.append(f'<path d="M{tx} {ty+dy*28} L{tx} {ty} L{tx+dx*28} {ty}" fill="none" '
-                     f'stroke="{muted}" stroke-width="3"/>')
-        scx, scy = ax+aw/2, ay+ah/2 + 26
-        P.append(f'<circle cx="{scx}" cy="{scy-96}" r="74" fill="{muted}" opacity="0.28"/>')
-        P.append(f'<path d="M{scx-138} {scy+150} q138 -196 276 0 z" fill="{muted}" opacity="0.28"/>')
-        P.append(f'<text x="{scx}" y="{ay+34}" font-size="16" fill="{muted}" text-anchor="middle" '
+        P.append(f'<rect x="{img_x}" y="{img_y}" width="{IMG_W}" height="{IMG_H}" rx="18" fill="#ffffff" opacity="0.4" '
+                 f'stroke="{gold}" stroke-width="4" stroke-dasharray="14 10"/>')
+        for (tx, ty, dx, dy) in [(img_x+22, img_y+22, 1, 1), (img_x+IMG_W-22, img_y+22, -1, 1),
+                                 (img_x+22, img_y+IMG_H-22, 1, -1), (img_x+IMG_W-22, img_y+IMG_H-22, -1, -1)]:
+            P.append(f'<path d="M{tx} {ty+dy*34} L{tx} {ty} L{tx+dx*34} {ty}" fill="none" '
+                     f'stroke="{muted}" stroke-width="4"/>')
+        scx, scy = img_x+IMG_W/2, img_y+IMG_H/2 + 40
+        P.append(f'<circle cx="{scx}" cy="{scy-190}" r="150" fill="{muted}" opacity="0.28"/>')
+        P.append(f'<path d="M{scx-260} {scy+300} q260 -400 520 0 z" fill="{muted}" opacity="0.28"/>')
+        P.append(f'<text x="{scx}" y="{img_y+44}" font-size="22" fill="{muted}" text-anchor="middle" '
                  f'font-family="{bfont}" font-style="italic">illustration placeholder · human-illustrated (no AI final art)</text>')
-        P.append(f'<rect x="{scx-166}" y="{ay+ah-56}" width="332" height="38" rx="19" fill="{ink}"/>')
-        P.append(f'<text x="{scx}" y="{ay+ah-30}" font-size="23" fill="#ffffff" text-anchor="middle" '
+        P.append(f'<rect x="{scx-210}" y="{img_y+IMG_H-70}" width="420" height="46" rx="23" fill="{ink}"/>')
+        P.append(f'<text x="{scx}" y="{img_y+IMG_H-38}" font-size="27" fill="#ffffff" text-anchor="middle" '
                  f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[{esc(fig_id)}]</text>')
-    # character blurb, tucked under the portrait
-    by0 = ay + ah + 36
-    for i, ln in enumerate(textwrap.wrap(blurb, 44)[:2]):
-        P.append(f'<text x="{lx}" y="{by0 + i*30}" font-size="22" fill="{text}" '
+
+    # ICON-ONLY ability + flaw medallions UNDER the image (no keyword text — the rulebook carries the words)
+    med_r = 66
+    med_cy = img_y + IMG_H + 110
+    med_cx_a = img_x + IMG_W * 0.25
+    med_cx_f = img_x + IMG_W * 0.75
+
+    def icon_medallion(cx, code, col, label):
+        return "".join([
+            f'<circle cx="{cx}" cy="{med_cy}" r="{med_r}" fill="#ffffff" stroke="{col}" stroke-width="5"/>',
+            _pb_kit_glyph(cx, med_cy, code, col, ink, tfont),
+            f'<text x="{cx}" y="{med_cy+med_r+44}" font-size="26" fill="{col}" text-anchor="middle" '
+            f'font-family="{tfont}" font-weight="bold" letter-spacing="2">{esc(label)}</text>'])
+    P.append(icon_medallion(med_cx_a, acode, teal, "ABILITY 能力"))
+    P.append(icon_medallion(med_cx_f, fcode, vermilion, "FLAW 弱點"))
+    cap = "Icons are reminders — the rulebook carries the exact rule."
+    if acode == "discount_home":
+        cap = "Setup: pick ONE home region.  " + cap
+    P.append(f'<text x="{img_x+IMG_W/2}" y="{med_cy+med_r+96}" font-size="21" fill="{muted}" '
+             f'text-anchor="middle" font-family="{bfont}" font-style="italic">{esc(cap)}</text>')
+
+    # ==================== LEFT WORK AREA: prose strip + three card-footprint zones =======================
+    work_l = M                                     # 70
+    work_r = img_x - 60                            # 2478 — clears the image column
+    work_w = work_r - work_l                       # 2408
+
+    # --- PROSE strip: a short, funny one-liner (from the blurb), between the image and the piles ----------
+    ps_y, ps_h = content_top, 172
+    P.append(f'<rect x="{work_l}" y="{ps_y}" width="{work_w}" height="{ps_h}" rx="20" fill="{gold}" opacity="0.16"/>')
+    P.append(f'<rect x="{work_l}" y="{ps_y}" width="10" height="{ps_h}" rx="5" fill="{gold}"/>')
+    P.append(f'<text x="{work_l+42}" y="{ps_y+62}" font-size="70" fill="{gold}" opacity="0.5" '
+             f'font-family="{tfont}" font-weight="bold">&#8220;</text>')
+    prose_wrap = max(40, int((work_w - 150) / 20))
+    plines = textwrap.wrap(blurb, prose_wrap)[:2]
+    pbase = ps_y + (ps_h - (len(plines)-1)*46) / 2 + 4
+    for i, ln in enumerate(plines):
+        P.append(f'<text x="{work_l+120}" y="{pbase + i*46:.0f}" font-size="38" fill="{ink}" '
                  f'font-family="{bfont}" font-style="italic">{esc(ln)}</text>')
 
-    # ==================== RIGHT REGION: icon-first ABILITY/FLAW, then Bookings + Score piles =============
-    rx0 = 560
-    RW = W - 44 - rx0                            # width of the reflowed right region
-    kw = (RW - 24) / 2                           # ABILITY | FLAW side by side
+    # --- THREE card-footprint zones: FOLLOWERS · CANCELLED 取消 · COMPLETE 成團 --------------------------
+    zgap = 39
+    z_pad_l = 40
+    zone_top = ps_y + ps_h + 130                    # room for the zone labels above each card
+    z_x = [work_l + z_pad_l + i*(CARD_W + zgap) for i in range(3)]   # 110, 899, 1688
+    label_y = zone_top - 40
 
-    # ICON-FIRST kit blocks: big glyph + KEYWORD; the rulebook carries the words.
-    def kit_block(x0, y0, w, label, code, txt, col):
-        head, sub = _pb_headline(txt)
-        bh = 138
-        s = [f'<rect x="{x0}" y="{y0}" width="{w}" height="{bh}" rx="18" fill="#ffffff" '
-             f'opacity="0.55" stroke="{col}" stroke-width="3"/>',
-             f'<text x="{x0+118}" y="{y0+40}" font-size="24" fill="{col}" font-family="{tfont}" '
-             f'font-weight="bold" letter-spacing="2">{esc(label)}</text>',
-             # glyph medallion on the left
-             f'<circle cx="{x0+58}" cy="{y0+bh/2}" r="46" fill="#ffffff" stroke="{col}" stroke-width="3"/>',
-             _pb_kit_glyph(x0+58, y0+bh/2, code, col, ink, tfont)]
-        s.append(f'<text x="{x0+118}" y="{y0+80}" font-size="26" fill="{ink}" font-family="{tfont}" '
-                 f'font-weight="bold">{esc(head[:28])}</text>')
-        for i, ln in enumerate(textwrap.wrap(sub, 32)[:1]):
-            s.append(f'<text x="{x0+118}" y="{y0+114}" font-size="20" fill="{muted}" '
-                     f'font-family="{bfont}">{esc(ln)}</text>')
-        return "".join(s)
-    ky = top
-    P.append(kit_block(rx0, ky, kw, "ABILITY 能力", acode, ability, teal))
-    P.append(kit_block(rx0+kw+24, ky, kw, "FLAW 弱點", fcode, flaw, vermilion))
-    ny = ky + 138 + 28
-    if acode == "discount_home":
-        P.append(f'<text x="{rx0}" y="{ny}" font-size="20" fill="{muted}" font-family="{bfont}" '
-                 f'font-style="italic">Setup: pick ONE home region (open).</text>')
-    P.append(f'<text x="{rx0}" y="{ny+24}" font-size="19" fill="{muted}" font-family="{bfont}" '
-             f'font-style="italic">Icons are reminders — the rulebook carries the exact rule.</text>')
-
-    # Booking hand (max 3) — card-scale slots
-    bhead_y = ny + 62
-    P.append(f'<text x="{rx0}" y="{bhead_y}" font-size="27" fill="{booking_col}" font-family="{tfont}" '
-             f'font-weight="bold" letter-spacing="1">YOUR BOOKINGS — hand max 3</text>')
-    P.append(f'<text x="{W-44}" y="{bhead_y}" font-size="20" fill="{muted}" text-anchor="end" '
-             f'font-family="{bfont}" font-style="italic">line one up → refill the row</text>')
-    sw_, sh_ = 156, 218
-    sgap = 26
-    sy = bhead_y + 20
-    for i in range(3):
-        sx = rx0 + i*(sw_+sgap)
-        P.append(f'<rect x="{sx}" y="{sy}" width="{sw_}" height="{sh_}" rx="12" fill="#ffffff" '
-                 f'opacity="0.5" stroke="{booking_col}" stroke-width="2" stroke-dasharray="9 6"/>')
-        P.append(emblem_svg("ticket", sx+sw_/2, sy+sh_/2-14, 32, booking_col))
-        P.append(f'<text x="{sx+sw_/2}" y="{sy+sh_-24}" font-size="18" fill="{muted}" text-anchor="middle" '
-                 f'font-family="{bfont}" font-style="italic">Booking {i+1}</text>')
-    # Completed / Cancelled — card-shaped drop zones
-    py = sy + sh_ + 46
-    def pile(x0, en, han, emcol, note):
-        ph_ = 210
-        return "".join([
-            f'<rect x="{x0}" y="{py}" width="248" height="{ph_}" rx="14" fill="#ffffff" opacity="0.5" '
-            f'stroke="{emcol}" stroke-width="3" stroke-dasharray="10 7"/>',
-            emblem_svg("stamp", x0+40, py+46, 24, emcol, stroke=ink),
-            f'<text x="{x0+76}" y="{py+40}" font-size="26" fill="{ink}" font-family="{tfont}" '
-            f'font-weight="bold" letter-spacing="1">{esc(en)}</text>',
-            f'<text x="{x0+76}" y="{py+72}" font-size="30" fill="{emcol}" font-family="{tfont}" '
-            f'font-weight="bold">{esc(han)}</text>',
-            f'<text x="{x0+20}" y="{py+ph_-20}" font-size="19" fill="{muted}" '
-            f'font-family="{bfont}">{esc(note)}</text>'])
-    P.append(f'<text x="{rx0}" y="{py-14}" font-size="22" fill="{muted}" font-family="{tfont}" '
-             f'font-weight="bold" letter-spacing="1">YOUR SCORE PILES</text>')
-    P.append(pile(rx0, "COMPLETED", "成團", gold_pile, "ran -> full value (+)"))
-    P.append(pile(rx0+276, "CANCELLED", "取消", taupe, "didn't run -> half value"))
-    # a compact note to the right of the piles
-    nx = rx0 + 276 + 248 + 30
-    if nx < W - 60:
-        for i, ln in enumerate(["Bookings are your", "WHOLE score.",
-                                "Vendors, Followers,", "the dial: never score."]):
-            P.append(f'<text x="{nx}" y="{py+40 + i*34}" font-size="21" fill="{text}" '
-                     f'font-family="{bfont}">{esc(ln)}</text>')
-
-    # ============================ FULL-WIDTH: the FOLLOWERS dial =========================================
-    bx, byz, bw, bh = 44, 946, W-88, 190
-    P.append(f'<rect x="{bx}" y="{byz}" width="{bw}" height="{bh}" rx="18" fill="#ffffff" opacity="0.5" '
-             f'stroke="{violet}" stroke-width="4"/>')
-    P.append(emblem_svg("spark", bx+34, byz+40, 15, violet))
-    P.append(f'<text x="{bx+60}" y="{byz+50}" font-size="30" fill="{violet}" font-family="{tfont}" '
-             f'font-weight="bold" letter-spacing="1">FOLLOWERS — committed</text>')
-    P.append(f'<text x="{bx+bw-20}" y="{byz+50}" font-size="24" fill="{violet}" text-anchor="end" '
-             f'font-family="{tfont}" font-weight="bold">keep committed ≤ your Followers-max (the dial)</text>')
-    n_slots = 13
-    pad = 34
-    cell = (bw - 2*pad) / n_slots
-    slot_y = byz + 128
-    r = 27
-    for i in range(n_slots):
-        scx2 = bx + pad + cell*(i + 0.5)
+    # FOLLOWERS zone (zone 0) — hosts the vertical Followers-max DIAL
+    fx = z_x[0]
+    P.append(f'<text x="{fx}" y="{label_y}" font-size="30" fill="{violet}" font-family="{tfont}" '
+             f'font-weight="bold" letter-spacing="1">FOLLOWERS 粉 · the dial</text>')
+    P.append(f'<rect x="{fx}" y="{zone_top}" width="{CARD_W}" height="{CARD_H}" rx="16" fill="#ffffff" '
+             f'opacity="0.5" stroke="{violet}" stroke-width="4"/>')
+    P.append(emblem_svg("spark", fx+50, zone_top+52, 22, violet))
+    P.append(f'<text x="{fx+86}" y="{zone_top+62}" font-size="30" fill="{violet}" font-family="{tfont}" '
+             f'font-weight="bold" letter-spacing="1">Followers-max</text>')
+    # vertical gauge 0..8, climbing bottom→top; MAX flag at the per-character start value
+    n_dial = 9
+    d_cx = fx + CARD_W*0.42
+    d_top = zone_top + 116
+    d_bot = zone_top + CARD_H - 70
+    d_step = (d_bot - d_top) / (n_dial - 1)
+    dr = 34
+    for i in range(n_dial):
+        cy = d_bot - i*d_step
         active = i <= dial_start
         fill = "#ffffff" if active else "#E7E1D4"
         stroke = violet if active else muted
         dash = "" if active else ' stroke-dasharray="6 5"'
-        P.append(f'<circle cx="{scx2:.1f}" cy="{slot_y}" r="{r}" fill="{fill}" stroke="{stroke}" '
-                 f'stroke-width="{3 if active else 2}"{dash}/>')
+        P.append(f'<circle cx="{d_cx:.1f}" cy="{cy:.1f}" r="{dr}" fill="{fill}" stroke="{stroke}" '
+                 f'stroke-width="{4 if active else 2}"{dash}/>')
         ncol = ink if active else muted
-        P.append(f'<text x="{scx2:.1f}" y="{slot_y+9}" font-size="25" fill="{ncol}" text-anchor="middle" '
+        P.append(f'<text x="{d_cx:.1f}" y="{cy+11:.1f}" font-size="32" fill="{ncol}" text-anchor="middle" '
                  f'font-family="{tfont}" font-weight="bold">{i}</text>')
-    # the movable Followers-max DIAL marker — a violet flag pointing down at the START value
-    mcx = bx + pad + cell*(dial_start + 0.5)
-    P.append(f'<rect x="{mcx-84:.1f}" y="{slot_y-82}" width="168" height="32" rx="16" fill="{violet}"/>')
-    P.append(f'<text x="{mcx:.1f}" y="{slot_y-59}" font-size="20" fill="#ffffff" text-anchor="middle" '
-             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">MAX · start {dial_start}</text>')
-    P.append(f'<polygon points="{mcx-15:.1f},{slot_y-50} {mcx+15:.1f},{slot_y-50} {mcx:.1f},{slot_y-r-3}" '
-             f'fill="{violet}"/>')
-    P.append(f'<text x="{bx+pad}" y="{byz+bh-16}" font-size="20" fill="{muted}" font-family="{bfont}" '
-             f'font-style="italic">Slide the MAX flag +1 each Travel. Winning a vendor returns your Followers. '
-             f'Lose a promotion war: MAX drops (-1 day / -2 night), never below {dial_start}.</text>')
+    # the movable MAX flag, to the right of the column, pointing LEFT at the start value
+    my = d_bot - dial_start*d_step
+    flag_x = d_cx + dr + 22
+    P.append(f'<polygon points="{flag_x:.1f},{my:.1f} {flag_x+26:.1f},{my-26:.1f} {flag_x+26:.1f},{my+26:.1f}" fill="{violet}"/>')
+    P.append(f'<rect x="{flag_x+26:.1f}" y="{my-30:.1f}" width="188" height="60" rx="14" fill="{violet}"/>')
+    P.append(f'<text x="{flag_x+120:.1f}" y="{my-4:.1f}" font-size="24" fill="#ffffff" text-anchor="middle" '
+             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">MAX</text>')
+    P.append(f'<text x="{flag_x+120:.1f}" y="{my+24:.1f}" font-size="21" fill="#ffffff" text-anchor="middle" '
+             f'font-family="{tfont}" font-weight="bold">start {dial_start}</text>')
 
-    # ============================ FULL-WIDTH: Rave-Reviews / Tours-Completed meter =======================
-    ty0 = 1156
-    P.append(f'<rect x="44" y="{ty0}" width="{W-88}" height="196" rx="18" fill="#ffffff" opacity="0.42" '
+    # CANCELLED / COMPLETE — card-shaped drop zones (a real Booking card stacks here)
+    def pile_zone(x0, en, han, emcol, note, label):
+        s = [f'<text x="{x0}" y="{label_y}" font-size="30" fill="{emcol}" font-family="{tfont}" '
+             f'font-weight="bold" letter-spacing="1">{esc(label)}</text>',
+             f'<rect x="{x0}" y="{zone_top}" width="{CARD_W}" height="{CARD_H}" rx="16" fill="#ffffff" '
+             f'opacity="0.5" stroke="{emcol}" stroke-width="4" stroke-dasharray="14 10"/>',
+             emblem_svg("stamp", x0+CARD_W/2, zone_top+CARD_H*0.34, 54, emcol, stroke=ink),
+             f'<text x="{x0+CARD_W/2}" y="{zone_top+CARD_H*0.56:.0f}" font-size="72" fill="{emcol}" '
+             f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(han)}</text>',
+             f'<text x="{x0+CARD_W/2}" y="{zone_top+CARD_H*0.66:.0f}" font-size="30" fill="{ink}" '
+             f'text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="2">{esc(en)}</text>',
+             f'<text x="{x0+CARD_W/2}" y="{zone_top+CARD_H-40}" font-size="24" fill="{muted}" '
+             f'text-anchor="middle" font-family="{bfont}" font-style="italic">{esc(note)}</text>']
+        return "".join(s)
+    P.append(pile_zone(z_x[1], "CANCELLED", "取消", taupe, "didn't run → half value", "CANCELLED 取消"))
+    P.append(pile_zone(z_x[2], "COMPLETE", "成團", gold_pile, "ran → full value", "COMPLETE 成團"))
+
+    # --- FOOTER strip: scoring logic + the dial rule (fills the lower-left, keeps the columns balanced) ---
+    ft_y = zone_top + CARD_H + 56
+    ft_h = H - M - ft_y
+    P.append(f'<rect x="{work_l}" y="{ft_y}" width="{work_w}" height="{ft_h}" rx="18" fill="#ffffff" opacity="0.4" '
              f'stroke="{teal}" stroke-width="3"/>')
-    P.append(emblem_svg("crowd", 84, ty0+40, 20, teal))
-    P.append(f'<text x="120" y="{ty0+48}" font-size="27" fill="{teal}" font-family="{tfont}" '
-             f'font-weight="bold" letter-spacing="1">RAVE REVIEWS 好評 · tours completed (yours)</text>')
-    P.append(f'<text x="{W-64}" y="{ty0+48}" font-size="19" fill="{muted}" text-anchor="end" '
-             f'font-family="{bfont}" font-style="italic">a completions meter — NOT your score</text>')
-    tn = 7
-    tcell = (W - 88 - 120) / tn
-    tsy = ty0 + 128
-    rave = {2: "+1 Followers-max", 4: "+1 ingredient · next Bribe -1"}
-    for i in range(tn):
-        tcx = 100 + tcell*(i + 0.5)
-        is_ms = i in rave
-        fill = teal if is_ms else "#ffffff"
-        tcol = "#ffffff" if is_ms else ink
-        P.append(f'<circle cx="{tcx:.1f}" cy="{tsy}" r="29" fill="{fill}" stroke="{teal}" '
-                 f'stroke-width="{4 if is_ms else 2}"/>')
-        P.append(f'<text x="{tcx:.1f}" y="{tsy+10}" font-size="27" fill="{tcol}" text-anchor="middle" '
-                 f'font-family="{tfont}" font-weight="bold">{i}</text>')
-        if is_ms:
-            segs = textwrap.wrap(rave[i], 20)[:2]
-            base = tsy - 42 - (len(segs)-1)*22
-            for j, seg in enumerate(segs):
-                P.append(f'<text x="{tcx:.1f}" y="{base+j*22:.0f}" font-size="18" fill="{teal}" '
-                         f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(seg)}</text>')
-    P.append(f'<text x="100" y="{ty0+180}" font-size="19" fill="{muted}" font-family="{bfont}" '
-             f'font-style="italic">+1 each time a Bribe completes a held Booking; never goes down. '
-             f'Claim each Rave Review the FIRST time YOU reach that mark.</text>')
+    foot = [
+        "Your held Bookings are your WHOLE score:  COMPLETE 成團 = full value  ·  CANCELLED 取消 = half.",
+        "Vendors, Followers and the dial never score.  Hand limit 3 + the Rave-Reviews boons: see the rulebook.",
+        f"Followers dial: slide the MAX flag +1 each Travel; lose a promotion war and MAX drops "
+        f"(-1 day / -2 night), never below your start ({dial_start}).",
+    ]
+    for i, ln in enumerate(foot):
+        col = teal if i == 0 else muted
+        style = ' font-style="italic"' if i else ''
+        P.append(f'<text x="{work_l+34}" y="{ft_y+56 + i*56}" font-size="27" fill="{col}" '
+                 f'font-family="{bfont}"{style}>{esc(ln)}</text>')
 
     return _svg(W, H, P), W, H
 

@@ -84,14 +84,31 @@ done
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --out build/map-day.png
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --out build/map-night.png
 
-# Per-player CHARACTER BOARDS (6 landscape mats, one per characters.csv row) — REPLACES the character
-# cards. Each board carries: name in THREE scripts (Tâi-lô · English · 繁體), an art placeholder
-# [FIG-CHAR-<slug>] + a warm blurb, the ABILITY/FLAW icon blocks, the BUZZ zone with a movable REACH cap
-# marker (this FOLDS IN the old standalone reach-track — committed Buzz ≤ Reach enforced at a glance), the
-# per-player COMPLETED 成團 / CANCELLED 取消 pile zones, and a per-player TOURS-COMPLETED (好評 Rave Reviews)
-# mini-track. TA-only: --type playerboard renders only rows with ability_code+flaw_code, so Beacon et al.
-# are untouched.
+# Per-player CHARACTER BOARDS (6 A4-LANDSCAPE mats, one per characters.csv row) — CD REDESIGN 2026-08.
+# Each board carries: English name TOP-LEFT + 漢字 TOP-RIGHT with the Tâi-lô romanisation beneath it; a
+# full-height character IMAGE on the RIGHT with ICON-ONLY ability/flaw medallions under it (no keyword
+# text — the rulebook carries the words); a short funny PROSE one-liner; and three card-EXACT-footprint
+# zones (63.5×88.9 mm) left→right — FOLLOWERS (the Followers-max dial, start 2 / 4 for the Influencer) ·
+# CANCELLED 取消 · COMPLETE 成團. The Rave-Reviews track and the "Your Bookings" hand section were REMOVED
+# from the board (they live in the rulebook now). TA-only: --type playerboard renders only rows with
+# ability_code+flaw_code, so Beacon et al. are untouched.
+#
+# ART EMBED (opt-in mock-ups — NEVER committed): prep the six committed finals from art/mockups/ into the
+# gitignored build/mockups/ at the board's new image-slot size (900×1700 px), keyed to transparent + fit.
+# The board auto-embeds build/mockups/FIG-CHAR-<slug>.png (base64 data-URI) when present, else a placeholder.
+mkdir -p build/mockups
+for slug in old-councillor homebody big-eater influencer big-brother globetrotter; do
+    python3 $T/mockup/prep_mockup.py --image art/mockups/FIG-CHAR-$slug.png --key-bg \
+        --fit 900x1700 --pad --outdir build/mockups --out FIG-CHAR-$slug.png
+done
+# WARM boards (art embedded) → build/boards/ ONLY — the CD-preview set. build/ is gitignored: no AI final
+# art is ever committed (the binding rail). Default --mockups-dir is build/mockups, so these embed the finals.
 python3 $T/boards/build_board.py --type playerboard --csv components/characters.csv --theme "$theme" --out build/boards/
+# PLACEHOLDER boards (dashed [FIG-CHAR-<slug>] slot, NO AI art) → these are what gets snapshotted into the
+# COMMITTED exports/. Point --mockups-dir at an empty dir so the embed always falls back to the placeholder.
+mkdir -p build/nomockups
+python3 $T/boards/build_board.py --type playerboard --csv components/characters.csv --theme "$theme" \
+    --mockups-dir build/nomockups --out build/boards-placeholder/
 
 # Live in-game tracks: V7 has NO shared clock track — the clock is DECK-DRIVEN (the Booking deck IS the
 # clock: DAY-deck-out → 黃昏 DUSK, NIGHT-deck-out → 末班車 LAST TRAIN, via seeded boundary cards). The old
@@ -130,9 +147,9 @@ cp build/top/sheets/bookings_day_sheet_*.png    exports/ 2>/dev/null || true
 cp build/top/sheets/bookings_day_back.png       exports/ 2>/dev/null || true
 cp build/top/sheets/bookings_night_sheet_*.png  exports/ 2>/dev/null || true
 cp build/top/sheets/bookings_night_back.png     exports/ 2>/dev/null || true
-# Character BOARDS — 5 landscape player mats (replaces the old characters_sheet). Reach + Tours-Completed
-# now live on these, so the standalone reach-track / tours-track exports are gone.
-cp build/boards/board-*.png               exports/ 2>/dev/null || true
+# Character BOARDS — 6 A4-landscape player mats. Snapshot the PLACEHOLDER renders (no AI final art — the
+# binding rail); the warm art-embedded boards stay in build/boards/ (gitignored, CD preview only).
+cp build/boards-placeholder/board-*.png   exports/ 2>/dev/null || true
 cp build/map-day.png                      exports/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/map-night.png 2>/dev/null || true
 cp build/token-key.png                    exports/token-key.png 2>/dev/null || true
@@ -150,8 +167,9 @@ cp build/sheets/vend_*_sheet_*.png        exports/screentop/ 2>/dev/null || true
 cp build/sheets/vend_*_back.png           exports/screentop/ 2>/dev/null || true
 cp build/sheets/booking_*_sheet_*.png     exports/screentop/ 2>/dev/null || true
 cp build/sheets/booking_*_back.png        exports/screentop/ 2>/dev/null || true
-# Character BOARDS go into the Screentop set too — each uploads as a per-player board image.
-cp build/boards/board-*.png               exports/screentop/ 2>/dev/null || true
+# Character BOARDS go into the Screentop set too — each uploads as a per-player board image (PLACEHOLDER
+# renders; no AI final art in the committed set).
+cp build/boards-placeholder/board-*.png   exports/screentop/ 2>/dev/null || true
 # The shared TABLE map (both day/night states) — the Screentop module stands the play area up from these.
 cp build/map-day.png                      exports/screentop/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/screentop/map-night.png 2>/dev/null || true
@@ -183,10 +201,10 @@ python3 $T/print/build_pnp.py --mode cards --page A4 --theme "$theme" \
 python3 $T/print/build_pnp.py --mode cards --page A3 --theme "$theme" \
     --title "$title — Cards (A3)" --blurb "$cardblurb" --quantities-csv $cardqty \
     --out exports/print/pnp-cards-A3.pdf $carddecks
-# Character / player boards — 2 per A4 at true 142×117 mm.
-python3 $T/print/build_pnp.py --mode images --page A4 --per-page 2 --theme "$theme" \
+# Character / player boards — 1 per A4-LANDSCAPE at true 297×210 mm (each board now IS a full A4 sheet).
+python3 $T/print/build_pnp.py --mode images --page A4 --landscape --per-page 1 --theme "$theme" \
     --title "$title — Character Boards" \
-    --blurb "6 character / player boards at true 142×117 mm (2 per sheet). Art placeholder — final mock-ups re-tile automatically." \
+    --blurb "6 character / player boards at true 297×210 mm (one per A4-landscape sheet). Art placeholder — final mock-ups re-tile automatically." \
     --out exports/print/pnp-boards.pdf exports/board-*.png
 # Region map — A3 (one per sheet) + an A4-landscape fallback (fits on one A4 landscape, no taping).
 python3 $T/print/build_pnp.py --mode images --page A3 --per-page 1 --theme "$theme" \

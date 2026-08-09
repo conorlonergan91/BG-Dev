@@ -120,7 +120,7 @@ image drops cleanly into its SVG slot. Background: **transparent** for cut-out c
 
 | Slot | FIG code | Size (px) | Physical | Aspect | Background | Composition note |
 |---|---|---|---|---|---|---|
-| Character-board portrait | `FIG-CHAR-<slug>` | **490 × 600** | 41.5 × 50.8 mm | **~0.82:1 PORTRAIT (≈4:5)** | transparent | full-figure / waist-up hero standing tall; the slot is now a **large PORTRAIT** at top-left (44,176) on the 1680×1380 board (was a wide letterbox) — **compose TALL**. Auto-embedded when `build/mockups/FIG-CHAR-<slug>.png` exists (data-URI), else a dashed placeholder renders. `preserveAspectRatio=meet` letterboxes, so exact 490×600 is ideal but any ~4:5 crop drops in cleanly |
+| Character-board image | `FIG-CHAR-<slug>` | **900 × 1700** | 76.2 × 143.9 mm | **~0.53:1 TALL PORTRAIT** | transparent | full-figure hero standing tall; the slot is the **full-height RIGHT column** at (2538,308) on the **A4-landscape 3508×2480 board** (CD redesign 2026-08 — was 490×600 on the old 1680×1380 board). **Compose TALL** — a standing full-figure reads best. Auto-embedded when `build/mockups/FIG-CHAR-<slug>.png` exists (data-URI), else a dashed placeholder renders. `preserveAspectRatio=meet` letterboxes (never crops), so any tall crop drops in cleanly; exact 900×1700 fills edge-to-edge. Prep to size: `--fit 900x1700 --pad` |
 | Ingredient card art | `FIG-ING-<id>` | **642 × 560** | 54.4 × 47.4 mm | **~1.15:1** | simple | on a 750×1050 poker card at (54,168); shows a **MIX** of that generic category (e.g. Meat = pork belly + beef + sausage + poultry together) |
 | Vendor card face | `FIG-VEND-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px (4.5 mm) safe margin**; see drop-in note below |
 | Tour / Booking card face | `FIG-TOUR-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px safe margin**; see drop-in note below |
@@ -192,10 +192,10 @@ python tools/mockup/prep_mockup.py --image ~/Downloads/granny.png --key-bg \
 Use the **SCALE TABLE** `--fit` value for the slot you're filling (char `490x600`, ingredient `642x560`,
 card `750x1050`, map `2280x1680`). A heavy vignette will only *partly* key — regenerate those flat.
 
-**Aspect note (portraits & the board slot).** The board portrait slot is now a **large ~4:5 PORTRAIT
-(490×600)** — reshaped from the old wide letterbox precisely so **full-figure character art shows big**.
-Compose TALL (full-figure or waist-up hero standing). `render_playerboard` embeds
+**Aspect note (portraits & the board slot).** The board image slot is now the **full-height RIGHT column
+(900×1700, ~0.53:1)** on the A4-landscape board — sized so **full-figure character art shows big** beside
+the three card-footprint zones. Compose TALL (a standing full-figure hero). `render_playerboard` embeds
 `build/mockups/FIG-CHAR-<slug>.png` as a self-contained data-URI (`preserveAspectRatio=meet`, so it
-letterboxes rather than crops — an exact 490×600 fills edge-to-edge); with no file present the dashed
+letterboxes rather than crops — an exact 900×1700 fills edge-to-edge); with no file present the dashed
 placeholder renders. Ingredient cards (`FIG-ING-<id>`) auto-embed the same way. (Board layout owned by
 `bg-infodesign`.)
