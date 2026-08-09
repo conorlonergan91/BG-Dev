@@ -156,3 +156,47 @@ cp build/boards/board-*.png               exports/screentop/ 2>/dev/null || true
 cp build/map-day.png                      exports/screentop/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/screentop/map-night.png 2>/dev/null || true
 echo "✓ exports/ refreshed — commit these."
+
+# --- HOME PRINT-AND-PLAY (library A4 / A3, print-at-100%-and-cut) --------------------------------
+# TA-LOCAL. Tiles the ALREADY-RENDERED component PNGs at TRUE physical size onto A4/A3 pages with cut
+# guides + a scale-check cover, via tools/print/build_pnp.py (weasyprint, mm units — the same engine as
+# the rulebook). This CONSUMES renders; it never re-renders shared code. The CD wanted a set they can
+# print at a library and cut out. Regenerates into exports/print/ (committed). Cards get BOTH an A4 and
+# an A3 version (the CD picks per the library's paper). build/pnp is disposable scratch.
+echo "→ tiling the home print-and-play PDFs into exports/print/"
+rm -rf build/pnp
+mkdir -p build/pnp exports/print
+# Individual card FRONT PNGs (750×1050 = true 63.5×88.9 mm poker) for the four play decks.
+python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build/pnp/vendors     --theme "$theme" --formats png --tokens-csv components/recipe-glyphs.csv
+python3 $T/cards/build_cards.py --csv components/bookings.csv    --out build/pnp/bookings    --theme "$theme" --formats png
+python3 $T/cards/build_cards.py --csv components/ingredients.csv --out build/pnp/ingredients --theme "$theme" --formats png --tokens-csv components/tokens.csv
+python3 $T/cards/build_cards.py --csv components/events.csv      --out build/pnp/events      --theme "$theme" --formats png
+cardblurb="All play cards: 24 Vendors, 45 Bookings + 2 boundary cards, 16 Ingredients, 27 Events (day + night)."
+carddecks="build/pnp/vendors/png build/pnp/bookings/png build/pnp/ingredients/png build/pnp/events/png"
+# Cards — A4 (9 per sheet, 3×3) AND A3 (16 per sheet, 4×4). Both required.
+python3 $T/print/build_pnp.py --mode cards --page A4 --theme "$theme" \
+    --title "$title — Cards (A4)" --blurb "$cardblurb" \
+    --out exports/print/pnp-cards-A4.pdf $carddecks
+python3 $T/print/build_pnp.py --mode cards --page A3 --theme "$theme" \
+    --title "$title — Cards (A3)" --blurb "$cardblurb" \
+    --out exports/print/pnp-cards-A3.pdf $carddecks
+# Character / player boards — 2 per A4 at true 142×117 mm.
+python3 $T/print/build_pnp.py --mode images --page A4 --per-page 2 --theme "$theme" \
+    --title "$title — Character Boards" \
+    --blurb "6 character / player boards at true 142×117 mm (2 per sheet). Art placeholder — final mock-ups re-tile automatically." \
+    --out exports/print/pnp-boards.pdf exports/board-*.png
+# Region map — A3 (one per sheet) + an A4-landscape fallback (fits on one A4 landscape, no taping).
+python3 $T/print/build_pnp.py --mode images --page A3 --per-page 1 --theme "$theme" \
+    --title "$title — Region Map (A3)" \
+    --blurb "The shared table map at true 193×142 mm, in both day and night states — one per A3 sheet." \
+    --out exports/print/pnp-map-A3.pdf exports/map-day.png exports/map-night.png
+python3 $T/print/build_pnp.py --mode images --page A4 --landscape --per-page 1 --theme "$theme" \
+    --title "$title — Region Map (A4 fallback)" \
+    --blurb "A4-landscape fallback if the library has no A3: the 193×142 mm map fits on one A4 landscape sheet at true size — no taping needed. Day + night." \
+    --out exports/print/pnp-map-A4.pdf exports/map-day.png exports/map-night.png
+# Tokens key + player aid — one asset per sheet.
+python3 $T/print/build_pnp.py --mode images --page A4 --per-page 1 --theme "$theme" \
+    --title "$title — Tokens & Player Aid" \
+    --blurb "The token key (Followers / Trending / dials / markers) on sheet 1, and the player aid on sheet 2, at true 300-DPI size." \
+    --out exports/print/pnp-tokens-aid.pdf exports/token-key.png exports/player-aid.png
+echo "✓ exports/print/ refreshed — print at 100% / Actual Size and cut. Commit these."
