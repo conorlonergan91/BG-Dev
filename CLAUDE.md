@@ -69,6 +69,27 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 | Publishing | `bg-publishing` | IP / copyright / trademark / compliance for **Ireland, UK, USA**; contracts; sensitivity-risk flag. |
 | Production | `bg-production` | Physical make & ship — manufacturing, component engineering, sourcing, freight/tariffs, fulfilment, pledge-manager ops. Runs print pre-flight. Deferred until a physical run (skip if licensed). |
 
+### Art & Editorial (presentation layer)
+
+A pod that owns how the game **looks and reads** — the illustrated hand, the graphic finish, the words,
+the rulebook, and player comprehension. **Presentation-only: this pod never changes mechanics, rules,
+balance, or component-data VALUES** (card costs, quantities, abilities, counts). When a member spots a
+mechanics/balance/rules-logic problem it **flags it** to the design side (`bg-design`, `bg-elegance`,
+`bg-critic`, `bg-playtest`) and does not change it. All carry the studio's binding rails — **no AI final
+art** (AI only for labelled/gitignored playtest mock-ups), the **Taiwan cultural-sensitivity rails**
+(Traditional not Simplified, secular, dignified locals, faithful real dishes, consultant-gated Indigenous
+items), and **English names first**.
+
+| Role | Agent | What it does |
+|------|-------|--------------|
+| Art direction | `bg-art-director` | Owns the game's ONE visual look and the consistency of its illustrated hand across every component; steward of `art/art-style.md`; sets the visual direction of all art briefs & mock-ups; and is the visual simplifier (kills over-busy/over-detailed art). Complements `bg-theme` (felt identity) and `bg-infodesign`/`bg-access`. |
+| Graphic design | `bg-graphic-designer` | The aesthetic finish — typography, colour systems, composition, layout polish across cards, boards, box & cover. Distinct from `bg-infodesign` (functional readability); defers to it when polish fights game-critical readability. |
+| AI image prompts | `bg-ai-prompt` | Turns art briefs into high-fidelity MOCK-UP generation prompts (per-asset kickoffs, reusable style-anchor, style-reference-image technique, per-slot scale); owns `knowledge/ai-mockup-workflow.md` + `art/mockup-kickoffs.md`. Playtest mock-ups only; works under `bg-art-director`. |
+| Copywriting | `bg-copywriter` | The game's words — flavour text, card/component copy, naming voice, box & short marketing lines, tone of voice. Coordinates with `bg-theme` (voice) and `bg-marketing` (sell copy); never changes a rule's meaning. |
+| Continuity | `bg-continuity` | The drift-catcher — guards consistency across every doc, component & render: canonical English↔繁體↔Tâi-lô name tables, terminology currency (retired vs current), grammar/style/proofreading, visual-consistency sweeps. Flags mechanics mismatches. |
+| Rulebook | `bg-rulebook` | The rulebook & player aids as DOCUMENTS — structure, teaching order, worked examples, layout, teachability, FAQ presentation. Presents the rules clearly; never changes a rule (that's `bg-design`/`bg-elegance`). Uses `tools/rulebook/build_rulebook.py`. |
+| Presentation UX | `bg-ux` | How players PERCEIVE & PARSE the presentation — information hierarchy, reading order, comprehension, player-aid design, first-time-user comprehension. Researches how best to PRESENT the rules and designs that presentation; never changes them. Distinct from `bg-playtest` (mechanics/balance); merges a UX-researcher + UX-designer remit. |
+
 **How to invoke an agent:** use the `Agent` tool with the matching `subagent_type` (e.g.
 `bg-design`). Give it the game slug and point it at that game's `game-bible.md`. When work is
 independent, launch agents in parallel.
