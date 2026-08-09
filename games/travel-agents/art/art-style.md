@@ -147,3 +147,45 @@ A mock-up is still a picture of a real culture; the `art-style.md` guardrail abo
   and **E01 竹筒飯 (bamboo-tube rice)** — keep any mock-up **generic and respectful**, **no specific tribal
   iconography**, no AI-invented Indigenous-language terms. Treat these as placeholders and **flag for the
   paid community consultant**; do not treat a mock-up as any kind of sign-off.
+
+### Generating & prepping the PNGs (the raster reality + the prep tool)
+
+AI image tools (ChatGPT/DALL·E, Midjourney, …) return **raster PNGs, not SVG**, and won't reliably
+loop over a cast or emit one file per item. **That's expected — and fine.** The component SVG *embeds*
+a raster in its art slot; we never needed per-item SVGs. Ask the tool for a **raster PNG**, not vector.
+
+**Generate for a clean cut-out** so prep is painless:
+- **One subject per image.** Don't ask for a grid/sheet of the whole cast — the tool composes them at
+  different scales and you then have to slice it. One character (or one vendor) per generation.
+- **Flat or transparent background — NO baked backdrop.** Explicitly request *"on a plain flat
+  background"* or *"transparent background, no scenery."* **Avoid the dark radial glow/vignette** some
+  tools add by default: it is *not* a flat colour, so it can't be keyed cleanly and forces a re-gen.
+  (This is exactly why the Councillor and the Globetrotter came back hard to cut out.)
+- Keep the subject **fully inside the frame** with a little margin, so trimming doesn't clip a hand.
+
+**Prep the export into a drop-in slot asset — `tools/mockup/prep_mockup.py` (stdlib + Pillow):**
+It (1) splits a grid into individual cells, (2) keys a flat background to transparent via a
+**corner-seeded flood fill** (lifts the backdrop without punching holes in a white shirt or bowl —
+interior whites aren't border-connected, so they survive), and (3) trims + scales + pads each cutout
+to a slot's **exact px size**, writing to the gitignored `build/mockups/<FIG-CODE>.png`.
+
+```bash
+# Split a 2×2 grid of four characters, key the white bg, fit each to the board portrait slot:
+python tools/mockup/prep_mockup.py --grid ~/Downloads/cast.png --rows 2 --cols 2 \
+    --names homebody,big-eater,influencer,big-brother \
+    --key-bg --fit 604x286 --pad --game games/travel-agents --prefix FIG-CHAR-
+
+# Clean one already-cropped portrait (e.g. the Globetrotter) to the same slot:
+python tools/mockup/prep_mockup.py --image ~/Downloads/granny.png --key-bg \
+    --fit 604x286 --pad --game games/travel-agents --out FIG-CHAR-globetrotter.png
+```
+
+Use the **SCALE TABLE** `--fit` value for the slot you're filling (char `604x286`, ingredient `642x560`,
+card `750x1050`, map `2280x1680`). A heavy vignette will only *partly* key — regenerate those flat.
+
+**Aspect note (portraits vs the board slot).** The board portrait slot is a **wide 604×286 letterbox**,
+but full-figure character art is **taller than it is wide** — fit into the wide slot it shrinks with big
+transparent side-bars. Two ways to reconcile: (a) generate/crop the portrait as a **wide waist-up band**
+to match the slot, or (b) **widen the board's portrait slot to a portrait/square** so the full-figure art
+shows big (a `render_playerboard` layout change, owned by `bg-infodesign`). If we keep loving the
+full-figure look, (b) is the better fix — flagged for the next board pass.
