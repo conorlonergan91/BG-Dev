@@ -55,7 +55,7 @@ _SCOPE_GLYPHS = "⦿⬢➤"
 MAINT_SLATE = "#8A8F98"
 
 from themes import (get_theme, resolve_suit, emblem_svg, page_gradient, pick_text_color,
-                    phase_style, phase_ribbon_svg, back_style)
+                    phase_style, phase_ribbon_svg, back_style, PHASE_STYLES)
 
 # ---- Card geometry (poker, trimmed, 300 DPI) --------------------------------
 CARD_W, CARD_H = 750, 1050          # px @ 300 DPI
@@ -154,6 +154,13 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
     gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
     teal = theme["suits"].get("central", {}).get("color", "#1F8A7A")
     violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
+    # V7 LANGUAGE-AGNOSTIC rename: the promotional currency's on-card mechanical label is now "Followers"
+    # (drops the old CJK mechanical tag "讚 BUZZ" — a name→picture policy call, bg-infodesign). GUARDED to
+    # the Travel-Agents theme (its bespoke `back` wordmark) so any other game rendering a vendor keeps the
+    # old label byte-for-byte. Beacon has no vendor cards at all, so this branch never fires for it anyway.
+    followers_label = ("Followers"
+                       if theme.get("back", {}).get("wordmark") == "TRAVEL AGENTS"
+                       else "讚 BUZZ")
 
     recipe = [s.strip() for s in (row.get("recipe") or "").split(";") if s.strip()]
     buzz = str(row.get("buzz_cost", "")).strip()
@@ -244,7 +251,7 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
         f'<text x="{x2 + r}" y="{chips_cy + 12}" font-size="40" fill="#ffffff" text-anchor="middle" '
         f'font-family="{tfont}" font-weight="bold">{esc(buzz)}</text>'
         f'<text x="{x2 + r}" y="{chips_cy + 62}" font-size="24" fill="{violet}" text-anchor="middle" '
-        f'font-family="{tfont}" font-weight="bold">讚 BUZZ</text>')
+        f'font-family="{tfont}" font-weight="bold">{esc(followers_label)}</text>')
     # CROSS-REGION tag riding the PAY label — reads the two-region requirement without decoding chip colours
     cross_tag = ""
     if cross_letters:
@@ -338,6 +345,20 @@ def _is_island_banner(row: dict) -> bool:
 def _is_character(row: dict) -> bool:
     """A Travel-Agents character mat: carries ability_code + flaw_code (Beacon/others don't)."""
     return bool(str(row.get("ability_code", "")).strip()) and bool(str(row.get("flaw_code", "")).strip())
+
+
+def _is_ingredient(row: dict) -> bool:
+    """A Travel-Agents PICTORIAL ingredient/food card: carries an `ingredient` column (one of the 5
+    palette types) and is tagged 'ingredient'. Beacon and every other game have no `ingredient` column,
+    so this branch never fires for them — the change is byte-safe outside Travel Agents."""
+    return (bool(str(row.get("ingredient", "")).strip())
+            and "ingredient" in str(row.get("tags", "")).lower())
+
+
+def _is_boundary(row: dict) -> bool:
+    """A Travel-Agents deck-clock BOUNDARY card (黃昏 DUSK / 末班車 LAST TRAIN) seeded at the bottom of the
+    Booking deck. Marked type=boundary. No other game uses that type → byte-safe elsewhere."""
+    return str(row.get("type", "")).strip().lower() == "boundary"
 
 
 def _hazard_stripes(x: float, y: float, w: float, h: float, a: str, b: str) -> str:
@@ -502,9 +523,140 @@ def _render_character_svg(row: dict, theme: dict) -> str:
 </svg>"""
 
 
+def _render_ingredient_svg(row: dict, theme: dict) -> str:
+    """A PICTORIAL ingredient/food card (Travel Agents, V7 language-agnostic).
+
+    The card is keyed off the `ingredient` column — NOT the region `type` — so its big picture-glyph is
+    the SAME shape + colour a player sees in the vendor's recipe chip and on the token key (pork = red hex,
+    tea = teal triangle, seafood = amber square, rice = indigo circle, sugar = caramel beam). That closes
+    the match-your-hand-to-the-recipe loop at a glance. Distinguishable by PICTURE + SHAPE, never colour
+    alone (bg-access): a large drawn ingredient emblem fills a framed art placeholder + a [FIG-ING-<id>]
+    brief for the human illustrator. 繁體 + English name are the CULTURAL name (kept, per the sensitivity
+    rails); nothing MECHANICAL relies on reading CJK."""
+    ink, text, muted, accent, radius = (theme["ink"], theme["text"], theme["muted"],
+                                        theme["accent"], theme["radius"])
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    ing = str(row.get("ingredient", "")).strip().lower()
+    isuit = resolve_suit(theme, ing) if ing in theme["suits"] else theme["suits"]["_default"]
+    scol, semb = isuit["color"], isuit["emblem"]
+    pstyle = phase_style(row.get("phase"))
+    frame_col = pstyle["frame"] if pstyle else ink
+    page_cols = pstyle["page"] if pstyle else None
+    ribbon = phase_ribbon_svg(pstyle, CARD_W, CARD_H, MARGIN, tfont)
+
+    han = str(row.get("hanzi", "")).strip() or str(row.get("name", "")).strip()
+    name_full = str(row.get("name", "")).strip()
+    # English part of "豬肉 Pork" → "Pork" (strip a leading CJK run + space)
+    en = re.sub(r'^[^\x00-\x7f]+\s*', '', name_full).strip() or name_full
+    region = str(row.get("region", "")).strip().lower()
+    region_lab = {"north": "NORTH 北", "central": "CENTRAL 中", "south": "SOUTH 南",
+                  "east": "EAST 東", "sugar": "COMMON 共"}.get(region, region.upper())
+    tcol_head = pick_text_color(scol, dark=ink, light="#ffffff")
+
+    # header band (grows nothing — single line): the ingredient's 繁體 name + region tag
+    header_h = 118
+    header_end = 26 + header_h
+    head = (f'<path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} '
+            f'h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} '
+            f'v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{scol}"/>'
+            f'<text x="{MARGIN}" y="{MARGIN+60}" font-size="60" fill="{tcol_head}" '
+            f'font-family="{tfont}" font-weight="bold">{esc(han)}</text>'
+            f'<text x="{CARD_W-MARGIN}" y="{MARGIN+40}" font-size="26" fill="{tcol_head}" text-anchor="end" '
+            f'font-family="{tfont}" font-weight="bold" letter-spacing="2" opacity="0.92">{esc(region_lab)}</text>')
+
+    # PICTURE plate — a framed placeholder with the big ingredient emblem (the shape carries WHICH
+    # ingredient) + the illustrator brief code. This is the pictorial payload of the card.
+    px, py = MARGIN, header_end + 24
+    pw, ph = CARD_W - 2*MARGIN, 560
+    pcx, pcy = px + pw/2, py + ph/2 - 30
+    corners = "".join(
+        f'<path d="M{cxx} {cyy+dy*34} L{cxx} {cyy} L{cxx+dx*34} {cyy}" fill="none" '
+        f'stroke="{scol}" stroke-width="4" opacity="0.75"/>'
+        for (cxx, cyy, dx, dy) in [(px+18, py+18, 1, 1), (px+pw-18, py+18, -1, 1),
+                                   (px+18, py+ph-18, 1, -1), (px+pw-18, py+ph-18, -1, -1)])
+    fig = str(row.get("ingredient", "")).strip().lower()
+    plate = (f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" opacity="0.45" '
+             f'stroke="{scol}" stroke-width="3" stroke-dasharray="14 9"/>' + corners
+             + f'<circle cx="{pcx}" cy="{pcy}" r="150" fill="{scol}" opacity="0.14"/>'
+             + emblem_svg(semb, pcx, pcy, 118, scol, stroke=ink)
+             + f'<text x="{pcx}" y="{py+42}" font-size="22" fill="{muted}" text-anchor="middle" '
+               f'font-family="{bfont}" font-style="italic">illustration placeholder · human-illustrated (no AI final art)</text>'
+             + f'<rect x="{pcx-150}" y="{py+ph-64}" width="300" height="42" rx="21" fill="{ink}"/>'
+             + f'<text x="{pcx}" y="{py+ph-35}" font-size="24" fill="#ffffff" text-anchor="middle" '
+               f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[FIG-ING-{esc(fig)}]</text>')
+
+    # foot: big English name (the at-a-glance label) + a terse "into your Larder" line
+    fy = py + ph + 64
+    foot = (f'<text x="{MARGIN}" y="{fy}" font-size="52" fill="{scol}" '
+            f'font-family="{tfont}" font-weight="bold">{esc(en)}</text>'
+            f'<text x="{MARGIN}" y="{fy+44}" font-size="28" fill="{text}" '
+            f'font-family="{bfont}">Take 1 into your Larder.</text>')
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
+  <defs>{page_gradient(theme, 'pg', page_cols)}</defs>
+  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{frame_col}" stroke-width="6"/>
+  <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{scol}" stroke-width="2" opacity="0.5"/>
+  {head}
+  {plate}
+  {foot}
+  {ribbon}
+</svg>"""
+
+
+def _render_boundary_svg(row: dict, theme: dict) -> str:
+    """A self-announcing deck-clock BOUNDARY card: 黃昏 DUSK (bottom of the DAY Booking deck → flip to
+    night) or 末班車 LAST TRAIN (bottom of the NIGHT deck → finish the round, end). When a refill turns it
+    up, the clock announces itself — no one counts cards. Big drawn sun→moon (DUSK) / moon (LAST TRAIN)
+    motif so it reads across the table and is dual-coded (shape + word + colour). Beacon has no boundary
+    cards; TA-only."""
+    ink, text, muted, radius = theme["ink"], theme["text"], theme["muted"], theme["radius"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    day = PHASE_STYLES["day"]
+    night = PHASE_STYLES["night"]
+    phase = str(row.get("phase", "")).strip().lower()
+    is_last = (phase == "night")
+    ground = night["page"] if is_last else day["page"]
+    band = night["tag_fill"] if is_last else day["tag_fill"]
+    frame_col = night["frame"] if is_last else day["frame"]
+    han = str(row.get("hanzi", "")).strip() or ("末班車" if is_last else "黃昏")
+    en = "LAST TRAIN" if is_last else "DUSK"
+    sub = ("The night's last tours are gone — finish the round, then the game ends."
+           if is_last else "The day's tours have booked out — flip the board to night.")
+    cx = CARD_W / 2
+    # central motif: DUSK = sun handing to moon; LAST TRAIN = a lone moon over a rail
+    if is_last:
+        motif = (emblem_svg("moon", cx, 470, 120, frame_col)
+                 + f'<line x1="{MARGIN+30}" y1="640" x2="{CARD_W-MARGIN-30}" y2="640" '
+                   f'stroke="{ink}" stroke-width="8" stroke-linecap="round" opacity="0.7"/>'
+                 + f'<line x1="{MARGIN+30}" y1="662" x2="{CARD_W-MARGIN-30}" y2="662" '
+                   f'stroke="{ink}" stroke-width="8" stroke-linecap="round" opacity="0.35" stroke-dasharray="30 26"/>')
+    else:
+        motif = (emblem_svg("sun", cx - 130, 470, 96, day["frame"])
+                 + f'<path d="M{cx-30} 470 h 60" stroke="{muted}" stroke-width="7" '
+                   f'stroke-linecap="round"/><path d="M{cx+18} 452 l 24 18 l -24 18" fill="none" '
+                   f'stroke="{muted}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>'
+                 + emblem_svg("moon", cx + 130, 470, 96, night["frame"]))
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
+  <defs>{page_gradient(theme, 'pg', ground)}</defs>
+  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{frame_col}" stroke-width="8"/>
+  <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{frame_col}" stroke-width="3" stroke-dasharray="16 10" opacity="0.7"/>
+  <rect x="26" y="120" width="{CARD_W-52}" height="150" fill="{band}"/>
+  <text x="{cx}" y="228" font-size="120" fill="#ffffff" text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="4">{esc(han)}</text>
+  {motif}
+  <text x="{cx}" y="770" font-size="64" fill="{frame_col}" text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="6">{esc(en)}</text>
+  <text x="{cx}" y="840" font-size="30" fill="{text}" text-anchor="middle" font-family="{bfont}">{esc("THE CLOCK · the Booking deck")}</text>
+  <text x="{cx}" y="928" font-size="30" fill="{ink}" text-anchor="middle" font-family="{bfont}"><tspan x="{cx}" dy="0">{esc(sub.split(' — ')[0] if ' — ' in sub else sub)}</tspan></text>
+  <text x="{cx}" y="966" font-size="30" fill="{ink}" text-anchor="middle" font-family="{bfont}">{esc(sub.split(' — ')[1] if ' — ' in sub else '')}</text>
+</svg>"""
+
+
 def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> str:
     if _is_vendor(row):
         return render_vendor_svg(row, theme, glyph_map)
+    if _is_boundary(row):
+        return _render_boundary_svg(row, theme)
+    if _is_ingredient(row):
+        return _render_ingredient_svg(row, theme)
     if _is_island_banner(row):
         return _render_island_banner(row, theme)
     if _is_character(row):
@@ -562,7 +714,7 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
         if is_objective:
             # value footer chip (bottom-left), no top index, no pip row. Travel Agents' Tour Tickets score
             # in the game's own "value" language (成團 win pile → +value); other games keep the generic VP.
-            bonus_word = "value" if ctype.lower() == "mission" else "VP"
+            bonus_word = "value" if ctype.lower() in ("mission", "booking") else "VP"
             chw, chh = (224 if bonus_word == "value" else 168), 60
             cx0, cy0 = MARGIN, CARD_H - MARGIN - 60
             value_row = (

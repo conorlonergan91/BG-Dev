@@ -128,6 +128,12 @@ THEMES = {
             # --- v3 secret signature-tour Mission cards: the +7 prize (gold seal, distinct from the
             # indigo assignment stamp and the gold spark of `signature`) ---
             "mission":    {"color": "#C9A227", "emblem": "stamp"},     # Gold + a passport stamp — the prize
+            # --- v7 Bookings (開團): the SOLE scoring deck. Its own suit so it never renders the grey
+            # `_default` (clears the linter's default-colour warning) and reads as a boarding-pass ticket.
+            # A UNIQUE `ticket` emblem => it can NEVER share an emblem with another suit, so the CVD
+            # checker can only ever downgrade a colour-clash to INFO (never an ERROR); boarding-pass blue
+            # is off the four region hues + the gold prize + the violet Followers. (bg-infodesign) ---
+            "booking":    {"color": "#3A6EA5", "emblem": "ticket"},    # boarding-pass blue — the 開團 scoring deck
             # --- ingredient tokens: colour = region, emblem distinct per specialty within its region.
             # NB: beef/tea/rice deliberately DON'T reuse their region's own emblem (north=triangle,
             # central=diamond, east=square) — a same-colour + same-emblem clash reads as two meanings for
@@ -397,6 +403,12 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
         return (f'<circle cx="{cx}" cy="{cy}" r="{r*0.95}" fill="none" stroke="{color}" '
                 f'stroke-width="{max(2, r*0.16)}" opacity="0.5"/>'
                 f'<circle cx="{cx}" cy="{cy}" r="{r*0.5}" fill="{color}"/>')
+    if kind == "ticket":  # a boarding-pass / booking stub — rounded rect + a torn perforation edge
+        w, h = r * 1.15, r * 0.82
+        perf_x = cx + w * 0.34
+        return (f'<rect x="{cx-w}" y="{cy-h}" width="{2*w}" height="{2*h}" rx="{h*0.3}" fill="{color}" {sw}/>'
+                f'<line x1="{perf_x}" y1="{cy-h*0.72}" x2="{perf_x}" y2="{cy+h*0.72}" '
+                f'stroke="#ffffff" stroke-width="{max(2, r*0.16)}" stroke-dasharray="{r*0.2} {r*0.15}" opacity="0.9"/>')
     if kind == "stamp":  # an inked passport/dossier seal — a ring around a filled block (for Missions)
         o, inner = r * 0.95, r * 0.46
         return (f'<rect x="{cx-o}" y="{cy-o}" width="{2*o}" height="{2*o}" rx="{o*0.28}" fill="none" '
