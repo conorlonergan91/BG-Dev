@@ -1331,11 +1331,17 @@ player learns them as three intuitions ("my crowd / my pantry / the street"):
 | | **TREND** | drop a **Trending** marker on a face-up vendor (its winner grows +1 follower) | + |
 | | **BLOCK [action]** | a named action (draw / Promote / Travel-grow) is unusable for the duration | − |
 | | **DETOUR [hsr / link]** | travel restriction — HSR down, or a ring link severed | − |
+| **TOURS** (bookings) | **CLEAR** | remove **1** of **your own** Cancelled 取消 tours (shed its penalty) — a rare self-relief (§15.9) | + |
+| | **SALVAGE** | take **1** Cancelled 取消 tour from the **lowest-scoring** rival → your **COMPLETED** pile at **half value** (they shed the penalty) — the bounded catch-up double-boon (§15.9) | + |
 
-*Twelve verbs, three families.* Magnitude `n` is almost always **1** (rival-facing losses are **always** 1
-— §15.5); a rare self-boon or shared-boon reads **2**. Every hazard is **tax-not-destroy**: it delays,
-reroutes, or taxes tempo — it **never** removes a won vendor, a completed Booking, or costs a whole turn,
-and dispersed followers go to **your own** supply (never to an attacker).
+*Fourteen verbs, four families* (**15 in data** counting the build's 13th verb `promote`; §15.6). Magnitude
+`n` is almost always **1** (rival-facing losses are **always** 1 — §15.5); a rare self-boon or shared-boon
+reads **2**, and the two TOURS verbs act on exactly **1** tour card. Every hazard is **tax-not-destroy**: it
+delays, reroutes, or taxes tempo — it **never** removes a won vendor, a completed Booking, or costs a whole
+turn, and dispersed followers go to **your own** supply (never to an attacker). The two **TOURS** verbs are
+the sole verbs that touch the Booking piles; both are **boons** (they *shed* a scoring penalty, never
+inflict one), and `SALVAGE` is the only event that reaches the Completed pile — bounded to **half value** so
+it is never a free tour (§15.9).
 
 ### (b) SCOPE vocabulary — five icons, "who does it hit," read from the drawn region
 
@@ -1345,7 +1351,7 @@ Visit that's your region; for a Convenience Store it can be a remote region you 
 | Scope | Icon | Who / where | Read |
 |---|:--:|---|---|
 | **YOU** | **⦿** | the acting player only, wherever they stand | a personal boon/hazard |
-| **A RIVAL** | **✦** | **the current LEADER** (auto-targeted — §15.5), not the drawer's pick | the island's spotlight finds whoever's ahead |
+| **A RIVAL** | **✦** | **the standings auto-pick, not the drawer** (§15.5): a *loss* finds the **LEADER**; a *hand-up* (the SALVAGE boon) finds the **lowest-scoring** rival | the island's spotlight — a knock for whoever's ahead, a hand-up for whoever's behind |
 | **THIS REGION** | **⬢** | every agent standing in the drawn region (+ that region's board) | the island acting on a *place* |
 | **NEXT DOOR** | **➤** | agent(s) standing in a region **adjacent** to the drawn one (ring; HSR N↔S counts adjacent) | it spills next door |
 | **WHOLE BOARD** | **▦** | everyone / the whole map (its own banner, like Scheduled Maintenance) | island-wide day |
@@ -1364,12 +1370,15 @@ values **re-use the clock the game already has** — no new timing concept to te
 | **⏳ ROUND** | yes | at the **end-of-round refill step** (the same beat slow-refill already uses) |
 | **⏳ PHASE** | yes | at the next **DUSK** or **LAST TRAIN** boundary |
 
-That is the entire framework: **12 verbs / 5 scope icons / 4 durations.** Everything below is content written
-in it — cheap variety, flat rules load.
+That is the entire framework: **14 verbs / 5 scope icons / 4 durations** (15 verbs in data with the build's
+`promote`; the two new TOURS verbs are read-the-card and act on a single tour card — §15.9). Everything below
+is content written in it — cheap variety, flat rules load. *(bg-elegance flag: verb count moved 12 → 13
+[build `promote`] → 15; the growth is bounded — one new family of two boon verbs, no new scope icon, no new
+duration — see §15.8.)*
 
 ## 15.3 THE PROPOSED EVENT SET (generous — day + night, all domains + creative additions)
 
-~46 cards spanning every locked mechanic. English name first, 繁體 in parallel. Effects are in framework
+~48 cards spanning every locked mechanic. English name first, 繁體 in parallel. Effects are in framework
 primitives; the **card text is authoritative** and goes to the paid consultant before lock. Region = which
 deck it lives in (or ▦ = island banner, seeded into a night deck). "exists" = already in `events.csv`.
 
@@ -1434,12 +1443,21 @@ deck it lives in (or ▦ = island banner, seeded into a night deck). "exists" = 
 | 45 | Scooter Gridlock | 機車陣 | **BLOCK [Travel]** next turn arrives with no ingredient (tempo toll) | ➤ | ⏳TURN | day/N · night/C | exists (re-expressed as BLOCK) |
 | 46 | The 3:47 to Zuoying | 高鐵衝刺 | free HSR move now (N↔S) | ⦿ | NOW | night / N | HSR-sprint boon |
 
-**Mix:** ~26 hazard / ~20 boon-or-neutral — hazard-leaning as specified, but the boon slice (and the warm
-catch-up pairing on #33) keeps the market-dig from being pure dread. **Rival-facing (✦/➤ hazard) is a small
-minority** (~7 of 46) by design — most pressure is ⦿ personal or ⬢ shared. Domains covered: followers
+### TOURS — clearing and salvaging cancelled tours (the catch-up boons — §15.9)
+
+| # | Name | 繁體 | Verb | Scope | Dur | Phase/Region | Note |
+|---|---|---|---|---|---|---|---|
+| 47 | Back On the Itinerary | 重新開團 | **CLEAR 1** (your own Cancelled tour) | ⦿ | NOW | night / C | self-relief; rare (1 copy); fizzles if you hold no Cancelled tour |
+| 48 | Someone Has to Run It | 有人接手 | **SALVAGE 1** (lowest rival's Cancelled → your Completed at **half value**; they shed the penalty) | ✦ (→ lowest) | NOW | night / S | catch-up double-boon; rare (1 copy); bounded to ½ value (§15.9) |
+
+**Mix:** ~27 hazard / ~21 boon-or-neutral across ~48 cards — hazard-leaning as specified, but the boon slice
+(the warm catch-up pairing on #33, plus the two new TOURS boons #47/#48) keeps the market-dig from being
+pure dread. **Rival-facing (✦/➤ *hazard*) is a small minority** (~7 of 48) by design — most pressure is ⦿
+personal or ⬢ shared; the two ✦-*boon* TOURS cards reach a rival only to *help* them (§15.9). Domains
+covered: followers
 (viral/cancel), hand ingredients (gift/spoil/steal/sink), travel (HSR/link/toll), action-locks (draw/
-Promote/Travel-grow), vendor board (trend/wash/restock), and whole-board festival/banner — every locked
-mechanic is reachable by an event.
+Promote/Travel-grow), vendor board (trend/wash/restock), the **Booking tour piles** (clear/salvage
+cancelled — §15.9), and whole-board festival/banner — every locked mechanic is reachable by an event.
 
 ## 15.4 Per-count draw ratio (events vs ingredients per region deck)
 
@@ -1475,6 +1493,29 @@ Direct attacks — **SWIPE** (steal), **DISPERSE ✦** (cancel a rival), and riv
 are a spike of confrontation in an otherwise warm game. Seven rails keep them cheeky-caper, not spite,
 especially at 5–6p:
 
+> **⚑ BINDING TUNING PRINCIPLE — the ✦ leader-nudge is a light catch-up VALVE, not a beating (CD, 2026-08-09).**
+> *"If someone has worked hard for their lead I don't want to demotivate them too much."* The ✦ leader-target
+> events exist to gently narrow a runaway, **never** to punish a player for leading. This binds every ✦ *hazard*
+> and its numbers:
+> - **Magnitude stays 1** (never 2+ from the leader) — rail 1.
+> - **A small MINORITY of the pool** — the ✦-hazard slice stays ~4–5 of ~48 cards (rail 5); it does not grow
+>   with the set.
+> - **No pile-on** — the same leader is **not** hit repeatedly in a single round by stacked ✦ events; a
+>   lingering ✦ marker blocks a second (rail 6). At high counts especially, one nudge per leader per round is
+>   the ceiling.
+> - **Tax-not-destroy** — a ✦ loss is one ingredient, one follower, or one tempo beat; it **never** removes a
+>   won vendor or a Completed tour (rail 4).
+> - **DESIGN + SIM/PLAYTEST TARGET (binding):** the leader's **cumulative** ✦-event hit across a whole game
+>   stays **mild** — a nudge, not a demoralising swing. The sim/table must show a *small* cumulative
+>   leader-event-impact and a *small* leader win-rate delta from being hit (§15.7 probe 2, §15.8 sim). If the
+>   cumulative hit reads punishing, the fix is **fewer ✦-hazard copies** and/or convert some to ⬢ shared —
+>   not bigger magnitudes.
+>
+> **The symmetric ✦ boon (NEW — SALVAGE, §15.9).** The same "the standings pick the target, not the drawer"
+> rule now runs in **both** directions: a ✦ *loss* finds the **leader** (a light knock), a ✦ *hand-up* finds
+> the **lowest-scoring** rival (SALVAGE's shed-the-penalty boon). Boons reach *down*, losses reach *up* — one
+> principle, symmetric, and neither is the drawer's pick (no kingmaking on either end).
+
 1. **Magnitude is always 1.** Any rival-facing loss is exactly 1 (1 ingredient swiped, 1 follower
    dispersed, 1 tempo beat). Only **self**-boons or **shared** boons ever read 2. No event takes 2+ from one
    rival.
@@ -1491,12 +1532,15 @@ especially at 5–6p:
 4. **Tax-not-destroy, absolute.** Never removes a won vendor or a completed Booking; never costs a whole
    turn. Dispersed followers go to **your own** supply to re-rally — they **never** join the attacker; a
    swiped ingredient is one Visit away from replacement.
-5. **Rival-facing is a small minority of the pool** (~7 of 46), and at 5–6p most of what fires is ⦿/⬢ —
-   so no one player eats a stream of targeted attacks.
+5. **Rival-facing *hazard* is a small minority of the pool** (~7 of 48), and at 5–6p most of what fires is
+   ⦿/⬢ — so no one player eats a stream of targeted attacks.
 6. **No pile-on stacking.** A lingering ✦ marker can't be re-applied while one is already active on the
    leader (one Getting Cancelled at a time).
-7. **Boon-facing rival scope is free-choice** (rare) — only *losses* are leader-locked; generosity you may
-   aim.
+7. **Rival-facing BOONS are auto-targeted too — down, not up.** SALVAGE's boon auto-finds the **lowest-scoring**
+   rival (§15.9), *not* the drawer's free pick — deliberately, so a boon can't be aimed to prop up a friend
+   (no kingmaking on the boon side either). This tightens the old "generosity you may aim" rail: only truly
+   incidental shared boons (⬢ everyone-here) are un-targeted; the one *directed* rival-boon (SALVAGE) is
+   standings-locked to the trailer.
 
 **The one dynamic to watch (→ bg-critic):** does auto-leader-targeting create a perverse **"don't want to
 lead"** incentive, or feel bad for a narrow leader who then gets a Booking-poach? Magnitude-1 + tax-not-
@@ -1509,13 +1553,22 @@ destroy is designed to keep it a nudge, not a swing — but this is exactly a si
 - **`scope`** ∈ `self | rival | region | neighbour | board` (icons ⦿/✦/⬢/➤/▦ on the card).
 - **`duration`** ∈ `now | turn | round | phase` (⏳ marker on all but `now`).
 - **`verb`** (primary) ∈ `rally | disperse | gift | pinch | spoil | swipe | sink | wash | restock | trend |
-  block | detour` — the machine-readable hook for the sim; **`effect` text stays authoritative.**
+  block | detour | clear | salvage` — the machine-readable hook for the sim; **`effect` text stays
+  authoritative.** *(Plus the build's `promote`; the two TOURS verbs `clear`/`salvage` are new this pass, §15.9.)*
 - **`target`** = verb parameter where needed: `block` → `draw|promote|travel|travel-grow`; `detour` →
-  `hsr|link`; `gift/spoil/swipe` → ingredient type; blank otherwise.
-- **`value`** = magnitude `n` (default 1; the two "big" boons read 2).
+  `hsr|link`; `gift/spoil/swipe` → ingredient type; **`salvage`/`clear`** → blank (target is a tour pile, not
+  an ingredient; `salvage` auto-resolves to the lowest-scoring rival, `clear` to self); blank otherwise.
+- **`value`** = magnitude `n` (default 1; the two "big" boons read 2). **`clear`/`salvage` are `value=1`**
+  (one tour card); `salvage`'s **half-value-to-Completed** is a scoring rule the `effect` text carries, not a
+  `value` field.
+- **Add the two TOURS rows (§15.9):** `id=t_clear` — **Back On the Itinerary 重新開團**, `verb=clear`,
+  `scope=self`, `duration=now`, `value=1`, `quantity=1`, night/C; and `id=t_salvage` — **Someone Has to Run
+  It 有人接手**, `verb=salvage`, `scope=rival` (auto → lowest), `duration=now`, `value=1`, `quantity=1`,
+  night/S. Both `kind=boon`. Consultant rail as for every rival-facing beat (warm mutual-aid register).
 - **`quantity`** = copies in the POOL (drive variety; a common PINCH/GIFT may be 2–3, a marquee 1).
-- Populate the ~46-card set of §15.3 (retains all "exists" rows, re-columned; adds the ~20 new/creative
-  cards). Retire the `kind` column into `verb`+sign, or keep `kind=boon|hazard` as a convenience tag.
+- Populate the ~48-card set of §15.3 (retains all "exists" rows, re-columned; adds the ~22 new/creative
+  cards, incl. the two TOURS boons #47/#48). Retire the `kind` column into `verb`+sign, or keep
+  `kind=boon|hazard` as a convenience tag.
 - **Rail:** every Chinese/Tâi-lô string + every rival-facing beat → paid consultant before lock; 繁體 only,
   secular, dignified locals; keep "meeple" out of flavour (always "followers / your crowd").
 
@@ -1532,7 +1585,7 @@ destroy is designed to keep it a nudge, not a swing — but this is exactly a si
 (Scheduled Maintenance / island ▦ banners live inside night decks and fire board-scope when drawn — no
 separate deck.)
 
-**C. `game-bible.md`** — refresh the components list (events grow from ~26 → ~46 pool cards; new
+**C. `game-bible.md`** — refresh the components list (events grow from ~26 → ~48 pool cards; new
 scope/duration/verb columns) and the one-line event summary. *(Left for the CD/next pass per the spec-only
 rail.)*
 
@@ -1544,6 +1597,11 @@ rail.)*
    Booking-poach; fallback = ✦ losses hit "everyone tied for/near the lead" or convert to ⬢.
 3. **Lingering-marker overhead.** Four ⏳ durations + a physical marker — does the table track them cleanly,
    or does one collapse into another? Cut toward NOW/⏳TURN if ⏳ROUND/⏳PHASE rarely earn their keep.
+4. **The cancelled-tour boons (§15.9) — relief or swing?** Is `SALVAGE` a satisfying catch-up double-boon at
+   half value, or does a single card leapfrog the drawer past an earned leader (dial: drop half-value →
+   fallback = the simpler "clear the lowest scorer's cancelled tour + a small flat reward for the drawer",
+   §15.9)? Is `CLEAR` a welcome relief or a get-out-of-jail-free (dial: rarity — keep at 1 copy)? And does
+   `SALVAGE`'s auto-target-lowest create a mild "want to be lowest" bait (bg-critic)?
 
 ## 15.8 Guardian & follow-up flags (per the handoff contract)
 
@@ -1554,21 +1612,130 @@ rail.)*
   festival/banner cards (Lantern Festival, Golden Week) carry **no temple/deity content**. Signature-twist
   note: events now **feed the follower crowd-fight** (RALLY/TREND grow the very meeples that win stalls) and
   the **scarcity board** (RESTOCK/WASH move the slow-refill slots) — check the fiction still explains those.
+  **NEW (§15.9) — the salvage flavour:** `SALVAGE` (**Someone Has to Run It 有人接手**) lets one agent pick up
+  the tour a trailing rival had to cancel. The register must read as **warm mutual aid** — *"that tour fell
+  through, so someone else runs it and everyone still eats"* — never gloating over the trailer or scavenging
+  their misfortune. `CLEAR` (**Back On the Itinerary 重新開團**) is a clean second-chance beat. Both stay
+  secular/dignified, 繁體 only, English-first; consultant before lock as with every string.
 - **bg-critic** — feel-bad / kingmaking on the take-that (§15.5): the leader-target rule, the 6p pile-on,
-  the SWIPE/DISPERSE-on-leader, and the "don't want to lead" perverse incentive.
+  the SWIPE/DISPERSE-on-leader, and the "don't want to lead" perverse incentive. **NEW (§15.9) — SALVAGE:**
+  confirm the auto-target-lowest boon doesn't create a mild **"want to be lowest"** bait, and that
+  half-value + rare (1 copy) keeps it a genuine catch-up, never a swing that leapfrogs the drawer past
+  earned leaders. Check the drawer can't game *which* Cancelled tour (they take the lowest scorer's; among
+  ties the drawer picks — bounded to ½ value regardless).
 - **bg-elegance** — the complexity argument: the card count is generous but the **rulebook load is one
-  framework block** (12 verbs / 5 icons / 4 durations, all read-the-card) + one reused clock for persistence.
+  framework block** (14 verbs / 5 icons / 4 durations, all read-the-card) + one reused clock for persistence.
   Net add over the shipped ⦿/⬢/➤ system: **two scope icons (✦, ▦), one persistence mechanic, one draw-ratio
-  table** — argue this buys large per-game variety for a small, bounded teach. Re-gauge with the meeple
+  table** — argue this buys large per-game variety for a small, bounded teach. **NEW — verb-count growth to
+  re-gauge:** the set moved **12 → 13 (build `promote`) → 15 in data** (this pass adds **CLEAR** + **SALVAGE**,
+  §15.9). Bounded on purpose: **one new family (TOURS) of exactly two verbs, both boons, no new scope icon, no
+  new duration**, and each acts on a single tour card — read-the-card load only. The one real teach-cost is
+  `SALVAGE`'s half-value-to-Completed exception (the sole event that reaches the Completed pile); it is 1 rare
+  card (1 copy). Confirm the added rulebook prose is a line or two, not a section. Re-gauge with the meeple
   swap's trims folded in.
 - **THE SIM** — re-encode required: model the new verbs (esp. RALLY/DISPERSE feeding the meeple pool,
   SWIPE/SPOIL on the Larder, TREND on vendor value) and the **⏳ persistence** state (a lingering marker that
   expires on turn/round/phase). Track: event-fire rate per player per game, ✦-leader-target frequency and
   the leader's post-hit win-rate delta, take-that swing, and whether the §15.4 ratio holds per-player swing
-  bounded across 3–6p. **Gated — do not run until the CD signs off this spec.**
+  bounded across 3–6p. **ADDITION (§15.9 — the event-sim fold is in flight; add these to it):**
+  1. **Model `CLEAR`** — the drawer removes one own Cancelled tour from their CANCELLED pile (drops the
+     −⌊V/2⌋ penalty on the highest-value cancelled tour they hold); fizzle if they hold none.
+  2. **Model `SALVAGE`** — auto-target the **lowest-scoring** rival (standings order: fewest Completed →
+     fewest vendors → fewest board followers; ties → drawer picks among tied trailers); that rival sheds the
+     penalty on one of their Cancelled tours, the tour enters the **drawer's COMPLETED pile scoring ⌊V/2⌋**
+     (half value); if no lower rival holds a Cancelled tour, the drawer may `CLEAR` one of their own instead.
+  3. **The cumulative-leader-impact probe (binding, §15.5 principle):** report the **leader's total ✦-event
+     hit per game** (sum of magnitude across all ✦ hazards that landed on the leader) and the **leader
+     win-rate delta** attributable to being hit — both must stay **small** (a nudge, not a swing). If either
+     reads punishing, cut ✦-hazard copies / convert some to ⬢ — do **not** raise magnitudes.
+  4. **SALVAGE swing guard:** confirm the half-value catch-up narrows the gap without leapfrogging earned
+     leaders, and that its rarity (1 copy) keeps table-wide impact small.
+  **Gated — do not run until the CD signs off this spec.**
 - **bg-rulebook** — teach the framework **once** (the three-question block: verb / scope / duration), then
   let cards self-explain; one worked example (a ⬢ region hazard + a ⏳ lingering marker); the scope/duration
-  icon legend on the player aid.
+  icon legend on the player aid. **NEW (§15.9):** add a two-line teach for the **TOURS boons** — `CLEAR` (drop
+  one of your own Cancelled tours) and `SALVAGE` (take the lowest-scoring rival's Cancelled tour into your
+  Completed pile at **half value**; they lose the penalty) — with a one-line worked example of the half-value
+  salvage (the one place a Completed tour scores less than face). Also state the **gentle-leader principle**
+  in player-facing voice on/near the ✦ legend: *"the island's spotlight gives the front-runner a small nudge
+  and the trailing agent a hand-up — it's a light catch-up, never a knock-out."*
+- **bg-infodesign (render)** — **two new verb glyphs** for the icon system: `CLEAR` (shed a Cancelled tour —
+  suggest a torn-ticket-mended / itinerary-restored mark) and `SALVAGE` (a rival's cancelled tour picked up —
+  suggest a handoff/relay mark), both keyed to the **TOURS** family and visually distinct from the CROWD /
+  PANTRY / STREET verb glyphs. Also a small **✦→lowest** variant read so the boon-facing ✦ is legible as "a
+  hand-up to the trailer" vs the hazard ✦ "a knock to the leader". Card layout otherwise unchanged.
+
+## 15.9 THE CANCELLED-TOUR BOONS (CD refinement 2 — the catch-up double-boons)
+
+> **Status: SPEC (bg-design, 2026-08-09).** Two new events that treat a player's **Cancelled 取消 pile** as a
+> lever. Scoring context (rules-draft §9, confirmed): a **Completed 成團** tour scores **+full value**; a
+> **Cancelled 取消** tour scores **−⌊V/2⌋** (and any Booking still unfinished in hand at the last train is
+> cancelled too). These two boons let an agent *shed* that penalty — one for themselves, one as a shared
+> hand-up to the trailing player. Both are framework-native (VERB · SCOPE · DURATION), rare, and magnitude 1.
+
+### (a) CLEAR — *Back On the Itinerary 重新開團* (a clean self-boon)
+
+- **Framework primitives:** **VERB `CLEAR`** · **SCOPE ⦿ YOU** · **DURATION NOW.** Lives in the **night /
+  Central** deck; **quantity 1** (rare).
+- **Effect:** remove **ONE** of **your own** Cancelled 取消 tours from your CANCELLED pile (to the box) —
+  shedding its **−⌊V/2⌋** penalty. Your choice which; naturally your highest-value cancelled tour (biggest
+  relief). If you hold no Cancelled tour, the card **fizzles** (nothing to clear).
+- **Benefit to drawer:** +⌊V/2⌋ effective (the penalty you were carrying disappears).
+- **Balance — welcome relief, not get-out-of-jail-free:**
+  - **Exactly one** tour, magnitude 1 (framework-consistent).
+  - **Rare — 1 copy** in the pool; most games it never appears, and when it does it may not be drawn by
+    someone carrying a cancellation.
+  - **Self-limiting = inherently catch-up.** It only helps a player who has *been* cancelling tours — which
+    correlates with struggling to complete them. A leader running clean tours draws a dead card. So the relief
+    lands, on average, on someone behind — no rule needed to make it catch-up-flavoured.
+  - Bounded by ⌊V/2⌋, so even a max-value cancel (V≈6 → +3) is a modest, one-time swing.
+
+### (b) SALVAGE — *Someone Has to Run It 有人接手* (the resolved double-boon)
+
+- **Framework primitives:** **VERB `SALVAGE`** · **SCOPE ✦ (→ the lowest-scoring rival, auto-targeted)** ·
+  **DURATION NOW.** Lives in the **night / South** deck; **quantity 1** (rare).
+- **The resolved mechanic (chosen bounded version):**
+  1. **Auto-target the lowest-scoring rival** — standings order fewest Completed → fewest vendors → fewest
+     board followers (the game's own tiebreak, inverted); ties → the drawer picks among the tied trailers.
+     *The drawer never free-picks the target → no kingmaking, guaranteed catch-up.*
+  2. That rival **sheds the −⌊V/2⌋ penalty** on one of their Cancelled tours (**their** boon — the drawer
+     takes the tour they'd most benefit from being rid of; among a tie the drawer picks).
+  3. The salvaged tour enters the **drawer's COMPLETED 成團 pile but scores HALF value, ⌊V/2⌋** — flip it or
+     mark it "salvaged" (the sole event where a Completed tour scores less than face). *This is the drawer's
+     bounded boon.*
+  4. **Graceful degrade (never a dead card):** if no lower-scoring rival holds a Cancelled tour (or the
+     drawer is the sole lowest scorer), the drawer may instead **`CLEAR` one of their own** Cancelled tours.
+- **Exact benefit-to-drawer:** **+⌊V/2⌋** (a half-value Completed tour). **Target rule:** auto — the
+  lowest-scoring rival. **Cost / bound:** it completes at **half value**, it is **one** tour, and it is **rare
+  (1 copy)** — three independent brakes.
+- **Why this version (the balance argument — NOT a free win):**
+  - A full-value Completed tour dropped free would be a game-swinging ~4–8 points — a clear free-win vector.
+    **Half value (⌊V/2⌋)** turns it into a modest gain: a V≈6 tour salvages for **+3** to the drawer while the
+    trailing rival sheds **−3** — a bounded, symmetric double-boon.
+  - **Aimed only at the trailer**, so the drawer's own gain is capped *and* the table's lowest player is
+    lifted — the CD's "a boon for you but also for another player (maybe the lowest scoring)."
+  - It is the **only** event that reaches the Completed pile, and it can never reach a *leader's* pile — so
+    it cannot compound a runaway.
+  - **Rare (1 copy)** keeps table-wide frequency low; the sim's SALVAGE swing guard (§15.8) verifies it
+    narrows the gap without leapfrogging an earned leader.
+- **Considered and rejected:**
+  - *"Salvage at FULL value only if the drawer's own vendors satisfy the Booking's pattern."* Elegant bound,
+    but it fires rarely (the drawer must happen to qualify for a pattern a trailer abandoned) → often a **dead
+    card**, and it adds a conditional. Half-value always does something and both players benefit — cleaner.
+  - *"Pay the tour's ingredient cost to salvage."* Doesn't map — Bookings complete via **vendor patterns**,
+    not ingredient payment (rules-draft §6); there is no per-Booking ingredient cost to pay.
+- **Fallback (if the sim shows half-value still swings):** the simpler version the CD named — the event
+  **clears the lowest scorer's Cancelled tour** (their catch-up) and the drawer takes a **small flat reward**
+  (e.g. RALLY 1 or GIFT 1) instead of a half-Completed tour. This decouples the drawer's gain from the
+  Booking value entirely. Held as reserve; the half-value double-boon is the primary.
+
+### Why these fit the framework (elegance)
+
+Both are **read-the-card**, magnitude 1, no new scope icon, no new duration — a single new **TOURS** family
+of two boon verbs (§15.2). They add **one** genuinely new teach: `SALVAGE`'s half-value-to-Completed
+exception, carried on **one rare card**. The verb count moves **13 → 15 in data** (bg-elegance re-gauge,
+§15.8). Warm-tone and secular rails bind the flavour (bg-theme, §15.8): mutual aid, second chances — never
+gloating over the trailer.
 
 ---
 
