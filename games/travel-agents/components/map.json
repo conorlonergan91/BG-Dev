@@ -1,10 +1,34 @@
 {
-  "_note": "v6.3.2 ACROSS-THE-TABLE 2p centrepiece for build_board.py --type regionmap. A setup/placement guide oriented for two players seated on the LONG edges (top & bottom): the 4-region diamond (adjacency + HSR spine drawn as edges) with the shared vendor-claims CLOCK built into BOTH edges (mirror-rotated so each seat reads it upright), plus realistically-sized, labelled placeholder zones for every SHARED component (vendor card slots, market decks, ingredient-token supply, Buzz/Star supply, Tour-Ticket decks). PER-PLAYER instruments (Reach, Tours-Completed, 成團/取消 piles) live on the CHARACTER BOARDS now and are NOT on this map (board↔map interface, 2026-08-08 pass). Renders in two states via --phase day|night (make.sh builds both) to mirror the dusk flip. North's hub is TAIPEI, the COMMON START for every agent (CD-3); the HSR spine carries an HSR-CLOSED 停 slot for the Scheduled Maintenance table-wide event (CD-2). Tickets-only scoring → no score track on the map; the ONE shared track is the vendor-claims clock. Region colours: night-market (identity.md), CVD-checked via check_access.py; every region carries colour + emblem + 繁體 (dual-coded). Real illustrated Taiwan map is a later art task. NEW FIELDS (v6.3.2): `hub_hanzi` (台北 label at the common start) + `clock` {max,dusk,last_train} (the built-in day→night clock's span + gate positions, 2p — data is the source; the standalone scoretrack clock in make.sh reads the same values).",
-  "title": "Travel Agents: Taiwan — the table (v6.3.2)",
+  "_note": "V7 NEUTRAL SHARED N-PLAYER board (3–6) for build_board.py --type regionmap. Data is the source of truth. RENDER REBUILD OWED → bg-infodesign (render_regionmap still draws the stale 2p across-the-table layout until rebuilt): (1) REMOVE the across-the-table two-seat MIRROR + the per-edge duplicated clock rails — collapse to ONE neutral board readable from any seat. (2) The clock is now DECK-DRIVEN (the Booking 開團 deck IS the clock) — DELETE the numbered vendor-claims clock track; DUSK fires when the DAY Booking deck exhausts (seeded 黃昏 boundary card → flip to night), LAST TRAIN when the NIGHT Booking deck exhausts (seeded 末班車 boundary card → finish the round, end). (3) PHASE-SPLIT the vendor slots — day-only slots hold DAY vendors, night-only slots hold NIGHT vendors; a phase's unused slots → box. (4) DROP the Ingredient-Supply section (the old five Ø20mm token wells) — ingredients are CARDS in the regional market decks now (components/ingredients.csv). (5) KEEP the Taipei common start (北 hub), the HSR spine, and the 停 Scheduled-Maintenance slot. Per-count booking-deck + vendor-slot + Followers-supply tables below are DATA. Region colours: night-market (identity.md), CVD-checked; every region carries colour + emblem + 繁體 (dual-coded).",
+  "title": "Travel Agents: Taiwan — the table (V7 · 3–6 players)",
+  "players": "3-6",
   "start_hub": "north",
   "hub_hanzi": "台北",
   "hsr_closed_marker": true,
-  "clock": {"max": 10, "dusk": 5, "last_train": 10},
+  "clock_model": {
+    "driver": "the BOOKING (開團) deck — DECK-DRIVEN, NOT a numbered track",
+    "dusk": "黃昏 DUSK — fires when the DAY Booking deck is exhausted (seeded 黃昏 boundary card at the deck's bottom); flip the board to night",
+    "last_train": "末班車 LAST TRAIN — fires when the NIGHT Booking deck is exhausted (seeded 末班車 boundary card); finish the round, then end",
+    "retired": "the vendor-claims clock, its dusk@/last-train@ thresholds, the +1-on-Bribe step, and the stall backstop are ALL DELETED (§11 canon — one clock, deck-driven, guaranteed to fire)"
+  },
+  "booking_deck_sizes": {
+    "_rule": "DAY = 3·(N+1), NIGHT = 4·(N+1) (SIM-VALIDATED; reconciles §11's earlier N+2 draft to what the sim actually validated). The seeded boundary card sits BELOW these counts.",
+    "3": {"day": 12, "night": 16},
+    "4": {"day": 15, "night": 20},
+    "5": {"day": 18, "night": 24},
+    "6": {"day": 21, "night": 28}
+  },
+  "followers_supply": {
+    "_rule": "shared table Followers pool ≈ round(24·(1+0.375·(N−2)))",
+    "3": 33, "4": 42, "5": 51, "6": 60
+  },
+  "vendor_slots": {
+    "_note": "face-up vendor slots per region (N/C/S/E). NIGHT uses the SAME per-count counts as DAY (§4 — one slot table). Slots stay BELOW the player count (~1.5–2.0 stalls/agent) so collisions are forced — the area-majority engine. `slots_n` on each region below is the 4p HOME default for the render.",
+    "3": {"N": 2, "C": 2, "S": 1, "E": 1},
+    "4": {"N": 2, "C": 2, "S": 2, "E": 1},
+    "5": {"N": 2, "C": 2, "S": 2, "E": 2},
+    "6": {"N": 3, "C": 2, "S": 2, "E": 2}
+  },
   "regions": [
     {
       "key": "north", "name": "NORTH 北", "color": "#D64545", "emblem": "triangle", "slots_n": 2,
@@ -12,7 +36,7 @@
       "chips": [{"id": "pork", "label": "豬", "en": "pork"}]
     },
     {
-      "key": "central", "name": "CENTRAL 中", "color": "#1F8A7A", "emblem": "diamond", "slots_n": 1,
+      "key": "central", "name": "CENTRAL 中", "color": "#1F8A7A", "emblem": "diamond", "slots_n": 2,
       "chips": [{"id": "tea", "label": "茶", "en": "tea"}, {"id": "sugar", "label": "糖", "en": "sugar"}]
     },
     {
@@ -20,7 +44,7 @@
       "chips": [{"id": "rice", "label": "米", "en": "rice"}]
     },
     {
-      "key": "south", "name": "SOUTH 南", "color": "#E6A930", "emblem": "circle", "slots_n": 1,
+      "key": "south", "name": "SOUTH 南", "color": "#E6A930", "emblem": "circle", "slots_n": 2,
       "chips": [{"id": "seafood", "label": "海", "en": "seafood"}, {"id": "sugar", "label": "糖", "en": "sugar"}]
     }
   ],

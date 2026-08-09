@@ -1,52 +1,17 @@
 {
-  "_note": "v6.3.1 quick-glance aid for build_board.py --type aid. A REMINDER, not a rulebook — condensed by bg-infodesign (faithful to rules-draft.md §3-§9; no rule changed). Kept under complexity-budget.json max_player_aid_lines 22 (currently 16 line-entries). Reflects the v6.3.1 canon: TICKETS-ONLY scoring (vendors + Reach don't score), the Reach cap on committed Buzz, the Greedy Grab sink, Rave Reviews on the Tours-Completed counter, and the table-wide Scheduled Maintenance event.",
+  "_note": "V7 quick-glance aid for build_board.py --type aid. STRIPPED to the ON-YOUR-TURN section ONLY (CD auto-drive Phase-4): the dial rules, the lost-war dial-drop, events, the deck-driven clock, Rave Reviews, and scoring now live in the RULEBOOK, not the aid. V7 vocabulary: Followers / Followers-max (the dial) / Bookings / Promote (no Buzz / Reach / Ticket). One action per turn.",
   "title": "Travel Agents: Taiwan — Player Aid",
-  "subtitle": "One action per turn · then trim your Larder to 7",
+  "subtitle": "On your turn: do ONE action · then trim your Larder to 7",
   "sections": [
     {
       "heading": "Do ONE action",
       "lines": [
-        "VISIT (here): flip 3 from this region's market — event fires by scope, keep 2 ingredients.",
-        "CONVENIENCE STORE (anywhere): flip 1 from any region — take the ingredient, or the event fires.",
-        "TRAVEL: move 1 region (HSR = 北↔南), flip 1 on arrival (event does nothing). Gain +1 Reach.",
-        "PROMOTE (here): put 2 Buzz on face-up vendor(s) — public; keep total Buzz ≤ your Reach.",
-        "BRIBE A VENDOR: win it (below). Moves the day-clock +1.",
-        "LINE UP A TOUR TICKET: take 1 from the row of 3, then refill. Your tickets are your whole score."
-      ]
-    },
-    {
-      "heading": "Bribe a vendor  (win it — one rule for all)",
-      "lines": [
-        "Be with it + hold 2+ more Buzz than your rival + pay its ingredients minus your region-icon discounts (Buzz never discounts).",
-        "It joins your tour as an engine piece + may complete a ticket → clear ALL its Buzz, refill, clock +1. Scores NO points itself."
-      ]
-    },
-    {
-      "heading": "Reach = your Buzz cap  (not a score)",
-      "lines": [
-        "Your total committed Buzz can never exceed your Reach (start 2). Travel +1, some events ±. Winning a vendor frees its Buzz.",
-        "Greedy Grab: keep 1 extra ingredient → -1 Reach (only if it won't drop Reach below your committed Buzz)."
-      ]
-    },
-    {
-      "heading": "Events — the island living its life",
-      "lines": [
-        "⦿ YOU · ⬢ THIS REGION · ➤ NEXT DOOR (read from the drawn region). Hazards tax or delay — never destroy, never a whole turn.",
-        "排班保養 Scheduled Maintenance (island-wide banner): HSR down for everyone one round — Travel the long way round the ring."
-      ]
-    },
-    {
-      "heading": "Day → Night clock  (+1 each Bribe)",
-      "lines": [
-        "DUSK (5th Bribe, 2p): judge DAY tickets into your piles, flip the day layer → night decks, swap the ticket row. Keep your Larder.",
-        "LAST TRAIN (10th, 2p): judge NIGHT tickets, then finish the round + one more. Marks grow with player count."
-      ]
-    },
-    {
-      "heading": "Rave Reviews & scoring",
-      "lines": [
-        "Tours Completed 2nd → +1 Reach; 4th → 1 ingredient of choice + next Bribe -1 (each agent earns their own).",
-        "SCORE = tickets only: + value in your COMPLETED 成團 pile, - floor(value/2) in your CANCELLED 取消 pile. Most = TOP AGENT."
+        "VISIT (here): flip 3 from this region's market — the event fires by scope, keep 2 ingredients (大胃王 keeps 3).",
+        "CONVENIENCE STORE (anywhere): flip 1 from any region's market — take the ingredient, or the event fires.",
+        "TRAVEL: move 1 region (HSR = 北↔南); flip 1 on arrival (event whiffs). Nudge your Followers-max dial +1. (媽寶 draws 2 from the region she LEFT; 阿嬤 reaches ANY region.)",
+        "PROMOTE (here): place 2 Followers on co-located face-up vendor(s) — public; keep your TOTAL committed Followers ≤ your Followers-max dial.",
+        "BRIBE A VENDOR (here): claim it if you hold STRICTLY MORE committed Followers than every rival (大哥 wins ties) + pay its ingredients − your region discounts. It joins your tour + may complete a Booking; your Followers return; each loser's dial drops (−1 day / −2 night).",
+        "LINE UP A BOOKING: take 1 from the face-up row, then refill. Your Bookings are your whole score (成團 completed / 取消 cancelled)."
       ]
     }
   ]
