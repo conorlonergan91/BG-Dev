@@ -915,6 +915,13 @@ def render_playerboard(theme, row, mockups_dir=None):
     violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")       # Followers hue
     booking_col = theme["suits"].get("booking", {}).get("color", "#3A6EA5")
     gold_pile, taupe = gold, muted
+    # CHARACTER SIGNATURE COLOUR (CD 2026-08 v4): read `colour` from the data so the whole board matches
+    # that player's meeples at a glance. Fall back to the house gold if the column is absent/blank. Used as
+    # an ACCENT (title band, prose banner, lane header caps, inner edge) — never floods the ground or the
+    # portrait. `band_text` auto-picks dark/light ink so the name stays legible on any of the six hues; the
+    # colour is redundant with the name + portrait, so the CVD floor holds (bg-access).
+    char_col = str(row.get("colour", "")).strip() or gold
+    band_text = pick_text_color(char_col, dark=ink, light="#ffffff")
 
     name = row.get("name", "")                    # Tâi-lô
     hanzi = row.get("hanzi", "")                   # 漢字
@@ -940,23 +947,24 @@ def render_playerboard(theme, row, mockups_dir=None):
     P = [f'<defs>{page_gradient(theme, "pg")}</defs>',
          f'<rect width="{W}" height="{H}" rx="34" fill="url(#pg)" stroke="{ink}" stroke-width="7"/>',
          f'<rect x="30" y="30" width="{W-60}" height="{H-60}" rx="24" fill="none" '
-         f'stroke="{gold}" stroke-width="2" opacity="0.5"/>']
+         f'stroke="{char_col}" stroke-width="3" opacity="0.6"/>']
 
     # ==================== TITLE band: English TOP-LEFT · icons CENTRE · 漢字 + Tâi-lô TOP-RIGHT ==========
+    # The band is the CHARACTER'S signature colour (matches that player's meeples); text auto-contrasts.
     ox, hr, hh = 18, 28, 250
     P.append(f'<path d="M{ox} {18+hr} a {hr} {hr} 0 0 1 {hr} -{hr} h {W-2*ox-2*hr} '
-             f'a {hr} {hr} 0 0 1 {hr} {hr} v {hh-hr} h -{W-2*ox} z" fill="{gold}"/>')
+             f'a {hr} {hr} 0 0 1 {hr} {hr} v {hh-hr} h -{W-2*ox} z" fill="{char_col}"/>')
     # English name — the hero, top-left
-    P.append(f'<text x="52" y="152" font-size="86" fill="#ffffff" font-family="{tfont}" '
+    P.append(f'<text x="52" y="152" font-size="86" fill="{band_text}" font-family="{tfont}" '
              f'font-weight="bold" letter-spacing="1">{esc(name_en)}</text>')
-    P.append(f'<text x="54" y="210" font-size="30" fill="#ffffff" opacity="0.9" '
+    P.append(f'<text x="54" y="210" font-size="30" fill="{band_text}" opacity="0.9" '
              f'font-family="{tfont}" font-style="italic" letter-spacing="3">CHARACTER BOARD · 角色板</text>')
     # 漢字 top-right, Tâi-lô romanisation directly underneath it
-    P.append(f'<text x="{W-52}" y="140" font-size="100" fill="#ffffff" text-anchor="end" '
+    P.append(f'<text x="{W-52}" y="140" font-size="100" fill="{band_text}" text-anchor="end" '
              f'font-family="{tfont}" font-weight="bold">{esc(hanzi)}</text>')
-    P.append(f'<text x="{W-52}" y="212" font-size="50" fill="#ffffff" text-anchor="end" '
+    P.append(f'<text x="{W-52}" y="212" font-size="50" fill="{band_text}" text-anchor="end" '
              f'font-family="{tfont}" font-style="italic" opacity="0.95">{esc(name)}</text>')
-    # ICON-ONLY ability + flaw medallions, CENTRED in the gold band (drawn glyphs; NO keyword/explainer
+    # ICON-ONLY ability + flaw medallions, CENTRED in the band (drawn glyphs; NO keyword/explainer
     # text — the rulebook carries the words). Ability teal on the LEFT, flaw vermilion on the RIGHT: a
     # fixed position + hue pairing that tells which-is-which at a glance without a text label.
     med_r = 74
@@ -972,64 +980,56 @@ def render_playerboard(theme, row, mockups_dir=None):
     P.append(icon_medallion(med_cx_f, fcode, vermilion))
 
     content_top = 18 + hh + 40                     # = 308
-    bottom = H - M                                 # 2410 — the content baseline (outer margin M)
 
-    # ==================== LEFT COLUMN (full height): character IMAGE (top) + PROSE blurb (below) =========
-    # v3 white-space fix (CD steer 2026-08): the portrait anchors the upper-left and the funny one-liner
-    # sits DIRECTLY BENEATH it, so the whole left column is used top-to-bottom (no dead band under the art)
-    # AND the right column is freed of its floating prose banner — its three pile lanes now run the full
-    # height. AI playtest art is embedded straight into the portrait slot (CD lifted the no-AI-in-committed
-    # rail for the prototype); the placeholder branch below is the fallback only when a mock-up is absent.
-    img_x = M                                      # 70 — image on the LEFT
+    # ---- geometry (CD steer 2026-08 v4): big PORTRAIT (left) + three clean PILE LANES (right) over ONE
+    # full-width PROSE banner along the bottom. The v3 left-column prose card is REMOVED so the portrait
+    # owns the whole left column; the lanes lose their inner glyphs + stacking fans (clean drop targets).
+    ban_h = 340
+    ban_y = H - M - ban_h                          # the prose banner sits on the bottom margin
+    ban_x, ban_w = M, W - 2*M                       # spans the ENTIRE board width
+    col_bottom = ban_y - 46                        # portrait + lanes run down to just above the banner
+
+    # ==================== LEFT COLUMN (full height): the character PORTRAIT, matted =======================
+    # A big portrait matted on a warm card that fills the whole left column. The illustration embeds CENTRED
+    # (meet — never cropped), so any letterbox reads as an intentional photo-mat rather than dead space. AI
+    # playtest art is embedded straight in (CD lifted the no-AI-in-committed rail for the prototype); the
+    # placeholder branch is the fallback only when a mock-up is absent.
+    img_x = M                                      # 70
     img_y = content_top                            # 308
     IMG_W = 900
-    IMG_H = 1330                                    # portrait fills the upper-left; the prose card fills below
+    IMG_H = col_bottom - content_top               # fills the column height
     fig_id = f"FIG-CHAR-{slug}"
     embedded = _embed_fig_png(fig_id, img_x, img_y, IMG_W, IMG_H, mockups_dir)
     if embedded:
-        P.append(f'<rect x="{img_x}" y="{img_y}" width="{IMG_W}" height="{IMG_H}" rx="18" fill="#ffffff" opacity="0.6"/>')
-        P.append(embedded)                          # clipPath + <image> data URI (self-contained)
-        P.append(f'<rect x="{img_x}" y="{img_y}" width="{IMG_W}" height="{IMG_H}" rx="18" fill="none" '
-                 f'stroke="{gold}" stroke-width="5"/>')
+        P.append(f'<rect x="{img_x}" y="{img_y}" width="{IMG_W}" height="{IMG_H}" rx="20" fill="#ffffff" opacity="0.6"/>')
+        P.append(embedded)                          # clipPath + <image> data URI (self-contained), centred
+        P.append(f'<rect x="{img_x}" y="{img_y}" width="{IMG_W}" height="{IMG_H}" rx="20" fill="none" '
+                 f'stroke="{char_col}" stroke-width="6"/>')
     else:
         # empty state: dashed placeholder frame + corner ticks + a portrait silhouette + caption + label
-        P.append(f'<rect x="{img_x}" y="{img_y}" width="{IMG_W}" height="{IMG_H}" rx="18" fill="#ffffff" opacity="0.4" '
-                 f'stroke="{gold}" stroke-width="4" stroke-dasharray="14 10"/>')
+        P.append(f'<rect x="{img_x}" y="{img_y}" width="{IMG_W}" height="{IMG_H}" rx="20" fill="#ffffff" opacity="0.4" '
+                 f'stroke="{char_col}" stroke-width="4" stroke-dasharray="14 10"/>')
         for (tx, ty, dx, dy) in [(img_x+22, img_y+22, 1, 1), (img_x+IMG_W-22, img_y+22, -1, 1),
                                  (img_x+22, img_y+IMG_H-22, 1, -1), (img_x+IMG_W-22, img_y+IMG_H-22, -1, -1)]:
             P.append(f'<path d="M{tx} {ty+dy*34} L{tx} {ty} L{tx+dx*34} {ty}" fill="none" '
                      f'stroke="{muted}" stroke-width="4"/>')
-        scx, scy = img_x+IMG_W/2, img_y+IMG_H/2 + 40
-        P.append(f'<circle cx="{scx}" cy="{scy-190}" r="150" fill="{muted}" opacity="0.28"/>')
-        P.append(f'<path d="M{scx-260} {scy+300} q260 -400 520 0 z" fill="{muted}" opacity="0.28"/>')
-        P.append(f'<text x="{scx}" y="{img_y+44}" font-size="22" fill="{muted}" text-anchor="middle" '
+        scx, scy = img_x+IMG_W/2, img_y+IMG_H/2
+        P.append(f'<circle cx="{scx}" cy="{scy-150}" r="150" fill="{muted}" opacity="0.28"/>')
+        P.append(f'<path d="M{scx-260} {scy+220} q260 -400 520 0 z" fill="{muted}" opacity="0.28"/>')
+        P.append(f'<text x="{scx}" y="{img_y+48}" font-size="24" fill="{muted}" text-anchor="middle" '
                  f'font-family="{bfont}" font-style="italic">character art · playtest mock-up</text>')
-        P.append(f'<rect x="{scx-210}" y="{img_y+IMG_H-70}" width="420" height="46" rx="23" fill="{ink}"/>')
-        P.append(f'<text x="{scx}" y="{img_y+IMG_H-38}" font-size="27" fill="#ffffff" text-anchor="middle" '
+        P.append(f'<rect x="{scx-210}" y="{img_y+IMG_H-72}" width="420" height="46" rx="23" fill="{ink}"/>')
+        P.append(f'<text x="{scx}" y="{img_y+IMG_H-40}" font-size="27" fill="#ffffff" text-anchor="middle" '
                  f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[{esc(fig_id)}]</text>')
 
-    # --- PROSE one-liner — a warm gold-accented card filling the rest of the LEFT column ----------------
-    # The funny blurb (28-39 words) wraps in the ~820px text width; the card grows to the bottom margin so
-    # the left column reads full. If a blurb ever overruns the card it is flagged to the copywriter (the
-    # board never silently truncates — textwrap keeps every word; overflow would push past the baseline).
-    pb_x, pb_w = img_x, IMG_W
-    pb_y = img_y + IMG_H + 46                        # 1684
-    pb_h = bottom - pb_y                             # ~726
-    P.append(f'<rect x="{pb_x}" y="{pb_y}" width="{pb_w}" height="{pb_h}" rx="20" fill="{gold}" opacity="0.16"/>')
-    P.append(f'<rect x="{pb_x}" y="{pb_y}" width="12" height="{pb_h}" rx="6" fill="{gold}"/>')
-    P.append(f'<text x="{pb_x+42}" y="{pb_y+108}" font-size="104" fill="{gold}" opacity="0.5" '
-             f'font-family="{tfont}" font-weight="bold">&#8220;</text>')
-    prose_wrap = max(20, int((pb_w - 96) / 20))      # ~char budget at the 42px body size
-    plines = textwrap.wrap(blurb, prose_wrap)
-    pstep = 56
-    pbase = pb_y + (pb_h - (len(plines) - 1) * pstep) / 2 + 14
-    for i, ln in enumerate(plines):
-        P.append(f'<text x="{pb_x+46}" y="{pbase + i*pstep:.0f}" font-size="42" fill="{ink}" '
-                 f'font-family="{bfont}" font-style="italic">{esc(ln)}</text>')
-
-    # --- FOLLOWERS | CANCELLED | COMPLETE pile lanes (right column) · `_follower` draws its centre glyph -
+    # ==================== RIGHT COLUMN: THREE clean PILE LANES — FOLLOWERS | CANCELLED | COMPLETE =========
+    # (CD steer v4) Each lane = a HEADER CAP in the CHARACTER'S signature colour (so the whole board reads
+    # as that player's) carrying its section GLYPH, over a CLEAN card-exact dashed drop target centred in
+    # the lane body. No glyph repeated inside the body; no stacking-fan boxes at the foot. The three
+    # SECTIONS stay distinct by their white cap glyph + the drop-target border hue (follower violet ·
+    # cancelled taupe · complete gold) — a second channel beyond the shared character-colour cap.
     def _follower(cx, cy, s, filled):
-        """A follower MEEPLE glyph (round head + flared body). filled → solid; hollow → violet outline."""
+        """A follower MEEPLE glyph (round head + flared body) — used on the FOLLOWERS header cap."""
         fill = violet if filled else "#ffffff"
         head = (f'<circle cx="{cx:.0f}" cy="{cy-s*0.62:.0f}" r="{s*0.34:.0f}" '
                 f'fill="{fill}" stroke="{violet}" stroke-width="{max(3, s*0.10):.0f}"/>')
@@ -1039,84 +1039,59 @@ def render_playerboard(theme, row, mockups_dir=None):
                 f'fill="{fill}" stroke="{violet}" stroke-width="{max(3, s*0.10):.0f}"/>')
         return head + body
 
-    # ==================== RIGHT COLUMN: THREE PILE LANES — FOLLOWERS | CANCELLED | COMPLETE ==============
-    # v3 white-space fix: the prose banner moved to the left column, so the three sections now run as tall
-    # PILE LANES filling the FULL right-column height (no floating tray in a sea of margin). Each lane is
-    # WIDER THAN a real Booking footprint (a card / stack of meeples drops in with slack), and TALLER — a
-    # growing pile stacks DOWN the lane. Still ICON-ONLY (no text; the player aid carries the words): each
-    # lane shows a card-footprint drop target near the top with its section glyph, and faint "stack" ghost
-    # cards below it, so the height reads as intentional pile space rather than empty box.
     right_l = img_x + IMG_W + 60                    # 1030
     right_r = W - M                                 # 3438
     right_w = right_r - right_l                     # 2408
-    zgap = 46
-    LANE_W = (right_w - 2*zgap) / 3                  # ~772 — fills the right column, ≥ a 750px poker card
-    lane_top = content_top                          # 308 — lanes start at the content line
-    lane_h = bottom - lane_top                       # 2102 — run to the bottom margin
+    zgap = 40
+    LANE_W = (right_w - 2*zgap) / 3                  # ~776 — fills the right column, > a 750px poker card
+    lane_top = content_top                          # 308
+    lane_h = col_bottom - lane_top                   # runs to just above the banner
     zx = [right_l + i*(LANE_W + zgap) for i in range(3)]
+    cap_h = 156
 
-    # each lane: a rounded translucent panel + a coloured header cap (identifies the section by hue + glyph)
-    def _lane(x0, col, header_glyphs):
-        cap_h = 150
-        out = [f'<rect x="{x0}" y="{lane_top}" width="{LANE_W}" height="{lane_h}" rx="22" '
-               f'fill="#ffffff" opacity="0.30" stroke="{col}" stroke-width="3.5"/>',
-               f'<path d="M{x0} {lane_top+22} a 22 22 0 0 1 22 -22 h {LANE_W-44} a 22 22 0 0 1 22 22 '
-               f'v {cap_h-22} h -{LANE_W} z" fill="{col}" opacity="0.90"/>']
-        out.append(header_glyphs(x0 + LANE_W/2, lane_top + cap_h/2 + 4))
-        return "".join(out), lane_top + cap_h
-
-    # a card-footprint drop target with the section glyph in the lane's UPPER body; below it, faint
-    # card-edge "stack" bars step down to the lane foot — so the tall lane reads as growing pile space
-    # (drop a card at the top, the pile builds downward) rather than an empty box.
-    def _drop_and_stack(x0, body_top, emcol, glyph):
-        cx = x0 + LANE_W/2
-        dw, dh = CARD_W, CARD_H                       # a real 750×1050 poker footprint sits here
-        dx = x0 + (LANE_W - dw)/2
-        dy = body_top + 40
-        s = [f'<rect x="{dx}" y="{dy}" width="{dw}" height="{dh}" rx="18" fill="#ffffff" opacity="0.62" '
-             f'stroke="{emcol}" stroke-width="4" stroke-dasharray="16 11"/>']
-        s.append(glyph(cx, dy + dh/2))
-        # card-edge stack bars fanning DOWN to the lane foot — the growing pile
-        stack_top = dy + dh + 30
-        foot = bottom - 40                            # stop just inside the lane bottom
-        step = 108
-        n_bars = max(1, int((foot - stack_top) // step))
-        for k in range(n_bars):
-            gy = stack_top + step*k
-            inset = 12 + 8*k
-            op = max(0.10, 0.40 - 0.035*k)
-            s.append(f'<rect x="{dx+inset}" y="{gy:.0f}" width="{dw-2*inset}" height="60" rx="14" '
-                     f'fill="none" stroke="{emcol}" stroke-width="3" opacity="{op:.2f}"/>')
-        return "".join(s)
-
-    # header glyph rows (small, on the coloured cap) + body drop-target glyphs (large)
+    # header glyphs sit ON the character-colour cap → use band_text (auto dark/light) so they stay legible
     def _hdr_follower(cx, cy):
-        return _follower(cx, cy, 96, False).replace(f'"{violet}"', '"#ffffff"')
+        return _follower(cx, cy, 62, False).replace(f'"{violet}"', f'"{band_text}"')
     def _hdr_cancel(cx, cy):
-        return (f'<circle cx="{cx}" cy="{cy}" r="52" fill="none" stroke="#ffffff" stroke-width="9"/>'
-                f'<line x1="{cx-37}" y1="{cy+37}" x2="{cx+37}" y2="{cy-37}" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>')
+        return (f'<circle cx="{cx}" cy="{cy}" r="52" fill="none" stroke="{band_text}" stroke-width="9"/>'
+                f'<line x1="{cx-37}" y1="{cy+37}" x2="{cx+37}" y2="{cy-37}" stroke="{band_text}" stroke-width="9" stroke-linecap="round"/>')
     def _hdr_check(cx, cy):
-        return (f'<path d="M{cx-46} {cy+4} l 30 34 l 62 -70" fill="none" stroke="#ffffff" '
+        return (f'<path d="M{cx-46} {cy+4} l 30 34 l 62 -70" fill="none" stroke="{band_text}" '
                 f'stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>')
 
-    def _body_follower(cx, cy):
-        return _follower(cx, cy - 30, 200, True)
-    def _body_cancel(cx, cy):
-        return (emblem_svg("stamp", cx, cy, 150, taupe, stroke=ink)
-                + f'<line x1="{cx-150}" y1="{cy+150}" x2="{cx+150}" y2="{cy-150}" '
-                  f'stroke="{taupe}" stroke-width="22" stroke-linecap="round"/>')
-    def _body_check(cx, cy):
-        return (emblem_svg("stamp", cx, cy, 150, gold_pile, stroke=ink)
-                + f'<path d="M{cx-110} {cy+6} l 70 80 l 150 -170" fill="none" stroke="{gold_pile}" '
-                  f'stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>')
+    for x0, sec, hdr in [(zx[0], violet, _hdr_follower),
+                         (zx[1], taupe, _hdr_cancel),
+                         (zx[2], gold_pile, _hdr_check)]:
+        # lane panel (section-hue border) + rounded-top header cap in the CHARACTER colour
+        P.append(f'<rect x="{x0}" y="{lane_top}" width="{LANE_W}" height="{lane_h}" rx="22" '
+                 f'fill="#ffffff" opacity="0.30" stroke="{sec}" stroke-width="3.5"/>')
+        P.append(f'<path d="M{x0} {lane_top+22} a 22 22 0 0 1 22 -22 h {LANE_W-44} a 22 22 0 0 1 22 22 '
+                 f'v {cap_h-22} h -{LANE_W} z" fill="{char_col}" opacity="0.95"/>')
+        P.append(hdr(x0 + LANE_W/2, lane_top + cap_h/2 + 4))
+        # CLEAN card-exact dashed drop target, centred in the lane body (no inner glyph, no stack fans);
+        # its dashed border keeps the SECTION hue so the three piles stay distinguishable.
+        body_top = lane_top + cap_h
+        dw, dh = CARD_W, CARD_H                       # a real 750×1050 poker footprint sits here
+        dx = x0 + (LANE_W - dw)/2
+        dy = body_top + (col_bottom - body_top - dh)/2
+        P.append(f'<rect x="{dx}" y="{dy:.0f}" width="{dw}" height="{dh}" rx="18" fill="#ffffff" '
+                 f'opacity="0.55" stroke="{sec}" stroke-width="4" stroke-dasharray="16 11"/>')
 
-    lanes = [(zx[0], violet, _hdr_follower, _body_follower),
-             (zx[1], taupe,  _hdr_cancel,   _body_cancel),
-             (zx[2], gold_pile, _hdr_check, _body_check)]
-    for x0, col, hdr, body in lanes:
-        panel, body_top = _lane(x0, col, hdr)
-        P.append(panel)
-        P.append(_drop_and_stack(x0, body_top, col, body))
+    # ==================== FULL-WIDTH PROSE banner (bottom) — the funny one-liner =========================
+    # One horizontal band spanning the whole board width. The 28-39-word blurb wraps to the wide measure
+    # (comfortably 2 lines); the band is tall enough that even the longest blurb seats with margin — the
+    # board never truncates (textwrap keeps every word). Any overrun is flagged to the copywriter.
+    P.append(f'<rect x="{ban_x}" y="{ban_y}" width="{ban_w}" height="{ban_h}" rx="24" fill="{char_col}" opacity="0.14"/>')
+    P.append(f'<rect x="{ban_x}" y="{ban_y}" width="14" height="{ban_h}" rx="7" fill="{char_col}"/>')
+    P.append(f'<text x="{ban_x+56}" y="{ban_y+130}" font-size="120" fill="{char_col}" opacity="0.5" '
+             f'font-family="{tfont}" font-weight="bold">&#8220;</text>')
+    prose_wrap = max(40, int((ban_w - 300) / 21))    # ~char budget at the 46px body size, across the width
+    plines = textwrap.wrap(blurb, prose_wrap)
+    pstep = 62
+    pbase = ban_y + (ban_h - (len(plines) - 1) * pstep) / 2 + 18
+    for i, ln in enumerate(plines):
+        P.append(f'<text x="{ban_x+170}" y="{pbase + i*pstep:.0f}" font-size="46" fill="{ink}" '
+                 f'font-family="{bfont}" font-style="italic">{esc(ln)}</text>')
 
     return _svg(W, H, P), W, H
 
