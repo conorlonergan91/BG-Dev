@@ -51,7 +51,10 @@ def measure(game: Path) -> dict:
             m["keywords"] = len(terms)
     comp = game / "components"
     if comp.is_dir():
-        csvs = sorted(comp.glob("*.csv"))
+        # Exclude parked, flag-gated experimental branches (e.g. *-split.csv): they live in
+        # components/ but are not part of the ship config, so they must not inflate the budget
+        # proxies (component_types / decks / card_count). Games without such files are unaffected.
+        csvs = sorted(c for c in comp.glob("*.csv") if not c.name.endswith("-split.csv"))
         m["decks"] = len(csvs)
         types, total = set(), 0
         for c in csvs:
