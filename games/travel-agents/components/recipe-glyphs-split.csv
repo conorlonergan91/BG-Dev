@@ -1,0 +1,9 @@
+id,name,label,color,family,emblem
+meat,肉 Meat (North signature),肉,#D64545,meat,meat-cut / drumstick
+seafood,海鮮 Seafood (South signature),海,#E6A930,seafood,whole fish
+tea,茶 Tea (Central signature),茶,#1F8A7A,tea,single tea leaf
+rice,米 Rice (East signature — Pantry split),米,#26324D,pantry,cluster of small grains (dots)
+noodles,麵 Noodles (East signature — Pantry split),麵,#26324D,pantry,long wavy strands
+sugar,糖 Sugar (common — Central & South),糖,#B5835A,sugar,diamond / cube crystal
+pearls,珍珠 Pearls (common — Central & South — Sugar split),珍,#B5835A,sugar,three filled circles (boba)
+veg,菜 Vegetables (common — North & East),菜,#4C9A5A,veg,leafy green

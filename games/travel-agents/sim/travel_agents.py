@@ -138,6 +138,19 @@ POOL_OVERRIDE = os.environ.get("TA_POOL", "")               # "" = full 13/11; "
 #   is edited to pick one; both are faithful models and bg-playtest A/Bs them in one run.
 VISIT_MODE    = os.environ.get("TA_VISIT_MODE", "straight")      # "straight" (A, baseline) | "keep2" (control)
 
+# --- §19 VISIT_VARIETY toggle — the finer region-local INGREDIENT TAXONOMY (B-hybrid, CD FINAL) --------
+# "mono" (BASELINE, DEFAULT — flag OFF): the 6-type taxonomy (meat/tea/seafood/pantry/sugar/veg) loaded
+#   from ingredients.csv + vendors.csv exactly as before. Nothing in the locked scarcity/clock model, the
+#   33 strategies, the vendor-depletion clock, the counts-tag, or the locale/dishtype targets changes.
+# "split:8" (CD-FINAL B-hybrid): the 8-type taxonomy — Pantry→Rice 米 / Noodles 麵 and Sugar→Sugar 糖 /
+#   Pearls 珍珠 (Meat/Seafood/Tea/Veg unchanged). Loads the NON-DESTRUCTIVE branch files
+#   ingredients-split.csv + vendors-split.csv. A pure within-category relabel: dish costs and cross-region
+#   span are PRESERVED (§19.3); it only DEEPENS sourcing (thinner sub-pools, Noodles tightest — the M6
+#   probe). Cell 4 = keep2 + split:8; Cell 4a = straight + split:8 (§19.8). The flag DEFAULTS OFF so the
+#   mono baseline (Cell 1) is untouched byte-for-byte.
+VISIT_VARIETY  = os.environ.get("TA_VISIT_VARIETY", "mono").strip()   # "mono" | "split:8"
+SPLIT_TAXONOMY = VISIT_VARIETY.startswith("split")
+
 # --- §15.9 the two cancelled-tour BOONS (CLEAR + SALVAGE) -----------------------------------------
 # ⚠ DATA GAP (flag to bg-developer): §15.8 scheduled the verb count 13 → 15 IN DATA, but events.csv still
 # holds only the 13 pre-boon verbs — the CLEAR (central-night, 1 copy) and SALVAGE (south-night, 1 copy)
@@ -260,6 +273,19 @@ SIG_TYPE = {"N": "meat", "C": "tea", "S": "seafood", "E": "pantry"}
 TYPE_SIG_REGION = {v: k for k, v in SIG_TYPE.items()}         # meat->N, tea->C, ...
 COMMONS = {"sugar": {"C", "S"}, "veg": {"N", "E"}}            # common type -> regions it is sourceable in
 COMMON_HOME = {"sugar": "C", "veg": "N"}                      # deterministic region a returned common goes to
+
+# §19 B-hybrid (split:8) rebinds the taxonomy maps BEFORE the data loads (VENDORS/INGREDIENTS run at
+# import). Pantry SPLITS into Rice + Noodles — BOTH East signatures (both discount off the E icon, both
+# recycle home to E). Sugar SPLITS into Sugar + Pearls — both Central/South commons (no icon discount).
+# The map is the ONLY behavioural change: recipe payment, discounts, discard-routing and the bot
+# travel-to-source heuristic are all data/table-driven off these, so the split is transparent to the rest
+# of the engine. SIG_TYPE[E] = the DEEPEST East subtype (rice) so the empty-need fallback stays a real type.
+_SPLIT_SUBTYPES = ("rice", "noodles", "sugar", "pearls")     # M6: the split sub-pools (Noodles tightest, §19.5)
+if SPLIT_TAXONOMY:
+    SIG_TYPE = {"N": "meat", "C": "tea", "S": "seafood", "E": "rice"}
+    TYPE_SIG_REGION = {"meat": "N", "tea": "C", "seafood": "S", "rice": "E", "noodles": "E"}
+    COMMONS = {"sugar": {"C", "S"}, "pearls": {"C", "S"}, "veg": {"N", "E"}}
+    COMMON_HOME = {"sugar": "C", "pearls": "C", "veg": "N"}
 REGIONS = ("N", "C", "S", "E")
 RING = {"N": ["C", "E"], "C": ["N", "S"], "S": ["C", "E"], "E": ["S", "N"]}
 HSR = ("N", "S")
@@ -282,7 +308,8 @@ def _load_vendors():
     """Load vendors.csv → the vendor table. recipe (a ';'-list of ingredient TYPES) is the cost; the
     `draw` and `buzz_cost` columns are RETIRED (dropped from the data). icon = region letter | ''."""
     out = []
-    with open(os.path.join(_COMP, "vendors.csv"), encoding="utf-8", newline="") as f:
+    _vf = "vendors-split.csv" if SPLIT_TAXONOMY else "vendors.csv"     # §19 non-destructive branch file
+    with open(os.path.join(_COMP, _vf), encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
             recipe = [t.strip() for t in row["recipe"].split(";") if t.strip()]
             cost = Counter(recipe)
@@ -334,12 +361,19 @@ def _load_events():
             ph = 1 if row["phase"].strip() == "day" else 2
             tags = row.get("tags", "")
             kind = "hazard" if "hazard" in tags else ("boon" if "boon" in tags else "neutral")
+            target = row.get("target", "").strip()
+            if SPLIT_TAXONOMY and target:
+                # §19: the mono 'pantry' ingredient-target no longer exists under split:8 (it split into
+                # Rice + Noodles). Remap it to RICE — the one such event, EV-D12 "Rice Comes In / 稻穫季",
+                # is literally a rice windfall, so this is the faithful re-expression. events.csv stays
+                # byte-identical (non-destructive); only the loaded model reflects the split taxonomy.
+                target = ";".join("rice" if t == "pantry" else t for t in target.split(";"))
             ev = {
                 "idx": len(out), "id": row["id"], "region": r, "phase": ph,
                 "scope": row["scope"].strip(),        # self | rival | region | neighbour | board
                 "duration": row["duration"].strip(),  # now | turn | round | phase
                 "verb": row["verb"].strip(),
-                "target": row.get("target", "").strip(),
+                "target": target,
                 "value": int(row["value"]) if row.get("value", "").strip() else 1,
                 "qty": int(row["quantity"]) if row.get("quantity", "").strip() else 1,
                 "kind": kind,
@@ -388,7 +422,8 @@ _inject_tours_boons()
 # --------------------------------------------------------------------------------------------------
 def _load_ingredients():
     out = {(r, ph): [] for r in REGIONS for ph in (1, 2)}
-    with open(os.path.join(_COMP, "ingredients.csv"), encoding="utf-8", newline="") as f:
+    _inf = "ingredients-split.csv" if SPLIT_TAXONOMY else "ingredients.csv"   # §19 non-destructive branch
+    with open(os.path.join(_COMP, _inf), encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
             r = row["region"].strip()
             ph = 1 if row["phase"].strip() == "day" else 2
@@ -878,6 +913,9 @@ class TravelAgentsGame:
             "reshuffle_sizes": {(r, ph): [] for r in REGIONS for ph in (1, 2)},
             "evfrac_samples": {(r, ph): [] for r in REGIONS for ph in (1, 2)},
             "pantry_supply_min": 10 ** 9, "box_from_larder": 0,
+            # §19 M6: per-subtype recyclable supply minimum (deck + discard, summed across each subtype's
+            # regions). Tracked only under split:8 — Noodles is the tightest sub-pool (§19.5), the #1 probe.
+            "sub_supply_min": {t: 10 ** 9 for t in _SPLIT_SUBTYPES},
             "commit_hist": [],   # (turn, vid, p) for fingerprints / earliest committer
             # N07-orphan probe: per-game held/completed for the two N07-dependent tours + N07 surface/win.
             "tour_held": Counter(), "tour_completed": Counter(),
@@ -1649,10 +1687,23 @@ class TravelAgentsGame:
 
     # -------- §16 explicit market deck-flow (draw / reshuffle / discard / phase-to-box) --------
     def _sample_pantry_min(self, s):
-        """§16.5 guard: track the minimum recyclable Pantry (糧) card count in East's deck + discard."""
+        """§16.5 guard: track the minimum recyclable Pantry (糧) card count in East's deck + discard.
+        Under split:8 there is no Pantry (it split into Rice + Noodles) so this stays at its init sentinel;
+        the M6 per-subtype tracker (_sample_sub_min) carries the split supply guard instead."""
         cnt = sum(1 for c in s["deck"].get("E", []) if c[0] == "I" and c[1] == "pantry")
         cnt += sum(1 for c in s["disc"].get("E", []) if c[0] == "I" and c[1] == "pantry")
         s["pantry_supply_min"] = min(s["pantry_supply_min"], cnt)
+
+    def _sample_sub_min(self, s):
+        """§19 M6: track the minimum recyclable count of each SPLIT sub-pool (deck + discard, summed over
+        the subtype's regions). Only meaningful under split:8; a no-op in mono (the flag guards the call).
+        Noodles is the tightest sub-pool (§19.5) and the #1 make-or-break probe for B-hybrid sourcing."""
+        for t in _SPLIT_SUBTYPES:
+            cnt = 0
+            for r in REGIONS:
+                cnt += sum(1 for c in s["deck"].get(r, []) if c[0] == "I" and c[1] == t)
+                cnt += sum(1 for c in s["disc"].get(r, []) if c[0] == "I" and c[1] == t)
+            s["sub_supply_min"][t] = min(s["sub_supply_min"][t], cnt)
 
     def _draw_card(self, s, r, rng):
         """Draw the top card of region r's live deck. On deck-out, RESHUFFLE the face-up current-phase
@@ -1676,6 +1727,8 @@ class TravelAgentsGame:
         card = dk.pop()
         if r == "E":
             self._sample_pantry_min(s)
+        if SPLIT_TAXONOMY:
+            self._sample_sub_min(s)
         return card
 
     def _discard_card(self, s, r, card):
@@ -2259,6 +2312,14 @@ class TravelAgentsGame:
             "evfrac_E_day": _evf("E", 1), "evfrac_N_day": _evf("N", 1),
             "pantry_supply_min": float(s["pantry_supply_min"]),
             "box_from_larder_per_game": float(s["box_from_larder"]),
+            # ---- §19 M6: split sub-pool supply minima (split:8 only; 0.0 in mono) + split src-shares ----
+            "split_taxonomy": 1.0 if SPLIT_TAXONOMY else 0.0,
+            "supply_min_rice": float(s["sub_supply_min"]["rice"]) if SPLIT_TAXONOMY else 0.0,
+            "supply_min_noodles": float(s["sub_supply_min"]["noodles"]) if SPLIT_TAXONOMY else 0.0,  # M6 #1 probe
+            "supply_min_sugar": float(s["sub_supply_min"]["sugar"]) if SPLIT_TAXONOMY else 0.0,
+            "supply_min_pearls": float(s["sub_supply_min"]["pearls"]) if SPLIT_TAXONOMY else 0.0,
+            "src_share_rice": share("rice"), "src_share_noodles": share("noodles"),
+            "src_share_pearls": share("pearls"),
             # ---- MAKE-OR-BREAK PROBE #2: sourcing/throughput health ----
             "src_share_meat_N": share("meat"), "src_share_tea_C": share("tea"),
             "src_share_seafood_S": share("seafood"), "src_share_pantry_E": share("pantry"),
@@ -2883,7 +2944,7 @@ if __name__ == "__main__":
         SMOKE_COUNTS = tuple(int(x) for x in _counts.split(",")) if _counts else (3, 4, 5, 6)
         print(f"# {TITLE}")
         print(f"# V7-M SMOKE TEST — {N} games/count, counts {SMOKE_COUNTS}, VISIT_MODE={VISIT_MODE} "
-              f"(import + end-to-end + sane instruments)\n")
+              f"VISIT_VARIETY={VISIT_VARIETY} (import + end-to-end + sane instruments)\n")
         for c in SMOKE_COUNTS:
             bal = STRATEGIES["balanced"]
             wins, mt = _run({p: bal for p in range(c)}, N, seed=1, n_players=c)
@@ -2917,6 +2978,11 @@ if __name__ == "__main__":
                   f"reshuffle-size(E {mt['reshuffle_size_E_night']:.1f})  live evfrac(E-night {mt['evfrac_E_night']*100:.0f}%/"
                   f"N-night {mt['evfrac_N_night']*100:.0f}%)  Pantry supply_min {mt['pantry_supply_min']:.0f}  "
                   f"→box/gm {mt['box_from_larder_per_game']:.1f}")
+            if mt.get("split_taxonomy", 0.0) >= 1.0:
+                print(f"  §19 M6 split:8 sub-pools: supply_min Rice {mt['supply_min_rice']:.0f} "
+                      f"Noodles {mt['supply_min_noodles']:.0f} (★#1 probe — tightest) Sugar {mt['supply_min_sugar']:.0f} "
+                      f"Pearls {mt['supply_min_pearls']:.0f}  src-share Rice {mt['src_share_rice']*100:.0f}% "
+                      f"Noodles {mt['src_share_noodles']*100:.0f}% Pearls {mt['src_share_pearls']*100:.0f}%")
             print(f"  §15.9 tours-boons: SALVAGE fires/gm {mt['salvage_fires_per_game']:.2f} swing "
                   f"{mt['salvage_swing_per_game']:.2f} (drawer {mt['salvage_gain_drawer_per_game']:.2f}/trailer "
                   f"{mt['salvage_relief_trailer_per_game']:.2f})  CLEAR fires/gm {mt['clear_fires_per_game']:.2f} "
