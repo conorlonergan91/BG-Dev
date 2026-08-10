@@ -211,6 +211,21 @@ PHASE_STYLES = {
         "label": "通用 ANY",
         "emblem": "spark",
     },
+    "any": {  # AGNOSTIC tours (Bookings phase=any) — playable DAY *or* NIGHT, judged at LAST TRAIN.
+        # Its own treatment so an any-time tour reads at a glance as "either phase", never as a neutral /
+        # phase-less card (the pre-fix behaviour, which rendered identically to a bug). A cool boarding-pass
+        # BLUE that sits OFF both the warm day-amber and the neon night-violet (so the three phases are three
+        # distinct reads) and matches the Bookings suit hue (#3A6EA5) — the only deck that carries phase=any.
+        # The ⟳ cycle badge + the word "ANY 全天" dual-code it beyond colour (bg-access). TA-only: no other
+        # game has a phase=any card, so this key is inert (byte-identical) everywhere else.
+        "page": ("#EAF0F6", "#D6E2F0"),   # cool boarding-pass paper — light, keeps CJK/body text contrast
+        "frame": "#3A6EA5",               # boarding-pass blue (the Bookings suit) — the any-phase frame line
+        "glow": "#8FB3D9",
+        "tag_fill": "#3A6EA5",
+        "tag_ink": "#FFFFFF",
+        "label": "ANY 全天",
+        "emblem": "cycle",
+    },
 }
 
 
@@ -226,6 +241,9 @@ BACK_PHASE = {
     "day":     {"char": "日", "label": "DAY · 早", "emblem": "sun"},
     "night":   {"char": "夜", "label": "NIGHT · 夜市", "emblem": "moon"},
     "general": {"char": "通", "label": "ANY · 通用", "emblem": "spark"},
+    # AGNOSTIC (phase=any) Bookings back — the ⟳ cycle motif + 全天, so a face-down any-time pile sorts by
+    # MOTIF, not colour alone (bg-access). 全天 ("all-day") is PROVISIONAL playtest 繁體 — consultant-gated.
+    "any":     {"char": "全", "label": "ANY · 全天", "emblem": "cycle"},
 }
 
 
@@ -433,5 +451,26 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
         vein = (f"M {cx-r*0.07} {cy-r*0.52} L {cx+r*0.07} {cy-r*0.52} "
                 f"L {cx+r*0.07} {cy+r*0.70} L {cx-r*0.07} {cy+r*0.70} Z")
         return f'<path fill-rule="evenodd" fill="{color}" d="{body} {vein}" {sw}/>'
+    if kind == "cycle":  # ⟳ phase=ANY — a clockwise circular arrow: "playable DAY or NIGHT, any time".
+        # DRAWN (the ⟳ glyph is tofu under cairosvg's toy text API), so the any-phase read is dual-coded
+        # by SHAPE + word ("ANY 全天") + colour, never colour alone (bg-access). New/additive: no existing
+        # theme references 'cycle', so Beacon and every other theme render byte-identically. The arc leaves
+        # a gap at the arrowhead so the loop reads as a cycle, not a closed ring (≠ the region 'circle').
+        sw2 = max(2, r * 0.24)
+        a0, a1 = math.radians(-50), math.radians(210)   # ~260° clockwise sweep; gap carries the arrowhead
+        x0, y0 = cx + r * math.cos(a0), cy + r * math.sin(a0)
+        x1, y1 = cx + r * math.cos(a1), cy + r * math.sin(a1)
+        arc = (f'<path d="M {x0:.1f} {y0:.1f} A {r:.1f} {r:.1f} 0 1 1 {x1:.1f} {y1:.1f}" fill="none" '
+               f'stroke="{color}" stroke-width="{sw2:.1f}" stroke-linecap="round"/>')
+        # arrowhead at the sweep end, pointing along the clockwise tangent (-sin a1, cos a1)
+        tx, ty = -math.sin(a1), math.cos(a1)
+        pxu, pyu = -ty, tx
+        hl, hw = r * 0.62, r * 0.42
+        tip = (x1 + tx * hl, y1 + ty * hl)
+        b1 = (x1 + pxu * hw, y1 + pyu * hw)
+        b2 = (x1 - pxu * hw, y1 - pyu * hw)
+        head = (f'<polygon points="{tip[0]:.1f},{tip[1]:.1f} {b1[0]:.1f},{b1[1]:.1f} '
+                f'{b2[0]:.1f},{b2[1]:.1f}" fill="{color}"/>')
+        return arc + head
     # fallback
     return f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{color}" {sw}/>'
