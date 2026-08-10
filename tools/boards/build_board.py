@@ -650,6 +650,119 @@ def render_regionmap(theme, spec, phase="day"):
     return _svg(W, H, parts), W, H
 
 
+# ---- Closing-Time die (關門) — a printable 6-FACE reference sheet ------------
+def render_die(theme, spec):
+    """The Closing-Time die 關門 as a 6-face reference sheet (a printable / Screentop d6 key).
+
+    A custom d6: 4 REGION faces (North 北 / Central 中 / South 南 / East 東) + 2 BLANK faces (the 1/3
+    reprieve). Every region face is dual-coded per bg-access — the region's established COLOUR *and* its
+    emblem *and* its 繁體 character — so the die reads without relying on colour alone. Colours/emblems are
+    reused straight from map.json's regions (the same hues the map + vendors use), never minted here.
+
+    TA-specific — only games/travel-agents/make.sh calls --type die."""
+    ink, accent, muted, text = theme["ink"], theme["accent"], theme["muted"], theme["text"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+
+    # Region colour + emblem come from the shared map spec; the 繁體 char + English name are fixed canon.
+    region_char = {"north": "北", "central": "中", "south": "南", "east": "東"}
+    region_en = {"north": "NORTH", "central": "CENTRAL", "south": "SOUTH", "east": "EAST"}
+    by_key = {r.get("key"): r for r in spec.get("regions", [])}
+    order = ["north", "central", "south", "east"]
+    faces = []
+    for key in order:
+        r = by_key.get(key, {})
+        faces.append({
+            "kind": "region",
+            "color": r.get("color", accent),
+            "emblem": r.get("emblem", "circle"),
+            "char": region_char.get(key, ""),
+            "en": region_en.get(key, key.upper()),
+        })
+    # the two reprieve faces
+    faces.append({"kind": "blank"})
+    faces.append({"kind": "blank"})
+
+    # layout: a 3×2 grid of die-face tiles under a title band
+    TILE = 460
+    GAP = 52
+    PADX = 70
+    title_h = 176
+    foot_h = 74
+    cols, rows_n = 3, 2
+    W = PADX * 2 + cols * TILE + (cols - 1) * GAP
+    H = title_h + rows_n * TILE + (rows_n - 1) * GAP + foot_h + 40
+
+    parts = [f'<rect x="0" y="0" width="{W}" height="{H}" fill="url(#pg)"/>']
+
+    # --- title band -----------------------------------------------------------
+    parts.append(f'<rect x="0" y="0" width="{W}" height="{title_h}" fill="{theme["ink"]}"/>')
+    # a small die glyph (rounded square + 3 pips) left of the wordmark, so the band reads "a die"
+    dx, dy, dr = 92, title_h / 2, 52
+    parts.append(f'<rect x="{dx-dr}" y="{dy-dr}" width="{2*dr}" height="{2*dr}" rx="16" fill="#ffffff"/>')
+    for (ox, oy) in [(-0.42, -0.42), (0, 0), (0.42, 0.42)]:
+        parts.append(f'<circle cx="{dx+ox*dr:.0f}" cy="{dy+oy*dr:.0f}" r="{dr*0.13:.0f}" fill="{theme["ink"]}"/>')
+    parts.append(f'<text x="{dx+dr+40}" y="{title_h*0.44:.0f}" font-size="58" fill="#ffffff" '
+                 f'font-family="{tfont}" font-weight="bold">Closing-Time Die 關門</text>')
+    parts.append(f'<text x="{dx+dr+40}" y="{title_h*0.78:.0f}" font-size="30" fill="#F7F1E3" '
+                 f'font-family="{bfont}">A custom d6 · 4 region faces + 2 blank (1-in-3 reprieve)</text>')
+
+    def _face_tile(x, y, f, idx):
+        s = []
+        # face-index numeral (top-left) so the sheet reads as the six faces of ONE die
+        s.append(f'<text x="{x+18}" y="{y+42}" font-size="30" fill="{muted}" '
+                 f'font-family="{tfont}" font-weight="bold" opacity="0.7">{idx}</text>')
+        cx = x + TILE / 2
+        if f["kind"] == "region":
+            col = f["color"]
+            # die-face tile: light region-tinted ground + a thick region-colour edge (a physical die face)
+            s.append(f'<rect x="{x}" y="{y}" width="{TILE}" height="{TILE}" rx="46" fill="{col}" opacity="0.12"/>')
+            s.append(f'<rect x="{x+6}" y="{y+6}" width="{TILE-12}" height="{TILE-12}" rx="42" fill="none" '
+                     f'stroke="{col}" stroke-width="10"/>')
+            # emblem (the SHAPE channel) — upper; sits clear of the CJK char below
+            s.append(emblem_svg(f["emblem"], cx, y + 132, 70, col, stroke=ink))
+            # 繁體 character (the CJK channel) — big, centred
+            s.append(f'<text x="{cx}" y="{y+322:.0f}" font-size="120" fill="{col}" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold">{esc(f["char"])}</text>')
+            # English region name + a terse "what it does" caption (both clear of the char)
+            s.append(f'<text x="{cx}" y="{y+392:.0f}" font-size="33" fill="{col}" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="3">{esc(f["en"])}</text>')
+            s.append(f'<text x="{cx}" y="{y+428:.0f}" font-size="20" fill="{muted}" text-anchor="middle" '
+                     f'font-family="{bfont}" font-style="italic">closes this region\'s oldest face-up stall</text>')
+        else:
+            # BLANK face — neutral grey, empty; visibly a NON-region face (reprieve, nothing closes)
+            grey = "#8A8F98"
+            s.append(f'<rect x="{x}" y="{y}" width="{TILE}" height="{TILE}" rx="46" fill="{grey}" opacity="0.08"/>')
+            s.append(f'<rect x="{x+6}" y="{y+6}" width="{TILE-12}" height="{TILE-12}" rx="42" fill="none" '
+                     f'stroke="{grey}" stroke-width="8" stroke-dasharray="20 16"/>')
+            # a soft open ring with a dash (not a slash — nothing is forbidden; simply no region comes up)
+            s.append(f'<circle cx="{cx}" cy="{y+180}" r="80" fill="none" stroke="{grey}" '
+                     f'stroke-width="10" opacity="0.55"/>')
+            s.append(f'<text x="{cx}" y="{y+198:.0f}" font-size="60" fill="{grey}" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold">—</text>')
+            s.append(f'<text x="{cx}" y="{y+340:.0f}" font-size="40" fill="{grey}" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="3">BLANK</text>')
+            s.append(f'<text x="{cx}" y="{y+400:.0f}" font-size="23" fill="{muted}" text-anchor="middle" '
+                     f'font-family="{bfont}" font-style="italic">reprieve — no stall closes</text>')
+        return "".join(s)
+
+    for i, f in enumerate(faces):
+        c = i % cols
+        rr = i // cols
+        x = PADX + c * (TILE + GAP)
+        y = title_h + 30 + rr * (TILE + GAP)
+        parts.append(_face_tile(x, y, f, i + 1))
+
+    # --- footer: the dual-coding note + when it rolls ---------------------------
+    fy = H - foot_h + 34
+    parts.append(f'<text x="{PADX}" y="{fy}" font-size="26" fill="{muted}" font-family="{bfont}">'
+                 f'Roll after track round L (L=2 at 3p · L=3 at 4-6p). '
+                 f'Dual-coded: colour + emblem + 繁體 — never colour alone.</text>')
+
+    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">'
+           f'<defs>{page_gradient(theme, "pg")}</defs>' + "".join(parts) + "</svg>")
+    return svg, W, H
+
+
 # ---- per-player CHARACTER BOARD (landscape player mat) ----------------------
 def _slugify(s: str) -> str:
     s = re.sub(r'^\s*the\s+', '', (s or "").strip(), flags=re.I)
@@ -1061,7 +1174,7 @@ def _svg(W, H, parts):
 def main():
     ap = argparse.ArgumentParser(description="Render themed boards, tracks, and tokens.")
     ap.add_argument("--type", required=True,
-                    choices=["track", "tokens", "mat", "aid", "regionmap", "scoretrack", "playerboard"])
+                    choices=["track", "tokens", "mat", "aid", "regionmap", "die", "scoretrack", "playerboard"])
     ap.add_argument("--theme", default="clean")
     ap.add_argument("--out", type=Path, default=Path("build/board.png"))
     # track
@@ -1151,6 +1264,11 @@ def main():
             ap.error("--type regionmap requires --spec <file.json>")
         spec = json.loads(args.spec.read_text(encoding="utf-8"))
         svg, W, H = render_regionmap(theme, spec, args.phase)
+    elif args.type == "die":
+        if not args.spec:
+            ap.error("--type die requires --spec <map.json> (region colours/emblems)")
+        spec = json.loads(args.spec.read_text(encoding="utf-8"))
+        svg, W, H = render_die(theme, spec)
     elif args.type == "scoretrack":
         milestones = {}
         for chunk in args.milestones.split(";"):

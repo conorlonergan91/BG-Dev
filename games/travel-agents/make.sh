@@ -120,6 +120,11 @@ python3 $T/boards/build_board.py --type playerboard --csv components/characters.
 # Token key + player aid.
 python3 $T/boards/build_board.py --type tokens --from-csv components/tokens.csv --shape circle --legend \
     --theme "$theme" --out build/token-key.png
+# Closing-Time die (關門) — the custom d6 rendered as a 6-FACE reference sheet (a printable / Screentop
+# key), replacing the single text-legend token: 4 region faces (北/中/南/東, each in that region's
+# established colour + emblem + 繁體) + 2 BLANK faces (the 1/3 reprieve). Dual-coded colour + emblem +
+# CJK (bg-access), region hues/emblems reused straight from map.json — none minted here.
+python3 $T/boards/build_board.py --type die --spec components/map.json --theme "$theme" --out build/die-closing-time.png
 python3 $T/boards/build_board.py --type aid    --spec components/player-aid.json --theme "$theme" --out build/player-aid.png
 
 # Cover + rulebook.
@@ -158,6 +163,7 @@ cp build/boards-placeholder/board-*.png   exports/ 2>/dev/null || true
 cp build/map-day.png                      exports/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/map-night.png 2>/dev/null || true
 cp build/token-key.png                    exports/token-key.png 2>/dev/null || true
+cp build/die-closing-time.png             exports/die-closing-time.png 2>/dev/null || true
 cp build/player-aid.png                   exports/player-aid.png 2>/dev/null || true
 cp build/rulebook.pdf                     exports/rulebook.pdf 2>/dev/null || true
 cp build/rulebook.html                    exports/rulebook.html 2>/dev/null || true   # keep the tracked HTML in sync (build always emits it) so it can't silently drift
@@ -178,6 +184,8 @@ cp build/boards-placeholder/board-*.png   exports/screentop/ 2>/dev/null || true
 # The shared TABLE map (both day/night states) — the Screentop module stands the play area up from these.
 cp build/map-day.png                      exports/screentop/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/screentop/map-night.png 2>/dev/null || true
+# The Closing-Time die reference sheet — the Screentop module stands the custom d6 up from this key too.
+cp build/die-closing-time.png             exports/screentop/die-closing-time.png 2>/dev/null || true
 echo "✓ exports/ refreshed — commit these."
 
 # --- HOME PRINT-AND-PLAY (library A4 / A3, print-at-100%-and-cut) --------------------------------
