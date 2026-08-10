@@ -101,8 +101,8 @@ design/balance issue it spots is flagged to the design side.
 
 | Role | Agent | What it does |
 |------|-------|--------------|
-| Producer | `bg-producer` | The showrunner — owns `status.md` (the current-state dashboard) and curates `director-brief.md` (the CD's own steers, per version, so good input never gets lost); tracks pipeline stage, done/in-flight/next, open CD decisions, guardrail health & risks; confirms the living docs reflect the current version and the project is on track; routes staleness/drift to the right owner. |
-| Archivist | `bg-archivist` | The doc steward — keeps `game-bible.md`/`identity.md` a clean CURRENT-STATE snapshot, relocates superseded/dead-version content to `archive/` (nothing lost, just out of the way), and keeps `decision-log.md` skimmable (in-force summary + archived ranges). Distinct from `bg-continuity` (inconsistency/drift-catching); this one restructures for **currency + readability**. |
+| Producer | `bg-producer` | The showrunner — owns `status.md` (the current-state dashboard) and curates `director-brief.md` (the CD's own steers, per version, so good input never gets lost); tracks pipeline stage, done/in-flight/next, open CD decisions, guardrail health & risks; confirms the living docs reflect the current version and the project is on track; runs the **duplication radar** (same truth in two places → route to `bg-archivist`); routes staleness/drift to the right owner. |
+| Archivist | `bg-archivist` | The doc steward — keeps `game-bible.md`/`identity.md` a clean CURRENT-STATE snapshot, enforces **one canonical home per topic** (consolidates duplicate/overlapping docs, archives the redundant copies), relocates superseded/dead-version content to `archive/` (nothing lost, just out of the way), and keeps `decision-log.md` skimmable (in-force summary + archived ranges). Distinct from `bg-continuity` (inconsistency/drift-catching); this one restructures for **currency + readability + single-source-of-truth**. |
 
 **How to invoke an agent:** use the `Agent` tool with the matching `subagent_type` (e.g.
 `bg-design`). Give it the game slug and point it at that game's `game-bible.md`. When work is
@@ -116,9 +116,12 @@ met?) and **`bg-infodesign`** (still parseable at a glance?). Cheap by default; 
 when one actually flags something. (Full cadence in the `board-game-studio` skill.)
 
 **The keep-current sweep (at milestones / version close):** run **`bg-producer`** to refresh `status.md`
-and curate `director-brief.md`, and **`bg-archivist`** to prune the living docs to current-state + relocate
-the closed version's history to `archive/`. This is what stops `game-bible.md` / `identity.md` /
-`decision-log.md` from silently growing into a stratigraphy of every past version. And carry the
+and curate `director-brief.md` (incl. its **duplication radar** — same fact in two files gets routed to the
+archivist), and **`bg-archivist`** to prune the living docs to current-state, **consolidate duplicated/
+overlapping content to one canonical home**, and relocate the closed version's history + redundant copies to
+`archive/`. This is what stops `game-bible.md` / `identity.md` / `decision-log.md` from silently growing
+into a stratigraphy of every past version — or the same truth scattered across a dozen files (bloat to read,
+error-prone to edit, ambiguous after a context clear). And carry the
 **orchestrator reflex**: the moment the Creative Director sends a substantive steer, capture it into
 `director-brief.md` (same habit as the decision-log) — `bg-producer` curates it later.
 
@@ -154,10 +157,15 @@ games/<slug>/
 describe the game *as it is now* (pruned to the current version); `status.md` is the one-screen "where are
 we" dashboard; `decision-log.md` stays the append-only rationale record; **`director-brief.md`** logs the
 CD's own steers + context per version so a good idea sent mid-thread is never lost; and superseded /
-dead-version content is relocated to `archive/` (nothing deleted). `bg-archivist` keeps the living docs
-pruned + the history archived; `bg-producer` keeps `status.md` + `director-brief.md` true and the project on
-track. **Orchestrator reflex:** capture each substantive CD steer into `director-brief.md` the moment it
-arrives (same habit as the decision-log) — `bg-producer` then curates it.
+dead-version content is relocated to `archive/` (nothing deleted). **One canonical home per topic:** every
+fact lives in exactly *one* file (mechanics → `game-bible.md`, felt identity → `identity.md`, voice →
+`prose-identity.md`, decisions → `decision-log.md`); when a topic is duplicated or scattered across several
+docs, the canonical owner keeps it and the other copies become a one-line pointer or move to `archive/` —
+fewer places to edit, no second "truth" to drift after a context clear. `bg-archivist` keeps the living docs
+pruned, **de-duplicated to their canonical home**, + the history archived; `bg-producer` keeps `status.md` +
+`director-brief.md` true, runs the **duplication radar**, and keeps the project on track. **Orchestrator
+reflex:** capture each substantive CD steer into `director-brief.md` the moment it arrives (same habit as the
+decision-log) — `bg-producer` then curates it.
 
 **The three canonical identities.** A game is anchored by `game-bible.md` (the design), and — once it has a
 felt identity, art, and words — by three living identity files a `bg-*` agent points at for direction:

@@ -156,9 +156,10 @@ whether the human is ready to sim, **ask** — a wasted sim burns real time.
 
 ## Living documents
 
-Living docs are a **current-state snapshot, not an accreted history** — keep the *now* clean and relocate
-the *history* to `archive/` (nothing deleted). Owned/kept-current by the **Production pod** (`bg-producer`,
-`bg-archivist`).
+Living docs are a **current-state snapshot, not an accreted history**, with **one canonical home per topic**
+(no duplicate/overlapping docs) — keep the *now* clean, keep each fact in exactly one place, and relocate the
+*history* + redundant copies to `archive/` (nothing deleted). Owned/kept-current by the **Production pod**
+(`bg-producer`, `bg-archivist`).
 
 - `game-bible.md` — concept, positioning, core loop, components, rules summary. **CURRENT-STATE**, readable
   in one sitting; no dead-version cruft (`bg-archivist` prunes; history → `archive/`).
@@ -176,8 +177,11 @@ the *history* to `archive/` (nothing deleted). Owned/kept-current by the **Produ
 - Stage outputs live in `design/`, `components/`, `playtests/`, `marketing/`, `art/` (see `CLAUDE.md`).
 
 **Keep-current sweep (milestones / version close):** run `bg-producer` (refresh `status.md`, curate
-`director-brief.md`) + `bg-archivist` (prune living docs to current, archive the closed version) so the
-docs never drift into a stratigraphy of every past version.
+`director-brief.md`, run the **duplication radar** — same truth in two places → route to the archivist) +
+`bg-archivist` (prune living docs to current, **consolidate duplicated/overlapping content to one canonical
+home**, archive the closed version + redundant copies) so the docs never drift into a stratigraphy of every
+past version — or the same fact scattered across a dozen files (bloat to read, error-prone to edit,
+ambiguous after a context clear).
 
 ## Tooling & knowledge
 
