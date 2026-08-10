@@ -1,4 +1,4 @@
-# 📋 Travel Agents: Taiwan — Status (current state of play)
+# 📋 Travel Agents: Taiwan Food Tour — Status (current state of play)
 
 > **The live dashboard.** Owned by `bg-producer`. Always reflects the CURRENT version — readable in under a
 > minute. If you want the *why* behind a decision, see `decision-log.md`; the *history* lives in `archive/`;
@@ -11,6 +11,10 @@
   day, and score on two tracks — completed tours + won vendors.*
 - **Shipped / frozen builds:** V7-M merged to `main` in **PR #13** (2026-08-10). No `builds/build-N/`
   snapshot cut yet — the merge + `exports/` are the known-good state.
+- **Theme (2026-08-10 pivot):** the secret-agent wrapper is **scrapped** → **"Wacky Races, Taiwan-food
+  edition"** (over-the-top, battle-hungry rival agents); retitled **Travel Agents: Taiwan Food Tour**.
+  Felt identity + voice re-founded (`identity.md`, `prose-identity.md`, `game-bible.md` framing, `names.md`).
+  **Mechanics unchanged.** *Downstream copy + art still carry the old spy voice/title — see In-flight.*
 
 ## Pipeline stage
 **Prototype-ready.** Design + development are CLOSED for V7-M at a clean, sim-validated state (N=400). The
@@ -27,11 +31,15 @@ prototype kit is current in `exports/`. The next real work is a **human playtest
     (default OFF).
   - **Prototype kit** — Screentop deck sheets, player/character boards with embedded AI mock-up portraits,
     A4/A3 print-and-play, map — all current in `exports/`.
-  - **Rulebook** — "Meet the Agents" gallery + world intro ("Operation Beef Noodle") + character portraits +
-    stylish `--rich` layout.
+  - **Rulebook** — "Meet the Agents" gallery + character portraits + stylish `--rich` layout. *(The world
+    intro + backstories were written in the retired secret-agent voice → flagged for a copy refresh.)*
   - **Voice bible** — `prose-identity.md` authored and promoted to a studio standard.
   - **Art prep** — art prompts + `art/ta-art-context.zip` (2.7 MB) ready for the CD's ChatGPT art generation.
-- **⏳ In-flight:** none — V7-M development is being closed for now.
+- **⏳ In-flight (theme-pivot follow-through, 2026-08-10):** the re-founded docs are done (`identity.md`,
+  `game-bible.md` framing, `prose-identity.md`, `names.md`, logs). **Remaining:** propagate the retitle +
+  new frame into `art/`, `marketing/`, and regenerated `exports/`; refresh the spy-voiced player copy (the
+  `rules-draft.md` "Your Assignment" world intro, the "Meet the Agents" backstories, mat quotes, event
+  flavour); reconcile the character-kit drift in `names.md`/`v7-plan.md` to `characters.csv`.
 - **➡️ Next:** CD generates the remaining art (map + vendor cards) in ChatGPT from the prepared
   zip/prompts, then runs a **3–4-player human playtest**.
 
@@ -57,18 +65,16 @@ not a decision.
   before any physical/public release:** (1) the character **The Big Boss (老大)** affectionate-fixer framing
   (warm, never a triad/gang caricature), and (2) the **2 Indigenous East-region dishes** (E01 竹筒飯,
   E04 石板烤肉). Screentop playtesting can proceed; art/print cannot without sign-off.
-- ⚠️ **Duplication / drift watch (from the Archivist's currency flags → routed, NOT fixed here):** the same
-  truths live in two places and one copy is stale —
-  - **Two-track scoring:** current everywhere that matters (CD brief + sim N=400 + `components/vendors.csv`
-    `vp` column + `game-bible.md` §14), **but `design/rules-draft.md` §1/§9 and `names.md` §3 still read
-    "tickets-only / vendors never score," and `names.md` §3 says cancel = −½ value** where the live rule is
-    **flat −1**. → routed to **bg-continuity** + **bg-rulebook** (prose), **bg-design** (says which is right —
-    it's two-track / flat −1).
+- ⚠️ **Drift watch (open currency reconciles):**
+  - **Two-track scoring / flat −1 / the clock:** authority is `game-bible.md` + sim N=400 +
+    `components/vendors.csv` (two-track VP · flat −1 cancel · vendor-depletion + Closing-Time-die clock).
+    **`names.md` is now reconciled to this (2026-08-10).** Still lagging: **`design/rules-draft.md` §1/§9**
+    (reads tickets-only / deck-driven clock) — the rules-teach reconcile → **bg-rulebook** / **bg-design**.
   - **`min_followers` crowd-floor:** in the component data but **untaught in `rules-draft.md` §5** (which
     teaches only biggest-crowd plurality). → **bg-design** / **bg-rulebook**.
-  - **Character kits:** `components/characters.csv` is canon for the six V7-M kits, but **`names.md` §1 and
-    `v7-plan.md` still describe the pre-V7-M shapes** (Old Councillor / Big Eater / Influencer / Big Boss).
-    → **bg-continuity**.
+  - **Character kits:** `components/characters.csv` is canon for the six V7-M kits, but **`names.md` §1/§3
+    and `v7-plan.md` still describe pre-V7-M shapes** (Old Councillor / Big Eater / Influencer / Globetrotter);
+    `bg-continuity` flagged them in `names.md` §5, not yet reconciled. → **bg-continuity**.
 
 ## Next real step
 **The Creative Director's call:** generate the remaining art (map + vendor cards) in ChatGPT from
