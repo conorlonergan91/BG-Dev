@@ -94,20 +94,21 @@ python3 $T/boards/build_board.py --type regionmap --spec components/map.json --t
 # from the board (it lives in the rulebook now). TA-only: --type playerboard renders only rows with
 # ability_code+flaw_code, so Beacon et al. are untouched.
 #
-# ART EMBED (opt-in mock-ups — NEVER committed): prep the six committed finals from art/mockups/ into the
-# gitignored build/mockups/ at the board's image-slot size (900×1380 px — the v2 LEFT-column image slot),
-# keyed to transparent + fit. The board auto-embeds build/mockups/FIG-CHAR-<slug>.png (base64 data-URI)
-# when present, else a placeholder.
+# ART EMBED: prep the six approved playtest illustrations from art/mockups/ into the gitignored
+# build/mockups/ at the board's image-slot size (900×1330 px — the v3 LEFT-column portrait slot), keyed to
+# transparent + fit. render_playerboard auto-embeds build/mockups/FIG-CHAR-<slug>.png (base64 data-URI)
+# when present, else the dashed placeholder. NOTE (CD 2026-08): the "no AI art in committed deliverables"
+# rail is LIFTED FOR THIS PROTOTYPE — the art-embedded boards below are what ships into exports/.
 mkdir -p build/mockups
 for slug in old-councillor homebody big-eater influencer big-brother globetrotter; do
     python3 $T/mockup/prep_mockup.py --image art/mockups/FIG-CHAR-$slug.png --key-bg \
-        --fit 900x1380 --pad --outdir build/mockups --out FIG-CHAR-$slug.png
+        --fit 900x1330 --pad --outdir build/mockups --out FIG-CHAR-$slug.png
 done
-# WARM boards (art embedded) → build/boards/ ONLY — the CD-preview set. build/ is gitignored: no AI final
-# art is ever committed (the binding rail). Default --mockups-dir is build/mockups, so these embed the finals.
+# WARM boards (playtest art embedded) → build/boards/. These ARE the committed set now (snapshotted into
+# exports/ + exports/screentop/ below). Default --mockups-dir is build/mockups, so these embed the art.
 python3 $T/boards/build_board.py --type playerboard --csv components/characters.csv --theme "$theme" --out build/boards/
-# PLACEHOLDER boards (dashed [FIG-CHAR-<slug>] slot, NO AI art) → these are what gets snapshotted into the
-# COMMITTED exports/. Point --mockups-dir at an empty dir so the embed always falls back to the placeholder.
+# PLACEHOLDER boards (dashed [FIG-CHAR-<slug>] slot, NO art) → kept as the art-absent fallback reference
+# only (no longer snapshotted). Point --mockups-dir at an empty dir so the embed falls back to placeholder.
 mkdir -p build/nomockups
 python3 $T/boards/build_board.py --type playerboard --csv components/characters.csv --theme "$theme" \
     --mockups-dir build/nomockups --out build/boards-placeholder/
@@ -157,9 +158,12 @@ cp build/top/sheets/bookings_night_back.png     exports/ 2>/dev/null || true
 # §20 ANY-time (agnostic) tour pile — 31 tours drawable throughout; its own sheet + neutral back.
 cp build/top/sheets/bookings_any_sheet_*.png    exports/ 2>/dev/null || true
 cp build/top/sheets/bookings_any_back.png       exports/ 2>/dev/null || true
-# Character BOARDS — 6 A4-landscape player mats. Snapshot the PLACEHOLDER renders (no AI final art — the
-# binding rail); the warm art-embedded boards stay in build/boards/ (gitignored, CD preview only).
-cp build/boards-placeholder/board-*.png   exports/ 2>/dev/null || true
+# Character BOARDS — 6 A4-landscape player mats. Snapshot the WARM ART-EMBEDDED renders (build/boards/):
+# the CD lifted the "no AI art in committed deliverables" rail for the PROTOTYPE, so the committed +
+# Screentop boards SHOW the six approved playtest illustrations (art/mockups/FIG-CHAR-<slug>.png, prepped
+# into build/mockups/ above and embedded by render_playerboard). The placeholder set (build/boards-
+# placeholder/) is kept as the art-absent fallback only; it is no longer what ships.
+cp build/boards/board-*.png               exports/ 2>/dev/null || true
 cp build/map-day.png                      exports/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/map-night.png 2>/dev/null || true
 cp build/token-key.png                    exports/token-key.png 2>/dev/null || true
@@ -178,9 +182,9 @@ cp build/sheets/vend_*_sheet_*.png        exports/screentop/ 2>/dev/null || true
 cp build/sheets/vend_*_back.png           exports/screentop/ 2>/dev/null || true
 cp build/sheets/booking_*_sheet_*.png     exports/screentop/ 2>/dev/null || true
 cp build/sheets/booking_*_back.png        exports/screentop/ 2>/dev/null || true
-# Character BOARDS go into the Screentop set too — each uploads as a per-player board image (PLACEHOLDER
-# renders; no AI final art in the committed set).
-cp build/boards-placeholder/board-*.png   exports/screentop/ 2>/dev/null || true
+# Character BOARDS go into the Screentop set too — each uploads as a per-player board image (the WARM
+# art-embedded renders; AI playtest art is wanted in the prototype per the CD).
+cp build/boards/board-*.png               exports/screentop/ 2>/dev/null || true
 # The shared TABLE map (both day/night states) — the Screentop module stands the play area up from these.
 cp build/map-day.png                      exports/screentop/map-day.png 2>/dev/null || true
 cp build/map-night.png                    exports/screentop/map-night.png 2>/dev/null || true
@@ -217,7 +221,7 @@ python3 $T/print/build_pnp.py --mode cards --page A3 --theme "$theme" \
 # Character / player boards — 1 per A4-LANDSCAPE at true 297×210 mm (each board now IS a full A4 sheet).
 python3 $T/print/build_pnp.py --mode images --page A4 --landscape --per-page 1 --theme "$theme" \
     --title "$title — Character Boards" \
-    --blurb "6 character / player boards at true 297×210 mm (one per A4-landscape sheet). Art placeholder — final mock-ups re-tile automatically." \
+    --blurb "6 character / player boards at true 297×210 mm (one per A4-landscape sheet), with the playtest character art embedded." \
     --out exports/print/pnp-boards.pdf exports/board-*.png
 # Region map — A3 (one per sheet) + an A4-landscape fallback (fits on one A4 landscape, no taping).
 python3 $T/print/build_pnp.py --mode images --page A3 --per-page 1 --theme "$theme" \

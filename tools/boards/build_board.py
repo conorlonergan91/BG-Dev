@@ -972,12 +972,18 @@ def render_playerboard(theme, row, mockups_dir=None):
     P.append(icon_medallion(med_cx_f, fcode, vermilion))
 
     content_top = 18 + hh + 40                     # = 308
+    bottom = H - M                                 # 2410 — the content baseline (outer margin M)
 
-    # ==================== LEFT COLUMN (full height): character IMAGE + the Followers DIAL ================
-    img_x = M                                      # 70 — image now on the LEFT
+    # ==================== LEFT COLUMN (full height): character IMAGE (top) + PROSE blurb (below) =========
+    # v3 white-space fix (CD steer 2026-08): the portrait anchors the upper-left and the funny one-liner
+    # sits DIRECTLY BENEATH it, so the whole left column is used top-to-bottom (no dead band under the art)
+    # AND the right column is freed of its floating prose banner — its three pile lanes now run the full
+    # height. AI playtest art is embedded straight into the portrait slot (CD lifted the no-AI-in-committed
+    # rail for the prototype); the placeholder branch below is the fallback only when a mock-up is absent.
+    img_x = M                                      # 70 — image on the LEFT
     img_y = content_top                            # 308
     IMG_W = 900
-    IMG_H = 1380                                    # portrait slot; the dial sits below in the same column
+    IMG_H = 1330                                    # portrait fills the upper-left; the prose card fills below
     fig_id = f"FIG-CHAR-{slug}"
     embedded = _embed_fig_png(fig_id, img_x, img_y, IMG_W, IMG_H, mockups_dir)
     if embedded:
@@ -997,16 +1003,31 @@ def render_playerboard(theme, row, mockups_dir=None):
         P.append(f'<circle cx="{scx}" cy="{scy-190}" r="150" fill="{muted}" opacity="0.28"/>')
         P.append(f'<path d="M{scx-260} {scy+300} q260 -400 520 0 z" fill="{muted}" opacity="0.28"/>')
         P.append(f'<text x="{scx}" y="{img_y+44}" font-size="22" fill="{muted}" text-anchor="middle" '
-                 f'font-family="{bfont}" font-style="italic">illustration placeholder · human-illustrated (no AI final art)</text>')
+                 f'font-family="{bfont}" font-style="italic">character art · playtest mock-up</text>')
         P.append(f'<rect x="{scx-210}" y="{img_y+IMG_H-70}" width="420" height="46" rx="23" fill="{ink}"/>')
         P.append(f'<text x="{scx}" y="{img_y+IMG_H-38}" font-size="27" fill="#ffffff" text-anchor="middle" '
                  f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[{esc(fig_id)}]</text>')
 
-    # --- FOLLOWERS → ONE card slot in the right-column row (V7-M · CD steer 2026-08) --------------------
-    # The three-bin SUPPLY→BOARD→STALL lifecycle panel is RETIRED. Followers now get ONE card-shaped slot
-    # sitting in a row with the two scoring piles, so the board reads as three identical card sections:
-    # Followers | Cancelled | Complete (each icon-in-the-middle, no text). The follower LIFECYCLE words
-    # move to the player aid (the board stays icon-only). `_follower` (kept) draws the slot's centre icon.
+    # --- PROSE one-liner — a warm gold-accented card filling the rest of the LEFT column ----------------
+    # The funny blurb (28-39 words) wraps in the ~820px text width; the card grows to the bottom margin so
+    # the left column reads full. If a blurb ever overruns the card it is flagged to the copywriter (the
+    # board never silently truncates — textwrap keeps every word; overflow would push past the baseline).
+    pb_x, pb_w = img_x, IMG_W
+    pb_y = img_y + IMG_H + 46                        # 1684
+    pb_h = bottom - pb_y                             # ~726
+    P.append(f'<rect x="{pb_x}" y="{pb_y}" width="{pb_w}" height="{pb_h}" rx="20" fill="{gold}" opacity="0.16"/>')
+    P.append(f'<rect x="{pb_x}" y="{pb_y}" width="12" height="{pb_h}" rx="6" fill="{gold}"/>')
+    P.append(f'<text x="{pb_x+42}" y="{pb_y+108}" font-size="104" fill="{gold}" opacity="0.5" '
+             f'font-family="{tfont}" font-weight="bold">&#8220;</text>')
+    prose_wrap = max(20, int((pb_w - 96) / 20))      # ~char budget at the 42px body size
+    plines = textwrap.wrap(blurb, prose_wrap)
+    pstep = 56
+    pbase = pb_y + (pb_h - (len(plines) - 1) * pstep) / 2 + 14
+    for i, ln in enumerate(plines):
+        P.append(f'<text x="{pb_x+46}" y="{pbase + i*pstep:.0f}" font-size="42" fill="{ink}" '
+                 f'font-family="{bfont}" font-style="italic">{esc(ln)}</text>')
+
+    # --- FOLLOWERS | CANCELLED | COMPLETE pile lanes (right column) · `_follower` draws its centre glyph -
     def _follower(cx, cy, s, filled):
         """A follower MEEPLE glyph (round head + flared body). filled → solid; hollow → violet outline."""
         fill = violet if filled else "#ffffff"
@@ -1018,62 +1039,84 @@ def render_playerboard(theme, row, mockups_dir=None):
                 f'fill="{fill}" stroke="{violet}" stroke-width="{max(3, s*0.10):.0f}"/>')
         return head + body
 
-    # ==================== RIGHT COLUMN: prose one-liner + THREE card sections in a row ===================
-    # Prose banner and the pile tray share ONE centred width so they stack as a tidy module (rather than a
-    # single vast tray floating in void); clean board-background margins sit either side.
+    # ==================== RIGHT COLUMN: THREE PILE LANES — FOLLOWERS | CANCELLED | COMPLETE ==============
+    # v3 white-space fix: the prose banner moved to the left column, so the three sections now run as tall
+    # PILE LANES filling the FULL right-column height (no floating tray in a sea of margin). Each lane is
+    # WIDER THAN a real Booking footprint (a card / stack of meeples drops in with slack), and TALLER — a
+    # growing pile stacks DOWN the lane. Still ICON-ONLY (no text; the player aid carries the words): each
+    # lane shows a card-footprint drop target near the top with its section glyph, and faint "stack" ghost
+    # cards below it, so the height reads as intentional pile space rather than empty box.
     right_l = img_x + IMG_W + 60                    # 1030
     right_r = W - M                                 # 3438
     right_w = right_r - right_l                     # 2408
-    zgap = 50
-    inner_pad = 24
-    col_w = 3*CARD_W + 2*zgap + 2*inner_pad          # 2398 — hugs the THREE poker footprints
-    col_x = right_l + (right_w - col_w) / 2          # centred in the right column
+    zgap = 46
+    LANE_W = (right_w - 2*zgap) / 3                  # ~772 — fills the right column, ≥ a 750px poker card
+    lane_top = content_top                          # 308 — lanes start at the content line
+    lane_h = bottom - lane_top                       # 2102 — run to the bottom margin
+    zx = [right_l + i*(LANE_W + zgap) for i in range(3)]
 
-    # --- PROSE strip: a short, funny one-liner (from the blurb), under the banner -----------------------
-    ps_y, ps_h = content_top, 190
-    P.append(f'<rect x="{col_x}" y="{ps_y}" width="{col_w}" height="{ps_h}" rx="20" fill="{gold}" opacity="0.16"/>')
-    P.append(f'<rect x="{col_x}" y="{ps_y}" width="10" height="{ps_h}" rx="5" fill="{gold}"/>')
-    P.append(f'<text x="{col_x+42}" y="{ps_y+66}" font-size="70" fill="{gold}" opacity="0.5" '
-             f'font-family="{tfont}" font-weight="bold">&#8220;</text>')
-    prose_wrap = max(36, int((col_w - 170) / 20))
-    plines = textwrap.wrap(blurb, prose_wrap)[:2]
-    pbase = ps_y + (ps_h - (len(plines)-1)*46) / 2 + 4
-    for i, ln in enumerate(plines):
-        P.append(f'<text x="{col_x+120}" y="{pbase + i*46:.0f}" font-size="38" fill="{ink}" '
-                 f'font-family="{bfont}" font-style="italic">{esc(ln)}</text>')
+    # each lane: a rounded translucent panel + a coloured header cap (identifies the section by hue + glyph)
+    def _lane(x0, col, header_glyphs):
+        cap_h = 150
+        out = [f'<rect x="{x0}" y="{lane_top}" width="{LANE_W}" height="{lane_h}" rx="22" '
+               f'fill="#ffffff" opacity="0.30" stroke="{col}" stroke-width="3.5"/>',
+               f'<path d="M{x0} {lane_top+22} a 22 22 0 0 1 22 -22 h {LANE_W-44} a 22 22 0 0 1 22 22 '
+               f'v {cap_h-22} h -{LANE_W} z" fill="{col}" opacity="0.90"/>']
+        out.append(header_glyphs(x0 + LANE_W/2, lane_top + cap_h/2 + 4))
+        return "".join(out), lane_top + cap_h
 
-    # --- THREE card-EXACT-footprint sections in a row: FOLLOWERS | CANCELLED | COMPLETE (CD steer 2026-08).
-    # Each is exactly one poker footprint (750×1050) so real meeples / Booking cards sit on it, styled
-    # identically, ICON-IN-THE-MIDDLE, NO TEXT (the board is icon-only; the player aid carries the words).
-    # Distinguished by SHAPE + colour (CVD-safe): a follower meeple (violet) · a slashed stamp = cancelled
-    # (taupe) · a checked stamp = complete (gold). The follower slot is where YOUR gained followers live.
-    tray_pad_top, tray_pad_bot = 70, 40
-    tray_h = tray_pad_top + CARD_H + tray_pad_bot
-    tray_y = ps_y + ps_h + ((H - M) - (ps_y + ps_h) - tray_h) / 2   # centred below the prose
-    tray_x, tray_w = col_x, col_w
-    P.append(f'<rect x="{tray_x}" y="{tray_y}" width="{tray_w}" height="{tray_h}" rx="24" '
-             f'fill="#ffffff" opacity="0.28" stroke="{gold}" stroke-width="3"/>')
+    # a card-footprint drop target with the section glyph in the lane's UPPER body; below it, faint
+    # card-edge "stack" bars step down to the lane foot — so the tall lane reads as growing pile space
+    # (drop a card at the top, the pile builds downward) rather than an empty box.
+    def _drop_and_stack(x0, body_top, emcol, glyph):
+        cx = x0 + LANE_W/2
+        dw, dh = CARD_W, CARD_H                       # a real 750×1050 poker footprint sits here
+        dx = x0 + (LANE_W - dw)/2
+        dy = body_top + 40
+        s = [f'<rect x="{dx}" y="{dy}" width="{dw}" height="{dh}" rx="18" fill="#ffffff" opacity="0.62" '
+             f'stroke="{emcol}" stroke-width="4" stroke-dasharray="16 11"/>']
+        s.append(glyph(cx, dy + dh/2))
+        # card-edge stack bars fanning DOWN to the lane foot — the growing pile
+        stack_top = dy + dh + 30
+        foot = bottom - 40                            # stop just inside the lane bottom
+        step = 108
+        n_bars = max(1, int((foot - stack_top) // step))
+        for k in range(n_bars):
+            gy = stack_top + step*k
+            inset = 12 + 8*k
+            op = max(0.10, 0.40 - 0.035*k)
+            s.append(f'<rect x="{dx+inset}" y="{gy:.0f}" width="{dw-2*inset}" height="60" rx="14" '
+                     f'fill="none" stroke="{emcol}" stroke-width="3" opacity="{op:.2f}"/>')
+        return "".join(s)
 
-    zx = [tray_x + inner_pad + i*(CARD_W + zgap) for i in range(3)]
-    card_top = tray_y + tray_pad_top
+    # header glyph rows (small, on the coloured cap) + body drop-target glyphs (large)
+    def _hdr_follower(cx, cy):
+        return _follower(cx, cy, 96, False).replace(f'"{violet}"', '"#ffffff"')
+    def _hdr_cancel(cx, cy):
+        return (f'<circle cx="{cx}" cy="{cy}" r="52" fill="none" stroke="#ffffff" stroke-width="9"/>'
+                f'<line x1="{cx-37}" y1="{cy+37}" x2="{cx+37}" y2="{cy-37}" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>')
+    def _hdr_check(cx, cy):
+        return (f'<path d="M{cx-46} {cy+4} l 30 34 l 62 -70" fill="none" stroke="#ffffff" '
+                f'stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>')
 
-    def _card_zone(x0, emcol):
-        return (f'<rect x="{x0}" y="{card_top}" width="{CARD_W}" height="{CARD_H}" rx="16" fill="#ffffff" '
-                f'opacity="0.5" stroke="{emcol}" stroke-width="4" stroke-dasharray="14 10"/>')
-    icx = lambda i: zx[i] + CARD_W/2
-    icy = card_top + CARD_H/2
-    # FOLLOWERS — a single large follower meeple (your gained followers live here)
-    P.append(_card_zone(zx[0], violet) + _follower(icx(0), icy - 40, 210, True))
-    # CANCELLED — a passport stamp with a bold diagonal slash (void); taupe
-    P.append(_card_zone(zx[1], taupe)
-             + emblem_svg("stamp", icx(1), icy, 150, taupe, stroke=ink)
-             + f'<line x1="{icx(1)-150}" y1="{icy+150}" x2="{icx(1)+150}" y2="{icy-150}" '
-               f'stroke="{taupe}" stroke-width="22" stroke-linecap="round"/>')
-    # COMPLETE — a passport stamp with a bold check (done); gold
-    P.append(_card_zone(zx[2], gold_pile)
-             + emblem_svg("stamp", icx(2), icy, 150, gold_pile, stroke=ink)
-             + f'<path d="M{icx(2)-110} {icy+6} l 70 80 l 150 -170" fill="none" stroke="{gold_pile}" '
-               f'stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>')
+    def _body_follower(cx, cy):
+        return _follower(cx, cy - 30, 200, True)
+    def _body_cancel(cx, cy):
+        return (emblem_svg("stamp", cx, cy, 150, taupe, stroke=ink)
+                + f'<line x1="{cx-150}" y1="{cy+150}" x2="{cx+150}" y2="{cy-150}" '
+                  f'stroke="{taupe}" stroke-width="22" stroke-linecap="round"/>')
+    def _body_check(cx, cy):
+        return (emblem_svg("stamp", cx, cy, 150, gold_pile, stroke=ink)
+                + f'<path d="M{cx-110} {cy+6} l 70 80 l 150 -170" fill="none" stroke="{gold_pile}" '
+                  f'stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>')
+
+    lanes = [(zx[0], violet, _hdr_follower, _body_follower),
+             (zx[1], taupe,  _hdr_cancel,   _body_cancel),
+             (zx[2], gold_pile, _hdr_check, _body_check)]
+    for x0, col, hdr, body in lanes:
+        panel, body_top = _lane(x0, col, hdr)
+        P.append(panel)
+        P.append(_drop_and_stack(x0, body_top, col, body))
 
     return _svg(W, H, P), W, H
 
