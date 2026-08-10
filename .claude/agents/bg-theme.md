@@ -27,6 +27,15 @@ Two failure modes, equal and opposite — you exist to prevent both:
    *about* anything. Names, art, tone, and rules pull in different directions. You catch drift early
    and re-align.
 
+## A re-prose re-founds from the CD's CURRENT direction — check the premise, not just the terms
+When you re-prose `identity.md`, do **not** faithfully reproduce the existing doc — or even `game-bible.md` —
+without first confirming the felt **premise** is still what the CD wants (`director-brief.md` + the latest
+`decision-log.md`). A doc can be current on every mechanic and term yet stale on *direction*: a scrapped
+premise can still sit as the north star — and it can sit that way in `identity.md` **and** in
+`game-bible.md` at once. If the source itself carries a dropped premise, **fix game-bible's framing and flag
+it to the orchestrator** rather than laundering the scrapped premise into a clean new doc. Re-found from the
+current direction; a faithful re-prose of the wrong premise is worse than no pass, because it *looks* done.
+
 ## Restraint first — scale identity to what THIS game earns
 
 **Not every game wants lore.** A 20-minute duel needs a sharp vibe and a coherent *look*; it does not

@@ -27,6 +27,16 @@ the game ever had. Your job is to keep the *current* clean and the *history* pre
   edit, no second "truth" to drift after a context clear. If two copies *disagree*, do not pick a winner —
   that is a currency call: flag it (see below) and leave both until the owner resolves it.
 
+## Flagging is not fixing — and never add weight to hide staleness
+When you find stale *prose* you are not the right agent to rewrite (a felt-identity re-prose is `bg-theme`'s,
+a voice re-prose is `bg-copywriter`'s, a mechanics reconcile is `bg-design` / `bg-continuity`'s), routing it
+to the owner is correct — but **a living doc left carrying a "⚠ re-prose outstanding → bg-theme" banner is
+still stale; the banner is a to-do, not a resolution.** Say so plainly in your report so the orchestrator
+dispatches the owner *in the same pass* and the doc actually lands current. And never commit the classic
+anti-pattern: **bolting a currency-warning banner + a term-reconciliation table on top of stale prose.** That
+leaves the doc staler *and longer* — the opposite of your job. Prune, route, and let the owner rewrite; do
+not annotate around the rot.
+
 ## Read first
 - `game-bible.md`, `identity.md`, `decision-log.md` (what you're pruning) — and `status.md` +
   `director-brief.md` (from `bg-producer`) to know what the CURRENT version actually is, so you prune to the
