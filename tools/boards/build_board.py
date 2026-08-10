@@ -30,9 +30,10 @@ import sys
 import textwrap
 from pathlib import Path
 
-# Scope icons ⦿/⬢/➤ are tofu under cairosvg's toy text API — draw them as SVG shapes inline in the
-# player aid, matching the event-card badges (bg-access FIX A).
-SCOPE_GLYPH_SHAPE = {"⦿": "ring_dot", "⬢": "hex", "➤": "arrow"}
+# Scope icons ⦿/⬢/➤ AND the phase glyphs ☀/☾ are tofu under cairosvg's toy text API — draw them as SVG
+# shapes inline in the player aid, matching the event-card badges + market-card phase badge (bg-access
+# FIX A + §16.7). Keying ☀→sun / ☾→moon lets the aid's region/phase discard note draw the real glyphs.
+SCOPE_GLYPH_SHAPE = {"⦿": "ring_dot", "⬢": "hex", "➤": "arrow", "☀": "sun", "☾": "moon"}
 
 
 def _text_w(s, fs):
@@ -376,10 +377,11 @@ def render_regionmap(theme, spec, phase="day"):
       • MARKET deck  → a face-down DECK glyph badged with a BOWL (ingredients), region hue.
       • Taipei start → a PAWN glyph in dashed pawn spaces (North hub).
       • regions      → colour + emblem + a single 繁體 glyph (▲北 / ◆中 / ●南 / ■東) — NO English words.
-    Follower supplies + Trending 爆紅 are OFF the board (loose tokens beside each player's OWN board);
-    a compact off-board LEGEND band in the free bottom strip carries the V7-M scarcity facts (SLOW /
-    per-round refill timing, the per-count face-up slot totals, and the win→board / lose→own-supply +
-    阿嬤 Travel-cost notes from map.json). The full setup-by-player-count detail lives in the RULEBOOK.
+    Follower supplies + Trending 爆紅 are OFF the board (loose tokens beside each player's OWN board).
+    NO off-board LEGEND band (CD steer 2026-08 — "get rid of the legend on the map"): the V7-M scarcity
+    facts (SLOW / per-round refill timing, the per-count face-up slot totals, win→board / lose→own-supply,
+    阿嬤 Travel-cost) + the region/phase discard cues live on the PLAYER AID and in the RULEBOOK, not here.
+    The board stays a clean icon-only play surface; the freed bottom strip is margin under the warm glow.
 
     BARE HSR. A double-rail spine runs N↔S with a stop node at each end; the Scheduled-Maintenance
     EVENT card is simply placed on the track (self-evident — no 停 badge, no label). A tiny train ICON
@@ -637,58 +639,13 @@ def render_regionmap(theme, spec, phase="day"):
                              f'stroke="{rcol}" stroke-width="2" stroke-dasharray="6 5"/>')
                 parts.append(_pawn(px, py-2, PAWN_R*0.9, rcol))
 
-    # ------------------------------------------------------------------ OFF-BOARD LEGEND (scarcity + meeples)
-    # A clearly-delineated KEY band in the free bottom strip (NOT a play space — the textless-space rule
-    # governs spaces, not the key). Surfaces the V7-M map.json fields the render must now carry: the SLOW /
-    # per-round `refill` timing + the human-facing `legend_notes` (阿嬤 Travel-cost; win → followers home /
-    # lose → your own supply) + the per-count face-up totals derived from `vendor_slots`. Per the CD steer,
-    # follower SUPPLIES are NOT drawn as a board zone — they sit loose by each player's own board; the band
-    # only NOTES the lifecycle. A map.json on-map follower_supply block is deliberately NOT rendered.
-    lx, ly = 60, 1360
-    lw = W - 120
-    lh = H - 30 - ly
-    parts.append(f'<rect x="{lx}" y="{ly}" width="{lw}" height="{lh}" rx="18" fill="#ffffff" opacity="0.28" '
-                 f'stroke="{frame}" stroke-width="2.5"/>')
-    parts.append(f'<text x="{lx+24}" y="{ly+42}" font-size="28" fill="{ink}" '
-                 f'font-family="{tfont}" font-weight="bold" letter-spacing="2">LEGEND 圖例</text>')
-    cy = ly + 80
-    vs = spec.get("vendor_slots", {})
-    # SLOW-REFILL badge (a cycle/refresh glyph) — the load-bearing scarcity lever's timing
-    if vs.get("refill"):
-        gx = lx + 40
-        parts.append(f'<path d="M{gx-15} {cy-6} A 15 15 0 1 1 {gx+10} {cy+8}" fill="none" '
-                     f'stroke="{accent}" stroke-width="4" stroke-linecap="round"/>')
-        parts.append(f'<path d="M{gx+2} {cy-4} l 9 8 l -12 4" fill="none" stroke="{accent}" '
-                     f'stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>')
-        parts.append(f'<text x="{lx+72}" y="{cy}" font-size="24" fill="{accent}" '
-                     f'font-family="{tfont}" font-weight="bold" letter-spacing="1">SLOW REFILL</text>')
-        parts.append(f'<text x="{lx+300}" y="{cy}" font-size="22" fill="{text}" font-family="{bfont}">'
-                     f'empty slots refill at the END of each round — never instant.</text>')
-        cy += 42
-    # per-count face-up slot totals, derived from vendor_slots (floor 1 per region)
-    counts = []
-    for pc in ("3", "4", "5", "6"):
-        blk = vs.get(pc)
-        if isinstance(blk, dict):
-            try:
-                counts.append(f"{pc}p {sum(int(v) for v in blk.values())}")
-            except (TypeError, ValueError):
-                pass
-    if counts:
-        parts.append(f'<circle cx="{lx+30}" cy="{cy-8}" r="5" fill="{frame}"/>')
-        parts.append(f'<text x="{lx+50}" y="{cy}" font-size="22" fill="{text}" font-family="{bfont}">'
-                     f'Face-up stalls by players: {esc(" · ".join(counts))} (floor 1 per region).</text>')
-        cy += 40
-    # the human-facing legend_notes (skip the refill note — already shown as the badge above)
-    notes = [n for n in spec.get("legend_notes", []) if not str(n).upper().lstrip().startswith("SLOW REFILL")]
-    for n in notes:
-        segs = textwrap.wrap(str(n), 132)
-        parts.append(f'<circle cx="{lx+30}" cy="{cy-8}" r="5" fill="{frame}"/>')
-        for seg in segs:
-            parts.append(f'<text x="{lx+50}" y="{cy}" font-size="22" fill="{text}" '
-                         f'font-family="{bfont}">{esc(seg)}</text>')
-            cy += 32
-        cy += 8
+    # ------------------------------------------------------------------ NO OFF-BOARD LEGEND (CD steer 2026-08)
+    # The off-board LEGEND band is REMOVED per the CD ("get rid of the legend on the map"). The scarcity /
+    # slow-refill timing, the per-count face-up slot totals, and the win→board / lose→own-supply + 阿嬤
+    # Travel-cost notes now live on the PLAYER AID (components/player-aid.json) and in the rulebook — NOT on
+    # the shared table board, which stays a clean icon-only play surface. `vendor_slots` / `legend_notes`
+    # stay in map.json (still valid data; the per-region slot count is read above via slots_n) — they are
+    # simply no longer painted onto the map. The freed bottom strip is clean margin under the warm glow.
 
     return _svg(W, H, parts), W, H
 
@@ -932,120 +889,32 @@ def render_playerboard(theme, row, mockups_dir=None):
         P.append(f'<text x="{scx}" y="{img_y+IMG_H-38}" font-size="27" fill="#ffffff" text-anchor="middle" '
                  f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[{esc(fig_id)}]</text>')
 
-    # --- FOLLOWER POOL + SUPPLY lifecycle panel (V7-M meeples) — REPLACES the retired 0–8 dial ------------
-    # The dial is gone (it "didn't feel natural"). Followers are now physical, colour-coded meeples that
-    # live in one of three states, and the panel shows that LIFECYCLE left→right in the dial's old
-    # footprint: your SUPPLY (un-rallied) → grow on a Travel → YOUR BOARD (rallied, ready) → place on a
-    # Promote → ON A STALL (committed to a crowd-fight). `max` and `start_meeples` are surfaced from the
-    # data (網紅 owns 8, the field 6; start 2 on the board). Colour-agnostic on the board: drawn in the
-    # follower hue (violet) since any player may take any colour.
-    panel_x, panel_w = img_x, IMG_W                 # 70, 900
-    panel_y = img_y + IMG_H + 40                    # 1728
-    panel_bottom = H - M                            # 2410
-    panel_h = panel_bottom - panel_y                # 682
-
+    # --- FOLLOWERS → ONE card slot in the right-column row (V7-M · CD steer 2026-08) --------------------
+    # The three-bin SUPPLY→BOARD→STALL lifecycle panel is RETIRED. Followers now get ONE card-shaped slot
+    # sitting in a row with the two scoring piles, so the board reads as three identical card sections:
+    # Followers | Cancelled | Complete (each icon-in-the-middle, no text). The follower LIFECYCLE words
+    # move to the player aid (the board stays icon-only). `_follower` (kept) draws the slot's centre icon.
     def _follower(cx, cy, s, filled):
-        """A small follower MEEPLE glyph (round head + flared body). filled → rallied (solid);
-        hollow → un-rallied (white fill, violet outline)."""
+        """A follower MEEPLE glyph (round head + flared body). filled → solid; hollow → violet outline."""
         fill = violet if filled else "#ffffff"
         head = (f'<circle cx="{cx:.0f}" cy="{cy-s*0.62:.0f}" r="{s*0.34:.0f}" '
-                f'fill="{fill}" stroke="{violet}" stroke-width="3"/>')
+                f'fill="{fill}" stroke="{violet}" stroke-width="{max(3, s*0.10):.0f}"/>')
         body = (f'<path d="M{cx-s*0.62:.0f} {cy+s:.0f} '
                 f'C {cx-s*0.62:.0f} {cy-s*0.08:.0f} {cx-s*0.3:.0f} {cy-s*0.2:.0f} {cx:.0f} {cy-s*0.2:.0f} '
                 f'C {cx+s*0.3:.0f} {cy-s*0.2:.0f} {cx+s*0.62:.0f} {cy-s*0.08:.0f} {cx+s*0.62:.0f} {cy+s:.0f} Z" '
-                f'fill="{fill}" stroke="{violet}" stroke-width="3"/>')
+                f'fill="{fill}" stroke="{violet}" stroke-width="{max(3, s*0.10):.0f}"/>')
         return head + body
 
-    # header: title + a max/start pill
-    P.append(_follower(panel_x+26, panel_y+42, 22, True))
-    P.append(f'<text x="{panel_x+62}" y="{panel_y+52}" font-size="34" fill="{violet}" '
-             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">FOLLOWERS 粉 · your crowd</text>')
-    P.append(f'<text x="{panel_x+62}" y="{panel_y+90}" font-size="22" fill="{muted}" '
-             f'font-family="{bfont}" font-style="italic">your colour&#8217;s pool — grow to your board, then out onto a stall</text>')
-    pill_w = 300
-    pill_x = panel_x + panel_w - pill_w
-    P.append(f'<rect x="{pill_x}" y="{panel_y+14}" width="{pill_w}" height="58" rx="16" fill="{violet}"/>')
-    P.append(f'<text x="{pill_x+pill_w/2}" y="{panel_y+51}" font-size="30" fill="#ffffff" text-anchor="middle" '
-             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">POOL {pool_max} · START {start_n}</text>')
-
-    # three lifecycle bins
-    bins_top = panel_y + 122
-    bins_bot = panel_bottom - 66
-    bin_w, gap = 250, 75
-    xs = [panel_x + i*(bin_w+gap) for i in range(3)]
-    labels = [("SUPPLY 補給", "un-rallied"), ("YOUR BOARD 待命", "rallied · ready"),
-              ("ON A STALL 出攤", "committed")]
-
-    def _bin_box(bx, dashed):
-        d = ' stroke-dasharray="12 8"' if dashed else ""
-        return (f'<rect x="{bx}" y="{bins_top}" width="{bin_w}" height="{bins_bot-bins_top}" rx="18" '
-                f'fill="#ffffff" opacity="0.42" stroke="{violet}" stroke-width="3"{d}/>')
-
-    def _bin_header(bx, en_han, desc):
-        return (f'<text x="{bx+bin_w/2}" y="{bins_top+44}" font-size="26" fill="{violet}" text-anchor="middle" '
-                f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(en_han)}</text>'
-                f'<text x="{bx+bin_w/2}" y="{bins_top+78}" font-size="21" fill="{muted}" text-anchor="middle" '
-                f'font-family="{bfont}" font-style="italic">{esc(desc)}</text>')
-
-    def _lay_followers(bx, count, filled):
-        if count <= 0:
-            return (f'<text x="{bx+bin_w/2}" y="{(bins_top+96+bins_bot)/2:.0f}" font-size="30" fill="{muted}" '
-                    f'text-anchor="middle" font-family="{bfont}">—</text>')
-        cols = min(4, count)
-        rows = math.ceil(count / 4)
-        dx, dy, s = 52, 66, 18
-        gw = cols * dx
-        x0 = bx + (bin_w - gw) / 2 + dx/2
-        area_top, area_bot = bins_top + 96, bins_bot - 24
-        gh = rows * dy
-        y0 = area_top + (area_bot - area_top - gh) / 2 + dy/2
-        out = []
-        for k in range(count):
-            r_, c_ = divmod(k, 4)
-            # last row: centre a short row
-            in_row = min(4, count - r_*4)
-            rx0 = bx + (bin_w - in_row*dx) / 2 + dx/2
-            out.append(_follower(rx0 + c_*dx, y0 + r_*dy, s, filled))
-        return "".join(out)
-
-    # bins 1 & 2 hold meeples; bin 3 is the destination (a dashed target with a stall awning + one hollow follower)
-    P.append(_bin_box(xs[0], False) + _bin_header(xs[0], *labels[0]) + _lay_followers(xs[0], supply_n, False))
-    P.append(_bin_box(xs[1], False) + _bin_header(xs[1], *labels[1]) + _lay_followers(xs[1], start_n, True))
-    P.append(_bin_box(xs[2], True) + _bin_header(xs[2], *labels[2]))
-    # stall awning glyph + a lone standing follower inside bin 3
-    sx, sy = xs[2] + bin_w/2, (bins_top + 96 + bins_bot) / 2
-    P.append(f'<path d="M{sx-64} {sy-6} L{sx-50} {sy-46} L{sx+50} {sy-46} L{sx+64} {sy-6} Z" fill="{gold}"/>')
-    P.append(f'<line x1="{sx-58}" y1="{sy-6}" x2="{sx-58}" y2="{sy+46}" stroke="{gold}" stroke-width="6"/>'
-             f'<line x1="{sx+58}" y1="{sy-6}" x2="{sx+58}" y2="{sy+46}" stroke="{gold}" stroke-width="6"/>'
-             f'<line x1="{sx-72}" y1="{sy+46}" x2="{sx+72}" y2="{sy+46}" stroke="{gold}" stroke-width="7" stroke-linecap="round"/>')
-    P.append(_follower(sx, sy+30, 18, True))
-
-    # grow / place flow arrows in the gaps, with keyword labels above
-    arr_y = (bins_top + bins_bot) / 2
-    for gi, (kw, act) in enumerate([("grow", "Travel"), ("place", "Promote")]):
-        gx = panel_x + bin_w + gi*(bin_w+gap) + gap/2
-        P.append(f'<path d="M{gx-26:.0f} {arr_y:.0f} h 44 m -14 -12 l 14 12 l -14 12" fill="none" '
-                 f'stroke="{violet}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>')
-        P.append(f'<text x="{gx:.0f}" y="{arr_y-30:.0f}" font-size="22" fill="{violet}" text-anchor="middle" '
-                 f'font-family="{tfont}" font-weight="bold">{esc(kw)}</text>')
-        P.append(f'<text x="{gx:.0f}" y="{arr_y+46:.0f}" font-size="19" fill="{muted}" text-anchor="middle" '
-                 f'font-family="{bfont}" font-style="italic">({esc(act)})</text>')
-
-    # footnote: win / lose return direction (the lost-contest penalty that replaced the dial-drop)
-    P.append(f'<text x="{panel_x}" y="{panel_bottom-24}" font-size="21" fill="{ink}" '
-             f'font-family="{bfont}">Win a stall &#8594; your crowd comes home to your board.  '
-             f'Lose &#8594; back to your own supply.</text>')
-
-    # ==================== RIGHT COLUMN: prose one-liner + the two SCORING-PILE card zones ================
+    # ==================== RIGHT COLUMN: prose one-liner + THREE card sections in a row ===================
     # Prose banner and the pile tray share ONE centred width so they stack as a tidy module (rather than a
     # single vast tray floating in void); clean board-background margins sit either side.
     right_l = img_x + IMG_W + 60                    # 1030
     right_r = W - M                                 # 3438
     right_w = right_r - right_l                     # 2408
-    zgap = 170
-    inner_pad = 90
-    col_w = 2*CARD_W + zgap + 2*inner_pad           # 1850 — hugs the two poker footprints
-    col_x = right_l + (right_w - col_w) / 2         # centred in the right column
+    zgap = 50
+    inner_pad = 24
+    col_w = 3*CARD_W + 2*zgap + 2*inner_pad          # 2398 — hugs the THREE poker footprints
+    col_x = right_l + (right_w - col_w) / 2          # centred in the right column
 
     # --- PROSE strip: a short, funny one-liner (from the blurb), under the banner -----------------------
     ps_y, ps_h = content_top, 190
@@ -1060,38 +929,38 @@ def render_playerboard(theme, row, mockups_dir=None):
         P.append(f'<text x="{col_x+120}" y="{pbase + i*46:.0f}" font-size="38" fill="{ink}" '
                  f'font-family="{bfont}" font-style="italic">{esc(ln)}</text>')
 
-    # --- SCORING-PILE tray: the TWO card-EXACT-footprint drop zones (CANCELLED 取消 · COMPLETE 成團) ------
-    # Each zone is exactly one poker footprint (750×1050) so a real Booking card stacks on it. A compact
-    # tray hugs the pair and is centred vertically in the space below the prose banner.
-    tray_h = 200 + CARD_H + 56                      # header/label pad + card + bottom pad
+    # --- THREE card-EXACT-footprint sections in a row: FOLLOWERS | CANCELLED | COMPLETE (CD steer 2026-08).
+    # Each is exactly one poker footprint (750×1050) so real meeples / Booking cards sit on it, styled
+    # identically, ICON-IN-THE-MIDDLE, NO TEXT (the board is icon-only; the player aid carries the words).
+    # Distinguished by SHAPE + colour (CVD-safe): a follower meeple (violet) · a slashed stamp = cancelled
+    # (taupe) · a checked stamp = complete (gold). The follower slot is where YOUR gained followers live.
+    tray_pad_top, tray_pad_bot = 70, 40
+    tray_h = tray_pad_top + CARD_H + tray_pad_bot
     tray_y = ps_y + ps_h + ((H - M) - (ps_y + ps_h) - tray_h) / 2   # centred below the prose
     tray_x, tray_w = col_x, col_w
     P.append(f'<rect x="{tray_x}" y="{tray_y}" width="{tray_w}" height="{tray_h}" rx="24" '
-             f'fill="#ffffff" opacity="0.32" stroke="{gold}" stroke-width="3"/>')
-    P.append(f'<text x="{tray_x+40}" y="{tray_y+58}" font-size="32" fill="{ink}" '
-             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">SCORING PILES · 成團 / 取消</text>')
-    P.append(f'<text x="{tray_x+40}" y="{tray_y+92}" font-size="24" fill="{muted}" '
-             f'font-family="{bfont}" font-style="italic">stack each finished Booking card on its pile — these are your whole score</text>')
+             f'fill="#ffffff" opacity="0.28" stroke="{gold}" stroke-width="3"/>')
 
-    zx = [tray_x + inner_pad + i*(CARD_W + zgap) for i in range(2)]
-    card_top = tray_y + 200
-    label_y = card_top - 22
+    zx = [tray_x + inner_pad + i*(CARD_W + zgap) for i in range(3)]
+    card_top = tray_y + tray_pad_top
 
-    def pile_zone(x0, en, han, emcol, note, label):
-        s = [f'<text x="{x0+CARD_W/2}" y="{label_y}" font-size="30" fill="{emcol}" text-anchor="middle" '
-             f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(label)}</text>',
-             f'<rect x="{x0}" y="{card_top}" width="{CARD_W}" height="{CARD_H}" rx="16" fill="#ffffff" '
-             f'opacity="0.5" stroke="{emcol}" stroke-width="4" stroke-dasharray="14 10"/>',
-             emblem_svg("stamp", x0+CARD_W/2, card_top+CARD_H*0.34, 54, emcol, stroke=ink),
-             f'<text x="{x0+CARD_W/2}" y="{card_top+CARD_H*0.56:.0f}" font-size="72" fill="{emcol}" '
-             f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(han)}</text>',
-             f'<text x="{x0+CARD_W/2}" y="{card_top+CARD_H*0.66:.0f}" font-size="30" fill="{ink}" '
-             f'text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="2">{esc(en)}</text>',
-             f'<text x="{x0+CARD_W/2}" y="{card_top+CARD_H-40}" font-size="24" fill="{muted}" '
-             f'text-anchor="middle" font-family="{bfont}" font-style="italic">{esc(note)}</text>']
-        return "".join(s)
-    P.append(pile_zone(zx[0], "CANCELLED", "取消", taupe, "didn't run → half value", "CANCELLED 取消"))
-    P.append(pile_zone(zx[1], "COMPLETE", "成團", gold_pile, "ran → full value", "COMPLETE 成團"))
+    def _card_zone(x0, emcol):
+        return (f'<rect x="{x0}" y="{card_top}" width="{CARD_W}" height="{CARD_H}" rx="16" fill="#ffffff" '
+                f'opacity="0.5" stroke="{emcol}" stroke-width="4" stroke-dasharray="14 10"/>')
+    icx = lambda i: zx[i] + CARD_W/2
+    icy = card_top + CARD_H/2
+    # FOLLOWERS — a single large follower meeple (your gained followers live here)
+    P.append(_card_zone(zx[0], violet) + _follower(icx(0), icy - 40, 210, True))
+    # CANCELLED — a passport stamp with a bold diagonal slash (void); taupe
+    P.append(_card_zone(zx[1], taupe)
+             + emblem_svg("stamp", icx(1), icy, 150, taupe, stroke=ink)
+             + f'<line x1="{icx(1)-150}" y1="{icy+150}" x2="{icx(1)+150}" y2="{icy-150}" '
+               f'stroke="{taupe}" stroke-width="22" stroke-linecap="round"/>')
+    # COMPLETE — a passport stamp with a bold check (done); gold
+    P.append(_card_zone(zx[2], gold_pile)
+             + emblem_svg("stamp", icx(2), icy, 150, gold_pile, stroke=ink)
+             + f'<path d="M{icx(2)-110} {icy+6} l 70 80 l 150 -170" fill="none" stroke="{gold_pile}" '
+               f'stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>')
 
     return _svg(W, H, P), W, H
 

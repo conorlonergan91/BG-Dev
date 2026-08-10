@@ -1,5 +1,5 @@
 {
-  "_note": "V7-M quick-glance aid for build_board.py --type aid. STRIPPED to the ON-YOUR-TURN section ONLY: scarcity/refill timing, the boundary tie-resolver, events, the deck-driven clock, Rave Reviews, and scoring live in the RULEBOOK, not the aid. V7-M vocabulary: Followers are physical meeples in your colour (max 6 / Influencer 8); zones = your supply / your board / on a stall. Actions keep Travel + Promote (no dial / Buzz / Reach / Draw). One action per turn.",
+  "_note": "V7-M quick-glance aid for build_board.py --type aid. The ON-YOUR-TURN section, PLUS the words the icon-only components dropped: the character boards are icon-only, the follower slot + scoring piles carry no text, and the map legend was removed (CD steer) — so the aid now backfills the follower lifecycle, the region+phase ☀/☾ discard cue, and the market reshuffle/SINK rule. Deeper detail (per-count scarcity counts, the boundary tie-resolver, event framework, the deck-driven clock, Rave Reviews, full scoring) stays in the RULEBOOK. V7-M vocabulary: Followers are physical meeples in your colour (max 6 / Influencer 8); zones = your supply / your board / on a stall. Actions keep Travel + Promote (no dial / Buzz / Reach / Draw). One action per turn. ☀/☾ are DRAWN by the aid renderer (sun/moon shapes), never a font emoji.",
   "title": "Travel Agents: Taiwan — Player Aid",
   "subtitle": "On your turn: do ONE action · then trim your Larder to 7",
   "sections": [
@@ -10,8 +10,16 @@
         "CONVENIENCE STORE (anywhere): flip 1 from any region's market — take the ingredient, or the event fires.",
         "TRAVEL: move 1 region (HSR = 北↔南); flip 1 on arrival (event whiffs). Then GROW: 1 follower, supply → your board. (Homebody 媽寶 draws 2 from the region she LEFT; Globetrotter 阿嬤 reaches ANY region, tiring 1 follower to supply.)",
         "PROMOTE (here): place up to 2 followers FROM YOUR BOARD onto face-up stall(s) here — stacked or spread, in full view.",
-        "BRIBE A STALL (here): win it if you hold STRICTLY MORE followers on it than every rival (Big Brother 大哥 wins ties) + pay its ingredients − your region discounts (no follower cost). It joins your tour + may complete a Booking. Your followers come HOME to your board; each loser's scatter to their OWN supply. Leave the slot empty.",
+        "BRIBE A STALL (here): win it if you hold STRICTLY MORE followers on it than every rival AND meet its crowd floor (Big Brother 大哥 wins ties) + pay its ingredients − your region discounts (no follower cost). It joins your tour + may complete a Booking. Your followers come HOME to your board; each loser's scatter to their OWN supply. Leave the slot empty.",
         "LINE UP A BOOKING: take 1 from the face-up row, then refill. Your Bookings are your whole score (成團 completed / 取消 cancelled)."
+      ]
+    },
+    {
+      "heading": "Followers · piles · market",
+      "lines": [
+        "FOLLOWERS (your colour meeples): a TRAVEL grows 1 (your supply → your board); a PROMOTE places up to 2 (your board → onto a stall). Win the stall → they come HOME to your board; lose → back to your OWN supply.",
+        "Your board's three card slots: your FOLLOWERS slot, plus the two Booking piles — 成團 COMPLETE (ran → full value) and 取消 CANCELLED (didn't run → half value). The piles are your whole score.",
+        "Every market card shows its region (colour + emblem) and ☀ day / ☾ night — that pair IS its discard pile. Spent / fired / passed-over cards go to that region+phase discard; when a deck runs out, shuffle its discard back in. SINK = to the BOTTOM of the live deck (stays in play). At DUSK / LAST TRAIN the ending phase's decks AND discards go to the BOX."
       ]
     }
   ]

@@ -45,13 +45,16 @@ import re
 import sys
 from pathlib import Path
 
-# Scoped-event icons: the ⦿/⬢/➤ glyphs are TOFU under cairosvg's toy text API (no fall-through to a
+# Scoped-event icons: the ⦿/✦/⬢/➤/▦ glyphs are TOFU under cairosvg's toy text API (no fall-through to a
 # glyph-bearing font), so we DRAW them as SVG shapes keyed off the event `scope` column and keep the
-# word label alongside. (bg-access FIX A.)
-SCOPE_SHAPE = {"self": "ring_dot", "region": "hex", "neighbour": "arrow", "island": "island_ring"}
+# word label alongside. (bg-access FIX A.) V7-M (bg-infodesign 2026-08): the five-scope framework
+# (design-doc §15.2) adds ✦ rival (auto-targets the LEADER) and ▦ board (whole map) alongside the
+# shipped self/region/neighbour — `rival`→a spark/spotlight, `board`→the concentric island ring.
+SCOPE_SHAPE = {"self": "ring_dot", "region": "hex", "neighbour": "arrow", "island": "island_ring",
+               "rival": "spark", "board": "island_ring"}
 SCOPE_WORD = {"self": "YOU 自己", "region": "THIS REGION 全區", "neighbour": "NEXT DOOR 鄰區",
-              "island": "ISLAND-WIDE 全島"}
-_SCOPE_GLYPHS = "⦿⬢➤"
+              "island": "ISLAND-WIDE 全島", "rival": "THE LEADER 領先者", "board": "EVERYONE 全體"}
+_SCOPE_GLYPHS = "⦿✦⬢➤▦"
 # The slate that ties the Scheduled-Maintenance island banner to its 停 board marker (bg-access §v6.3.1).
 MAINT_SLATE = "#8A8F98"
 
@@ -65,6 +68,164 @@ TITLE_SIZE, TYPE_SIZE, BODY_SIZE = 50, 28, 34
 LINE_H = 44
 TITLE_WRAP = 22                     # chars/line before the title wraps (header grows to fit)
 TITLE_LINE_H = 56
+
+# ---- V7-M EVENT ICONOGRAPHY (VERB · SCOPE · DURATION) ------------------------
+# Every event card is written in three primitives (design-doc §15.2). The card TEXT stays authoritative;
+# these icons are the at-a-glance memory anchor. English-only verb labels (the design's own verb names) —
+# no unreviewed 繁體 is minted here; the effect text carries the flavour/繁體 the consultant gates. All
+# glyphs are DRAWN (no font glyphs) so nothing renders tofu under cairosvg.
+VERB_WORD = {
+    "rally": "RALLY", "disperse": "DISPERSE", "gift": "GIFT", "pinch": "PINCH", "spoil": "SPOIL",
+    "swipe": "SWIPE", "sink": "SINK", "wash": "WASH", "restock": "RESTOCK", "trend": "TREND",
+    "block": "BLOCK", "detour": "DETOUR",
+}
+# family sign (+ grow/gain · − lose/tax · ~ neutral shuffle · × lock) — drawn as an ASCII chip (font-safe)
+VERB_SIGN = {
+    "rally": "+", "gift": "+", "restock": "+", "trend": "+",
+    "disperse": "-", "pinch": "-", "spoil": "-", "swipe": "-",
+    "sink": "~", "wash": "~", "block": "x", "detour": "x",
+}
+DURATION_WORD = {"turn": "TURN", "round": "ROUND", "phase": "PHASE"}
+
+
+def _sign_chip(sx: float, sy: float, sr: float, s: str, col: str, tfont: str) -> str:
+    """A small +/−/~/× sign badge (ASCII only — font-covered, never tofu)."""
+    return (f'<circle cx="{sx}" cy="{sy}" r="{sr}" fill="#ffffff" stroke="{col}" stroke-width="3"/>'
+            f'<text x="{sx}" y="{sy + sr*0.42:.0f}" font-size="{sr*1.35:.0f}" fill="{col}" '
+            f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(s)}</text>')
+
+
+def _hourglass(cx: float, cy: float, r: float, col: str) -> str:
+    """A drawn ⏳ hourglass — the DURATION 'lingers until…' marker (never the tofu emoji)."""
+    top = f'<path d="M{cx-r} {cy-r} L{cx+r} {cy-r} L{cx} {cy} Z" fill="{col}"/>'
+    bot = f'<path d="M{cx} {cy} L{cx+r} {cy+r} L{cx-r} {cy+r} Z" fill="{col}"/>'
+    caps = (f'<line x1="{cx-r*1.15}" y1="{cy-r}" x2="{cx+r*1.15}" y2="{cy-r}" stroke="{col}" '
+            f'stroke-width="{max(2, r*0.28):.0f}" stroke-linecap="round"/>'
+            f'<line x1="{cx-r*1.15}" y1="{cy+r}" x2="{cx+r*1.15}" y2="{cy+r}" stroke="{col}" '
+            f'stroke-width="{max(2, r*0.28):.0f}" stroke-linecap="round"/>')
+    return top + bot + caps
+
+
+def _verb_glyph(verb: str, cx: float, cy: float, r: float, col: str, ink: str) -> str:
+    """ONE consistent drawn icon per effect VERB (design-doc §15.2a). Grouped by family so a player
+    reads them as three intuitions — CROWD (your crowd), PANTRY (your ingredients), STREET (the board).
+    Every shape is drawn; the sign chip is added by the caller."""
+    def bowl(bx, by, br):
+        return (f'<path d="M{bx-br} {by-br*0.1} A {br} {br} 0 0 0 {bx+br} {by-br*0.1} Z" fill="{col}"/>'
+                f'<ellipse cx="{bx}" cy="{by-br*0.1}" rx="{br}" ry="{br*0.24}" fill="none" '
+                f'stroke="{col}" stroke-width="{max(2, br*0.16):.0f}"/>')
+    def deck(dx, dy, dw, dh):
+        return (f'<rect x="{dx-dw/2+5}" y="{dy-dh/2+5}" width="{dw}" height="{dh}" rx="5" fill="{col}" opacity="0.4"/>'
+                f'<rect x="{dx-dw/2}" y="{dy-dh/2}" width="{dw}" height="{dh}" rx="5" fill="none" '
+                f'stroke="{col}" stroke-width="4"/>')
+    if verb in ("rally", "disperse"):        # CROWD — a cluster of people; a chevron grows (rally) / drops (disperse)
+        s = emblem_svg("crowd", cx, cy, r*0.9, col)
+        if verb == "rally":                   # chevron points UP, sitting above the crowd
+            tip_y, base_y = cy - r*1.5, cy - r*1.05
+        else:                                 # chevron points DOWN, below the crowd
+            tip_y, base_y = cy + r*1.5, cy + r*1.05
+        chev = (f'<path d="M{cx-r*0.5} {base_y} L{cx} {tip_y} L{cx+r*0.5} {base_y}" fill="none" '
+                f'stroke="{col}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>')
+        return s + chev
+    if verb == "gift":                        # PANTRY gain — a parcel (box + ribbon + bow)
+        box = f'<rect x="{cx-r*0.8}" y="{cy-r*0.5}" width="{r*1.6}" height="{r*1.3}" rx="4" fill="{col}"/>'
+        rib = (f'<line x1="{cx}" y1="{cy-r*0.5}" x2="{cx}" y2="{cy+r*0.8}" stroke="#ffffff" stroke-width="4"/>'
+               f'<line x1="{cx-r*0.8}" y1="{cy-r*0.05}" x2="{cx+r*0.8}" y2="{cy-r*0.05}" stroke="#ffffff" stroke-width="4"/>')
+        bow = (f'<circle cx="{cx-r*0.28}" cy="{cy-r*0.62}" r="{r*0.24}" fill="{col}"/>'
+               f'<circle cx="{cx+r*0.28}" cy="{cy-r*0.62}" r="{r*0.24}" fill="{col}"/>')
+        return box + rib + bow
+    if verb in ("pinch", "spoil"):            # PANTRY loss — a bowl; spoil adds a rising 'off' wisp
+        s = bowl(cx, cy, r*0.9)
+        if verb == "spoil":
+            s += (f'<path d="M{cx-r*0.3} {cy-r*0.6} q {r*0.3} -{r*0.4} 0 -{r*0.8}" fill="none" '
+                  f'stroke="{col}" stroke-width="3" stroke-linecap="round" opacity="0.8"/>'
+                  f'<path d="M{cx+r*0.3} {cy-r*0.6} q {r*0.3} -{r*0.4} 0 -{r*0.8}" fill="none" '
+                  f'stroke="{col}" stroke-width="3" stroke-linecap="round" opacity="0.8"/>')
+        return s
+    if verb == "swipe":                       # PANTRY steal — a hand/arrow taking a chip
+        dot = f'<circle cx="{cx+r*0.7}" cy="{cy}" r="{r*0.34}" fill="{col}"/>'
+        arr = (f'<path d="M{cx+r*0.5} {cy} h -{r*1.3} m {r*0.5} -{r*0.42} l -{r*0.5} {r*0.42} l {r*0.5} {r*0.42}" '
+               f'fill="none" stroke="{col}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>')
+        return dot + arr
+    if verb == "sink":                        # STREET — a card pushed to the BOTTOM of the deck
+        return deck(cx, cy-r*0.15, r*1.3, r*1.5) + (
+            f'<path d="M{cx} {cy-r*0.55} v {r*1.1} m -{r*0.36} -{r*0.36} l {r*0.36} {r*0.36} l {r*0.36} -{r*0.36}" '
+            f'fill="none" stroke="{col}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>')
+    if verb == "wash":                        # STREET — a refresh cycle (two curved arrows)
+        return (f'<path d="M{cx-r*0.75} {cy} a {r*0.75} {r*0.75} 0 1 1 {r*0.22} {r*0.55}" fill="none" '
+                f'stroke="{col}" stroke-width="4" stroke-linecap="round"/>'
+                f'<path d="M{cx-r*0.95} {cy-r*0.3} l {r*0.2} {r*0.3} l {r*0.32} -{r*0.22}" fill="none" '
+                f'stroke="{col}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>')
+    if verb == "restock":                     # STREET — an empty slot refilled (dashed box + up arrow)
+        return (f'<rect x="{cx-r*0.7}" y="{cy-r*0.8}" width="{r*1.4}" height="{r*1.6}" rx="4" fill="none" '
+                f'stroke="{col}" stroke-width="3" stroke-dasharray="6 4"/>'
+                f'<path d="M{cx} {cy+r*0.55} v -{r*1.0} m -{r*0.34} {r*0.34} l {r*0.34} -{r*0.34} l {r*0.34} {r*0.34}" '
+                f'fill="none" stroke="{col}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>')
+    if verb == "trend":                       # STREET — going viral (a spark/star with motion ticks)
+        return emblem_svg("spark", cx, cy, r*0.95, col) + (
+            f'<line x1="{cx+r*0.9}" y1="{cy-r*0.6}" x2="{cx+r*1.25}" y2="{cy-r*0.85}" stroke="{col}" stroke-width="3" stroke-linecap="round"/>'
+            f'<line x1="{cx+r*0.95}" y1="{cy}" x2="{cx+r*1.35}" y2="{cy}" stroke="{col}" stroke-width="3" stroke-linecap="round"/>')
+    if verb == "block":                       # STREET — a prohibition ring (circle + diagonal slash)
+        return (f'<circle cx="{cx}" cy="{cy}" r="{r*0.85}" fill="none" stroke="{col}" stroke-width="4"/>'
+                f'<line x1="{cx-r*0.6}" y1="{cy+r*0.6}" x2="{cx+r*0.6}" y2="{cy-r*0.6}" stroke="{col}" stroke-width="4" stroke-linecap="round"/>')
+    if verb == "detour":                      # STREET — a bent/forked travel arrow
+        return (f'<path d="M{cx-r*0.8} {cy+r*0.6} h {r*0.8} v -{r*0.9} h {r*0.7} m -{r*0.32} -{r*0.34} '
+                f'l {r*0.32} {r*0.34} l -{r*0.32} {r*0.34}" fill="none" stroke="{col}" stroke-width="4" '
+                f'stroke-linecap="round" stroke-linejoin="round"/>')
+    return emblem_svg("spark", cx, cy, r, col)
+
+
+def _event_iconography(theme: dict, row: dict, verb: str, scope: str, duration: str,
+                       value: str, type_text_y: float, scol: str) -> tuple[str, float]:
+    """Build the VERB · SCOPE · DURATION icon strip for an event, plus a header ☀/☾ phase badge.
+    Returns (svg, strip_height). Routed through the caller's existing `scope_chip` slot so the SHARED
+    render_card_svg template gains NO new line — non-events pass "" and Beacon stays byte-identical.
+    All coordinates are absolute, so the header badge lands top-right regardless of string placement."""
+    ink, muted, accent = theme["ink"], theme["muted"], theme["accent"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    parts = []
+
+    # --- header ☀/☾ phase badge (top-right) — the region+phase discard-sort cue (§16.7), DRAWN sun/moon
+    ps = phase_style(row.get("phase"))
+    if ps:
+        pcol = ps["frame"]
+        pchar = "夜" if ps.get("emblem") == "moon" else ("日" if ps.get("emblem") == "sun" else "通")
+        bx, by, br = CARD_W - MARGIN - 34, MARGIN + 34, 42
+        parts.append(f'<circle cx="{bx}" cy="{by}" r="{br}" fill="#ffffff" stroke="{pcol}" stroke-width="4"/>')
+        parts.append(emblem_svg(ps.get("emblem", "spark"), bx, by, br*0.42, pcol))
+        parts.append(f'<text x="{bx}" y="{by + br*0.86:.0f}" font-size="22" fill="{pcol}" text-anchor="middle" '
+                     f'font-family="{tfont}" font-weight="bold">{esc(pchar)}</text>')
+
+    # --- VERB row: glyph + sign chip + word + magnitude ------------------------------------------------
+    y0 = type_text_y + 44
+    vx, vr = MARGIN + 30, 26
+    parts.append(_verb_glyph(verb, vx, y0, vr, scol, ink))
+    parts.append(_sign_chip(vx + vr + 4, y0 - vr, 15, VERB_SIGN.get(verb, "~"), scol, tfont))
+    vw = VERB_WORD.get(verb, verb.upper())
+    parts.append(f'<text x="{MARGIN + 78}" y="{y0 + 10}" font-size="34" fill="{scol}" '
+                 f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(vw)}</text>')
+    # magnitude (show only when >1 — a '1' is the default and adds noise); a '×N' chip after the word
+    try:
+        mag = int(float(value)) if str(value).strip() else 1
+    except ValueError:
+        mag = 1
+    if mag > 1:
+        mtx = MARGIN + 78 + (len(vw) * 22) + 18
+        parts.append(_sign_chip(mtx, y0 - 2, 18, f"×{mag}", accent, tfont))
+
+    # --- SCOPE + DURATION row ---------------------------------------------------------------------------
+    y1 = y0 + 64
+    if scope in SCOPE_SHAPE:
+        parts.append(emblem_svg(SCOPE_SHAPE[scope], MARGIN + 22, y1 - 8, 20, scol, stroke=ink))
+        parts.append(f'<text x="{MARGIN + 58}" y="{y1}" font-size="28" fill="{scol}" '
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(SCOPE_WORD[scope])}</text>')
+    if duration in DURATION_WORD:
+        dx = CARD_W - MARGIN - 190
+        _hourglass_r = 16
+        parts.append(_hourglass(dx, y1 - 8, _hourglass_r, muted))
+        parts.append(f'<text x="{dx + 26}" y="{y1}" font-size="24" fill="{muted}" '
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(DURATION_WORD[duration])}</text>')
+    return "".join(parts), 130.0
 
 
 def format_target(target: str) -> str:
@@ -271,49 +432,68 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
         f'font-family="{tfont}" font-weight="bold" letter-spacing="3">PAY 付</text>'
         + cross_tag + chips)
 
-    # --- WON BY row: pure plurality (V7-M) — the stall goes to the biggest crowd; NO printed number ------
-    # The old DRAW 人氣 gauge and Buzz threshold are gone: winning is purely relative (out-commit your
-    # rivals). A crowd glyph + a short reminder line encodes "most followers on the stall wins" WITHOUT
-    # printing any win-count (the count needed is emergent — rival + 1). Same on every vendor; it is a
-    # memory anchor, the rulebook carries the tie/大哥 detail.
-    won_label_y = chips_cy + 120
-    won_cy = won_label_y + 56
-    wx = MARGIN + 40
-    wonby_block = (
-        f'<text x="{MARGIN}" y="{won_label_y}" font-size="28" fill="{accent}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">WON BY 得標</text>'
-        + emblem_svg("crowd", wx, won_cy, 34, gold) +
-        f'<text x="{wx + 62}" y="{won_cy - 4}" font-size="30" fill="{text}" '
-        f'font-family="{bfont}" font-weight="bold">most followers on the stall</text>'
-        f'<text x="{wx + 62}" y="{won_cy + 32}" font-size="23" fill="{muted}" '
-        f'font-family="{bfont}" font-style="italic">a plurality — no set number to reach</text>')
+    # --- STATS row (V7-M, ICONS + NUMBERS, no prose): the crowd FLOOR (min_followers) + the VP payoff (vp).
+    # The old "WON BY 得標 · a plurality — no set number" line is REMOVED — it is now factually wrong (there
+    # IS a min_followers floor). Two labelled stat cells replace it: a crowd-on-a-floor glyph + the floor
+    # number (1/2/3 followers you must MEET to claim; a plurality still decides the winner), and a gold VP
+    # pip + the payoff number (1–6, what the won stall scores). No sentences — the rulebook + icon sheet
+    # carry the tie/大哥/plurality words.
+    violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
+    min_f = str(row.get("min_followers", "")).strip()
+    vp = str(row.get("vp", "")).strip()
+    stats_label_y = chips_cy + 118
+    stats_cy = stats_label_y + 74
+    # left cell — CROWD FLOOR: a crowd glyph resting on a drawn floor bar + the number
+    fx = MARGIN + 44
+    crowd_stat = (
+        f'<text x="{MARGIN}" y="{stats_label_y}" font-size="28" fill="{accent}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">CROWD 人潮</text>'
+        + emblem_svg("crowd", fx, stats_cy - 4, 32, violet) +
+        f'<line x1="{fx-42}" y1="{stats_cy+40}" x2="{fx+42}" y2="{stats_cy+40}" stroke="{violet}" '
+        f'stroke-width="7" stroke-linecap="round"/>'
+        f'<text x="{fx+96}" y="{stats_cy+24}" font-size="74" fill="{violet}" '
+        f'font-family="{tfont}" font-weight="bold">{esc(min_f)}</text>')
+    # right cell — VP payoff: a gold pip + the number
+    vlx = CARD_W/2 + 40
+    vx = vlx + 42
+    vp_stat = (
+        f'<text x="{vlx}" y="{stats_label_y}" font-size="28" fill="{accent}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">POINTS 分</text>'
+        + emblem_svg("spark", vx, stats_cy - 4, 30, gold) +
+        f'<text x="{vx+64}" y="{stats_cy+24}" font-size="74" fill="{gold}" '
+        f'font-family="{tfont}" font-weight="bold">{esc(vp)}</text>')
+    stats_block = crowd_stat + vp_stat
 
-    # --- ICON box: region discount icon, or NONE (trophy / drink) ---------------
-    icon_label_y = won_cy + 96
+    # --- ICON box: region discount icon, ★ apex trophy, or drink — ICON + a terse tag (no sentence) ------
+    icon_label_y = stats_cy + 108
     box_y = icon_label_y + 18
     box_h = CARD_H - MARGIN - box_y
+    disc_chip = ""
     if icon:
         isuit = resolve_suit(theme, {"N": "north", "C": "central",
                                      "S": "south", "E": "east"}.get(icon, icon.lower()))
         iemb, icol = isuit["emblem"], isuit["color"]
-        icon_txt = f"{icon} discount icon — each you hold makes this region's ingredients 1 cheaper."
+        icon_tag = f"DISCOUNT 折 · {icon}"
+        # a '-1' chip = each held makes this region's ingredients 1 cheaper (the number, not a sentence)
+        disc_chip = (f'<circle cx="{MARGIN + 96 + 300}" cy="{box_y + 44}" r="26" fill="#ffffff" '
+                     f'stroke="{icol}" stroke-width="4"/>'
+                     f'<text x="{MARGIN + 96 + 300}" y="{box_y + 54}" font-size="34" fill="{icol}" '
+                     f'text-anchor="middle" font-family="{tfont}" font-weight="bold">-1</text>')
     elif is_apex:
         iemb, icol = "spark", gold
-        icon_txt = "★ apex marquee — the most-sought stall, NO discount icon (a trophy, not an engine piece)."
+        icon_tag = "★ APEX 名店"
     else:
         iemb, icol = "circle", muted
-        icon_txt = "Drink — cheap filler, NO discount icon."
-    icon_lines = wrap(icon_txt, max_chars=26)
-    icon_tspans = "".join(f'<tspan x="{MARGIN + 96}" dy="{0 if i == 0 else 40}">{esc(l)}</tspan>'
-                          for i, l in enumerate(icon_lines))
+        icon_tag = "DRINK 飲"
     icon_block = (
         f'<text x="{MARGIN}" y="{icon_label_y}" font-size="28" fill="{accent}" '
         f'font-family="{tfont}" font-weight="bold" letter-spacing="3">ICON 圖示</text>'
         f'<rect x="{MARGIN}" y="{box_y}" width="{CARD_W - 2*MARGIN}" height="{box_h}" rx="18" '
         f'fill="#ffffff" opacity="0.45" stroke="{icol}" stroke-width="3"/>'
-        + emblem_svg(iemb, MARGIN + 46, box_y + 52, 30, icol) +
-        f'<text x="{MARGIN + 96}" y="{box_y + 46}" font-size="30" fill="{text}" '
-        f'font-family="{bfont}">{icon_tspans}</text>')
+        + emblem_svg(iemb, MARGIN + 46, box_y + 44, 30, icol) +
+        f'<text x="{MARGIN + 96}" y="{box_y + 56}" font-size="34" fill="{text}" '
+        f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(icon_tag)}</text>'
+        + disc_chip)
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
   <defs>{page_gradient(theme, 'pg', page_cols)}</defs>
@@ -328,7 +508,7 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
   {eng_line}
   {place_line}
   {pay_block}
-  {wonby_block}
+  {stats_block}
   {icon_block}
   {ribbon}
 </svg>"""
@@ -572,20 +752,46 @@ def _render_ingredient_svg(row: dict, theme: dict) -> str:
     # English part of "豬肉 Pork" → "Pork" (strip a leading CJK run + space)
     en = re.sub(r'^[^\x00-\x7f]+\s*', '', name_full).strip() or name_full
     region = str(row.get("region", "")).strip().lower()
-    region_lab = {"north": "NORTH 北", "central": "CENTRAL 中", "south": "SOUTH 南",
-                  "east": "EAST 東", "sugar": "COMMON 共"}.get(region, region.upper())
+    # map the deck-region LETTER (n/c/s/e) → the region suit (colour + emblem) + its 繁體 glyph, so REGION
+    # is dual-coded on the card, not just a letter. A market card must sort to its region+phase discard
+    # pile at a glance (§16.7) — region here, phase in the ☀/☾ badge below.
+    region_key = {"n": "north", "c": "central", "s": "south", "e": "east"}.get(region, region)
+    rsuit = resolve_suit(theme, region_key) if region_key in theme["suits"] else {"color": scol, "emblem": "circle"}
+    rcol, remb = rsuit["color"], rsuit["emblem"]
+    region_char = {"north": "北", "central": "中", "south": "南", "east": "東"}.get(region_key, "")
     tcol_head = pick_text_color(scol, dark=ink, light="#ffffff")
 
-    # header band (grows nothing — single line): the ingredient's 繁體 name + region tag
+    # header band (grows nothing — single line): the ingredient's 繁體 name (region+phase live in the sort
+    # tab below the band, so the band stays clean).
     header_h = 118
     header_end = 26 + header_h
     head = (f'<path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} '
             f'h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} '
             f'v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{scol}"/>'
             f'<text x="{MARGIN}" y="{MARGIN+60}" font-size="60" fill="{tcol_head}" '
-            f'font-family="{tfont}" font-weight="bold">{esc(han)}</text>'
-            f'<text x="{CARD_W-MARGIN}" y="{MARGIN+40}" font-size="26" fill="{tcol_head}" text-anchor="end" '
-            f'font-family="{tfont}" font-weight="bold" letter-spacing="2" opacity="0.92">{esc(region_lab)}</text>')
+            f'font-family="{tfont}" font-weight="bold">{esc(han)}</text>')
+
+    # --- REGION + PHASE sort tab (top-right, straddling the header edge): two dual-coded roundels — REGION
+    # (region colour + region emblem + 繁體 glyph) and PHASE (☀ day / ☾ night, DRAWN sun/moon — never a
+    # font emoji → no tofu — + 日/夜). Together they say "this card's discard pile" at a glance (§16.7),
+    # dual-coded by SHAPE (emblem + sun/moon), not colour alone (bg-access redundant-encoding). ---
+    tab_cy = 26 + header_h/2
+    tab_r = 40
+    ph_cx = CARD_W - MARGIN - tab_r
+    rg_cx = ph_cx - (2*tab_r + 14)
+    phc = pstyle["frame"] if pstyle else ink
+    phe = pstyle.get("emblem", "spark") if pstyle else "spark"
+    phch = "夜" if phe == "moon" else ("日" if phe == "sun" else "通")
+    sort_tab = (
+        f'<circle cx="{rg_cx}" cy="{tab_cy}" r="{tab_r}" fill="#ffffff" stroke="{rcol}" stroke-width="4"/>'
+        + emblem_svg(remb, rg_cx, tab_cy - 8, tab_r*0.42, rcol, stroke=ink) +
+        f'<text x="{rg_cx}" y="{tab_cy + tab_r*0.82:.0f}" font-size="24" fill="{rcol}" text-anchor="middle" '
+        f'font-family="{tfont}" font-weight="bold">{esc(region_char)}</text>'
+        f'<circle cx="{ph_cx}" cy="{tab_cy}" r="{tab_r}" fill="#ffffff" stroke="{phc}" stroke-width="4"/>'
+        + emblem_svg(phe, ph_cx, tab_cy - 8, tab_r*0.40, phc) +
+        f'<text x="{ph_cx}" y="{tab_cy + tab_r*0.82:.0f}" font-size="24" fill="{phc}" text-anchor="middle" '
+        f'font-family="{tfont}" font-weight="bold">{esc(phch)}</text>')
+    head += sort_tab
 
     # PICTURE plate — a framed placeholder with the big ingredient emblem (the shape carries WHICH
     # ingredient) + the illustrator brief code. This is the pictorial payload of the card.
@@ -720,8 +926,11 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
     # ICONOGRAPHY is a SEPARATE presentation pass (see the render-pass flags in the dev handoff).
     is_event = bool((row.get("verb") or "").strip())
     is_objective = bool(target) and not is_event        # assignment-style: value is a completion bonus
-    if is_event:
-        value = ""                                       # don't stamp a stray VP numeral/pips on events
+    # V7-M (bg-infodesign 2026-08): events now SHOW their magnitude on the VERB glyph (the icon strip
+    # below), so the earlier blanket `value=""` suppression is GONE — we keep `value` readable for the
+    # strip. The generic bottom VP-pip / top index is a SCORING widget, wrong for an event, so it is
+    # guarded off with `not is_event` at its render site (below). Beacon has no `verb` → is_event False →
+    # that guard is a no-op there → byte-identical.
 
     # --- title: wraps; the header band GROWS to fit, so single-line titles are pixel-unchanged ---
     title_lines = wrap(row.get("name", ""), max_chars=TITLE_WRAP) or [""]
@@ -748,7 +957,7 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
     # bonus to a "+N VP" footer chip so the win-condition — not a constant number — leads.
     value_index = ""
     value_row = ""
-    if value:
+    if value and not is_event:
         try:
             vn = int(float(value))
         except ValueError:
@@ -811,11 +1020,22 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
             x += 84
         chip_h = 84
 
-    # --- scoped-event badge (drawn shape + word) — replaces the tofu ⦿/⬢/➤ glyph (bg-access FIX A) ---
+    # --- scoped-event badge (drawn shape + word) — replaces the tofu ⦿/✦/⬢/➤/▦ glyph (bg-access FIX A) ---
+    # V7-M events get the full VERB · SCOPE · DURATION iconography + magnitude + a ☀/☾ header phase badge,
+    # all built by _event_iconography and routed through THIS existing `scope_chip` slot so the SHARED
+    # template gains no new line (Beacon stays byte-identical). Non-events keep the plain scope chip.
     scope = (row.get("scope") or "").strip().lower()
     scope_chip = ""
     eff_text = row.get("effect", "")
-    if scope in SCOPE_SHAPE and not (recipe and glyph_map):
+    if is_event:
+        verb = (row.get("verb") or "").strip().lower()
+        duration = (row.get("duration") or "").strip().lower()
+        scope_chip, ev_h = _event_iconography(theme, row, verb, scope, duration, value,
+                                              type_text_y, scol)
+        eff_text = re.sub(r'^\s*[' + _SCOPE_GLYPHS + r'][^·]*·\s*', '', eff_text)
+        eff_text = re.sub(r'^\s*[' + _SCOPE_GLYPHS + r']\s*', '', eff_text)
+        chip_h = max(chip_h, ev_h)
+    elif scope in SCOPE_SHAPE and not (recipe and glyph_map):
         sy = type_text_y + 56
         scope_chip = (
             emblem_svg(SCOPE_SHAPE[scope], MARGIN + 24, sy - 8, 22, scol, stroke=ink) +
