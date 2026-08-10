@@ -183,7 +183,17 @@ them each time; fill the `<slots>`.
 > `<what it's doing>`. CHECK: `python tools/agents/agent_watch.py --all` + `ListAgents` (running vs done).
 > HANG = QUIET **and** ListAgents shows running **and** no repo write ~10 min → inspect, `TaskStop`, finish
 > manually. WHEN DONE: `<verify: lint 0 / tree clean / files committed+pushed / Beacon+tools untouched>`.
-> THEN: `<next step>`. If still in flight → re-arm 10 min + stay quiet (noop).
+> THEN: `<next step>`. If still in flight → **brief progress line if long-running (see below), else re-arm +
+> stay quiet (noop)**.
+
+**Progress cadence — brief, and rare.** The default while a pass runs is silence: the completion
+`<task-notification>` is the real update, and most passes are short enough that an interim line is just
+noise. **The exception is a genuinely long task** (spanning several poll cycles / more than ~15–20 min) —
+there, leaving the human in the dark is its own failure. For those, drop **one very short progress line**
+(≈one sentence: what it's on + a rough signal from `agent_watch` like files-touched or stage + elapsed),
+and **throttle hard** — at most one every ~15–20 min, and only when the agent is genuinely still alive and
+advancing. Never itemise, never repeat the same line, never post on a short task. If nothing has changed
+since the last update, stay a silent `noop`. When in doubt, err quiet.
 
 **3 · CD status-report skeleton** (what you tell the human when a pass lands):
 > **Done + pushed:** `<commits + one-line each>`. **Running now:** `<agent + what>`. **When it lands:**
