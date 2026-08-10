@@ -111,6 +111,24 @@ EVENT_SCALE   = float(os.environ.get("TA_EVENT_SCALE", "1.0"))   # switchable ev
 EVENTS_OFF    = os.environ.get("TA_EVENTS_OFF", "0") == "1"       # deal ZERO events (A/B: event contribution delta)
 STALL_CAP  = int(os.environ.get("TA_STALL_CAP", "60"))       # safety net (deck-clock is guaranteed to fire)
 
+# --- §18 VISIT_MODE toggle (the A/B the re-sim isolates) ------------------------------------------
+# "straight" = Option A (BASELINE, §18.2/§18.6): draw straight to your keep-count, events fire+discard
+#   and DO NOT count (§16.2 feeder-1 "passed-over card" is eliminated). "keep2" = status-quo control
+#   (§18.4 cell 2): flip 3, fire events, keep up to the cap, discard the rest. A clean switch — no rule
+#   is edited to pick one; both are faithful models and bg-playtest A/Bs them in one run.
+VISIT_MODE    = os.environ.get("TA_VISIT_MODE", "straight")      # "straight" (A, baseline) | "keep2" (control)
+
+# --- §15.9 the two cancelled-tour BOONS (CLEAR + SALVAGE) -----------------------------------------
+# ⚠ DATA GAP (flag to bg-developer): §15.8 scheduled the verb count 13 → 15 IN DATA, but events.csv still
+# holds only the 13 pre-boon verbs — the CLEAR (central-night, 1 copy) and SALVAGE (south-night, 1 copy)
+# cards spec'd in §15.9 were never transcribed. So the SALVAGE-swing / catch-up probes the readiness
+# charter requires cannot run off the CSV. Rather than edit component data (not this lane), the sim
+# INJECTS the two §15.9-spec'd cards synthetically into the night C/S pools (see _inject_tours_boons),
+# guarded by this flag so it is auditable + switchable. When bg-developer adds them to events.csv, set
+# this OFF and they load from the CSV like every other event.
+TOURS_BOONS   = os.environ.get("TA_TOURS_BOONS", "1") == "1"    # inject §15.9 CLEAR + SALVAGE (default ON)
+NUDGE_CAP     = int(os.environ.get("TA_NUDGE_CAP", "1"))        # §15.5 rail 6: max ✦ leader-hazard hits / leader / round
+
 # ==================================================================================================
 #  DATA LOADING — the built component CSV/JSON are the SOURCE OF TRUTH
 # ==================================================================================================
@@ -209,6 +227,34 @@ def _load_events():
 
 
 EVENTS, EVENT_POOL = _load_events()
+
+
+def _inject_tours_boons():
+    """§15.9 CLEAR + SALVAGE — the two cancelled-tour boons, framework-native (VERB · SCOPE · DURATION),
+    magnitude 1, rare (1 copy each). Not yet in events.csv (see the TOURS_BOONS flag note above), so the
+    sim adds them here faithfully to the spec so the SALVAGE-swing / catch-up probes can run:
+      * CLEAR  — *Back On the Itinerary* : VERB clear · SCOPE ⦿self · night / Central · qty 1. Shed ONE of
+                 your OWN cancelled tours (highest-value → box); fizzle if you hold none.
+      * SALVAGE — *Someone Has to Run It* : VERB salvage · SCOPE ✦(lowest-scoring rival) · night / South ·
+                 qty 1. The trailer sheds one cancelled tour's −⌊V/2⌋; the salvaged tour enters the DRAWER's
+                 Completed at HALF value ⌊V/2⌋. Graceful degrade → CLEAR own if no valid trailer.
+    Scope on SALVAGE is stored 'salvage' (a bespoke lowest-scorer target, NOT the ✦ leader used by losses)
+    so _scope_targets never mis-routes it up the standings."""
+    if not TOURS_BOONS:
+        return
+    specs = [
+        {"id": "EV-N31", "region": "C", "phase": 2, "scope": "self", "duration": "now",
+         "verb": "clear", "target": "", "value": 1, "qty": 1, "kind": "boon"},
+        {"id": "EV-N32", "region": "S", "phase": 2, "scope": "salvage", "duration": "now",
+         "verb": "salvage", "target": "", "value": 1, "qty": 1, "kind": "boon"},
+    ]
+    for sp in specs:
+        ev = {"idx": len(EVENTS), **sp}
+        EVENTS.append(ev)
+        EVENT_POOL[(sp["region"], sp["phase"])].extend([ev["idx"]] * sp["qty"])
+
+
+_inject_tours_boons()
 
 
 # --------------------------------------------------------------------------------------------------
@@ -511,6 +557,12 @@ class TravelAgentsGame:
                 "home_region": home,
                 "tickets": [], "counted_done": set(),
                 "day_book_score": 0, "night_book_score": 0, "cancel_penalty": 0,
+                # §15.9 the CANCELLED-TOUR pile: full VALUES V of cancelled Bookings (mid-game hand-limit
+                # cancels + phase-boundary unfinished). Scoring penalty = Σ⌊V/2⌋ over the pile, so CLEAR /
+                # SALVAGE shedding a tour reduces the penalty naturally. `salvage_score` banks the drawer's
+                # half-value Completed tours gained via SALVAGE (the sole Completed-at-half exception).
+                "cancelled": [], "salvage_score": 0,
+                "nudges_taken": 0, "nudge_impact": 0, "max_board": START_MEEPLES,
                 "next_bribe_disc": 0, "tempo_tax": 0, "promote_bonus": 0, "visit_keep_bonus": 0,
                 # §15 lingering BLOCK markers (⏳TURN): expiry = the turn at which they clear (this player's
                 # next turn start). -1 = inactive.
@@ -557,6 +609,14 @@ class TravelAgentsGame:
             # ---- §15 event probes ----
             "ev_by_verb": Counter(), "ev_leader_fires": 0, "ev_leader_fizzles": 0,
             "swipes": 0, "spoils": 0, "gifts": 0, "restocks": 0, "washes": 0, "blocks": 0, "detours": 0,
+            # §15.5 no-pile-on cap: leaders already ✦-nudged THIS round (cleared each end-of-round); cumulative
+            # leader ✦-hazard impact across the game (the "mild nudge, not a beating" binding target).
+            "nudged_this_round": Counter(), "nudge_pileon_blocked": 0, "leader_nudge_impact": 0,
+            # §15.9 CLEAR / SALVAGE probes (the catch-up double-boons + the SALVAGE-swing guard)
+            "clear_fires": 0, "clear_relief": 0, "salvage_fires": 0, "salvage_fizzles": 0,
+            "salvage_gain_drawer": 0, "salvage_relief_trailer": 0,
+            # §18 VISIT decision-density (M1): Visits offering a real keep-choice (≥2 distinct ingredient types)
+            "visit_choice_offered": 0,
             # ---- §16 deck-flow probes ----
             "reshuffles": {(r, ph): 0 for r in REGIONS for ph in (1, 2)},
             "reshuffle_sizes": {(r, ph): [] for r in REGIONS for ph in (1, 2)},
@@ -781,6 +841,7 @@ class TravelAgentsGame:
                 self._refill_round(s)
             for q in range(s["n"]):
                 s["players"][q]["visit_keep_bonus"] = 0
+            s["nudged_this_round"].clear()     # §15.5: the no-pile-on ceiling resets each round
         s["cur"] = s["turn"] % s["n"]
 
         if s["end_turn"] is None and s["turn"] >= STALL_CAP * s["n"]:
@@ -793,6 +854,8 @@ class TravelAgentsGame:
 
     def _track_committed(self, s, p):
         s["max_committed_by_player"] = max(s["max_committed_by_player"], self._committed(s, p))
+        pl = s["players"][p]
+        pl["max_board"] = max(pl["max_board"], pl["board"])   # banked-board probe (late-battler fingerprint)
         for b in s["fol"].values():
             s["max_committed_on_stall"] = max(s["max_committed_on_stall"], max(b))
 
@@ -993,7 +1056,7 @@ class TravelAgentsGame:
             # pile up incomplete — otherwise the night deck never exhausts and the game runs to the stall.
             victim = min(inprog, key=lambda k: self._prog_frac(pl, k))
             pl["tickets"].remove(victim)
-            pl["cancel_penalty"] += BOOKINGS[victim]["value"] // 2
+            pl["cancelled"].append(BOOKINGS[victim]["value"])   # §15.9 pile (CLEAR/SALVAGE can shed it)
             s["cancels"] += 1
         key = max(s["mrow"], key=lambda k: self._booking_want(s, p, k))
         s["mrow"].remove(key)
@@ -1070,7 +1133,12 @@ class TravelAgentsGame:
             keep = []
             for key in pl["tickets"]:
                 if BOOKINGS[key]["phase"] == 1:
-                    pl["day_book_score"] += _judge_booking(key, pl["won"])
+                    # §15.9: completed DAY tour → full VP; unfinished at dusk → CANCELLED pile (its −⌊V/2⌋
+                    # penalty, still sheddable by a night CLEAR/SALVAGE — the pile persists into night).
+                    if _booking_done(key, pl["won"]):
+                        pl["day_book_score"] += BOOKINGS[key]["value"]
+                    else:
+                        pl["cancelled"].append(BOOKINGS[key]["value"])
                 else:
                     keep.append(key)
             pl["tickets"] = keep
@@ -1153,8 +1221,16 @@ class TravelAgentsGame:
             self._resolve_all_ties(s, boundary="lasttrain", rng=rng)
         for p in range(s["n"]):
             pl = s["players"][p]
-            night = sum(_judge_booking(key, pl["won"]) for key in pl["tickets"]
-                        if BOOKINGS[key]["phase"] == 2)
+            # §15.9: completed NIGHT tour → full VP; unfinished-at-last-train → CANCELLED pile (game over,
+            # so its penalty stands). Scoring pulls the pile penalty in _booking_vp.
+            night = 0
+            for key in pl["tickets"]:
+                if BOOKINGS[key]["phase"] != 2:
+                    continue
+                if _booking_done(key, pl["won"]):
+                    night += BOOKINGS[key]["value"]
+                else:
+                    pl["cancelled"].append(BOOKINGS[key]["value"])
             pl["night_book_score"] = night
 
     # -------- sourcing / Larder cap --------
@@ -1213,6 +1289,51 @@ class TravelAgentsGame:
         best = max(key(q) for q in range(s["n"]))
         return [q for q in range(s["n"]) if key(q) == best]
 
+    def _standings_key(self, s, q):
+        pl = s["players"][q]
+        return (len(pl["counted_done"]), len(pl["won"]), pl["board"])
+
+    def _lowest_scorers(self, s):
+        """§15.9 SALVAGE targeting — the inverse of _leaders: fewest Completed → fewest vendors → fewest
+        board followers. The standings pick the trailer; the drawer never free-picks (no kingmaking)."""
+        worst = min(self._standings_key(s, q) for q in range(s["n"]))
+        return [q for q in range(s["n"]) if self._standings_key(s, q) == worst]
+
+    def _do_clear(self, s, p):
+        """CLEAR: shed ONE of your own Cancelled tours (highest value = biggest −⌊V/2⌋ relief) to the box.
+        Fizzle if you hold none. Returns the ⌊V/2⌋ relief (0 on fizzle)."""
+        pile = s["players"][p]["cancelled"]
+        if not pile:
+            return 0
+        v = max(pile)
+        pile.remove(v)
+        s["clear_fires"] += 1
+        s["clear_relief"] += v // 2
+        return v // 2
+
+    def _do_salvage(self, s, p):
+        """SALVAGE: auto-target the lowest-scoring rival holding a Cancelled tour; they shed its −⌊V/2⌋, the
+        salvaged tour enters the DRAWER's Completed at HALF value ⌊V/2⌋. Graceful degrade → CLEAR own; else
+        fizzle. (The only event that reaches a Completed pile, and never a leader's — cannot compound a lead.)"""
+        trailers = [q for q in self._lowest_scorers(s) if q != p and s["players"][q]["cancelled"]]
+        if not trailers:
+            # widen to ANY rival with a cancelled tour, still standings-ordered (never the drawer's free pick)
+            ranked = sorted((q for q in range(s["n"]) if q != p and s["players"][q]["cancelled"]),
+                            key=lambda q: self._standings_key(s, q))
+            trailers = ranked[:1]
+        if not trailers:
+            if self._do_clear(s, p) > 0:                 # graceful degrade to a self-CLEAR
+                return
+            s["salvage_fizzles"] += 1
+            return
+        q = trailers[0]
+        v = max(s["players"][q]["cancelled"])            # the tour they'd most benefit shedding
+        s["players"][q]["cancelled"].remove(v)
+        s["players"][p]["salvage_score"] += v // 2       # drawer's half-value Completed (the bounded boon)
+        s["salvage_fires"] += 1
+        s["salvage_gain_drawer"] += v // 2
+        s["salvage_relief_trailer"] += v // 2
+
     def _scope_targets(self, s, p, ev, r):
         """Who an event hits, from its scope icon, resolved relative to the drawn region r."""
         sc = ev["scope"]
@@ -1228,12 +1349,30 @@ class TravelAgentsGame:
         if sc == "rival":
             # ✦ loss auto-targets the LEADER; CD tied-leader refinement — hits ALL tied leaders EXCLUDING
             # the drawer; fizzles if the drawer is the sole/only-remaining top.
-            tgt = [q for q in self._leaders(s) if q != p]
-            if not tgt:
+            leaders = [q for q in self._leaders(s) if q != p]
+            if not leaders:
                 s["ev_leader_fizzles"] += 1
-                return None                                      # fizzle
+                return None                                      # fizzle: drawer is sole leader
+            if ev["kind"] == "hazard":
+                # §15.5 rail 6 (the "light catch-up VALVE, not a beating" binding): NO PILE-ON. A leader
+                # already ✦-nudged NUDGE_CAP times this round is not hit again — one nudge/leader/round is
+                # the ceiling. If every tied leader is capped out, the whole ✦ hazard fizzles this round.
+                eligible = [q for q in leaders if s["nudged_this_round"][q] < NUDGE_CAP]
+                if not eligible:
+                    s["nudge_pileon_blocked"] += 1
+                    s["ev_leader_fizzles"] += 1
+                    return None
+                for q in eligible:
+                    s["nudged_this_round"][q] += 1
+                    s["players"][q]["nudges_taken"] += 1
+                    # cumulative leader ✦-impact (magnitude is always 1 per rail 1): the DESIGN/SIM target
+                    # that this stays MILD across a whole game (§15.5 binding, §15.7 probe 2).
+                    s["players"][q]["nudge_impact"] += ev["value"]
+                    s["leader_nudge_impact"] += ev["value"]
+                s["ev_leader_fires"] += 1
+                return eligible
             s["ev_leader_fires"] += 1
-            return tgt
+            return leaders
         return [p]
 
     def _steal_one(self, s, thief, victim, typ):
@@ -1275,6 +1414,13 @@ class TravelAgentsGame:
         ev = EVENTS[idx]
         s["events_fired"] += 1
         s["ev_by_verb"][ev["verb"]] += 1
+        # §15.9 TOURS boons have bespoke targeting (self / lowest-scorer), resolved before scope routing.
+        if ev["verb"] == "clear":
+            self._do_clear(s, p)
+            return 0
+        if ev["verb"] == "salvage":
+            self._do_salvage(s, p)
+            return 0
         aff = self._scope_targets(s, p, ev, r)
         if aff is None:
             return 0                                     # fizzled ✦
@@ -1380,6 +1526,24 @@ class TravelAgentsGame:
         base = 3 if pl["char"] == "bigeater" else 2
         return base + pl["visit_keep_bonus"]             # §15 Golden Week ⏳ROUND boon
 
+    def _visit_target(self, pl):
+        """§18 straight-draw keep-count: Big Eater 大胃王 → 3, Homebody 媽寶 → 1 (his lane is Travel-forage,
+        §6.5), everyone else → 2; + the Golden Week ⏳ROUND boon."""
+        if pl["char"] == "homebody":
+            base = 1
+        elif pl["char"] == "bigeater":
+            base = 3
+        else:
+            base = 2
+        return base + pl["visit_keep_bonus"]
+
+    def _sample_visit_choice(self, s, types):
+        """§18 M1 probe: a Visit offered a real keep-choice iff ≥2 distinct ingredient TYPES turned up.
+        Under straight-draw (A) this reads ~0 by design (the choice moved to the map); under keep-2 it
+        reads whatever the flip-3 window actually supported (the CD's 'is it a choice or a chore')."""
+        if len(set(types)) >= 2:
+            s["visit_choice_offered"] += 1
+
     def _do_visit(self, s, p, rng):
         pl = s["players"][p]
         r = pl["pos"]
@@ -1387,6 +1551,79 @@ class TravelAgentsGame:
         # §15 BLOCK [draw] (⏳TURN): the market is shut for this agent — no cards this Visit
         if pl["block_draw"] >= s["turn"]:
             return
+        if VISIT_MODE == "keep2":
+            self._visit_keep2(s, p, r, rng)
+        else:
+            self._visit_straight(s, p, r, rng)
+
+    def _ingredients_left(self, s, r):
+        """§18.2 exhaustion clause: how many INGREDIENT cards are still obtainable from region r (live deck
+        + its face-up discard). The straight-draw loop stops when this hits 0 — you cannot 'keep drawing
+        until 2 ingredients' out of an all-event pile. This is the fix for the straight-draw × §16-recycling
+        event-spin (fired events recycle, so the deck is never card-empty, but its INGREDIENTS can run out)."""
+        n = sum(1 for c in s["deck"].get(r, []) if c[0] == "I")
+        n += sum(1 for c in s["disc"].get(r, []) if c[0] == "I")
+        return n
+
+    def _visit_straight(self, s, p, r, rng):
+        """§18.2 Option A (BASELINE): draw straight to the keep-count; an event fires at once and does NOT
+        count (feeder-1 eliminated — no passed-over card). Fired events are held OUT until the Visit ends
+        so they cannot reshuffle back and re-fire within the same Visit. Stop at the keep-count OR when no
+        ingredients remain (the exhaustion clause). PINCH/tempo tax = keep 1 fewer; Big Eater digs a greedy
+        4th (returns 1 follower); his hazards bite twice."""
+        pl = s["players"][p]
+        target = self._visit_target(pl)
+        kept, seen, fired = [], [], []
+
+        def _dig():
+            """Pull the next INGREDIENT, firing (and holding) any events on the way; None if none remain."""
+            while len(kept) < target or True:
+                if self._ingredients_left(s, r) <= 0:
+                    return None
+                c = self._draw_card(s, r, rng)
+                if c is None:
+                    return None
+                if c[0] == "E":
+                    pn = self._fire_event(s, p, c[1], r, during_visit=True)
+                    if pl["char"] == "bigeater":
+                        pn *= 2                           # 大胃王 flaw: hazards bite TWICE
+                    fired.append(c)                       # HELD — discarded only after the Visit (no mid-refire)
+                    if pn:
+                        return ("PINCH", pn)
+                    continue
+                return c
+
+        while len(kept) < target:
+            c = _dig()
+            if c is None:
+                break
+            if isinstance(c, tuple) and c[0] == "PINCH":
+                target = max(0, target - c[1])
+                continue
+            kept.append(c); seen.append(c[1])
+        if pl["tempo_tax"] > 0 and target > 0:           # weather ⏳ tempo tax = one fewer kept
+            pl["tempo_tax"] -= 1; target = max(0, target - 1)
+        # 大胃王 greedy 4th: dig ONE more ingredient, keep it, return 1 follower to supply (the greed sink)
+        if pl["char"] == "bigeater" and self._hungry(s, p):
+            ex = _dig()
+            while isinstance(ex, tuple) and ex[0] == "PINCH":   # a pinch surfaced — shrink target, dig again
+                target = max(0, target - ex[1]); ex = _dig()
+            if ex is not None:                               # a real ingredient card ("I", type, phase)
+                kept.append(ex); seen.append(ex[1]); target += 1
+                for _ in range(BIGEATER_COST):
+                    self._return_one_to_supply(s, p)
+        for c in kept[:target]:
+            self._keep_ing(s, p, r, c)
+        for c in kept[target:]:
+            self._discard_card(s, r, c)                  # a pinch shrank the keep below what we drew
+        for c in fired:
+            self._discard_card(s, r, c)                  # §16 feeder 3: fired events recycle AFTER the Visit
+        # §18.5 M1: straight-draw offers NO keep-choice by design (you keep all you draw) → leave at 0.
+
+    def _visit_keep2(self, s, p, r, rng):
+        """§18.4 cell 2 CONTROL (status-quo): flip 3, fire events, keep up to the cap, discard the rest
+        (feeder-1 alive). The non-choice the CD diagnosed — kept switchable so bg-playtest A/Bs it vs A."""
+        pl = s["players"][p]
         cards = [self._draw_card(s, r, rng) for _ in range(3)]
         ings = [c for c in cards if c is not None and c[0] == "I"]
         events = [c for c in cards if c is not None and c[0] == "E"]
@@ -1407,6 +1644,10 @@ class TravelAgentsGame:
             self._keep_ing(s, p, r, c)
         for c in ings[keep:]:
             self._discard_card(s, r, c)                  # §16 feeder 1: passed-over → discard
+        # §18.5 M1: a real keep-choice existed iff you drew MORE ingredients than you kept AND ≥2 distinct
+        # types were on offer (you actually chose which types to take, not a forced keep-everything).
+        if len(ings) > keep:
+            self._sample_visit_choice(s, [c[1] for c in ings])
 
     def _apply_tempo(self, pl, keep):
         if pl["tempo_tax"] > 0 and keep > 0:
@@ -1489,7 +1730,10 @@ class TravelAgentsGame:
         return sum(w["vp"] for w in pl["won"])
 
     def _booking_vp(self, pl):
-        return pl["day_book_score"] + pl["night_book_score"] - pl["cancel_penalty"]
+        # §14/§15.9: completed-tour VP (day+night) + SALVAGE half-value Completed tours − Σ⌊V/2⌋ over the
+        # still-standing Cancelled pile (CLEAR/SALVAGE shed entries from the pile, lightening this penalty).
+        cancel_pen = sum(v // 2 for v in pl["cancelled"])
+        return pl["day_book_score"] + pl["night_book_score"] + pl["salvage_score"] - cancel_pen
 
     def scores(self, s):
         if not s["_finalized"]:
@@ -1570,6 +1814,26 @@ class TravelAgentsGame:
             "gifts_per_game": float(s["gifts"]), "blocks_per_game": float(s["blocks"]),
             "detours_per_game": float(s["detours"]), "restocks_per_game": float(s["restocks"]),
             "washes_per_game": float(s["washes"]),
+            # §15.5 cumulative leader ✦-impact (BINDING: must stay MILD) + the no-pile-on cap effect. The
+            # win-rate-delta from being nudged is read across runs by bg-playtest; per-game we expose the
+            # total impact + the WINNER's own nudges-taken (a leader who won despite being nudged).
+            "leader_nudge_impact_per_game": float(s["leader_nudge_impact"]),
+            "nudge_pileon_blocked_per_game": float(s["nudge_pileon_blocked"]),
+            "winner_nudges_taken": float(s["players"][wp]["nudges_taken"]),
+            "max_nudges_on_one_leader": float(max((pl["nudges_taken"] for pl in s["players"]), default=0)),
+            # §15.9 SALVAGE swing + CLEAR relief (the catch-up double-boons). SALVAGE swing = drawer gain +
+            # trailer relief; the guard is that it NARROWS the gap without leapfrogging an earned leader.
+            "salvage_fires_per_game": float(s["salvage_fires"]),
+            "salvage_gain_drawer_per_game": float(s["salvage_gain_drawer"]),
+            "salvage_relief_trailer_per_game": float(s["salvage_relief_trailer"]),
+            "salvage_swing_per_game": float(s["salvage_gain_drawer"] + s["salvage_relief_trailer"]),
+            "clear_fires_per_game": float(s["clear_fires"]),
+            "clear_relief_per_game": float(s["clear_relief"]),
+            "cancelled_pile_field": float(sum(len(pl["cancelled"]) for pl in s["players"])),
+            # §18 M1 Visit decision-density (straight-draw should read ~0 by design; keep-2 shows what the
+            # flip-3 window supported) + M4/M2 companions live in the deck-flow / travel probes below.
+            "visit_choice_frac": float(s["visit_choice_offered"] / s["visits"]) if s["visits"] else 0.0,
+            "visit_mode_straight": 1.0 if VISIT_MODE == "straight" else 0.0,
             # ---- §16 DECK-FLOW probes (cycle-rate, thinning, event-enrichment, pantry supply) ----
             "reshuffles_E_night": _rs("E", 2), "reshuffles_N_night": _rs("N", 2),
             "reshuffle_size_E_night": _rsz("E", 2), "reshuffle_size_N_night": _rsz("N", 2),
@@ -1600,6 +1864,14 @@ class TravelAgentsGame:
             "frozen_at_boundary_per_game": float(s["frozen_at_boundary"]),
             # ---- runaway ----
             "best_win_streak": float(best_streak),
+            # ---- banked-board fingerprint (late-battler / lowball) + per-player peak board ----
+            "max_board_any_player": float(max((pl["max_board"] for pl in s["players"]), default=0)),
+            "winner_max_board": float(s["players"][wp]["max_board"]),
+            # ---- fingerprint aggregates (contest-entry rate + resource-per-win, for lane distinctness) ----
+            "contest_entries_field": float(sum(pl["fp_contest_entries"] for pl in s["players"])),
+            "fol_per_win_field": (float(sum(pl["fp_fol_per_win"] for pl in s["players"]))
+                                  / float(sum(pl["fp_wins"] for pl in s["players"]))
+                                  if sum(pl["fp_wins"] for pl in s["players"]) else 0.0),
             # ---- live-decision density ----
             "avg_legal_actions": float(statistics.mean(s["legal_counts"])) if s["legal_counts"] else 0.0,
             "forced_turn_frac": float(s["forced_turns"] / len(s["legal_counts"])) if s["legal_counts"] else 0.0,
@@ -1698,6 +1970,24 @@ def _pick_target(s, p, prefs):
             score += 2.0 + 1.0 * rival                          # brawler: hunt the rival's lock-in
         if prefs.get("late_battle") and s["act"] == 2 and v["tier"] >= 2:
             score += 2.5                                        # banked-board late-battler: crash the marquee
+        # --- archetype tilts (each carves a DISTINCT behavioural fingerprint) ---
+        if prefs.get("rush"):                                   # tempo: cheap, present, low-add wins fast
+            if v["total_cost"] <= 2:
+                score += 1.6
+            score -= 0.4 * v["total_cost"]
+            if GAME._present(s, p, vid):
+                score += 0.8
+        if prefs.get("engine") and not v["is_drink"] and v["icon"]:
+            score += 1.2 * (1 + pl["icons"].get(v["icon"], 0))  # economy: stack same-region icons → discounts
+        if prefs.get("concentrate") and v["region"] == pl["pos"]:
+            score += 1.3                                        # pile in one region (deny spread)
+        if prefs.get("spread") and v["region"] not in {w["region"] for w in pl["won"]}:
+            score += 1.5                                        # breadth: a new region each time
+        if prefs.get("snipe"):                                  # seat/open-info: grab uncontested + winnable NOW
+            if rival == 0 and add <= pl["board"] and GAME._present(s, p, vid):
+                score += 3.0
+            elif rival > 0:
+                score -= 1.5                                    # never brawl — snipe only the quiet, ready stalls
         if score > bscore:
             bscore, best = score, vid
     return best
@@ -1724,6 +2014,29 @@ def _co_located_targets(s, p):
     return [vid for vid in s["faceup"].get(r, [])]
 
 
+def _deny_target(s, p):
+    """DENIER/KINGMAKER exploit line: find the highest-VP face-up stall a RIVAL currently out-commits the
+    denier on AND the denier could MATCH (creating a top-tie → plurality tie BLOCKS the claim). Returns
+    (vid, gap_to_tie) or None. Tests whether the tie-resolver + floor + 大哥 margin defeat perpetual denial
+    (matching a Big-Brother rival does NOT deny — he wins ties at N=1, the design's built answer)."""
+    pl = s["players"][p]
+    best, bv = None, -1
+    for r in REGIONS:
+        for vid in s["faceup"].get(r, []):
+            fol = s["fol"][vid]
+            mine = fol[p]
+            top_rival = max((fol[q] for q in range(s["n"]) if q != p), default=0)
+            if top_rival <= mine or top_rival <= 0:
+                continue                                   # no rival lock-in to deny here
+            gap = top_rival - mine
+            if gap > pl["board"] + pl["supply_f"]:
+                continue                                   # cannot plausibly reach the tie
+            v = VENDORS[vid]["vp"]
+            if v > bv:
+                bv, best = v, (vid, gap)
+    return best
+
+
 def _plan(s, p, legal, rng, prefs):
     pl = s["players"][p]
     if legal == [("pass",)]:
@@ -1734,6 +2047,21 @@ def _plan(s, p, legal, rng, prefs):
               and not (prefs.get("no_drinks") and VENDORS[a[1]]["is_drink"])]
     if bribes:
         return max(bribes, key=lambda a: _road_value(s, p, a[1], prefs))
+
+    # 1d) DENIER/KINGMAKER: before anything else, chase a top-tie on a stall a rival is locking (tie
+    #     blocks the claim). Route to it, then Promote to MATCH the rival (never exceed → stay a tie).
+    if prefs.get("deny"):
+        dt = _deny_target(s, p)
+        if dt is not None:
+            vid = dt[0]
+            if not GAME._present(s, p, vid):
+                hop = _next_hop(pl["pos"], VENDORS[vid]["region"], pl["char"], GAME._hsr_open(s))
+                if ("travel", hop) in legal:
+                    return ("travel", hop)
+            elif pl["board"] > 0 and GAME._promote_ok(s, p, vid):
+                return ("promote", vid)                    # top up toward the tie (2/turn until matched)
+            elif ("visit",) in legal:
+                return ("visit",)                          # board empty → grow via sourcing, come back
 
     # 2) maintain a working hand of objectives (drawing Bookings drives the deck-clock). Under the
     #    hand-limit: claim. AT the hand-limit: CANCEL-TO-CLAIM only for a CLEARLY hotter Booking (the
@@ -1782,6 +2110,12 @@ def _plan(s, p, legal, rng, prefs):
     # 4) WIN THE FOLLOWER FIGHT — spread- & margin-aware. Return the action; step() applies it (the
     #    planner must NOT mutate state — the harness calls the agent, THEN step()).
     add = GAME._needed_to_win(s, p, tgt)
+    # BANK the board (lowball / late-battler exploit): in the DAY, refuse to spend followers on stalls —
+    # hoard board + source, then crash the night marquee with a full pool. Falls through to grow/source.
+    if prefs.get("bank") and s["act"] == 1:
+        if ("visit",) in legal:
+            return ("visit",)
+        return legal[0]
     if add > 0 and present:
         if GAME._promote_ok(s, p, tgt):
             # SPREAD decision: if this Promote already secures tgt (add ≤ 1) and the bot stands with a
@@ -1810,16 +2144,37 @@ def _make(prefs):
 
 
 BAL = {"w_val": 1.0, "w_food": 1.0, "w_drink": 1.0, "w_ramp": 1.0, "w_ticket": 1.0}
-CONTESTER = {**BAL, "contest": True}
-AVOIDER = {**BAL, "avoid_contest": True, "w_food": 1.2}
-MARQUEE = {**BAL, "marquee": True, "w_val": 1.2}
-# §9 probe lines
-HOMEBODY_DODGE = {**BAL, "avoid_contest": True, "no_tickets": False, "w_food": 1.3}      # (i) ignore-the-contest
-HOMEBODY_LATE = {**BAL, "late_battle": True, "w_food": 1.2}                              # (i) banked-board late-battler
-NO_TICKETS = {**BAL, "no_tickets": True}                                                # objectives-blind control
-# §14.5 MAKE-OR-BREAK probe: the vendor-only HOARDER — ignores Bookings, hoards stalls (biased to the
-# high-VP marquees). It must WIN < ~10% of the time (tours must dominate the two-track scoring).
-HOARDER = {**BAL, "no_tickets": True, "marquee": True, "w_val": 1.2}
+# ---- DIVERSE PLAYSTYLE ROSTER (fair lines that explore the real strategy space) -----------------
+CONTESTER   = {**BAL, "contest": True}                                # battler: hunt the follower-fight
+AVOIDER     = {**BAL, "avoid_contest": True, "w_food": 1.2}           # dodger: take quiet, uncontested wins
+MARQUEE     = {**BAL, "marquee": True, "w_val": 1.2}                  # trophy-hunter: chase high-VP apex stalls
+RUSH        = {**BAL, "rush": True, "w_drink": 1.1}                   # tempo: many cheap early claims, fast
+ENGINE      = {**BAL, "engine": True, "w_ramp": 1.4, "w_food": 1.15} # economy: stack region icons → discounts
+COLLECTOR   = {**BAL, "collect": True, "spread": True, "w_ticket": 1.2}  # spread-thin: breadth Bookings + regions
+CONCENTRATE = {**BAL, "concentrate": True, "contest": True}          # concentrate: dominate one region hard
+# ---- ADVERSARIAL EXPLOIT-HUNTERS (each from a bg-critic hypothesis — try to BREAK the design) ----
+LATE_BATTLER = {**BAL, "bank": True, "late_battle": True, "w_food": 1.15}  # banked-board late-battler (媽寶 line)
+DODGER       = {**BAL, "avoid_contest": True, "w_food": 1.3}              # ignore-the-contest dodger
+DENIER       = {**BAL, "deny": True}                                      # perpetual re-tie denier / kingmaker
+# §14.5 MAKE-OR-BREAK: the vendor-only HOARDER — ignores Bookings, hoards high-VP stalls. MUST win <~10%
+# (proves tours dominate the two-track scoring; if it matches a fair line the design is NOT closed).
+HOARDER      = {**BAL, "no_tickets": True, "marquee": True, "w_val": 1.2}
+# "want-to-be-lowest" SALVAGE / leader-fizzle bait: bank low, hold a full hand (→ cancels = SALVAGE bait),
+# never lead (dodge ✦ leader hazards), crash late. Tests the perverse "don't want to lead" incentive (§15.5).
+LOWBALL      = {**BAL, "bank": True, "collect": True, "avoid_contest": True, "late_battle": True, "w_ticket": 0.6}
+SNIPER       = {**BAL, "snipe": True, "avoid_contest": True}              # seat-order / open-info uncontested sniper
+NO_TICKETS   = {**BAL, "no_tickets": True}                               # objectives-blind control
+# ---- SIX CHARACTER-LANE lines (each kit's intended way to play the new economy, §6.5) -----------
+LANE = {
+    "councillor":   {**ENGINE},                       # home-gated draw engine → economy/ramp
+    "homebody":     {**DODGER},                        # viable dodge (his lane, §6.5a)
+    "bigeater":     {**RUSH, "w_food": 1.3},           # greedy 4th → many cheap food, fast
+    "influencer":   {**CONCENTRATE},                   # deep pool → pile followers, win the brawl
+    "bigbrother":   {**CONTESTER},                     # margin dial → the fight is his edge
+    "globetrotter": {**SNIPER, "spread": True},        # travel-anywhere → snipe uncontested across regions
+}
+# back-compat aliases (older run scripts referenced these names)
+HOMEBODY_DODGE, HOMEBODY_LATE = DODGER, LATE_BATTLER
 
 
 def s_random(s, p, legal, rng):
@@ -1831,12 +2186,31 @@ STRATEGIES = {
     "contester": _make(CONTESTER),
     "avoider": _make(AVOIDER),
     "marquee": _make(MARQUEE),
-    "homebody_dodge": _make(HOMEBODY_DODGE),
-    "homebody_late": _make(HOMEBODY_LATE),
-    "no_tickets": _make(NO_TICKETS),
+    "rush": _make(RUSH),
+    "engine": _make(ENGINE),
+    "collector": _make(COLLECTOR),
+    "concentrate": _make(CONCENTRATE),
+    # adversarial exploit bots
+    "late_battler": _make(LATE_BATTLER),
+    "dodger": _make(DODGER),
+    "denier": _make(DENIER),
     "hoarder": _make(HOARDER),
+    "lowball": _make(LOWBALL),
+    "sniper": _make(SNIPER),
+    "no_tickets": _make(NO_TICKETS),
+    # six character-lane lines
+    "lane_councillor": _make(LANE["councillor"]),
+    "lane_homebody": _make(LANE["homebody"]),
+    "lane_bigeater": _make(LANE["bigeater"]),
+    "lane_influencer": _make(LANE["influencer"]),
+    "lane_bigbrother": _make(LANE["bigbrother"]),
+    "lane_globetrotter": _make(LANE["globetrotter"]),
+    # controls
     "random": s_random,
 }
+# back-compat aliases so older run scripts keep resolving
+STRATEGIES["homebody_dodge"] = STRATEGIES["dodger"]
+STRATEGIES["homebody_late"] = STRATEGIES["late_battler"]
 
 
 # ==================================================================================================
@@ -1867,6 +2241,7 @@ def _step_with_spread(self, s, actions, rng):
                 self._refill_round(s)
             for q in range(s["n"]):
                 s["players"][q]["visit_keep_bonus"] = 0
+            s["nudged_this_round"].clear()     # §15.5: the no-pile-on ceiling resets each round
         s["cur"] = s["turn"] % s["n"]
         if s["end_turn"] is None and s["turn"] >= STALL_CAP * s["n"]:
             self._trigger_end(s, "stall")
@@ -1945,9 +2320,13 @@ if __name__ == "__main__":
         _args = [a for a in sys.argv[1:] if a.isdigit()]
         N = int(_args[0]) if _args else 20
         from engine import run_match
+        # counts default to the full 3–6 offer; TA_SMOKE_COUNTS="4,6" runs a tiny 1–2-count batch instead
+        _counts = os.environ.get("TA_SMOKE_COUNTS", "")
+        SMOKE_COUNTS = tuple(int(x) for x in _counts.split(",")) if _counts else (3, 4, 5, 6)
         print(f"# {TITLE}")
-        print(f"# V7-M SMOKE TEST — {N} games/count, balanced mirror (import + end-to-end + sane instruments)\n")
-        for c in (3, 4, 5, 6):
+        print(f"# V7-M SMOKE TEST — {N} games/count, counts {SMOKE_COUNTS}, VISIT_MODE={VISIT_MODE} "
+              f"(import + end-to-end + sane instruments)\n")
+        for c in SMOKE_COUNTS:
             bal = STRATEGIES["balanced"]
             wins, mt = _run({p: bal for p in range(c)}, N, seed=1, n_players=c)
             print(f"## {c}p  (fair share {100/c:.1f}%)")
@@ -1980,11 +2359,30 @@ if __name__ == "__main__":
                   f"reshuffle-size(E {mt['reshuffle_size_E_night']:.1f})  live evfrac(E-night {mt['evfrac_E_night']*100:.0f}%/"
                   f"N-night {mt['evfrac_N_night']*100:.0f}%)  Pantry supply_min {mt['pantry_supply_min']:.0f}  "
                   f"→box/gm {mt['box_from_larder_per_game']:.1f}")
+            print(f"  §15.9 tours-boons: SALVAGE fires/gm {mt['salvage_fires_per_game']:.2f} swing "
+                  f"{mt['salvage_swing_per_game']:.2f} (drawer {mt['salvage_gain_drawer_per_game']:.2f}/trailer "
+                  f"{mt['salvage_relief_trailer_per_game']:.2f})  CLEAR fires/gm {mt['clear_fires_per_game']:.2f} "
+                  f"relief {mt['clear_relief_per_game']:.2f}  cancelled-pile/field {mt['cancelled_pile_field']:.1f}")
+            print(f"  §15.5 leader-nudge (must stay MILD): impact/gm {mt['leader_nudge_impact_per_game']:.2f}  "
+                  f"pileon-blocked/gm {mt['nudge_pileon_blocked_per_game']:.2f}  max-on-one-leader "
+                  f"{mt['max_nudges_on_one_leader']:.1f}  winner-nudges {mt['winner_nudges_taken']:.2f}")
+            print(f"  §18 VISIT_MODE={VISIT_MODE}: M1 visit-choice {mt['visit_choice_frac']*100:.0f}% "
+                  f"(A→~0 by design)  banked-board(max any {mt['max_board_any_player']:.1f}/winner "
+                  f"{mt['winner_max_board']:.1f})  fol/win-field {mt['fol_per_win_field']:.2f}")
             print(f"  decision density: avg_legal {mt['avg_legal_actions']:.1f}  forced_turn_frac {mt['forced_turn_frac']:.3f}")
-            # §14.5 MAKE-OR-BREAK: vendor-only HOARDER in seat0 vs balanced field — must win < ~10%
-            hoard_field = {0: STRATEGIES["hoarder"], **{p: STRATEGIES["balanced"] for p in range(1, c)}}
-            hw, _ = _run(hoard_field, N, seed=777, n_players=c)
-            print(f"  §14.5 vendor-only HOARDER seat0 win% {hw[0]*100:.0f}% (target <10% — tours must dominate)\n")
+            # ---- EXPLOIT-BOT PANEL: each adversarial line in seat0 vs a balanced field (must not beat it) ----
+            # bg-critic hypotheses → concrete bots. HOARDER is the §14.5 make-or-break (must win <~10%).
+            print("  exploit-bot seat0 win% vs balanced field (fair share {:.0f}%):".format(100 / c))
+            for name, note in (("hoarder", "§14.5 vendor-only — MUST LOSE <10% (tours must dominate)"),
+                               ("dodger", "ignore-the-contest"),
+                               ("denier", "perpetual re-tie / kingmaker"),
+                               ("lowball", "want-to-be-lowest / SALVAGE-bait"),
+                               ("sniper", "seat-order / open-info snipe"),
+                               ("late_battler", "banked-board late-battler")):
+                ef = {0: STRATEGIES[name], **{p: STRATEGIES["balanced"] for p in range(1, c)}}
+                ew, _ = _run(ef, N, seed=777, n_players=c)
+                print(f"    {name:13} {ew[0]*100:4.0f}%   {note}")
+            print()
 
         # per-lane probe spot-check at 4p: each character in seat0 vs 3 balanced-neutrals. Confirms the
         # six kits run AND the lane-specific instruments emit sane, non-trivial numbers with the real char.
