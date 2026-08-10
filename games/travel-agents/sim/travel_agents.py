@@ -160,11 +160,91 @@ NUDGE_CAP     = int(os.environ.get("TA_NUDGE_CAP", "1"))        # §15.5 rail 6:
 CANCEL_COST   = os.environ.get("TA_CANCEL_COST", "half_value")  # "half_value" (baseline) | "flat:1" | "flat:2"
 
 
+def _cancel_cost():
+    """Live-read of the CANCEL_COST lever (so a driver can sweep configs in one process)."""
+    return os.environ.get("TA_CANCEL_COST", "half_value")
+
+
 def _cancel_pen_one(v):
     """Penalty for ONE cancelled tour of value V under the active CANCEL_COST lever."""
-    if CANCEL_COST.startswith("flat:"):
-        return int(CANCEL_COST.split(":", 1)[1])
+    cc = _cancel_cost()
+    if cc.startswith("flat:"):
+        return int(cc.split(":", 1)[1])
     return v // 2                                               # baseline: −⌊V/2⌋
+
+
+# ==================================================================================================
+#  §20 + §21 LEVERS (SPEC-ONLY MODELS — live-read from env so a driver sweeps configs in one process).
+#  These model the §21 wild booking + the 3p `counts`-tag helper and the recommended per-count scaling
+#  from the 1c22551 sweep. NONE of these edit a shipped rule or the component CSVs — they are switchable
+#  sim levers, exactly as bg-playstrat is meant to model spec proposals before the data build.
+# ==================================================================================================
+def _wild_book_on():
+    """§21.1 WILD BOOKING modelled ON. A Book variant: decline the face-up row, draw the top of the deck
+    blind, keep it (whiff → Cancel later at the flat cancel). Default ON for this validation."""
+    return os.environ.get("TA_WILD_BOOK", "1") == "1"
+
+
+def _counts_tag_on():
+    """§21.5 the per-count `counts` tag filter (HEAVY out at 3p; ON-RAMP always in at 3p). Default ON."""
+    return os.environ.get("TA_COUNTS_TAG", "1") == "1"
+
+
+def _onramp_high_in():
+    """§21.5 the `onramp_high_count` switch. IN (default) = the validated 45-tour deck at 4–6p (no
+    regression); OUT = drop the 8 on-ramp tours at 4–6p (the meatier variant). Always IN at 3p."""
+    return os.environ.get("TA_ONRAMP_HIGH", "IN").upper() != "OUT"
+
+
+def _reserve_3pa():
+    """§21.8 reserve 3p-a: +1 face-up Booking slot at 3p (pure tour-supply widening). Held OFF."""
+    return os.environ.get("TA_RESERVE_3PA", "0") == "1"
+
+
+def _reserve_3pb():
+    """§21.8 reserve 3p-b: also demote the 3-claim coverage tours (d_travel3/g_travel3d/n_deep3) out of 3p."""
+    return os.environ.get("TA_RESERVE_3PB", "0") == "1"
+
+
+def _scaling_recommended():
+    """Use the reconstructed 1c22551 recommended per-count scaling table (REC_SLOTS/REC_POOL/REC_TRACK).
+    A global TA_SLOTS / TA_POOL / TA_TRACK_L env override still wins over the table where set."""
+    return os.environ.get("TA_SCALING", "").lower() == "recommended"
+
+
+# §21.5 tour groups (the `counts` tag, modelled by tour id — the CSV tag-add is bg-developer's next step).
+HEAVY_TOURS = {"n_collect6", "g_collect5", "n_allfood5", "d_collect4", "n_four", "n_all4", "n_prestige14"}
+ONRAMP_TOURS = {"d_cheap2", "d_deep2", "d_east1", "d_pairNC", "d_pairSE", "d_drinks2", "d_mix1", "d_daymix"}
+RESERVE_3PB_TOURS = {"d_travel3", "g_travel3d", "n_deep3"}
+
+# Recommended per-count scaling from the 1c22551 sweep (thematic slots: base N1C1S1E1 → South +1 @5p →
+# North +1 @6p, East kept thinnest; light SUBSET of the 24 unique dishes, 6p≈12/10; gentle die L=3;
+# flat:1 cancel). REC_POOL is CALIBRATED here against the sweep's documented 4–6p health (hoarder ≤ fair,
+# pace ~40–45 tpp) — the driver may nudge REC_POOL[3] to land 3p pace in the accepted ~40–48 band.
+REC_SLOTS = {3: (1, 1, 1, 1), 4: (1, 1, 1, 1), 5: (1, 1, 2, 1), 6: (2, 1, 2, 1)}
+REC_POOL = {3: (9, 7), 4: (10, 8), 5: (11, 9), 6: (12, 10)}
+REC_TRACK = {3: 3, 4: 3, 5: 3, 6: 3}
+
+
+def _counts_filter(keys, n):
+    """§21.5 build a per-count tour pool from the `counts` groups. 3p drops the 7 HEAVY (4+-claim) tours
+    (and the 3 reserve-3p-b tours if that reserve is on); 4–6p drop the 8 ON-RAMP tours only when the
+    onramp switch is OUT. Everything else (CORE) is always in. A pure setup filter (no in-play rule)."""
+    if not _counts_tag_on():
+        return list(keys)
+    heavy = set(HEAVY_TOURS)
+    if n == 3 and _reserve_3pb():
+        heavy |= RESERVE_3PB_TOURS
+    out = []
+    for k in keys:
+        if n == 3:
+            if k in heavy:
+                continue                       # HEAVY (+reserve-b) unreachable at a ~7-claim 3p budget
+        else:
+            if (not _onramp_high_in()) and k in ONRAMP_TOURS:
+                continue                       # 4–6p OUT variant: the meatier deck
+        out.append(k)
+    return out
 
 # ==================================================================================================
 #  DATA LOADING — the built component CSV/JSON are the SOURCE OF TRUTH
@@ -512,6 +592,9 @@ def _slots_for(n):
     if SLOTS_OVERRIDE:
         v = [int(x) for x in SLOTS_OVERRIDE.split(",")]
         return {"N": v[0], "C": v[1], "S": v[2], "E": v[3]}
+    if _scaling_recommended() and n in REC_SLOTS:
+        v = REC_SLOTS[n]
+        return {"N": v[0], "C": v[1], "S": v[2], "E": v[3]}
     tab = MAP["vendor_slots"].get(str(n)) or MAP["vendor_slots"].get(str(min(max(n, 3), 6)))
     return {r: tab[r] for r in ("N", "C", "S", "E")}
 
@@ -536,16 +619,21 @@ def _track_length(n):
     per-count value from map.json.vendor_clock.track_length (baseline 3 for all counts)."""
     if TRACK_L_OVERRIDE:
         return TRACK_L_OVERRIDE
+    if _scaling_recommended() and n in REC_TRACK:
+        return REC_TRACK[n]
     tab = MAP["vendor_clock"]["track_length"]
     return int(tab.get(str(n)) or tab.get(str(min(max(n, 3), 6))) or 3)
 
 
-def _pool_target(phase):
-    """§17.6 per-count subset size for a phase from TA_POOL ('D,M' = day,night). None → full pool."""
-    if not POOL_OVERRIDE:
-        return None
-    parts = [int(x) for x in POOL_OVERRIDE.split(",")]
-    return parts[0] if phase == 1 else parts[1]
+def _pool_target(phase, n):
+    """§17.6 per-count subset size for a phase. A global TA_POOL ('D,M' = day,night) wins; else the
+    recommended per-count table (REC_POOL); else None (full pool)."""
+    if POOL_OVERRIDE:
+        parts = [int(x) for x in POOL_OVERRIDE.split(",")]
+        return parts[0] if phase == 1 else parts[1]
+    if _scaling_recommended() and n in REC_POOL:
+        return REC_POOL[n][0] if phase == 1 else REC_POOL[n][1]
+    return None
 
 
 def _phase_decks(phase, n, rng):
@@ -559,7 +647,7 @@ def _phase_decks(phase, n, rng):
     decks = {r: _region_deck(r, phase) for r in REGIONS}
     for r in REGIONS:
         rng.shuffle(decks[r])
-    target = _pool_target(phase)
+    target = _pool_target(phase, n)
     full = sum(len(decks[r]) for r in REGIONS)
     if target is None or target == full:
         return decks
@@ -622,6 +710,8 @@ class TravelAgentsGame:
         slots = _slots_for(n)
         day_size, night_size = _booking_deck_sizes(n)
         mrow_w = 3 if n < 4 else 4
+        if n == 3 and _reserve_3pa():
+            mrow_w += 1                                       # §21.8 reserve 3p-a: +1 face-up Booking slot
 
         # §17.6 decide the WHOLE-GAME vendor subset UP FRONT (day + night) so the Booking deck can co-scale
         # coherently: a tour is dealt only if the count's vendor pool can complete it (no orphaned tours).
@@ -637,9 +727,10 @@ class TravelAgentsGame:
             up = [d.pop() for _ in range(min(slots[r], len(d)))]
             vdeck[r] = d; faceup[r] = up
 
-        # §17.6 CO-SCALED Booking decks: filter DAY / NIGHT tour pools to those COMPLETABLE at this pool
-        day_keys = self._completable_keys(pool_vids, DAY_POOL)
-        night_keys = self._completable_keys(pool_vids, NIGHT_POOL)
+        # §17.6 CO-SCALED Booking decks: filter DAY / NIGHT tour pools to those COMPLETABLE at this pool,
+        # THEN apply the §21.5 per-count `counts`-tag filter (3p drops HEAVY; 4–6p onramp switch).
+        day_keys = self._completable_keys(pool_vids, _counts_filter(DAY_POOL, n))
+        night_keys = self._completable_keys(pool_vids, _counts_filter(NIGHT_POOL, n))
         day_deck = self._build_booking_deck(day_keys, day_size, rng)
         mrow = [day_deck.pop() for _ in range(min(mrow_w, len(day_deck)))] if day_deck else []
 
@@ -656,7 +747,7 @@ class TravelAgentsGame:
                 # spent — the phase-to-box guarantee). At dusk, larder → larder_prev.
                 "larder": Counter(), "larder_prev": Counter(), "icons": Counter(), "won": [],
                 "home_region": home,
-                "tickets": [], "counted_done": set(),
+                "tickets": [], "counted_done": set(), "wild_tickets": set(),
                 "day_book_score": 0, "night_book_score": 0, "cancel_penalty": 0,
                 # §15.9 the CANCELLED-TOUR pile: full VALUES V of cancelled Bookings (mid-game hand-limit
                 # cancels + phase-boundary unfinished). Scoring penalty = Σ⌊V/2⌋ over the pile, so CLEAR /
@@ -707,6 +798,10 @@ class TravelAgentsGame:
             # ---- diagnostics / §9 probes ----
             "claims": 0, "contested_claims": 0, "claim_by_region": {r: 0 for r in REGIONS},
             "night_claims": 0, "prestige_completions": 0, "cancels": 0,
+            # §21 WILD BOOKING probes: face-up Books vs blind (wild) Books, by phase; wild tours that
+            # ended up COMPLETED (the wild-book completion contribution) vs whiffed-and-cancelled.
+            "books_faceup": 0, "books_wild": 0, "books_wild_day": 0, "books_wild_night": 0,
+            "wild_keys_taken": [], "wild_completed": 0, "wild_cancelled": 0,
             "food_wins": 0, "drink_wins": 0, "apex_claims": 0,
             "src_by_type": Counter(), "empty_draws": 0,
             "travels": 0, "visits": 0, "cstores": 0, "promotes": 0, "passes": 0,
@@ -964,6 +1059,8 @@ class TravelAgentsGame:
             self._do_travel(s, p, act[1], rng)
         elif kind == "claim":
             self._do_claim(s, p)
+        elif kind == "wild_book":
+            self._do_wild_book(s, p)
         else:
             s["passes"] += 1
         self._discard_to_cap(s, pl)
@@ -1268,11 +1365,37 @@ class TravelAgentsGame:
         key = max(s["mrow"], key=lambda k: self._booking_want(s, p, k))
         s["mrow"].remove(key)
         pl["tickets"].append(key)
+        s["books_faceup"] += 1
         if s["mreserve"]:
             s["mrow"].append(s["mreserve"].pop())
         # §17: the Booking deck is NO LONGER the clock — it is finite tour-supply and does NOT reshuffle.
         # If it runs dry the face-up row simply stops refilling; drawing a tour is optional supply, not a
         # boundary trigger. DUSK / LAST-TRAIN now fire off VENDOR-POOL emptiness (see _check_pool_boundary).
+
+    def _do_wild_book(self, s, p):
+        """§21.1 WILD BOOKING — the Book variant: decline the whole face-up row and draw the TOP of the
+        current Booking deck BLIND, keep it. The face-up row is NOT refilled (you took no face-up card).
+        A whiff is Cancelled later at the flat cancel; the hand-limit still caps the whiff (cancel one
+        first to make room). Modelled here as: pop the top of s["mreserve"] (the current deck), keep it."""
+        pl = s["players"][p]
+        if not s["mreserve"]:
+            return self._do_claim(s, p)               # deck dry → fall back to a face-up Book
+        inprog = self._in_progress(pl)
+        if len(inprog) >= HAND_LIMIT:
+            victim = min(inprog, key=lambda k: self._prog_frac(pl, k))
+            pl["tickets"].remove(victim)
+            pl["cancelled"].append(BOOKINGS[victim]["value"])
+            pl["wild_tickets"].discard(victim)
+            s["cancels"] += 1
+        key = s["mreserve"].pop()                     # BLIND top-of-deck draw (kept, no peek)
+        pl["tickets"].append(key)
+        pl["wild_tickets"].add(key)
+        s["books_wild"] += 1
+        if BOOKINGS[key]["phase"] == 1:
+            s["books_wild_day"] += 1
+        else:
+            s["books_wild_night"] += 1
+        # the face-up row is deliberately NOT refilled on a wild Book (§21.1).
 
     def _booking_want(self, s, p, key):
         """How much a bot wants to hold/claim a Booking. Favours ACHIEVABLE + near-complete Bookings
@@ -1291,6 +1414,8 @@ class TravelAgentsGame:
                 continue
             if _booking_done(key, pl["won"]):
                 pl["counted_done"].add(key)
+                if key in pl["wild_tickets"]:
+                    s["wild_completed"] += 1        # §21 wild-book completion contribution
                 if key in PRESTIGE_KEYS:
                     s["prestige_completions"] += 1
 
@@ -2072,7 +2197,17 @@ class TravelAgentsGame:
             "src_share_sugar": share("sugar"), "src_share_veg": share("veg"),
             "empty_draws_per_game": float(s["empty_draws"]),
             "bookings_completed_field": float(held_or_done),
+            "tours_completed_per_player": float(held_or_done / n),
             "cancels_per_game": float(s["cancels"]),
+            # ---- §21 WILD BOOKING + counts-tag probes ----
+            "books_faceup_per_game": float(s["books_faceup"]),
+            "books_wild_per_game": float(s["books_wild"]),
+            "wild_book_frac": float(s["books_wild"] / (s["books_faceup"] + s["books_wild"]))
+                              if (s["books_faceup"] + s["books_wild"]) else 0.0,
+            "wild_books_day_per_game": float(s["books_wild_day"]),
+            "wild_books_night_per_game": float(s["books_wild_night"]),
+            "wild_completed_per_game": float(s["wild_completed"]),
+            "tours_in_play_per_game": float(s["books_faceup"] + s["books_wild"]),
             # ---- meeple economy ----
             "grow_total_per_game": float(s["grow_total"]),
             "grow_homebody_tick_per_game": float(s["grow_homebody_tick"]),
@@ -2314,6 +2449,35 @@ def _deny_target(s, p):
     return best
 
 
+def _row_suitable(s, p):
+    """§21 WILD-BOOK trigger (rational, spec-faithful): does the FACE-UP Booking row show a tour this
+    player could realistically COMPLETE — a NEW, low-claim-gap objective? If yes, take the KNOWN face-up
+    tour (never gamble blind when a suitable face-up exists). If no, the row is 'barren' and the rational
+    line is a wild (blind) Book. Budget = plausible remaining claim headroom (thin at 3p, wider at 4–6p)."""
+    pl = s["players"][p]
+    budget = 3 if s["n"] == 3 else 4
+    st = _wstat(pl["won"])
+    for k in s["mrow"]:
+        if k in pl["tickets"]:
+            continue                                   # already held → not a reason to Book
+        d, need = BOOKINGS[k]["progress"](st)
+        if (need - d) <= budget:
+            return True
+    return False
+
+
+def _book_action(s, p):
+    """Choose the Book variant: a KNOWN face-up claim when the row is suitable; else a blind WILD book
+    (only when barren, deck has cards, and the lever is on) — the §21.2 self-selecting fallback."""
+    if _wild_book_on() and s["mreserve"] and not _row_suitable(s, p):
+        return ("wild_book",)
+    if s["mrow"]:
+        return ("claim",)
+    if _wild_book_on() and s["mreserve"]:
+        return ("wild_book",)
+    return None
+
+
 def _plan(s, p, legal, rng, prefs):
     pl = s["players"][p]
     if legal == [("pass",)]:
@@ -2351,14 +2515,18 @@ def _plan(s, p, legal, rng, prefs):
     # a claim-hungry human books MORE ambitiously when cancelling is cheap (flat:1) — the downside of
     # holding a big-but-incomplete tour is capped, so the working hand widens. Faithful incentive model of
     # the CANCEL_COST lever's intent; the load-bearing hoarder read is pure scoring (needs no bot change).
-    _cheap_cancel = CANCEL_COST.startswith("flat:") and int(CANCEL_COST.split(":", 1)[1]) <= 1
+    _cc = _cancel_cost()
+    _cheap_cancel = _cc.startswith("flat:") and int(_cc.split(":", 1)[1]) <= 1
     WORK_HAND = HAND_LIMIT if (prefs.get("collect") or (prefs.get("human") and _cheap_cancel)) else 2
-    if ("claim",) in legal and not prefs.get("no_tickets"):
+    _can_book = (("claim",) in legal or ("wild_book",) in legal)
+    if _can_book and not prefs.get("no_tickets"):
         inprog = GAME._in_progress(pl)
         if len(inprog) < WORK_HAND:
-            return ("claim",)
+            a = _book_action(s, p)                     # §21: face-up if suitable, else wild (blind)
+            if a is not None:
+                return a
         stale = [k for k in inprog if GAME._prog_frac(pl, k) < 0.34]
-        if len(inprog) >= WORK_HAND and stale:
+        if len(inprog) >= WORK_HAND and stale and s["mrow"]:
             best_row = max(GAME._booking_want(s, p, k) for k in s["mrow"])
             worst_held = min(GAME._booking_want(s, p, k) for k in stale)
             if best_row > worst_held * 1.3:
@@ -2576,6 +2744,10 @@ def _legal_with_spread(self, s, p):
         for i, a in enumerate(co):
             for b in co[i + 1:]:
                 acts.append(("promote_spread", a, b))
+    # §21.1 WILD BOOKING: available whenever the current Booking deck (mreserve) still has cards — a
+    # blind draw is an option even if the face-up row is empty (you decline the row, take from the pile).
+    if _wild_book_on() and s["mreserve"]:
+        acts.append(("wild_book",))
     return acts
 
 
