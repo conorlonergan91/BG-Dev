@@ -93,8 +93,10 @@ A/B/C choice, get the call, record it, and move to the next stage.
    *accommodate* it. If not, **keep it a focused single-mode game and let scope emerge later** only when
    it clearly adds fun/variety/replayability. A focused game (even 2p-only) is a valid, often best
    answer. **A base game must be complete and great on its own.**
-2. **Resume:** read `game-bible.md` + `decision-log.md`, give a 3-line "where we are / what's next"
-   recap, then propose the next stage as an A/B/C choice.
+2. **Resume:** read **`status.md`** first (the current-state dashboard — the fast "where are we") then
+   `game-bible.md` + recent `decision-log.md`, give a 3-line "where we are / what's next" recap, then
+   propose the next stage as an A/B/C choice. (If `status.md` is missing or stale, run `bg-producer` to cut/
+   refresh it.)
 3. If no game exists yet and the human is unsure, offer: **(A)** ideate from a blank slate, **(B)**
    develop an idea they bring, or **(C)** just explore the studio.
 
@@ -104,7 +106,9 @@ For each stage:
 1. **Frame** the stage in one line ("Let's lock the core loop.").
 2. **Dispatch** the agent (or do light work inline if trivial).
 3. **Surface** the agent's output + its decision as **A/B/C with a recommendation**.
-4. **Record** the human's choice in `game-bible.md` + `decision-log.md`.
+4. **Record** the human's choice in `game-bible.md` + `decision-log.md` — and **capture the CD's own steer
+   into `director-brief.md` the moment it lands** (what they asked · the context/why · status). This reflex
+   is what stops a good idea sent mid-thread from getting lost; `bg-producer` curates it later.
 5. **Advance** — propose the next stage.
 
 Keep each loop short. If the human says "you decide," make the call, note it, and keep going.
@@ -150,13 +154,74 @@ This gate is **only** for simulation (the slow, model-a-thousand-games runs). Th
 linter/complexity/access checks, and quick probability sanity-checks are not gated. When in doubt about
 whether the human is ready to sim, **ask** — a wasted sim burns real time.
 
+### Orchestrating background agents (dispatch · liveness · report)
+
+Long specialist passes run as **background subagents** so the studio stays responsive. The harness fires a
+`<task-notification>` when an agent *completes*, so you never poll to learn it finished — you poll only to
+(a) catch a **hang** and (b) peek at **progress** on demand. Reuse these skeletons instead of rebuilding
+them each time; fill the `<slots>`.
+
+**Rails that apply to every dispatch** (state them in the prompt so the agent obeys):
+- **One committer at a time.** Subagents share the working tree + git index — never let two agents (or an
+  agent + you) `git commit` concurrently; corruption follows. Serialise commits.
+- **Targeted `git add` only** — the exact files the agent owns; **never `git add -A`**, never touch Beacon
+  or `tools/` unless that IS the task.
+- **Commit footer, verbatim** — `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>` + the
+  `Claude-Session:` line; **no model id** anywhere pushed. Push with backoff; **no PR** unless the CD asks.
+- **Never read an agent's `.output`** (it's the full JSONL transcript — it overflows context). Use
+  `tools/agents/agent_watch.py` instead.
+
+**1 · Dispatch skeleton** (`Agent` tool, `run_in_background: true`):
+> You are the **`<bg-agent>`** for **`<game>`** (slug `<slug>`), version `<vX>`. Your contract is
+> `.claude/agents/<bg-agent>.md` — follow it. Repo `<path>`, branch `<branch>` (checked out). Read
+> `<the living docs to ground on>` first. **Deliverable:** `<crisp spec>`. `git add` ONLY `<files>` — never
+> `-A`/Beacon/`tools/`. Commit (WHY-focused msg + the footer), push with backoff, **no PR**. Return a short
+> report: `<what to hand back>`.
+
+**2 · Liveness self-poll skeleton** (`send_later` back into THIS session; re-arm ~10 min while in flight):
+> LIVENESS POLL — `<what's running + why>`. STATE: `<done+pushed so far>`. NOW: `<agent id>` (task `<#>`) =
+> `<what it's doing>`. CHECK: `python tools/agents/agent_watch.py --all` + `ListAgents` (running vs done).
+> HANG = QUIET **and** ListAgents shows running **and** no repo write ~10 min → inspect, `TaskStop`, finish
+> manually. WHEN DONE: `<verify: lint 0 / tree clean / files committed+pushed / Beacon+tools untouched>`.
+> THEN: `<next step>`. If still in flight → re-arm 10 min + stay quiet (noop).
+
+**3 · CD status-report skeleton** (what you tell the human when a pass lands):
+> **Done + pushed:** `<commits + one-line each>`. **Running now:** `<agent + what>`. **When it lands:**
+> `<the verify → next step chain>`. **Needs you:** `<the one decision, or "nothing">`.
+
+**Liveness read, one call:** `python tools/agents/agent_watch.py --all` → each agent's `.output` mtime
+(ALIVE/QUIET), repo files touched in the last N min (the *truest* progress signal — mtimes don't lie), git
+status + recent commits. It never reads transcript contents. **QUIET ≠ hung:** a finished agent looks
+identical to a wedged one on the filesystem — confirm which with `ListAgents` before you `TaskStop`.
+
 ## Living documents
 
-- `game-bible.md` — the concept, positioning, core loop, components, rules summary, status. Always current.
-- `identity.md` — the felt identity: north star, target aesthetics, tone/vibe, story/lore (scaled),
-  look & feel, naming. Owned by `bg-theme`; kept coherent and evolving alongside the bible.
-- `decision-log.md` — dated one-liners: *decision — why — alternatives rejected*. Fast to skim.
+Living docs are a **current-state snapshot, not an accreted history**, with **one canonical home per topic**
+(no duplicate/overlapping docs) — keep the *now* clean, keep each fact in exactly one place, and relocate the
+*history* + redundant copies to `archive/` (nothing deleted). Owned/kept-current by the **Production pod**
+(`bg-producer`, `bg-archivist`).
+
+- `game-bible.md` — concept, positioning, core loop, components, rules summary. **CURRENT-STATE**, readable
+  in one sitting; no dead-version cruft (`bg-archivist` prunes; history → `archive/`).
+- `status.md` — the one-screen dashboard: version · pipeline stage · done/in-flight/next · open CD
+  decisions · guardrail health · risks · next step. Owned by `bg-producer`. **Read this first on resume.**
+- `identity.md` — the felt identity (north star, aesthetics, tone/vibe, story/lore, look & feel, naming),
+  CURRENT-STATE. Owned by `bg-theme`; kept coherent and evolving alongside the bible.
+- `prose-identity.md` — the voice bible (how every player-facing word reads). Owned by `bg-copywriter`;
+  every copy brief cites it.
+- `decision-log.md` — append-only dated one-liners: *decision — why — alternatives rejected*. Fast to skim
+  (`bg-archivist` keeps a "currently in force" summary up top + archives stale ranges).
+- `director-brief.md` — the **CD's own steers**, per version: *the ask · the context · status*. Captured in
+  real-time (cadence step 4), curated by `bg-producer`, so good input is never lost.
+- `archive/` — superseded / dead-version content, labelled. Owned by `bg-archivist`.
 - Stage outputs live in `design/`, `components/`, `playtests/`, `marketing/`, `art/` (see `CLAUDE.md`).
+
+**Keep-current sweep (milestones / version close):** run `bg-producer` (refresh `status.md`, curate
+`director-brief.md`, run the **duplication radar** — same truth in two places → route to the archivist) +
+`bg-archivist` (prune living docs to current, **consolidate duplicated/overlapping content to one canonical
+home**, archive the closed version + redundant copies) so the docs never drift into a stratigraphy of every
+past version — or the same fact scattered across a dozen files (bloat to read, error-prone to edit,
+ambiguous after a context clear).
 
 ## Tooling & knowledge
 
