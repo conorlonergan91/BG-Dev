@@ -2,17 +2,17 @@
 
 > The living source of truth for how this game **feels**: concept, theme, tone, look, and naming. Owned
 > by `bg-theme`. For mechanics read `game-bible.md`; for the canonical name table (English first) read
-> `names.md`. Slug: `travel-agents` · Version: V7-M · 3–6 players.
+> `names.md`. Slug: `travel-agents` · 3–6 players.
 >
 > **Restraint first.** This is an *evocative-theme* game — a felt world you grasp in a sentence, not a
 > plot to memorise. Leaving story/lore light is the correct answer here, not a gap.
 
 ## North star
 **Image:** *Dusk at the night market. Several rival travel agencies work the same crowded street —
-trench coats thrown over Hawaiian shirts, each guarding a secret itinerary, each rallying their own
-crowd of followers to the best stalls. Steam rises; neon flickers on. An earpiece crackles: head office
-— "the oysters just hit the grill in Tainan. Lock it into the tour. GO." Everyone's grinning, chopsticks
-already moving, one eye on the clock: the last train is coming.*
+trench coats over Hawaiian shirts, each guarding a secret itinerary, each rallying their own crowd of
+followers to the best stalls. Steam rises, neon flickers on. An earpiece crackles: head office — "the
+oysters just hit the grill in Tainan. Lock it into the tour. GO." Everyone's grinning, chopsticks already
+moving, one eye on the clock: the last train is coming.*
 
 **Phrase:** *The mission is the meal — out-book the other agencies to build the island's best food tour
 before the last train home.*
@@ -50,21 +50,21 @@ ridiculously obsessed with Taiwan showing you around.
   instead of fun and warm, dial it back to the grin.
 
 ## Target aesthetics — the kinds of fun (locked: 3)
-1. **Discovery** *(lead)* — uncovering the island: which stall, which region, what's around the next
+1. **Discovery** *(lead)* — uncovering the island: which stall, which region, what's round the next
    corner. The map and menu *reveal*. This is the engine of delight.
-2. **Fellowship** — the shared-table joy. Even at its most competitive it's *warm rivalry* ("look what I
+2. **Fellowship** — the shared-table joy; even at its most competitive it's *warm rivalry* ("look what I
    found!") and table talk.
-3. **Challenge** *(kept light)* — optimise your trip, the *Ticket to Ride* satisfaction, but never so
-   tight it stops feeling like a holiday.
+3. **Challenge** *(kept light)* — optimise your trip, the *Ticket to Ride* satisfaction, never so tight
+   it stops feeling like a holiday.
 
-Sensation (lovely food art, tactile bits) is supporting texture, not a core pick — we get it free from
-good illustration. Chasing all eight kinds of fun = chasing none.
+Sensation (lovely food art) is supporting texture, not a core pick — we get it free from good
+illustration. Chasing all eight kinds of fun = chasing none.
 
 ## How you win — the felt strategic identity
 You score **two ways at once**: the points printed on each **vendor** you won, *plus* the full value of
 each **tour (Booking)** you complete. Tours pay far more and are the main path; won vendors are a steady
-bonus that also power your engine. A booked tour you can't run in time is **cancelled** — a rueful little
-ding, never a scolding. Several warm travel-agent fantasies stay live at once:
+bonus that also powers your engine. A booked tour you can't run in time is **cancelled** — a rueful ding,
+never a scolding. Several warm travel-agent fantasies stay live at once:
 
 - **The character-lean agent** — lean hard into your agent's kit. *"I play to who I am."*
 - **The opportunist** — read the street and pounce on the newly-hot stall or the cheap easy win. *"I grab
@@ -151,23 +151,22 @@ label coding is mandatory; palette is first-pass, not locked.
   in 繁體字 (Taiwan uses Traditional, never Simplified).
 - **Iconography — three language-independent families:** food (dish silhouettes), transport (HSR, local
   rail, scooter, bus, ferry), and region/place (the island of Taiwan + N/C/S/E glyphs).
-- **Shape language:** cards frame as a **passport / boarding-pass / stall menu-board**; places visited
-  are recorded as **stamps** (the stamp motif doubles as the dossier gag and the Discovery feel). Rounded
-  corners, warm. A tour card leans into the literal boarding-pass look, with an "Operation: ___" strip
-  for the wink.
+- **Shape language:** cards frame as a **passport / boarding-pass / stall menu-board**; places visited are
+  recorded as **stamps** (doubling as the dossier gag and the Discovery feel). A tour card leans into the
+  literal boarding-pass look, with an "Operation: ___" strip for the wink. Rounded corners, warm.
 - **Day/night grammar — warm, not alarm.** Day = warm amber/gold; night = festive night-market **neon**
-  (lantern-glow lavender/magenta), never a cold or red alarm register. The region colours and ingredient
-  chips hold their warm palette in *both* states, tethering the night board to the warm-dusk north star.
+  (lantern-glow lavender/magenta), never a cold or red alarm register. Region colours and ingredient chips
+  hold their warm palette in *both* states, tethering the night board to the warm-dusk north star.
 - **Moodboard (real photo refs for a human illustrator):** Shilin / Raohe / Liuhe night markets at dusk;
   hand-painted 繁體 signage; HSR and local trains; scooters; convenience-store culture; vintage travel
-  stamps; the iconic dishes. Note the multi-ethnic range (Han, Hakka, Indigenous cuisines).
-- **Art production:** **human-illustrated — no AI final art.** Placeholders clearly labelled; opt-in AI
-  *mockups* for vibe exploration only, never shipped.
+  stamps; the iconic dishes — across the multi-ethnic range (Han, Hakka, Indigenous cuisines).
+- **Art production:** **human-illustrated — no AI final art;** placeholders labelled, opt-in AI *mockups*
+  for vibe exploration only, never shipped.
 
 ## Naming & voice
 - **Title — Travel Agents: Taiwan.** The travel/secret-agent pun is the point; series-ready as
-  "Travel Agents: <place>". (Trademark clearance → `bg-publishing`: the mark is descriptive, so lean on
-  the distinctive full lockup.)
+  "Travel Agents: <place>". (The mark is descriptive — lean on the distinctive full lockup; clearance to
+  `bg-publishing`.)
 - **Voice:** rulebook and player aids read as a warm **mission-dossier / field-guide** narrated by an
   over-caffeinated handler-slash-tour-guide — second person, short, funny margin asides. Head office *is*
   that voice. Dish names stay authentic (romanised + 繁體), never invented or parodied — the comedy is in
@@ -179,25 +178,21 @@ label coding is mandatory; palette is first-pass, not locked.
   market") are what keep it cheeky rather than corrupt.
 
 ## Sensitivity rails (binding)
-This is a real place and culture, so these are firm rails, not clutter. A paid **Taiwanese cultural +
-language consultant** signs off before art and print; ground research in Taiwanese sources.
+This is a real place and culture, so these are firm rails. A paid **Taiwanese cultural + language
+consultant** signs off before art and print.
 
-- **Taiwan as itself** — its places, food, culture on their own terms. Traditional characters, established
-  English place-spellings (Taipei, Kaohsiung, Tainan), Taiwan's own island form. No PRC framing, no
-  "China," no Simplified, never a province — and equally no turning the game into a political statement.
+- **Taiwan as itself** — Traditional characters, established English place-spellings, Taiwan's own island
+  form. No PRC framing, no "China," no Simplified, never a province — and no turning the game political.
 - **Celebration, not extraction** — the agents are passionate fans, ideally **local promoters showing off
-  home**, so the tour is a love letter, not a harvest. If a beat ever reads as outsiders packaging the
-  exotic East, that's a re-theme flag.
-- **"Bribe = marketing opportunity"** — the load-bearing warm reframe; smarm on the agent, the vendor
+  home**; the tour is a love letter, not a harvest. Reading extractive is a re-theme flag.
+- **"Bribe = marketing opportunity"** — the load-bearing warm reframe: smarm on the agent, the vendor
   freely chooses the bigger fan, never corruption. The #1 consultant watch-item.
-- **Character warmth rails** — The Big Boss 老大 a lovable fixer, never triad or menace (consultant-gated);
-  The Old Councillor 里長伯 neighbourly standing, never graft; The Homebody 媽寶 affectionate, never a dig
-  at young people; The Globetrotter 阿嬤 age-as-superpower, never frail.
-- **Secular only** — no temple, deity, ghost-month, or funerary content as mechanics or gags; lean modern
-  and secular (food fairs, fruit seasons, weather, roads, crowds).
-- **Dignity and specifics** — vendors and locals are warm, varied subjects, never obstacles or exotic
-  punchlines; dish names stay real and intact; no false accolade on a real named business (vendors are
-  dish-typed generic stalls). No mocking the language or "weird foreign food" gross-outs.
+- **Character warmth rails** — The Big Boss 老大 a lovable fixer, never triad/menace (consultant-gated);
+  The Old Councillor 里長伯 neighbourly standing, never graft; The Homebody 媽寶 affectionate, not a dig at
+  young people; The Globetrotter 阿嬤 age-as-superpower, never frail.
+- **Secular only** — no temple, deity, ghost-month, or funerary content as mechanics or gags; lean modern.
+- **Dignity and real food** — locals are warm, varied subjects, never obstacles or exotic punchlines; dish
+  names stay intact; no false accolade on a real named business (vendors are dish-typed generic stalls).
 - **The East region is Indigenous-forward** and **consultant-gated** — real, celebrated dishes across
   named peoples (never one flattened "generic Indigenous" label), signed off before any art.
 
@@ -208,6 +203,3 @@ language consultant** signs off before art and print; ground research in Taiwane
   sensitivity rail above.
 - **Fluid:** the exact naming of head office / the best-tour-title award, final palette hues, and the
   East apex Indigenous-dish lock (all consultant-gated).
-
-*(The full dated re-theme history — every design change → identity move → why, across v3 → V7 — is
-preserved in `archive/identity-history.md`.)*
