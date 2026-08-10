@@ -216,9 +216,17 @@ def _event_iconography(theme: dict, row: dict, verb: str, scope: str, duration: 
     # --- SCOPE + DURATION row ---------------------------------------------------------------------------
     y1 = y0 + 64
     if scope in SCOPE_SHAPE:
+        # 'rival' scope is overloaded: the anti-kingmaking hazards target THE LEADER, but the
+        # 'auto-lowest' catch-up boon (t_salvage) targets the LOWEST-scoring rival — so the fixed
+        # "THE LEADER 領先者" label contradicts that card's own effect text. Flip it for auto-lowest.
+        # English-only here: no unreviewed 繁體 is minted in this renderer (see header note); a
+        # reviewed 繁體 for "lowest rival" can be added once the consultant supplies it.
+        sword = SCOPE_WORD.get(scope, "")
+        if scope == "rival" and "auto-lowest" in (row.get("tags") or ""):
+            sword = "THE LOWEST RIVAL"
         parts.append(emblem_svg(SCOPE_SHAPE[scope], MARGIN + 22, y1 - 8, 20, scol, stroke=ink))
         parts.append(f'<text x="{MARGIN + 58}" y="{y1}" font-size="28" fill="{scol}" '
-                     f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(SCOPE_WORD[scope])}</text>')
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(sword)}</text>')
     if duration in DURATION_WORD:
         dx = CARD_W - MARGIN - 190
         _hourglass_r = 16
