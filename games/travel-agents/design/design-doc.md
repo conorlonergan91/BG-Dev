@@ -1941,8 +1941,14 @@ scarce vendors, §12) flowing, so the twist is *supplied* by this loop. Flag the
 
 > **Status: SPEC (bg-design, 2026-08-10). SUPERSEDES the deck-driven Booking-deck clock** everywhere it
 > appears — §8 of `rules-draft.md`, `map.json.clock_model`, and the `boundary_dusk` / `boundary_lasttrain`
-> Booking rows. **Spec-only — no data/code/sim edited here;** the change lists are §17.7–17.10. This is a
-> **net rules TRIM** (delete the Booking boundary-card mechanic; add one aging line) — flag to `bg-elegance`.
+> Booking rows. **Spec-only — no data/code/sim edited here;** the change lists are §17.7–17.11.
+>
+> **UPDATE (CD refinement, 2026-08-10):** the forcing function (§17.3, §17.5) is now the **Closing-Time die**
+> (a 3-round track + custom d6) — it REPLACES the earlier deterministic "oldest unclaimed+uncontested stall
+> sells out every R rounds." The vendors-are-the-clock spine, the finite 13/11 pools, the §16 reconciliation,
+> and DUSK/LAST-TRAIN = pool-exhaustion are all **unchanged**. This refinement **ADDS** the game's first
+> dice/randomness (a new die + track) — flag to `bg-elegance` (budget), `bg-architect` (custom-die cost),
+> `bg-access` (dual-coded faces), and `bg-critic` (does the die closing a contested stall feel bad?).
 
 ## 17.0 Why the clock moved (the diagnosis, in one paragraph)
 
@@ -1974,46 +1980,65 @@ decks are empty, the face-up stalls stop refilling and drain to zero — and the
 ## 17.2 The clock is guaranteed to fire — where the old one wasn't
 
 The old clock could freeze because a player could simply **stop booking**. The vendor clock cannot be
-declined: (a) **claims** drain it whenever the fight is live, and (b) when claims collapse, the **sell-out
-forcing function (§17.3) keeps draining it on a timer no player controls.** The pool is finite and monotone —
-it only ever shrinks — so the phase boundary is **guaranteed** to arrive. That is the whole point of the
-re-architecture.
+declined: (a) **claims** drain it whenever the fight is live, and (b) when claims collapse, the **Closing-Time
+die (§17.3) keeps draining it on a schedule no player controls** — plus the hard deadlock backstop closes any
+all-BLANK streak. The pool is finite and monotone — it only ever shrinks — so the phase boundary is
+**guaranteed** to arrive. That is the whole point of the re-architecture.
 
-## 17.3 The forcing function — "Sold out" (CRITICAL; without it the freeze just relocates)
+## 17.3 The forcing function — the Closing-Time die (CD refinement, 2026-08-10, REPLACES the deterministic aging)
 
 If depletion relied on claims alone, the freeze would move from the Booking deck to the vendor board: late
 game, players hold followers they can't cash, no one claims, the pool never empties, the phase never ends.
-So the clock is **paired with an aging rule that removes stalls even when claiming has stopped.**
+So the clock is **paired with a removal rule that thins the board even when claiming has stopped** — but the
+CD has replaced the old deterministic "oldest unclaimed+uncontested stall ages out every R rounds" with a
+**dice-driven closing-time roll**: it "adds excitement and risk, keeps things moving quicker toward the end,
+but no downside every time." Two components carry it (§17.9): a **3-round track** and a **custom d6**.
 
-> **Rule — Selling out.** The market thins on a **timer, not every round.** Every **R rounds** (the *sell-out
-> cadence*, per-count table in §17.5), the **single oldest face-up stall that is UNCLAIMED and UNCONTESTED**
-> (no follower stands on it) **sells out** — remove it from the game (it does **not** return to the deck),
-> then run the normal end-of-round refill. If, on a sell-out beat, **no** face-up stall is crowd-less (every
-> stall has a crowd on it), **nothing sells out that beat** — a live contest is never cut short.
+> **Rule — Closing time.** A **3-round track** on the table counts rounds **1 → 2 → 3**. **After the 3rd
+> round completes** (at that end-of-round step), **roll the Closing-Time die** — a custom d6 with **4 region
+> faces (North / Central / South / East)** and **2 BLANK faces**:
+> - **A region face →** the **oldest (leftmost) face-up stall in that region sells out** — remove it from the
+>   game (it does **not** return to the deck), then run the normal end-of-round refill (§1.2) so the pool
+>   net-drains by one. **This can be a CONTESTED stall** (see below).
+> - **A BLANK face →** nothing sells out this cycle — a built-in **1/3 reprieve.**
+> - **If the rolled region has no removable face-up stall** (all claimed, or the region is already empty) →
+>   **nothing happens** (treat as a reprieve; **no reroll** — simplest).
+>
+> Then **reset the track to round 1** and repeat. One die, one three-space track, zero per-stall bookkeeping.
 
-**Why a timer, not per-round (the CD's action-budget reasoning — verified against the turn model).** A turn is
-**one action.** Meaningfully engaging a stall spans **several** turns: Travel to grow a follower → Promote onto
-the stall → Bribe to claim it — and a **contested** stall takes more still, as rivals out-commit over
-successive turns. So a stall must **survive several rounds** for a fight to play out and resolve. Aging one out
-**every round** would strip the board faster than players can act on it — the phase would end before the
-contests (the signature twist) resolve. The diagnosis's own cadence sweep found **~1 stall aged per ~4 rounds**
-lands pace near the 26–32-t/p target; that is the anchor, tuned per count in §17.5.
+**No downside — the removal carries NO resource penalty (the CD's core intent).** When a stall is removed by
+the die, **every follower committed on it comes straight HOME to its owner's board** — including the whole
+crowd of a **live contest**. This is the DUSK "unclaimed stall clears" treatment (`followers-meeples-redesign`
+§2.5: *followers on a cleared, un-won stall return to their owners' boards*), **not** the lost-contest
+treatment (→ own supply, must re-grow). Rationale: the stall closed **un-won** — nobody claimed it, so no
+contest was actually *lost*, so nobody is punished. The only cost is **opportunity and tempo**: the marquee
+you were staging for has vanished, and your crowd is now idle on your board (a Promote to re-commit it
+elsewhere — no re-Travel, no re-grow). *"The stall I wanted packed up before I could book it,"* not *"I lost
+my crowd."* This is a **deliberate override of the old "contested stalls are immune" rail** — the CD wants the
+risk that a stall you are fighting over can vanish; the no-loss homecoming keeps that risk inside the
+"excitement, not punishment" band.
 
-**Why "oldest, unclaimed AND uncontested" (agency-preserving).** The timer only ever removes a stall **nobody
-is fighting over** — a quiet stall that has sat with no crowd. A contested stall (any follower on it) is
-immune to aging: you can never have a stall you're battling for yanked out from under you. This is thematic
-(a stall with no queue quietly packs up; a mobbed stall stays open) and it guarantees the fights the scarcity
-lever exists to create are the ones that get to resolve.
+**Why a 3-round track, not per-round.** A turn is **one action.** Meaningfully engaging a stall spans several
+turns (Travel → grow a follower → Promote onto the stall → Bribe to claim), and a **contested** stall takes
+more still as rivals out-commit over successive turns. A stall must survive several rounds for a fight to play
+out. The die firing **once per three rounds** (and only 4/6 of those firing at all) means a stall averages
+**~4.5 rounds of life** from the die alone — comfortably long enough for the signature crowd-fight to resolve
+— while still guaranteeing the board thins toward the boundary. Removal-rate math and per-count tuning are in
+§17.5.
 
-**Monotonic-depletion guarantee + the deadlock backstop.** The timer guarantees the pool shrinks whenever a
-crowd-less stall exists. The one residual hole is a **fully-parked / all-tie-blocked board** (every face-up
-stall carries a lone parked or tied crowd, no claims, no crowd-less stall to age). This is (a) costly and weak
-to attempt — parking one follower on every stall burns your whole pool and each parked stall is beaten by a
-rival's +1 — and (b) closed by two things already in the model: the region **deck still drains** via claims
-and the aging of *other* stalls, and the **DUSK / LAST-TRAIN tie-resolver (§2.6)** force-clears every lingering
-tied/crowd-less stall at the boundary. **Backstop for the sim:** treat a phase as exhausted (fire its boundary)
-once its **vendor deck is empty AND the face-up set has not changed for a full round** — the boundary resolver
-then empties the face-up and the phase ends. This closes the only path to a re-freeze.
+**Monotonic-depletion guarantee + the deadlock backstop (freeze is impossible even on an all-BLANK streak).**
+Termination is guaranteed by two facts, one probabilistic and one hard:
+1. **The pool only ever SHRINKS.** A vendor leaves the pool exactly two ways — **claimed** or **die-removed** —
+   and neither the vendor decks (finite, never reshuffled — §17.4) nor the die ever *add* one back. Every
+   claim and every region-face roll net-drains the finite 13/11 pool by one. It is monotone.
+2. **The die keeps rolling every 3 rounds forever**, and each roll is a region face with probability **4/6**;
+   a run of *k* consecutive BLANKs has probability (1/3)ᵏ → 0, so with probability 1 the die eventually
+   removes a stall. To close that probabilistic hole with a **hard, deterministic** backstop — so there is **no
+   freeze even on an adversarial all-BLANK run with zero claims** — the existing **deadlock backstop stands:**
+   treat a phase as exhausted (fire its boundary) once its **vendor deck is empty AND the face-up set has not
+   changed for one full 3-round track cycle.** The DUSK / LAST-TRAIN tie-resolver (§2.6) then force-clears the
+   lingering face-up (tied/idle crowds home per §2.5) and the phase ends. **DUSK and LAST TRAIN are therefore
+   still GUARANTEED to fire** — the die only ever *speeds* the close, never blocks it.
 
 ## 17.4 §16 RECONCILIATION — finite vendor decks vs. reshuffling market decks (the crux)
 
@@ -2030,39 +2055,48 @@ coming."** The §16 loop (four discard feeders + reshuffle-on-empty + phase-to-b
 pass — it already scoped vendors out explicitly (§16.2 "Out of scope"). The only edit §16 needs is to stop
 saying DUSK/LAST-TRAIN is "when the Booking deck runs out" and say "when the vendor pool runs out."
 
-## 17.5 PACE — per-count vendor pools + sell-out cadence (targeting 26–32 turns/player)
+## 17.5 PACE — per-count track length + die-removal math (targeting 26–32 turns/player)
 
 The vendor pool is **fixed at 13 day / 11 night for every count** — all 24 vendors are always in play (they are
-unique named real dishes; not duplicated). So the **per-count pacing knob is the sell-out cadence R** (rounds
-between sell-out beats). Turns/player ≈ number of rounds ≈ (day rounds + night rounds).
+unique named real dishes; not duplicated). Turns/player ≈ number of rounds ≈ (day rounds + night rounds).
+Depletion each round = *claims that round* + *die-removals (≈0.67 per 3-round cycle)*. **Claims are the dominant
+driver; the die is the excitement layer that guarantees the board keeps thinning when claims stall.**
 
-**Reasoning for the per-count spread.** Depletion each round = *claims that round* + *aging (≈1 per R rounds)*.
-More players = more actions/round = more claims/round = the pool drains **faster in rounds** → to hold the
-26–32 band the aging must be **gentler (larger R)** at high counts. Aging can only *speed* depletion, never
-slow claims, so high counts are the binding pace risk (§17.6). Fewer players = sparser claims = the pool drains
-**slower** → a **slightly sharper (smaller R)** cadence keeps 3p from dragging past the band and clears dead
-stalls promptly.
+**The die's removal rate.** On the baseline **3-round track**, the die fires once per 3 rounds and removes a
+stall on 4/6 of those rolls → **≈0.67 removals per 3 rounds ≈ 1 removal every ~4.5 rounds.** That is close to
+the old deterministic anchor (~1 aged per 4 rounds) at 4p, but note it is **slightly gentler** and, being
+stochastic, has variance — some games get a run of BLANKs (slower close), some a run of hits (faster close).
+That variance IS the intended "risk/excitement"; it is bounded by the monotone pool + deadlock backstop
+(§17.3) so it can never freeze, only wander within a few rounds of the mean.
 
-| Players | Day pool | Night pool | Face-up slots (§1.3) | **Sell-out cadence R (baseline)** | Action-budget note |
+**Is the track FIXED at 3 for all counts?** **Ship it at 3 for every count** (the CD's stated design; one die,
+one track, no per-count component swap — the elegant default). BUT the **track length L is now the #1 pacing
+knob** and the two ends of the count range are the known risks, so it is the primary sim sweep:
+
+| Players | Day/Night pool | Face-up slots (§1.3) | **Track L (baseline)** | Die removals / game* | Pace risk & the sweep |
 |:--:|:--:|:--:|:--:|:--:|---|
-| **3p** | 13 | 11 | 4 (N1 C1 S1 E1) | **every 3 rounds** | ~3 actions/round; a claim spans ~3 turns, a contest ~2–3 rounds → R=3 lets fights resolve, sparse claims need the sharper backstop |
-| **4p** | 13 | 11 | 5 (N2 C1 S1 E1) | **every 4 rounds** | the anchor (the sweep's ~1-per-4-rounds pace) |
-| **5p** | 13 | 11 | 5 (N2 C1 S1 E1) | **every 4 rounds** | more claims/round than 4p, same slots → hold R=4, watch pace at the top |
-| **6p** | 13 | 11 | 6 (N2 C2 S1 E1) | **every 5 rounds** | ~6 actions/round → fastest claim-drain; gentlest aging to preserve rounds (and may still ride the band's low end — §17.6) |
+| **3p** | 13 / 11 | 4 (N1 C1 S1 E1) | **3** (sweep L=2) | ~6–7 | **Drag risk.** Sparse claims → the die is a bigger share of drain; ~4.5 rds/removal may push 3p past 32 t/p. If the sim shows drag, drop 3p to **L=2** (die every 2 rounds → ~1 removal / 3 rounds, the old R=3 pace). |
+| **4p** | 13 / 11 | 5 (N2 C1 S1 E1) | **3** | ~6–7 | The anchor — nearest the old ~1-per-4-rounds pace. Expected in-band. |
+| **5p** | 13 / 11 | 5 (N2 C1 S1 E1) | **3** | ~6–7 | More claims/round than 4p, same slots → claims carry more of the drain; hold L=3, watch the top of the band. |
+| **6p** | 13 / 11 | 6 (N2 C2 S1 E1) | **3** (sweep L=4) | ~6–7 | **Undershoot risk (the §17.6 flag).** ~6 actions/round → fastest claim-drain; the game may end <26 t/p regardless of the die. If so, a **longer track L=4** (gentler die) buys a little, but the real fix is the pool-size decision in §17.6. |
 
-These are **starting points for the sim**, not final. **R is the #1 knob for the re-smoke** — sweep R ∈
-{3, 4, 5, 6} per count. The counter is a single global "rounds since last sell-out" tally on the clock band;
-zero extra per-stall bookkeeping.
+\* rough: at ~29 rounds/game the die alone removes ~29/4.5 ≈ 6–7 of the 24 vendors; claims remove the rest.
+
+At high counts claims already drain fast, so the die does *less* of the work and a gentler (or unchanged) track
+is right; at low counts the die does *more* of the work, so a sharper track (L=2) prevents drag. **Sweep L ∈
+{2, 3, 4} per count** in the re-smoke; default to L=3 everywhere unless 3p drags or 6p undershoots. The track is
+a single 3-space marker on the clock band; the die is one custom d6. Zero per-stall bookkeeping.
 
 ## 17.6 The arithmetic honesty flag (the one real risk)
 
 24 unique vendors is a **tight budget** for 26–32 turns/player. The maximum possible game length in rounds is
-capped by the **claim-only drain rate** (aging can only shorten the game, never lengthen it): if claims alone
+capped by the **claim-only drain rate** (the die can only shorten the game, never lengthen it): if claims alone
 empty the 24-pool in fewer than ~26 rounds at a given count, **that count cannot reach the band no matter how
-gentle the aging.** High counts (6p, most actions/round) are where this bites. The diagnosis (late-game claim
-**collapse**, low throughput) suggests the claim rate is low enough that aging is the dominant driver and the
-band **is** reachable — but this is exactly what the re-smoke must confirm, per count. **If 6p (and maybe 5p)
-undershoots 26 t/p even at the gentlest cadence,** the CD decision is between **(A) accept a slightly shorter
+gentle the die (a longer track).** High counts (6p, most actions/round) are where this bites. The diagnosis
+(late-game claim **collapse**, low throughput) suggests the claim rate is low enough that die-removal is a
+meaningful driver and the band **is** reachable — but this is exactly what the re-smoke must confirm, per
+count. **If 6p (and maybe 5p) undershoots 26 t/p even at the longest track (gentlest die),** the CD decision is
+between **(A) accept a slightly shorter
 high-count game (~22–25 t/p)** — fine for a 30–45-min title — or **(B) enlarge the day/night pools by adding
 duplicate copies of the cheap commodity stalls only** (bubble tea, soy milk, papaya milk — thematically there
 *are* many such stalls; never duplicate an apex trophy), a `vendors.csv` quantity change outside this pass.
@@ -2076,10 +2110,14 @@ This is the top decision-for-the-human below.
   the *trigger* changed from "Booking deck empty" to "vendor pool empty." **No perverse incentive:** vendors
   and followers still score nothing (§9), so a player never wants to hoard vendors; a completed tour is still
   strictly better than an unfinished one.
-- **New, legitimate end-game race lever.** A leader can now **push the clock** — claim or let stalls age to
-  drain the pool and slam the boundary shut while ahead; a trailer can **keep stalls crowded** to buy time
-  (a crowd immunizes a stall from aging). This is *good* end-game tension the Booking clock delivered only
-  weakly, and it is bounded by the timer + backstop (§17.3) — a trailer cannot freeze the pool, only slow it.
+- **New, legitimate end-game race lever (now with a die of fate).** A leader can still **push the clock** —
+  claim aggressively to drain the pool and slam the boundary shut while ahead. What *changed* vs the old
+  deterministic aging: a trailer can **no longer immunize a stall by keeping it crowded** — the die can clear a
+  contested stall too (followers home, no loss). So the clock is less controllable and more of a shared
+  ticking risk everyone reads off the track ("die rolls after round 3 — is my marquee the oldest in its
+  region?"). This is *good* end-game tension, bounded by the monotone pool + deadlock backstop (§17.3) — no one
+  can freeze the pool, and no one fully controls the die. **Flag `bg-critic`:** the swing is opportunity/tempo,
+  not resource loss (§17.3) — confirm a die-cleared near-win doesn't feel like a punishment (see the top-3).
 - **DUSK/LAST-TRAIN tie-resolver (§2.6) + min-follower floor (§12.2) still work — and are now doubly
   load-bearing.** They fire at the vendor-triggered boundary exactly as specified: still-tied stalls resolve
   to most-followers → earliest-committer (paying if able; a below-floor top crowd clears **unclaimed**,
@@ -2097,10 +2135,23 @@ This is the top decision-for-the-human below.
   - `last_train`: "fires when the NIGHT vendor pool is exhausted — finish the round, then end."
   - `retired`: extend to note the **Booking-deck clock and its seeded 黃昏/末班車 boundary cards are DELETED**
     (superseded by §17); the Booking deck is now pure tour-supply.
-- **Add `vendor_clock`** block: the per-phase pool sizes (`day: 13, night: 11`, fixed all counts) + the
-  **`sellout_cadence`** per-count map `{"3":3, "4":4, "5":4, "6":5}` (rounds between sell-out beats) + the
-  sell-out rule note (oldest **unclaimed & uncontested** face-up stall; skip if none crowd-less; deadlock
-  backstop = deck-empty + face-up-static-one-round → boundary).
+- **Rewrite the `vendor_clock`** block (CD refinement 2026-08-10 — the Closing-Time die REPLACES the
+  deterministic `sellout_cadence`). Keep the per-phase pool sizes (`day: 13, night: 11`, fixed all counts).
+  **Replace `sellout_cadence` + its aging `rule`** with the die/track params:
+  - `track_length` per-count map `{"3":3, "4":3, "5":3, "6":3}` (rounds per track cycle; **baseline 3 for all
+    counts** — the #1 pacing knob, sim sweeps L∈{2,3,4}; 3p may drop to 2, 6p may rise to 4 — §17.5).
+  - `die_faces`: `["N","C","S","E","BLANK","BLANK"]` (the custom d6 — 4 region faces + 2 blank; 1/3 reprieve).
+  - `roll_timing`: "after the 3rd round of the track completes (at end-of-round), then reset the track."
+  - `removal_rule`: "a region face removes the **oldest (leftmost) face-up stall in that rolled region**
+    (contested or not); it is **gone** (never returned to the deck), then run the normal end-of-round refill.
+    BLANK → nothing. Rolled region has no removable face-up stall → nothing (**no reroll**)."
+  - `followers_home`: "every follower committed on a die-removed stall — **including a live contest** — returns
+    HOME to its owner's **board** (kept, no re-grow), per `followers-meeples-redesign` §2.5. **NO resource
+    penalty** (this overrides the old 'contested stalls immune to aging' rail)."
+  - keep `sellout_backstop` as the **deadlock backstop only**: "deck empty + face-up static for one full track
+    cycle → fire the boundary (§17.3)"; drop the old "skip a contested stall / do not reset the counter"
+    clause (the die no longer skips contested stalls).
+  - Update the block `_note` from "sell-out" language to the Closing-Time die (dice/randomness now in the game).
 - **`booking_deck_sizes`** — KEEP the sizes, but change the `_rule` note: the Booking deck is **no longer the
   clock**; it is finite tour-supply and, like the vendor decks, **does not reshuffle** — if a phase's Booking
   deck empties, the face-up row simply stops refilling (drawing tours is optional supply, not the clock). Drop
@@ -2114,6 +2165,23 @@ This is the top decision-for-the-human below.
 - Everything else in `bookings.csv` stands (the day/night phase split still governs when a tour is *available*
   and when it *judges* — that split is unchanged; it is just no longer the clock).
 
+## 17.9b Change list — `tokens.csv` / `manifest.md` (COMPONENTS — spec only) — NEW for the die
+
+The Closing-Time die adds **two physical components** — the first **dice / randomness** in the game (a
+deliberate excitement add per the CD). Add to `components/tokens.csv` (or the manifest, per how dice are
+tracked):
+- **Closing-Time die** — a **custom d6**, faces `[North, Central, South, East, BLANK, BLANK]` (4 region faces
+  drawn with each region's colour + emblem + 繁體 for dual-coding — CVD-safe, matches the board's region
+  encoding; 2 blank faces). `qty 1`.
+- **Closing-Time track** — a **3-space round track** (1 · 2 · 3) printed on the clock band (no new punch-out if
+  it lives on the board) **+ 1 track marker** (`qty 1`). If the track prints on the board, `map.json` carries
+  the art and only the marker is a token.
+
+**Flag `bg-architect`** — a **custom-printed d6** is a real COGS line (custom die tooling/minimum-order vs a
+blank/pipped stock die); confirm it fits the component-cost budget or fall back to a **stock d6 with a
+region↔number key on the board** (faces 1–4 = N/C/S/E, 5–6 = BLANK). **Flag `bg-access`** — the die faces must
+dual-code (region colour + emblem + 繁體), never colour alone; a stock-die fallback needs the key legible.
+
 ## 17.10 Change list — `sim/travel_agents.py` (SIM — spec only, `bg-playtest` re-models + re-smokes)
 
 - **Sever the Booking-deck clock:** in `_do_claim`, when `mreserve` is empty, **stop calling
@@ -2123,16 +2191,24 @@ This is the top decision-for-the-human below.
   empty — or the deadlock backstop: decks empty & face-up static one round) → `_dusk(s)`; if `act==2` and the
   NIGHT pool is exhausted → `_trigger_end(s, "lasttrain")`. Keep `_dusk` / `_finalize` bodies (tie-resolver +
   boundary sweep + Larder→box) as-is; only their **trigger** moves.
-- **Add the sell-out forcing function** in `_refill_round` (run it **before** topping up): maintain
-  `s["rounds_since_sellout"]`; every `R = sellout_cadence[n]` rounds, remove the **oldest face-up stall with
-  no followers on it** (`sum(fol[vid])==0`) from the region with such a stall (oldest by insertion order);
-  the removed vendor is **gone** (not returned to `vdeck`); if no crowd-less face-up stall exists that beat,
-  skip (do not age a contested stall) and do **not** reset the counter. Reset the counter on a sell-out.
+- **Add the Closing-Time die forcing function** in `_refill_round` (run it **before** topping up), REPLACING
+  the old deterministic sell-out: maintain `s["track"]` (0→L-1); every `L = track_length[n]` rounds (baseline
+  3), **roll a seedable RNG** — draw one of `["N","C","S","E","BLANK","BLANK"]` via `s["rng"].choice(...)`
+  where `s["rng"] = random.Random(seed)` is seeded per game for **deterministic reproducibility** (expose the
+  seed as a run param so `bg-playtest` can replay a run). On a region face: remove the **oldest (leftmost)
+  face-up stall in that region** by insertion order — **contested or not** (do NOT check `sum(fol[vid])`); the
+  removed vendor is **gone** (not returned to `vdeck`); **return every committed follower on it to its owner's
+  BOARD** (the DUSK-unclaimed homecoming — `board[owner]+=`, NOT `supply[owner]`; no re-grow). On BLANK, or if
+  the rolled region has no removable face-up stall → **nothing** (no reroll). Reset `s["track"]` each cycle. The
+  die can only *speed* the close; keep the deadlock backstop (deck empty + face-up static one full track cycle
+  → boundary) so an all-BLANK streak still terminates.
 - **`_dusk` day-layer sweep** currently *rebuilds* the night face-up from `_region_deck(r,2)` — keep, but note
   the day pool is already empty when DUSK fires (nothing to clear), so the sweep of unclaimed day stalls is a
   no-op by construction; the night pool build is unchanged.
 - **New / changed metrics for the re-smoke:** turns/player per count (target **26–32**, hard read that
-  **stall→0**, i.e. no games hit `STALL_CAP`); sell-outs/game and day-rounds vs night-rounds; **contested_frac
+  **stall→0**, i.e. no games hit `STALL_CAP`); **die-removals/game + BLANK-roll frequency + the turns/player
+  VARIANCE** (the die adds spread — confirm the low/high tail stays in-band; **sweep `track_length` L∈{2,3,4}
+  per count**, L is the #1 knob); day-rounds vs night-rounds; **contested_frac
   holds/rises** (confirm the vendor clock didn't shorten the game so much that fights don't happen — the CD's
   explicit check that *fights get to resolve before their stall ages*); Booking-supply-starvation (did a
   phase's Booking row run dry, and did that hurt completion); Last-Train Booking completion ≥ ~90%; the §16
@@ -2143,20 +2219,39 @@ This is the top decision-for-the-human below.
 - **§8 rewritten** from the deck-driven clock to the vendor-depletion clock (see the file).
 - **§5 / §6 / FAQ touched** to point the clock at vendor depletion and drop the "Booking decks are the clock /
   seed the boundary card" language.
+- **§8 gains the Closing-Time die teach** (CD refinement): the 3-round track (count 1·2·3), the custom d6 (4
+  region faces + 2 blank = 1/3 reprieve), "after round 3, roll → a region face closes the oldest stall there,
+  a blank = nothing, then reset the track," and — critically — the **no-loss rule**: "a closed stall's whole
+  crowd, even in a live fight, comes **home to your board** (no re-growing) — the stall you wanted just packed
+  up, you keep your followers." FAQ: die clears a stall I was about to book → yes, it can; your followers come
+  home, you re-Promote elsewhere. Die rolls a region with no face-up stall → nothing, no reroll.
 
 ## 17.12 Handoff / coherence flags (per the contract)
 
-**Mechanic that moved this pass — the game CLOCK** (the pacing spine), from a Booking-deck driver to a
-vendor-pool driver. The **signature twist** (the follower crowd-fight over scarce vendors, §2/§5) is not
-re-shaped, but it is now **directly wired to the clock**: the same scarcity that forces the fight now ends the
-game, and the sell-out timer is explicitly tuned so fights **resolve before** their stall ages out. Flag the
+**Mechanic that moved this pass — the CLOCK's FORCING FUNCTION** (CD refinement 2026-08-10): the deterministic
+"oldest unclaimed+uncontested stall sells out every R rounds" is REPLACED by the **Closing-Time die** (3-round
+track + custom d6, 4 region faces + 2 blank; a rolled region closes its oldest face-up stall, blank = reprieve;
+committed followers — **even a live fight** — come home to the board, no loss). The vendors-are-the-clock spine
+and the finite 13/11 pools are **unchanged**. The **signature twist** (the follower crowd-fight over scarce
+vendors, §2/§5) is not re-shaped but its relationship to the clock changed in one important way: a contested
+stall is **no longer immune** — the die can close one out from under a live fight (no resource loss). Flag the
 Director to run:
-- **`bg-elegance`** — expected **net TRIM**: this DELETES the Booking boundary-card mechanic (two cards + the
-  "seed at deck bottom / when drawn, flip" clause + the `boundary` type) and ADDS one "sold-out timer" line +
-  one clock reword. Argue it *simplifies* the clock (one guaranteed-to-fire driver instead of a decline-able
-  one) and re-gauge the budget.
-- **`bg-theme`** — does the fiction still fit? "The market closes when the stalls are gone" and "a stall with
-  no queue quietly packs up (sold out)" are *warmer and more legible* than "the tour-booking deck ran out."
-  Confirm the sell-out flavour reads as the day naturally winding down, not as punishment.
-- **`bg-rulebook`** — teach the new clock: the one-line mental model ("vendors are the clock and run out;
-  ingredients & events reshuffle and keep coming"), the DUSK/LAST-TRAIN triggers, and the sold-out timer.
+- **`bg-elegance`** — this pass **ADDS** rather than trims: a **new die + a new track + a new random subsystem**
+  (the game's first dice/randomness). Re-gauge the complexity budget: argue the die *replaces* an equally-fiddly
+  deterministic "oldest unclaimed+uncontested, skip-if-none, per-count R table" with a **more legible, more
+  exciting** one-roll rule (players read a physical track + die, not an abstract counter) — but be honest that
+  it introduces randomness the game did not have, and confirm that fits the target weight/mood.
+- **`bg-critic`** — the headline check: does the die **closing a contested / about-to-be-booked stall feel
+  bad**, even with followers returned home (no re-grow)? The swing is **opportunity + tempo** (your staged crowd
+  is idle, needs a Promote to redeploy), not resource loss — confirm that lands as "risk/excitement" per the CD,
+  not "punishment." Also: can a leader **weaponize** the die (no — it is random and hits the oldest face-up
+  regardless of owner), and does a die-lost near-win at high stakes (a prestige Booking) sting too hard?
+- **`bg-architect`** — component cost: a **custom-printed d6** is a real COGS line (custom die tooling vs stock);
+  see the §17.9b fallback (stock d6 + a region↔number key on the board).
+- **`bg-access`** — the die's region faces must **dual-code** (colour + emblem + 繁體), never colour alone.
+- **`bg-theme`** — does the fiction still fit? "Closing time — the market rolls the shutters down; a stall
+  packs up and its crowd drifts home" reads as the day winding down with a jolt of chance, not punishment.
+  Confirm the die's "luck of the market" flavour fits the felt identity.
+- **`bg-rulebook`** — teach the die + track + the no-loss homecoming (see §17.11); one-line model still holds
+  ("vendors are the clock and run out; ingredients & events reshuffle and keep coming") + "the Closing-Time die
+  rolls the shutters down."
