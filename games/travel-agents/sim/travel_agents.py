@@ -212,9 +212,12 @@ def _scaling_recommended():
     return os.environ.get("TA_SCALING", "").lower() == "recommended"
 
 
-# §21.5 tour groups (the `counts` tag, modelled by tour id — the CSV tag-add is bg-developer's next step).
-HEAVY_TOURS = {"n_collect6", "g_collect5", "n_allfood5", "d_collect4", "n_four", "n_all4", "n_prestige14"}
-ONRAMP_TOURS = {"d_cheap2", "d_deep2", "d_east1", "d_pairNC", "d_pairSE", "d_drinks2", "d_mix1", "d_daymix"}
+# §21.5 tour groups. HEAVY_TOURS / ONRAMP_TOURS are now DERIVED FROM THE CSV `counts:`/`onramp` tags
+# after BOOKINGS loads (see just below _load_bookings) — these are placeholders overwritten at load so
+# the sim tracks the built data, never a hand-maintained id list. RESERVE_3PB_TOURS stays an explicit
+# reserve set (a held-off sim lever, not a shipped tag).
+HEAVY_TOURS = set()
+ONRAMP_TOURS = set()
 RESERVE_3PB_TOURS = {"d_travel3", "g_travel3d", "n_deep3"}
 
 # Recommended per-count scaling from the 1c22551 sweep (thematic slots: base N1C1S1E1 → South +1 @5p →
@@ -300,6 +303,10 @@ def _load_vendors():
                 "trending": row.get("trending", "").strip() == "yes",
                 "apex": tier >= 3,
                 "cross": len(sig_regions) >= 2,   # a cross-region (→X) dish spans >1 signature region
+                # §21 tour targets `locale:<place>` / `dishtype:<kind>` match against these grouping columns
+                # (read from the CSV — never hardcoded; a street-crawl / dish-type tour reads exactly them).
+                "locale": row.get("locale", "").strip(),
+                "dish_type": row.get("dish_type", "").strip(),
             })
     return out
 
@@ -404,6 +411,9 @@ def _wstat(won):
     return {
         "n": len(won),
         "regions": set(by), "by": by,
+        # §21 street-crawl (locale:) + dish-type (dishtype:) tallies over the won pile
+        "locale": Counter(v["locale"] for v in won if v.get("locale")),
+        "dishtype": Counter(v["dish_type"] for v in won if v.get("dish_type")),
         "max_region": max(by.values()) if by else 0,
         "food": sum(1 for v in won if not v["is_drink"]),
         "drinks": sum(1 for v in won if v["is_drink"]),
@@ -461,6 +471,14 @@ def _parse_target(target):
             body = part[len("vendors_region:"):]
             reg, need = body.split(">=")
             clauses.append((lambda st, r=reg: st["by"].get(r, 0), int(need)))
+        elif part.startswith("locale:"):
+            # §21 street-crawl: N won vendors sharing one `locale` (e.g. locale:dadaocheng>=2 = the Dihua crawl)
+            loc, need = part[len("locale:"):].split(">=")
+            clauses.append((lambda st, x=loc.strip(): st["locale"].get(x, 0), int(need)))
+        elif part.startswith("dishtype:"):
+            # §21 dish-type: N won vendors of one `dish_type` (e.g. dishtype:bubble_tea>=2, dishtype:rice>=3)
+            kind, need = part[len("dishtype:"):].split(">=")
+            clauses.append((lambda st, x=kind.strip(): st["dishtype"].get(x, 0), int(need)))
         else:
             key, need = part.split(">=")
             fn = _SCALARS[key.strip()]
@@ -481,13 +499,27 @@ def _load_bookings():
             if row["type"].strip() == "boundary":
                 continue
             key = row["id"].strip()
+            ph_raw = row["phase"].strip()
+            # §20/§21 THREE booking phases: day=1 (DUSK-judged), night=2 (LAST-TRAIN, night-locked),
+            # any=3 (AGNOSTIC — drawable from setup, satisfiable across the whole game, judged at LAST
+            # TRAIN, NOT coerced to night). The old model mapped "any"→night; the re-model gives it its
+            # own value so it is (a) in the setup-available deck and (b) NOT frozen at dusk.
+            phase = 1 if ph_raw == "day" else (3 if ph_raw == "any" else 2)
+            tags = {t.strip() for t in row.get("tags", "").split(";") if t.strip()}
+            counts = ""                                       # e.g. "3456" / "456" from the `counts:` tag
+            for t in tags:
+                if t.startswith("counts:"):
+                    counts = t[len("counts:"):]
             out[key] = {
                 "value": int(row["value"]),
-                "phase": 1 if row["phase"].strip() == "day" else 2,
+                "phase": phase,
                 "target": row["target"].strip(),
                 "progress": _parse_target(row["target"].strip()),
                 "is_general": key.startswith("g_"),
                 "is_prestige": "value" in row.get("tags", "") and "prestige" in key,
+                "tags": tags,
+                "counts": counts,                             # player counts this tour is dealt at
+                "onramp": "onramp" in tags,                   # §21.5 on-ramp (easy value-3) tour
             }
             order.append(key)
     return out, order
@@ -495,10 +527,27 @@ def _load_bookings():
 
 BOOKINGS, BOOKING_ORDER = _load_bookings()
 PRESTIGE_KEYS = {"d_prestige8", "n_prestige14", "g_prestige12"}
-# DAY / NIGHT booking pools (the deck-clock draws from these). A general (g_) booking rides the phase
-# its CSV row is tagged with (g_travel3d = day; g_*n / g_collect5 / g_prestige12 / g_cross1 = night).
-DAY_POOL = [k for k, b in BOOKINGS.items() if b["phase"] == 1]
-NIGHT_POOL = [k for k, b in BOOKINGS.items() if b["phase"] == 2]
+# §20/§21 booking pools by phase. AGNOSTIC "any" (phase 3) tours are drawable from SETUP *and* stay
+# drawable in night (they satisfy across the whole game), so they ride BOTH the setup-available pool and
+# the night pool. day (1) = setup-only (DUSK-judged); night (2) = night-only. §20.9 sampling model: the
+# setup-available deck = day + any; the night deck = night + any (both faithful to "drawable from setup /
+# judged at last train"), landed here with the combined re-smoke.
+DAY_POOL = [k for k, b in BOOKINGS.items() if b["phase"] in (1, 3)]      # setup-available (day + any)
+NIGHT_POOL = [k for k, b in BOOKINGS.items() if b["phase"] in (2, 3)]    # night deck (night + any)
+
+# §21.5 the `counts` tag + `onramp` flag, DERIVED FROM THE CSV (not hardcoded): HEAVY = the >=4-claim
+# tours NOT dealt at 3p (their `counts` tag omits '3', i.e. counts:456); ON-RAMP = the easy value-3 tours
+# governed by onramp_high_count at 4-6p. Overrides the earlier id-list placeholders now that the CSV
+# carries the real tags (the sim can never drift from the built data).
+HEAVY_TOURS = {k for k, b in BOOKINGS.items() if b["counts"] and "3" not in b["counts"]}
+ONRAMP_TOURS = {k for k, b in BOOKINGS.items() if b["onramp"]}
+
+# The two flagged-risk tours that BOTH hinge on the single-slot night stall N07 (珍奶 · Bubble Tea,
+# Dadaocheng Wharf): g_travel3d = dishtype:bubble_tea>=2 (needs N07 + C03), d_north2 = locale:dadaocheng>=2
+# (needs N07 + N02). If N07 rarely surfaces / is won, these two are orphaned in practice — we track their
+# held-vs-completed rate (and N07's surface/win rate) so bg-playtest can size the orphan risk.
+TRACKED_TOURS = {"g_travel3d", "d_north2"}
+N07_ID = VID_BY_KEY.get("N07")
 
 
 def _booking_done(key, won):
@@ -830,6 +879,9 @@ class TravelAgentsGame:
             "evfrac_samples": {(r, ph): [] for r in REGIONS for ph in (1, 2)},
             "pantry_supply_min": 10 ** 9, "box_from_larder": 0,
             "commit_hist": [],   # (turn, vid, p) for fingerprints / earliest committer
+            # N07-orphan probe: per-game held/completed for the two N07-dependent tours + N07 surface/win.
+            "tour_held": Counter(), "tour_completed": Counter(),
+            "n07_surfaced": False, "n07_won": False,
         }
         # build the four DAY live market decks (ingredient cards + dealt day events) + fresh discards
         for r in REGIONS:
@@ -860,6 +912,7 @@ class TravelAgentsGame:
             upper.append({"id": vid, "region": v["region"], "is_drink": v["is_drink"], "phase": v["phase"],
                           "total_cost": v["total_cost"], "tier": v["tier"], "apex": v["apex"],
                           "cross": v["cross"], "vp": v["vp"],
+                          "locale": v["locale"], "dish_type": v["dish_type"],
                           "contested": True, "act_won": 1, "final_round": True})
         st = _wstat(upper)
         out = []
@@ -1182,8 +1235,11 @@ class TravelAgentsGame:
             "id": vid, "region": v["region"], "is_drink": v["is_drink"], "phase": v["phase"],
             "total_cost": v["total_cost"], "tier": v["tier"], "apex": v["apex"], "cross": v["cross"],
             "vp": v["vp"],                                  # §14 vendor VP (the second scoring track)
+            "locale": v["locale"], "dish_type": v["dish_type"],   # §21 street-crawl / dish-type targets
             "contested": contested, "act_won": s["act"], "final_round": s["end_turn"] is not None,
         })
+        if vid == N07_ID:
+            s["n07_won"] = True
         if v["apex"]:
             s["apex_claims"] += 1
         if not v["is_drink"] and v["icon"]:
@@ -1261,6 +1317,8 @@ class TravelAgentsGame:
                     continue   # reserve d: apex stalls, once gone, do not come back (drop, try next)
                 s["faceup"][r].append(nv)
                 s["fol"].setdefault(nv, [0] * s["n"])
+                if nv == N07_ID:
+                    s["n07_surfaced"] = True
 
     def _closing_time_die(self, s):
         """§17.3 the Closing-Time die forcing function. Every L rounds (L = track_length, baseline 3), roll a
@@ -1365,6 +1423,8 @@ class TravelAgentsGame:
         key = max(s["mrow"], key=lambda k: self._booking_want(s, p, k))
         s["mrow"].remove(key)
         pl["tickets"].append(key)
+        if key in TRACKED_TOURS:
+            s["tour_held"][key] += 1
         s["books_faceup"] += 1
         if s["mreserve"]:
             s["mrow"].append(s["mreserve"].pop())
@@ -1390,6 +1450,8 @@ class TravelAgentsGame:
         key = s["mreserve"].pop()                     # BLIND top-of-deck draw (kept, no peek)
         pl["tickets"].append(key)
         pl["wild_tickets"].add(key)
+        if key in TRACKED_TOURS:
+            s["tour_held"][key] += 1
         s["books_wild"] += 1
         if BOOKINGS[key]["phase"] == 1:
             s["books_wild_day"] += 1
@@ -1497,6 +1559,8 @@ class TravelAgentsGame:
             s["vdeck"][r] = nd; s["faceup"][r] = up
             for vid in up:
                 s["fol"].setdefault(vid, [0] * s["n"])
+                if vid == N07_ID:
+                    s["n07_surfaced"] = True
             # §16.4 PHASE-TO-BOX: the day market deck + its face-up discard go to the BOX; build the fresh
             # NIGHT market deck (night ingredient cards + dealt night events) with an empty night discard.
             _build_market(s, r, 2, rng)
@@ -1567,10 +1631,14 @@ class TravelAgentsGame:
             # so its penalty stands). Scoring pulls the pile penalty in _booking_vp.
             night = 0
             for key in pl["tickets"]:
-                if BOOKINGS[key]["phase"] != 2:
+                # LAST TRAIN judges night (2) AND agnostic "any" (3) tours; day (1) tours were already
+                # frozen at dusk (§20/§21: an "any" tour is satisfiable across the whole game).
+                if BOOKINGS[key]["phase"] == 1:
                     continue
                 if _booking_done(key, pl["won"]):
                     night += BOOKINGS[key]["value"]
+                    if key in TRACKED_TOURS:
+                        s["tour_completed"][key] += 1
                 else:
                     pl["cancelled"].append(BOOKINGS[key]["value"])
             pl["night_book_score"] = night
@@ -2241,6 +2309,13 @@ class TravelAgentsGame:
             "ama_snipe_rate": float(s["ama_snipes"] / s["ama_claims"]) if s["ama_claims"] else 0.0,
             "ama_travel_cost_paid_per_game": float(s["ama_travel_cost_paid"]),
             "councillor_free_draws_per_game": float(sum(pl["fp_free_draws"] for pl in s["players"])),
+            # ---- N07-orphan probe (the two flagged N07-dependent tours) ----
+            "n07_surfaced": 1.0 if s["n07_surfaced"] else 0.0,
+            "n07_won": 1.0 if s["n07_won"] else 0.0,
+            "g_travel3d_held_per_game": float(s["tour_held"].get("g_travel3d", 0)),
+            "g_travel3d_completed_per_game": float(s["tour_completed"].get("g_travel3d", 0)),
+            "d_north2_held_per_game": float(s["tour_held"].get("d_north2", 0)),
+            "d_north2_completed_per_game": float(s["tour_completed"].get("d_north2", 0)),
             # ---- claim geography ----
             "claim_share_N": s["claim_by_region"]["N"] / claims,
             "claim_share_C": s["claim_by_region"]["C"] / claims,
@@ -2272,6 +2347,7 @@ def _booking_marginal(s, p, vid, prefs):
     v = VENDORS[vid]
     cand = {"id": v["id"], "region": v["region"], "is_drink": v["is_drink"], "phase": v["phase"],
             "total_cost": v["total_cost"], "tier": v["tier"], "apex": v["apex"], "cross": v["cross"],
+            "vp": v["vp"], "locale": v["locale"], "dish_type": v["dish_type"],
             "contested": False, "act_won": s["act"], "final_round": s["end_turn"] is not None}
     total = 0.0
     for key in pl["tickets"]:
