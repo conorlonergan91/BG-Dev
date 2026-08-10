@@ -30,8 +30,8 @@ Everything sits on **one shared board, readable from any seat. Everyone starts i
 - **Vendor stalls** — fill the face-up slots from each region's DAY vendor deck (counts below); set the
   NIGHT vendor decks aside for dusk.
 - **Booking decks** — shuffle the **DAY 開團** and **NIGHT 開團** decks *separately* to your count's size;
-  seed the **黃昏 DUSK** card at the DAY deck's bottom and **末班車 LAST TRAIN** at the NIGHT deck's — your
-  clock (§8). Deal a face-up **Booking row** from the DAY deck.
+  they are your **tour supply**, not the clock (the clock is the vendors, §8). Deal a face-up **Booking
+  row** from the DAY deck.
 - **Followers** — take your full pool in your colour (**6**; the Influencer 網紅 owns **8**): put **2 on
   your board**, the rest in your own **supply**.
 - Each player takes a **character board** (read its ability and flaw aloud), a pawn in Taipei, an empty
@@ -87,8 +87,8 @@ it) — the whole cost of losing. **Leave the slot empty** for now.
 Promote again to break it, or walk away and leave them.
 
 **Stalls are scarce and refill slowly.** A claimed or emptied slot stays **empty**; all empty slots refill
-only at the **end of the round**. So a stall may be the region's only one — out-commit a rival, or Travel
-on and risk it being gone.
+only at the **end of the round** (and a stall that no one queues at eventually **sells out**, §8). So a
+stall may be the region's only one — out-commit a rival, or Travel on and risk it being gone.
 
 **A won vendor is pure engine.** Most show a **region icon**: each icon you hold makes
 that region's ingredients **1 cheaper** to Bribe — your ramp. Drinks and ★ apex stalls carry no icon.
@@ -131,19 +131,28 @@ Travel does nothing.
 
 ## 8. The day-clock — dusk & the last train
 
-It's one eating day, and the **Booking decks are the clock**: the day's tours book out, then the night's.
+It's one eating day, and **the vendors are the clock**: the day runs on its stalls, and when the day's
+stalls are gone the night's begin — when those are gone, it's the last train home. The Booking decks are
+**not** the clock (they're just your tour supply); the **market decks** (ingredients & events) reshuffle and
+keep coming — only the **vendors** run out.
 
-- **Daytime 白天** — morning food and drinks; build your ramp.
-- **黃昏 DUSK** — when the DAY deck runs out, its **黃昏 DUSK** card surfaces: finish the current turn,
-  then flip to night — clear the unclaimed day vendors and markets, bring the **night** vendors and
-  markets online, and deal a new Booking row from the NIGHT deck. **Keep your Larder and Bookings.**
-- **Night Market 夜市** — the big stalls: pricier, fought-over, the ★ apex.
-- **末班車 LAST TRAIN** — when the NIGHT deck runs out, its **末班車 LAST TRAIN** card surfaces: finish the
-  current round so all have had equal turns, then the game ends.
+- **Daytime 白天** — the day's stalls are the **13 daytime vendors.** Build your ramp on them.
+- **黃昏 DUSK** — the moment the **day vendors are all gone** — claimed or sold out, with none left to put
+  out — dusk falls: finish the current turn, then flip to night. Bring the **night** vendors and markets
+  online and deal a fresh Booking row from the NIGHT deck. **Keep your Larder and Bookings.**
+- **Night Market 夜市** — the **11 nighttime vendors**: pricier, fought-over, the ★ apex.
+- **末班車 LAST TRAIN** — the moment the **night vendors are all gone**, the last train is called: finish the
+  current round so everyone has had equal turns, then the game ends.
+
+> **Stalls sell out.** So a dead stall can't hold up the day: every few rounds (see the setup chart for your
+> count) the **oldest stall that no one is queuing at** — no followers on it — quietly **sells out** and is
+> removed. A stall with a crowd on it is safe: a contest is never cut short. This is what guarantees the day
+> — and the night — always come to a close.
 
 > **At each boundary (DUSK and the last train).** First break any still-**tied** stall — to **most
 > followers, then earliest committer** (paying if able); losers scatter to their supply. Then followers on
-> **unclaimed** stalls return **home to their boards** — the stall simply closed, unwon.
+> **unclaimed** stalls return **home to their boards** — the stall simply closed, unwon. Any **unfinished
+> Booking** you still hold is **cancelled** for its −half penalty (a held tour with no time left to run).
 
 ## 9. Scoring
 
@@ -178,6 +187,8 @@ short:
   more first; every **Travel** grows one.
 - **A rival won a stall my followers were on.** They go back to your **own supply** (never to the rival),
   to rally again. A bad-review event works the same way.
-- **A market or Booking deck runs out.** Reshuffle a *market's* discard — ingredients never leave the
-  game. The **Booking** decks never reshuffle: their boundary card is the clock (§8).
+- **A market or Booking deck runs out.** Reshuffle a *market's* discard — ingredients and events never
+  leave the game, they keep coming around. The **vendor** and **Booking** decks never reshuffle: the
+  vendors are the clock and must run out (§8); if a Booking deck empties, its face-up row simply stops
+  refilling (you've seen all the tours) — that does not end anything.
 - **Can a vendor or a ★ apex stall score?** No. Only Bookings score.

@@ -80,6 +80,25 @@
 >   clock/scoring/fight/character-bands are ingredient-identity-independent and untouched). Full taxonomy +
 >   old→new conversion table + re-sim scope: `design/ingredient-taxonomy.md` §FINAL.
 
+> ---
+> ## ⚠ V7-M CLOCK CANON (2026-08-10 — bg-design, SUPERSEDES every clock line below)
+> **The clock is now VENDOR DEPLETION, not the Booking deck.** The sim found the stall's root cause: the
+> Booking deck was the clock, and it only drains when a player chooses to Book — an action they stop taking
+> once late-game vendor throughput collapses, so the deck froze and ~half of games ran to the ~50-t/p cap
+> (target 26–32). CD decision: **make the vendors the clock** — the resource scarcity already drains.
+> - **DAY** runs on the finite pool of **13 day vendors**; when it is exhausted → **黃昏 DUSK** (flip to
+>   night). **NIGHT** runs on the finite **11 night vendors**; when exhausted → **末班車 LAST TRAIN** →
+>   finish the round → end. A vendor leaves the pool by being **claimed** or **sold out**.
+> - **Forcing function (guarantees the clock fires):** every **R rounds** (per-count *sell-out cadence* — 3p 3
+>   · 4p 4 · 5p 4 · 6p 5, sim-tuned) the **oldest face-up stall no one is queuing at** (uncontested) sells
+>   out and is removed. A contested stall is immune — fights are never cut short.
+> - **§16 reconciliation:** the **vendor** phase-decks are FINITE and **never reshuffle** (they must deplete
+>   to end the phase); the region **ingredient + event** decks still **reshuffle per §16** (they recur). The
+>   **Booking deck is retired as the clock** — pure finite tour-supply; its 黃昏/末班車 boundary cards are
+>   **deleted**. One-line teach: *"vendors are the clock and run out; ingredients & events keep coming."*
+> - Full spec: `design/design-doc.md` **§17**. Net rules **TRIM** (flag `bg-elegance`); re-smoke gated
+>   (confirm 26–32 t/p, stall→0, fights resolve before their stall ages).
+
 ## One-liner
 <!-- The hook a stranger would repeat. -->
 You and your rival run competing **travel agencies** racing to build the best Taiwan food **tour** — ride

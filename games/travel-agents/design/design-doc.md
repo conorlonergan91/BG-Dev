@@ -1934,3 +1934,229 @@ scarce vendors, §12) flowing, so the twist is *supplied* by this loop. Flag the
   disambiguation. Argue it *replaces* vaguer prose already scattered across §15/§12.5 (a consolidation, near
   weight-neutral) and folds into the same rulebook-headroom re-gauge (§10 flag).
 - **`bg-access`** — the new **phase glyph** (§16.7) must pass redundant-encoding (sun/moon, not colour-only).
+
+---
+
+# 17. THE VENDOR-DEPLETION CLOCK (SUPERSEDES the Booking-deck clock — CD decision, 2026-08-10)
+
+> **Status: SPEC (bg-design, 2026-08-10). SUPERSEDES the deck-driven Booking-deck clock** everywhere it
+> appears — §8 of `rules-draft.md`, `map.json.clock_model`, and the `boundary_dusk` / `boundary_lasttrain`
+> Booking rows. **Spec-only — no data/code/sim edited here;** the change lists are §17.7–17.10. This is a
+> **net rules TRIM** (delete the Booking boundary-card mechanic; add one aging line) — flag to `bg-elegance`.
+
+## 17.0 Why the clock moved (the diagnosis, in one paragraph)
+
+The sim found the stall's root cause: the clock **was** the Booking deck, and the Booking deck only drains
+when a player spends a turn to **Book** a tour — and booking is chained to *completing* tours, which is
+chained to *winning vendors*. Under V7-M scarcity, late-game vendor throughput collapses; players hold
+un-completable Bookings, stop booking, the Booking deck freezes, and ~half of games ran to the ~50-turn/player
+stall cap (target 26–32). The fix the CD chose: **stop clocking the game off an action players can decline,
+and clock it off the resource that scarcity already drains — the vendors.** The market closes when the stalls
+are gone. This deletes the Booking-deck clock entirely.
+
+## 17.1 The core rule — the vendors ARE the clock
+
+The day and the night each run on a **finite pool of vendors** that only depletes and never reshuffles:
+
+- **DAY runs on the DAY vendor pool** — all **13 day vendors** (every day vendor is tier-1; N 3 · C 4 · S 3 ·
+  E 3). When that pool is **exhausted — every day vendor claimed or sold out, deck empty, no day stall left in
+  play — DUSK fires:** finish the current turn, flip the board to night.
+- **NIGHT runs on the NIGHT vendor pool** — all **11 night vendors** (N 4 · C 2 · S 3 · E 2; 1 drink, 6 tier-2,
+  4 tier-3 apex). When that pool is **exhausted — LAST TRAIN fires:** finish the current round so all seats
+  have equal turns, then the game ends and scores.
+
+Mechanically the pool = the region **vendor decks** (`vdeck`, face-down behind the slots) **plus** the face-up
+stalls. A vendor leaves the pool exactly two ways: **claimed** (a Bribe) or **sold out** (the forcing
+function, §17.3). Every claim/sell-out pulls the next card from the region deck into the empty slot at the
+**end-of-round refill** (§1.2, unchanged); so each claim/sell-out net-drains the pool by one. When a phase's
+decks are empty, the face-up stalls stop refilling and drain to zero — and the phase ends.
+
+## 17.2 The clock is guaranteed to fire — where the old one wasn't
+
+The old clock could freeze because a player could simply **stop booking**. The vendor clock cannot be
+declined: (a) **claims** drain it whenever the fight is live, and (b) when claims collapse, the **sell-out
+forcing function (§17.3) keeps draining it on a timer no player controls.** The pool is finite and monotone —
+it only ever shrinks — so the phase boundary is **guaranteed** to arrive. That is the whole point of the
+re-architecture.
+
+## 17.3 The forcing function — "Sold out" (CRITICAL; without it the freeze just relocates)
+
+If depletion relied on claims alone, the freeze would move from the Booking deck to the vendor board: late
+game, players hold followers they can't cash, no one claims, the pool never empties, the phase never ends.
+So the clock is **paired with an aging rule that removes stalls even when claiming has stopped.**
+
+> **Rule — Selling out.** The market thins on a **timer, not every round.** Every **R rounds** (the *sell-out
+> cadence*, per-count table in §17.5), the **single oldest face-up stall that is UNCLAIMED and UNCONTESTED**
+> (no follower stands on it) **sells out** — remove it from the game (it does **not** return to the deck),
+> then run the normal end-of-round refill. If, on a sell-out beat, **no** face-up stall is crowd-less (every
+> stall has a crowd on it), **nothing sells out that beat** — a live contest is never cut short.
+
+**Why a timer, not per-round (the CD's action-budget reasoning — verified against the turn model).** A turn is
+**one action.** Meaningfully engaging a stall spans **several** turns: Travel to grow a follower → Promote onto
+the stall → Bribe to claim it — and a **contested** stall takes more still, as rivals out-commit over
+successive turns. So a stall must **survive several rounds** for a fight to play out and resolve. Aging one out
+**every round** would strip the board faster than players can act on it — the phase would end before the
+contests (the signature twist) resolve. The diagnosis's own cadence sweep found **~1 stall aged per ~4 rounds**
+lands pace near the 26–32-t/p target; that is the anchor, tuned per count in §17.5.
+
+**Why "oldest, unclaimed AND uncontested" (agency-preserving).** The timer only ever removes a stall **nobody
+is fighting over** — a quiet stall that has sat with no crowd. A contested stall (any follower on it) is
+immune to aging: you can never have a stall you're battling for yanked out from under you. This is thematic
+(a stall with no queue quietly packs up; a mobbed stall stays open) and it guarantees the fights the scarcity
+lever exists to create are the ones that get to resolve.
+
+**Monotonic-depletion guarantee + the deadlock backstop.** The timer guarantees the pool shrinks whenever a
+crowd-less stall exists. The one residual hole is a **fully-parked / all-tie-blocked board** (every face-up
+stall carries a lone parked or tied crowd, no claims, no crowd-less stall to age). This is (a) costly and weak
+to attempt — parking one follower on every stall burns your whole pool and each parked stall is beaten by a
+rival's +1 — and (b) closed by two things already in the model: the region **deck still drains** via claims
+and the aging of *other* stalls, and the **DUSK / LAST-TRAIN tie-resolver (§2.6)** force-clears every lingering
+tied/crowd-less stall at the boundary. **Backstop for the sim:** treat a phase as exhausted (fire its boundary)
+once its **vendor deck is empty AND the face-up set has not changed for a full round** — the boundary resolver
+then empties the face-up and the phase ends. This closes the only path to a re-freeze.
+
+## 17.4 §16 RECONCILIATION — finite vendor decks vs. reshuffling market decks (the crux)
+
+The new architecture makes one distinction load-bearing; state it unambiguously, because two kinds of deck now
+behave in **opposite** ways:
+
+| Deck | Reshuffles? | Why |
+|---|:--:|---|
+| **Vendor phase-decks** (`vdeck`, day 13 / night 11) | **NEVER** | They **are** the clock. They must **deplete to zero** to end the phase. A reshuffle would make the day/night infinite and the game would never end. Once a vendor is claimed or sold out it is **gone for the phase** (and day vendors go to the box at DUSK per §16.4). |
+| **Region INGREDIENT + EVENT decks** (the region **market** decks, `ingredients.csv` + `events.csv`) | **YES — per §16** | They are **not** the clock. They recycle exactly as §16 specifies (spent / fired / forced / passed-over → face-up region discard; deck-out → reshuffle that discard) so **ingredients and events recur** through the now-longer game. Phase-to-box at DUSK/LAST-TRAIN (§16.4) is unchanged. |
+
+One sentence for the rulebook: **"Vendors are the clock and run out; ingredients and events reshuffle and keep
+coming."** The §16 loop (four discard feeders + reshuffle-on-empty + phase-to-box) is **untouched** by this
+pass — it already scoped vendors out explicitly (§16.2 "Out of scope"). The only edit §16 needs is to stop
+saying DUSK/LAST-TRAIN is "when the Booking deck runs out" and say "when the vendor pool runs out."
+
+## 17.5 PACE — per-count vendor pools + sell-out cadence (targeting 26–32 turns/player)
+
+The vendor pool is **fixed at 13 day / 11 night for every count** — all 24 vendors are always in play (they are
+unique named real dishes; not duplicated). So the **per-count pacing knob is the sell-out cadence R** (rounds
+between sell-out beats). Turns/player ≈ number of rounds ≈ (day rounds + night rounds).
+
+**Reasoning for the per-count spread.** Depletion each round = *claims that round* + *aging (≈1 per R rounds)*.
+More players = more actions/round = more claims/round = the pool drains **faster in rounds** → to hold the
+26–32 band the aging must be **gentler (larger R)** at high counts. Aging can only *speed* depletion, never
+slow claims, so high counts are the binding pace risk (§17.6). Fewer players = sparser claims = the pool drains
+**slower** → a **slightly sharper (smaller R)** cadence keeps 3p from dragging past the band and clears dead
+stalls promptly.
+
+| Players | Day pool | Night pool | Face-up slots (§1.3) | **Sell-out cadence R (baseline)** | Action-budget note |
+|:--:|:--:|:--:|:--:|:--:|---|
+| **3p** | 13 | 11 | 4 (N1 C1 S1 E1) | **every 3 rounds** | ~3 actions/round; a claim spans ~3 turns, a contest ~2–3 rounds → R=3 lets fights resolve, sparse claims need the sharper backstop |
+| **4p** | 13 | 11 | 5 (N2 C1 S1 E1) | **every 4 rounds** | the anchor (the sweep's ~1-per-4-rounds pace) |
+| **5p** | 13 | 11 | 5 (N2 C1 S1 E1) | **every 4 rounds** | more claims/round than 4p, same slots → hold R=4, watch pace at the top |
+| **6p** | 13 | 11 | 6 (N2 C2 S1 E1) | **every 5 rounds** | ~6 actions/round → fastest claim-drain; gentlest aging to preserve rounds (and may still ride the band's low end — §17.6) |
+
+These are **starting points for the sim**, not final. **R is the #1 knob for the re-smoke** — sweep R ∈
+{3, 4, 5, 6} per count. The counter is a single global "rounds since last sell-out" tally on the clock band;
+zero extra per-stall bookkeeping.
+
+## 17.6 The arithmetic honesty flag (the one real risk)
+
+24 unique vendors is a **tight budget** for 26–32 turns/player. The maximum possible game length in rounds is
+capped by the **claim-only drain rate** (aging can only shorten the game, never lengthen it): if claims alone
+empty the 24-pool in fewer than ~26 rounds at a given count, **that count cannot reach the band no matter how
+gentle the aging.** High counts (6p, most actions/round) are where this bites. The diagnosis (late-game claim
+**collapse**, low throughput) suggests the claim rate is low enough that aging is the dominant driver and the
+band **is** reachable — but this is exactly what the re-smoke must confirm, per count. **If 6p (and maybe 5p)
+undershoots 26 t/p even at the gentlest cadence,** the CD decision is between **(A) accept a slightly shorter
+high-count game (~22–25 t/p)** — fine for a 30–45-min title — or **(B) enlarge the day/night pools by adding
+duplicate copies of the cheap commodity stalls only** (bubble tea, soy milk, papaya milk — thematically there
+*are* many such stalls; never duplicate an apex trophy), a `vendors.csv` quantity change outside this pass.
+This is the top decision-for-the-human below.
+
+## 17.7 Interactions — confirmed coherent
+
+- **Incomplete held Bookings cancel at −⌊V/2⌋ (existing rule) now triggers on vendor depletion.** At DUSK the
+  held **day** Bookings judge (completed → +V, unfinished → CANCELLED −⌊V/2⌋, still sheddable by a night
+  CLEAR/SALVAGE); at LAST TRAIN the held **night** Bookings judge and the game ends. Identical to today — only
+  the *trigger* changed from "Booking deck empty" to "vendor pool empty." **No perverse incentive:** vendors
+  and followers still score nothing (§9), so a player never wants to hoard vendors; a completed tour is still
+  strictly better than an unfinished one.
+- **New, legitimate end-game race lever.** A leader can now **push the clock** — claim or let stalls age to
+  drain the pool and slam the boundary shut while ahead; a trailer can **keep stalls crowded** to buy time
+  (a crowd immunizes a stall from aging). This is *good* end-game tension the Booking clock delivered only
+  weakly, and it is bounded by the timer + backstop (§17.3) — a trailer cannot freeze the pool, only slow it.
+- **DUSK/LAST-TRAIN tie-resolver (§2.6) + min-follower floor (§12.2) still work — and are now doubly
+  load-bearing.** They fire at the vendor-triggered boundary exactly as specified: still-tied stalls resolve
+  to most-followers → earliest-committer (paying if able; a below-floor top crowd clears **unclaimed**,
+  followers home). They also serve as the deadlock backstop (§17.3).
+- **"Tours dominate" VP intent intact.** Only Bookings score; the clock change adds no VP anywhere and does
+  not touch the prestige-Booking targets (§6/§12.6).
+
+## 17.8 Change list — `map.json` (DATA — spec only, `bg-developer` executes)
+
+- **`clock_model`** → rewrite from Booking-deck-driven to **vendor-depletion**:
+  - `driver`: "the finite VENDOR pools — the day pool (13) then the night pool (11) deplete; the phase ends
+    when its pool is exhausted. NOT the Booking deck."
+  - `dusk`: "fires when the DAY vendor pool is exhausted (all day vendors claimed or sold out, deck empty,
+    no day stall in play) — finish the turn, flip to night."
+  - `last_train`: "fires when the NIGHT vendor pool is exhausted — finish the round, then end."
+  - `retired`: extend to note the **Booking-deck clock and its seeded 黃昏/末班車 boundary cards are DELETED**
+    (superseded by §17); the Booking deck is now pure tour-supply.
+- **Add `vendor_clock`** block: the per-phase pool sizes (`day: 13, night: 11`, fixed all counts) + the
+  **`sellout_cadence`** per-count map `{"3":3, "4":4, "5":4, "6":5}` (rounds between sell-out beats) + the
+  sell-out rule note (oldest **unclaimed & uncontested** face-up stall; skip if none crowd-less; deadlock
+  backstop = deck-empty + face-up-static-one-round → boundary).
+- **`booking_deck_sizes`** — KEEP the sizes, but change the `_rule` note: the Booking deck is **no longer the
+  clock**; it is finite tour-supply and, like the vendor decks, **does not reshuffle** — if a phase's Booking
+  deck empties, the face-up row simply stops refilling (drawing tours is optional supply, not the clock). Drop
+  the "seeded boundary card sits BELOW these counts" line.
+- **`vendor_slots`** — unchanged (§1.3 scarcity counts stand); its slow-refill `refill` note stands.
+
+## 17.9 Change list — `bookings.csv` (DATA — spec only)
+
+- **Delete the two boundary rows** `boundary_dusk` (黃昏) and `boundary_lasttrain` (末班車) — the Booking deck
+  no longer carries the clock. (This retires the `boundary` `type` value from the deck entirely.)
+- Everything else in `bookings.csv` stands (the day/night phase split still governs when a tour is *available*
+  and when it *judges* — that split is unchanged; it is just no longer the clock).
+
+## 17.10 Change list — `sim/travel_agents.py` (SIM — spec only, `bg-playtest` re-models + re-smokes)
+
+- **Sever the Booking-deck clock:** in `_do_claim`, when `mreserve` is empty, **stop calling
+  `_booking_deck_out`** — a dry Booking deck must no longer trigger dusk/end; the row just doesn't refill.
+- **Trigger DUSK/LAST-TRAIN off vendor emptiness instead.** At end-of-round (in `step`, after
+  `_refill_round`): if `act==1` and the DAY pool is exhausted (all `vdeck[r]` empty **and** all `faceup[r]`
+  empty — or the deadlock backstop: decks empty & face-up static one round) → `_dusk(s)`; if `act==2` and the
+  NIGHT pool is exhausted → `_trigger_end(s, "lasttrain")`. Keep `_dusk` / `_finalize` bodies (tie-resolver +
+  boundary sweep + Larder→box) as-is; only their **trigger** moves.
+- **Add the sell-out forcing function** in `_refill_round` (run it **before** topping up): maintain
+  `s["rounds_since_sellout"]`; every `R = sellout_cadence[n]` rounds, remove the **oldest face-up stall with
+  no followers on it** (`sum(fol[vid])==0`) from the region with such a stall (oldest by insertion order);
+  the removed vendor is **gone** (not returned to `vdeck`); if no crowd-less face-up stall exists that beat,
+  skip (do not age a contested stall) and do **not** reset the counter. Reset the counter on a sell-out.
+- **`_dusk` day-layer sweep** currently *rebuilds* the night face-up from `_region_deck(r,2)` — keep, but note
+  the day pool is already empty when DUSK fires (nothing to clear), so the sweep of unclaimed day stalls is a
+  no-op by construction; the night pool build is unchanged.
+- **New / changed metrics for the re-smoke:** turns/player per count (target **26–32**, hard read that
+  **stall→0**, i.e. no games hit `STALL_CAP`); sell-outs/game and day-rounds vs night-rounds; **contested_frac
+  holds/rises** (confirm the vendor clock didn't shorten the game so much that fights don't happen — the CD's
+  explicit check that *fights get to resolve before their stall ages*); Booking-supply-starvation (did a
+  phase's Booking row run dry, and did that hurt completion); Last-Train Booking completion ≥ ~90%; the §16
+  reshuffle metrics (ingredient/event decks) unchanged.
+
+## 17.11 Change list — `rules-draft.md` (SPEC — rewritten this pass)
+
+- **§8 rewritten** from the deck-driven clock to the vendor-depletion clock (see the file).
+- **§5 / §6 / FAQ touched** to point the clock at vendor depletion and drop the "Booking decks are the clock /
+  seed the boundary card" language.
+
+## 17.12 Handoff / coherence flags (per the contract)
+
+**Mechanic that moved this pass — the game CLOCK** (the pacing spine), from a Booking-deck driver to a
+vendor-pool driver. The **signature twist** (the follower crowd-fight over scarce vendors, §2/§5) is not
+re-shaped, but it is now **directly wired to the clock**: the same scarcity that forces the fight now ends the
+game, and the sell-out timer is explicitly tuned so fights **resolve before** their stall ages out. Flag the
+Director to run:
+- **`bg-elegance`** — expected **net TRIM**: this DELETES the Booking boundary-card mechanic (two cards + the
+  "seed at deck bottom / when drawn, flip" clause + the `boundary` type) and ADDS one "sold-out timer" line +
+  one clock reword. Argue it *simplifies* the clock (one guaranteed-to-fire driver instead of a decline-able
+  one) and re-gauge the budget.
+- **`bg-theme`** — does the fiction still fit? "The market closes when the stalls are gone" and "a stall with
+  no queue quietly packs up (sold out)" are *warmer and more legible* than "the tour-booking deck ran out."
+  Confirm the sell-out flavour reads as the day naturally winding down, not as punishment.
+- **`bg-rulebook`** — teach the new clock: the one-line mental model ("vendors are the clock and run out;
+  ingredients & events reshuffle and keep coming"), the DUSK/LAST-TRAIN triggers, and the sold-out timer.
