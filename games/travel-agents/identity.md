@@ -1,4 +1,4 @@
-# 🎨 Travel Agents: Taiwan — Creative Identity
+# 🎨 Travel Agents: Taiwan Food Tour — Creative Identity
 
 > The living source of truth for how this game **feels**: concept, theme, tone, look, and naming. Owned
 > by `bg-theme`. For mechanics read `game-bible.md`; for the canonical name table (English first) read
@@ -8,54 +8,54 @@
 > plot to memorise. Leaving story/lore light is the correct answer here, not a gap.
 
 ## North star
-**Image:** *Dusk at the night market. Several rival travel agencies work the same crowded street —
-trench coats over Hawaiian shirts, each guarding a secret itinerary, each rallying their own crowd of
-followers to the best stalls. Steam rises, neon flickers on. An earpiece crackles: head office — "the
-oysters just hit the grill in Tainan. Lock it into the tour. GO." Everyone's grinning, chopsticks already
-moving, one eye on the clock: the last train is coming.*
+**Image:** *Dusk at the night market. Several rival travel agencies descend on the same crowded street,
+elbows out, each shoving their own crowd of followers toward the best stalls. One agent cuts another off
+at the beef-noodle cart; someone snatches the hot vendor out from under a rival mid-pitch. Steam rises,
+neon flickers on, everyone's yelling their busload louder than the next. And down the tracks, headlight
+blazing, the last train is bearing down — nobody's leaving anything on the grill.*
 
-**Phrase:** *The mission is the meal — out-book the other agencies to build the island's best food tour
-before the last train home.*
+**Phrase:** *A demolition-derby dash to build the island's best food tour — elbows out on your rivals,
+never on Taiwan — before the last train home.*
 
-When a call is unclear, ask: *does it make the table feel like a street full of food-obsessed travel
-agents on a "top-secret" race through the night market?* The mission and the meal are the same picture,
-the rivalry is in the frame, the clock is ticking — and the whole spy act is a joke on a wholesome
-day-job. The excitement lives in the chase, the warmth in the grin.
+When a call is unclear, ask: *does it make the table feel like a pack of food-obsessed travel agents
+racing flat-out through the night market, throwing elbows at each other while the island grins on?* The
+rivalry is loud and in the frame; the island and its food are the beloved thing everyone's fighting
+*over*, never *against*. The excitement lives in the scramble, the warmth in the food.
 
 ## Concept & premise
-A lighthearted travel-and-food game set in **Taiwan**. You run a **travel agency**, and so do your
-rivals, and you're all racing to assemble the single best Taiwan foodie **tour** on the island. The joke:
-you take it *so* seriously that you behave like a covert **secret agent** about it — trench coat over the
-Hawaiian shirt, guarding your dossier, muttering into an earpiece, sneaking a look at what the competition
-is booking. But the actual job is the wholesome one: a travel agent showing off the best of the island.
-"Secret agent" is pure behavioural wordplay on **travel agent** — the title is literal, and that's the gag.
+A madcap, over-the-top competitive travel-and-food game set in **Taiwan**. You run a **travel agency**,
+and so do your rivals — a pack of **battle-hungry** rival agents in a zany, all-out dash to assemble the
+single best Taiwan foodie **tour** and sell the most tickets. Elbows out, dirty tricks welcome — *on each
+other*, never on the island: cut a rival off at the stall, snatch the hot vendor out from under them, gun
+it for the last train. The literal job is wholesome — a travel agent showing off the best of the island —
+but you compete for it like it's a demolition derby. Think **Wacky Races, Taiwan-food edition**.
 
-The agent layer is a first-class part of the game, not paint — the wordplay **earns real rules**. And
-because a travel agent's job is to *promote and showcase* the island — to bring people *to* the food,
-never take it away — the frame is **celebration by construction**, not extraction.
+Because a travel agent's job is to *promote and showcase* the island — to bring people *to* the food,
+never take it away — the frame is **celebration by construction**: the take-that is agent-vs-agent, the
+island itself is always the beloved prize.
 
 ## Tone & vibe — one tone, held everywhere
-**An over-enthusiastic travel buddy on a "top-secret" snack mission — warm, funny, never at anyone's
-expense.** Sunny, generous, gently comedic travel-guide enthusiasm: the delight of a friend who is
-ridiculously obsessed with Taiwan showing you around.
+**Silly, raucous, over-the-top — a madcap competitive race with Wacky-Races energy: warm toward Taiwan
+and its food, elbows-out between the rival agents.** Over-caffeinated, gleeful, all-in; the joy of a
+demolition derby run through the world's best night market.
 
-- **The comedy comes from the *with* register:** the players' own gluttony and indecision, the absurd
-  stakes of the "mission," and affectionate specifics a local would high-five — the scooter swarm, 24-hour
-  everything, "臭豆腐 stinky tofu smells wild, tastes incredible — the locals are right." Punch at yourself
-  and the gag; **never** at the place.
+- **The comedy comes from the *with* register:** the agents' own over-the-top antics, gluttony and
+  cheerful sabotage, the absurd stakes of the race, and affectionate specifics a local would high-five —
+  the scooter swarm, 24-hour everything, "臭豆腐 stinky tofu smells wild, tastes incredible — the locals
+  are right." Punch at the rival agents and at yourself; **never** at the place.
 - **The one test:** would a Taiwanese player laugh *with* this, or feel it laughs *at* their home? If a
   joke only works because you find Taiwan itself strange, cut it.
-- **A warm caper, not a thriller.** The stakes and the clock are game-show fizz, never danger or dread — a
-  typhoon is a comic inconvenience head office groans about on the phone. If a beat feels tense or mean
-  instead of fun and warm, dial it back to the grin.
+- **Elbows out, but the island grins.** The mayhem and the clock are game-show fizz — a typhoon is a comic
+  inconvenience, a sold-out sign is a groan and a laugh. Take-that between agents is welcome and loud; but
+  the moment a beat reads as mean *toward Taiwan or the food or the vendors*, dial it back to the grin.
 
 ## Target aesthetics — the kinds of fun (locked: 3)
 1. **Discovery** *(lead)* — uncovering the island: which stall, which region, what's round the next
    corner. The map and menu *reveal*. This is the engine of delight.
-2. **Fellowship** — the shared-table joy; even at its most competitive it's *warm rivalry* ("look what I
-   found!") and table talk.
+2. **Fellowship** — the shared-table joy, now as *raucous rivalry* — the table talk of a full-contact
+   race, ribbing, groans, and "I can't believe you took that stall."
 3. **Challenge** *(kept light)* — optimise your trip, the *Ticket to Ride* satisfaction, never so tight
-   it stops feeling like a holiday.
+   it stops feeling like a mad dash for fun.
 
 Sensation (lovely food art) is supporting texture, not a core pick — we get it free from good
 illustration. Chasing all eight kinds of fun = chasing none.
@@ -64,13 +64,13 @@ illustration. Chasing all eight kinds of fun = chasing none.
 You score **two ways at once**: the points printed on each **vendor** you won, *plus* the full value of
 each **tour (Booking)** you complete. Tours pay far more and are the main path; won vendors are a steady
 bonus that also powers your engine. A booked tour you can't run in time is **cancelled** — a rueful ding,
-never a scolding. Several warm travel-agent fantasies stay live at once:
+never a scolding. Several over-the-top travel-agent fantasies stay live at once:
 
 - **The character-lean agent** — lean hard into your agent's kit. *"I play to who I am."*
 - **The opportunist** — read the street and pounce on the newly-hot stall or the cheap easy win. *"I grab
-  what's good right now."*
-- **The disruptor** — work the island *against* a rival with a scoped event (a typhoon day, a sold-out
-  sign). Warm rail: this is the *island* nudging them, a cheeky "ooh, bad luck," never a mean strike.
+  what's good right now — before you can."*
+- **The disruptor** — reach into a rival's region with a scoped event (a typhoon day, a sold-out sign) and
+  gum up their run. Open elbows-out competition — a cheeky "ooh, bad luck," played for laughs.
 - **The balanced agent** — a bit of everything, never caught out. *"I stay flexible."*
 - **The clock-watcher** — read the day winding down and time your big wins for when the street turns over.
   *"I know when the night ends."*
@@ -79,9 +79,9 @@ never a scolding. Several warm travel-agent fantasies stay live at once:
 A player should be able to half-guess the rules from the fiction. The core moves all read as inevitable:
 
 - **Followers piled on a stall = the crowd you've drummed up** — your busloads, five-star reviews, and
-  "trust me, you HAVE to eat here." Two agencies piling followers on the same beef-noodle stall is a hype
-  war over who puts the auntie on the poster, and she has never been happier. Holding the biggest crowd
-  wins her over, and you have to *be there in person* to rally them.
+  "trust me, you HAVE to eat here." Two agencies piling followers on the same beef-noodle stall is a
+  full-volume hype war over who puts the auntie on the poster — and she has never been happier. Holding
+  the biggest crowd wins her over, and you have to *be there in person*, shouting, to rally them.
 - **Bribe a Vendor = a marketing opportunity, not corruption.** The gag is explicit: the agent
   theatrically slides a "bribe" across the table that turns out to be *free publicity, a glowing review,
   and a busload of hungry tourists.* The smarm lands on the over-the-top **agent**; the vendor is never
@@ -96,14 +96,15 @@ A player should be able to half-guess the rules from the fiction. The core moves
   recipes break.
 - **The day is the real Taiwan food day.** Morning carts build toward the night-market climax: the day
   vendors run out → **dusk 黃昏** → the night vendors run out → the **last train 末班車**, with the
-  **Closing-Time die 關門** shuttering an old stall now and then. No alarm — a giddy wind-down: grab the
-  last great bite before the last train.
+  **Closing-Time die 關門** shuttering an old stall now and then. The wind-down is giddy, not grim — grab
+  the last great bite and *floor it* for the last train.
 - **Going viral vs. the marquee.** A **Trending** marker is the island dropping fresh hype on an ignored
   stall mid-game (win it and your following can grow); the printed **★ apex** is a standing, permanent
   accolade (a Michelin / Bib-Gourmand nod) on a legendary name. Both warm and real, held apart on purpose.
-- **Events = the island acting on everyone, equally.** Weather, crowds, sold-out signs, a closed road —
-  the island is a *subject* that pushes *you* around, not scenery to catalogue. Secular and warm even when
-  a scoped event lands on a rival: the island deals it, never a spiteful agent take-that.
+- **Events = the island (and your rivals working it) shaking up the race.** Weather, crowds, sold-out
+  signs, a closed road — the island is a *subject* that pushes everyone around, and a scoped event is an
+  agent seizing on it to trip up a rival. Elbows-out and played for laughs, secular and warm — the island
+  deals the mischief, the food is never the target.
 - **Larder cap = travelling light, eating fresh** — a night-market haul doesn't keep.
 
 ## The six agents
@@ -148,12 +149,13 @@ label coding is mandatory; palette is first-pass, not locked.
 
 - **Typography:** a friendly rounded display face for titles (hand-painted market signage), a clean
   humanist sans for body, paired with a **Traditional Chinese** face — dish names appear romanised *and*
-  in 繁體字 (Taiwan uses Traditional, never Simplified).
+  in 繁體字 (Taiwan uses Traditional, never Simplified). Titles can push loud, comic, over-the-top energy.
 - **Iconography — three language-independent families:** food (dish silhouettes), transport (HSR, local
   rail, scooter, bus, ferry), and region/place (the island of Taiwan + N/C/S/E glyphs).
 - **Shape language:** cards frame as a **passport / boarding-pass / stall menu-board**; places visited are
-  recorded as **stamps** (doubling as the dossier gag and the Discovery feel). A tour card leans into the
-  literal boarding-pass look, with an "Operation: ___" strip for the wink. Rounded corners, warm.
+  recorded as **stamps** (the collected-travel feel and the Discovery reveal). Tour cards lean into the
+  literal boarding-pass / ticket look. Rounded corners, warm — these are *travel* motifs, all about the
+  journey and the crowd, not secrecy.
 - **Day/night grammar — warm, not alarm.** Day = warm amber/gold; night = festive night-market **neon**
   (lantern-glow lavender/magenta), never a cold or red alarm register. Region colours and ingredient chips
   hold their warm palette in *both* states, tethering the night board to the warm-dusk north star.
@@ -164,15 +166,13 @@ label coding is mandatory; palette is first-pass, not locked.
   for vibe exploration only, never shipped.
 
 ## Naming & voice
-- **Title — Travel Agents: Taiwan.** The travel/secret-agent pun is the point; series-ready as
-  "Travel Agents: <place>". (The mark is descriptive — lean on the distinctive full lockup; clearance to
-  `bg-publishing`.)
-- **Voice:** rulebook and player aids read as a warm **mission-dossier / field-guide** narrated by an
-  over-caffeinated handler-slash-tour-guide — second person, short, funny margin asides. Head office *is*
-  that voice. Dish names stay authentic (romanised + 繁體), never invented or parodied — the comedy is in
-  the flavour text and the gag, never in mangling real food.
-- **The wink lives on the tours:** a Booking can carry an internal **"Operation: ___"** code-name
-  ("Operation: Beef Noodle"), so the mission really is the meal.
+- **Title — Travel Agents: Taiwan Food Tour.** Series-ready as "Travel Agents: <place> Food Tour". (The
+  mark is descriptive — lean on the distinctive full lockup; clearance to `bg-publishing`.)
+- **Voice direction (high level):** player-facing words run in an over-the-top, over-caffeinated
+  **race-commentator / hype-man travel-guide** register — second person, short, loud, funny, all-in on the
+  scramble. Dish names stay authentic (romanised + 繁體), never invented or parodied — the comedy is in the
+  antics and the flavour, never in mangling real food. *(The full voice bible lives in `prose-identity.md`,
+  re-founded separately; this is direction + the naming register only.)*
 - Read the term set aloud and kill anything that clashes. "Bribe" is the spiciest word, so its warm
   neighbours ("the following you drummed up," "marketing opportunity," "put her on the poster," "night
   market") are what keep it cheeky rather than corrupt.
@@ -184,7 +184,8 @@ consultant** signs off before art and print.
 - **Taiwan as itself** — Traditional characters, established English place-spellings, Taiwan's own island
   form. No PRC framing, no "China," no Simplified, never a province — and no turning the game political.
 - **Celebration, not extraction** — the agents are passionate fans, ideally **local promoters showing off
-  home**; the tour is a love letter, not a harvest. Reading extractive is a re-theme flag.
+  home**; the tour is a love letter, not a harvest. The take-that is agent-vs-agent; reading extractive
+  *toward the island* is a re-theme flag.
 - **"Bribe = marketing opportunity"** — the load-bearing warm reframe: smarm on the agent, the vendor
   freely chooses the bigger fan, never corruption. The #1 consultant watch-item.
 - **Character warmth rails** — The Big Boss 老大 a lovable fixer, never triad/menace (consultant-gated);
@@ -197,9 +198,10 @@ consultant** signs off before art and print.
   named peoples (never one flattened "generic Indigenous" label), signed off before any art.
 
 ## Locked vs fluid
-- **Locked:** title, setting, the one **tone**, the three aesthetics, the **evocative** rung, the agent
-  framing as a warm mechanically-earning layer, the **Bribe = marketing opportunity** reframe, the
+- **Locked:** title (Travel Agents: Taiwan Food Tour), setting, the one **tone** (silly / raucous /
+  over-the-top, elbows-out between agents, warm toward Taiwan), the three aesthetics, the **evocative**
+  rung, take-that welcome *agent-vs-agent only*, the **Bribe = marketing opportunity** reframe, the
   six-agent English names and their binding warm portrayals, human-illustrated final art, and every
   sensitivity rail above.
-- **Fluid:** the exact naming of head office / the best-tour-title award, final palette hues, and the
-  East apex Indigenous-dish lock (all consultant-gated).
+- **Fluid:** the exact voice register wording (settling in `prose-identity.md`), final palette hues, and
+  the East apex Indigenous-dish lock (all consultant-gated).

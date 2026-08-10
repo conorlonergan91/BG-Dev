@@ -1,4 +1,4 @@
-# 🎲 Travel Agents: Taiwan — Game Bible
+# 🎲 Travel Agents: Taiwan Food Tour — Game Bible
 
 > The single living source of truth for this game. Every agent reads and updates this. Keep it current.
 > Slug: `travel-agents` · Started: 2026-08-06 · **Version: V7-M** (merged PR #13, 2026-08-10).
@@ -21,18 +21,19 @@
 
 ## One-liner
 <!-- The hook a stranger would repeat. -->
-Rival travel agencies race through one Taiwan eating day — ride the rails between four regions, gather
-ingredients, and pile your **Followers** on the island's food stalls: win a stall by drawing the **biggest
-crowd** and it joins your tour, making the next one cheaper. Complete the most **Bookings** before the
-**last train** to be **Top Agent**. You just *behave* like covert agents about it.
+Rival travel agencies go elbows-out through one Taiwan eating day — ride the rails between four regions,
+gather ingredients, and pile your **Followers** on the island's food stalls: win a stall by drawing the
+**biggest crowd** and it joins your tour, making the next one cheaper. Craft the best tours and cash the
+most **Bookings** before the **last train** to be **Top Agent** — in the most over-the-top way you can.
 
 ## Core fantasy / player role
 <!-- Who you are, what you're doing, the feeling (the "kind of fun"). -->
-You run a travel agency (so do your rivals), racing to assemble the single best Taiwan foodie **tour** —
-and you take it *so* seriously you behave like a covert agent about it (trench coat over the Hawaiian
-shirt, guarding your dossier, muttering into an earpiece). The literal job is wholesome: showing off the
-island's best food. "Secret agent" is pure wordplay on **travel agent** — the title is literal, and that's
-the gag. Kinds of fun (**locked**): **Discovery** (lead) + **Fellowship** (warm rivalry) + **Challenge**.
+You run a travel agency, and so do your rivals — a pack of over-the-top, **battle-hungry** rival agents in
+a zany, all-out dash to assemble the single best Taiwan foodie **tour** and sell the most tickets. Elbows
+out, dirty tricks welcome — *on each other*, never on the island: cut a rival off at the stall, snatch the
+hot vendor out from under them, and gun it for the last train. The literal job is wholesome — showing off
+the island's best food — but you compete for it like it's a demolition derby. Kinds of fun (**locked**):
+**Discovery** (lead) + **Fellowship** (raucous rivalry) + **Challenge**.
 Full felt identity, tone, look & feel and naming: `identity.md`; canonical names & terms: `names.md`;
 voice bible: `prose-identity.md`.
 
@@ -40,9 +41,10 @@ voice bible: `prose-identity.md`.
 - **Weight (BGG 1–5):** aim **~2.2**, ceiling **~2.5**. Band: Splendor Duel ~2.3 · LOTR: Duel ~2.4 · Arnak ~2.7.
 - **Players:** **3–6** (design home 3–5 solid, 6 a validated stretch; the 2p duel is retired).
 - **Playtime:** **~30–45 min** (the deep-claiming recipes + follower fight make a meatier game than the old 2p duel).
-- **Tone:** silly / warm / adventurous — a warm caper, never a thriller.
+- **Tone:** silly / raucous / over-the-top — a madcap competitive race (Wacky-Races energy); warm toward
+  Taiwan and its food, elbows-out between the rival agents.
 - **Comparable:** *Splendor Duel* / *Arnak*-style engine-building + *Ticket to Ride* objective tickets,
-  scaled to a 3–6p area-majority race and wrapped in a warm Taiwan food-tour with a secret-agent wink.
+  scaled to a 3–6p area-majority race and wrapped in an over-the-top, wacky Taiwan food-tour.
 - **Audience:** families, foodies, casual + gateway hobbyist; travel/Taiwan-culture fans.
 - **Target platform:** Screentop.gg for playtest (studio default); route-to-market TBD (`bg-funding`).
 
