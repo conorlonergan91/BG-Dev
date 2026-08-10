@@ -63,7 +63,8 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 | Accessibility | `bg-access` | **Guardian.** Colour-blind safety (redundant encoding), contrast/legibility, cognitive/motor/communication load, price — who can actually play. Runs `tools/access/check_access.py`. |
 | Critique | `bg-critic` | Adversarial red-team: hunts dominant strategies, dead turns, swinginess, co-op alpha-player leaks — before you spend playtests. |
 | Elegance | `bg-elegance` | Guards the complexity budget (set at start), hunts what to cut/merge, keeps the rulebook + player aid succinct/clear/fun (incl. the editorial pass), disciplined FAQ. |
-| Testing | `bg-playtest` | Playtest plans (incl. FTUE/blind-test), session logging, feedback synthesis, balance analysis, and simulation (`tools/sim`). |
+| Testing | `bg-playtest` | Playtest plans (incl. FTUE/blind-test), session logging, feedback synthesis, balance analysis, and simulation (`tools/sim`) — owns the harness + the run + interpreting results. |
+| Playtest strategy | `bg-playstrat` | Engineers the SIMULATOR's bot/AI **strategies** — a diverse playstyle roster **and** adversarial exploit-hunting bots (from `bg-critic`'s hypotheses) so the sim is an honest, punishing adversary. Owns the strategy layer of `tools/sim` + `games/<slug>/sim/`; models the rules faithfully and plays them WELL — never changes a rule to make a bot work. Complements `bg-playtest` (harness/run/analysis). |
 | Funding / route | `bg-funding` | **How the game is released** — free / POD / pitch-to-publisher / crowdfunding, ranked by upfront cost & risk. Defaults to minimal out-of-pocket. Owns the money decision before marketing copy. |
 | Marketing | `bg-marketing` | Pitch, elevator, box copy, sell sheet, crowdfunding page, audience strategy — for the route `bg-funding` chose. |
 | Publishing | `bg-publishing` | IP / copyright / trademark / compliance for **Ireland, UK, USA**; contracts; sensitivity-risk flag. |
@@ -174,7 +175,9 @@ want 3D pieces (Blender) or collaborative visual layout (Figma).
 
 Encode a game's rules once as `games/<slug>/sim/<slug>.py` and play it thousands of times to expose
 dominant strategies, balance, and score spreads **before** human playtesting (stdlib-only). Every run
-ends with an auto **Health read** (dominant line? intransitive depth?). Owned by `bg-playtest`; see the
+ends with an auto **Health read** (dominant line? intransitive depth?). Owned by `bg-playtest` (harness +
+run + interpretation); the bot **strategies** it runs are engineered by `bg-playstrat` (diverse archetypes
++ adversarial exploit bots). See the
 playbook `knowledge/simulation-and-balance.md`, `tools/sim/README.md`, and the worked example
 `games/beacon/sim/beacon.py`.
 
