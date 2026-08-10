@@ -1,6 +1,18 @@
 # Travel Agents: Taiwan — Design Doc
 
-> ## ✅ CURRENT DESIGN = v6.2 — **LOCKED 2026-08-07** (CD sign-off, sim-validated). See **`design/v6.2-content-draft.md`** for the authoritative current spec.
+> ## 🔒 CURRENT DESIGN = v6.3 — **SHAPE LOCKED 2026-08-07** (CD sign-off on all nine items). See **`design/v6.3-content-draft.md`** for the authoritative current *shape*.
+> **Balance is PENDING a gated re-sim.** v6.3 gives **Reputation teeth** (a live cap on committed Buzz;
+> earned by Travel + events, **not** vendors; **it no longer scores**; and a small **Rep-sink** set —
+> greed/corner-cutting cost Rep), adds **milestone boons** on the (renamed) **Bookings** track (marks 7/14,
+> Set A "Tempo & Fuel", first-to-cross), **eliminates the perk field** (a vendor = Bookings + icon-or-not;
+> table reissued), collapses **ticket pools 3→2 (DAY/NIGHT)**, and confirms **per-player win/lose piles**
+> (COMPLETED 成團 / CANCELLED 取消). New tiebreak: **most vendors → most regions → fewest LOSE-pile tickets.**
+> **⚠ Change 1 is NOT sim-equivalent — a combined re-sim (Changes 1+2+3) is REQUIRED and GATED on the CD's
+> explicit "go."** **Until that run validates the numbers, `design/v6.2-content-draft.md` remains the last
+> SIM-VALIDATED build.** Do not rebuild the CSVs or the sim module before the re-sim. Full v6.3 shape +
+> the open sim knobs: `design/v6.3-content-draft.md`; the options + rationale: `design/v6.3-proposal.md`.
+
+> ## ✅ PRIOR SIM-VALIDATED BUILD = v6.2 — **LOCKED 2026-08-07** (CD sign-off, sim-validated). See **`design/v6.2-content-draft.md`**. (Superseded in SHAPE by v6.3 above; remains the balance baseline until the v6.3 re-sim.)
 > The detailed text below is **v6.1, retained as history/reference.** v6.2 (co-designed 2026-08-07; sim run +
 > CD locks at the top of `decision-log.md`) **supersedes** several v6.1 structures and the sections below
 > that describe them:
@@ -288,7 +300,7 @@ A turn = ONE of five. Each is simple; the depth is in *when*, *where*, and *whic
 |--------|-------|--------|-------|
 | **Visit the Local Market** | your current region | Reveal the top **3** cards of this region's market deck. Resolve **any event** revealed immediately (**it fires by its scope** — see *Events*), discard them. Keep up to **2** of the revealed **ingredients** (to your Larder); discard the rest. | The ingredient workhorse **and** the push-your-luck spine — the way you bulk-source your **region signature**. More events = more swing. *大胃王 keeps all 3; 媽寶 keeps only 1.* |
 | **Convenience Store** | anywhere | Reveal the **top 1** card of **any one** region's market deck. Ingredient → take it. **Event → it fires by its scope** (⦿ self / ⬢ the drawn region / ➤ a neighbour of it — see *Events*). | **The drinks engine's spine** *and now a light interaction lever.* No travel, any region — the reliable way to grab the **common**; aim it at a common-bearing region. **v6.1: live-but-slightly-risky** — the drawn card can be an event, which now *fires*: a self-scoped one taxes **you**, but a region/neighbour-scoped one can drop a warm island-hazard (or boon) on **whoever is standing there** — including a rival whose region you flip. One blind card. |
-| **Travel** | to an adjacent region | Move your Agent to an **adjacent** region (HSR: North↔South counts adjacent); then reveal the **top 1** card of the **arriving** region's deck (ingredient → take it; **event → whiff, nothing fires** — you're passing through, not working the market). | Never a dead turn — you (usually) arrive with something. *媽寶 draws the region she LEFT instead. 里長伯 cannot use HSR.* |
+| **Travel** | to an adjacent region | Move your Agent to an **adjacent** region (HSR: North↔South counts adjacent); then reveal the **top 1** card of the **arriving** region's deck (ingredient → take it; **event → whiff, nothing fires** — you're passing through, not working the market). | Never a dead turn — you (usually) arrive with something. *媽寶 draws the region she LEFT instead. (v6.3.1: 里長伯's no-HSR flaw is REMOVED — HSR closure is now the table-wide "Scheduled Maintenance" event.)* |
 | **Promote** | your current region | Place **2 Buzz** from the supply onto **vendor(s) you're with in this region** — a ladder vendor here and/or **this region's beverage slot**. Buzz stays on the card, public; the rival may also Buzz it. | The Buzz-placement action, **on-site for every vendor type** (v6.1: no beverage exception — you Promote the drinks stand where you stand). *網紅 places 3 (+1). 大哥's alternate flaw = places 1.* |
 | **Bribe a Vendor** | **in its region** (all vendor types) | Choose a Board vendor **you're with (in its region)** on which you hold **≥2 more Buzz than your rival**; **pay its ingredients** (− region discounts, floored at 0). Take it to your tour → gain **Prestige** (VP live), a **Rep** bump, and its **perk**. **All Buzz on it returns to the supply.** Refill the slot from the matching deck; **the vendor is locked from the rival.** **If the vendor is a breakfast or night-market (ladder) vendor, advance the day-clock +1. A beverage Bribe does NOT advance the clock.** | The scoring beat — **ONE unified rule for all vendors**: presence + majority + ingredients. The clock-tick clause is the fork's spine. *大哥 wins at a tie (≥0), not ≥2; 大哥 pays +1 ingredient.* |
 
@@ -801,7 +813,7 @@ interact with the new deck composition, so re-check at the sim.)*
 
 | # | Character | Ability | Flaw | Lever / anti-lever | Status |
 |---|-----------|---------|------|--------------------|--------|
-| 1 | **里長伯 The Old Councillor** | *Old Favours* — the first vendor you Bribe in **each of your first two regions** costs **1 fewer ingredient**. | *Works Every Room* — **no HSR**. | ingredient discount / mobility | **KEPT** |
+| 1 | **里長伯 The Old Councillor** | *Old Favours* — picks a **home region** at setup; his Bribes there cost **1 fewer ingredient** (home only). *(v6.3.1 CD-1 rework — supersedes the first-two-region version.)* | *An Outsider Everywhere Else* — the **away-tax**: Bribing in any region other than home costs **+1 ingredient**. *(no-HSR flaw REMOVED → re-homed as the table-wide "Scheduled Maintenance" event.)* | home-region discount / away tax | **REWORKED (v6.3.1)** |
 | 2 | **媽寶 The Live-At-Home Office Worker** | *Mum Packed You a 便當* — when you **Travel**, draw the top market card of the region you are **LEAVING**. | *Only Eats Mum's Cooking* — on a **Visit** keep only **1**. | travel-sourcing / market-sourcing | **KEPT** |
 | 3 | **網紅 The Influencer** | *Going Viral* — your **Promote places +1 Buzz** (3 instead of 2). | *Chasing Clout* — go **last** and start **behind** (2 resources). | Buzz fight / tempo | **KEPT** |
 | 4 | **大胃王 The Competitive Eater** | *Eyes Bigger Than the Table* — keep **all 3** on a **Visit** (not 2). | *Head Down, Chopsticks Up* (**proposed**) — **hazards fire twice** when they hit on your Visit. | market haul / market risk | **NEW → sim** |
@@ -869,7 +881,7 @@ its take-that off; it pressures via the ladder only.)* **Defer to `bg-architect`
 ## Complexity budget
 
 Target **~2.4–2.5, ceiling 2.5** — **still holdable, now with more headroom** (the 10→5 palette cut is a
-real bank). `complexity-budget.json` caps (rulebook 1650 words, keywords 15, component types 8, aid 22
+real bank). `complexity-budget.json` caps (rulebook 1850 words, keywords 15, component types 8, aid 22
 lines); `bg-elegance` guards.
 
 **The weight call (honest, v6.1).** v6 banks the palette cut (fewer ingredient token types, fewer card
@@ -888,46 +900,35 @@ v6.1 delta ledger.)
 
 ## Keywords / glossary
 
-- **Larder** — your sourced ingredient cards, **face-up**. Cap **7**.
-- **Vendor** — a Board card you **Bribe** to secure. One of three **venue types**: **breakfast shop 早餐店**
-  (Act I Ladder), **night-market stall 夜市攤** (Act II Ladder), **beverage shop 飲料店** (persistent,
-  off-clock, one per region beverage slot). Carries an ingredient cost, a region **icon** *(ladder only)*,
-  **Prestige**, **Reputation**, a **perk**, and the **Buzz piled on it**.
-- **the Ladder** — the contested, region-gated, clock-driving central display of vendors; cycles from
-  breakfast shops (Act I) to night-market stalls (Act II) at dusk.
-- **region beverage slot** — each region's persistent, off-the-clock drinks-stand space (a face-up beverage
-  shop fed by the Beverage deck, never swept). A stand in every region — you court the one where you stand
-  *(v6.1: replaces the mistaken region-free central "Beverage Row")*.
-- **Bribe a Vendor** *(LOCKED keyword)* — the core action, **one unified rule for every vendor type**: be
-  **with the vendor (in its region)**, hold a ≥2 Buzz majority (≥0 for 大哥), pay its ingredients
-  (− discount) to win it. **A ladder Bribe advances the day-clock +1; a beverage Bribe does not.** Carries
-  the binding warm reframe (*"a marketing opportunity, not a bribe"*).
-- **Buzz** — the committed, public, contested resource; **Promote** to place it on a vendor you're with (in
-  your current region); never discounted; clears to supply on a win. The interactive anti-runaway brake.
-- **Promote** — the action that places 2 Buzz (3 for 網紅) on vendor(s) you're with **in your current
-  region** (ladder vendor and/or this region's beverage slot).
-- **event scope** *(v6.1)* — a dual-coded tag on every event card (**⦿ self** / **⬢ region** / **➤
-  neighbour**) that decides who it hits, resolved relative to the region the card was drawn from. Events
-  fire when you **work a market** (Visit or Convenience Store); a card flipped on a Travel fly-by whiffs.
-- **discount icon** — a **ladder** vendor's region badge; each held reduces that region's ingredient cost on
-  future vendors by 1 (floored at 0). The compounding engine (ingredients only; **beverages carry none**).
-- **Prestige (VP)** — a vendor's value; the headline VP vector; live on the track.
-- **★ Star** — a value hook on a standout **ladder** vendor: **printed** on an apex "Legendary" 夜市攤 (a
-  standing Michelin/Bib-Gourmand/competition accolade, 7–8), or a **Star token** dropped mid-game by a
-  "vendor gets hot" boon (+2 Prestige / +1 Rep; token returns on the win). The deliberate value swing on the
-  ladder road.
-- **signature ingredient** — a region's one specialty (N/C/S/E). **common ingredient** — the fifth, shared
-  ingredient the drinks fork + Convenience Store run on (in two of the four regions).
-- **market deck** — a region's face-down deck of its signature (+ common, in two regions) + events (each
-  scope-tagged); **Visit** draws 3 keeps 2 (events fire by scope); **Convenience Store** draws 1 (**also
-  fires** by scope); **Travel**'s arrival draw is the only reveal that **whiffs**.
-- **signature Mission** — your secret **+7** vendor pattern (draw-3-keep-1); the only hidden info; carries
-  the grand-tour breadth line and the *"3 beverage shops"* drinks line.
-- **day-clock (the Act track)** — the marker that climbs +1 on every table-wide **ladder** Bribe (never a
-  beverage one); at **dusk** the Ladder flips to the Night-Market deck (Act I → II); at the **last-train**
-  mark **night falls, the night market winds down** and the game ends.
-- **the last train home** — the end-game: when the day-clock hits the last-train mark, finish the round +
-  one full round → reveal missions → score. (Day → Night arc; no named alarm — was "Code Red" in v5.)
+> **⚠ Historical v6 design doc — superseded for V7 by `design/rules-draft.md` (rules) and
+> `games/travel-agents/names.md` (the canonical name/term table).** Continuity-scrubbed 2026-08-09
+> (`bg-continuity`): the retired terms **Buzz / Reach / Draw / Tour Ticket / ★ Star / day-clock** were
+> removed from this glossary and the 成團/取消 double-entry collapsed to one, so the complexity gauge (which
+> reads this section) reports the true current keyword count. Surviving entries carry the pure V7 renames
+> (Buzz → Followers, Reach → Followers-max) aligned to `rules-draft.md`; the current V7 term set with 繁體 +
+> retired-vs-current status lives in `names.md`. One bolded head-term per entry (definitions plain) so the
+> count reads true.
+
+- **Larder** — your sourced ingredient cards, kept face-up; cap 7.
+- **Vendor** — a face-up card you Bribe to win; carries one region icon or none. Once won it is a stop on
+  your tours and an engine piece — it never scores directly.
+- **Bribe** — the one unified action to win a face-up vendor: be with it in its region, hold the biggest
+  committed-Followers majority (a tie claims nothing — the Big Brother 大哥 aside), and pay its ingredients
+  minus your region discounts.
+- **Promote** — the action that places 2 Followers on vendor(s) you are with in your current region, so long
+  as your total committed Followers stays within your Followers-max dial.
+- **region discount icon** — a vendor's region badge; each one you hold makes that region's ingredients 1
+  cheaper on future vendors (floored at 0). The compounding engine; drinks and the ★ apex carry none.
+- **COMPLETED 成團 / CANCELLED 取消** — your two Booking piles: the tours that ran (COMPLETED 成團, +value) and
+  the tours that didn't run in time (CANCELLED 取消, −floor(value ÷ 2)); tallied once at game end.
+- **Rave Reviews** (好評) — the two per-player milestone boons on the Tours Completed counter, earned the
+  first time YOU reach your 2nd and 4th completed tour (never pumps the leader).
+- **market deck** — a region's face-down deck of its signature ingredient (+ the common, in two regions)
+  and a few events. Events carry a scope (⦿ self / ⬢ region / ➤ next-door) and fire on a Visit or
+  Convenience Store; a card flipped on Travel arrival does nothing.
+- **Scheduled Maintenance** (排班保養) — a table-wide event (its own island-wide banner, not a scope glyph):
+  the HSR is down for everyone until the drawer's next turn; North and South take the long way. Two copies,
+  seeded in the North and South NIGHT ingredient decks.
 
 ---
 
@@ -1073,7 +1074,7 @@ region/neighbour, boons leaning self, and **events fire on Visit + Convenience S
   rival* capability must land as **cheeky caper, not spite** (the identity's "island is a subject that
   pushes everyone around" rail helps here). `bg-theme` to (1) confirm the rival-facing beats read warm; (2)
   name/lock the three **scope icons** (⦿ self / ⬢ region / ➤ neighbour) in the icon vocabulary; (3) note
-  the scope adds a *new keyword* — check it doesn't over-clutter the warm register.
+  the scope adds a *new game-term* — check it doesn't over-clutter the warm register.
 - **(B) Beverages region-ANCHORED — `bg-theme` + identity.md fix.** Beverages are no longer region-free;
   there is now a drinks stand **in every region**, and you must be **on-site** to Promote/Bribe one.
   **identity.md is now STALE on this** — it repeatedly calls the drinks fork **"region-free"** and names a
@@ -1085,7 +1086,7 @@ region/neighbour, boons leaning self, and **events fire on Visit + Convenience S
   coherence.
 - **`bg-elegance` (v6.1 net):** we **removed** a special case (region-free beverages → **one unified Bribe
   rule + one unified Promote rule**, a real teach-simplification) and **added** one small concept (the
-  3-icon **event scope**). Roughly a wash on keywords (~12 → ~13). See the *v6.1 delta ledger* up top. The
+  3-icon **event scope**). Roughly a wash on game-terms (~12 → ~13). See the *v6.1 delta ledger* up top. The
   standing v6 flag is unchanged and still live: **rulebook prose is over its word cap** — write the scope
   block tight (one compact table) and let the unified Bribe/Promote rules *shorten* the action prose (they
   no longer fork by vendor type). The scope must be taught as **ONE concept** ("every event has a scope =
@@ -1113,8 +1114,8 @@ below are the v6-base record, lightly patched.)*
   directive) → the plain **Day → Night** arc ("night winds down → last train home"); identity.md still says
   "Code Red" — **bg-theme to strip it in the guardian re-check** (I did not touch identity.md).
 - **`bg-elegance` check:** the **10→5 palette cut** should read materially lighter on the component/cost
-  gauges (fewer ingredient token types; the `type`-column artifact shrinks). Net weight ~2.4–2.5; keyword
-  count ~12 *(v6.1: ~13 with the scope keyword, which nets against the removed region-free special case)*.
+  gauges (fewer ingredient token types; the `type`-column artifact shrinks). Net weight ~2.4–2.5; game-term
+  count ~12 *(v6.1: ~13 with the scope term, which nets against the removed region-free special case)*.
   The NEW ideas to weigh: the **region beverage slots** *(v6.1: per-region, superseding the v6 "Beverage
   Row")* and the **"drinks don't tick the clock"** clause. Guard the rulebook word count — and note the
   editorial fix below is now done.
@@ -1215,6 +1216,1043 @@ The order a first game should reveal the rules:
    to your lose-pile at half value. Book bold, or play it safe."
 8. **The hype fight** — the first time you both stack Buzz on one vendor: "out-commit, race to the
    ingredients, or concede and take another. Outraced, not robbed."
-9. **Reputation** — the second live track; "several ways to win — go tall, climb your Rep, chase tickets."
+9. **Reach** — the Buzz cap you build by travelling; "it fuels the hype fight but never scores — the only
+   score is your Tour Tickets, so book bold and finish them."
 10. **Dusk → the Night Market** — introduce at the dusk flip: "the day judges your daytime tickets, the
     street turns over to neon, the big names arrive — and night's coming, so don't miss the last train."
+
+
+---
+
+## Rules-draft provenance (relocated)
+
+> Relocated here 2026-08-08 (bg-elegance) from the scaffolding HTML comment at the top of `rules-draft.md`,
+> to keep the rulebook's word count clean while losing no context. Voice for the rulebook: warm
+> travel-guide, teach-in-play order (identity.md). CANON spec = `design/v6.3-content-draft.md`.
+> Terminology now blessed/locked and used in the rulebook: a vendor's *value* attribute = **Draw** 人氣;
+> *Reputation* = **Reach**. (The note below is the historical v6.3/v6.3.1 change record; it predates the
+> Draw rename and still says "value" for the vendor attribute — read that as Draw.)
+
+**v6.3 changes folded in:** TICKETS-ONLY scoring (vendors give NO points — Tour Tickets are the sole score;
+expanded ~44-ticket deck); Reputation→Reach gates Buzz (a live cap) + Reach sinks; Reputation no longer
+scores; perk field eliminated; ticket pools 3→2; milestones = perplayer, re-homed on a Tours-Completed
+counter. A vendor keeps a printed value ATTRIBUTE (referenced by value-tickets; NOT a score) — now named
+**Draw** 人氣. The former "Bookings" score track is retired as a score; its physical track is repurposed as
+the Tours-Completed / Rave-Reviews counter.
+
+**v6.3.1 (four CD changes — BALANCE-VALIDATED by the re-sim, `playtests/sim-notes.md §v6.3.1`; the CD's
+three final calls LOCKED 2026-08-08):**
+1. 里長伯 reworked — picks a HOME region at setup; −1 discount there only, +1 ingredient away-tax elsewhere;
+   no-HSR flaw REMOVED. LOCKED −1/+1 AS-IS (lands 55%, top-of-band, CD-accepted); he starts Reach 2 like
+   everyone (NO start-Reach change — the sim module's start-Reach-1 default is NOT canon).
+2. New table-wide event "Scheduled Maintenance" (HSR down for everyone one round — re-homes the no-HSR
+   concept); LOCKED at 2 copies (a felt ~12% beat; sim default 1 is NOT canon).
+3. ALL agents start in Taipei (North hub) — replaces the split N/S 2p start.
+4. NIGHT vendors cost meaningfully MORE than day vendors (LOTR:Duel-style curve); LOCKED SOFT curve — night
+   "both" foods → 3, apex ★ → 4 (top apex 5), every night marquee cross-region biased; DAY held as printed;
+   steep +2 and the min-1 floor both rejected.
+
+bg-developer builds to CANON (v6.3-content-draft §CD-4 table), not the sim defaults.
+
+---
+
+## Sensitivity — production rail (RELOCATED from the player rulebook, 2026-08-08, bg-elegance)
+
+> **Why this lives here, not in `rules-draft.md`:** these are **production constraints for the team**
+> (art, naming, print, publishing), not rules a first-time player needs. The rulebook now carries only a
+> short, warm player-facing line ("these are real Taiwanese dishes and night markets — celebrated with
+> care"). The binding rail below is NOT lost — it is relocated intact and still binds `bg-developer`,
+> `bg-theme`, `bg-publishing`, and the art pipeline. Full context: `identity.md` §Sensitivity + the
+> theme↔mechanic resonance bullets; this is the consolidated at-a-glance rail.
+
+**Binding production constraints (all must hold before art/print):**
+- **Paid Taiwanese / Indigenous cultural + language consultant sign-off** before art — the **#1 pre-art
+  item**, especially the East region (Indigenous-forward) and the top apex **石板烤肉 Stone-Slab BBQ**
+  (dish + naming + framing must clear the consultant first).
+- **Names are never mangled.** Dish, vendor, and place names stay real and intact — **Tâi-lô romanisation +
+  繁體字**, never bent to fit a gag or a "starred" joke.
+- **Traditional Chinese only (繁體), never Simplified** — Taiwan uses Traditional characters; this is
+  non-negotiable in every printed and rendered string.
+- **Secular only.** No mechanics, art, or gags built on temple festivals, deities, ghost-month, or funerary
+  customs. Events lean modern/secular — food fairs, fruit seasons, weather, roads, crowds, warm local
+  characters (people with dignity, never exotic punchlines).
+- **"Bribe" reads as warm comedy, never corruption** — the smarm lands on the over-the-top agent; the
+  vendor is the beloved, never a mark. 大哥 (gangster-adjacent) and 里長伯 (politician) sit next to that
+  word and carry the tied-#1 consultant flags — bind the warmth hard.
+- **★ accolades stay real and secular**, dishes stay dish-typed generic stalls — **never a false star on a
+  real named business.**
+- **Celebration, not extraction** — the agents are passionate local promoters showing off home; if a tour
+  or event ever reads as outsiders packaging/harvesting the island, that's a re-theme flag.
+
+---
+
+# §15 — THE EVENT SYSTEM (V7-M) — "the island lives its day"
+
+> **Status: SPEC (bg-design, 2026-08-09).** A rich, mechanic-spanning event system for the LOCKED V7-M
+> meeple + scarcity + Bookings model (`design/followers-meeples-redesign.md`). CD brief: *"the more and the
+> more creative, the better."* The trick is a **tiny framework** so the card count can be generous while the
+> rulebook load stays flat. Events already sit **inside the region MARKET decks** and fire on a **worked
+> draw** (a Visit or a Convenience Store; a Travel fly-by whiffs) — that carrier is unchanged (rules-draft
+> §7); this section defines the framework the cards are written in, a generous proposed set, the per-count
+> draw ratio, and the take-that bounding. **Spec-only — no data touched here; the rebuild list is §15.6.**
+
+## 15.1 Design intent (and why events, per `knowledge/design-fundamentals.md`)
+
+Events are the game's **input-randomness texture** and its **cheapest source of per-game variety** — the
+push-your-luck spine ("a typhoon may be the next card") and, since v6.1, its **light interaction lever**
+(a scoped card can boon or tax a rival). Under V7-M's slow-refill scarcity the board is thin and tense;
+events are the warm, comic pressure-release and the shared drama that a bigger table wants more of. The
+whole point of a framework is that **per-card variety is free** (read-the-card), so we can span *every*
+mechanic — followers, hand ingredients, travel, actions, vendors, the board — without adding rules weight,
+**provided the framework teaches in a few lines.** It does: three questions, always the same order —
+**what does it do (a verb), who does it hit (a scope icon), how long (a duration).**
+
+## 15.2 THE FRAMEWORK — three primitives (this is the whole teach)
+
+Every event card is: **VERB · SCOPE · DURATION**, then plain read-the-card text. Teach it once; every card
+thereafter is self-explaining.
+
+### (a) Effect VERBS — a compact closed set, grouped in three families
+
+Plain-language verbs, **not** memorised terms — the card text is always authoritative. Grouped so a
+player learns them as three intuitions ("my crowd / my pantry / the street"):
+
+| Family | Verb | What it does | Sign |
+|---|---|---|---|
+| **CROWD** (followers) | **RALLY n** | grow *n* followers (your supply → your board) | + |
+| | **DISPERSE n** | return *n* of your followers (board/on-stall) to **your OWN supply** — re-rally them | − |
+| **PANTRY** (ingredients) | **GIFT n [type]** | take *n* free named ingredient(s) into your Larder | + |
+| | **PINCH n** | keep *n* fewer ingredient(s) from *this* draw/Visit (the tempo tax — you lose nothing you hold) | − |
+| | **SPOIL n [type]** | *n* held ingredients of a named type go off → region discard | − |
+| | **SWIPE [type?]** | take **1** ingredient from a target → your Larder (the "playing dirty" verb — bounded, §15.5) | − |
+| | **SINK** | put a card (a market top card) to the **BOTTOM** of its region deck | ∼ |
+| **STREET** (board & tempo) | **WASH** | discard & refill the face-up vendor slot(s) in a region (neutral shakeup) | ∼ |
+| | **RESTOCK** | refill **1 empty** vendor slot early (a boon *against* slow-refill) | + |
+| | **TREND** | drop a **Trending** marker on a face-up vendor (its winner grows +1 follower) | + |
+| | **BLOCK [action]** | a named action (draw / Promote / Travel-grow) is unusable for the duration | − |
+| | **DETOUR [hsr / link]** | travel restriction — HSR down, or a ring link severed | − |
+| **TOURS** (bookings) | **CLEAR** | remove **1** of **your own** Cancelled 取消 tours (shed its penalty) — a rare self-relief (§15.9) | + |
+| | **SALVAGE** | take **1** Cancelled 取消 tour from the **lowest-scoring** rival → your **COMPLETED** pile at **half value** (they shed the penalty) — the bounded catch-up double-boon (§15.9) | + |
+
+*Fourteen verbs, four families* (**15 in data** counting the build's 13th verb `promote`; §15.6). Magnitude
+`n` is almost always **1** (rival-facing losses are **always** 1 — §15.5); a rare self-boon or shared-boon
+reads **2**, and the two TOURS verbs act on exactly **1** tour card. Every hazard is **tax-not-destroy**: it
+delays, reroutes, or taxes tempo — it **never** removes a won vendor, a completed Booking, or costs a whole
+turn, and dispersed followers go to **your own** supply (never to an attacker). The two **TOURS** verbs are
+the sole verbs that touch the Booking piles; both are **boons** (they *shed* a scoring penalty, never
+inflict one), and `SALVAGE` is the only event that reaches the Completed pile — bounded to **half value** so
+it is never a free tour (§15.9).
+
+### (b) SCOPE vocabulary — five icons, "who does it hit," read from the drawn region
+
+Extends the shipped ⦿/⬢/➤ set to five. Resolved **relative to the region the card was drawn from** (for a
+Visit that's your region; for a Convenience Store it can be a remote region you flipped).
+
+| Scope | Icon | Who / where | Read |
+|---|:--:|---|---|
+| **YOU** | **⦿** | the acting player only, wherever they stand | a personal boon/hazard |
+| **A RIVAL** | **✦** | **the standings auto-pick, not the drawer** (§15.5): a *loss* finds the **LEADER**; a *hand-up* (the SALVAGE boon) finds the **lowest-scoring** rival | the island's spotlight — a knock for whoever's ahead, a hand-up for whoever's behind |
+| **THIS REGION** | **⬢** | every agent standing in the drawn region (+ that region's board) | the island acting on a *place* |
+| **NEXT DOOR** | **➤** | agent(s) standing in a region **adjacent** to the drawn one (ring; HSR N↔S counts adjacent) | it spills next door |
+| **WHOLE BOARD** | **▦** | everyone / the whole map (its own banner, like Scheduled Maintenance) | island-wide day |
+
+### (c) DURATION — ONE persistence mechanic, four clock-anchored values
+
+**The rule (one line):** *most events fire and are discarded (**NOW**); a **lingering** event is left face-up
+as a marker in its scope location (on the region, on the ▦ board banner, or tucked under a player's board)
+and carries a printed **⏳ "until …"** clause. Discard it the instant its clause resolves.* The four "until"
+values **re-use the clock the game already has** — no new timing concept to teach:
+
+| Duration | Marker? | Ends when… |
+|---|:--:|---|
+| **NOW** | no | resolves immediately, discard |
+| **⏳ TURN** | yes | at the **start of the affected player's next turn** (e.g. Scheduled Maintenance today) |
+| **⏳ ROUND** | yes | at the **end-of-round refill step** (the same beat slow-refill already uses) |
+| **⏳ PHASE** | yes | at the next **DUSK** or **LAST TRAIN** boundary |
+
+That is the entire framework: **14 verbs / 5 scope icons / 4 durations** (15 verbs in data with the build's
+`promote`; the two new TOURS verbs are read-the-card and act on a single tour card — §15.9). Everything below
+is content written in it — cheap variety, flat rules load. *(bg-elegance flag: verb count moved 12 → 13
+[build `promote`] → 15; the growth is bounded — one new family of two boon verbs, no new scope icon, no new
+duration — see §15.8.)*
+
+## 15.3 THE PROPOSED EVENT SET (generous — day + night, all domains + creative additions)
+
+~48 cards spanning every locked mechanic. English name first, 繁體 in parallel. Effects are in framework
+primitives; the **card text is authoritative** and goes to the paid consultant before lock. Region = which
+deck it lives in (or ▦ = island banner, seeded into a night deck). "exists" = already in `events.csv`.
+
+### CROWD — going viral (RALLY) and getting cancelled (DISPERSE)
+
+| # | Name (英) | 繁體 | Verb | Scope | Dur | Phase/Region | Note |
+|---|---|---|---|---|---|---|---|
+| 1 | A Featured Spot | 打卡熱點 | RALLY 1 | ⦿ | NOW | day / N | exists |
+| 2 | In the News | 上了新聞 | RALLY 1 | ⦿ | NOW | night / C | exists |
+| 3 | Blogger's Pick | 部落客推薦 | RALLY 1 | ⦿ | NOW | night / E | exists |
+| 4 | The Reel Blew Up | 短片爆了 | **RALLY 2** | ⦿ | NOW | night / N | the big viral (rare, magnitude 2) |
+| 5 | Everyone's Filming | 全城打卡 | RALLY 1 to each agent **here** | ⬢ | NOW | night / C | shared boon |
+| 6 | The Blogger Arrives | 網紅來了 | each agent's next Promote places **+1** follower | ⬢ | ⏳ROUND | night / E | exists — lingering boon |
+| 7 | Gone Viral | 爆紅 | **TREND** the cheapest face-up vendor here | ⬢ | NOW | night / N | exists (dynamic Trending marker) |
+| 8 | Lantern Festival | 燈會 | RALLY 1 to **every** agent | ▦ | NOW | night / C | island boon; secular lanterns |
+| 9 | A Bad Review | 負評 | DISPERSE 1 | ⦿ | NOW | night / S | exists |
+| 10 | A Mix-Up | 出包 | DISPERSE 1 | ⦿ | NOW | night / N | exists |
+| 11 | The Comments Turned | 風向變了 | DISPERSE 1 | ⦿ | NOW | day / C | new self-loss |
+| 12 | Getting Cancelled | 被出征 | DISPERSE 1 | **✦ leader** | NOW | night / N | catch-up; leader-locked, bounded (§15.5) |
+
+### PANTRY — gifts, spoilage, and playing dirty
+
+| # | Name | 繁體 | Verb | Scope | Dur | Phase/Region | Note |
+|---|---|---|---|---|---|---|---|
+| 13 | The Aunty Insists | 阿姨招待 | GIFT 1 [北 pork] | ⦿ | NOW | day / N | exists |
+| 14 | She Won't Take No | 再吃一點啦 | GIFT 1 [南 seafood] | ⦿ | NOW | night / S | exists |
+| 15 | 24-Hour Convenience | 深夜便利商店 | GIFT 1 [糖 sugar] | ⦿ | NOW | day/E · night/C | exists ×2 |
+| 16 | Mango Season | 芒果季 | GIFT 1 [糖] to each agent here | ⬢ | NOW | day / S | exists |
+| 17 | Spring Tea Harvest | 春茶收成 | GIFT 1 [茶] to each agent here | ⬢ | NOW | day / C | new — parallels Mango |
+| 18 | Rice Comes In | 稻穫季 | GIFT 1 [糧 pantry] | ⦿ | NOW | day / E | new — secular valley warmth |
+| 19 | Oyster Glut | 蚵仔盛產 | GIFT 1 [海鮮] | ⦿ | NOW | night / S | new |
+| 20 | Heat Wave | 熱浪 | SPOIL 1 [any] for each agent here | ⬢ | NOW | day / S | CD's "ingredients go off" |
+| 21 | The Fridge Broke | 冰箱壞了 | SPOIL 1 [seafood/meat] | ⦿ | NOW | night / S | perishables only |
+| 22 | Picked Clean | 被掃光 | SINK the deck's top card | ⬢ | NOW | day / any | thins the good stuff |
+| 23 | Poached the Supplier | 挖角 | **SWIPE 1** | ✦ leader | NOW | night / N | steal-from-the-top, bounded (§15.5) |
+| 24 | Cut in Line | 插隊 | **SWIPE 1** from an agent **here** | ⬢ | NOW | night / S | co-location counterplay |
+| 25 | Borrowed the Recipe | 借了食譜 | **SWIPE 1** of a named type | ✦ leader | NOW | night / C | leader-locked |
+
+### STREET — weather/tempo (PINCH), locks (BLOCK), travel (DETOUR), stalls (WASH/RESTOCK)
+
+| # | Name | 繁體 | Verb | Scope | Dur | Phase/Region | Note |
+|---|---|---|---|---|---|---|---|
+| 26 | Typhoon Day | 颱風假 | PINCH 1 | ⬢ | NOW | day / S | exists |
+| 27 | Plum Rains | 梅雨 | PINCH 1 | ⬢ | NOW | day / C | exists |
+| 28 | Night-Market Crush | 人潮 | PINCH 1 | ⬢ | NOW | night / N | exists |
+| 29 | Sudden Squall | 西北雨 | PINCH 1 | ➤ | NOW | night / S | exists |
+| 30 | Sold Out | 完售 | PINCH 1 | ⦿ | NOW | day/C · night/N · night/E | exists ×3 |
+| 31 | The Long Queue | 排隊人龍 | PINCH 1 | ⦿ | NOW | day / S | exists |
+| 32 | Last-Bus Rush | 末班車人潮 | PINCH 1 | ⦿ | NOW | night / E | exists |
+| 33 | The Big Typhoon | 強颱來襲 | **BLOCK [draw]** here + RALLY 1 to each agent here (everyone's home doom-scrolling food pics) | ⬢ | **⏳TURN** | night / S | CD's "no card-draw in a typhoon"; warm catch-up pairing |
+| 34 | No Signal | 沒有訊號 | **BLOCK [Travel-grow]** — your next Travel grows no follower | ⦿ | ⏳TURN | night / E | CD's "no internet on Travel" |
+| 35 | The Boss Wants a Word | 老闆找你 | **BLOCK [Promote]** next turn | ⦿ | ⏳TURN | day / N | CD's "the boss wants to talk"; head-office gag |
+| 36 | Roadworks | 道路施工 | **DETOUR** — can't Travel *out* of this region | ⬢ | ⏳ROUND | day / C | region lock, tempo |
+| 37 | Scheduled Maintenance | 排班保養 | **DETOUR [hsr]** — N↔S link down | ▦ | ⏳TURN | night / N&S | exists ×2 (banner; 阿嬤 immune) |
+| 38 | Landslide on the Pass | 山路坍方 | **DETOUR [link]** — sever one ring link | ➤ | ⏳TURN | night / E | mountain flavour |
+| 39 | Pop-Up Stall | 快閃攤 | **RESTOCK** 1 empty slot here now | ⬢ | NOW | day / N | boon vs scarcity |
+| 40 | Fully Booked | 客滿 | **WASH** this region's face-up vendor(s) | ⬢ | NOW | day / C | neutral shakeup |
+| 41 | New Management | 換老闆 | **WASH** one face-up vendor here | ⬢ | NOW | night / E | reroute |
+| 42 | The Queue That Ate the Block | 快閃排隊 | **TREND** the cheapest face-up vendor here | ⬢ | NOW | day / N | day parallel to Gone Viral |
+| 43 | Market Anniversary | 夜市週年慶 | each agent here places up to 2 board followers onto a co-located vendor (free Promote) | ⬢ | NOW | night / C | exists |
+| 44 | Golden Week | 連假 | everyone's Visit keeps **+1** | ▦ | ⏳ROUND | day / N | island boon, lingering |
+| 45 | Scooter Gridlock | 機車陣 | **BLOCK [Travel]** next turn arrives with no ingredient (tempo toll) | ➤ | ⏳TURN | day/N · night/C | exists (re-expressed as BLOCK) |
+| 46 | The 3:47 to Zuoying | 高鐵衝刺 | free HSR move now (N↔S) | ⦿ | NOW | night / N | HSR-sprint boon |
+
+### TOURS — clearing and salvaging cancelled tours (the catch-up boons — §15.9)
+
+| # | Name | 繁體 | Verb | Scope | Dur | Phase/Region | Note |
+|---|---|---|---|---|---|---|---|
+| 47 | Back On the Itinerary | 重新開團 | **CLEAR 1** (your own Cancelled tour) | ⦿ | NOW | night / C | self-relief; rare (1 copy); fizzles if you hold no Cancelled tour |
+| 48 | Someone Has to Run It | 有人接手 | **SALVAGE 1** (lowest rival's Cancelled → your Completed at **half value**; they shed the penalty) | ✦ (→ lowest) | NOW | night / S | catch-up double-boon; rare (1 copy); bounded to ½ value (§15.9) |
+
+**Mix:** ~27 hazard / ~21 boon-or-neutral across ~48 cards — hazard-leaning as specified, but the boon slice
+(the warm catch-up pairing on #33, plus the two new TOURS boons #47/#48) keeps the market-dig from being
+pure dread. **Rival-facing (✦/➤ *hazard*) is a small minority** (~7 of 48) by design — most pressure is ⦿
+personal or ⬢ shared; the two ✦-*boon* TOURS cards reach a rival only to *help* them (§15.9). Domains
+covered: followers
+(viral/cancel), hand ingredients (gift/spoil/steal/sink), travel (HSR/link/toll), action-locks (draw/
+Promote/Travel-grow), vendor board (trend/wash/restock), the **Booking tour piles** (clear/salvage
+cancelled — §15.9), and whole-board festival/banner — every locked mechanic is reachable by an event.
+
+## 15.4 Per-count draw ratio (events vs ingredients per region deck)
+
+**Model.** `events.csv` is the **POOL**; `ingredients.csv` fixes each region deck's ingredient cards
+(day N8/C9/S9/E8, night N6/C8/S8/E6). At setup, for each region+phase, shuffle the matching event pool and
+deal the per-count number below into that region's deck; the rest of the pool stays in the box. **This
+gives a different event mix every game — free replayability, and the ratio is a clean per-count dial.**
+
+| Players | Day events / region | Night events / region | ≈ event share (night N/E) |
+|:--:|:--:|:--:|:--:|
+| **3p** | 1 | 2 | 2:6 ≈ 25% |
+| **4p** | 2 | 3 | 3:6 ≈ 33% |
+| **5p** | 2 | 3 | 3:6 ≈ 33% |
+| **6p** | 3 | 4 | 4:6 ≈ 40% |
+
+**Direction of the dial — event pressure rises GENTLY with player count.** Reasoning:
+1. **Interaction payoff scales with the table.** ⬢/➤/▦ events are the shared drama; a fuller region means
+   one card touches more agents — exactly the texture a bigger table wants, and the CD's "same or
+   surrounding areas" reach only pays off when people are *there*.
+2. **High counts churn decks faster** (more Visits/round → reshuffles sooner), so a thin event slice gets
+   diluted; a denser slice keeps the island reacting.
+3. **Scarcity concentrates agents** into fewer live regions, so shared events land harder — desirable.
+
+**Capped so per-player swing stays bounded:** events are tax-not-destroy, personal (⦿) hazards are
+magnitude 1, and the denser night mix is mostly shared texture, not repeated personal punishment. **Night
+N/E at 6p (~40% events) is the hot corner** — flagged as the #1 event-density sim/table knob (§15.7). Night
+stays event-heavier than day at every count (the map's existing "night event-heavier" intent), emergently
+reinforced by more followers committed at night.
+
+## 15.5 BOUNDING THE TAKE-THAT (the direct-attack verbs) — anti-feel-bad, anti-kingmaking
+
+Direct attacks — **SWIPE** (steal), **DISPERSE ✦** (cancel a rival), and rival-aimed **BLOCK/DETOUR (➤)** —
+are a spike of confrontation in an otherwise warm game. Seven rails keep them cheeky-caper, not spite,
+especially at 5–6p:
+
+> **⚑ BINDING TUNING PRINCIPLE — the ✦ leader-nudge is a light catch-up VALVE, not a beating (CD, 2026-08-09).**
+> *"If someone has worked hard for their lead I don't want to demotivate them too much."* The ✦ leader-target
+> events exist to gently narrow a runaway, **never** to punish a player for leading. This binds every ✦ *hazard*
+> and its numbers:
+> - **Magnitude stays 1** (never 2+ from the leader) — rail 1.
+> - **A small MINORITY of the pool** — the ✦-hazard slice stays ~4–5 of ~48 cards (rail 5); it does not grow
+>   with the set.
+> - **No pile-on** — the same leader is **not** hit repeatedly in a single round by stacked ✦ events; a
+>   lingering ✦ marker blocks a second (rail 6). At high counts especially, one nudge per leader per round is
+>   the ceiling.
+> - **Tax-not-destroy** — a ✦ loss is one ingredient, one follower, or one tempo beat; it **never** removes a
+>   won vendor or a Completed tour (rail 4).
+> - **DESIGN + SIM/PLAYTEST TARGET (binding):** the leader's **cumulative** ✦-event hit across a whole game
+>   stays **mild** — a nudge, not a demoralising swing. The sim/table must show a *small* cumulative
+>   leader-event-impact and a *small* leader win-rate delta from being hit (§15.7 probe 2, §15.8 sim). If the
+>   cumulative hit reads punishing, the fix is **fewer ✦-hazard copies** and/or convert some to ⬢ shared —
+>   not bigger magnitudes.
+>
+> **The symmetric ✦ boon (NEW — SALVAGE, §15.9).** The same "the standings pick the target, not the drawer"
+> rule now runs in **both** directions: a ✦ *loss* finds the **leader** (a light knock), a ✦ *hand-up* finds
+> the **lowest-scoring** rival (SALVAGE's shed-the-penalty boon). Boons reach *down*, losses reach *up* — one
+> principle, symmetric, and neither is the drawer's pick (no kingmaking on either end).
+
+1. **Magnitude is always 1.** Any rival-facing loss is exactly 1 (1 ingredient swiped, 1 follower
+   dispersed, 1 tempo beat). Only **self**-boons or **shared** boons ever read 2. No event takes 2+ from one
+   rival.
+2. **Losses target the LEADER, never the drawer's pick.** Every **✦** *hazard* auto-targets the current
+   **leader** — most Completed Bookings (the Tours-Completed meter) → tie: most vendors → then most board
+   followers (the game's own tiebreak order). The drawer never chooses the victim → **no ganging up, no
+   kingmaking.** If the drawer *is* the sole leader, a ✦ hazard fizzles ("you're already on top") — you
+   can't weaponise it by drawing it yourself. Ties for the lead → drawer picks **among the tied leaders
+   only.**
+3. **The nastiest steal needs co-location counterplay.** The unrestricted-target SWIPE ("Cut in Line", #24)
+   is **⬢ this region only** — the victim sees the thief standing there and can leave. The at-a-distance
+   SWIPEs (#23, #25) are **leader-locked** and steal-from-the-top, so they read as "the frontrunner's
+   supplier got poached," not "pick on the straggler."
+4. **Tax-not-destroy, absolute.** Never removes a won vendor or a completed Booking; never costs a whole
+   turn. Dispersed followers go to **your own** supply to re-rally — they **never** join the attacker; a
+   swiped ingredient is one Visit away from replacement.
+5. **Rival-facing *hazard* is a small minority of the pool** (~7 of 48), and at 5–6p most of what fires is
+   ⦿/⬢ — so no one player eats a stream of targeted attacks.
+6. **No pile-on stacking.** A lingering ✦ marker can't be re-applied while one is already active on the
+   leader (one Getting Cancelled at a time).
+7. **Rival-facing BOONS are auto-targeted too — down, not up.** SALVAGE's boon auto-finds the **lowest-scoring**
+   rival (§15.9), *not* the drawer's free pick — deliberately, so a boon can't be aimed to prop up a friend
+   (no kingmaking on the boon side either). This tightens the old "generosity you may aim" rail: only truly
+   incidental shared boons (⬢ everyone-here) are un-targeted; the one *directed* rival-boon (SALVAGE) is
+   standings-locked to the trailer.
+
+**The one dynamic to watch (→ bg-critic):** does auto-leader-targeting create a perverse **"don't want to
+lead"** incentive, or feel bad for a narrow leader who then gets a Booking-poach? Magnitude-1 + tax-not-
+destroy is designed to keep it a nudge, not a swing — but this is exactly a sim-and-table question (§15.7).
+
+## 15.6 DATA CHANGE LIST (for `bg-developer` — spec only; NOT executed here)
+
+**A. Rebuild `components/events.csv`** to the framework. New/renamed columns:
+`id,name,hanzi,type,region,phase,deck,scope,duration,verb,target,value,quantity,tags,effect,art_note`
+- **`scope`** ∈ `self | rival | region | neighbour | board` (icons ⦿/✦/⬢/➤/▦ on the card).
+- **`duration`** ∈ `now | turn | round | phase` (⏳ marker on all but `now`).
+- **`verb`** (primary) ∈ `rally | disperse | gift | pinch | spoil | swipe | sink | wash | restock | trend |
+  block | detour | clear | salvage` — the machine-readable hook for the sim; **`effect` text stays
+  authoritative.** *(Plus the build's `promote`; the two TOURS verbs `clear`/`salvage` are new this pass, §15.9.)*
+- **`target`** = verb parameter where needed: `block` → `draw|promote|travel|travel-grow`; `detour` →
+  `hsr|link`; `gift/spoil/swipe` → ingredient type; **`salvage`/`clear`** → blank (target is a tour pile, not
+  an ingredient; `salvage` auto-resolves to the lowest-scoring rival, `clear` to self); blank otherwise.
+- **`value`** = magnitude `n` (default 1; the two "big" boons read 2). **`clear`/`salvage` are `value=1`**
+  (one tour card); `salvage`'s **half-value-to-Completed** is a scoring rule the `effect` text carries, not a
+  `value` field.
+- **Add the two TOURS rows (§15.9):** `id=t_clear` — **Back On the Itinerary 重新開團**, `verb=clear`,
+  `scope=self`, `duration=now`, `value=1`, `quantity=1`, night/C; and `id=t_salvage` — **Someone Has to Run
+  It 有人接手**, `verb=salvage`, `scope=rival` (auto → lowest), `duration=now`, `value=1`, `quantity=1`,
+  night/S. Both `kind=boon`. Consultant rail as for every rival-facing beat (warm mutual-aid register).
+- **`quantity`** = copies in the POOL (drive variety; a common PINCH/GIFT may be 2–3, a marquee 1).
+- Populate the ~48-card set of §15.3 (retains all "exists" rows, re-columned; adds the ~22 new/creative
+  cards, incl. the two TOURS boons #47/#48). Retire the `kind` column into `verb`+sign, or keep
+  `kind=boon|hazard` as a convenience tag.
+- **Rail:** every Chinese/Tâi-lô string + every rival-facing beat → paid consultant before lock; 繁體 only,
+  secular, dignified locals; keep "meeple" out of flavour (always "followers / your crowd").
+
+**B. `map.json` — add a per-count event-draw block** (the §15.4 ratio):
+```json
+"event_deck_mix": {
+    "_note": "events.csv is the POOL; ingredients.csv fixes each region deck's ingredient cards. At setup, per region+phase, shuffle the matching event pool and deal this many events into that region deck (rest to box). Different mix each game. Event pressure rises gently with player count (interaction payoff + faster churn under more players); capped so per-player swing stays bounded — night N/E at 6p (~40%) is the #1 density knob.",
+    "3": {"day": 1, "night": 2},
+    "4": {"day": 2, "night": 3},
+    "5": {"day": 2, "night": 3},
+    "6": {"day": 3, "night": 4}
+}
+```
+(Scheduled Maintenance / island ▦ banners live inside night decks and fire board-scope when drawn — no
+separate deck.)
+
+**C. `game-bible.md`** — refresh the components list (events grow from ~26 → ~48 pool cards; new
+scope/duration/verb columns) and the one-line event summary. *(Left for the CD/next pass per the spec-only
+rail.)*
+
+## 15.7 Open questions for playtesting / the sim (top of the list)
+
+1. **Event density at 6p night (N/E ~40%).** Is the hot corner fun-swingy or overload? The #1 knob — dial
+   the §15.4 night counts if per-turn swing reads too high.
+2. **Does auto-leader-targeting feel bad / discourage leading?** (bg-critic.) Test the narrow-leader
+   Booking-poach; fallback = ✦ losses hit "everyone tied for/near the lead" or convert to ⬢.
+3. **Lingering-marker overhead.** Four ⏳ durations + a physical marker — does the table track them cleanly,
+   or does one collapse into another? Cut toward NOW/⏳TURN if ⏳ROUND/⏳PHASE rarely earn their keep.
+4. **The cancelled-tour boons (§15.9) — relief or swing?** Is `SALVAGE` a satisfying catch-up double-boon at
+   half value, or does a single card leapfrog the drawer past an earned leader (dial: drop half-value →
+   fallback = the simpler "clear the lowest scorer's cancelled tour + a small flat reward for the drawer",
+   §15.9)? Is `CLEAR` a welcome relief or a get-out-of-jail-free (dial: rarity — keep at 1 copy)? And does
+   `SALVAGE`'s auto-target-lowest create a mild "want to be lowest" bait (bg-critic)?
+
+## 15.8 Guardian & follow-up flags (per the handoff contract)
+
+- **bg-theme** — does *direct attack* fit the warm tone? Sign off the rival-facing register: SWIPE ("playing
+  dirty"), **Getting Cancelled 被出征** (brigading/cancelling can read harsh — needs a warm-comedic reframe),
+  and the ✦ "spotlight finds the leader" flavour. Confirm secular + dignified locals, **繁體 only**,
+  English-first; East events stay secular/scenic (no Indigenous specifics without the consultant); the
+  festival/banner cards (Lantern Festival, Golden Week) carry **no temple/deity content**. Signature-twist
+  note: events now **feed the follower crowd-fight** (RALLY/TREND grow the very meeples that win stalls) and
+  the **scarcity board** (RESTOCK/WASH move the slow-refill slots) — check the fiction still explains those.
+  **NEW (§15.9) — the salvage flavour:** `SALVAGE` (**Someone Has to Run It 有人接手**) lets one agent pick up
+  the tour a trailing rival had to cancel. The register must read as **warm mutual aid** — *"that tour fell
+  through, so someone else runs it and everyone still eats"* — never gloating over the trailer or scavenging
+  their misfortune. `CLEAR` (**Back On the Itinerary 重新開團**) is a clean second-chance beat. Both stay
+  secular/dignified, 繁體 only, English-first; consultant before lock as with every string.
+- **bg-critic** — feel-bad / kingmaking on the take-that (§15.5): the leader-target rule, the 6p pile-on,
+  the SWIPE/DISPERSE-on-leader, and the "don't want to lead" perverse incentive. **NEW (§15.9) — SALVAGE:**
+  confirm the auto-target-lowest boon doesn't create a mild **"want to be lowest"** bait, and that
+  half-value + rare (1 copy) keeps it a genuine catch-up, never a swing that leapfrogs the drawer past
+  earned leaders. Check the drawer can't game *which* Cancelled tour (they take the lowest scorer's; among
+  ties the drawer picks — bounded to ½ value regardless).
+- **bg-elegance** — the complexity argument: the card count is generous but the **rulebook load is one
+  framework block** (14 verbs / 5 icons / 4 durations, all read-the-card) + one reused clock for persistence.
+  Net add over the shipped ⦿/⬢/➤ system: **two scope icons (✦, ▦), one persistence mechanic, one draw-ratio
+  table** — argue this buys large per-game variety for a small, bounded teach. **NEW — verb-count growth to
+  re-gauge:** the set moved **12 → 13 (build `promote`) → 15 in data** (this pass adds **CLEAR** + **SALVAGE**,
+  §15.9). Bounded on purpose: **one new family (TOURS) of exactly two verbs, both boons, no new scope icon, no
+  new duration**, and each acts on a single tour card — read-the-card load only. The one real teach-cost is
+  `SALVAGE`'s half-value-to-Completed exception (the sole event that reaches the Completed pile); it is 1 rare
+  card (1 copy). Confirm the added rulebook prose is a line or two, not a section. Re-gauge with the meeple
+  swap's trims folded in.
+- **THE SIM** — re-encode required: model the new verbs (esp. RALLY/DISPERSE feeding the meeple pool,
+  SWIPE/SPOIL on the Larder, TREND on vendor value) and the **⏳ persistence** state (a lingering marker that
+  expires on turn/round/phase). Track: event-fire rate per player per game, ✦-leader-target frequency and
+  the leader's post-hit win-rate delta, take-that swing, and whether the §15.4 ratio holds per-player swing
+  bounded across 3–6p. **ADDITION (§15.9 — the event-sim fold is in flight; add these to it):**
+  1. **Model `CLEAR`** — the drawer removes one own Cancelled tour from their CANCELLED pile (drops the
+     −⌊V/2⌋ penalty on the highest-value cancelled tour they hold); fizzle if they hold none.
+  2. **Model `SALVAGE`** — auto-target the **lowest-scoring** rival (standings order: fewest Completed →
+     fewest vendors → fewest board followers; ties → drawer picks among tied trailers); that rival sheds the
+     penalty on one of their Cancelled tours, the tour enters the **drawer's COMPLETED pile scoring ⌊V/2⌋**
+     (half value); if no lower rival holds a Cancelled tour, the drawer may `CLEAR` one of their own instead.
+  3. **The cumulative-leader-impact probe (binding, §15.5 principle):** report the **leader's total ✦-event
+     hit per game** (sum of magnitude across all ✦ hazards that landed on the leader) and the **leader
+     win-rate delta** attributable to being hit — both must stay **small** (a nudge, not a swing). If either
+     reads punishing, cut ✦-hazard copies / convert some to ⬢ — do **not** raise magnitudes.
+  4. **SALVAGE swing guard:** confirm the half-value catch-up narrows the gap without leapfrogging earned
+     leaders, and that its rarity (1 copy) keeps table-wide impact small.
+  **Gated — do not run until the CD signs off this spec.**
+- **bg-rulebook** — teach the framework **once** (the three-question block: verb / scope / duration), then
+  let cards self-explain; one worked example (a ⬢ region hazard + a ⏳ lingering marker); the scope/duration
+  icon legend on the player aid. **NEW (§15.9):** add a two-line teach for the **TOURS boons** — `CLEAR` (drop
+  one of your own Cancelled tours) and `SALVAGE` (take the lowest-scoring rival's Cancelled tour into your
+  Completed pile at **half value**; they lose the penalty) — with a one-line worked example of the half-value
+  salvage (the one place a Completed tour scores less than face). Also state the **gentle-leader principle**
+  in player-facing voice on/near the ✦ legend: *"the island's spotlight gives the front-runner a small nudge
+  and the trailing agent a hand-up — it's a light catch-up, never a knock-out."*
+- **bg-infodesign (render)** — **two new verb glyphs** for the icon system: `CLEAR` (shed a Cancelled tour —
+  suggest a torn-ticket-mended / itinerary-restored mark) and `SALVAGE` (a rival's cancelled tour picked up —
+  suggest a handoff/relay mark), both keyed to the **TOURS** family and visually distinct from the CROWD /
+  PANTRY / STREET verb glyphs. Also a small **✦→lowest** variant read so the boon-facing ✦ is legible as "a
+  hand-up to the trailer" vs the hazard ✦ "a knock to the leader". Card layout otherwise unchanged.
+
+## 15.9 THE CANCELLED-TOUR BOONS (CD refinement 2 — the catch-up double-boons)
+
+> **Status: SPEC (bg-design, 2026-08-09).** Two new events that treat a player's **Cancelled 取消 pile** as a
+> lever. Scoring context (rules-draft §9, confirmed): a **Completed 成團** tour scores **+full value**; a
+> **Cancelled 取消** tour scores **−⌊V/2⌋** (and any Booking still unfinished in hand at the last train is
+> cancelled too). These two boons let an agent *shed* that penalty — one for themselves, one as a shared
+> hand-up to the trailing player. Both are framework-native (VERB · SCOPE · DURATION), rare, and magnitude 1.
+
+### (a) CLEAR — *Back On the Itinerary 重新開團* (a clean self-boon)
+
+- **Framework primitives:** **VERB `CLEAR`** · **SCOPE ⦿ YOU** · **DURATION NOW.** Lives in the **night /
+  Central** deck; **quantity 1** (rare).
+- **Effect:** remove **ONE** of **your own** Cancelled 取消 tours from your CANCELLED pile (to the box) —
+  shedding its **−⌊V/2⌋** penalty. Your choice which; naturally your highest-value cancelled tour (biggest
+  relief). If you hold no Cancelled tour, the card **fizzles** (nothing to clear).
+- **Benefit to drawer:** +⌊V/2⌋ effective (the penalty you were carrying disappears).
+- **Balance — welcome relief, not get-out-of-jail-free:**
+  - **Exactly one** tour, magnitude 1 (framework-consistent).
+  - **Rare — 1 copy** in the pool; most games it never appears, and when it does it may not be drawn by
+    someone carrying a cancellation.
+  - **Self-limiting = inherently catch-up.** It only helps a player who has *been* cancelling tours — which
+    correlates with struggling to complete them. A leader running clean tours draws a dead card. So the relief
+    lands, on average, on someone behind — no rule needed to make it catch-up-flavoured.
+  - Bounded by ⌊V/2⌋, so even a max-value cancel (V≈6 → +3) is a modest, one-time swing.
+
+### (b) SALVAGE — *Someone Has to Run It 有人接手* (the resolved double-boon)
+
+- **Framework primitives:** **VERB `SALVAGE`** · **SCOPE ✦ (→ the lowest-scoring rival, auto-targeted)** ·
+  **DURATION NOW.** Lives in the **night / South** deck; **quantity 1** (rare).
+- **The resolved mechanic (chosen bounded version):**
+  1. **Auto-target the lowest-scoring rival** — standings order fewest Completed → fewest vendors → fewest
+     board followers (the game's own tiebreak, inverted); ties → the drawer picks among the tied trailers.
+     *The drawer never free-picks the target → no kingmaking, guaranteed catch-up.*
+  2. That rival **sheds the −⌊V/2⌋ penalty** on one of their Cancelled tours (**their** boon — the drawer
+     takes the tour they'd most benefit from being rid of; among a tie the drawer picks).
+  3. The salvaged tour enters the **drawer's COMPLETED 成團 pile but scores HALF value, ⌊V/2⌋** — flip it or
+     mark it "salvaged" (the sole event where a Completed tour scores less than face). *This is the drawer's
+     bounded boon.*
+  4. **Graceful degrade (never a dead card):** if no lower-scoring rival holds a Cancelled tour (or the
+     drawer is the sole lowest scorer), the drawer may instead **`CLEAR` one of their own** Cancelled tours.
+- **Exact benefit-to-drawer:** **+⌊V/2⌋** (a half-value Completed tour). **Target rule:** auto — the
+  lowest-scoring rival. **Cost / bound:** it completes at **half value**, it is **one** tour, and it is **rare
+  (1 copy)** — three independent brakes.
+- **Why this version (the balance argument — NOT a free win):**
+  - A full-value Completed tour dropped free would be a game-swinging ~4–8 points — a clear free-win vector.
+    **Half value (⌊V/2⌋)** turns it into a modest gain: a V≈6 tour salvages for **+3** to the drawer while the
+    trailing rival sheds **−3** — a bounded, symmetric double-boon.
+  - **Aimed only at the trailer**, so the drawer's own gain is capped *and* the table's lowest player is
+    lifted — the CD's "a boon for you but also for another player (maybe the lowest scoring)."
+  - It is the **only** event that reaches the Completed pile, and it can never reach a *leader's* pile — so
+    it cannot compound a runaway.
+  - **Rare (1 copy)** keeps table-wide frequency low; the sim's SALVAGE swing guard (§15.8) verifies it
+    narrows the gap without leapfrogging an earned leader.
+- **Considered and rejected:**
+  - *"Salvage at FULL value only if the drawer's own vendors satisfy the Booking's pattern."* Elegant bound,
+    but it fires rarely (the drawer must happen to qualify for a pattern a trailer abandoned) → often a **dead
+    card**, and it adds a conditional. Half-value always does something and both players benefit — cleaner.
+  - *"Pay the tour's ingredient cost to salvage."* Doesn't map — Bookings complete via **vendor patterns**,
+    not ingredient payment (rules-draft §6); there is no per-Booking ingredient cost to pay.
+- **Fallback (if the sim shows half-value still swings):** the simpler version the CD named — the event
+  **clears the lowest scorer's Cancelled tour** (their catch-up) and the drawer takes a **small flat reward**
+  (e.g. RALLY 1 or GIFT 1) instead of a half-Completed tour. This decouples the drawer's gain from the
+  Booking value entirely. Held as reserve; the half-value double-boon is the primary.
+
+### Why these fit the framework (elegance)
+
+Both are **read-the-card**, magnitude 1, no new scope icon, no new duration — a single new **TOURS** family
+of two boon verbs (§15.2). They add **one** genuinely new teach: `SALVAGE`'s half-value-to-Completed
+exception, carried on **one rare card**. The verb count moves **13 → 15 in data** (bg-elegance re-gauge,
+§15.8). Warm-tone and secular rails bind the flavour (bg-theme, §15.8): mutual aid, second chances — never
+gloating over the trailer.
+
+---
+
+# 16. DECK-FLOW — per-region discard piles + reshuffle (the self-sustaining market)
+
+> **Status: SPEC (bg-design, 2026-08-09).** CD brief: make the region MARKET decks self-sustaining so events
+> (and ingredients) recur, without letting a concluded phase's cards leak into the next phase. This section
+> pins the card-flow that the earlier sections *assumed* (design-doc §15 "Recycling: fired hazards return";
+> §12.5 "the market decks reshuffle — `supply_min` never hit 0") but never fully specified. **Spec-only — no
+> data/code/sim touched here; the change lists are §16.5–16.8.** Scope = the region **market decks**
+> (ingredients + events, `ingredients.csv` + `events.csv`). Vendor cards are a **separate** system governed by
+> the §1 slow-refill scarcity model and are explicitly out of scope here (§16.2 note).
+
+## 16.1 The physical model (what's on the table)
+
+Each region has, at any moment, **one live draw deck** (its current-phase market deck, face-down) **and one
+face-up discard pile** (loose, beside the deck — no printed board zone; see §16.6). Because day and night are
+separate physical decks (`ingredients.csv` day/night rows; night set aside until DUSK), there are 8 market
+decks in the box but only **4 live** at once (the current phase). So the table shows **4 live decks + 4
+face-up discards** — one pair per region — full stop. The discard is **face-up all game** — a mild, fair
+push-your-luck read (you can see what will cycle back when the deck reshuffles).
+
+## 16.2 The flow rules (stated tightly)
+
+**A card enters a region discard when it is spent, used, forced, or passed over — always to ITS OWN region's
+current-phase discard.** Four feeders, in descending volume:
+
+1. **Passed over on a Visit** (the highest-volume feeder). A Visit flips 3, keeps ≤2; the **un-kept revealed
+   ingredient(s)** go face-up to that region's discard. (Same for a Larder over-limit dump: over 7 → discard
+   the excess to the region each card came from.)
+2. **Spent — an ingredient PAID to a vendor.** When you pay a recipe, each ingredient card leaves your Larder
+   to **its own** region's current-phase discard (a North meat card → North's discard; an East pantry card →
+   East's discard). *Phase check applies — see §16.3 destination 3.*
+3. **Used — an EVENT that just FIRED.** After it resolves, the event card goes face-up to the discard of the
+   region whose deck it was drawn from. **A fired event that fizzles still goes to the discard** — it *fired*
+   (see the leader-fizzle FAQ, §16.8). This is what makes events **recur**.
+4. **Forced out — a card effect that discards a market card** (SPOIL a held ingredient; PINCH's un-kept
+   card). Goes to the relevant region's current-phase discard. *Phase check applies.*
+
+**Reshuffle (one line):** **when a region's live draw deck runs out, shuffle that region's face-up
+current-phase discard to form the new draw deck.** No card is added or removed; the pool just cycles. Fired
+events return with it, so the island keeps reacting; ingredients return, so a category deeper in demand than
+its deck-depth can still be sourced (§16.4).
+
+> **Out of scope (say it once):** **vendor** cards are not part of this. A claimed / washed / cleared vendor
+> slot follows the §1 **slow-refill** rule (stays empty; refill from the vendor deck at end of round). Vendors
+> never touch a region *market* discard. SINK / WASH / RESTOCK that read like "deck" verbs are disambiguated
+> in §16.3.
+
+## 16.3 The THREE "away" destinations — disambiguated, no path ambiguous
+
+Every card that leaves the players' hands or the top of a deck resolves to **exactly one** of three places.
+The sort is a two-question read off marks already on the card (§16.6): **"Is this a SINK? → bottom of deck.
+Otherwise: is the card's phase the CURRENT phase? → region discard, else → the box."**
+
+| Destination | One-line rule | Reshuffles back? | Trigger | Reads the… |
+|---|---|:--:|---|---|
+| **Bottom of the live deck** — **SINK** | The card goes to the **bottom of its own region's live draw deck**. It never leaves the deck — it's just **deferred**; you'll meet it again this phase. | Stays in-deck (n/a) | **Only** the SINK event verb (e.g. #22 Picked Clean), invoked **by name** by a card. | — (named effect) |
+| **Region discard** — spent / used / forced / passed over | A **current-phase** market card that is paid, fired, forced, or passed over goes **face-up to its region's current-phase discard**. | **Yes** — on that region's next deck-out. | The four feeders of §16.2. | region **+** phase (phase = current) |
+| **The box** — phase-expired | When a phase ends, that phase's decks **and** discards leave the game. And any market card spent **after** its phase has concluded (a day card paid during the night) goes **to the box, not the discard**. | **Never** — permanently out. | DUSK / LAST TRAIN (§16.5); or a stale-phase card leaving a Larder. | phase (phase = concluded) |
+
+**Why no path collides:** SINK is the *only* thing that sends a card in-deck, and it is only ever invoked by
+an event's printed text — you never SINK by default. Everything else reads the **phase stamp**: current →
+discard, concluded → box. That single check is also what guarantees the CD's requirement — **a reshuffle only
+ever recycles current-phase cards** — because a stale card can never reach a current-phase discard.
+
+## 16.4 Phase-expiry — the single clean DUSK / LAST-TRAIN rule
+
+> **Rule (one line).** At **DUSK** and at **LAST TRAIN**, the concluding phase's **market decks and their
+> discards go to the box**; the next phase's decks (and fresh empty discards) take over. **Cards already in a
+> player's Larder are NOT swept** — they stay; but when a *concluded-phase* card is later spent, it goes to
+> the **box** (§16.3), never a current-phase discard.
+
+- **At DUSK** (day Booking deck out — the deck-driven clock, `map.json.clock_model`): the **4 day market
+  decks + 4 day discards → box**; the pre-built **4 night decks** go live with **4 fresh empty discards**.
+  (This runs alongside the existing dusk vendor sweep in §1 — vendors are separate.)
+- **At LAST TRAIN** (night Booking deck out): the game ends; the night decks + discards are irrelevant (score
+  and pack up).
+- **The Larder-at-dusk call (the one real design choice — see §16.9):** RECOMMENDED = **Larder cards
+  survive** (Option A). It removes a feel-bad wipe and a sorting chore at the busiest beat, it is **already
+  what the sim assumes** (the Larder is face-up all game and ingredients are fungible-by-type), and the
+  uniform "stale card → box on exit" rule keeps night decks pure regardless. A day meat card carried into
+  night still pays a night recipe, then quietly goes to the **box** when spent — never polluting the night
+  discard.
+
+## 16.5 Sourcing-loop analysis — is pantry-tightness solved? (VERDICT + the new sim guard)
+
+**Verdict: the renewable loop MITIGATES but does not ELIMINATE the +30%-demand pantry risk — and it is not
+new economy; it is the mechanism §12.5 already relied on.** Reasoning from the closed numbers:
+
+- **The loop is *why* deck-depth < demand is survivable.** New aggregate demand is 65 tokens (§12.4/§12.5);
+  Pantry is the tight category at **16 demanded vs 11 physical** (E-day 6 + E-night 5). Without a reshuffle,
+  East's deck empties and pantry starves; **with** the reshuffle, the 11 physical pantry cards cycle
+  (~1.5×) to cover 16 demand. §12.5 already assumed exactly this ("the market decks reshuffle — `supply_min`
+  never hit 0"). So §16 **does not change** the expected economy; it **specifies** the loop that economy
+  leaned on. The +30% aggregate load rides on top unchanged.
+- **It doesn't *eliminate* the risk, because the loop is uneven.** A card only re-enters the draw pool when
+  it is **spent/forced/passed-over → discard → the deck empties and reshuffles.** Ingredients **held in
+  Larders are withheld from the loop.** So the effective renewal rate depends on (a) the **Visit rate into
+  that region** (draw-down speed) and (b) how much of the category is **hoarded** vs spent.
+- **The NEW second-order risk the loop introduces — reshuffle-thinning enrichment.** Events **always** return
+  to the discard (you can't hold an event), but ingredients get **siphoned into Larders** (kept, not
+  discarded). So over a phase a hot region's live deck becomes progressively **event-enriched** — ingredients
+  leave the loop into hands, events keep cycling back. This bites hardest in the **small night N/E decks**
+  (6 ingredients) at high counts, and it **couples to §15.4's density knob** (see §16.9 / point 5).
+
+**What the re-sim sourcing guard must NOW additionally check** (folds into §9 / §12.9 / §15.6-SIM, one CD-gated run):
+1. **Deck cycle-rate per region per phase per count** — reshuffles/game per live deck. Flag any deck cycling
+   so **fast** its dealt events over-recur (couples to §15.4), or so **slow** that a tight category (pantry)
+   never realises its renewable benefit (`supply_min` → 0 despite the loop existing on paper).
+2. **Reshuffled-deck size** (the thinning proxy) — the average card count when a deck reshuffles. A thin
+   reshuffle = a fast, event-dense cycle.
+3. **Live-deck event-fraction over the phase** — does it climb materially above the §15.4 *dealt* ratio as
+   ingredients siphon into Larders? Report per region per count; **night N/E at 6p is the predicted hot
+   corner.**
+4. **Pantry `supply_min` under the loop** — must stay > 0 across 3–6p; if it starves, apply the §12.5
+   conditional deck-rebalance (idle Sugar depth → Pantry/Meat), **not** a change to §16's flow.
+
+## 16.6 Change list — COMPONENT / MANIFEST (placement confirmed)
+
+- **No new printed components and no board-art change.** The four discards are **loose, face-up piles beside
+  each region's live deck** — confirmed against the CD's minimal-map steer (`map.json._note`: keep the shared
+  board uncluttered). The piles are **self-sorting** because every market card carries its region + phase
+  (§16.7), so a loose pile needs no printed frame or label.
+- **`map.json` — add three `legend_notes` lines** (data, presentation-neutral): (i) *"Each region has a
+  FACE-UP discard beside its deck: cards spent, fired, forced, or passed-over go there. When a deck runs out,
+  shuffle its discard to make the new deck."* (ii) *"SINK = to the BOTTOM of the deck (stays live), not the
+  discard."* (iii) *"At DUSK / LAST TRAIN the ending phase's decks AND discards go to the box — a reshuffle
+  only ever recycles current-phase cards."*
+- **Optional (hold):** a tiny "↻ reshuffle when empty" hint could sit in each region's deck footprint on the
+  board render — but per the minimal-map steer, keep it in the legend, not on the map. Decision to
+  `bg-infodesign`.
+
+## 16.7 Change list — bg-infodesign (region + phase UNMISTAKABLE on every card)
+
+This is the **load-bearing readability requirement** — the entire three-destination sort (§16.3) depends on
+reading two marks off any market card at a glance:
+- **Region** — already dual-coded and CVD-checked: **N red / triangle, C teal / diamond, E navy / square,
+  S gold / circle** (`map.json.regions`). Reuse verbatim on **every** market card (ingredient **and** event),
+  so a discarded card sorts to the right pile instantly.
+- **Phase** — must be **equally unmistakable and dual-coded** (NOT day-gold-vs-night-neon colour alone —
+  that risks a CVD collision). Add a **sun ☀ (day) / moon ☾ (night) glyph** to every market card. Phase is
+  what the DUSK "→ discard or → box?" check reads (§16.3–16.4); if it's ambiguous, stale cards leak into the
+  night pool and the guarantee breaks. **Flag `bg-access`** to confirm the phase glyph passes redundant-
+  encoding.
+- **Consistency:** the SINK / discard / box legend icons on the player aid must match the card marks (region
+  emblem + ☀/☾). One legend line: *"region + ☀/☾ = which pile this card belongs to."*
+
+## 16.8 Change list — SIM (an ADDITION to the in-flight baseline re-encode)
+
+The baseline re-encode (§9 / §12.9 / §15.6-SIM) **already assumes reshuffle** for `supply_min`; this makes
+the loop **explicit and adds the phase-to-box path + new metrics**. Fold into the same CD-gated run:
+- **Model the four discard feeders** (passed-over, paid, fired, forced) → a per-region **current-phase
+  discard**; **reshuffle** the discard into the deck on deck-out.
+- **Model phase-to-box:** at DUSK the day decks + day discards → box; a **concluded-phase card leaving a
+  Larder → box** (Option A baseline; if the CD picks Option B, model the dusk Larder wipe instead — §16.9).
+  Night deck/discard reshuffles must contain **only** night-stamped cards (the guarantee — assert it).
+- **New metrics** (the §16.5 guard): reshuffles/game per region per count; reshuffled-deck size (thinning);
+  **live-deck event-fraction over the phase** (enrichment); Pantry `supply_min`. These are *additions*, not a
+  re-baseline — the taxonomy/pacing bands are unaffected by making an assumed loop explicit.
+
+## 16.9 Follow-ups — top-3 open questions + the human's call
+
+**Top-3 balance / open questions for playtesting:**
+1. **Reshuffle-thinning enrichment at high counts** (§16.5 risk). Do the small night N/E decks (6 ingredients
+   + up to 4 events) become event-dense as ingredients siphon into 6 Larders, cycling fast? **The #1 knob** —
+   couples to §15.4; loosen the §15.4 **night-event count at 5–6p first** (cheapest-to-loosen, per §12.4's
+   philosophy) if phase-end event-fraction climbs.
+2. **Does explicit reshuffle keep Pantry alive under the +30% load** across 3–6p (`supply_min` > 0), or does
+   the uneven loop (hoarding withholds pantry) still starve it → the §12.5 conditional rebalance?
+3. **Deck predictability from a face-up discard.** A face-up discard telegraphs what will reshuffle back —
+   is that a satisfying read or does it flatten the push-your-luck dread on a fast-cycling deck? (Reserve
+   fix: keep the reshuffled pile face-**down** while cycling; costs nothing.)
+
+**Decision for the human (the one real design choice) — day cards in the Larder at DUSK:**
+- **Option A (RECOMMENDED) — Larder cards survive dusk.** Only decks + discards go to the box; a carried
+  day-card pays a night recipe, then goes to the box when spent. Simplest, kindest, sim-consistent, guarantee
+  preserved. Enables legitimate day→night pre-sourcing (a feature, capped by the Larder ≤7 limit).
+- **Option B — day Larder cards expire to the box at DUSK.** A "use-it-or-lose-it" pressure (spend before
+  dusk); thematically "the breakfast ingredients don't keep." Cost: a feel-bad wipe + a sorting chore at the
+  busy dusk beat, and it **deviates from the current sim assumption** (needs new modelling).
+- *(My call: A — but this is the CD's to make; it changes the felt end-of-day pressure.)*
+
+## 16.10 Handoff / coherence flag (per the contract)
+
+Mechanics that moved this pass: **(1) the market decks became an explicit renewable loop** (per-region
+face-up discard → reshuffle) and **(2) a hard phase-to-box gate** (concluded-phase cards leave the game).
+Neither touches the **signature twist** (the follower crowd-fight over scarce vendors) directly — but both
+feed its inputs: the loop keeps **events** (which RALLY/TREND the crowd, §15) and **ingredients** (which pay
+scarce vendors, §12) flowing, so the twist is *supplied* by this loop. Flag the Director to run:
+- **`bg-theme`** — does the fiction explain a *face-up, recycling* market (the stall restocks; yesterday's
+  passed-over produce comes back around) and the phase-to-box ("breakfast is over, those stalls are gone for
+  the day")? Confirm the recycling reads warm/mundane, not wasteful.
+- **`bg-elegance`** — the net rules add: one "spent/fired/forced/passed → region discard; deck-out →
+  reshuffle" clause + one "phase ends → decks & discards to box" clause + the SINK-vs-discard-vs-box
+  disambiguation. Argue it *replaces* vaguer prose already scattered across §15/§12.5 (a consolidation, near
+  weight-neutral) and folds into the same rulebook-headroom re-gauge (§10 flag).
+- **`bg-access`** — the new **phase glyph** (§16.7) must pass redundant-encoding (sun/moon, not colour-only).
+
+---
+
+# 17. THE VENDOR-DEPLETION CLOCK (SUPERSEDES the Booking-deck clock — CD decision, 2026-08-10)
+
+> **Status: SPEC (bg-design, 2026-08-10). SUPERSEDES the deck-driven Booking-deck clock** everywhere it
+> appears — §8 of `rules-draft.md`, `map.json.clock_model`, and the `boundary_dusk` / `boundary_lasttrain`
+> Booking rows. **Spec-only — no data/code/sim edited here;** the change lists are §17.7–17.11.
+>
+> **UPDATE (CD refinement, 2026-08-10):** the forcing function (§17.3, §17.5) is now the **Closing-Time die**
+> (a 3-round track + custom d6) — it REPLACES the earlier deterministic "oldest unclaimed+uncontested stall
+> sells out every R rounds." The vendors-are-the-clock spine, the finite 13/11 pools, the §16 reconciliation,
+> and DUSK/LAST-TRAIN = pool-exhaustion are all **unchanged**. This refinement **ADDS** the game's first
+> dice/randomness (a new die + track) — flag to `bg-elegance` (budget), `bg-architect` (custom-die cost),
+> `bg-access` (dual-coded faces), and `bg-critic` (does the die closing a contested stall feel bad?).
+
+## 17.0 Why the clock moved (the diagnosis, in one paragraph)
+
+The sim found the stall's root cause: the clock **was** the Booking deck, and the Booking deck only drains
+when a player spends a turn to **Book** a tour — and booking is chained to *completing* tours, which is
+chained to *winning vendors*. Under V7-M scarcity, late-game vendor throughput collapses; players hold
+un-completable Bookings, stop booking, the Booking deck freezes, and ~half of games ran to the ~50-turn/player
+stall cap (target 26–32). The fix the CD chose: **stop clocking the game off an action players can decline,
+and clock it off the resource that scarcity already drains — the vendors.** The market closes when the stalls
+are gone. This deletes the Booking-deck clock entirely.
+
+## 17.1 The core rule — the vendors ARE the clock
+
+The day and the night each run on a **finite pool of vendors** that only depletes and never reshuffles:
+
+- **DAY runs on the DAY vendor pool** — all **13 day vendors** (every day vendor is tier-1; N 3 · C 4 · S 3 ·
+  E 3). When that pool is **exhausted — every day vendor claimed or sold out, deck empty, no day stall left in
+  play — DUSK fires:** finish the current turn, flip the board to night.
+- **NIGHT runs on the NIGHT vendor pool** — all **12 night vendors** (N 5 · C 2 · S 3 · E 2; 2 drinks, 6 tier-2,
+  4 tier-3 apex). When that pool is **exhausted — LAST TRAIN fires:** finish the current round so all seats
+  have equal turns, then the game ends and scores.
+
+Mechanically the pool = the region **vendor decks** (`vdeck`, face-down behind the slots) **plus** the face-up
+stalls. A vendor leaves the pool exactly two ways: **claimed** (a Bribe) or **sold out** (the forcing
+function, §17.3). Every claim/sell-out pulls the next card from the region deck into the empty slot at the
+**end-of-round refill** (§1.2, unchanged); so each claim/sell-out net-drains the pool by one. When a phase's
+decks are empty, the face-up stalls stop refilling and drain to zero — and the phase ends.
+
+## 17.2 The clock is guaranteed to fire — where the old one wasn't
+
+The old clock could freeze because a player could simply **stop booking**. The vendor clock cannot be
+declined: (a) **claims** drain it whenever the fight is live, and (b) when claims collapse, the **Closing-Time
+die (§17.3) keeps draining it on a schedule no player controls** — plus the hard deadlock backstop closes any
+all-BLANK streak. The pool is finite and monotone — it only ever shrinks — so the phase boundary is
+**guaranteed** to arrive. That is the whole point of the re-architecture.
+
+## 17.3 The forcing function — the Closing-Time die (CD refinement, 2026-08-10, REPLACES the deterministic aging)
+
+If depletion relied on claims alone, the freeze would move from the Booking deck to the vendor board: late
+game, players hold followers they can't cash, no one claims, the pool never empties, the phase never ends.
+So the clock is **paired with a removal rule that thins the board even when claiming has stopped** — but the
+CD has replaced the old deterministic "oldest unclaimed+uncontested stall ages out every R rounds" with a
+**dice-driven closing-time roll**: it "adds excitement and risk, keeps things moving quicker toward the end,
+but no downside every time." Two components carry it (§17.9): a **3-round track** and a **custom d6**.
+
+> **Rule — Closing time.** A **3-round track** on the table counts rounds **1 → 2 → 3**. **After the 3rd
+> round completes** (at that end-of-round step), **roll the Closing-Time die** — a custom d6 with **4 region
+> faces (North / Central / South / East)** and **2 BLANK faces**:
+> - **A region face →** the **oldest (leftmost) face-up stall in that region sells out** — remove it from the
+>   game (it does **not** return to the deck), then run the normal end-of-round refill (§1.2) so the pool
+>   net-drains by one. **This can be a CONTESTED stall** (see below).
+> - **A BLANK face →** nothing sells out this cycle — a built-in **1/3 reprieve.**
+> - **If the rolled region has no removable face-up stall** (all claimed, or the region is already empty) →
+>   **nothing happens** (treat as a reprieve; **no reroll** — simplest).
+>
+> Then **reset the track to round 1** and repeat. One die, one three-space track, zero per-stall bookkeeping.
+
+**No downside — the removal carries NO resource penalty (the CD's core intent).** When a stall is removed by
+the die, **every follower committed on it comes straight HOME to its owner's board** — including the whole
+crowd of a **live contest**. This is the DUSK "unclaimed stall clears" treatment (`followers-meeples-redesign`
+§2.5: *followers on a cleared, un-won stall return to their owners' boards*), **not** the lost-contest
+treatment (→ own supply, must re-grow). Rationale: the stall closed **un-won** — nobody claimed it, so no
+contest was actually *lost*, so nobody is punished. The only cost is **opportunity and tempo**: the marquee
+you were staging for has vanished, and your crowd is now idle on your board (a Promote to re-commit it
+elsewhere — no re-Travel, no re-grow). *"The stall I wanted packed up before I could book it,"* not *"I lost
+my crowd."* This is a **deliberate override of the old "contested stalls are immune" rail** — the CD wants the
+risk that a stall you are fighting over can vanish; the no-loss homecoming keeps that risk inside the
+"excitement, not punishment" band.
+
+**Why a 3-round track, not per-round.** A turn is **one action.** Meaningfully engaging a stall spans several
+turns (Travel → grow a follower → Promote onto the stall → Bribe to claim), and a **contested** stall takes
+more still as rivals out-commit over successive turns. A stall must survive several rounds for a fight to play
+out. The die firing **once per three rounds** (and only 4/6 of those firing at all) means a stall averages
+**~4.5 rounds of life** from the die alone — comfortably long enough for the signature crowd-fight to resolve
+— while still guaranteeing the board thins toward the boundary. Removal-rate math and per-count tuning are in
+§17.5.
+
+**Monotonic-depletion guarantee + the deadlock backstop (freeze is impossible even on an all-BLANK streak).**
+Termination is guaranteed by two facts, one probabilistic and one hard:
+1. **The pool only ever SHRINKS.** A vendor leaves the pool exactly two ways — **claimed** or **die-removed** —
+   and neither the vendor decks (finite, never reshuffled — §17.4) nor the die ever *add* one back. Every
+   claim and every region-face roll net-drains the finite 13/11 pool by one. It is monotone.
+2. **The die keeps rolling every 3 rounds forever**, and each roll is a region face with probability **4/6**;
+   a run of *k* consecutive BLANKs has probability (1/3)ᵏ → 0, so with probability 1 the die eventually
+   removes a stall. To close that probabilistic hole with a **hard, deterministic** backstop — so there is **no
+   freeze even on an adversarial all-BLANK run with zero claims** — the existing **deadlock backstop stands:**
+   treat a phase as exhausted (fire its boundary) once its **vendor deck is empty AND the face-up set has not
+   changed for one full 3-round track cycle.** The DUSK / LAST-TRAIN tie-resolver (§2.6) then force-clears the
+   lingering face-up (tied/idle crowds home per §2.5) and the phase ends. **DUSK and LAST TRAIN are therefore
+   still GUARANTEED to fire** — the die only ever *speeds* the close, never blocks it.
+
+## 17.4 §16 RECONCILIATION — finite vendor decks vs. reshuffling market decks (the crux)
+
+The new architecture makes one distinction load-bearing; state it unambiguously, because two kinds of deck now
+behave in **opposite** ways:
+
+| Deck | Reshuffles? | Why |
+|---|:--:|---|
+| **Vendor phase-decks** (`vdeck`, day 13 / night 11) | **NEVER** | They **are** the clock. They must **deplete to zero** to end the phase. A reshuffle would make the day/night infinite and the game would never end. Once a vendor is claimed or sold out it is **gone for the phase** (and day vendors go to the box at DUSK per §16.4). |
+| **Region INGREDIENT + EVENT decks** (the region **market** decks, `ingredients.csv` + `events.csv`) | **YES — per §16** | They are **not** the clock. They recycle exactly as §16 specifies (spent / fired / forced / passed-over → face-up region discard; deck-out → reshuffle that discard) so **ingredients and events recur** through the now-longer game. Phase-to-box at DUSK/LAST-TRAIN (§16.4) is unchanged. |
+
+One sentence for the rulebook: **"Vendors are the clock and run out; ingredients and events reshuffle and keep
+coming."** The §16 loop (four discard feeders + reshuffle-on-empty + phase-to-box) is **untouched** by this
+pass — it already scoped vendors out explicitly (§16.2 "Out of scope"). The only edit §16 needs is to stop
+saying DUSK/LAST-TRAIN is "when the Booking deck runs out" and say "when the vendor pool runs out."
+
+## 17.5 PACE — per-count track length + die-removal math (targeting 26–32 turns/player)
+
+The vendor pool is **fixed at 13 day / 12 night for every count** — all 24 unique vendors plus the N08 duplicate
+night stall (25 cards) are always in play (24 unique named real dishes; N08 is a §17.6 duplicate-commodity
+stall, not a 25th dish). Turns/player ≈ number of rounds ≈ (day rounds + night rounds).
+Depletion each round = *claims that round* + *die-removals (≈0.67 per 3-round cycle)*. **Claims are the dominant
+driver; the die is the excitement layer that guarantees the board keeps thinning when claims stall.**
+
+**The die's removal rate.** On the baseline **3-round track**, the die fires once per 3 rounds and removes a
+stall on 4/6 of those rolls → **≈0.67 removals per 3 rounds ≈ 1 removal every ~4.5 rounds.** That is close to
+the old deterministic anchor (~1 aged per 4 rounds) at 4p, but note it is **slightly gentler** and, being
+stochastic, has variance — some games get a run of BLANKs (slower close), some a run of hits (faster close).
+That variance IS the intended "risk/excitement"; it is bounded by the monotone pool + deadlock backstop
+(§17.3) so it can never freeze, only wander within a few rounds of the mean.
+
+**Is the track FIXED at 3 for all counts?** **Ship it at 3 for every count** (the CD's stated design; one die,
+one track, no per-count component swap — the elegant default). BUT the **track length L is now the #1 pacing
+knob** and the two ends of the count range are the known risks, so it is the primary sim sweep:
+
+| Players | Day/Night pool | Face-up slots (§1.3) | **Track L (baseline)** | Die removals / game* | Pace risk & the sweep |
+|:--:|:--:|:--:|:--:|:--:|---|
+| **3p** | 13 / 11 | 4 (N1 C1 S1 E1) | **3** (sweep L=2) | ~6–7 | **Drag risk.** Sparse claims → the die is a bigger share of drain; ~4.5 rds/removal may push 3p past 32 t/p. If the sim shows drag, drop 3p to **L=2** (die every 2 rounds → ~1 removal / 3 rounds, the old R=3 pace). |
+| **4p** | 13 / 11 | 5 (N2 C1 S1 E1) | **3** | ~6–7 | The anchor — nearest the old ~1-per-4-rounds pace. Expected in-band. |
+| **5p** | 13 / 11 | 5 (N2 C1 S1 E1) | **3** | ~6–7 | More claims/round than 4p, same slots → claims carry more of the drain; hold L=3, watch the top of the band. |
+| **6p** | 13 / 11 | 6 (N2 C2 S1 E1) | **3** (sweep L=4) | ~6–7 | **Undershoot risk (the §17.6 flag).** ~6 actions/round → fastest claim-drain; the game may end <26 t/p regardless of the die. If so, a **longer track L=4** (gentler die) buys a little, but the real fix is the pool-size decision in §17.6. |
+
+\* rough: at ~29 rounds/game the die alone removes ~29/4.5 ≈ 6–7 of the 24 vendors; claims remove the rest.
+
+At high counts claims already drain fast, so the die does *less* of the work and a gentler (or unchanged) track
+is right; at low counts the die does *more* of the work, so a sharper track (L=2) prevents drag. **Sweep L ∈
+{2, 3, 4} per count** in the re-smoke; default to L=3 everywhere unless 3p drags or 6p undershoots. The track is
+a single 3-space marker on the clock band; the die is one custom d6. Zero per-stall bookkeeping.
+
+## 17.6 The arithmetic honesty flag (the one real risk)
+
+24 unique vendors is a **tight budget** for 26–32 turns/player. The maximum possible game length in rounds is
+capped by the **claim-only drain rate** (the die can only shorten the game, never lengthen it): if claims alone
+empty the 24-pool in fewer than ~26 rounds at a given count, **that count cannot reach the band no matter how
+gentle the die (a longer track).** High counts (6p, most actions/round) are where this bites. The diagnosis
+(late-game claim **collapse**, low throughput) suggests the claim rate is low enough that die-removal is a
+meaningful driver and the band **is** reachable — but this is exactly what the re-smoke must confirm, per
+count. **If 6p (and maybe 5p) undershoots 26 t/p even at the longest track (gentlest die),** the CD decision is
+between **(A) accept a slightly shorter
+high-count game (~22–25 t/p)** — fine for a 30–45-min title — or **(B) enlarge the day/night pools by adding
+duplicate copies of the cheap commodity stalls only** (bubble tea, soy milk, papaya milk — thematically there
+*are* many such stalls; never duplicate an apex trophy), a `vendors.csv` quantity change outside this pass.
+This is the top decision-for-the-human below.
+
+## 17.7 Interactions — confirmed coherent
+
+- **Incomplete held Bookings cancel at −⌊V/2⌋ (existing rule) now triggers on vendor depletion.** At DUSK the
+  held **day** Bookings judge (completed → +V, unfinished → CANCELLED −⌊V/2⌋, still sheddable by a night
+  CLEAR/SALVAGE); at LAST TRAIN the held **night** Bookings judge and the game ends. Identical to today — only
+  the *trigger* changed from "Booking deck empty" to "vendor pool empty." **No perverse incentive:** vendors
+  and followers still score nothing (§9), so a player never wants to hoard vendors; a completed tour is still
+  strictly better than an unfinished one.
+- **New, legitimate end-game race lever (now with a die of fate).** A leader can still **push the clock** —
+  claim aggressively to drain the pool and slam the boundary shut while ahead. What *changed* vs the old
+  deterministic aging: a trailer can **no longer immunize a stall by keeping it crowded** — the die can clear a
+  contested stall too (followers home, no loss). So the clock is less controllable and more of a shared
+  ticking risk everyone reads off the track ("die rolls after round 3 — is my marquee the oldest in its
+  region?"). This is *good* end-game tension, bounded by the monotone pool + deadlock backstop (§17.3) — no one
+  can freeze the pool, and no one fully controls the die. **Flag `bg-critic`:** the swing is opportunity/tempo,
+  not resource loss (§17.3) — confirm a die-cleared near-win doesn't feel like a punishment (see the top-3).
+- **DUSK/LAST-TRAIN tie-resolver (§2.6) + min-follower floor (§12.2) still work — and are now doubly
+  load-bearing.** They fire at the vendor-triggered boundary exactly as specified: still-tied stalls resolve
+  to most-followers → earliest-committer (paying if able; a below-floor top crowd clears **unclaimed**,
+  followers home). They also serve as the deadlock backstop (§17.3).
+- **"Tours dominate" VP intent intact.** Only Bookings score; the clock change adds no VP anywhere and does
+  not touch the prestige-Booking targets (§6/§12.6).
+
+## 17.8 Change list — `map.json` (DATA — spec only, `bg-developer` executes)
+
+- **`clock_model`** → rewrite from Booking-deck-driven to **vendor-depletion**:
+  - `driver`: "the finite VENDOR pools — the day pool (13) then the night pool (11) deplete; the phase ends
+    when its pool is exhausted. NOT the Booking deck."
+  - `dusk`: "fires when the DAY vendor pool is exhausted (all day vendors claimed or sold out, deck empty,
+    no day stall in play) — finish the turn, flip to night."
+  - `last_train`: "fires when the NIGHT vendor pool is exhausted — finish the round, then end."
+  - `retired`: extend to note the **Booking-deck clock and its seeded 黃昏/末班車 boundary cards are DELETED**
+    (superseded by §17); the Booking deck is now pure tour-supply.
+- **Rewrite the `vendor_clock`** block (CD refinement 2026-08-10 — the Closing-Time die REPLACES the
+  deterministic `sellout_cadence`). Keep the per-phase pool sizes (`day: 13, night: 11`, fixed all counts).
+  **Replace `sellout_cadence` + its aging `rule`** with the die/track params:
+  - `track_length` per-count map `{"3":3, "4":3, "5":3, "6":3}` (rounds per track cycle; **baseline 3 for all
+    counts** — the #1 pacing knob, sim sweeps L∈{2,3,4}; 3p may drop to 2, 6p may rise to 4 — §17.5).
+  - `die_faces`: `["N","C","S","E","BLANK","BLANK"]` (the custom d6 — 4 region faces + 2 blank; 1/3 reprieve).
+  - `roll_timing`: "after the 3rd round of the track completes (at end-of-round), then reset the track."
+  - `removal_rule`: "a region face removes the **oldest (leftmost) face-up stall in that rolled region**
+    (contested or not); it is **gone** (never returned to the deck), then run the normal end-of-round refill.
+    BLANK → nothing. Rolled region has no removable face-up stall → nothing (**no reroll**)."
+  - `followers_home`: "every follower committed on a die-removed stall — **including a live contest** — returns
+    HOME to its owner's **board** (kept, no re-grow), per `followers-meeples-redesign` §2.5. **NO resource
+    penalty** (this overrides the old 'contested stalls immune to aging' rail)."
+  - keep `sellout_backstop` as the **deadlock backstop only**: "deck empty + face-up static for one full track
+    cycle → fire the boundary (§17.3)"; drop the old "skip a contested stall / do not reset the counter"
+    clause (the die no longer skips contested stalls).
+  - Update the block `_note` from "sell-out" language to the Closing-Time die (dice/randomness now in the game).
+- **`booking_deck_sizes`** — KEEP the sizes, but change the `_rule` note: the Booking deck is **no longer the
+  clock**; it is finite tour-supply and, like the vendor decks, **does not reshuffle** — if a phase's Booking
+  deck empties, the face-up row simply stops refilling (drawing tours is optional supply, not the clock). Drop
+  the "seeded boundary card sits BELOW these counts" line.
+- **`vendor_slots`** — unchanged (§1.3 scarcity counts stand); its slow-refill `refill` note stands.
+
+## 17.9 Change list — `bookings.csv` (DATA — spec only)
+
+- **Delete the two boundary rows** `boundary_dusk` (黃昏) and `boundary_lasttrain` (末班車) — the Booking deck
+  no longer carries the clock. (This retires the `boundary` `type` value from the deck entirely.)
+- Everything else in `bookings.csv` stands (the day/night phase split still governs when a tour is *available*
+  and when it *judges* — that split is unchanged; it is just no longer the clock).
+
+## 17.9b Change list — `tokens.csv` / `manifest.md` (COMPONENTS — spec only) — NEW for the die
+
+The Closing-Time die adds **two physical components** — the first **dice / randomness** in the game (a
+deliberate excitement add per the CD). Add to `components/tokens.csv` (or the manifest, per how dice are
+tracked):
+- **Closing-Time die** — a **custom d6**, faces `[North, Central, South, East, BLANK, BLANK]` (4 region faces
+  drawn with each region's colour + emblem + 繁體 for dual-coding — CVD-safe, matches the board's region
+  encoding; 2 blank faces). `qty 1`.
+- **Closing-Time track** — a **3-space round track** (1 · 2 · 3) printed on the clock band (no new punch-out if
+  it lives on the board) **+ 1 track marker** (`qty 1`). If the track prints on the board, `map.json` carries
+  the art and only the marker is a token.
+
+**Flag `bg-architect`** — a **custom-printed d6** is a real COGS line (custom die tooling/minimum-order vs a
+blank/pipped stock die); confirm it fits the component-cost budget or fall back to a **stock d6 with a
+region↔number key on the board** (faces 1–4 = N/C/S/E, 5–6 = BLANK). **Flag `bg-access`** — the die faces must
+dual-code (region colour + emblem + 繁體), never colour alone; a stock-die fallback needs the key legible.
+
+## 17.10 Change list — `sim/travel_agents.py` (SIM — spec only, `bg-playtest` re-models + re-smokes)
+
+- **Sever the Booking-deck clock:** in `_do_claim`, when `mreserve` is empty, **stop calling
+  `_booking_deck_out`** — a dry Booking deck must no longer trigger dusk/end; the row just doesn't refill.
+- **Trigger DUSK/LAST-TRAIN off vendor emptiness instead.** At end-of-round (in `step`, after
+  `_refill_round`): if `act==1` and the DAY pool is exhausted (all `vdeck[r]` empty **and** all `faceup[r]`
+  empty — or the deadlock backstop: decks empty & face-up static one round) → `_dusk(s)`; if `act==2` and the
+  NIGHT pool is exhausted → `_trigger_end(s, "lasttrain")`. Keep `_dusk` / `_finalize` bodies (tie-resolver +
+  boundary sweep + Larder→box) as-is; only their **trigger** moves.
+- **Add the Closing-Time die forcing function** in `_refill_round` (run it **before** topping up), REPLACING
+  the old deterministic sell-out: maintain `s["track"]` (0→L-1); every `L = track_length[n]` rounds (baseline
+  3), **roll a seedable RNG** — draw one of `["N","C","S","E","BLANK","BLANK"]` via `s["rng"].choice(...)`
+  where `s["rng"] = random.Random(seed)` is seeded per game for **deterministic reproducibility** (expose the
+  seed as a run param so `bg-playtest` can replay a run). On a region face: remove the **oldest (leftmost)
+  face-up stall in that region** by insertion order — **contested or not** (do NOT check `sum(fol[vid])`); the
+  removed vendor is **gone** (not returned to `vdeck`); **return every committed follower on it to its owner's
+  BOARD** (the DUSK-unclaimed homecoming — `board[owner]+=`, NOT `supply[owner]`; no re-grow). On BLANK, or if
+  the rolled region has no removable face-up stall → **nothing** (no reroll). Reset `s["track"]` each cycle. The
+  die can only *speed* the close; keep the deadlock backstop (deck empty + face-up static one full track cycle
+  → boundary) so an all-BLANK streak still terminates.
+- **`_dusk` day-layer sweep** currently *rebuilds* the night face-up from `_region_deck(r,2)` — keep, but note
+  the day pool is already empty when DUSK fires (nothing to clear), so the sweep of unclaimed day stalls is a
+  no-op by construction; the night pool build is unchanged.
+- **New / changed metrics for the re-smoke:** turns/player per count (target **26–32**, hard read that
+  **stall→0**, i.e. no games hit `STALL_CAP`); **die-removals/game + BLANK-roll frequency + the turns/player
+  VARIANCE** (the die adds spread — confirm the low/high tail stays in-band; **sweep `track_length` L∈{2,3,4}
+  per count**, L is the #1 knob); day-rounds vs night-rounds; **contested_frac
+  holds/rises** (confirm the vendor clock didn't shorten the game so much that fights don't happen — the CD's
+  explicit check that *fights get to resolve before their stall ages*); Booking-supply-starvation (did a
+  phase's Booking row run dry, and did that hurt completion); Last-Train Booking completion ≥ ~90%; the §16
+  reshuffle metrics (ingredient/event decks) unchanged.
+
+## 17.11 Change list — `rules-draft.md` (SPEC — rewritten this pass)
+
+- **§8 rewritten** from the deck-driven clock to the vendor-depletion clock (see the file).
+- **§5 / §6 / FAQ touched** to point the clock at vendor depletion and drop the "Booking decks are the clock /
+  seed the boundary card" language.
+- **§8 gains the Closing-Time die teach** (CD refinement): the 3-round track (count 1·2·3), the custom d6 (4
+  region faces + 2 blank = 1/3 reprieve), "after round 3, roll → a region face closes the oldest stall there,
+  a blank = nothing, then reset the track," and — critically — the **no-loss rule**: "a closed stall's whole
+  crowd, even in a live fight, comes **home to your board** (no re-growing) — the stall you wanted just packed
+  up, you keep your followers." FAQ: die clears a stall I was about to book → yes, it can; your followers come
+  home, you re-Promote elsewhere. Die rolls a region with no face-up stall → nothing, no reroll.
+
+## 17.12 Handoff / coherence flags (per the contract)
+
+**Mechanic that moved this pass — the CLOCK's FORCING FUNCTION** (CD refinement 2026-08-10): the deterministic
+"oldest unclaimed+uncontested stall sells out every R rounds" is REPLACED by the **Closing-Time die** (3-round
+track + custom d6, 4 region faces + 2 blank; a rolled region closes its oldest face-up stall, blank = reprieve;
+committed followers — **even a live fight** — come home to the board, no loss). The vendors-are-the-clock spine
+and the finite 13/11 pools are **unchanged**. The **signature twist** (the follower crowd-fight over scarce
+vendors, §2/§5) is not re-shaped but its relationship to the clock changed in one important way: a contested
+stall is **no longer immune** — the die can close one out from under a live fight (no resource loss). Flag the
+Director to run:
+- **`bg-elegance`** — this pass **ADDS** rather than trims: a **new die + a new track + a new random subsystem**
+  (the game's first dice/randomness). Re-gauge the complexity budget: argue the die *replaces* an equally-fiddly
+  deterministic "oldest unclaimed+uncontested, skip-if-none, per-count R table" with a **more legible, more
+  exciting** one-roll rule (players read a physical track + die, not an abstract counter) — but be honest that
+  it introduces randomness the game did not have, and confirm that fits the target weight/mood.
+- **`bg-critic`** — the headline check: does the die **closing a contested / about-to-be-booked stall feel
+  bad**, even with followers returned home (no re-grow)? The swing is **opportunity + tempo** (your staged crowd
+  is idle, needs a Promote to redeploy), not resource loss — confirm that lands as "risk/excitement" per the CD,
+  not "punishment." Also: can a leader **weaponize** the die (no — it is random and hits the oldest face-up
+  regardless of owner), and does a die-lost near-win at high stakes (a prestige Booking) sting too hard?
+- **`bg-architect`** — component cost: a **custom-printed d6** is a real COGS line (custom die tooling vs stock);
+  see the §17.9b fallback (stock d6 + a region↔number key on the board).
+- **`bg-access`** — the die's region faces must **dual-code** (colour + emblem + 繁體), never colour alone.
+- **`bg-theme`** — does the fiction still fit? "Closing time — the market rolls the shutters down; a stall
+  packs up and its crowd drifts home" reads as the day winding down with a jolt of chance, not punishment.
+  Confirm the die's "luck of the market" flavour fits the felt identity.
+- **`bg-rulebook`** — teach the die + track + the no-loss homecoming (see §17.11); one-line model still holds
+  ("vendors are the clock and run out; ingredients & events reshuffle and keep coming") + "the Closing-Time die
+  rolls the shutters down."

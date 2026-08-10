@@ -1,0 +1,255 @@
+# Travel Agents: Taiwan — Art Style Reference (the one look)
+
+**Purpose:** the single, canonical art-direction anchor for the whole game. **Every art-prompt / illustrator
+brief in this project — characters, map, vendor cards, ingredient/food cards, icons, tokens, cover, rulebook
+figures — MUST open by citing this reference**, so the whole set reads as one cohesive illustrated hand and
+nothing drifts.
+
+> **No AI final art (binding rail).** These briefs are for a **human illustrator**. AI is only ever used for
+> labelled, gitignored *mockups* to explore a brief — never for shipped art. A **paid Taiwanese cultural +
+> language consultant** reviews the character/theme art before final/print.
+
+---
+
+## The touchstone
+The CD's reference is the art style of **Agent Avenue** — specifically its **fun, lighthearted, cartoonish
+but *stylised*** look. **Take the LOOK, not the lore:** Travel Agents has stripped the secret-agent theme
+entirely. The world here is **rival travel agents building the island's best street-food tour** — warm,
+characterful **Taiwanese street-food & neighbourhood personalities**, a bustling day-to-night-market vibe.
+
+## The look (what "stylised cartoon" means here)
+- **Fun, lighthearted, cartoonish — but polished and STYLISED**, not crude doodle. Clean, confident linework;
+  bold, mostly-flat colour with simple stylised shading; strong silhouettes; expressive, characterful faces.
+- **A cohesive night-market palette** carried across every component: **warm daytime golds/ambers → neon-lit
+  night-market violets/teals** (matches the game's day→night arc and the existing `night-market` theme).
+- **At-a-glance clarity first** (this is a game, not an illustration gallery): the art serves readability —
+  a character, a dish, a region must read instantly at component size.
+- **One cohesive cast:** the six characters and the vendors all look like they belong to the same charming,
+  slightly-exaggerated world — same linework weight, same colour language, same level of stylisation.
+- **Dial the ENERGY up — dynamic, competitive, a little CHAOTIC** (CD steer; **this is a race-and-battle
+  game**). Characters and **events** especially: high-energy action poses, a sense of urgency and scramble,
+  competitive fire and glee, motion / speed lines — capture the frantic contest of rivals racing the island
+  and battling over vendors. Keep the **polished original style** (NOT an over-caricatured big-head look)
+  and the dignity guardrail (competitive/chaotic ≠ mean or mocking).
+
+## The characters (the six)
+Warm, affectionate, instantly-distinct **personalities** — lovable street-food/travel types, each exaggerated
+for **charm and readability**:
+- **The Old Councillor** (里長伯) — a cheerful apron-or-suit neighbourhood elder with real local clout.
+- **The Homebody** (媽寶) — an earnest young office worker clutching a mum-packed lunchbox, phone to ear.
+- **The Big Eater** (大胃王) — a joyful competitive eater, all appetite, mid-bite.
+- **The Influencer** (網紅) — a stylish food blogger framing the perfect bowl for the feed.
+- **The Big Boss** (老大) — a **warm, lovable neighbourhood big boss** (an affectionate fixer) in a bomber jacket, greeting a
+  delighted stall-owner like an old friend — **cinema-charm, never a threat, never a triad/gang caricature** (the #1 dignity watch-item; 老大 carries a boss/gang-leader connotation → **consultant-gated** before final art).
+- **The Globetrotter** (阿嬤 / A-má) — a spry, sharp-eyed granny with her elder travel-pass, already at the
+  next market before everyone else — **age as her superpower, never frail**.
+
+## Vendors — anchored to REAL Taiwan food places, and ALL distinct (CD steer)
+Vendors are not generic stalls. Each references a **real, famous Taiwan night-market / street / food-area**
+known for good eats, and its art **reflects that specific place** (its signature dish, stall look, and
+neighbourhood character). **No two vendors look the same** — distinct dish, distinct stall, distinct place,
+distinct composition; the vendor deck should feel like a tour across the island's real food scene.
+- **`bg-research` curates the accurate real-place set** across the game's four regions (North / Central /
+  South / East), with **correct place names + signature dishes** (rails: real dishes never mangled; secular;
+  Traditional characters; consultant-verified before final art).
+- **Anchor places the CD wants in (personal / family):** **Dadaocheng 大稻埕 + Dihua Street 迪化街 & the
+  Dadaocheng Wharf 大稻埕碼頭** (Taipei — Datong); **Miaoli 苗栗** (near the place the CD wrote "Huolong" —
+  **confirm the exact town + 繁體: likely 後龍 Houlong, possibly the 火炎山 Huoyanshan area — DO NOT guess the
+  characters, verify**); and **Chiayi 嘉義** (famous for 火雞肉飯 turkey-rice). Weave these in respectfully as
+  real, warm places — never a tourist-gaze postcard.
+
+## Practicality rail (art serves function) — BINDING
+
+**Function first, then style — never style over substance.** Every board and component layout must provide
+**real, correctly-scaled spaces for what physically goes on it** — card-exact footprints where cards sit,
+token wells sized to the token, dial faces the knob seats into, pawn spaces at the start. A freeform AI
+illustration **cannot** hold precise play positions, so it is never the shipped layout for anything cards or
+tokens rest on.
+
+- **The shared map is a FUNCTIONAL BOARD, not a freeform illustration.** It is the **code-rendered**
+  `build_board.py --type regionmap` board (two states, `--phase day|night`) — a clean, un-cluttered layout
+  with a real home for every component (region vendor-card slots, market decks, the deck-driven clock band +
+  face-up Booking row, the HSR spine + on-track 停 event label, the Taipei pawn start, the Followers/Trending
+  supply, the per-count setup table). It is **styled to match** the character/player-board house hand (bold
+  confident linework, bold flat colour, night-market palette, day/night chrome, the inner gold hairline
+  frame), but **legibility of the functional zones always wins**. The retired soft-watercolour AI map came
+  back off-style AND with nowhere to place cards — the exact failure this rail exists to prevent.
+- **`bg-art-director` coordinates layout with `bg-infodesign`** on any board/component before art goes on it,
+  so the functional skeleton (slots, decks, tracks, supply) is fixed *first* and art is a backdrop/underlay
+  *behind* it — never a scene that buries or displaces the play positions. If a gorgeous choice eats a slot
+  or a contrast the play needs, function wins and the art gets the rest.
+
+## ⚠ The sensitivity guardrail (BINDING — read before writing any character prompt)
+"**Caricature**" here means **charming personality exaggeration** — the warm, expressive stylisation of a
+great animated ensemble — **NOT ethnic caricature, racial stereotype, or mockery.** This is a real culture
+(Taiwan), and the rails are binding: **dignified local characters**, real dishes rendered accurately and
+respectfully, **secular** settings only (no temple/deity/ghost-month/funerary imagery), anti-extraction
+framing (celebration, never a tourist's gaze). Every character reads **warm, likeable, and dignified** — we
+are laughing *with* this world, never *at* it. When in doubt, dial toward affection. (Consultant reviews
+before final art; native-review watch-items: the Big Boss's warmth, the granny's spryness, the food/place
+names.)
+
+## How to cite this in a prompt
+Open every brief with one line, e.g.:
+> *Style: per `art/art-style.md` — fun, lighthearted, **stylised** cartoon (Agent Avenue-style look, travel-agent
+> not spy theme); clean linework, bold flat colour, night-market palette (warm day → neon night); warm,
+> dignified Taiwanese characters, charming not caricatured. Human-illustrated; no AI final art.*
+Then add the component-specific subject, composition, and the reserved size/figure code.
+
+---
+
+## Locked vs Fluid (living — art-director pass 2026-08)
+
+**LOCKED (the house look, set by the six approved character finals — every asset matches this hand):**
+- Polished **stylised cartoon** — clean confident linework, bold mostly-flat colour with soft cel-shading,
+  **dignified adult proportions (NOT big-head chibi)**, expressive warm faces.
+- **Cut-out on a plain flat pale-cream ground** with a soft contact shadow; **no baked background, no dark
+  vignette/glow.** This is now the house composition for **characters AND vendors.**
+- Night-market palette: lantern vermilion `#D64545`, jade teal `#1F8A7A`, golden amber `#E6A930`, dusk
+  indigo `#26324D`, on bao-paper cream `#F7F1E3`.
+- **Vendors = dish-hero cut-outs** (the dish alone, no people/stall/scene) — CD steer, locked.
+- **Map = the CODE-RENDERED FUNCTIONAL BOARD** (`build_board.py --type regionmap`, two states via
+  `--phase day|night`), styled to match the character/player-board house hand — bold vector linework, bold
+  flat colour, night-market palette, day/night chrome, inner gold hairline frame. It carries a real,
+  correctly-scaled home for every component (region vendor-card slots + market decks, the deck-driven clock
+  band + face-up Booking row, the HSR spine with the on-track 停 event label, the Taipei pawn start, the
+  Followers/Trending supply, the per-count setup table). **This is a functional board, not a freeform
+  illustration** — the earlier soft-watercolour AI map is RETIRED (off-style + no component spaces). Any
+  future human-illustrated art is a quiet backdrop *behind* the fixed functional zones, never a scene that
+  moves or buries them (see the Practicality rail above).
+- Style-reference-image technique: build every new asset by attaching an approved piece and matching it.
+
+**FLUID (still open):**
+- Whether **final human-illustrated** vendor art keeps the rich per-place backgrounds in `vendor-art.md`
+  or goes dish-hero cut-out like the mock-ups (→ flagged to CD / `bg-continuity`).
+- Tour / Booking ticket faces (boarding-pass treatment) — not yet mocked; still full-bleed in the table.
+- Cover / box composition — not yet briefed.
+
+---
+
+## AI mock-up prompts (playtest props — NOT final art)
+
+> **What this section is.** A **permitted, opt-in** use of AI: quick **high-fidelity mock-ups** so the CD
+> and playtesters can *feel* the game's warmth on the table during **manual playtesting**. These are
+> **props for playtesting only.**
+>
+> **The binding rail does NOT change: final art is human-illustrated. NO AI final art, ever.** Nothing
+> generated from these prompts is final, and none of it ships or is committed.
+>
+> **Where the PNGs go.** Every generated image is a **MOCKUP**: save it to the **gitignored** scratch dir
+> **`games/travel-agents/build/mockups/`**, filename = the **FIG code** (e.g. `FIG-CHAR-globetrotter.png`,
+> `FIG-VEND-N01.png`, `FIG-TOUR-d_north2.png`). Label it MOCKUP wherever it's shown. It is **never**
+> committed, **never** moved to `exports/`, and **never** shipped as final art.
+>
+> **This file is the canonical scaffolding.** The other art files' mock-up sections all cite the **STYLE
+> ANCHOR**, the **SCALE TABLE**, and the **sensitivity rails** below — they don't repeat them.
+
+### STYLE ANCHOR (paste this verbatim at the start of EVERY mock-up prompt)
+
+> A warm, lighthearted, **over-the-top-but-dignified stylised cartoon** illustration — the fun,
+> characterful *look* of Agent Avenue but with a **travel-agent, Taiwanese street-food theme (no spies)**.
+> Clean, confident linework; bold, mostly-flat colour with simple stylised shading; strong readable
+> silhouettes; expressive, affectionate faces — lively and appealing, **NOT an over-caricatured big-head
+> style**. **Compose the character and their own props ONLY — a clean cut-out with NO background scenery
+> (no maps, flags, HSR lines, region labels, or speech bubbles), on a plain flat background.** Cohesive
+> **night-market palette**: warm daytime golds and
+> ambers glowing into neon-lit night-market violets and teals — lantern vermilion `#D64545`, jade teal
+> `#1F8A7A`, golden amber `#E6A930`, dusk indigo `#26324D`, on bao-paper cream `#F7F1E3`. Cozy, inviting,
+> celebratory. **The single most important goal: convey the WARMTH at the heart of this game** — the
+> friendly, food-loving, celebratory spirit of Taiwan's night markets should be *felt at a glance*.
+> Dignified Taiwanese locals and faithfully-rendered real dishes; **charming personality exaggeration,
+> never ethnic caricature or mockery**; **secular settings only** — no temple, deity, ghost-month or
+> funerary imagery.
+
+### SCALE TABLE (px @ 300 DPI — the exact slot each mock-up must drop into)
+
+Generate at **2× the pixel size below** for crispness, then **export at the exact aspect ratio** so the
+image drops cleanly into its SVG slot. Background: **transparent** for cut-out character portraits;
+**full/simple** for full-card faces and the map (noted per row). Save to
+`build/mockups/<FIG-CODE>.png`.
+
+| Slot | FIG code | Size (px) | Physical | Aspect | Background | Composition note |
+|---|---|---|---|---|---|---|
+| Character-board image | `FIG-CHAR-<slug>` | **900 × 1380** | 76.2 × 116.8 mm | **~0.65:1 TALL PORTRAIT** | transparent | full-figure hero standing tall; the slot is the **LEFT column** at (70,308) on the **A4-landscape 3508×2480 board**, with the Followers dial beneath it (CD redesign 2026-08 **v2** — was 900×1700 on the RIGHT in v1; 490×600 on the old 1680×1380 board). **Compose TALL** — a standing full-figure reads best. Auto-embedded when `build/mockups/FIG-CHAR-<slug>.png` exists (data-URI), else a dashed placeholder renders. `preserveAspectRatio=meet` letterboxes (never crops), so any tall crop drops in cleanly; exact 900×1380 fills edge-to-edge. Prep to size: `--fit 900x1380 --pad` |
+| Ingredient card art | `FIG-ING-<id>` | **642 × 560** | 54.4 × 47.4 mm | **~1.15:1** | simple | on a 750×1050 poker card at (54,168); shows a **MIX** of that generic category (e.g. Meat = pork belly + beef + sausage + poultry together) |
+| Vendor card face | `FIG-VEND-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | plain pale-cream | **dish-hero CUT-OUT** — the signature dish alone on a plain warm ground, exactly like the character cut-outs (NO people, NO stall/market scene, NO background). Keep the hero dish in the **upper ~55%** so the translucent UI panels stay legible below; **54 px safe margin**; see drop-in note below |
+| Tour / Booking card face | `FIG-TOUR-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px safe margin**; see drop-in note below |
+| Region map (shared board) | **code-rendered — NOT an AI mock-up** | **2280 × 1680** | 193 × 142.2 mm | **~1.36:1** | — | The map is the **code board** `build_board.py --type regionmap` (two states, `--phase day\|night`), styled to match the house hand — **it is not generated from an AI prompt.** It already carries every component's real, scaled slot (vendor cards, market decks, clock band + Booking row, HSR spine + on-track 停 event, pawn start, supply, setup table). Any future *human-illustrated* backdrop paints *behind* those fixed zones. See the Practicality rail. |
+
+**Vendor & Tour card drop-in (read `render_vendor_svg` in `tools/cards/build_cards.py`).** The vendor
+face is **UI-dense**: a region-colour **header band** (Tâi-lô title + 繁體 subtitle) with a **tier pill**
+top-right, then a **region strip + English dish name**, then the **PAY** row (ingredient chips + the
+violet **Followers** badge), the **DRAW 人氣** crowd-gauge, and an **ICON 圖示** box filling the lower
+card. Those UI elements are drawn as **translucent white boxes (opacity ~0.45–0.9) that sit on top** of
+whatever art is behind them.
+
+**Vendors are DISH-HERO CUT-OUTS (CD steer 2026-08 — this replaces the old full-bleed painted-scene
+approach).** The signature **dish is the hero, rendered alone on a plain warm pale-cream ground — exactly
+like the character cut-outs**: NO people, NO stall, NO market scene, NO background. This is both a warmth
+and a **legibility** win: a clean dish on a calm ground sits far better under the translucent PAY/DRAW/ICON
+panels than a busy painted scene did. **Compose the dish in the upper ~55%** of the face (under the header
+band, above the PAY/DRAW/ICON stack) and leave the lower area as calm plain ground so the panels stay
+legible. The place a dish comes from is provenance only — **illustrate the food, never the location.**
+Tour tickets keep the full-bleed **boarding-pass** treatment: the icon-motif read in a clear upper window,
+the name band + requirement overlaid.
+
+### Sensitivity rails for mock-ups (BINDING — same rails as final art)
+
+A mock-up is still a picture of a real culture; the `art-style.md` guardrail above applies in full.
+
+- **Dignified locals** — charming personality exaggeration only; **never** ethnic caricature, racial
+  stereotype, or mockery. We laugh *with* this world, never *at* it. When in doubt, dial toward affection.
+- **Secular only** — no temple, deity, ghost-month or funerary imagery, even where a real place sits near
+  a temple.
+- **Real dishes rendered faithfully** — the food is the beloved; get it right.
+- **Indigenous items are consultant-gated even for mock-ups.** **E04 石板烤肉 (slate BBQ, Paiwan/Rukai)**
+  and **E01 竹筒飯 (bamboo-tube rice)** — keep any mock-up **generic and respectful**, **no specific tribal
+  iconography**, no AI-invented Indigenous-language terms. Treat these as placeholders and **flag for the
+  paid community consultant**; do not treat a mock-up as any kind of sign-off.
+
+### Generating & prepping the PNGs (the raster reality + the prep tool)
+
+AI image tools (ChatGPT/DALL·E, Midjourney, …) return **raster PNGs, not SVG**, and won't reliably
+loop over a cast or emit one file per item. **That's expected — and fine.** The component SVG *embeds*
+a raster in its art slot; we never needed per-item SVGs. Ask the tool for a **raster PNG**, not vector.
+
+**Generate for a clean cut-out** so prep is painless:
+- **One subject per image.** Don't ask for a grid/sheet of the whole cast — the tool composes them at
+  different scales and you then have to slice it. One character (or one vendor) per generation.
+- **Flat or transparent background — NO baked backdrop.** Explicitly request *"on a plain flat
+  background"* or *"transparent background, no scenery."* **Avoid the dark radial glow/vignette** some
+  tools add by default: it is *not* a flat colour, so it can't be keyed cleanly and forces a re-gen.
+  (This is exactly why the Councillor and the Globetrotter came back hard to cut out.)
+- Keep the subject **fully inside the frame** with a little margin, so trimming doesn't clip a hand.
+- **Attach a style reference image** (CD's finding — big quality win). Alongside the text prompt, attach
+  one of the already-generated characters you're happy with and tell the tool to **match that art style**.
+  A reference image locks the look far more reliably than words alone, and keeps the whole cast cohesive.
+  Build the set outward from your favourite one.
+
+**Prep the export into a drop-in slot asset — `tools/mockup/prep_mockup.py` (stdlib + Pillow):**
+It (1) splits a grid into individual cells, (2) keys a flat background to transparent via a
+**corner-seeded flood fill** (lifts the backdrop without punching holes in a white shirt or bowl —
+interior whites aren't border-connected, so they survive), and (3) trims + scales + pads each cutout
+to a slot's **exact px size**, writing to the gitignored `build/mockups/<FIG-CODE>.png`.
+
+```bash
+# Split a 2×2 grid of four characters, key the white bg, fit each to the board portrait slot:
+python tools/mockup/prep_mockup.py --grid ~/Downloads/cast.png --rows 2 --cols 2 \
+    --names homebody,big-eater,influencer,big-boss \
+    --key-bg --fit 900x1380 --pad --game games/travel-agents --prefix FIG-CHAR-
+
+# Clean one already-cropped portrait (e.g. the Globetrotter) to the same slot:
+python tools/mockup/prep_mockup.py --image ~/Downloads/granny.png --key-bg \
+    --fit 900x1380 --pad --game games/travel-agents --out FIG-CHAR-globetrotter.png
+```
+
+Use the **SCALE TABLE** `--fit` value for the slot you're filling (char `900x1380`, ingredient `642x560`,
+card `750x1050`, map `2280x1680`). A heavy vignette will only *partly* key — regenerate those flat.
+
+**Aspect note (portraits & the board slot).** The board image slot is the **LEFT column (900×1380,
+~0.65:1)** on the A4-landscape board, with the Followers dial beneath it — sized so **full-figure
+character art shows big** beside the two scoring-pile card zones on the right. Compose TALL (a standing
+full-figure hero). `render_playerboard` embeds `build/mockups/FIG-CHAR-<slug>.png` as a self-contained
+data-URI (`preserveAspectRatio=meet`, so it letterboxes rather than crops — an exact 900×1380 fills
+edge-to-edge); with no file present the dashed placeholder renders. Ingredient cards (`FIG-ING-<id>`)
+auto-embed the same way. (Board layout owned by `bg-infodesign`.)

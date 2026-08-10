@@ -27,13 +27,43 @@ EXCEPTION_RE = re.compile(r"\b(except|unless|instead|however|special|exception|e
                           r"cannot|may not|does not)\b", re.I)
 BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
 HEADING_RE = re.compile(r"^#{1,4}\s", re.M)
+# Flavour sections are STORY, not rules-teaching load, so they must not count toward the rules
+# proxies. A section is dropped if it is fenced by <!-- complexity:ignore-start/end --> markers, or if
+# its heading matches this tight allowlist (a whole section = the heading + everything until the next
+# heading of the same or higher level). Kept deliberately narrow so it never eats a real rules heading
+# (e.g. "Setting up"). Games without such sections (e.g. Beacon) are unaffected — this is a no-op there.
+FLAVOUR_HEADING_RE = re.compile(r"^\s*(meet the (agents|cast|crew)|backstor|character bios?|\blore\b)",
+                                re.I)
+
+
+def _strip_flavour(text: str) -> str:
+    """Remove flavour sections from the rules text before counting the rules-complexity proxies."""
+    out, skip_level, in_marker = [], None, False
+    for ln in text.split("\n"):
+        if "complexity:ignore-start" in ln:
+            in_marker = True; continue
+        if "complexity:ignore-end" in ln:
+            in_marker = False; continue
+        if in_marker:
+            continue
+        h = re.match(r"^(#{1,4})\s+(.*)$", ln)
+        if h:
+            level, title = len(h.group(1)), h.group(2)
+            if skip_level is not None and level <= skip_level:
+                skip_level = None  # flavour section ended; re-evaluate this heading below
+            if skip_level is None and FLAVOUR_HEADING_RE.match(title):
+                skip_level = level; continue
+        if skip_level is not None:
+            continue
+        out.append(ln)
+    return "\n".join(out)
 
 
 def measure(game: Path) -> dict:
     m = {}
     rules = game / "design" / "rules-draft.md"
     if rules.exists():
-        text = rules.read_text(encoding="utf-8")
+        text = _strip_flavour(rules.read_text(encoding="utf-8"))
         words = re.findall(r"\S+", text)
         m["rulebook_words"] = len(words)
         m["rule_sections"] = len(HEADING_RE.findall(text))
@@ -51,7 +81,10 @@ def measure(game: Path) -> dict:
             m["keywords"] = len(terms)
     comp = game / "components"
     if comp.is_dir():
-        csvs = sorted(comp.glob("*.csv"))
+        # Exclude parked, flag-gated experimental branches (e.g. *-split.csv): they live in
+        # components/ but are not part of the ship config, so they must not inflate the budget
+        # proxies (component_types / decks / card_count). Games without such files are unaffected.
+        csvs = sorted(c for c in comp.glob("*.csv") if not c.name.endswith("-split.csv"))
         m["decks"] = len(csvs)
         types, total = set(), 0
         for c in csvs:

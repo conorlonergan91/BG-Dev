@@ -1,50 +1,101 @@
 {
-  "_note": "v6.2 region-ring board spec for build_board.py --type regionmap. Four regions on a diamond ring (North 北 top, Central 中 west, South 南 bottom, East 東 east coast) with ring edges (N-C-S-E-N) and the HSR 高鐵 spine (North<->South). v6.2 model: each region has its OWN face-down vendor deck (a DAY deck in Act I, a NIGHT deck in Act II, drinks mixed in as the low-value vendors) plus a face-down INGREDIENT market deck. Face-up VENDOR slots: North 2, the others 1 (5 vendors courtable table-wide). Each region shows its ONE signature ingredient in the shared colour + 繁體 + emblem grammar; the COMMON 糖 sugar lives in Central & South only. The vendor-claims CLOCK, Prestige track, Reputation track, token key and the 成團/遺珠 piles render as SEPARATE components (make.sh). Real illustrated Taiwan map is a bg-infodesign task. Region colours: first-pass night-market (identity.md), CVD-checked via check_access.py.",
-  "title": "Travel Agents: Taiwan  —  four regions on the ring (v6.2)",
-  "width": 1600,
-  "height": 1270,
-  "region_w": 330,
-  "region_h": 236,
+  "_note": "V7 NEUTRAL SHARED N-PLAYER board (3–6) for build_board.py --type regionmap. Data is the source of truth. RENDER REBUILT (bg-infodesign 2026-08): render_regionmap now draws the ONE neutral any-seat board — no 2p across-the-table mirror, no per-edge clock rails. The clock is DECK-DRIVEN (the 開團 Booking deck IS the clock): a full-width clock band carries the DAY deck (out → 黃昏 DUSK → flip to night), the NIGHT deck (out → 末班車 LAST TRAIN → finish round, end), and the shared FACE-UP Booking row — NO numbered vendor-claims track. The 4-region diamond (北 top · 中 left · 東 right · 南 bottom) carries colour + emblem + 繁體 (dual-coded), each with its FACE-UP vendor card slots (card-exact footprints; slots_n below is the 4p HOME default, per-count scaling in the setup table) + a MARKET deck; ingredients are CARDS in those market decks (components/ingredients.csv), so there is NO ingredient-supply section. The HSR spine runs N↔S with a region STOP at each end. hsr_closed_marker draws the 停 Scheduled-Maintenance EVENT as a printed LABEL on the track (the event card is played ONTO the track) — NOT a separate dashed drop-slot (CD steer 2026-08). Bottom band: PER-COLOUR Follower supply trays (each player's own pool — no shared table pool) + Trending markers, a how-to-read legend, and the per-count setup table. Two states via --phase day|night (warm gold day / neon night chrome; region colours stay warm in both). Styled to match the character/player-board house hand (inner gold hairline frame, coloured header banners, drawn emblems) — NOT the retired soft-watercolour AI map mock-up. Per-count booking-deck + (V7-M tightened, slow-refill) vendor-slot tables + the per-colour follower supply below are DATA. Region colours: night-market (identity.md), CVD-checked.",
+  "title": "Travel Agents: Taiwan — the table (V7 · 3–6 players)",
+  "players": "3-6",
+  "start_hub": "north",
+  "hub_hanzi": "台北",
+  "hsr_closed_marker": true,
+  "clock_model": {
+    "model": "vendor-depletion",
+    "driver": "the finite VENDOR pools — the day pool (13) then the night pool (12) deplete; the phase ends when its pool is exhausted. NOT the Booking deck.",
+    "dusk": "黃昏 DUSK — fires when the DAY vendor pool is exhausted (all day vendors claimed or sold out, deck empty, no day stall in play) — finish the turn, flip to night.",
+    "last_train": "末班車 LAST TRAIN — fires when the NIGHT vendor pool is exhausted — finish the round, then end.",
+    "retired": "the vendor-claims clock, its dusk@/last-train@ thresholds, the +1-on-Bribe step, and the stall backstop are ALL DELETED (§11 canon). ALSO DELETED (§17): the Booking-deck-driven clock and its seeded 黃昏/末班車 boundary cards — superseded by vendor depletion; the Booking deck is now pure tour-supply."
+  },
+  "vendor_clock": {
+    "_note": "V7-M VENDOR-DEPLETION CLOCK + the CLOSING-TIME DIE (§17, CD refinement 2026-08-10): the finite vendor pools ARE the clock (DUSK = day pool exhausted; LAST TRAIN = night pool exhausted), and the Closing-Time die — the game's FIRST dice/randomness — is the forcing function that thins the board when claiming stalls. It REPLACES the deterministic sell-out cadence.",
+    "day_pool": 13,
+    "night_pool": 12,
+    "track_length": {"3": 2, "4": 2, "5": 2, "6": 3},
+    "_track_note": "rounds per Closing-Time track cycle, per player count. ★ CORRECTED (decision-log dbd7dda, 2026-08-10): L=2 at 3p, L=3 at 4/5/6p — the die is a 3p-only PACE aid (a shorter track ticks the 3p clock a touch faster so the meatier 3p game doesn't drag), NOT a per-count balance lever. ONE physical die + ONE 3-space track printed on the board serve every count (at 3p you simply roll after space 2). L stays the #1 sim PACING KNOB — the CD-gated full run may test L=2 at 4/5p too if ~48-50 tpp reads long.",
+    "die_faces": ["N", "C", "S", "E", "BLANK", "BLANK"],
+    "roll_timing": "after round L of the track completes (at end-of-round), roll the Closing-Time die, then reset the track to round 1.",
+    "removal_rule": "a region face (N/C/S/E) closes the OLDEST (leftmost) face-up stall in that rolled region — contested or not — it is GONE (never returned to the deck), then run the normal end-of-round refill so the pool net-drains by one. BLANK → nothing (a 1/3 reprieve). Rolled region has no removable face-up stall → nothing (NO reroll).",
+    "followers_home": "every follower committed on a die-removed stall — INCLUDING a live contest — returns HOME to its owner's BOARD (kept, no re-grow), per followers-meeples-redesign §2.5. NO resource penalty — this OVERRIDES the old 'contested stalls immune to aging' rail (the die CAN close a stall out from under a live fight; the cost is opportunity + tempo, not lost followers).",
+    "deadlock_backstop": "deck empty + face-up static for one full track cycle → fire the boundary (§17.3). Guarantees DUSK / LAST TRAIN still fire even on an all-BLANK streak with zero claims; the die only ever SPEEDS the close, never blocks it."
+  },
+  "booking_deck_sizes": {
+    "_rule": "DAY = 3·(N+1), NIGHT = 4·(N+1) (SIM-VALIDATED; reconciles §11's earlier N+2 draft to what the sim actually validated). §17: the Booking deck is NO LONGER the clock — it is finite tour-supply and, like the vendor decks, does NOT reshuffle; if a phase's Booking deck empties the face-up row simply stops refilling (drawing tours is optional supply, not the clock). No boundary card is seeded.",
+    "3": {"day": 12, "night": 16},
+    "4": {"day": 15, "night": 20},
+    "5": {"day": 18, "night": 24},
+    "6": {"day": 21, "night": 28}
+  },
+  "booking_deck_filter": {
+    "_note": "§20 + §21 (2026-08): the 45-card Booking deck now carries THREE `phase` values — day (6 tours, DUSK-judged premium gamble), night (8 night-locked tours), any (31 AGNOSTIC tours, drawable from setup, judged at LAST TRAIN, the safe default line). AND a per-count `counts` tag on every row. At SETUP, build the decks from ONLY the rows whose `counts` tag includes your player count — a pure setup filter, no in-play rule.",
+    "counts_filter": {
+      "3": "CORE + ON-RAMP only — the 7 HEAVY (>=4-claim) tours tagged `counts:456` are set aside (a 3p ~7-claim budget can't finish them). 3p deck = 38 rows.",
+      "4-6": "the full 45 rows by default (all counts include 4/5/6). HEAVY tours are in; ON-RAMP inclusion is governed by `onramp_high_count`."
+    },
+    "onramp_high_count": {
+      "default": "IN",
+      "_note": "governs whether the 8 ON-RAMP tours (tagged `onramp`, the easy value-3 1-2-vendor tours) are dealt at 4/5/6p. They are ALWAYS dealt at 3p (the throughput fix). IN (default, dbd7dda-validated) = the full 45-row 4-6p deck (gentler on-ramp + variety, reproduces the validated `1c22551` balance, no regression). OUT = drop the 8 on-ramp rows at 4-6p (37 rows) = a meatier 4-6p variant; a sim A/B toggle only, not the default.",
+      "deck_rows_by_count": {"3": 38, "4-6 (IN)": 45, "4-6 (OUT)": 37}
+    },
+    "_deck_plumbing_OPEN": "§20.9 DEFERRED to bg-playtest/bg-prototyper (NOT resolved here): how the face-up Booking row samples the day/night/any piles (single always-available agnostic market vs agnostic present in both phase rows) and how `booking_deck_sizes` (still the pre-§20 day/night sizes) maps onto the new 3-phase partition. make.sh's split_decks already carves the deck into day/night/any piles by `phase`; the sampling model is the open call. Land with the combined re-smoke.",
+    "reserve_3p_a_HELD": "NOT baseline. Reserve 3p-a = +1 face-up BOOKING-row slot at 3p only, held as a comfortable-margin option (validation dbd7dda: 3p already passes at 26-30% hoarder < 33% fair WITHOUT it; adopt only if the CD-gated full run wants more 3p margin). Do NOT add to the 3p setup unless the CD calls it."
+  },
+  "follower_supply": {
+    "_rule": "V7-M MEEPLES: followers are a PER-PLAYER, per-colour pool — there is NO shared/central table pool (the old shared scaled block is retired). At setup each player takes their character's `max` followers in their OWN colour into a labelled per-colour supply zone by their board; `start_meeples` of them (baseline 2) start ON their board, the rest sit in their supply. A follower is only ever in your supply, on your board, or committed on a stall. `max` enforces the old Followers-max ceiling physically — component count, zero tracking.",
+    "per_colour_max": {"default": 6, "influencer": 8},
+    "start_on_board": 2,
+    "setup_line": "followers per colour = your character's max (6; 網紅 The Influencer = 8). Draw them from your colour's bin; put 2 on your board, the rest in your supply."
+  },
+  "legend_notes": [
+    "SLOW REFILL (scarcity): a claimed or cleared vendor slot stays EMPTY; refill all empty slots from the region decks at the END of each round (never immediately).",
+    "阿嬤 The Globetrotter — her Travel-anywhere costs 1 follower to her supply (the trip tires her crowd).",
+    "Win a contested stall → your followers on it come home to YOUR BOARD (kept). Lose it → your followers go back to YOUR OWN supply (re-rally them); they never join the winner."
+  ],
+  "vendor_pool": {
+    "_note": "★ CORRECTED SCALING (decision-log dbd7dda, 2026-08-10) — the FULL vendor pool is used at EVERY player count: NO per-count pool subset. The earlier `1c22551` sweep's per-count pool-SHRINK BACKFIRED — tours are completed by CLAIMING vendors, so fewer vendors starves tour completion → the vendor-only HOARDER wins at every count AND it regresses 4-6p. So the day pool stays the full 13 day vendors and the night pool the full 12 night vendors at 3/4/5/6p (12 = 11 unique night dishes + the N08 §17.6 duplicate-commodity 珍奶 stall added 2026-08-10 to un-orphan the bubble-tea / Dadaocheng span tours). The lever that fixes 3p is NOT here (it is the bookings `counts` tag — drop the 7 HEAVY >=4-claim tours at 3p — plus the die as a 3p pace aid); this block only documents that the pool must NOT be subset. Only the face-up SLOTS below scale (thematically), never the pool.",
+    "day": 13,
+    "night": 12,
+    "per_count_subset": false
+  },
+  "vendor_slots": {
+    "_note": "face-up vendor slots per region (N/C/S/E); DAY = NIGHT (one table). ★ CORRECTED SCALING (dbd7dda): only the face-up SLOTS scale with player count, thematically, over the FULL pool (see `vendor_pool`). Base N1/C1/S1/E1 (3p, 4p) -> +1 South (Tainan) @5p -> +1 North (Taipei) @6p; EAST kept thinnest (never a 2nd slot before 6p - the East 2nd slot is the contest-softener, held back). This REPLACES the earlier V7-M scarcity table (which gave North 2 from 4p and Central 2 at 6p). Refill stays SLOW (see `refill`) - the load-bearing scarcity lever; slow refill + these tight counts (still ~1.0-1.33 stalls/agent) force the crowd-fight. `slots_n` on each region is the 4p HOME default for the render.",
+    "refill": "SLOW / per-round: a claimed or cleared slot stays EMPTY; refill ALL empty slots from the region decks at the END of each round (after every player has taken one turn). NEVER immediate. This is the load-bearing scarcity lever - it makes each stall a non-substitutable prize for the rest of the round.",
+    "3": {"N": 1, "C": 1, "S": 1, "E": 1},
+    "4": {"N": 1, "C": 1, "S": 1, "E": 1},
+    "5": {"N": 1, "C": 1, "S": 2, "E": 1},
+    "6": {"N": 2, "C": 1, "S": 2, "E": 1}
+  },
+  "event_deck_mix": {
+    "_note": "V7-M EVENT SYSTEM (2026-08, §15.4/§15.6-B): events.csv is the POOL; ingredients.csv fixes each region deck's ingredient cards. At setup, per region+phase, shuffle the matching event pool (rows whose `deck` = <region>-<phase>) and deal this many events into that region's deck; the rest go back to the box. Different mix every game — free replayability. Event pressure rises GENTLY with player count (interaction payoff + faster deck churn under more players); capped so per-player swing stays bounded — night N/E at 6p (~40% events) is the #1 density knob to watch. Scheduled Maintenance / island (board-scope) banners live inside night decks and fire board-scope when drawn — no separate deck.",
+    "3": {"day": 1, "night": 2},
+    "4": {"day": 2, "night": 3},
+    "5": {"day": 2, "night": 3},
+    "6": {"day": 3, "night": 4}
+  },
   "regions": [
     {
-      "key": "north", "name": "NORTH 北", "color": "#D64545", "emblem": "triangle",
-      "x": 635, "y": 150, "slots": "2 face-up vendors",
-      "specialties": [
-        {"id": "pork", "label": "豬", "en": "Pork — signature"}
-      ]
+      "key": "north", "name": "NORTH 北", "color": "#D64545", "emblem": "triangle", "slots_n": 1,
+      "hub": "Taipei", "start": true,
+      "chips": [{"id": "pork", "label": "豬", "en": "pork"}]
     },
     {
-      "key": "central", "name": "CENTRAL 中", "color": "#1F8A7A", "emblem": "diamond",
-      "x": 250, "y": 470, "slots": "1 face-up  ·  茶 exports",
-      "specialties": [
-        {"id": "tea", "label": "茶", "en": "Tea — signature"},
-        {"id": "sugar", "label": "糖", "en": "Sugar — common (local)"}
-      ]
+      "key": "central", "name": "CENTRAL 中", "color": "#1F8A7A", "emblem": "diamond", "slots_n": 1,
+      "chips": [{"id": "tea", "label": "茶", "en": "tea"}, {"id": "sugar", "label": "糖", "en": "sugar"}]
     },
     {
-      "key": "east", "name": "EAST 東", "color": "#26324D", "emblem": "square",
-      "x": 1020, "y": 470, "slots": "1 face-up  ·  highest apex",
-      "specialties": [
-        {"id": "rice", "label": "米", "en": "Rice — signature"}
-      ]
+      "key": "east", "name": "EAST 東", "color": "#26324D", "emblem": "square", "slots_n": 1,
+      "chips": [{"id": "rice", "label": "米", "en": "rice"}]
     },
     {
-      "key": "south", "name": "SOUTH 南", "color": "#E6A930", "emblem": "circle",
-      "x": 635, "y": 790, "slots": "1 face-up vendor",
-      "specialties": [
-        {"id": "seafood", "label": "海", "en": "Seafood — signature"},
-        {"id": "sugar", "label": "糖", "en": "Sugar — common (local)"}
-      ]
+      "key": "south", "name": "SOUTH 南", "color": "#E6A930", "emblem": "circle", "slots_n": 1,
+      "chips": [{"id": "seafood", "label": "海", "en": "seafood"}, {"id": "sugar", "label": "糖", "en": "sugar"}]
     }
   ],
   "ring": [["north", "central"], ["central", "south"], ["south", "east"], ["east", "north"]],
-  "hsr": ["north", "south"],
-  "notes": [
-    "Ring: North–Central–South–East–North are adjacent — a Travel action moves 1 step along the ring.",
-    "HSR 高鐵: North and South also count ADJACENT (the west-coast high-speed spine).",
-    "The COMMON 糖 sugar lives in Central & South decks only; North & East source it via Convenience Store / Travel.",
-    "Cross-region recipe LOOP (the travel pull): North's 牛肉麵 needs Central 茶 · Central's 逢甲 needs South 海鮮 · South's 棺材板 needs East 米 · East's ★石板烤肉 needs North 豬肉. Every region both exports and imports its signature.",
-    "Convenience Store: draw the top card of ANY region's ingredient deck from anywhere (no travel) — the reliable way to grab the common 糖.",
-    "Start (2p): one Agent begins in North 北, the other in South 南 (opposite ends of the ring)."
-  ]
+  "hsr": ["north", "south"]
 }

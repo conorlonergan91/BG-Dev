@@ -63,11 +63,33 @@ game's living documents (see "One source of truth" below), so they chain cleanly
 | Accessibility | `bg-access` | **Guardian.** Colour-blind safety (redundant encoding), contrast/legibility, cognitive/motor/communication load, price — who can actually play. Runs `tools/access/check_access.py`. |
 | Critique | `bg-critic` | Adversarial red-team: hunts dominant strategies, dead turns, swinginess, co-op alpha-player leaks — before you spend playtests. |
 | Elegance | `bg-elegance` | Guards the complexity budget (set at start), hunts what to cut/merge, keeps the rulebook + player aid succinct/clear/fun (incl. the editorial pass), disciplined FAQ. |
-| Testing | `bg-playtest` | Playtest plans (incl. FTUE/blind-test), session logging, feedback synthesis, balance analysis, and simulation (`tools/sim`). |
+| Testing | `bg-playtest` | Playtest plans (incl. FTUE/blind-test), session logging, feedback synthesis, balance analysis, and simulation (`tools/sim`) — owns the harness + the run + interpreting results. |
+| Playtest strategy | `bg-playstrat` | Engineers the SIMULATOR's bot/AI **strategies** — a diverse playstyle roster **and** adversarial exploit-hunting bots (from `bg-critic`'s hypotheses) so the sim is an honest, punishing adversary. Owns the strategy layer of `tools/sim` + `games/<slug>/sim/`; models the rules faithfully and plays them WELL — never changes a rule to make a bot work. Complements `bg-playtest` (harness/run/analysis). |
 | Funding / route | `bg-funding` | **How the game is released** — free / POD / pitch-to-publisher / crowdfunding, ranked by upfront cost & risk. Defaults to minimal out-of-pocket. Owns the money decision before marketing copy. |
 | Marketing | `bg-marketing` | Pitch, elevator, box copy, sell sheet, crowdfunding page, audience strategy — for the route `bg-funding` chose. |
 | Publishing | `bg-publishing` | IP / copyright / trademark / compliance for **Ireland, UK, USA**; contracts; sensitivity-risk flag. |
 | Production | `bg-production` | Physical make & ship — manufacturing, component engineering, sourcing, freight/tariffs, fulfilment, pledge-manager ops. Runs print pre-flight. Deferred until a physical run (skip if licensed). |
+
+### Art & Editorial (presentation layer)
+
+A pod that owns how the game **looks and reads** — the illustrated hand, the graphic finish, the words,
+the rulebook, and player comprehension. **Presentation-only: this pod never changes mechanics, rules,
+balance, or component-data VALUES** (card costs, quantities, abilities, counts). When a member spots a
+mechanics/balance/rules-logic problem it **flags it** to the design side (`bg-design`, `bg-elegance`,
+`bg-critic`, `bg-playtest`) and does not change it. All carry the studio's binding rails — **no AI final
+art** (AI only for labelled/gitignored playtest mock-ups), the **Taiwan cultural-sensitivity rails**
+(Traditional not Simplified, secular, dignified locals, faithful real dishes, consultant-gated Indigenous
+items), and **English names first**.
+
+| Role | Agent | What it does |
+|------|-------|--------------|
+| Art direction | `bg-art-director` | Owns the game's ONE visual look and the consistency of its illustrated hand across every component; steward of `art/art-style.md`; sets the visual direction of all art briefs & mock-ups; and is the visual simplifier (kills over-busy/over-detailed art). Complements `bg-theme` (felt identity) and `bg-infodesign`/`bg-access`. |
+| Graphic design | `bg-graphic-designer` | The aesthetic finish — typography, colour systems, composition, layout polish across cards, boards, box & cover. Distinct from `bg-infodesign` (functional readability); defers to it when polish fights game-critical readability. |
+| AI image prompts | `bg-ai-prompt` | Turns art briefs into high-fidelity MOCK-UP generation prompts (per-asset kickoffs, reusable style-anchor, style-reference-image technique, per-slot scale); owns `knowledge/ai-mockup-workflow.md` + `art/mockup-kickoffs.md`. Playtest mock-ups only; works under `bg-art-director`. |
+| Copywriting | `bg-copywriter` | The game's words — flavour text, card/component copy, naming voice, box & short marketing lines, tone of voice. Coordinates with `bg-theme` (voice) and `bg-marketing` (sell copy); never changes a rule's meaning. |
+| Continuity | `bg-continuity` | The drift-catcher — guards consistency across every doc, component & render: canonical English↔繁體↔Tâi-lô name tables, terminology currency (retired vs current), grammar/style/proofreading, visual-consistency sweeps. Flags mechanics mismatches. |
+| Rulebook | `bg-rulebook` | The rulebook & player aids as DOCUMENTS — structure, teaching order, worked examples, layout, teachability, FAQ presentation. Presents the rules clearly; never changes a rule (that's `bg-design`/`bg-elegance`). Uses `tools/rulebook/build_rulebook.py`. |
+| Presentation UX | `bg-ux` | How players PERCEIVE & PARSE the presentation — information hierarchy, reading order, comprehension, player-aid design, first-time-user comprehension. Researches how best to PRESENT the rules and designs that presentation; never changes them. Distinct from `bg-playtest` (mechanics/balance); merges a UX-researcher + UX-designer remit. |
 
 **How to invoke an agent:** use the `Agent` tool with the matching `subagent_type` (e.g.
 `bg-design`). Give it the game slug and point it at that game's `game-bible.md`. When work is
@@ -91,6 +113,7 @@ document the human and every agent read and update. Supporting files:
 games/<slug>/
 ├── game-bible.md        # THE living design document — single source of truth
 ├── identity.md          # THE living creative identity — concept/theme/tone/lore/look&feel/naming (bg-theme)
+├── prose-identity.md    # THE living VOICE bible — how every player-facing word sounds; copy briefs cite it (bg-copywriter)
 ├── decision-log.md      # every key decision + the rationale (fast to skim)
 ├── design/              # deeper design notes, math/economy spreadsheets, rules drafts
 ├── components/          # component DATA (CSV/JSON) — cards, tiles, tokens (the real source)
@@ -102,6 +125,13 @@ games/<slug>/
 ├── art/                 # art briefs, references, and assets
 └── marketing/           # pitch, sell sheet, campaign copy
 ```
+
+**The three canonical identities.** A game is anchored by `game-bible.md` (the design), and — once it has a
+felt identity, art, and words — by three living identity files a `bg-*` agent points at for direction:
+`identity.md` (how it *feels*, `bg-theme`), `art/art-style.md` (how it *looks*, `bg-art-director`), and
+`prose-identity.md` (how it *reads* — the voice bible, `bg-copywriter`; scaffold in `templates/prose-identity.md`).
+**Every copy/writing brief opens by citing `prose-identity.md`, exactly as every art brief cites
+`art-style.md`** — that one habit keeps the whole game sounding like a single narrator.
 
 ### Scaling a project: products, modules, series & builds
 
@@ -153,7 +183,9 @@ want 3D pieces (Blender) or collaborative visual layout (Figma).
 
 Encode a game's rules once as `games/<slug>/sim/<slug>.py` and play it thousands of times to expose
 dominant strategies, balance, and score spreads **before** human playtesting (stdlib-only). Every run
-ends with an auto **Health read** (dominant line? intransitive depth?). Owned by `bg-playtest`; see the
+ends with an auto **Health read** (dominant line? intransitive depth?). Owned by `bg-playtest` (harness +
+run + interpretation); the bot **strategies** it runs are engineered by `bg-playstrat` (diverse archetypes
++ adversarial exploit bots). See the
 playbook `knowledge/simulation-and-balance.md`, `tools/sim/README.md`, and the worked example
 `games/beacon/sim/beacon.py`.
 
@@ -222,11 +254,18 @@ WebSearch). Offline-testable via `--thing-xml`.
 - `trends-2026.md` — what's current (cozy games, solo, crowdfunding shift, market pressures).
 - `manufacturing-specs.md` — card sizes, bleed, DPI, POD specs, TTS export limits.
 - `publishing-ip.md` — IP/copyright/trademark/compliance for IE/UK/US (general info, not legal advice).
+- `ai-mockup-workflow.md` — the proven loop for high-fidelity **playtest** mock-ups: one-look briefs → upload-once context → thin per-asset kickoffs → **pose dramatizes the ability** → style-reference image → `prep_mockup.py` (key/fit) → commit to `art/mockups/` → auto-embed into renders (mock-ups only; final art stays human-illustrated). Owned by `bg-theme` + `bg-infodesign`.
 
 ---
 
 ## Operating style (for Claude)
 
+- **Talk to the human in plain English — names first.** ALWAYS refer to a game's characters, components,
+  and terms by their **English / plain-language name** in conversation *and* in documentation. **Never use
+  an original-language name (繁體 / Tâi-lô / etc.) on its own** — the human can't tell who you mean. Put the
+  original-language name in parentheses *after* the English only when precision or the cultural-sensitivity/
+  component-data context genuinely needs it (e.g. "the Homebody (媽寶)"). Each game keeps a canonical
+  English↔original name table in its own docs (for Travel Agents: `games/travel-agents/v7-plan.md`).
 - **Keep the human in the loop, but keep it moving.** Present tight, opinionated options (A/B/C with a
   recommendation) rather than open-ended questions. Decide fast, log it, iterate.
 - **Update the living docs as you go.** Every meaningful choice → `game-bible.md` + `decision-log.md`.

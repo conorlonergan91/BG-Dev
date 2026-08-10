@@ -3,10 +3,40 @@
 > The living source of truth for this game's **felt identity**: concept, theme, tone/vibe, story/lore,
 > look & feel, and naming. Owned by `bg-theme`; read alongside `game-bible.md`. Keep it current — and
 > keep it **coherent** while letting it **evolve** with the design.
-> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-07 (bg-theme — **v6.2 direction: board → REGION VENDOR MARKETS** (each region its own face-down daytime-on-nighttime vendor pile, 1–2 face-up, refilled in place — the central Ladder is GONE); **DRINKS → just low-value vendors** mixed into every region's pile (the drinks *fork / two roads / easy-points / region-free / Beverage Row / off-clock beverages* framing all STRIPPED); **strategic identity → FIVE PLAYSTYLES** (character-lean · opportunistic · disruptive · balanced · end-game-driver), not two roads; **objectives → the SPINE, LOCKED name "Tour Tickets"** (a face-up row of tours you book/claim, day/night/general pools, 12→5-per-phase variable setup — Ticket-to-Ride's tickets re-skinned as a travel agent's booked tours) — **post-sim v6.2 LOCK corrections folded in (2026-08-07):** the day is now paced by the **VENDOR-CLAIMS clock** (dusk = 5th table-wide vendor claim, last train = 10th @2p), **NOT** by ticket delivery; tickets score via a **WIN pile / LOSE pile** (completed → +value, unfinished → −floor(value/2)) tallied once at game end — an accounting model, not live retroactive ±; the two piles are now **named** (成團 *Published Tours* / 遺珠 *the Ones That Got Away*); and the **網紅 flaw = "Late to the Party"** (misses its first night-phase turn)). Earlier — v6.1 guardian sweep: beverages now REGION-ANCHORED (a persistent drinks stand in *every* region, not a region-free "Beverage Row"; low-travel now = **ubiquity + easy sourcing**, NOT bribing-at-a-distance) · **Convenience Store events now FIRE via a 3-way SCOPE** (⦿ self / ⬢ region / ➤ next-door — can land a warm island-hazard on a rival's region; bound to the warm/secular island-life rail) · confirmed no live "Code Red" remains. Earlier — v6 guardian sweep: **"Code Red" end-trigger DROPPED** → the plain **Day → Night** close (last train home, no alarm) · **common ingredient named 糖 sugar** (the 手搖飲 + convenience-store staple) · drinks fork confirmed warm + native. Earlier: **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 + a day→night end-game · v5 sweep: ★ Star / accolade value-swing added, Coverage folded into a Mission, venue rename 早餐店→夜市攤 + 飲料店 all-day)
+> Slug: `travel-agents` · Started: 2026-08-06 · Last re-framed: 2026-08-09 (bg-theme — **v7 NAMING-BLESS + PROPAGATION pass (2026-08-09; CD auto-drive): five naming calls blessed & propagated, no re-theme, still coherent.** (1) **The Granny (阿嬤 / A-má) BLESSED as canon** — the 6th character, formally identity- & dignity-passed at last: English name **LOCKED "The Globetrotter"** (over "The Free Rider" — *rejected: "free rider" reads freeloader, undercutting dignity* — and "A-má" / "The Globetrotter Granny" — *off-register*). "The Globetrotter" fits the cast's warm-social-type "The [X]" register, encodes her signature (the 敬老卡 elder-pass go-anywhere reach) as **age-as-superpower, never frail**, and names a *type* not a demographic (her granny identity lives in 阿嬤 + art + blurb, exactly as the other five name a type not an age). **Flaw-free by design** — the V7 balance close-out retired her small-basket flaw = a dignity win (her age is pure upside). PASS-WITH-BINDING: the spry/sharp portrayal is load-bearing (guard the frail/forgetful-granny stereotype, sibling to 媽寶 / 大哥); light watch that "Globetrotter" reads as her restless *local*-wanderer personality, never a foreign-tourist gaze; native review of 阿嬤 + 敬老卡. Added as row **C6** on `characters.csv` (`name_en`). (2) **Bookings 繁體 BLESSED: 開團 *kāi-tuán*** — the real 旅行社 operator's verb ("open a group tour for departure"), chosen over the floated **行程 / 預約 / 訂單** family (itinerary / customer-reservation / retail-order words) because it is operator-native (the player *is* the agency) and threads **團** cleanly through the whole lifecycle: **開團 → 成團 (runs) / 取消 (cancelled) → 好評**. Fallback 預訂 if native review finds 開團 reads as the offering not the commitment. (3) **Currency rename PROPAGATED (CD v6.4 lock): Buzz → Followers, Reach → Followers-max (the dial).** Retired the **Buzz/Reach** terms and the **"the Queue"** stack-flavour (the renamed *Followers* token is self-flavouring — your following/audience steered to a stall); re-lettered the funnel **Travel → Followers-max → Followers → win Vendors → run Tours (成團)**. **Promote** and **Complete 成團 / Cancelled 取消** unchanged. WORDING RAIL carried: frame the lost-war dial-drop as *the crowd ebbing / drifting to the rival's stall*, never a bare "−N Followers" (a real social-media feel-bad is the one way this beat could curdle). (4) **★ apex vs Trending CONFIRMED DISTINCT** — the *printed* ★ apex vendors keep the **Michelin / Bib-Gourmand / top-Draw** marquee identity; **"Trending" is ONLY the dynamic, event-dropped going-viral marker** (its own icon; winning a Trending-marked vendor grants +1 Followers-max). Two different things, held apart on purpose. (5) **Tri-lingual roster refreshed to all SIX** (Tâi-lô · English · 繁體), consistent everywhere. Rails BINDING: Traditional characters only, dignified, secular; a **paid Taiwanese cultural + language consultant before art/print is STILL required** (this pass does not discharge it). Earlier — **v6.3.2 NAMING-BLESS & PILE-RENAME pass (2026-08-08): two CD naming decisions blessed & propagated, no re-theme, still coherent.** (1) **English character names BLESSED & made canonical** (CD "adopt as proposed") — the `name_en` set on `characters.csv`: 里長伯 → *The Old Councillor* · 媽寶 → *The Homebody* · 大胃王 → *The Big Eater* · 網紅 → *The Influencer* · 大哥 → *The Big Brother*. The dignity/accuracy pass under the Taiwan sensitivity rails **PASSES all five**; the two edge cases hold on their warm portrayals — **媽寶 → "The Homebody"** de-fangs the literal "mama's boy" into an affectionate stays-close-to-home read (warm, not mocking), and **大哥 → "The Big Brother"** must read as the warm elder / community-figure 大哥 (a lovable rogue every stall-owner is glad to see), NOT a menacing gangster or an Orwellian "Big Brother" — blessed *only while its warm portrayal stays load-bearing*, and flagged the #1 character-name consultant watch-item. Tri-lingual set recorded in Naming & voice. (2) **Win/lose pile names UNIFIED to one canonical pair everywhere: WIN = COMPLETED 成團 (the tour ran / formed → full value); LOSE = CANCELLED 取消 (didn't run in time → half value).** This RENAMES the old English "SOLD" win label to **COMPLETED** (繁體 成團 kept) and RETIRES the 繁體 遺珠 + its "the Ones That Got Away" / "Published Tours" / "Departures" skins — one pair, read the same on the character boards, tokens, player aid, rulebook, and every living doc. Bonus coherence win: dropping "SOLD" removes the clash with the **完售 "Sold Out"** event. Native reviewer still to bless 成團 · 取消. Earlier — **v6.3.1 FOUR-CD-CHANGES coherence pass (2026-08-07 PM): three items blessed & locked, no re-theme, still coherent.** (1) **里長伯 RE-LORED** to a home-turf silhouette — kit reworked (picks ONE home borough at setup; **Old Favours** = −1 ingredient in his home region; NEW flaw **Off His Patch** = +1 ingredient courting anywhere else). The old island-wide favours + the no-HSR **"Works Every Room"** flaw are GONE; the new shape is *tighter* theme AND a *stronger* sensitivity cushion (his favours are now bounded to the one borough a real 里長 actually serves — reads as neighbourly standing, not graft). Standing 里長伯 sensitivity binding HOLDS. (2) **NEW table-wide event NAMED & LOCKED: "Scheduled Maintenance"** (working 繁體 排班保養; recommend 例行保養 to native reviewer) — the HSR is down for the whole table for a round, warm/secular/comedic ("the high-speed rail's down for scheduled maintenance — slow road for everyone"); re-homes the old no-HSR flaw as an island-wide beat, and it's *warmer* as a table-wide gripe than as one character's deficiency. Distinct from the ⦿/⬢/➤ scoped events (island-wide banner, not a 4th glyph). (3) **Night-cost escalation BLESSED** — day-cheap → night-expensive reads as the *earned climax you build toward* (the marquee night-market names are pricier *because* they're the marquee), dead-on the day→night arc + night-market north star; one affordability watch handed to design (must stay reachable-with-a-good-engine, not a wall). Details + infodesign notes folded into the 里長伯 character bullet, the event resonance + Naming entries, and the Day→Night arc bullet. Earlier — **v6.3 TICKETS-ONLY coherence pass (2026-08-07): the signature twist moved AGAIN — vendors flipped from banked TROPHIES to the ENGINE you assemble to run tours; the score is now ONLY your completed Tour Tickets (成團). STILL COHERENT — a TIGHTENING, no re-theme.** Vendors giving no points is *more* coherent with the travel-agent premise than vendors-as-trophies: a travel agent doesn't hoard restaurants, they run tours that actually depart (成團) — the vendors are the stops they line up to make a tour happen. Two names LOCKED this pass: the **vendor value attribute → "Draw"** (人氣 *rén-qì* flavour anchor — a stall's crowd-pulling power; a printed card attribute, NOT a score — referenced by a few high-value tickets + marking the ★ apex), and the retired **"Bookings" score track → repurposed physical track "Tours Completed"** (the live monotonic counter that hosts the per-player **Rave Reviews** 好評 milestones at your 2nd & 4th completed tour). **"Bookings" is fully RETIRED as a term** (it named a score that no longer exists; the vendor attribute it might have labelled is now "Draw") — one fewer noun in the glossary, an elegance win. The funnel recasts cleanly: **Travel → Reach → Buzz → win Vendors → run Tours (成團 = the sole score)** — each noun still teaches the next mechanic, and it now ends on the actual win condition instead of an abstract prestige number. 成團/遺珠, Reach, Rave Reviews 好評 all HOLD unchanged. Details folded into the resonance + Naming sections below. Earlier — **v6.3 SHAPE-LOCK coherence pass (2026-08-07): the signature twist MOVED and the fiction FOLLOWED — no re-theme, still coherent.** Reputation is recast from a *passive end-VP* into the **LIVE FUEL** for the Buzz fight (a "live cap": committed Buzz ≤ your standing) — earned by **TRAVELLING** (spreading your name) + some events, dinged by **greed/cutting corners** (the Greedy Grab + 負評/出包 events), and it **NO LONGER SCORES**. Names now BLESSED & LOCKED: **Reputation → "Reach"** (触及-adjacent; it's hype-*capacity*, not a score — travel literally *extends your reach*), the former **Prestige/VP track → "Bookings"** (the travel trade's own success metric; keep English-only — do NOT skin it 成團, which is the win pile), and the milestone boons → **"Rave Reviews" 好評**. The **travel→Reach→Buzz→Bookings funnel** (audience → engagement → conversions) is the real marketing pipeline, three distinct nouns / three distinct jobs — a funnel a new player could half-recite. Open Q from the proposal ("is Reach gate / score / both?") is **RESOLVED: gate-only** by CD lock. Greed-burns-Reach reads **warm-comedic** (a bad review / a mix-up dents your standing; a fizzled hype campaign you *choose* to let go), NOT grim. Details folded into the resonance + Naming sections below. Earlier — **v6.2 direction: board → REGION VENDOR MARKETS** (each region its own face-down daytime-on-nighttime vendor pile, 1–2 face-up, refilled in place — the central Ladder is GONE); **DRINKS → just low-value vendors** mixed into every region's pile (the drinks *fork / two roads / easy-points / region-free / Beverage Row / off-clock beverages* framing all STRIPPED); **strategic identity → FIVE PLAYSTYLES** (character-lean · opportunistic · disruptive · balanced · end-game-driver), not two roads; **objectives → the SPINE, LOCKED name "Tour Tickets"** (a face-up row of tours you book/claim, day/night/general pools, 12→5-per-phase variable setup — Ticket-to-Ride's tickets re-skinned as a travel agent's booked tours) — **post-sim v6.2 LOCK corrections folded in (2026-08-07):** the day is now paced by the **VENDOR-CLAIMS clock** (dusk = 5th table-wide vendor claim, last train = 10th @2p), **NOT** by ticket delivery; tickets score via a **WIN pile / LOSE pile** (completed → +value, unfinished → −floor(value/2)) tallied once at game end — an accounting model, not live retroactive ±; the two piles are now **named** (成團 *Published Tours* / 遺珠 *the Ones That Got Away*); and the **網紅 flaw = "Late to the Party"** (misses its first night-phase turn)). Earlier — v6.1 guardian sweep: beverages now REGION-ANCHORED (a persistent drinks stand in *every* region, not a region-free "Beverage Row"; low-travel now = **ubiquity + easy sourcing**, NOT bribing-at-a-distance) · **Convenience Store events now FIRE via a 3-way SCOPE** (⦿ self / ⬢ region / ➤ next-door — can land a warm island-hazard on a rival's region; bound to the warm/secular island-life rail) · confirmed no live "Code Red" remains. Earlier — v6 guardian sweep: **"Code Red" end-trigger DROPPED** → the plain **Day → Night** close (last train home, no alarm) · **common ingredient named 糖 sugar** (the 手搖飲 + convenience-store staple) · drinks fork confirmed warm + native. Earlier: **CD LOCK: "Bribe a Vendor"** as the vendor keyword, over bg-theme's Schmooze rec; warm reframe now BINDING/load-bearing · v4 fiction: Buzz-on-vendor hype-war · Lunchbox Grandma · Acts / a-day's-arc end-game · v5 character re-lore → 5 Taiwanese social types · Acts tightened to 2 + a day→night end-game · v5 sweep: ★ Star / accolade value-swing added, Coverage folded into a Mission, venue rename 早餐店→夜市攤 + 飲料店 all-day)
 
 > **Restraint first.** Match identity depth to what the game *earns*. Leaving story/lore light on purpose
 > is a correct answer, not a gap. Never invent lore to fill a section.
+
+## Terminology — the v7 currency rename (read this first)
+> **Canonical naming as of v7 (CD v6.4 lock, propagated 2026-08-09).** This governs every current-state
+> section below. Where older, version-tagged prose (v4 / v6.2 / v6.3) still says **Buzz** or **Reach**, read
+> the renamed term — the analysis holds unchanged under the rename.
+
+| Old term | v7 canonical term | What it is |
+|---|---|---|
+| **Buzz** | **Followers** | The committed, contested hype you pile ON a vendor (a **Promote places 2 Followers**). Your *following* — the audience/crowd you steer to a stall. |
+| **Reach** | **Followers-max (the dial)** | Your live ceiling on total committed Followers, shown by a per-player **dial**. Earned by Travelling + events; the lost-war sink drops it. **Never scores.** |
+| ~~the Queue~~ | *(retired)* | The old flavour-skin for the Buzz stack — **dropped**; *Followers* is self-flavouring. |
+| **Tour Tickets** / **Tour-Ticket** / **missions** | **Bookings (開團 *kāi-tuán*)** | The tour cards you book and run — the sole scoring vector (hand-limit 3, cancel-to-claim; the Booking decks are the deck-driven clock). Where older prose says "Tour Tickets" read **Bookings**; the analysis holds. *Claim action → "Book a Tour."* |
+| **Draw** (人氣) | *(retired as a vendor value — status FLAGGED)* | Was a vendor's printed crowd-pull value. **`rules-draft.md` has no Draw**; the `draw` column still lives in `vendors.csv` + Draw-target Bookings — a **data-vs-rules contradiction for `bg-design`/`bg-elegance` to resolve** (see `names.md` §4). Read current-state prose's "Draw" as *pending confirmation*, not canon. |
+
+> **⚠ Continuity note (`bg-continuity`, 2026-08-09 — first sweep).** This reconciliation table above was
+> extended to also cover **Tour Tickets → Bookings** and to flag **Draw**. The historical **Re-theme log**
+> (bottom of file) is a dated record — **left as-is on purpose.** Two current-tense felt-identity items are
+> **flagged for a `bg-theme` re-prose pass** (not editable as pure term-swaps): **(a)** the **North star +
+> Concept** still stage a **2-player duel** ("*two* rival agents", "*your* rival", "one shared table") —
+> V7 is a crowded **3–6-player** market (the 2p across-the-table board is retired); **(b)** current-tense
+> Concept/resonance prose still uses "Tour Tickets" and "Draw" as live terms. Reading them through this
+> table keeps every downstream reader on V7 terms until the re-prose lands. The canonical V7 term set with
+> 繁體 + retired-vs-current status now lives in **`games/travel-agents/names.md`**.
+
+**The funnel (re-lettered):** **Travel → Followers-max → Followers → win Vendors → run Tours (成團).**
+Audience-reach → the following you can rally → the vendors you win → the tours that actually depart (the
+sole score). **Promote** (the action that places Followers) and **Complete 成團 / Cancelled 取消** are
+unchanged. **Wording rail (binding → `bg-elegance` / `bg-developer`):** frame any loss of Followers or a
+dial-drop as *the crowd ebbing or drifting to the rival's stall* — **never** a bare "−N Followers"; a real
+social-media feel-bad is the one way this warm beat could curdle.
 
 ## North star
 **Image:** *Dusk at the night market. Two rival **travel agents** — trench coats thrown over Hawaiian
@@ -131,10 +161,11 @@ free from good illustration without chasing it. Chasing all eight = chasing none
 The felt *strategic* identity, distinct from the kinds of fun above: v6.2 opens **five legible ways to
 chase the best-tour title**, and the design's health bar is that **all five stay live** (none dominant;
 some rock-paper-scissors between them). Each is a warm travel-agent fantasy:
-1. **The character-lean agent** — lean hard into your agent's kit (里長伯's old favours, 大哥's clout,
+1. **The character-lean agent** — lean hard into your agent's kit (里長伯's old favours, 老大's clout,
    大胃王's haul). *"I play to who I am."*
 2. **The opportunist** — read the board and pounce: snap the newly-hot ★ stall, the cheap easy win, the
-   high-Prestige name the moment it surfaces. *"I grab what's good right now."*
+   high-**Draw** name the moment it surfaces (a big-Draw vendor is the stop that finishes a fat ticket).
+   *"I grab what's good right now."*
 3. **The disruptor** — work the island *against* your rival: use a scoped **Convenience-Store** event to
    land a *warm* island-hazard (a typhoon day, a 完售 sold-out sign, a festival crowd) on their region and
    slow their tour. **BINDING warm rail:** this is the *island* nudging your rival, a cheeky "ooh, bad
@@ -148,7 +179,7 @@ some rock-paper-scissors between them). Each is a warm travel-agent fantasy:
    night ends."*
 
 These are **paths to victory, not new components** — all five emerge from the same region-market +
-Tour-Ticket + Buzz spine. Keeping the *disruptor* warm is the one sensitivity-load-bearing line here (see
+Tour-Ticket + Followers spine. Keeping the *disruptor* warm is the one sensitivity-load-bearing line here (see
 the event-scope resonance bullet + §Sensitivity).
 
 ## Tone & vibe — **one tone, held everywhere**
@@ -219,8 +250,8 @@ bullets are unchanged and still hold.)*
   **integrated, and now the load-bearing *fun* engine alongside the Buzz fight.** A face-up row of **Tour
   Tickets** (the season's tours on offer) sits open on the table; **claiming one is booking it into your
   itinerary** (a full action). It is then **judged at the END of its phase** (daytime tickets at dusk,
-  nighttime at the last train) and sorted into one of two piles — **completed → your WIN pile (成團
-  *Published Tours*, worth +its value); unfinished → your LOSE pile (遺珠 *the Ones That Got Away*,
+  nighttime at the last train) and sorted into one of two piles — **completed → your WIN pile (COMPLETED
+  成團, worth +its value); unfinished → your LOSE pile (CANCELLED 取消,
   −floor(value/2))** — and the whole tally is settled **once, at game end** (an accounting model, not a
   live retroactive ±). That's the perfect travel-agent read of Ticket-to-Ride's destination tickets: *you
   promise a client a tour, and you're paid if the tour actually ran, and eat a refund/reputation ding if
@@ -272,12 +303,56 @@ bullets are unchanged and still hold.)*
 - **The compounding discount ramp (regulars vouch for you → the next stall's an easier sign)** —
   **integrated.** "Once you're a known, trusted promoter, the next vendor signs on faster" is exactly
   how a promoter's reputation snowballs. On-theme, not a bolted-on Splendor engine.
-- **Prestige / Reputation / the grand tour (scoring vectors)** — **integrated.** Prestige = the star
-  power of your tour; Reputation = your standing as an agent; the **grand tour across the whole island**
-  = breadth. All are travel-agent-native; none needs a stretch. *(v5→v6.2: **Region-Coverage is no longer a
-  standalone scoring track** — the grand-tour breadth line is now a **Tour Ticket** (e.g. 走透透 / 大三元 "a
-  vendor in every region"). No fiction impact: "the grand tour across the island" survives intact, just
-  re-homed from a track onto a booked tour — nothing thematically stranded.)*
+- **Vendors are the ENGINE you assemble to RUN tours; the score is only the tours that ran 成團 (v6.3
+  TICKETS-ONLY — the signature-twist recast). Reach = the live fuel for the Buzz fight** —
+  **integrated, and this is now the single strongest theme↔mechanic resonance in the game.** Two older
+  readings are **superseded** here: the "vendors are trophies you bank for points" reading (dropped — a
+  vendor now scores *nothing*) and, with it, the "Bookings = the headline score" reading (that track no
+  longer scores; the word "Bookings" is retired). The tightened v6.3 fiction:
+  - **A vendor is a STOP you line up, not a trophy you hoard.** A travel agent doesn't *own* the
+    beef-noodle king — you can't pocket a night-market stall. What a travel agent actually banks is **tours
+    that departed.** So under tickets-only a won vendor is purely the **engine**: its region-icon feeds the
+    discount ramp (each vendor makes the next an easier sign), and it's the **stop that lets a held Tour
+    Ticket's pattern come true** → the tour runs. This is *more* coherent than vendors-as-trophies, not
+    less — the premise was always "build the island's best food **tour**," and now the vendors are
+    unmistakably the *means* (the itinerary's stops) and the completed tours are the *end* (the score). The
+    slightly abstract "prestige accumulator" number — the one piece that never had a clean in-world referent
+    — is simply gone.
+  - **The score is your Tour Tickets: COMPLETED 成團 (tours that ran) minus a rueful ½ for CANCELLED 取消
+    (tours that didn't run in time).** The win condition is now perfectly diegetic — *most successfully-run
+    tours = you booked the season people most wanted = Top Agent* — with no abstract prestige proxy in the way.
+    (成團 win unchanged; the lose pile is now **CANCELLED 取消**, v6.3.2 — see their bullet + Naming.)
+  - **Draw** (the vendor's *value* number, renamed — see Naming) = *how big a crowd this stall pulls* — a
+    printed **card attribute, NOT a score.** In-world a 大香腸 or a ★ apex stall is simply a **bigger draw**
+    than a soy-milk cart, so it's the stop that satisfies the fat "high-Draw tour" tickets and the marquee
+    "chase a star" get. Draw keeps the apex meaningfully special without paying points for owning it —
+    exactly right: a big-name stall is *worth routing to*, but the payoff is the **tour it completes**, never
+    the stall itself.
+  - **Reach** (former Reputation) = *your standing / how far your name carries* — and it **no longer
+    scores.** It is the **live cap on the Buzz fight: your committed Buzz can never exceed your Reach.**
+    In-world you can't summon a busload to a stall if nobody's heard of you; a trusted, far-carrying agency's
+    word moves crowds. **You build Reach by TRAVELLING** (getting your agency's name around the island —
+    travel literally *is* reaching more places, which finally makes the chronically-weak Travel action
+    thematically load-bearing) **+ some events** (getting featured / picked up by the island's happenings).
+    Needing standing *before* you can create hype is genuinely inevitable fiction — the real
+    influencer/travel-media funnel.
+  - **The funnel reads as one pipeline — and now it ends on the win condition, not an abstract score:**
+    **Travel → Followers-max → Followers → win Vendors → run Tours (成團)** *(v7 rename)*. Audience →
+    credibility → engagement → the
+    stops you line up → the tours that actually depart. Each noun still teaches the next mechanic; dropping
+    the dangling "Bookings" conversion-score made the pipeline *shorter and truer* (the conversions were
+    always really *the tours that ran*).
+  - **★ Reach can be LOST — greed & cut corners dent your standing (v6.3 CD addition) — reads WARM, not
+    grim.** A **Greedy Grab** (shoving to the front of the queue for an extra ingredient) and a couple of
+    warm-comedic events (**負評 "a bad review"**, **出包 "a mix-up / cut a corner"**) cost −1 Reach. This is
+    the exact register of a **CANCELLED 取消** tour (*"ah, that one didn't run in time"*) — a **rueful, comedic ding**, never a punitive scold:
+    your reach dips because a tour got a so-so review or you cut a corner and it showed. The push-pull is
+    diegetically clean: **you build your name by getting around and spreading the word; you dent it by being
+    greedy or sloppy** — how reputation actually works. When a forced loss would drop Reach below your
+    committed Buzz, you pull a hype campaign back off the board (*your choice which fizzles*) — reads warm
+    ("ah, that buzz didn't hold") and keeps player agency. No grim register anywhere.
+  - **The grand tour (breadth)** survives as a **Tour Ticket** (走透透 / 大三元 "a vendor in every region"),
+    unchanged from v6.2 — re-homed onto a booked tour, nothing stranded.
 - **★ Star / accolade value-swing (v5 — CD's dynamic value curve) — integrated; reads as WARM
   celebration, and it's real & secular.** In-world a Star is simply **"this beloved stall finally got its
   due"** — a genuine, secular Taiwan food accolade (**Michelin / Bib Gourmand street-food nod / a
@@ -331,6 +406,18 @@ bullets are unchanged and still hold.)*
   cheeky "ooh, bad luck,"** never a spiteful strike. Keep it the *island* doing it, not the *agent* — and it
   stays squarely on the Tone "warm caper, not a thriller" rail. *(Scope icon set → Naming; dual-coding →
   `bg-access` / `bg-infodesign`.)*
+- **Scheduled Maintenance = *"the whole island takes the slow road for a bit"* (v6.3.1 CD-2 — the NEW
+  table-wide event; re-homes the old 里長伯 no-HSR flaw as an island-wide beat) — integrated; reads WARM +
+  secular + comedic.** When it fires, the **HSR (the North↔South high-speed shortcut) is down for
+  everyone** for a round — every agent rings the island the long way (N→C→S or N→E→S). In-world this is the
+  most mundane, universal travel gripe there is: *the fast train's out for servicing, so we're all on the
+  slow road today.* It's the exact head-office-groans-on-the-phone register the whole event layer runs on
+  (a comic inconvenience, never peril), and it's **structurally warmer than the flaw it replaces** — it's
+  no longer *one* character who can't take the fast train (which risked reading as a personal deficiency),
+  it's **the island doing the same thing to everyone at once**, squarely on the "the island pushes YOU
+  around" rail. Distinct from the ⦿/⬢/➤ scoped events by design (it disables a *global board feature*, hits
+  everyone regardless of where they stand, and *persists* a round) — so it earns its own island-wide banner
+  frame, not a fourth scope glyph. **Name LOCKED below (Naming).**
 - **Larder cap = 7 → *"travelling light, eating fresh — a night-market haul doesn't keep."*** Makes the
   cap feel inevitable. (v3 discards surplus; the old Dead-drop generosity beat is gone — no re-theme
   needed, the cap stands on the fresh-food logic alone.)
@@ -347,6 +434,21 @@ bullets are unchanged and still hold.)*
   end is the plain Day → Night close** — no alarm, no "Code Red": *play the day into the night, and when the
   night market winds down the tour's over — grab the last great bite before the last train.* Stays
   **warm/comedic**, a giddy wind-down, never menace. *(Full act framing in Naming.)*
+  - **Night = the expensive climax you build toward (v6.3.1 CD-4 — the day-cheap → night-pricey cost curve)
+    — BLESSED, thematically right.** The engine change (day vendors cheap and ramp-building; night marquee
+    names — the ★ apex, the big "both" foods — costing meaningfully more, so a discount engine still has to
+    source/travel to afford them) lands *exactly* on the day→night arc and the night-market north star.
+    In-world it is inevitable, not a tax: **a bowl of soy milk at a 7am breakfast cart is cheap; the
+    night-market marquee — the beef-noodle king, the ★-starred 擔仔麵 — is the headline act, and you *build
+    your whole day toward being able to afford it.*** That is the warm read of the LOTR-Duel curve: the
+    morning is where you assemble your reach and your ramp; **dusk is the payoff**, cashing the day you
+    built into the big neon names. The marquee stops being pricier **because they're the marquee** — the
+    crescendo of the food day — not because night is a grind. **The one warmth rail (→ re-sim / FTUE, not a
+    theme call):** the climax must stay *reachable-with-a-good-engine* — if night marquees tip into
+    *unaffordable* (the design's "Failure Mode B": nobody Bribes at night, the clock stalls), the giddy
+    payoff curdles into a wall and the north-star grin is lost. As specced (defray-don't-zero, a mandatory
+    ~2-ingredient residual), it reads as **earned climax, not punishing grind.** Blessed on the fiction;
+    keep the affordability watch on the design side.
 - **Re-skin test:** PASSES — the region vendor markets are Taiwan-specific food geography (each region its
   own street), the arc is the Taiwan food *day* (早餐店 → 夜市攤 — breakfast → night market, drinks stalls
   mixed through both layers), and **Tour Tickets** are a travel agent's booked tours; rename the setting and
@@ -386,6 +488,22 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     pile with its **1–2 face-up slots** and a **day/night layer marker** so "morning stacked over night"
     reads at a glance; and the **scoped-event icons** (⦿ self · ⬢ region · ➤ next-door) already flagged for
     dual-coding. Drinks stalls need **no** special marker now — they're just cheaper vendors on the shelf.
+  - **Coherence bless — card backs + two-state board (bg-theme guardian pass, 2026-08-07): ON-BRAND / BLESSED.**
+    `bg-infodesign`'s new native back identity (constant dusk-indigo border + passport-stamp roundel +
+    "TRAVEL AGENTS 台灣" wordmark + ticket-stub perforation + day ☀日 sun / night ☾夜 crescent motifs, drawn
+    not glyph → no tofu) and the two-state day/night board (`map-day.png` / `map-night.png`) render as a
+    genuine felt-identity fit — the passport / boarding-pass shape language, the sun/moon day-night grammar,
+    the 繁體 throughout, and the 成團 / 取消 pile names are all native to *this* game; **no Beacon leftover
+    remains** (the old copied back is gone). The day/night language stays **warm, not alarm**: day = warm
+    amber/gold; night = festive night-market **neon** (lavender/magenta), which reads as lantern-neon glow,
+    never a cold/red alarm register. **Well-judged in one specific way worth noting:** the phase *chrome*
+    flips cool-neon (ground, market slots, panel frames) while the **identity colours stay warm** — region
+    headers (North vermilion / South amber / Central jade) and the ingredient chips (豬/茶/海/糖/米) hold
+    their warm palette in *both* states, so the night board stays tethered to the warm-dusk north star
+    instead of drifting fully cool. **One light, optional forward note for `bg-infodesign` (NOT a blocker):**
+    the *night ticket back* is the single artefact with the least warm anchor (near-all lavender + neon, vs
+    the day back's all-gold warmth) — a small lantern-vermilion or amber accent in the night back's stamp
+    roundel would keep it on the "warm dusk" rail as a pair; safe to leave as-is for now.
 - **Moodboard / references to gather in `art/`** (real photo refs for a human illustrator):
   Shilin / Raohe / Liuhe night markets at dusk; hand-painted stall signage & 繁體 hand-lettering; HSR
   and local trains; scooters; convenience-store culture; vintage travel stamps/stickers; and the iconic
@@ -406,14 +524,40 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   objectives = **Tour Tickets** *(v6.2 LOCK — the season's tours you book; each may still carry an internal
   *"Operation: ___"* code-name for the wink)*, the trip = your **Itinerary**, scoring = the **Traveller's
   Log**, places visited = **Stamps**. Read them aloud together; kill any that clash.
+- **Character names — TRI-LINGUAL, LOCKED & BLESSED (v6.3.2 for the first five + v7 2026-08-09 for the
+  Granny; CD "adopt as proposed"; dignity-passed by
+  `bg-theme` under the Taiwan sensitivity rails).** Each character carries its name in three scripts on the
+  board: **Tâi-lô romanisation · English (player-facing `name_en`) · 繁體**. The canonical set (this is the
+  `characters.csv name_en` lock):
+
+  | Tâi-lô | English (`name_en`) | 繁體 | Dignity read |
+  |--------|---------------------|------|--------------|
+  | Lí-tiúⁿ-peh | **The Old Councillor** | 里長伯 | Warm local elected community figure (a 里長 warden). PASS. *Accuracy footnote: 里長 is strictly a neighbourhood/borough warden, not a city 議員 councillor — "Councillor" is a loose but dignified gloss; consultant to confirm best English (alt: "The Ward Chief").* |
+  | Ma-pó | **The Homebody** | 媽寶 | Deliberately warmer read of literal 媽寶 ("mama's boy"). "Homebody" lands affectionate (loves home), NOT the pejorative. PASS — the warm portrayal (phones home, swears home food is best) carries it. |
+  | Tuā-uī-ông | **The Big Eater** | 大胃王 | Celebrated competitive-eater / food-challenge figure. Neutral-warm, fits a food game joyfully. PASS (clean). |
+  | Bāng-âng | **The Influencer** | 網紅 | Contemporary, neutral role; framed as genuinely loving the food (affectionate self-aware wink). PASS (clean). |
+  | Lāu-tuā | **The Big Boss** | 老大 | A PLAYFUL, affectionate boss — the lovable fixer everyone's mysteriously glad to see; warm and comedic, NOT menacing or a triad/gang caricature. 老大 carries a boss/gang-leader connotation → **consultant-gated** (the paid consultant signs off the name + depiction before final/print). PASS **only while the warm portrayal stays load-bearing.** *(Renamed from The Big Brother 大哥 / Tuā-ko — CD, 2026-08-10.)* |
+  | A-má | **The Globetrotter** *(LOCKED & BLESSED v7, 2026-08-09 — CD auto-drive)* | 阿嬤 | The 6th character (mobility/tempo agent). Beloved spry grandma, everywhere-at-once on her **敬老卡 elder travel-pass** (reaches any region in one Travel + immune to the HSR maintenance outage); standard basket, **flaw-free**. **Age-as-superpower, never frailty** — the elder pass makes age a literal *advantage*, and the V7 close-out retiring her one flaw (the "small basket") removed the last age-as-deficit cue. **"The Globetrotter" names her *type*** (the tireless traveller who out-ranges everyone), not her demographic — the granny identity lives in 阿嬤 + art + blurb, exactly as the other five name a type not an age. 阿嬤 is the correct **Taigi/Hokkien** term for grandma (matches the Tâi-lô cast; warmer + more Taiwan-native than Mandarin 奶奶). PASS-WITH-BINDING — the spry/sharp portrayal is **load-bearing** (guard the frail/forgetful-granny stereotype, sibling to 媽寶/大哥); light watch that "Globetrotter" reads as a restless *local* wanderer, never a foreign-tourist gaze; native review of 阿嬤 + 敬老卡. *(Rejected: "The Free Rider" — reads freeloader, undercuts dignity; "A-má" — leaves the English column non-English, off-register; "The Globetrotter Granny" — names the demographic + is wordy, off the cast's "The [type]" register.)* |
+  - **Dignity verdict: all SIX BLESS** (the Granny 阿嬤 / **The Globetrotter** added & blessed v7 — a
+    PASS-WITH-BINDING sibling to the two edge cases below: her spry/dignified, age-as-superpower portrayal is
+    load-bearing, guarding the frail/forgetful-granny stereotype, and flaw-free by design). The two original
+    edge cases (**The Homebody**, **The Big Boss**) pass *on
+    their portrayals*, not on the English alone — so their warmth is now **binding & load-bearing** (like the
+    "Bribe = marketing opportunity" reframe): every surface (blurb, art note, rulebook voice) must keep 媽寶
+    affectionate-not-mocking and 老大 warm-not-menacing. **The Big Boss is the #1 character-name consultant
+    watch-item** (老大 carries an explicit boss/gang-leader connotation, so the warm-fixer read does NOT come
+    for free — the art + voice must carry it; **consultant-gated**: if a blind test reads it as gangster/triad,
+    warmer alts "The Local Legend" / "Everybody's Uncle" are a cheap swap). All 繁體 are **Traditional
+    characters** (rail-compliant); 媽寶 and 老大 also go to the native reviewer to confirm they read as
+    gentle-teasing / warm-respectful in context.
 - **New proper nouns from the re-frame (proposed — coherent with the above):**
   - **your travel agency** = who you are (you *run* it); your rival runs a competing agency.
   - **head office** = your dispatcher/boss on the phone/earpiece (and the voice of the rulebook).
   - **Tour Tickets** *(v6.2 — LOCKED; the objective spine, replaces the old single secret "signature
     Mission" +7 hook).* The season's **tours on offer** sit in a face-up row; **booking one** (claiming it)
     is a full action. Each booked ticket is **judged at the end of its phase** (daytime at dusk, nighttime
-    at the last train) into a **WIN pile** (成團 *Published Tours*, +value) or a **LOSE pile** (遺珠 *the
-    Ones That Got Away*, −floor(value/2)), tallied **once at game end** (accounting model, not live ±).
+    at the last train) into a **WIN pile** (COMPLETED 成團, +value) or a **LOSE pile** (CANCELLED 取消,
+    −floor(value/2)), tallied **once at game end** (accounting model, not live ±).
     Split into **daytime / nighttime / general** pools; a variable **12→5-per-phase** draw keeps each season
     fresh. **The day is paced by the VENDOR-CLAIMS clock** — each vendor claim ticks the day (dusk = 5th
     table-wide claim → the last train = 10th @2p) — **not** by ticket delivery. *Why "Tour Tickets":* it's
@@ -424,25 +568,45 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     row = "the tours on offer" / the Tour Board; the verb = **book a tour** / claim a ticket; the physical
     card = a **Tour Ticket**.)* → native review of the ticket names (the 繁體 set is idiomatic — bless +
     confirm).
-  - **The two ticket piles** *(v6.2 LOCK — bg-theme's call, confirming bg-design's candidate; warm skin on
-    the WIN / LOSE accounting model).* A booked tour is judged at the end of its phase into one of two
-    named piles, tallied once at game end:
-    - **WIN pile = "Published Tours" (成團 *chéng-tuán*)** — the tours that **ran**. *成團* is the genuine
-      travel-agency word for a tour that filled and **departed** (vs 不成團, a trip that never left), so the
-      warmth is *native and celebratory*: these are the tours that made it into the brochure, the season's
-      wins. *(Verb-friendly: a completed ticket "**goes to press** / makes the brochure.")*
-    - **LOSE pile = "The Ones That Got Away" (遺珠 *yí-zhū*)** — the tours you booked but couldn't run in
-      time. *遺珠* (from 遺珠之憾, "the overlooked pearl") is a **rueful, affectionate shrug**, never a
-      failure-shaming beat: *"ahh, that one got away"* — the travel agent's wistful glance at the trip that
-      almost was, not a black mark. **Bind (→ `bg-elegance` voice):** keep the lose-pile language warm and
-      wistful (*got away / the one that slipped past / almost-ran*), **never** harsh (*failed / lost /
-      dead*). A −floor(value/2) ticket is a shrug, not a scolding.
-    *Why these two:* they're travel-agent-native (a tour either **departs** or it **doesn't**), they read
-    warm in both languages, and 成團 / 遺珠 give the native reviewer a real idiom to bless rather than a
-    literal coinage. **→ native review** confirms 成團 / chéng-tuán and 遺珠 / yí-zhū read natural and warm;
-    **→ `bg-infodesign`** for the two pile markers (a "departed/brochure" tick vs a soft "got-away" mark —
-    dual-coded, not colour-alone). *(English names are the player-facing lock; the 繁體 rides alongside as
-    the flavour anchor, pending the native bless.)*
+  - **The two ticket piles** *(v6.3.2 LOCK — CD; the canonical pair, supersedes the v6.2 "Published Tours" /
+    "The Ones That Got Away" skin).* A booked tour is judged at the end of its phase into one of two named
+    piles, tallied once at game end:
+    - **WIN pile = COMPLETED (成團 *chéng-tuán*)** — the tours that **ran**. *成團* is the genuine
+      travel-agency word for a tour that filled and **departed / formed** (vs 不成團, a trip that never left),
+      so the warmth is *native and celebratory*: the season's wins, the tours that made the brochure. The
+      English is now the plain **COMPLETED** — the old **"SOLD"** board label and the **"Published Tours"**
+      prose skin are both retired. It pairs cleanly with CANCELLED, reads the same on every surface, and drops
+      the old **"SOLD" ↔ 完售 "Sold Out" event** clash.
+    - **LOSE pile = CANCELLED (取消 *qǔ-xiāo*)** — the tours you booked but couldn't run in time
+      (−floor(value/2)). **取消** is the everyday travel-trade word for a trip that's called off: plain,
+      legible, the exact antonym of a tour that ran. This RETIRES the old **遺珠 "the Ones That Got Away"**
+      skin — kept a while for its rueful warmth, but it read as a *different register* on every surface and
+      never matched the board's already-rendered **CANCELLED 取消**. **Bind (→ `bg-elegance` voice):** the
+      *name* is plain, but keep the surrounding *voice* warm and rueful — a CANCELLED tour is *"ah, that one
+      didn't run in time,"* a shrug, **never** a scolding (*failed / lost / dead*). A −floor(value/2) ticket
+      is a shrug, not a black mark.
+    *Why the plain pair:* one canonical **COMPLETED 成團 / CANCELLED 取消** reads identically on the character
+    boards, tokens, player aid, rulebook, and docs — no split between a board label and a prose skin — and it
+    lands on the diegetic travel-agency truth: **a tour either runs or it's cancelled.** **→ native review**
+    confirms 成團 / chéng-tuán and 取消 / qǔ-xiāo read natural and warm; **→ `bg-infodesign`** for the two pile
+    markers (a "departed/brochure" tick vs a soft "cancelled" mark — dual-coded, not colour-alone).
+    *(Historical: v6.2 locked "Published Tours" 成團 / "The Ones That Got Away" 遺珠 — see the dated log below;
+    only the English + the lose-pile 繁體 moved, the 成團 win 繁體 is unchanged.)*
+  - **BOOKING = 開團 *kāi-tuán* (BLESSED CANON — bg-theme v6.4, re-confirmed v7 2026-08-09; → native
+    review).** Chosen over the floated **行程 / 預約 / 訂單** family (itinerary / customer-reservation /
+    retail-order words): **開團 is the *operator's* verb** — the player *is* the 旅行社, so "open a group
+    tour for departure" fits the fiction where a customer-side reservation word never would — and it
+    **threads 團 through the whole lifecycle so the vocabulary teaches itself.** v6.4 renames the
+    objective cards **Tour Tickets → Bookings** and the claim action to **"Book a Tour."** Blessed 繁體
+    anchor: **開團** — the real Taiwan 旅行社 operator's verb, *"to open a group tour for departure."* It
+    threads the **團** through the whole lifecycle the game already owns: you **開團** (open/commit a tour)
+    → it either **成團** (fills and runs) or **取消** (called off) → milestone **好評**. Operator's verb, and
+    the player *is* the agency, so it fits the fiction better than the customer-side 預訂 (the plain
+    fallback if native review finds 開團 reads as the offering rather than the commitment). English keyword
+    stays **Booking**; 開團 is the flavour anchor. Consultant/native-review watch is **low** — plain
+    secular travel-trade vocab; confirm 開團 → 成團/取消 reads as a clean, natural triad. **Note the English
+    "Bookings" is REVIVED cleanly:** the old retired "Bookings" score-track referent no longer exists, so
+    the noun is free — and "booking a tour" is *more* diegetic than the retired abstract score ever was.
   - **Vendor** + **Bribe** = the stall/cook you win over, and the action of doing so (pay ingredients +
     hold the Buzz majority → they feature on your tour). ***v4 spine word — replaces "Court." LOCKED by
     the CD (2026-08-06), chosen over bg-theme's "Schmooze" rec for the funnier, spicier word.*** *Flavour
@@ -467,14 +631,21 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     recurs wherever "Bribe" appears (rulebook, player aid, box copy): the agent theatrically slides a
     "bribe" across the table that turns out to be a glowing review and a busload of tourists. The joke does
     double duty — it's funny *and* it's the guardrail.
-  - **Buzz** + **Promote** = the second currency (now **committed & contested ON a vendor** — v4) and the
-    action that earns it. *Flavour of the physical stack:* **the Queue** — a Buzz token = a busload/a wave
-    of your clients you've steered to that stall; the pile of Buzz on a vendor = the queue snaking out their
-    door, half yours half your rival's. **Recommend keeping the keyword "Buzz"** (already means hype, warm,
-    funny, low-churn) and flavouring the on-vendor stack as *"the queue you've drummed up"* / *"whose busload
-    is bigger."* The ≥2-Buzz majority reads as *your agency is clearly driving the bigger crowd, so the
-    vendor throws in with you.* (If the CD wants a more concrete on-vendor noun than "Buzz," **"the Queue"**
-    or **"Crowd"** is the fallback — but Buzz is coherent as-is.)
+  - **Followers** + **Promote** = the committed, contested currency you pile ON a vendor, and the action
+    that places it *(v7 rename — was **Buzz**; CD v6.4 lock).* A **Promote places 2 Followers**; the pile of
+    Followers on a vendor is **your following steered to that stall** — the busloads, the five-star reviews,
+    the "you HAVE to eat here" going out to your feed, half yours and half your rival's. **The old "the
+    Queue" stack-skin is RETIRED** — *Followers* is self-flavouring (it *is* your audience/crowd), and it
+    sits natively in the influencer/marketing funnel the game already runs on (網紅 The Influencer, the ★
+    going-viral / Trending beat). Holding the majority reads as *your agency is clearly driving the bigger
+    crowd, so the vendor throws in with you.* **Followers are gated by Followers-max (the dial):** your total
+    committed Followers can never exceed your **Followers-max**. Fiction: *you can only rally as big a
+    following as your name can carry* — a small agency runs one campaign, a far-reaching one runs several at
+    once. Winning a vendor returns your Followers to supply → frees the dial for the next campaign. This is
+    the signature twist's spine (see the recast resonance bullet); it reads as inevitable fiction, not a
+    bolted-on ceiling. **Wording rail (→ `bg-elegance` / `bg-developer`):** a *loss* of Followers (the
+    lost-war dial-drop) is *the crowd drifting to the rival's stall / the hype ebbing*, **never** a bare
+    "−N Followers" (a real social-media feel-bad is the one way this could curdle).
   - **Vendor venue types & the region markets** *(v6.2 — the central Ladder / Beverage-Row structure is
     replaced by **per-region vendor markets**; the venue *names* are kept, the "beverage fork" is retired).*
     Each region runs its own face-down **vendor pile** = the day's **早餐店 breakfast shops stacked over
@@ -526,6 +697,19 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     default; a head-office-voice skin ("local / district / neighbouring", or a sitrep register) is optional
     if it stays warm and never reads as a targeted attack. **The icons are `bg-infodesign`'s to finalise and
     `bg-access`'s to dual-code** (redundant to colour: distinct glyph + short label).*
+  - **Scheduled Maintenance** *(v6.3.1 CD-2 — LOCKED English name; the table-wide HSR-down event, NOT a
+    ⦿/⬢/➤ scoped card).* The one island-wide event: the North↔South high-speed line is down for everyone for
+    a round, so the whole table takes the slow road. **English name LOCKED: "Scheduled Maintenance."** It's
+    warm, secular, universal, and comedic in the driest possible way — the single most relatable travel
+    gripe there is. **Flavour line (LOCKED):** *"Head office on the earpiece, groaning: 'the high-speed
+    rail's down for scheduled maintenance — slow road for everyone, you included.'"* — head-office-groans-
+    on-the-phone register, a comic inconvenience, never peril. **繁體 (working 排班保養; → native reviewer):**
+    for *rail servicing* the more idiomatic Taiwanese phrasing is **例行保養 (lì-xíng bǎo-yǎng, "routine
+    maintenance")** or **定期保養 (dìng-qí bǎo-yǎng, "scheduled servicing")** — 排班保養 mixes 排班
+    (shift-rostering) with 保養 and reads slightly off; **recommend 例行保養 pending the native bless.**
+    English is the player-facing lock; the 繁體 rides alongside as flavour. **→ `bg-infodesign`:** this needs
+    its own **full-width island-wide banner frame** (visibly *not* a ⦿/⬢/➤ card) + an **HSR-closed reminder
+    marker** that sits on the board's North↔South HSR spine while it's in effect.
   - **The Acts** = the end-game structure — **a single glorious eating day, a TWO-BEAT arc** *(v5 — the CD's
     ≤30-min target)*, **morning breakfast → night-market climax.** With the venue rename the on-clock arc is
     **早餐店 → 夜市攤** (drinks stalls mixed through both layers — no longer off-clock). ***Act I · The Breakfast Run 早餐***
@@ -552,19 +736,71 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
     the tone, not just the ruleset. Nothing thematically stranded — the spy-caper wink still lives in the
     trench-coats, "Operation: ___" mission names, and the head-office voice.* ~~*Alternatives logged:
     "Last Orders," "Wheels Up," "Code Red" (v5, now cut).*~~
-  - **Prestige** / **Reputation** = the two live scoring vectors (star power / your standing as an agent),
-    alongside the **Tour Tickets** (the objective spine — see above). *(v5→v6.2: Region-Coverage is **no
-    longer a scoring track** — the grand-tour breadth line is now a **Tour Ticket** (走透透 / 大三元), not a
-    named vector. "The grand tour across the island" survives as fiction; only the scoring plumbing moved.)*
-  - **★ Star** = the value hook on a **standout** vendor — either **printed** on an apex "Legendary"
-    night-market stall 夜市攤 (a *standing* accolade — Michelin / Bib Gourmand / competition win, worth the
-    most Prestige) or
-    a dynamic **★ Star token** dropped mid-game by the **"vendor gets hot"** boon (**摘星了 / 得獎了 / 爆紅**)
-    onto an ignored Board vendor (+Prestige/+Rep to whoever wins it). *Flavour = **"this beloved stall got
-    its due" / "the little place that blew up overnight."*** Warm celebration, **real & secular**, dish
-    names intact — the reason a specific vendor is suddenly worth crossing the island and burning Buzz for.
-    **Never** an invented award, sacred framing, or a false star on a real named business (see the ★ Star
-    resonance bullet's three binding rails). *v5 — CD's value-swing.*
+  - **Tour Tickets = the SOLE score (v6.3 TICKETS-ONLY — LOCKED).** The final score is your Tour-Ticket
+    tally and nothing else: Σ(COMPLETED 成團 win-pile value) − ½·Σ(CANCELLED 取消 lose-pile value). **Vendors do NOT score;
+    Reach does NOT score.** (See the objective-spine bullet above + §resonance.)
+  - **~~Bookings~~ = RETIRED as a term (v6.3 TICKETS-ONLY).** It named the former Prestige/VP score track;
+    with vendors no longer scoring, that track has no scoring job, so the *word* is dropped entirely (rather
+    than demoted to a per-card label — the vendor value attribute is now **"Draw,"** below). One fewer noun
+    in the glossary. *(Was, briefly at v6.3 SHAPE-LOCK: a headline score track renamed from "Prestige." That
+    lived for one pass.)*
+  - **Draw** = a vendor's **value** number, renamed (v6.3 TICKETS-ONLY — LOCKED; 繁體 flavour anchor **人氣**
+    *rén-qì*, a stall's crowd-pulling power → native review). It is a **printed card ATTRIBUTE, not a score
+    track** — read straight off the card, never summed on a board ledger. Its jobs: (1) a few high-value
+    tickets reference cumulative Draw (`d_prestige8` ≥8, `n_prestige14` ≥14, `g_prestige12` 揮金如土 ≥12 — sum
+    the printed Draw of your face-up won vendors at that ticket's judging), and (2) it marks the ★ apex as the
+    marquee get. *Why "Draw" over "value":* "value" now misreads as "points" (the exact confusion tickets-only
+    must kill), whereas **Draw** is diegetic — it's already the fiction's word for what a good vendor does (*"a
+    bigger draw → more people book the tour"*), it's tourism-native (the trip's "main draw"), warm, and it
+    tells the player the number is about *pulling a crowd to a stop*, not scoring. *(Fallback **"Pull"** if the
+    card-flip vocabulary ever adopts the verb "draw" and a collision shows up in the FTUE — the core loop says
+    "flip," so no collision today. Rejected: **"value"** (reads as points), **"appeal"** (flat).)*
+  - **Followers-max — the dial** *(v7 rename — was **Reach** (v6.3), and **Reputation** before that; CD v6.4
+    lock)* is **not a scoring vector** — it is the **live cap on the Followers fight** (committed Followers ≤
+    Followers-max), shown by a **per-player dial**, earned by Travelling + events and dropped by greed /
+    cut corners / a lost promotion war.
+    *(v5→v6.2: Region-Coverage is **no longer a scoring track** — the grand-tour breadth line is a **Tour
+    Ticket** (走透透 / 大三元). "The grand tour across the island" survives as fiction; only the scoring
+    plumbing moved.)*
+  - **Tours Completed** = the repurposed physical track (v6.3 TICKETS-ONLY — LOCKED as the functional
+    label). With "Bookings" retired, its old score track is re-tasked as a **live monotonic counter of the
+    tours you've completed** (a ticket's pattern met by your won vendors — ticks up the moment it's met,
+    never comes down; **no new component — one track, relabelled**). It **hosts the Rave Reviews milestones**
+    (below) at your 2nd & 4th completed tour. Keep the **printed track label literal** — it's a live count
+    players read at a glance, and clarity beats a cute skin here (restraint). The rulebook *voice* may frame
+    it warmly as your agency's growing **track record** of tours run, but that's flavour, not a relabel.
+    **Coherence note (→ `bg-infodesign`): "Tours Completed" is NOT the 成團 win pile and must not read as
+    it.** The counter counts *completions* (pattern met, during play); 成團 counts *tours that scored* (settled
+    into the win pile at phase-end) — a DAY tour whose pattern you meet only after dusk ticks the counter yet
+    lands in CANCELLED 取消, so the two numbers can differ. Keep the counter visually distinct from the 成團 pile.
+  - **Rave Reviews** (v6.3 — LOCKED; 繁體 **好評** *hǎo-píng*, → native review) = the **milestone boons** now
+    homed on the **Tours-Completed counter** (re-homed off the retired Bookings track): as the tours you've
+    run stack up, your agency hits press milestones — it gets reviewed, it trends, it blows up. **`perplayer`
+    (v6.3 TICKETS-ONLY): each agency earns its Rave the first time IT crosses a mark** — it can no longer be
+    pumped onto the leader (the old "first-to-cross-for-the-table" version compounded a runaway; per-player
+    fixes it). Each Rave is an engine-fuel boon, never points. Warm, celebratory "your tours are taking off"
+    beats, coherent with the ★-accolade / five-star-review vocabulary already in the game. *(Deliberately
+    avoids the taken **"Going Viral"** — that's 網紅's ability — and the inverted **"Sold Out" 完售** — that's
+    an event hazard. Alt umbrella if ever wanted: "Headlines." Hold ONE umbrella name; don't grow the glossary
+    with per-mark synonyms.)*
+  - **★ apex vs Trending — TWO DISTINCT things, confirmed held apart (v7 bless).**
+    - **★ apex (printed, permanent)** = the standing top-Draw accolade printed on a **"Legendary"
+      night-market stall 夜市攤** — a real, secular honour: **Michelin / Bib Gourmand / a competition win** —
+      the **highest Draw**, one per region in the night set, the marquee get and the target of the star-chase
+      tickets (`n_star1`). It **keeps the Michelin / top-Draw identity** it has always had; the ★ is *its*
+      mark.
+    - **Trending (dynamic, event-dropped)** *(v6.4 rename — was the "★ Star token" dropped by the "vendor
+      gets hot" boon **摘星了 / 得獎了 / 爆紅**)* = a **separate** marker the island drops mid-game onto an
+      ignored vendor when it **goes viral**; **winning a Trending-marked vendor grants +1 Followers-max**
+      ("this stall blew up → your reach jumps"). It carries **its own icon** (→ `bg-infodesign`), **NOT** a
+      printed ★ — so a standing Michelin ★ never reads as a fresh going-viral beat, and vice versa.
+    Both stay **real & secular**, dish names intact; the ★ apex scores **nothing** on its own (v6.3
+    TICKETS-ONLY — its high Draw just makes it the fastest stop to *complete a fat tour*; vendors grant no
+    Followers-max). *Flavour = **"this beloved stall got its due" / "the little place that blew up
+    overnight."*** Warm celebration — the reason a vendor is suddenly worth crossing the island and rallying
+    your Followers for. **Never** an invented award, sacred framing, or a false star on a real named business
+    (see the ★ Star resonance bullet's three binding rails). *v5 — CD's value-swing; v7 — apex/Trending split
+    confirmed distinct.*
   - ~~**Brief / Client Brief / Memo**~~ = **CUT in v3** (directive deck removed; head office survives as
     the rulebook/earpiece *voice* only). *(v6.2: the deck's fiction jobs live on as **Tour Tickets** (the
     risky-book-it gamble) + **scoped Convenience-Store events** (the keep-your-rival-honest nudge) — no
@@ -579,20 +815,22 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   - **best-tour title** = the season's prize you're both racing for — the compete-engine's payoff. A
     cutesy award *name* (a "Golden Boarding-Pass"-type gag) is **fluid** — hold it light; route any
     Chinese/Tâi-lô coinage through the native reviewer before it locks.
-  - Read the v6.2 set aloud together (travel agency / head office / **Tour Tickets** (book a tour; the
-    *"Operation: ___"* wink) / **Bribe a Vendor** / **Buzz → the Queue** / **region vendor markets** (北·中·南·東,
+  - Read the set aloud together (travel agency / head office / **Bookings 開團** (book a tour; the
+    *"Operation: ___"* wink) / **Bribe a Vendor** / **Promote → Followers** / **region vendor markets** (北·中·南·東,
     daytime stacked over nighttime) / **早餐店 · 夜市攤 · drinks stalls mixed in** / ingredients:
     **豬肉 · 茶 · 海鮮 · 米 + 糖 (common)** / **Act I The Breakfast Run 早餐 · Act II Night Market 夜市 · the
-    last train home** / **Prestige · Reputation** / Events (scopes **⦿ self · ⬢ region · ➤ next-door**) /
+    last train home** / **Bookings — COMPLETED 成團 / CANCELLED 取消 (the SOLE score) · Draw 人氣 (a vendor's crowd-pull, a printed
+    attribute — NOT a score) · Followers-max — the dial (the Followers cap; Travel → Followers-max → Followers → win Vendors → run Tours 成團) ·
+    Tours Completed counter → Rave Reviews 好評 (milestones)** / Events (scopes **⦿ self · ⬢ region · ➤ next-door**) /
     best-tour title / Stamps) — one warm
     travel-agent-playing-spy voice, no clashes. *(Venue set reads warm together: 早餐店 → 夜市攤 is the
     morning→night turn of each region's street; drinks stalls sit among both as the cheap grabs.)* **"Bribe"** is the spiciest word in the set, so it *depends* on its
-    neighbours to stay warm: *"the queue you drummed up,"* *"marketing opportunity,"* *"put her on the
+    neighbours to stay warm: *"the following you drummed up,"* *"marketing opportunity,"* *"put her on the
     poster,"* and *"night market"* all point the same way (a crowd + the neon climax + a delighted vendor) —
     which is exactly what cushions "Bribe" into cheeky-agent-comedy rather than corruption. Kill any that
     drift toward menace, and make sure no "Bribe" line is left standing *without* its warm cushion. *(Note: the objectives = **Tour Tickets** register above stays;
-    "Traveller's Log" is now just flavour for the tour, not a scoring keyword — score via the two named
-    tracks + the Tour Tickets.)*
+    "Traveller's Log" is now just flavour for the tour, not a scoring keyword — score is
+    **Tour Tickets only** — COMPLETED 成團 / CANCELLED 取消 (v6.3 TICKETS-ONLY; no track scores).)*
 - **→ `bg-publishing` clearance flags (before art/print):** the **"Travel Agents" mark itself** is
   descriptive/crowded — the literal-title re-frame *strengthens* the descriptive read, so lean harder on
   the distinctive full lockup + logo (flagged already). Clear any award/title name. (Naming *clearance*
@@ -674,19 +912,37 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   recognises — which is exactly the *"local promoters showing off home"* the extraction rail needs, so the
   cast **strengthens** the rail. **The comedy punches at the over-the-top *agent*-type, never at a real
   group.** Framing guidance so no archetype slides to caricature (each: *name · flavour · ability · flaw*):
-  - **The Old Councillor 里長伯** *(re-lore of the Night-Market Auntie; mechanic KEPT — no re-sim).* A
-    retired borough-warden / local councillor who served the district so long he's shaken every hand twice
-    — turns up at every opening, wedding and night-market stall with a business card and a grin, and
-    *genuinely loves his patch.* *Ability = **Old Favours*** (the KEPT start-discount, re-lored): the first
-    vendor he Bribes in each of his first two regions costs **1 fewer ingredient** — *an old contact who
-    owes him one, from decades of showing up.* *Flaw = **Works Every Room*** (the KEPT no-HSR anti-lever,
-    re-lored): he insists on driving the district in person, stopping to chat, so he rings the map the long
-    way. **Bind the framing:** the discount is **earned goodwill / knowing everyone after a lifetime of
-    service**, *NOT graft* — the beloved 里長伯 fixer, never a cynical power-broker; **no real party, no
-    real figure, no cross-strait politics.** ⚑ **Compounding-risk flag (→ consultant):** a *politician*
-    whose edge is *connections/favours*, dropped into a game whose core verb is **"Bribe,"** could stack
-    into a corruption read — hold the warm cushion hard (earned relationships + the "marketing opportunity"
-    gag) and **watch this pairing** at the consultant pass.
+  - **The Old Councillor 里長伯** *(re-lore of the Night-Market Auntie; **kit REWORKED v6.3.1 CD-1 — home-turf
+    silhouette; → gated character re-sim**).* A retired borough-warden / local councillor who served **his own
+    borough** so long he's shaken every hand twice — turns up at every opening, wedding and night-market
+    stall on his patch with a business card and a grin, and *genuinely loves his district.* But that pull is
+    **local**: step outside his borough and he's just another out-of-towner who has to introduce himself.
+    **His whole identity is home-turf advantage / stranger-everywhere-else** — arguably *tighter* than the
+    retired no-HSR gag, and (see the bind) it makes the sensitivity cushion *stronger*, because his favours
+    are now visibly **bounded to the one borough a real 里長 actually serves.**
+    - **Setup — picks his home borough:** at setup (open — kits are public), 里長伯 declares **ONE home
+      region** where his standing lives. *(He still starts his pawn in Taipei with everyone — CD-3; the home
+      borough is a strategic declaration of where he'll build, not where he starts.)*
+    - *Ability = **Old Favours*** *(re-lored to home-only)*: a Bribe **in his home borough costs 1 fewer
+      ingredient** — *the old contacts who owe him one, from a lifetime of showing up on his own street.*
+      (Stacks with the region-icon discount ramp, floors at the vendor's cost — same flooring as any
+      discount.)
+    - *Flaw = **Off His Patch*** *(NEW — the away tax, re-homes the old anti-lever)*: a Bribe in **any region
+      other than home costs +1 ingredient** (his choice of type) — *nobody out here owes him a favour, so he
+      has to turn up with a little something and win them over from scratch, the honest way.*
+    - **Bind the framing (the standing 里長伯 sensitivity binding HOLDS, and this shape reinforces it):** the
+      home discount is **earned goodwill / knowing everyone after a lifetime of service in his own borough**,
+      *NOT graft* — the beloved local fixer, never a cynical power-broker; the away tax is *he's a stranger
+      elsewhere and courts vendors the warm, honest way like anyone else*, never "can't grease the right
+      palms." **No real party, no real figure, no cross-strait politics.** ⚑ **Compounding-risk flag (→
+      consultant):** a *politician* whose edge is *connections/favours*, dropped into a game whose core verb
+      is **"Bribe,"** could stack into a corruption read — but bounding the favours to his **own borough**
+      (where local goodwill is exactly what a 里長 legitimately has) reads *more* clearly as neighbourly
+      standing than the old island-wide discount did. Hold the warm cushion hard and **watch this pairing**
+      at the consultant pass. **→ `bg-infodesign`:** two mat icons — a **home-borough discount marker** (set
+      at setup) + an **away-tax reminder** (+1 elsewhere). *(The old **"Works Every Room"** no-HSR flaw is
+      GONE — re-homed as the table-wide **Scheduled Maintenance** event, see Naming + the event resonance
+      bullet.)*
   - **The Live-At-Home Office Worker 媽寶** *(re-lore of the A-má Lunchbox Grandma; mechanic KEPT — no
     re-sim).* A young office worker who still lives with mum and dad — every morning a parent presses a
     便當 into their hands (*"you can't buy food out there as good as home"*). Relatable and affectionate:
@@ -747,6 +1003,25 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
     gag, the vendor *chooses* him gladly) is **load-bearing.** **The single consultant question:** does he
     read as **affectionate Taiwanese-cinema comedy**, or a **crime stereotype of Taiwan**? Native review
     of 大哥 / 角頭.
+  - **The Regular 阿嬤 (A-má)** *(CD addition, 2026-08-08 — the NEW sixth character, the mobility/tempo
+    agent → sim; bg-theme name pick, CD to bless the English).* Everyone's favourite grandma, and she is
+    *everywhere* — sharp as a tack and quicker than agents half her age, she works her **敬老卡** (the real,
+    secular free/discounted **elder transit pass**) to ride the island's buses, trains and ferries for next
+    to nothing — breakfast in Tainan, the Taipei night market by dusk. She travels light — a little market
+    basket, room for the day's best few bites and not a scrap more — and she's generous to a fault, pressing
+    her finds on everyone at the table. *Ability (proposed) = **敬老卡 / the Elder Pass*** — she reaches any
+    region in one Travel (the free-riding, everywhere-at-once elder). *Flaw (proposed) = **A Little Basket***
+    — a low Larder cap; she buys fresh and carries little. **Bind the framing (load-bearing, sibling to
+    媽寶 / 大哥):** her age is her **superpower**, not a weakness — spry, sharp, joyful, in charge; **never**
+    doddering, forgetful, frail, or a helpless-cute-granny gag, and the small basket reads as
+    **travels-light-by-choice / eats fresh**, never *too weak to carry*. **SECULAR + real:** 敬老卡 is a
+    genuine everyday Taiwan elder benefit — read it as **warm pride** (she earned that pass and rides the
+    island like she owns it), never freeloading. **Roster bonus:** she adds a **senior woman**, balancing the
+    male-coded 大哥 / 里長伯 toward the ~3:2 gender aim and widening the range of faces. ⚑ **Consultant
+    watch-item (NEW):** does *"spry mobile elder + small basket"* read **charming**, or tip **ageist-frail**?
+    Native review of 阿嬤 (warm Taigi term for grandma) and 敬老卡 (natural wording; and a light accuracy note
+    — the pass is free/discounted *access*, so the "reaches anywhere fast" is the game's warm abstraction of a
+    well-travelled elder, not a claim the HSR is free on it).
   - **Roster variety (a respect signal — spans age + gender + ethnicity):** the cast now spans **age**
     (senior 里長伯 · young 媽寶 & 網紅 · mid 大胃王 & 大哥), **gender** and **ethnicity**. **Gender
     (art-flexible, aim ~3:2):** the **大哥** register is male-coded — so balance the rest toward women;
@@ -814,6 +1089,25 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
   delivery; Tour Tickets score via a **WIN pile / LOSE pile** (completed → +value, unfinished →
   −floor(value/2), tallied once at game end), the two piles **named "Published Tours" 成團 / "The Ones That
   Got Away" 遺珠**; and the **網紅 flaw = "Late to the Party"** (misses its first night-phase turn).
+  **New (v6.3 SHAPE-LOCK, 2026-08-07 — the signature twist moved; fiction followed):** **Reputation is
+  recast into a live resource and RENAMED "Reach"** — it **no longer scores**; it is the **live cap on the
+  Buzz fight** (committed Buzz ≤ Reach), **earned by Travelling** + some events, and **can be LOST** to greed
+  (the Greedy Grab) and warm-comedic mishap events (負評 bad review / 出包 mix-up). **Newest (v6.3
+  TICKETS-ONLY, 2026-08-07):** the signature scoring model moved again — **vendors flipped from banked
+  trophies to the ENGINE you assemble to run tours, and Tour Tickets 成團/遺珠 are the SOLE score** (vendors
+  score nothing; Reach scores nothing). Two names locked: the vendor **value → "Draw"** (人氣; a printed
+  attribute, not a score) and the retired **"Bookings" track → repurposed "Tours Completed"** counter, which
+  hosts the now-`perplayer` **Rave Reviews 好評** milestones (2nd & 4th completed tour). **"Bookings" is
+  fully retired as a term.** Locked spine language is now the funnel **Travel → Reach → Buzz → win Vendors →
+  run Tours (成團)**. **Reach is gate-only, NOT scored.** *(Balance numbers ride the gated character re-pass
+  re-sim — the shape is locked, the knobs are not.)* **New (v6.3.2, 2026-08-08 — two CD naming locks):**
+  (1) the **English character names** are LOCKED & canonical (dignity-passed): **The Old Councillor 里長伯 ·
+  The Homebody 媽寶 · The Big Eater 大胃王 · The Influencer 網紅 · The Big Brother 大哥** — the warm portrayals
+  of **The Homebody** (media 媽寶) and **The Big Brother** (大哥) are **binding/load-bearing** (they carry the
+  dignity pass); The Big Brother is the #1 character-name consultant watch-item. (2) the two ticket piles are
+  UNIFIED to one canonical pair everywhere: **WIN = COMPLETED 成團 · LOSE = CANCELLED 取消** — this retires the
+  old "SOLD" board label, the "Published Tours" prose skin, and the 繁體 **遺珠** "the Ones That Got Away"
+  (kept only in the dated log above as history). 成團 win 繁體 unchanged.
 - **Fluid:** the mechanism spine details and how the v4 layers earn rules (→ `bg-design`, parallel pass);
   the *exact naming* of head office / the tour / the award (proposals above, pending consultant +
   `bg-publishing`); the suit set (food categories vs regions) and final palette hues; whether the 2p duel
@@ -832,6 +1126,76 @@ the *subject* is real and politically sensitive, so this is a genuine flag, not 
 
 ## Re-theme log
 <!-- date — design change → identity move → why. -->
+- 2026-08-09 (Creative Director, **V7 REAL-PLACE + TOUR + GENERIC-TAXONOMY grounding — LOCKED into identity, NO re-theme, a DEEPENING**) — three V7 content moves that all pull the same direction (*sharing the real Taiwan* — the north star), consolidated here from `decision-log.md`. **(1) Vendors are now anchored to REAL Taiwan food-places** (`design/vendor-places.md`): all 24 mapped to actual famous night-markets / streets / food-areas, each visually distinct, **no two the same** — including the CD's family anchors (**後龍 Houlong, Miaoli**; **迪化街 Dihua St + 大稻埕碼頭 Dadaocheng Wharf**; **嘉義 Chiayi 文化路夜市**). Identity move: the fiction gets *more* real, not more strained — a travel agent showing off the island's actual best stops. **(2) Tours (Bookings 開團) re-themed to landmark-cluster / route / festival groupings** (`design/tour-themes.md`) tying each to things-to-do around its vendors (e.g. a Dihua-area day, the round-island cycling route, a Lunar-New-Year market run) — **secular festivals only** (no temple/deity/ghost-month), the binding rail. **(3) The generic ingredient taxonomy** (6 categories whose art shows a MIX — Meat/Tea/Seafood/Pantry/Sugar/Vegetables) **broadens the culture-sharing theme**: far more real dishes become expressible (it solved Chiayi turkey rice for free), so the deck showcases *more* of Taiwan's food, not a fixed five. **Art identity:** the cast + events read **over-the-top & wacky but warm/dignified** in an Agent-Avenue-style *look* (not lore), per `art/art-style.md`. **Binding sensitivity rails carried in full:** a **paid Taiwanese cultural + language consultant** verifies place/dish names, romanisation (Tâi-lô), and the Indigenous items (E01 竹筒飯, **E04 石板烤肉 — the #1 pre-art item**) BEFORE final art; caricature = charming exaggeration, **never** ethnic mockery; **no AI final art**. Owner for the full identity.md terminology refresh to V7 (Followers/Followers-max, Bookings restored, Trending) = **bg-theme** (flagged; not blind-edited here).
+- 2026-08-07 (bg-theme, **v6.3 TICKETS-ONLY guardian coherence pass — the signature scoring model MOVED
+  AGAIN**) — **STILL COHERENT — a TIGHTENING; two name-locks; NO re-theme.** `design/v6.3-content-draft.md`
+  flipped vendors from *trophies you bank for points* to *the ENGINE you assemble to run tours*: a vendor now
+  scores nothing (it's the region-discount ramp + the stop that completes a held ticket), and **Tour Tickets
+  成團/遺珠 are the sole score.** This is exactly the healthy case the prime mandate protects — a mechanic
+  moved and the fiction got *more* coherent, not strained.
+  **(1) Confirmed vendors-as-engine is a TIGHTENING, not a strain.** A travel agent doesn't hoard restaurants
+  — they run tours that actually depart (成團). Vendors-as-trophies was the mildly off-theme reading (you were
+  paying points for *owning* a stall you can't own); vendors-as-stops-you-line-up sits dead-centre on the
+  north star (*"build the island's best food **tour**"*). The one number that never had a clean in-world
+  referent (the "prestige accumulator") is simply gone. The §resonance bullet was rewritten accordingly.
+  **(2) Locked the vendor value attribute → "Draw"** (繁體 flavour **人氣** *rén-qì*, → native review). It's a
+  printed card ATTRIBUTE, not a score. Chosen over keeping "value" (now misreads as points — the exact
+  confusion tickets-only must kill) because "Draw" is already the fiction's own word (*"a bigger draw → more
+  people book the tour"*), tourism-native, warm, and tells the player the number is about *pulling a crowd to
+  a stop*. Fallback "Pull" logged if a "draw a card" collision ever surfaces (core loop says "flip," so none
+  today).
+  **(3) Locked the repurposed track → "Tours Completed"** (functional label; a live monotonic completion
+  counter, no new component). Kept literal over a cute skin because it's a live count read at a glance
+  (restraint — let "Rave Reviews" carry the warmth; rulebook voice may call it your agency's "track record").
+  Flagged the coherence trap for infodesign: the counter (completions/pattern-met) is NOT the 成團 win pile
+  (tours that scored) — they can differ, so keep them visually distinct.
+  **(4) Retired "Bookings" as a term entirely** (it named a score that no longer exists; the attribute it
+  might have labelled is now "Draw") — one fewer glossary noun, an elegance win. Recast the funnel to **Travel
+  → Reach → Buzz → win Vendors → run Tours (成團)** — now ends on the actual win condition.
+  **(5) Confirmed nothing else stranded:** 成團/遺珠, Reach, Rave Reviews 好評 all hold unchanged; Rave Reviews
+  just re-homed off the dead Bookings track onto the Tours-Completed counter and went `perplayer`.
+  **(6) Sensitivity:** trivial pass — no new real-culture motif; 人氣/好評 are secular everyday marketing/food
+  terms, added to the native-reviewer 繁體 list. The anti-extraction rail is if anything *strengthened*:
+  scoring the *tours that ran* (bringing people **to** the food) rather than *owning* stalls reads even more
+  as sharing/boosterism, not packaging/harvesting.
+  **Handoff to bg-infodesign** (gated on the character re-pass re-sim, when component data rebuilds):
+  simplified vendor card face = **Draw number + region-icon-or-not, NO score number, NO Rep number**; the
+  repurposed track **relabelled "Tours Completed"** with `perplayer` **Rave Reviews markers at the 2nd & 4th
+  completed tour** (dual-coded) and held **visually distinct from the 成團 win pile**; value-referencing
+  tickets (`d_prestige8`/`n_prestige14`/`g_prestige12`) cue "sum your vendors' Draw." No re-theme; numbers
+  ride the gated re-sim.
+- 2026-08-07 (bg-theme, **v6.3 SHAPE-LOCK guardian coherence pass — the signature twist MOVED**) —
+  **STILL COHERENT; concrete realign edits + three name-locks, NO re-theme.** The Buzz layer's spine changed
+  (`design/v6.3-content-draft.md`): Reputation stopped being a passive end-VP accumulator and became the
+  **live fuel** for the Buzz fight (a live cap: committed Buzz ≤ your standing), earned by Travelling +
+  events, lost to greed/cut corners, and **no longer scoring**. This is the healthy case the prime mandate
+  is built for — a *mechanic* moved and the *fiction followed and tightened*, so the job was coherence +
+  naming, not a re-theme.
+  **(1) Recast Reputation → the resonance bullet rewritten** (§Theme↔mechanic resonance): the old "Prestige /
+  Reputation / grand tour, all scoring vectors" reading is superseded by the **Travel → Reach → Buzz →
+  Bookings** funnel; Reach = the live Buzz cap, no longer a score.
+  **(2) Blessed & locked three names.** **Reputation → "Reach"** (hype-*capacity*, not a score; travel
+  literally extends your reach; sits one rung above Buzz in the real marketing funnel). **Prestige/VP →
+  "Bookings"** (the travel trade's own success metric — a diegetic upgrade on the referent-less "Prestige";
+  kept **English-only** to avoid colliding with the 成團 win pile). Milestone boons → **"Rave Reviews" 好評**
+  (warm review-threshold beats; deliberately dodges the taken "Going Viral"/網紅 and the inverted "Sold
+  Out"/完售). All three fold the Naming & voice section + the read-aloud set + Locked-vs-fluid.
+  **(3) Blessed the greed-burns-Reach fiction as WARM, not grim.** The Greedy Grab (shoving to the front of
+  the queue for an extra ingredient) and the 負評/出包 events dent your standing in the exact rueful-comedic
+  register as 遺珠 "the one that got away" — a ding, never a scold; a forced over-cap loss = a hype campaign
+  you *choose* to let fizzle (agency preserved). Confirmed on the warm-caper / never-menace tone rail.
+  **(4) Sensitivity:** no new sensitive motif; 負評/出包/好評 are secular island-life/marketing beats — added
+  to the native-reviewer 繁體 list (alongside 成團/遺珠). The anti-extraction rail on "Bookings" (people you
+  bring *to* the food = sharing, not packaging the island for outsiders) inherited cleanly. Trivial pass.
+  **Handoff to bg-infodesign** (gated on the re-sim, when component data rebuilds) — **⚠ PARTLY SUPERSEDED by
+  the v6.3 TICKETS-ONLY entry above (see it for the current card-face + track spec):** the **simplified card
+  face** (~~Bookings value~~ → **Draw** number + region-icon-or-not; the Reputation number is GONE from every
+  vendor), the **Rep track relabelled "Reach" and re-read as a resource/cap track** (marker + a clear "your
+  Buzz ceiling" read, not an end-score ladder) *(still current)*, ~~the **Rave Reviews milestone markers at
+  Bookings 7/14**~~ → **now `perplayer` markers on the "Tours Completed" counter at the 2nd & 4th completed
+  tour** (dual-coded), and a **Greedy-Grab marker/affordance** on the source action (the "+1 extra ingredient
+  = −1 Reach" touchpoint needs a legible cue) *(still current)*. No re-theme; balance numbers ride the gated
+  re-sim.
 - 2026-08-07 (bg-theme, **v6.2 LOCK guardian coherence re-check — post-sim CD locks: the vendor-claims
   clock + win/lose-pile scoring + the 網紅 flaw**) — **STILL COHERENT; concrete realign edits, NO re-theme.**
   identity.md had been written to the v6.2 *direction* but predated the post-sim **LOCK** (`design/v6.2-

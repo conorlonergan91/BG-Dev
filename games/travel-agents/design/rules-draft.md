@@ -1,148 +1,317 @@
-# Travel Agents: Taiwan — Rules Draft (v6.2)
+# Travel Agents: Taiwan — Rules
 
-<!-- Scaffolding note (not laid-out rulebook text): teach-in-play order, warm travel-guide voice per
-identity.md. Full spec, character kits, and the FTUE teaching sequence live in v6.2-content-draft.md +
-design-doc.md. -->
+<!-- Canon: design/followers-meeples-redesign.md (V7-M) + components/*.csv. -->
 
+<!-- complexity:ignore-start | FLAVOUR — front-of-book world intro (setting/premise). STORY, not rules-teaching load; excluded from the rulebook_words proxy, exactly like "Meet the Agents". Do not put any rule here. -->
+## Your Assignment
 
----
+Somewhere on this island, the greatest street-food tour ever run is waiting to be booked. You intend to book it first.
 
-## 0. The pitch (read aloud, 20 seconds)
-"You're rival **travel agents** building the best Taiwan food **tour** in one eating day. Ride between four
-regions, dig ingredients from each market, and pile **Buzz** on the vendors you want. Win one by
-**out-hyping your rival on the spot** — each vendor makes the next cheaper and climbs your **Prestige** and
-**Reputation**. Book **Tour Tickets** and finish them before **dusk** flips the street to the neon **night
-market**; when the last train's called, catch it home. Best tour is **Top Agent**."
+You're a travel agent. You have chosen, for reasons best left unexamined, to treat this like a covert operation — trench coat over the Hawaiian shirt, head office crackling in your earpiece, codename already assigned: **Operation Beef Noodle**.
 
-## 1. Goal
-Score the most points — from your vendors' **Prestige**, your **Reputation** standing, and your **Tour
-Tickets** (win-pile − lose-pile). Most = **Top Agent**.
+The mission is simple. One eating day: a Taipei breakfast at dawn, the last train south at dusk. Win the island's most beloved stalls onto your tour — every vendor happily goes with whoever's driving the biggest, hungriest crowd — line up your bookings, and out-hype the rival agents circling the very same bowl of noodles.
 
-## 2. Setup (teach while you set up)
-1. Unfold the **Taiwan map** — four regions in a ring, **North 北 · Central 中 · South 南 · East 東**, an HSR
-   spine linking North↔South. It holds the **day-clock track** (a **dusk** mark and a **last-train** mark),
-   the **Prestige** and **Reputation** tracks, and — **per region** — a face-down **vendor deck** with
-   **face-up vendor slots** (**North 2, the others 1**) and a face-down **ingredient market deck**. Set every
-   marker to 0.
-2. Sort each region's cards into a **DAY deck** and a **NIGHT deck** (drinks are the low-value vendors mixed
-   into each); set the **night** decks aside for dusk. Shuffle each **day vendor deck** and **day ingredient
-   deck** face-down into place. Ingredient decks use the 5-palette (**N 豬肉 · C 茶 · S 海鮮 · E 米** + the
-   common **K 糖**, in **C & S** only) plus a few **event cards** (§6). Fill the face-up vendor slots. Set out
-   the **Buzz** supply (~24 @2p).
-3. **Tour Tickets:** shuffle the **daytime** pool, **draw 5** (rest to the box), reveal **3** as the shared
-   **ticket row** (the other 2 form its draw pile, with a few general-pool tickets shuffled in). Repeat with
-   the **nighttime** pool; set it aside for dusk.
-4. Each agent takes an **Agent Character** (ability + flaw — read aloud, public) and a **pawn** (start
-   opposite at 2p — one North, one South). Your Larder starts empty and stays **face-up** all game.
+Complete the most tours before that last train and the island crowns you its finest food-tour agency.
 
-## 3. How a turn works (the core loop — teach these six, then just play)
-Do **ONE** action. Then if your Larder holds over **7** ingredients, discard down to 7 (to that region's
-market discard, which reshuffles in when the deck runs dry — ingredients are never removed from the game).
+Now. Grab your coat. Try to look casual.
+<!-- complexity:ignore-end -->
 
-- **VISIT THE LOCAL MARKET** *(where you stand)* — flip the top **3** of this region's ingredient deck. Any
-  **event** happens now (by its scope — §6), then is discarded. **Keep up to 2** ingredients, discard the
-  rest.
-- **CONVENIENCE STORE** *(anywhere)* — flip the top **1** card of **any** region's ingredient deck: an
-  ingredient → take it; an event → it fires **by its scope** (§6). *(Any region, no travel — the reliable
-  way to grab the common **K**.)*
-- **TRAVEL** — move to a **neighbouring** region (HSR = North↔South), then flip the top **1** card of the
-  region you **arrive** in: ingredient → take it; **event → nothing, keep moving**.
-- **PROMOTE** *(with the vendor, in this region)* — place **2 Buzz** from the supply onto vendor(s) you're
-  with here. Buzz stays on the card for all to see; your rival can pile on too.
-- **BRIBE A VENDOR** — win a face-up vendor by out-hyping your rival, on the spot (§4–§5). *(Winning any
-  vendor moves the day-clock +1.)*
-- **CLAIM A TOUR TICKET** — take one ticket from the face-up **row of 3** (the current phase's pool) as an
-  open commitment; refill the row. You may only claim one you **haven't yet completed**. It scores later
-  into your win-pile / lose-pile (§8–§9).
+Rival travel agencies chase the same food stalls through one eating day. Ride between four regions, gather
+ingredients, and pile **Followers** on the stalls you want: win a stall by drawing the **biggest crowd**
+and it joins your tour, making the next one cheaper. Your only points are the **Bookings** you run —
+complete the most before the **last train** to be **Top Agent**.
 
-> **Agent Characters bend the rules.** Each mat carries **one ability + one flaw** for that agent alone
-> (e.g. the competitive eater keeps all 3 on a Visit) — read every mat aloud at setup; a mat wins where it
-> differs from the above.
+> These are real Taiwanese dishes and night markets — celebrated with care. Eat them with a grin.
 
-## 4. Buzz — the hype fight (the heart of it)
-You show a vendor you want them with **Buzz** — you promise crowds and hype (your job: bring people *to* the
-food).
-- Buzz only ever sits **in the supply** or **on a vendor** — never in your hand.
-- To Buzz a vendor you must be **standing in its region**.
-- **Both agents can pile Buzz on the same vendor** — that's the fight, and it's where the game is won.
+**3–6 players · 30–45 min**
 
-## 5. Bribing a vendor (winning it over) — ONE rule for every vendor
-To **Bribe** a face-up vendor, all at once:
-1. be **with the vendor, in its region**;
-2. hold **at least 2 more Buzz on it than your rival** (the majority, checked right now);
-3. **pay its ingredients**, minus your region discounts (below).
-Take the vendor to your tour and gain its **Prestige** (score marker up), its **Reputation** (Rep marker
-up), and its **perk**. Then **clear ALL Buzz on it** (yours *and* your rival's) back to the supply,
-**refill** the slot from that region's current deck, and **move the day-clock +1** (§7). The vendor is
-locked from your rival.
+## Meet the Agents
 
-> **The engine (the "aha").** Each **food** vendor carries a **region icon**; every matching icon you hold
-> makes that region's ingredients **1 cheaper** on future vendors — sign a couple of Southern stalls and the
-> next barely needs oysters. **Drinks** carry no icon and no ramp (worth **2 Prestige**) — a cheap grab,
-> never a win on their own. **Buzz is never discounted**, so the *hype fight*, not the ingredients, gates
-> your next big win.
+*Pure flavour — nothing to learn here. Each agent's actual ability and flaw live on their board and in
+**The six agents** near the end. Pour a tea and enjoy the introductions.*
 
-> **Outraced, not robbed.** If your rival out-hypes you, your Buzz just fizzles back to the supply — you keep
-> every ingredient you sourced, and a fresh vendor comes out. You never seize a place.
+### The Old Councillor 里長伯
 
-## 6. The market decks & events (the island doesn't sit still)
-Each region's market is a **face-down deck** of its **signature** ingredient (+ the common **K**, in two of
-the four regions) and a few **event** cards (mostly hazards). **Working a market — a Visit or a Convenience
-Store — fires any flipped event straight away, by its scope; a card flipped as you *arrive* on a Travel does
-nothing.**
-- **Hazards** *(the majority)* — a typhoon, a "完售 SOLD OUT" sign, scooter gridlock. They **tax or delay —
-  never destroy** what you hold, never cost a whole turn.
-- **Boons** *(the minority)* — a festival that hands out Buzz, a kind auntie, or a vendor **suddenly gets
-  hot** (★ below).
+> *"Why trust Google Maps when the whole neighbourhood has my number?"*
 
-> **The scope tag — who the event hits**, measured from the region the card came out of: **⦿ You** (just the
-> flipper) · **⬢ This region** (everyone standing in the drawn region) · **➤ Next door** (someone in a
-> neighbour). *Worked example:* on a **Visit** you stand in the region you flipped, so ⬢ hits **you**; on a
-> **Convenience Store** you're often elsewhere, so ⬢ hits **whoever stands in the region you flipped** — flip
-> a rival's region and a scoped hazard can land on **them**. Never a personal attack — just the island living
-> its life.
+Need a reservation? He knows the owner.  
+Need a shortcut? He built it.  
+Need directions? Three aunties have already argued about the best route before you've finished asking.
 
-> **★ Star vendors.** Some night-market names carry a **printed ★** (a real Michelin / Bib-Gourmand nod),
-> score top Prestige, and sit one apex per region — the rotating prize both agents chase. A boon can also
-> drop a **★ Star token** on a vendor, making it worth **+2 Prestige / +1 Rep** to whoever wins it.
+The Old Councillor has spent so long looking after his neighbourhood that the neighbourhood now looks after him. Every market greets him like a returning celebrity. Stall owners wave him over, locals quietly slip today's freshest ingredients into his bag, and somehow he hasn't paid full price for lunch since 1998.
 
-## 7. The day-clock — Day → Night (every vendor you win moves it)
-It's **one eating day**. The **day-clock** climbs **+1 every time anyone Bribes a vendor** — food or drink
-alike. It has two marks (2p: **dusk = the 5th table-wide vendor win · last train = the 10th**; the marks
-grow with more players):
-- **Act I — Daytime 白天:** morning food + the day's drinks. Cheap and low-contest at first — build your
-  discount ramp and stake early positions. **Daytime Tour Tickets** are on offer.
-- **DUSK (the day-clock hits the dusk mark) — the street turns over.** In one flip: **judge every claimed
-  DAYTIME ticket** (completed → win-pile · unfinished → lose-pile — §9); then **clear the entire day layer
-  island-wide** — every face-up **and** face-down **day vendor deck AND day ingredient deck** — and replace
-  it with each region's **night decks** (a neon recolour, run **event-heavier**). Swap the ticket row to the
-  **nighttime** pool. **You keep your Larder.** Any unclaimed day vendor is gone.
-- **Act II — Night Market 夜市:** the big **night-market stalls** — expensive, fought-over, the ★ apex per
-  region. This is where the tour is won.
+If your tour stays close to home, you'll eat like royalty.  
+If it leaves… well… now you're just another tourist.
 
-*(The faster you all win vendors, the faster the day moves — a built-in catch-up for a slow, tall player.)*
+### The Homebody 媽寶
 
-## 8. Ending the trip — the last train home
-When the day-clock hits the **last-train mark** (2p: the **10th vendor win**), everyone catches the last
-train: **finish the current round, play one more full round, and stop.** *(Backstop: if a region's deck
-empties, its slot isn't refilled until the next flip; if all decks dry island-wide, the phase ends then.
-Reaching the top of Reputation scores its reward but does not end the game. If one win trips **dusk and** the
-last train at once, resolve **dusk first**, then the end check.)*
+> *"You call it over-packing. Mum calls it being prepared."*
 
-## 9. Scoring — reveal your piles and tally once
-Add up three vectors:
-1. **Prestige** — the sum of your vendors' values (already on your track).
-2. **Reputation** — the VP for your **final** position **only** (not cumulative): 3–5 → **+2** · 6–8 →
-   **+4** · 9–11 → **+6** · 12 → **+9**.
-3. **Tour Tickets** — **+the printed value of each ticket in your WIN pile**, **−floor(value ÷ 2) for each in
-   your LOSE pile** (half its own value, rounded down). Tickets are sorted into those piles as each phase
-   ends (§7–§8); tally **once**, at game end — nothing changes during play.
+His mother packed "a few snacks."  
+The backpack now weighs more than he does.
 
-Most points wins → **Top Agent**. **Ties:** highest Reputation, then most vendors, then most regions covered.
+Every journey begins with enough dumplings, tea eggs, fruit, drinks and emergency pineapple cakes to survive crossing the Pacific. Halfway through the trip he's somehow collected even more food than he started with.
 
-## 10. The warm-tone reminders (margin asides, not rules)
-- You're **promoting** Taiwan's food — winning a vendor is out-hyping your rival to earn their blessing,
-  never taking from them. "Bribe" is the cheeky word; the deed is a warm hard sell, not corruption.
-- Events are the island living its life — never sacred customs for laughs; a Convenience-Store event on your
-  rival is the *island* doing it, a shared groan, never a spiteful strike. Dish and vendor names stay real
-  (Tâi-lô + 繁體); the comedy is the caper gag and your own gluttony.
+People laugh.  
+Until they realise he's the only guide who never wastes time shopping because Mum already thought of everything.  
+She probably packed something for you too.
+
+### The Big Eater 大胃王
+
+> *"I've personally taste-tested the entire island. More than once."*
+
+Her tour has one simple guarantee:  
+If it's delicious, you'll eat it.
+
+Breakfast becomes second breakfast.  
+Second breakfast becomes an "important cultural tasting."  
+Lunch somehow lasts until dinner.
+
+By sunset everyone's carrying food babies and questioning their life choices while she's cheerfully asking,  
+"Dessert?"
+
+She's personally inspected every famous stall in Taiwan.  
+Several times.  
+For quality assurance, obviously.
+
+### The Influencer 網紅
+
+> *"Tomorrow's biggest food trend starts wherever I point my camera."*
+
+By the time you've discovered a hidden gem…  
+…she's already uploaded it.  
+By the time you've posted your lunch…  
+…she's moved onto dinner.
+
+Entire markets panic when they see her ring light appear over the horizon because they know what's coming next:  
+Twenty thousand hungry followers.
+
+She doesn't chase trends.  
+She accidentally causes them.
+
+### The Big Boss 老大
+
+> *"Funny thing… everything always works out better when I'm around."*
+
+Nobody's quite sure what he actually does.  
+They just know everybody knows him.
+
+The queue mysteriously speeds up.  
+The best table suddenly becomes available.  
+The vendor insists you try the expensive seafood "on the house."
+
+Nobody argues.  
+Nobody asks questions.  
+Everyone simply agrees that Big Boss's tour should probably go first.  
+Just… seems easier that way.
+
+### The Globetrotter 阿嬤
+
+> *"Keep up if you can, dear — I already booked tomorrow."*
+
+She claims she's "slowing down."  
+Nobody has ever witnessed evidence.
+
+One minute she's buying breakfast in Taipei.  
+Five minutes later she's waving from Tainan.  
+By lunchtime she's somehow already eaten in Kaohsiung and is recommending dessert in Hualien.
+
+Nobody knows how.  
+Nobody asks.  
+At this point people simply assume Taiwan rearranges itself to make life easier for Grandma.
+
+## 1. What you're going for
+
+Your score is your **Bookings, and nothing else.** A Booking is a little tour you promise to run — *three
+breakfast stalls*, *a ★ marquee name*. Complete it to score its value; leave it unfinished and it costs
+you. Vendors and Followers never score. Most Booking points at the last train is **Top Agent** (§9).
+
+## 2. Setup
+
+> 🖼 **[FIG-SETUP|build/map-day.png]** — the shared board: four regions in a ring, the HSR link between North and South, and each region's vendor slots and market deck.
+
+Everything sits on **one shared board, readable from any seat. Everyone starts in Taipei (North).**
+
+- **The map** — four regions in a ring: **North 北 · Central 中 · South 南 · East 東**. Ring-neighbours
+  are linked; the **HSR** also links **North and South** directly.
+- **Ingredient markets** — each region has a face-down market deck. Split each into **DAY** and **NIGHT**
+  piles; shuffle the DAY into place, set the NIGHT aside for dusk.
+- **Vendor stalls** — fill the face-up slots from each region's DAY vendor deck (counts below); set the
+  NIGHT vendor decks aside for dusk.
+- **Booking decks** — at **3 players**, first set aside the seven tours marked **4–6** (they need more
+  stalls than a 3-player game supplies). Shuffle the rest into the **開團** tour supply: the **⟳ any-time**
+  tours can be booked from the start and worked on all game, while the **☀ day** tours come out by day and
+  the **☾ night** tours at night (see the setup chart for sizes). Deal a face-up **Booking row** to start.
+- **Followers** — take your full pool in your colour (**6**; the Influencer 網紅 owns **8**): put **2 on
+  your board**, the rest in your own **supply**.
+- Each player takes a **character board** (read its ability and flaw aloud), a pawn in Taipei, an empty
+  **Larder** face-up, and their **COMPLETED 成團** and **CANCELLED 取消** pile markers.
+
+The **setup chart on the board** gives, for your count, the vendor slots per region and the Booking-deck
+sizes. There are deliberately **fewer stalls than agents** — so you'll collide over them. First player is
+whoever ate street food most recently, then clockwise; the Influencer 網紅 takes the **last** seat.
+
+## 3. Your turn
+
+Take **ONE** action. Then, if your Larder holds more than **7** ingredients, discard down to 7.
+
+- **VISIT the market** *(where you stand)* — flip the top **3** of this region's market. Any **event**
+  fires now (§7), then discards. **Keep 2** ingredients (the Big Eater 大胃王 keeps 3).
+- **CONVENIENCE STORE** *(anywhere)* — flip the top **1** of **any** market: take the ingredient, or its
+  **event** fires.
+- **TRAVEL** — move to a neighbour (or North↔South by HSR), then flip the top **1** where you arrive (an
+  event on arrival does nothing). Then **grow your crowd**: 1 follower, supply → your board.
+- **PROMOTE** *(with a vendor here)* — place **up to 2** followers **from your board** onto stall(s) here,
+  stacked or spread (§4).
+- **BRIBE a vendor** *(with it)* — win a stall you've drawn the biggest crowd for (§5).
+- **BOOK a tour** — take a Booking into your hand (§6).
+
+> **Greedy Grab.** On a Visit or Convenience Store, keep **one extra** ingredient beyond your limit —
+> **send 1 follower back to your supply** (the crowd tuts and drifts).
+
+> **Characters bend the rules.** Each board has one ability and one flaw for that player alone; where a
+> board disagrees with these rules, the board wins. Some agents are flaw-free by design.
+
+## 4. Followers — your crowd
+
+**Followers** are the hype you pile on a stall — never in hand, always in full view. Each is in one of
+three places: your **supply** (un-rallied), **your board** (rallied), or **on a stall** (committed). You
+own a fixed pool in your colour — **6**, or **8** for the Influencer 網紅 — and can never commit more than
+you own. They flow supply → board (**grow**, on Travel) → stall (**Promote**), then **home to your board**
+on a win or back to your **own supply** on a loss (§5).
+
+## 5. Bribing a vendor — the biggest crowd wins
+
+A face-up vendor goes to whoever draws the **biggest crowd** for it. To Bribe a vendor you stand with:
+
+1. hold **strictly more of your followers on it than any single rival** — an outright plurality (a *tie*
+   claims nothing; the Big Boss 老大 alone wins by matching);
+2. **pay its ingredients**, minus your region discounts (the crowd decides only *who* pays — there is
+   **no follower cost**).
+
+Take it onto your tour and complete any **Booking** it satisfies (§6). Your followers come **home to your
+board**; each loser's scatter to their **own supply** (the crowd drifts to the rival's stall, never onto
+it) — the whole cost of losing. **Leave the slot empty** for now.
+
+**A tie just blocks.** Level for the lead (no Big Boss present)? None may claim; the crowds **ride** —
+Promote again to break it, or walk away and leave them.
+
+**Stalls are scarce.** A claimed or emptied slot stays **empty** until the round's-end refill, and a stall
+no one queues at eventually **sells out** (§8). A stall may be the region's only one — out-commit a rival,
+or Travel on and risk it being gone.
+
+**A won vendor is pure engine.** Most show a **region icon**: each icon you hold makes
+that region's ingredients **1 cheaper** to Bribe — your ramp. Drinks and ★ apex stalls carry no icon.
+Night stalls cost more and often want two regions' ingredients.
+
+> **Trending 爆紅.** An event can drop a **Trending** marker on a stall; win it and your crowd **grows +1**
+> — it went viral. The printed **★ apex** stalls are a separate, permanent thing — a region's top table.
+
+> **Rave Reviews 好評.** The first time you complete your **2nd** tour, **grow your crowd +1**; at your
+> **4th**, take **1 ingredient of choice** and your **next Bribe costs 1 less**. Once each, per player.
+
+## 6. Bookings — your tours
+
+A **Booking (開團)** is a tour you line up to run. Hold at most **3**. There are three kinds, told apart on
+the card:
+
+- **⟳ any-time** (most tours) — finish it any time before the last train; it never cancels at dusk. The
+  safe, default line.
+- **☀ day** — must be finished before **dusk** or it's cancelled. Riskier, so it pays a little more.
+- **☾ night** — a night target, finished by the last train.
+
+**Book a tour** is one action, taken ONE of two ways:
+
+- **from the row** — take one card from the face-up Booking row into your hand, then refill the row; **or**
+- **Pot-Luck (隨緣開團)** — decline the whole row and draw the **top of the current Booking deck blind**
+  (DAY deck by day, NIGHT at night). You **keep it** unseen; the row is **not** refilled.
+
+One Book = one tour, one way — never both. Use Pot-Luck when nothing in the row suits you.
+
+- **Complete it (成團).** The moment your won vendors satisfy a held Booking, flip it to your **COMPLETED
+  成團** pile — it scores its full value, nudges your **Tours-Completed** meter, and frees a hand slot.
+- **Cancel it (取消).** At your 3-Booking limit and want a new one — or holding a Pot-Luck tour that
+  doesn't fit? **Cancel** a held Booking into your **CANCELLED 取消** pile: a flat **−1** at scoring,
+  whatever the tour's value.
+
+## 7. Markets & events
+
+Each region's market holds its foods plus a few **events**, mostly small hazards. **Working a market — a
+Visit or a Convenience Store — fires any event you flip, at once.** A card flipped as you *arrive* on a
+Travel does nothing.
+
+- **Hazards** tax or delay — they never take what you already hold, nor cost a whole turn.
+- **Boons** hand out an ingredient, grow your crowd, or send a stall **Trending**.
+
+> **Who an event hits** — read from the region the card came from: **⦿ You** · **⬢ This region** (everyone
+> there) · **➤ Next door** (a neighbour). At a Convenience Store you may be elsewhere, so ⬢ can land on a
+> rival — not an attack, just the island living its day.
+
+> **排班保養 Scheduled Maintenance** *(island-wide — its own banner).* The HSR is down for everyone: until
+> the start of your next turn, North and South aren't linked — travel the long way round the ring. Then it
+> reopens. (The Globetrotter 阿嬤 is immune.)
+
+## 8. The day-clock — dusk & the last train
+
+It's one eating day, and **the vendors are the clock**: when the day's stalls are gone the night's begin;
+when those are gone, it's the last train home. The Booking decks aren't the clock (just your tour supply),
+and the **market decks** (ingredients & events) reshuffle and keep coming — only the **vendors** run out.
+
+- **Daytime 白天** — the **13 daytime vendors.** Build your ramp on them.
+- **黃昏 DUSK** — the moment the **day vendors are all gone** (claimed or sold out): finish the current turn,
+  then flip to night — bring the **night** vendors and markets online and deal a fresh Booking row from the
+  NIGHT deck. **Keep your Larder and Bookings.**
+- **Night Market 夜市** — the **12 nighttime vendors** (11 unique + 1 duplicate): pricier, fought-over, the ★ apex.
+- **末班車 LAST TRAIN** — the moment the **night vendors are all gone**: finish the current round so everyone
+  has had equal turns, then the game ends.
+
+> 🖼 **[FIG-DIE|build/die-closing-time.png]** — the Closing-Time die 關門: four region faces (北/中/南/東) and two blank reprieves.
+
+> **The Closing-Time die 關門.** A stall left too long closes. Track rounds on the board's **1·2·3 clock**;
+> after round **L** for your count (**2** at 3 players, **3** at 4–6 — the setup chart says which), roll the
+> **Closing-Time die** and reset the clock. Four faces are regions (北/中/南/東), two are **blank** (a
+> reprieve). A region face **closes that region's oldest face-up stall** — even one with a crowd on it: the
+> stall is gone (not reshuffled), and **everyone's followers on it go home to their boards, kept** — no one
+> loses a contest, the die just called time. A blank, or a region with no stall to close, does nothing.
+
+> **At each boundary (DUSK and the last train).** First break any still-**tied** stall — to **most
+> followers, then earliest committer** (paying if able); losers scatter to their supply. Then followers on
+> **unclaimed** stalls return **home to their boards** — the stall simply closed, unwon. **At DUSK**, any
+> unfinished **☀ day** tour you hold is **cancelled** (flat **−1**); your any-time and night tours carry on.
+> **At the last train**, every tour still unfinished in hand is cancelled the same way (flat **−1** each).
+
+## 9. Scoring
+
+Total each player once:
+
+- **+ the full value** of every Booking in your **COMPLETED 成團** pile — the tours that ran.
+- **−1** for every Booking in your **CANCELLED 取消** pile (a flat one point each, whatever its value); any
+  Booking still unfinished in hand at the last train is cancelled too.
+
+Vendors and Followers score nothing. Most points is **Top Agent**; ties break to most vendors, then most
+regions covered, then fewest cancelled Bookings.
+
+## The six agents
+
+Everyone plays the same game with one twist. Each board states its agent's exact ability and flaw; in
+short:
+
+- **The Old Councillor 里長伯** — name one **home region**; while there, start each turn drawing **1
+  ingredient** from any market, free (neighbours look after their beloved local); away, it sleeps.
+- **The Homebody 媽寶** — sole on-the-move sourcer: on a **Travel**, draw the top **2** of the region you
+  **left** and keep both (event whiffs).
+- **The Big Eater 大胃王** — on a **Visit**, keep all **3** (may grab a 4th, but **send 1 follower back to
+  your supply**). Flaw: hazards fire **twice** on his Visit.
+- **The Influencer 網紅** — a deeper crowd: **8** followers, not 6. Flaw: takes the **last** seat.
+- **The Big Boss 老大** — he **wins ties** (need only to **match** the biggest crowd).
+- **The Globetrotter 阿嬤** — her **Travel reaches any region** in one action; **immune** to Scheduled
+  Maintenance. Each trip **tires her crowd**: 1 follower back to supply.
+
+## FAQ
+
+- **A market or Booking deck runs out.** Reshuffle a *market's* discard — ingredients and events never
+  leave the game. The **vendor** and **Booking** decks never reshuffle: the vendors are the clock and must
+  run out (§8); an emptied Booking deck just stops refilling its row (you've seen all the tours) — that
+  ends nothing.
+- **Nothing in the Booking row suits me.** Book **Pot-Luck** (§6): decline the row, draw the current deck's
+  top tour **blind**, keep it — you're never stuck with no tour worth booking.

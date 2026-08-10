@@ -1,53 +1,69 @@
-# Character mats — design notes (v6.2)
+# Character mats — design notes (v6.3.1)
 
-Companion to `characters.csv`. The CSV carries the **locked default kits**; this note records the
-**reserve dials** and one **build-scope flag** for the Director. Data is the source of truth — change
-the kit in `characters.csv`, not in a rendered mat.
+Companion to `characters.csv`. The CSV carries the **locked v6.3.1 kits** (re-sim-validated, band
+43.5–55.2%); this note records the **reserve dials**, the **infodesign icon asks**, and the FTUE
+watch-flags for the Director. Data is the source of truth — change the kit in `characters.csv`, not in a
+rendered mat.
 
-## What was built — the FIVE locked v6.2 mats
-All **five** mats from the locked v6.2 spec (`design/v6.2-content-draft.md` §Character kits) are built.
-(大哥 was added after the CD corrected the brief — the original bg-developer task said "four" in error.)
-
-| Mat | Ability | Flaw (default) | Sim |
+## The FIVE locked v6.3.1 mats
+| Mat | Ability | Flaw | Re-sim |
 |---|---|---|---:|
-| 里長伯 Lí-tiúⁿ-peh | Regular's Discount (first Bribe in each of first 2 regions −1 ingredient) | No HSR | 51.8% |
-| 媽寶 Ma-pó | Mum's Packed Lunch (Travel draws the region you LEFT) | none (Visit keep-2 normal) | 45.6% |
-| 大胃王 Tuā-uī-ông | Bottomless (Visit keep all 3) | hazards fire TWICE on his Visit | 52.6% |
-| 網紅 Bāng-âng | Going Viral (Promote places 3 Buzz) | Late to the Party (misses first NIGHT-phase turn) | 55.0%* |
-| 大哥 Tuā-ko | Everybody Knows 大哥 (win a Buzz fight at a ≥1 lead, not the usual ≥2) | **none** (Option D) | 51.7% |
+| 里長伯 Lí-tiúⁿ-peh | **Old Favours (home turf)** — name ONE home region at setup; −1 ingredient discount there only | **The Away Tax** — +1 of any one ingredient to Bribe anywhere else | 55.2% |
+| 媽寶 Ma-pó | Mum's Packed Lunch (Travel draws the region you LEFT) | none (Visit keep-2 normal) | 43.5% |
+| 大胃王 Tuā-uī-ông | Bottomless (Visit keep all 3) | hazards fire TWICE on his Visit | 54.8% |
+| 網紅 Bāng-âng | Going Viral (Promote places 3 Buzz, still Reach-capped) | **goes last** (turn order only — lost-turn flaw RETIRED) | 51.2% |
+| 老大 Lāu-tuā | Everybody Knows 老大 (win a Buzz fight at a ≥1 lead, not the usual ≥2) | none (Option D) | 50.7% |
 
-## 大哥 — the Buzz-margin override (no vendor data changes)
-- ability `bribe_margin1` — *Everybody Knows 大哥* — you win a Buzz fight at a lead of just **≥1** over
-  your rival (everyone else needs the ≥2 majority).
-- flaw `none` — the tie-win and the +1-ingredient "tab" are both DROPPED; the slim ≥1 edge alone tested
-  balanced at 51.7% (Option D).
-- **NB the vendor data prints the ≥2 majority for everyone** (`buzz_cost` = 2 is the printed majority
-  reminder on every vendor). 大哥's ≥1 is a **mat-level override**, not per-vendor data — no vendor rows
-  change.
-- **Sensitivity (bound in identity.md):** warm cinema lovable-rogue; vendors respect and *like* him
-  (never intimidated), fully secular (NOT 八家將 / gang imagery). Mat text stays warm.
+Everyone **starts Reach 2** and **starts in Taipei** (the North hub, CD-3). No kit changes those.
 
-## 網紅 — the KEY table balance-check + the lost-turn DIAL (carry in reserve)
-Built to the **default dial** (`late_to_night`). The sim seated 網紅 at 55.0% modelling the flaw only as
-"goes last"; the sim flagged that a go-last disadvantage is *under-counted* in sim, so the concrete
-lost-turn flaw the CD locked here may **over-correct below 45%**. This is **not sim-equivalent** and is a
-KEY balance-check in the Screentop plan. If it tests too weak/strong, swap `flaw_code` in
-`characters.csv` to one of:
-- **Default / locked:** `late_to_night` — misses its first turn of the **night** phase (one lost turn).
-- **Heavier** (`late_both_phases`): misses its first turn of **BOTH** phases (day + night — two lost turns).
-- **Alt** (`forfeit_final_move`): forfeits its **final move** at the last-train trigger ("still posing
-  while everyone catches the train").
-- **Lighter / revert** (`goes_last_only`): drop the lost turn — keep just goes-last + the ability (the
-  sim's 55.0% config) and instead **trim the ability** (e.g. +1 Buzz on your **first** Promote only, or a
-  small bribe tab). Pick the dial from the session result.
+## 里長伯 — REWORKED (v6.3.1 CD-1, LOCKED −1 home / +1 away, start-Reach 2)
+The old island-wide/first-two-region Old Favours **+ the no-HSR flaw** are both **RETIRED** (the no-HSR
+concept is re-homed as the table-wide *Scheduled Maintenance* event). The new silhouette is **home-turf
+advantage / away-from-home cost:**
+- **Setup:** picks **ONE home region** (open, after mats are dealt). He still starts his pawn in Taipei
+  like everyone — home is a strategic *build* declaration, not a start position.
+- **Ability `discount_home`:** his **−1 ingredient** discount applies **only in his home region** (stacks
+  with the region-icon ramp; floors at 0).
+- **Flaw `away_tax`:** Bribing in any region other than home costs **+1 of any one ingredient** (his choice
+  of type). On a cross-region →X night dish it is still just +1 of one chosen type.
+- **⚠ CANON vs sim:** the committed sim module defaults to `TA_COUNCILLOR_REACH=1` (a start-Reach-1 variant
+  the CD did **NOT** take). **Canon = start-Reach 2** (built here). The −1/+1 kit lands 55.2% (top-of-band)
+  and the CD accepted it as-is.
+- **Two mat icons → bg-infodesign:** a **home-region discount marker** + an **away-tax reminder**.
+- **FTUE watch:** with the common Taipei start he picks North home ~60% and bribes home ~75% — a thematic
+  "borough boss," watch it doesn't read as a *stuck* camp. **Reserve levers (only if the table confirms a
+  problem):** `+2 away-tax` → ~50% but deepens the camp; **start-Reach 1** → ~45.5% (a clean second flaw
+  that does NOT worsen the camp) — the preferred brake if one is ever wanted, but **not adopted now.**
 
-## 媽寶 — near the floor
-45.6% is just above the 45% band edge and its flaw is effectively dropped (Visit keep-2 = normal). Flagged
-`table-watch`. If it seats too weak, the reserve is a **light non-Visit flaw** for silhouette (a
-table/design call, not sim-load-bearing) — e.g. cannot claim a Tour Ticket on the same turn it Travels.
-Do not re-add a Visit-crippling flaw (that was the 29.4% trap that was fixed).
+## 網紅 — the lost-turn flaw RETIRED
+Built to `goes_last` only. The v6.2 "Late to the Party" **lost-turn** flaw is **RETIRED**: the re-sim
+landed the influencer at **51.2% with the flaw retired** vs **~41% with it** — the lost turn over-taxed a
+Buzz-heavy kit now that the Buzz fight matters *less* to the score (points come from tickets). *(This is a
+character-kit recommendation the re-sim surfaced, carried into the build — not part of the CD's three-call
+balance lock, which was CD-1/CD-2/CD-4.)* **Reserve dial** if it tests too strong at the table: re-add a
+light lost-turn (`late_to_night` — miss the first night-phase turn) or trim the ability (+1 Buzz on the
+first Promote only).
+
+## 老大 — the Buzz-margin override (no vendor data changes)
+- ability `bribe_margin1` — win a Buzz fight at a lead of just **≥1** (everyone else needs ≥2).
+- The vendor data prints `buzz_cost = 2` as the ≥2-majority reminder for everyone; 老大's ≥1 is a
+  **mat-level override**, not per-vendor data — no vendor rows change.
+- **Sensitivity (bound in identity.md):** warm cinema lovable-rogue; vendors respect and *like* him (never
+  intimidated), fully secular (NOT 八家將 / gang imagery). Mat text stays warm.
+
+## 媽寶 — the floor-watch
+43.5% is the field floor; its flaw is effectively dropped (Visit keep-2 = normal). Its routing-flexibility
+ability is a documented greedy-bot blind spot (a floor, not a real break). Flagged `table-watch` — carry
+the win-rate + fun to the table; **do not shotgun a kit change on the number.** If it seats too weak, the
+reserve is a **light non-Visit flaw** for silhouette (e.g. cannot claim a Tour Ticket on the same turn it
+Travels). Do NOT re-add a Visit-crippling flaw (the old 29% trap).
+
+## 大胃王 — unchanged
+Ability `visit_keep3` + flaw `hazard_twice_visit` hold (54.8%). Note his Greedy Grab (§4a) starts from
+keep-3, so a greedy 4th keep costs −1 Reach from a base of 3.
 
 ## Rendering note (→ bg-prototyper / bg-infodesign)
-Mats are rendered as **cards** by the current pipeline (a bespoke landscape mat template is an
-infodesign task). Each mat should read: name (Tâi-lô primary + 繁體), one **ability** line, one **flaw**
-line, both public. `table_watch=yes` mats want a small "playtest-watch" corner marker in the real layout.
+Mats are rendered as **cards** by the current pipeline (a bespoke landscape mat template is an infodesign
+task). Each mat should read: name (Tâi-lô primary + 繁體), one **ability** line, one **flaw** line, both
+public. 里長伯 needs the two home/away icons; `table_watch=yes` mats (里長伯, 媽寶) want a small
+"playtest-watch" corner marker in the real layout.

@@ -12,8 +12,17 @@ node_modules/
 # NOTE: games/<slug>/exports/ IS committed — it holds the curated, shareable deliverables
 # (deck sheets, cover, rulebook PDF, track, tokens). Only build/ (scratch) is ignored.
 games/**/build/
-# AI-art MOCKUPS — exploration only, never shipped/committed (see tools/art/mockup.py):
+# Root-level scratch build dir (e.g. a tool run from the repo root) — disposable, never tracked.
+/build/
+# AI-art MOCKUPS: gitignored EXPLORATION scratch by default (build/ above covers build/mockups/). A game's
+# CD-APPROVED playtest mock-ups MAY be committed under games/<slug>/art/mockups/ (clearly labelled MOCKUP,
+# see that dir's README) so they persist across the ephemeral container and boards re-render warm — but
+# they are NEVER copied into exports/ and NEVER treated as final art (human illustration + the Taiwanese
+# consultant are still required before any real/print use). Ignore mockup scratch for ALL games by
+# default; un-ignore ONLY games with committed, CD-approved mock-ups.
 games/**/art/mockups/
+!games/travel-agents/art/mockups/
+!games/travel-agents/art/mockups/**
 tools/**/out/
 *.tmp
 

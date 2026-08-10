@@ -1,44 +1,25 @@
 {
-  "_note": "v6.2 player aid for build_board.py --type aid. Reuses the card/token component budget (not a new type). Keep <= 22 lines (complexity-budget.json: max_player_aid_lines 22). Rebuilt from the stale pre-v6 aid (Stock Up / Extract / Poach / Season / Coverage are all GONE).",
-  "title": "Travel Agents: Taiwan  ·  v6.2",
-  "subtitle": "Your turn = ONE action. Then if your Larder holds over 7, discard down to 7 (to that region's market discard — it reshuffles in when the deck runs dry).",
+  "_note": "V7-M quick-glance aid for build_board.py --type aid. The ON-YOUR-TURN section, PLUS the words the icon-only components dropped: the character boards are icon-only, the follower slot + scoring piles carry no text, and the map legend was removed (CD steer) — so the aid now backfills the follower lifecycle, the region+phase ☀/☾ discard cue, and the market reshuffle/SINK rule. Deeper detail (per-count scarcity counts, the boundary tie-resolver, event framework, the deck-driven clock, Rave Reviews, full scoring) stays in the RULEBOOK. V7-M vocabulary: Followers are physical meeples in your colour (max 6 / Influencer 8); zones = your supply / your board / on a stall. Actions keep Travel + Promote (no dial / Buzz / Reach / Draw). One action per turn. ☀/☾ are DRAWN by the aid renderer (sun/moon shapes), never a font emoji.",
+  "title": "Travel Agents: Taiwan — Player Aid",
+  "subtitle": "On your turn: do ONE action · then trim your Larder to 7",
   "sections": [
     {
       "heading": "Do ONE action",
       "lines": [
-        "VISIT the local market (where you stand) — flip top 3 of this region's ingredient deck; any EVENT fires now (by scope); keep up to 2 ingredients.",
-        "CONVENIENCE STORE (anywhere) — flip top 1 of ANY region's ingredient deck: ingredient -> take it; event -> it fires by scope. The reliable way to grab 糖.",
-        "TRAVEL — move to a neighbouring region (HSR = North<->South), then flip top 1 there: ingredient -> take it; event -> nothing, keep moving.",
-        "PROMOTE (with the vendor, in this region) — place 2 Buzz on face-up vendor(s) here. Buzz stays on the card, public; your rival can pile on too.",
-        "BRIBE A VENDOR — win a face-up vendor by out-hyping your rival (below). Moves the day-clock +1.",
-        "CLAIM A TOUR TICKET — take 1 from the face-up row of 3 (this phase's pool); refill the row. Only one you haven't already completed. Scores into your piles later."
+        "VISIT (here): flip 3 from this region's market — the event fires by scope, keep 2 ingredients (Big Eater 大胃王 keeps 3).",
+        "CONVENIENCE STORE (anywhere): flip 1 from any region's market — take the ingredient, or the event fires.",
+        "TRAVEL: move 1 region (HSR = 北↔南); flip 1 on arrival (event whiffs). Then GROW: 1 follower, supply → your board. (Homebody 媽寶 draws 2 from the region she LEFT; Globetrotter 阿嬤 reaches ANY region, tiring 1 follower to supply.)",
+        "PROMOTE (here): place up to 2 followers FROM YOUR BOARD onto face-up stall(s) here — stacked or spread, in full view.",
+        "BRIBE A STALL (here): win it if you hold STRICTLY MORE followers on it than every rival AND meet its crowd floor (Big Boss 老大 wins ties) + pay its ingredients − your region discounts (no follower cost). It joins your tour + may complete a Booking. Your followers come HOME to your board; each loser's scatter to their OWN supply. Leave the slot empty.",
+        "LINE UP A BOOKING: take 1 from the face-up row, then refill. Your Bookings are your whole score (成團 completed / 取消 cancelled)."
       ]
     },
     {
-      "heading": "Bribe = out-hype, on the spot (one rule for every vendor)",
+      "heading": "Followers · piles · market",
       "lines": [
-        "1) be WITH the vendor, in its region;  2) hold at least 2 MORE Buzz on it than your rival;  3) pay its ingredients minus your matching region discount icons (Buzz is NEVER discounted).",
-        "Gain Prestige (score up) + Reputation (marker up) + its perk. Then clear ALL Buzz on it (yours + rival's), refill the slot, day-clock +1. FOOD carries a region discount icon; DRINKS carry none."
-      ]
-    },
-    {
-      "heading": "Events — the island living its life (⦿ / ⬢ / ➤, measured from the drawn region)",
-      "lines": [
-        "⦿ YOU (the flipper)  ·  ⬢ THIS REGION (everyone standing there)  ·  ➤ NEXT DOOR (a neighbour). Hazards TAX or delay — never destroy what you hold, never cost a whole turn."
-      ]
-    },
-    {
-      "heading": "The day-clock: Day -> Night (every Bribe moves it +1)",
-      "lines": [
-        "DUSK = the 5th table-wide Bribe (2p): judge every DAYTIME ticket, then clear the ENTIRE day layer island-wide -> night decks (event-heavier), swap the ticket row to night. Keep your Larder.",
-        "LAST TRAIN = the 10th Bribe (2p): judge every NIGHTTIME ticket, then finish the round + one more full round and stop. (Marks grow with player count.)"
-      ]
-    },
-    {
-      "heading": "Score once, at game end",
-      "lines": [
-        "Prestige (sum of your vendors) + Reputation end-VP for your FINAL position (3/6/9/top -> +2/+4/+6/+9) + Tour Tickets.",
-        "Tickets: +printed value for each in your 成團 WIN pile;  -floor(value/2) for each in your 遺珠 LOSE pile.  Most points = TOP AGENT (ties: Reputation, then most vendors, then most regions)."
+        "FOLLOWERS (your colour meeples): a TRAVEL grows 1 (your supply → your board); a PROMOTE places up to 2 (your board → onto a stall). Win the stall → they come HOME to your board; lose → back to your OWN supply.",
+        "Your board's three card slots: your FOLLOWERS slot, plus the two Booking piles — 成團 COMPLETE (ran → full value) and 取消 CANCELLED (didn't run → half value). The piles are your whole score.",
+        "Every market card shows its region (colour + emblem) and ☀ day / ☾ night — that pair IS its discard pile. Spent / fired / passed-over cards go to that region+phase discard; when a deck runs out, shuffle its discard back in. SINK = to the BOTTOM of the live deck (stays in play). At DUSK / LAST TRAIN the ending phase's decks AND discards go to the BOX."
       ]
     }
   ]
