@@ -2126,7 +2126,7 @@ stay phase-locked.
 
 **Answer up front: the existing 24 vendors already contain enough day+night pairs — by locale AND by
 dish-type — to build every agnostic tour above. NO phase re-slotting is needed** (which is the right
-outcome: re-slotting a vendor day↔night would break the **13-day / 11-night die-clock pools** (§17.1) and
+outcome: re-slotting a vendor day↔night would break the **13-day / 12-night die-clock pools** (§17.1) and
 would have to be done in balanced pairs; it also risks the 24-unique-dishes identity and the recipe/sourcing
 economy). **The only vendor-data change is adding two grouping tags** — `locale` and `dish_type` — which
 touch **no** recipe, cost, floor, phase, region, or VP value. Zero economic ripple.
@@ -2161,7 +2161,7 @@ touch **no** recipe, cost, floor, phase, region, or VP value. Zero economic ripp
 so `dishtype:drink` still counts them). Every other vendor gets one `dish_type`. **Grill is night-only by
 nature** — it correctly produces no agnostic tour and instead sits behind the premium night bucket.
 
-**Verdict:** existing set + the 2 tags **suffice**. No re-slotting; 13/11 pools, 24 dishes, and the
+**Verdict:** existing set + the 2 tags **suffice**. No re-slotting; 13/12 pools, 24 dishes, and the
 recipe/sourcing economy all untouched.
 
 ## 20.5 VP on the effort curve — premium compensates risk (point 4)
@@ -2256,7 +2256,7 @@ reworked rows for downstream filtering.
 - **ADD column `dish_type`** — one of `{bubble_tea, drink, noodle, bun, rice, grill}` per §20.4 (with C03/N07
   = `bubble_tea`; keep a `drink` **tag** on them so `dishtype:drink` still counts them if the dev models
   drink as a superset). No other field changes.
-- **NO phase / recipe / cost / floor / region / vp / quantity changes.** 13-day / 11-night pools, 24 unique
+- **NO phase / recipe / cost / floor / region / vp / quantity changes.** 13-day / 12-night pools, 24 unique
   dishes, sourcing economy, and §14 vendor VP **all untouched.** Re-run `tools/lint` + `tools/access`
   (tags-only; no palette/economy impact expected).
 

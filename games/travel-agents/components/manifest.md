@@ -86,7 +86,7 @@ Booking deck itself.
 
 The follower pool no longer scales with player count — it is a **fixed per-colour pool = your character's
 `max`** (a physical component ceiling, not a shared table pool). **V7-M scarcity:** the FULL vendor pool
-(13 day / 11 night) is used at every count — **NO per-count pool subset** (dbd7dda: shrinking it backfires);
+(13 day / 12 night) is used at every count — **NO per-count pool subset** (dbd7dda: shrinking it backfires);
 only the face-up SLOTS scale, thematically (base N1/C1/S1/E1 → +1 South @5p → +1 North @6p, East kept
 thinnest), still ~1.0–1.33 stalls/agent (floor 1/region) with **SLOW / per-round** refill — the load-bearing
 lever that forces the contested crowd-fight. The 3p Bookings deck drops the 7 HEAVY ≥4-claim tours (a

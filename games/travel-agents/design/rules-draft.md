@@ -152,7 +152,7 @@ and the **market decks** (ingredients & events) reshuffle and keep coming — on
 - **黃昏 DUSK** — the moment the **day vendors are all gone** (claimed or sold out): finish the current turn,
   then flip to night — bring the **night** vendors and markets online and deal a fresh Booking row from the
   NIGHT deck. **Keep your Larder and Bookings.**
-- **Night Market 夜市** — the **11 nighttime vendors**: pricier, fought-over, the ★ apex.
+- **Night Market 夜市** — the **12 nighttime vendors** (11 unique + 1 duplicate): pricier, fought-over, the ★ apex.
 - **末班車 LAST TRAIN** — the moment the **night vendors are all gone**: finish the current round so everyone
   has had equal turns, then the game ends.
 

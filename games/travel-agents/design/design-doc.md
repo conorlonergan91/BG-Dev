@@ -1967,7 +1967,7 @@ The day and the night each run on a **finite pool of vendors** that only deplete
 - **DAY runs on the DAY vendor pool** — all **13 day vendors** (every day vendor is tier-1; N 3 · C 4 · S 3 ·
   E 3). When that pool is **exhausted — every day vendor claimed or sold out, deck empty, no day stall left in
   play — DUSK fires:** finish the current turn, flip the board to night.
-- **NIGHT runs on the NIGHT vendor pool** — all **11 night vendors** (N 4 · C 2 · S 3 · E 2; 1 drink, 6 tier-2,
+- **NIGHT runs on the NIGHT vendor pool** — all **12 night vendors** (N 5 · C 2 · S 3 · E 2; 2 drinks, 6 tier-2,
   4 tier-3 apex). When that pool is **exhausted — LAST TRAIN fires:** finish the current round so all seats
   have equal turns, then the game ends and scores.
 
@@ -2057,8 +2057,9 @@ saying DUSK/LAST-TRAIN is "when the Booking deck runs out" and say "when the ven
 
 ## 17.5 PACE — per-count track length + die-removal math (targeting 26–32 turns/player)
 
-The vendor pool is **fixed at 13 day / 11 night for every count** — all 24 vendors are always in play (they are
-unique named real dishes; not duplicated). Turns/player ≈ number of rounds ≈ (day rounds + night rounds).
+The vendor pool is **fixed at 13 day / 12 night for every count** — all 24 unique vendors plus the N08 duplicate
+night stall (25 cards) are always in play (24 unique named real dishes; N08 is a §17.6 duplicate-commodity
+stall, not a 25th dish). Turns/player ≈ number of rounds ≈ (day rounds + night rounds).
 Depletion each round = *claims that round* + *die-removals (≈0.67 per 3-round cycle)*. **Claims are the dominant
 driver; the die is the excitement layer that guarantees the board keeps thinning when claims stall.**
 

@@ -87,7 +87,7 @@
 > once late-game vendor throughput collapses, so the deck froze and ~half of games ran to the ~50-t/p cap
 > (target 26–32). CD decision: **make the vendors the clock** — the resource scarcity already drains.
 > - **DAY** runs on the finite pool of **13 day vendors**; when it is exhausted → **黃昏 DUSK** (flip to
->   night). **NIGHT** runs on the finite **11 night vendors**; when exhausted → **末班車 LAST TRAIN** →
+>   night). **NIGHT** runs on the finite **12 night vendors** (11 unique + 1 duplicate stall); when exhausted → **末班車 LAST TRAIN** →
 >   finish the round → end. A vendor leaves the pool by being **claimed** or **sold out**.
 > - **Forcing function (guarantees the clock fires):** every **R rounds** (per-count *sell-out cadence* — 3p 3
 >   · 4p 4 · 5p 4 · 6p 5, sim-tuned) the **oldest face-up stall no one is queuing at** (uncontested) sells
