@@ -882,9 +882,10 @@ def _embed_fig_png(fig_id, x, y, w, h, mockups_dir, rx=16):
 def render_playerboard(theme, row, mockups_dir=None):
     """One landscape CHARACTER BOARD per agent (V7 · CD REDESIGN 2026-08 v2 · icon-first, language-agnostic).
 
-    A4-LANDSCAPE (297×210 mm @ 300 DPI = 3508×2480 px). Two TRUE poker-card footprints
-    (63.5×88.9 mm = 750×1050 px each) sit on the right so real Booking cards stack on them, with a
-    full-height character image + the FOLLOWER POOL/SUPPLY lifecycle panel down the left column.
+    A4-LANDSCAPE WIDTH (297 mm @ 300 DPI = 3508 px); HEIGHT is DERIVED from the pile-lane geometry (CD
+    2026-08 v5) so the board is only as tall as the card piles need — the portrait is sized DOWN to the
+    pile-lane height rather than padding the board out. TRUE poker-card footprints (63.5×88.9 mm =
+    750×1050 px each) sit in the right-hand pile lanes so real Booking cards stack on them.
 
     Layout (v2 · V7-M meeples):
        • TITLE band — English name TOP-LEFT (e.g. "The Globetrotter"); 漢字 TOP-RIGHT with the Tâi-lô
@@ -904,8 +905,10 @@ def render_playerboard(theme, row, mockups_dir=None):
 
     TA-specific: only games/travel-agents/make.sh calls --type playerboard, and it renders only rows that
     carry ability_code + flaw_code — so Beacon and every other game are untouched."""
-    # A4 landscape at 300 DPI. mm() guarantees the card zones are EXACTLY one poker footprint.
-    W, H = mm(297), mm(210)                       # 3508 × 2480
+    # Landscape at 300 DPI. mm() guarantees the card zones are EXACTLY one poker footprint. WIDTH is fixed
+    # A4-landscape (297 mm); HEIGHT is DERIVED from the pile-lane geometry (CD 2026-08 v5) so the board is
+    # only as tall as the card piles need — the portrait no longer pads it out.
+    W = mm(297)                                   # 3508 — width unchanged
     CARD_W, CARD_H = mm(63.5), mm(88.9)           # 750 × 1050 — a real poker card sits on each zone
     ink, accent, muted, text = theme["ink"], theme["accent"], theme["muted"], theme["text"]
     tfont, bfont = theme["title_font"], theme["body_font"]
@@ -944,6 +947,19 @@ def render_playerboard(theme, row, mockups_dir=None):
     supply_n = pool_max - start_n
 
     M = 70                                         # outer margin
+    # ---- VERTICAL BUDGET (CD 2026-08 v5): shrink the board to exactly what the card piles need. The
+    # portrait (left) is sized DOWN to the pile-lane height (header cap + one card slot); the board height
+    # H is then DERIVED, not a fixed A4 — so no dead margin is padded around/beside the piles.
+    hh = 250                                       # title-band height (the band drawn just below)
+    content_top = 18 + hh + 40                     # 308 — first row under the title band
+    cap_h = 156                                    # pile-lane header cap
+    card_pad = 24                                  # breathing gap: cap→card, and card→lane foot
+    card_bottom = content_top + cap_h + card_pad + CARD_H   # bottom of a card slot == the portrait bottom
+    col_bottom = card_bottom + card_pad            # lane-panel foot (symmetric pad under the card slot)
+    ban_gap = 46
+    ban_h = 340                                    # full-width prose banner
+    ban_y = col_bottom + ban_gap                   # banner sits just below both columns
+    H = ban_y + ban_h + M                          # DERIVED board height (shorter than the old fixed A4)
     P = [f'<defs>{page_gradient(theme, "pg")}</defs>',
          f'<rect width="{W}" height="{H}" rx="34" fill="url(#pg)" stroke="{ink}" stroke-width="7"/>',
          f'<rect x="30" y="30" width="{W-60}" height="{H-60}" rx="24" fill="none" '
@@ -951,7 +967,7 @@ def render_playerboard(theme, row, mockups_dir=None):
 
     # ==================== TITLE band: English TOP-LEFT · icons CENTRE · 漢字 + Tâi-lô TOP-RIGHT ==========
     # The band is the CHARACTER'S signature colour (matches that player's meeples); text auto-contrasts.
-    ox, hr, hh = 18, 28, 250
+    ox, hr = 18, 28                                # hh (title-band height) fixed in the vertical budget
     P.append(f'<path d="M{ox} {18+hr} a {hr} {hr} 0 0 1 {hr} -{hr} h {W-2*ox-2*hr} '
              f'a {hr} {hr} 0 0 1 {hr} {hr} v {hh-hr} h -{W-2*ox} z" fill="{char_col}"/>')
     # English name — the hero, top-left
@@ -979,15 +995,10 @@ def render_playerboard(theme, row, mockups_dir=None):
     P.append(icon_medallion(med_cx_a, acode, teal))
     P.append(icon_medallion(med_cx_f, fcode, vermilion))
 
-    content_top = 18 + hh + 40                     # = 308
-
-    # ---- geometry (CD steer 2026-08 v4): big PORTRAIT (left) + three clean PILE LANES (right) over ONE
-    # full-width PROSE banner along the bottom. The v3 left-column prose card is REMOVED so the portrait
-    # owns the whole left column; the lanes lose their inner glyphs + stacking fans (clean drop targets).
-    ban_h = 340
-    ban_y = H - M - ban_h                          # the prose banner sits on the bottom margin
-    ban_x, ban_w = M, W - 2*M                       # spans the ENTIRE board width
-    col_bottom = ban_y - 46                        # portrait + lanes run down to just above the banner
+    # ---- geometry (CD steer 2026-08 v5): PORTRAIT (left) SHRUNK to the pile-lane height + three clean PILE
+    # LANES (right) over ONE full-width PROSE banner. content_top / cap_h / card_bottom / col_bottom / ban_*
+    # were fixed in the vertical-budget block above so H tracks the piles; here we just place the columns.
+    ban_x, ban_w = M, W - 2*M                       # banner spans the ENTIRE board width
 
     # ==================== LEFT COLUMN (full height): the character PORTRAIT, matted =======================
     # A big portrait matted on a warm card that fills the whole left column. The illustration embeds CENTRED
@@ -997,7 +1008,7 @@ def render_playerboard(theme, row, mockups_dir=None):
     img_x = M                                      # 70
     img_y = content_top                            # 308
     IMG_W = 900
-    IMG_H = col_bottom - content_top               # fills the column height
+    IMG_H = card_bottom - content_top              # portrait bottom == the card-slot bottom (pile-lane height)
     fig_id = f"FIG-CHAR-{slug}"
     embedded = _embed_fig_png(fig_id, img_x, img_y, IMG_W, IMG_H, mockups_dir)
     if embedded:
@@ -1047,7 +1058,7 @@ def render_playerboard(theme, row, mockups_dir=None):
     lane_top = content_top                          # 308
     lane_h = col_bottom - lane_top                   # runs to just above the banner
     zx = [right_l + i*(LANE_W + zgap) for i in range(3)]
-    cap_h = 156
+    # cap_h fixed in the vertical budget above
 
     # header glyphs sit ON the character-colour cap → use band_text (auto dark/light) so they stay legible
     def _hdr_follower(cx, cy):
@@ -1073,7 +1084,7 @@ def render_playerboard(theme, row, mockups_dir=None):
         body_top = lane_top + cap_h
         dw, dh = CARD_W, CARD_H                       # a real 750×1050 poker footprint sits here
         dx = x0 + (LANE_W - dw)/2
-        dy = body_top + (col_bottom - body_top - dh)/2
+        dy = body_top + card_pad                      # card sits directly under the cap (no centering slack)
         P.append(f'<rect x="{dx}" y="{dy:.0f}" width="{dw}" height="{dh}" rx="18" fill="#ffffff" '
                  f'opacity="0.55" stroke="{sec}" stroke-width="4" stroke-dasharray="16 11"/>')
 
