@@ -1416,3 +1416,270 @@ Director to run **`bg-theme`** (VP reads as "winning a famous stall is its own �
 with the crowd-fight twist; the apex trophies now pay prestige directly) and **`bg-elegance`** (a third
 printed number on vendor cards + a two-line scoring rule — confirm within the complexity budget; it is the
 cost the CD accepted to lock Route B).
+
+---
+
+# 18. VISIT-SOURCING A/B — the keep-2 non-choice (SPEC-ONLY; CD to A/B in playtest)
+
+> **Status: SPEC-ONLY — no data/rules/sim touched.** This section designs BOTH of the CD's candidate fixes
+> for the Visit keep-choice, threads the ripples (Option A → the §16 discard feeder; Option B → the §12
+> spread-forcing + the §12.5 sourcing balance), wires them as a **switchable playtest lever** (`VISIT_MODE`
+> + a variety parameter) so the re-sim and the human table can compare head-to-head, and recommends one on
+> design coherence. The re-sim/rulebook folds here are ADDITIONS to the in-flight §9/§12.9/§16.8 scope.
+
+## 18.1 The diagnosis — CONFIRMED, with the region-by-region nuance
+
+The CD's read is right: after §12 collapsed each region to **≈ one signature type + one thin common**, the
+"flip 3, keep 2" choice is shallow-to-absent. Here is the actual per-region-phase deck composition (from
+`ingredients.csv`, ingredient cards only — events thin it further, see below):
+
+| Region-phase | Signature (depth) | Common (depth) | Deck (ingredients) | Signature share |
+|---|---|---|:--:|:--:|
+| North day | Meat 6 | Veg 2 | 8 | **75%** |
+| North night | Meat 5 | Veg 1 | 6 | **83%** |
+| Central day | Tea 6 | Sugar 3 | 9 | 67% |
+| Central night | Tea 5 | Sugar 3 | 8 | 63% |
+| South day | Seafood 6 | Sugar 3 | 9 | 67% |
+| South night | Seafood 5 | Sugar 3 | 8 | 63% |
+| East day | Pantry 6 | Veg 2 | 8 | **75%** |
+| East night | Pantry 5 | Veg 1 | 6 | **83%** |
+
+**P(a flip-3 shows >1 ingredient TYPE), ignoring events** (i.e. shows the common at all, so keep-2 is even a
+nominal choice):
+
+| Region-phase | P(mixed flip) | P(all one type = pure non-choice) |
+|---|:--:|:--:|
+| North day (6M,2V) | 0.64 | 0.36 |
+| North night (5M,1V) | 0.50 | 0.50 |
+| Central / South day (6·,3K) | 0.75 | 0.25 |
+| Central / South night (5·,3K) | 0.80 | 0.20 |
+| East day (6P,2V) | 0.64 | 0.36 |
+| East night (5P,1V) | 0.50 | 0.50 |
+
+**Reads (be precise — the diagnosis is *shallow-choice*, not always *no-choice*):**
+- **The choice, when it exists, is signature-vs-thin-common — a near-forced keep of the signature.** You
+  Visit a region *for its signature* (the mono-region redesign is why), and the common is the two
+  lowest-demand/lowest-utility categories — **Veg 10.8%** (N/E) and **Sugar 10.8%, over-supplied** (C/S,
+  §12.5). Keeping signature over common is right almost every time, so even a "mixed" flip is a rubber-stamp,
+  not a decision.
+- **North and East are the near-mono decks (75–83% signature; thin Veg common)** — keep-2 there is a
+  non-choice ~half the time and a rubber-stamp the rest. **Central and South have the only real texture**
+  (deeper Sugar common) — but it's signature-vs-idle-Sugar, still a weak pick.
+- **Events make it worse than the table shows.** Each market deck also carries events; a flip-3 with 1–2
+  events leaves you **1–2 ingredients**, so keep-2 collapses to "keep whatever you drew" — no discard
+  decision at all. So the *effective* live-choice rate on a Visit is materially below the ingredient-only
+  P(mixed) above.
+- **Verdict:** keep-2 was designed for the OLD multi-type regions; §12 removed the variety it fed on. The CD
+  is right that it is now largely a non-choice. The re-sim should confirm the effective live-choice rate
+  (metric M1, §18.5) reads LOW under the current rule (Cell 2 control) — that is the number both fixes move.
+
+**A finding the CD should hold onto:** keep-2 was doing **double duty** — a keep-*choice* AND the **primary
+discard feeder** (§16.2 feeder 1, "the highest-volume feeder"). The choice is what's broken; the feeder is
+load-bearing for the reshuffle loop. Any fix that removes keep-2 (Option A) removes *both* — hence the §16
+ripple below is real and must be threaded, not hand-waved.
+
+## 18.2 Option A — straight draw (drop the keep-choice)
+
+> **Rule (A).** **VISIT the market** *(where you stand)*: **draw the top 2 ingredients** of this region's
+> current-phase deck straight into your Larder. Any **event** you turn up while drawing **fires at once**
+> (per §7) and is discarded — it does **not** count toward the 2; keep drawing until you hold 2 ingredients
+> (or the deck + its discard are exhausted). No flip-3, no keep-choice, no passed-over card.
+> Character deltas unchanged in spirit: **Big Eater 大胃王** draws to **3** (may grab a greedy 4th → return
+> 1 follower to supply; hazards fire twice); **Homebody 媽寶** draws **1** on a Visit (his sourcing lane is
+> Travel-forage, §6.5).
+
+- **N = 2** (matches the current keep-2 target, so the sourcing *rate* the sim closed is preserved — you end
+  a Visit with 2 ingredients either way). Blind draw (you don't pre-see the 3) **keeps the push-your-luck
+  spine** — you dig through whatever events sit on top, exactly the "more events = more swing" texture the
+  Visit was praised for — while honestly admitting there is no *keep* decision to make.
+- **Where the decision goes:** onto the **map**. Because a region gives you its signature, *variety* is
+  bought by **travelling** — which is precisely §12's cross-region intent (20/24 recipes force travel). A
+  relocates the Visit's dead micro-choice to a live macro-choice (which region next), rather than faking an
+  in-region choice the deck can't support.
+
+### 18.2a Ripple to §16 — A removes the biggest discard feeder (the real cost of A)
+
+Straight-draw keeps both drawn cards, so **there is no "passed-over" card** — §16.2 **feeder 1 (the
+highest-volume feeder) is eliminated.** Trace the per-Visit deck accounting:
+
+| | Deck loses / Visit | → Larder (out of cycle) | → discard (recycles) |
+|---|:--:|:--:|:--:|
+| **keep-2 (current)** | 3 cards | 2 | **1 (passed-over)** |
+| **straight-draw-2 (A)** | 2 cards | 2 | **0** |
+
+Two opposing effects, and the honest net:
+- **Decks deplete *slower*** under A (2 cards pulled/Visit, not 3) → each live deck lasts longer before
+  deck-out → **reshuffles happen *less often***. Good side: **fired events recur less** (a phase's hazards
+  cycle back more slowly — mildly kinder, less punishing).
+- **But the discard grows *slower*** (only feeders 2/3/4 remain: paid ingredients, fired events, forced) →
+  when a deck *does* run out, its reshuffle pile is **thinner and more event-enriched** than under keep-2.
+  This *sharpens* the §16.5 "reshuffle-thinning / event-enrichment" risk: with passed-over ingredients no
+  longer padding the discard, the pile that cycles back is proportionally more events + paid cards.
+
+**Is that fine, or does A need a compensating feeder?** My read: **probably fine, because the two effects
+partly cancel** (slower depletion offsets the thinner discard), and A does not touch the *source* of any
+category — Pantry is still 11 physical cards cycling to cover 16 demand (§16.5), and A pulls the East deck
+down *slower*. **But it must be measured, not assumed** — the exact tight-category (Pantry) `supply_min` and
+the reshuffle cadence are what decide it. **Do NOT bake a compensating feeder now.** IF the re-sim shows
+Pantry `supply_min` → 0 or a region stalls under A, the compensating fix is the **already-specified §12.5
+deck-rebalance** (swap idle Sugar depth → Pantry/Meat: Central/South sugar 12→7, East pantry 11→14, North
+meat 11→13) — **not** re-introducing keep-2 as a feeder. Re-adding keep-2 to feed the discard would be
+tail-wagging-dog: keeping a dead micro-choice alive purely for deck plumbing.
+
+### 18.2b Is A "the more coherent fix"? — CONFIRMED
+
+The CD's claim holds. §12 deliberately made regions mono-signature **to force travel for variety**; keep-2
+was trying to manufacture *in-region* variety the deck no longer has. A stops pretending: a region gives its
+signature, and every variety decision lives on the map (travel) — exactly §12's spread engine. A is also a
+net **rules-trim** (bg-elegance): *"draw 2 of this region's ingredients"* replaces *"flip 3, fire events,
+keep 2, discard the rest."* One fewer sub-step, one fewer thing to teach, and it retires the "keeps ≤2 /
+passed-over" clause from both the turn rules and §16.2's feeder list. The only price is the discard-feeder
+loss (18.2a) — bounded and measurable. **A is the coherence + elegance winner unless the sim says it
+starves a deck.**
+
+## 18.3 Option B — more variety per region (make keep-2 a real choice)
+
+The trap the CD named is exactly right and worth stating as a hard constraint: **the only thing that makes
+flip-3-keep-2 a genuine *type* choice is putting ≥2 *useful* types in each region — which is what §12 spent
+a whole pass REMOVING to force travel.** So a naive B ("give every region several sourceable types")
+**directly undoes §12's spread-forcing** — if North also carries Pantry, an East-Pantry recipe is sourced at
+North and nobody travels. **I will not spec that version; it is incoherent with the locked design.** Two
+non-destructive B variants exist; only one is worth testing:
+
+- **B-naive (REJECTED):** add a full secondary signature to each region. Makes keep-2 a real choice, but
+  dissolves cross-region sourcing → kills §12. Do not test.
+- **B-quality (REJECTED as hollow):** add a value/quality axis to the *same* type (premium vs standard
+  Meat). Preserves regional identity and travel, BUT the choice is empty unless recipes *consume* quality —
+  and recipes count tokens by type only (`ingredient_cost` = token count; the `value` column is blank). So
+  B-quality creates a fake choice unless we also rebuild the recipe economy — a large, off-scope change.
+- **B-wild (the ONLY testable B):** inject a **shallow "wild" ingredient** into each region-phase deck — a
+  card that counts as **any one category** when paying a recipe. Keep-2 becomes a real choice
+  (signature-for-volume **vs** the flexible wild), regional identity is preserved (the deck stays
+  mostly signature), and **it does not turn a region into a bulk cross-region source** *provided the wild is
+  a genuine minority.*
+
+> **Rule (B-wild).** Add **`VISIT_VARIETY` wilds** (baseline test value **2**) to each region-phase deck. A
+> wild ingredient (百搭 / "market-choice") counts as **one ingredient of any category** when paying a
+> recipe. On a keep-2 Visit you choose signature-vs-wild. Kept in the CD's requested `keep-2` VISIT_MODE
+> (B needs the keep-choice to express).
+
+**Quantify the sourcing rebalance B-wild forces:**
+- **Depth:** +2 wild per region-phase deck = **+16 wilds** if added on top (decks go 8→10 / 6→8 / 9→11).
+  Added-on-top (not replacing signature) avoids starving the signature and slightly deepens every deck →
+  **slower reshuffle-thinning** (a small §16 *benefit*), at a slower cycle-rate.
+- **Effective supply:** wilds inflate the *effective* supply of every category. Since **Pantry is the one
+  tight category** (24.6% demand vs 17.7% deck-share, §12.5), wilds preferentially get spent on Pantry →
+  they **ease the Pantry squeeze** — a real upside. But that same flexibility is a *travel-avoidance* tool:
+  every wild spent cross-region is one avoided Travel.
+- **The load-bearing constraint on B:** the wild must stay a **minority** (≈2/deck, ≤ ~18% of a day deck) or
+  it becomes a self-service cross-region substitute and **erodes the spread game** — the exact §12 intent.
+  Even at depth 2, B-wild trades *some* travel-forcing for the in-region choice. **This is B's honest cost,
+  and the sim must prove travel/spread rate (M2) does NOT fall vs Option A.**
+
+**Honest bottom line on B:** B-wild is the least-damaging way to restore a live Visit choice, but it still
+pushes *against* the pass that just locked. It adds a component (a new ingredient card type + its rule),
+nudges toward less travel, and only "works" if held to a strict minority. **B buys a local decision at the
+cost of a little of the global one A leans into.**
+
+## 18.4 The switchable playtest lever (a clean toggle for the re-sim + the table)
+
+Two independent toggles, so the sim can isolate *variety* from *draw-mode*:
+
+```
+VISIT_MODE    ∈ { straight-draw , keep-2 }     # A vs the keep-choice family
+VISIT_VARIETY ∈ { mono , wild:K }              # K wilds per region-phase deck; K=2 baseline for B
+```
+
+| Cell | VISIT_MODE | VISIT_VARIETY | = | Purpose |
+|:--:|---|---|---|---|
+| **1** | `straight-draw` | `mono` | **Option A** | The recommended fix. |
+| **2** | `keep-2` | `mono` | **Control (status quo)** | The non-choice the CD diagnosed — the baseline both fixes must beat. |
+| **3** | `keep-2` | `wild:2` | **Option B** | Variety injection under the keep-choice. |
+
+- **Cell 1 vs 2** isolates the cost/benefit of *dropping the keep-choice* (does A lose anything vs status
+  quo on sourcing/throughput/reshuffle?).
+- **Cell 3 vs 2** isolates whether *variety alone* restores the choice (M1 up) and what it costs travel (M2).
+- **Cell 1 vs 3** is the head-to-head the CD wants: A (relocate the choice to the map) vs B (rebuild the
+  in-region choice). The human table plays **Cell 1 and Cell 3 back-to-back** and judges whether a Visit
+  *feels* like a decision or a chore.
+- Baseline for the main re-sim run = **Cell 1 (A)** (my recommendation); Cells 2/3 are delta runs.
+
+## 18.5 What the sim / table must measure to pick a winner
+
+| # | Metric | What it tells us | Expected: A / Control / B |
+|:--:|---|---|---|
+| **M1** | **Live-decision density on a Visit** — % of Visits offering a real keep-choice (≥2 *useful* distinct types available) | Whether a fix actually restores the local decision | A ~**0** *(by design — choice moved to map)* / Control **LOW** *(confirms diagnosis)* / B **HIGH** |
+| **M2** | **Travel / spread rate** — travels/player/game + cross-region-sourcing share | §12's core intent; **B's danger metric** | A **hold/RISE** / Control base / B **must NOT fall** vs A |
+| **M3** | **Sourcing health** — per-category share vs §12.5 vector (±2pt); **Pantry `supply_min`**; `capbind` | The economy survives the change; Pantry is the make-or-break | all modes: shares track §12.5; **Pantry supply_min > 0** in whichever ships |
+| **M4** | **Reshuffle cycle-rate** — reshuffles/game per region-phase deck + reshuffled-deck-size (§16.5 thinning proxy) | A's discard-feeder ripple (18.2a); B's deck-deepening | A **slower cycle / thinner reshuffle** *(watch)* / B **slower cycle / fatter reshuffle** |
+| **M5** | **Throughput guard** — claims/gm, Booking + prestige-Booking completion (≥~90%), turns/player (26–32) | Neither Visit change chokes the §12.4 three-throttle stack | all modes must hold |
+
+**Decision rule (state it plainly for the CD):**
+- **Ship A** if Cell 1 holds M3 (Pantry alive) + M4 (no deck stall) + M5 (throughput) and M2 stays high —
+  i.e. A costs nothing the sim can see. This is the expected outcome.
+- **Ship B (wild:2)** only if the human table at Cell 1 genuinely *misses* the in-region choice (M1=0 feels
+  flat) **AND** Cell 3 keeps M2 (travel) within a whisker of Cell 1 **AND** M3/M5 hold. If B drops travel
+  materially, B loses on coherence regardless of how nice the local choice feels.
+- **If A starves a deck** (M3 Pantry supply_min → 0 or M4 stall), first apply the §12.5 deck-rebalance under
+  A — do **not** fall back to keep-2-as-feeder.
+
+## 18.6 Recommendation
+
+**Lean Option A (straight-draw).** It is the coherent heir of the mono-region redesign: §12 made regions
+mono-signature to force travel, so the variety decision *belongs on the map*, and A honestly puts it there
+instead of faking an in-region choice the deck can't support. It is a net rules-trim (bg-elegance win), it
+preserves the sourcing rate (draw 2 = keep 2) and the push-your-luck event spine, and its one real cost —
+losing §16's biggest discard feeder — is bounded (A also depletes decks slower, partly self-correcting),
+measurable (M4 + Pantry `supply_min`), and cheaply fixable if it bites (the §12.5 Sugar→Pantry rebalance,
+not a keep-2 revival). **Option B, even in its least-damaging wild form, spends a little of §12's
+spread-forcing to buy back a local choice, and adds a component.** Set both up honestly — Cell 1 (A) vs
+Cell 3 (B), with Cell 2 as the diagnosed control — and let the sim (M1–M5) plus the human table's
+"decision-or-chore" read decide. My money is on A.
+
+## 18.7 Change lists (SPEC-ONLY — for the owning agents AFTER the A/B resolves)
+
+**SIM (`bg-playtest`) — ADDITION to the in-flight §9/§12.9/§16.8 re-encode (not a new run):**
+- Add the **`VISIT_MODE`** toggle (`straight-draw` | `keep-2`) and **`VISIT_VARIETY`** (`mono` | `wild:K`,
+  K default 2). Baseline the main run at **Cell 1 (straight-draw, mono)**; run Cell 2 (control) and Cell 3
+  (wild:2) as deltas.
+- `straight-draw`: Visit draws **2** ingredients from the region current-phase deck, digging past events
+  (fire → discard), **no passed-over feeder** (drop §16.2 feeder 1 from the discard model for this mode).
+  Big Eater draws 3 (+greedy 4th); Homebody draws 1.
+- `wild:K`: seed **K wild ingredients per region-phase deck**; a wild pays **any one category** at Bribe.
+  Keep-2 keep-choice active.
+- **Add compare-metrics M1–M5** (§18.5): M1 live-Visit-decision rate; M2 travels/player + cross-region
+  source share; M3 per-category share + **Pantry `supply_min`** + `capbind`; M4 reshuffles/game +
+  reshuffled-deck-size per region-phase; M5 claims/gm + Booking/prestige completion + turns/player. Report
+  Cell 1 vs 2 vs 3 side-by-side.
+
+**DATA (`bg-developer`) — Option B ONLY, and only as a switchable/branch, NOT a destructive edit:**
+- **`ingredients.csv`** — IF B is chosen: add **wild ingredient rows** (e.g. `ING-<R>-<P>-W`, type `wild`,
+  tag `wild;<region>;<phase>;v7-B`, **quantity 2** per region-phase deck), effect *"百搭 Market-choice —
+  counts as one ingredient of any category when paying a recipe."* **Add behind a B branch / feature flag —
+  do NOT edit the mono baseline in place** (A must remain runnable). Option A requires **no `ingredients.csv`
+  change.**
+- Run `tools/lint/check_game.py` after any B branch (new rows + new `wild` type).
+
+**RULEBOOK (`bg-rulebook` / `bg-elegance`) — teach whichever WINS, AFTER the A/B (not now):**
+- If **A:** replace the Visit line with *"VISIT — draw the top 2 ingredients of this region's market into
+  your Larder; any event you turn up fires at once."* Retire "flip 3 / keep 2 / discard the rest" from the
+  turn rules **and** the §16.2 discard-feeder list (feeder 1 goes away — a small §16 rewrite). Net trim.
+- If **B:** keep the flip-3-keep-2 line; add one line teaching the **wild (百搭)** ingredient ("counts as
+  any one ingredient when you pay a stall"); `bg-infodesign` gets a wild-card icon. Net add — flag
+  `bg-elegance` for the budget.
+
+## 18.8 Handoff / coherence flag (per the contract — extends §11)
+
+**Mechanics that move in this pass (spec-only until the A/B resolves):** the **VISIT sourcing action** — the
+game's primary ingredient intake, which sits directly upstream of the **signature crowd-fight** (it funds
+every Bribe). Flag the Director to run the guardian sweep on whichever option the A/B selects:
+- **`bg-theme`** — Option A reframes a Visit as *"you take what the stall-strip is selling today"* (accept
+  the region's specialty) rather than *"pick the best of three"*; confirm that still reads as a lively
+  market forage, not a vending machine. Option B introduces a **wild "market-choice" (百搭)** ingredient —
+  confirm the fiction (a mixed/utility grab) and that it carries **no cultural-sensitivity load** (a generic
+  market item; **secular, dignified** per the rails).
+- **`bg-elegance`** — A is a net **trim** (fewer Visit sub-steps + one fewer §16 feeder) → re-gauge headroom
+  *down*; B is a net **add** (a new ingredient type + rule) → confirm within the complexity budget.
+- **`bg-critic` / `bg-playtest`** — the ripples to watch: **A → §16 discard-feeder loss** (reshuffle
+  cadence + Pantry `supply_min`); **B → §12 spread-forcing erosion** (travel rate M2 must not fall) **and**
+  the §12.5 Pantry rebalance the wild causes. Both are wired into the M1–M5 probes above.
