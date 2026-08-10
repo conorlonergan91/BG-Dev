@@ -3,17 +3,17 @@
 <!-- Canon: design/followers-meeples-redesign.md (V7-M) + components/*.csv. -->
 
 <!-- complexity:ignore-start | FLAVOUR — front-of-book world intro (setting/premise). STORY, not rules-teaching load; excluded from the rulebook_words proxy, exactly like "Meet the Agents". Do not put any rule here. -->
-## Your Assignment
+## The Job
 
-Somewhere on this island, the greatest street-food tour ever run is waiting to be booked. You intend to book it first.
+Somewhere on this island, the greatest street-food tour ever run is waiting to be booked. You intend to book it first — and so does every other agency in town.
 
-You're a travel agent. You have chosen, for reasons best left unexamined, to treat this like a covert operation — trench coat over the Hawaiian shirt, head office crackling in your earpiece, codename already assigned: **Operation Beef Noodle**.
+You're a travel agent. On paper it's the most wholesome job going: show a busload of hungry visitors the best stalls in Taiwan and send them home glowing. In practice you and your rivals run it like a demolition derby — elbows out, engines gunning, three agencies descending on the same beef-noodle cart at once.
 
-The mission is simple. One eating day: a Taipei breakfast at dawn, the last train south at dusk. Win the island's most beloved stalls onto your tour — every vendor happily goes with whoever's driving the biggest, hungriest crowd — line up your bookings, and out-hype the rival agents circling the very same bowl of noodles.
+One eating day, dawn to dusk: a Taipei breakfast at first light, the last train south when the neon comes on. Win the island's most beloved stalls onto your tour — every vendor happily goes with whoever's driving the biggest, hungriest crowd — line up your bookings, and out-hype the rival agents circling the very same bowl of noodles.
 
-Complete the most tours before that last train and the island crowns you its finest food-tour agency.
+Complete the most tours and sell the most tickets before that last train, and the island crowns you its finest food-tour agency.
 
-Now. Grab your coat. Try to look casual.
+Elbows out on your rivals. Never on Taiwan. Now floor it.
 <!-- complexity:ignore-end -->
 
 Rival travel agencies chase the same food stalls through one eating day. Ride between four regions, gather

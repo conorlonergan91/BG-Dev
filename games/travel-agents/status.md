@@ -14,7 +14,7 @@
 - **Theme (2026-08-10 pivot):** the secret-agent wrapper is **scrapped** → **"Wacky Races, Taiwan-food
   edition"** (over-the-top, battle-hungry rival agents); retitled **Travel Agents: Taiwan Food Tour**.
   Felt identity + voice re-founded (`identity.md`, `prose-identity.md`, `game-bible.md` framing, `names.md`).
-  **Mechanics unchanged.** *Downstream copy + art still carry the old spy voice/title — see In-flight.*
+  **Mechanics unchanged.** *Living docs + the rulebook world-intro are now re-voiced (2026-08-10); the retitle is only half-applied and art is still to come — see In-flight.*
 
 ## Pipeline stage
 **Prototype-ready.** Design + development are CLOSED for V7-M at a clean, sim-validated state (N=400). The
@@ -31,15 +31,19 @@ prototype kit is current in `exports/`. The next real work is a **human playtest
     (default OFF).
   - **Prototype kit** — Screentop deck sheets, player/character boards with embedded AI mock-up portraits,
     A4/A3 print-and-play, map — all current in `exports/`.
-  - **Rulebook** — "Meet the Agents" gallery + character portraits + stylish `--rich` layout. *(The world
-    intro + backstories were written in the retired secret-agent voice → flagged for a copy refresh.)*
+  - **Rulebook** — "Meet the Agents" gallery + character portraits + stylish `--rich` layout. The
+    front-of-book world intro is **re-voiced to the Wacky-Races premise** ("The Job", 2026-08-10); the
+    backstories were already on-premise. `exports/rulebook.{html,pdf}` regenerated.
   - **Voice bible** — `prose-identity.md` authored and promoted to a studio standard.
   - **Art prep** — art prompts + `art/ta-art-context.zip` (2.7 MB) ready for the CD's ChatGPT art generation.
-- **⏳ In-flight (theme-pivot follow-through, 2026-08-10):** the re-founded docs are done (`identity.md`,
-  `game-bible.md` framing, `prose-identity.md`, `names.md`, logs). **Remaining:** propagate the retitle +
-  new frame into `art/`, `marketing/`, and regenerated `exports/`; refresh the spy-voiced player copy (the
-  `rules-draft.md` "Your Assignment" world intro, the "Meet the Agents" backstories, mat quotes, event
-  flavour); reconcile the character-kit drift in `names.md`/`v7-plan.md` to `characters.csv`.
+- **⏳ In-flight (theme-pivot follow-through, 2026-08-10):** the re-founded docs **and the rulebook world
+  intro** are done (`identity.md`, `game-bible.md` framing, `prose-identity.md`, `names.md`,
+  `rules-draft.md` intro, regenerated `exports/rulebook.{html,pdf}`, logs). **Remaining:** (1) **retitle
+  decision — CD's call:** the pivot renamed the living docs to *Travel Agents: Taiwan Food Tour*, but
+  `make.sh` + `rules-draft.md`'s H1 still read *Travel Agents: Taiwan* — pick one and align both. (2)
+  Propagate the new frame into `art/` + `marketing/` (the art is the CD's ChatGPT pass). (3) Reconcile the
+  character-kit drift in `names.md`/`v7-plan.md` to `characters.csv`. (4) Old `design/` exploration notes
+  still hold the retired spy voice — **archive** (history), don't rewrite.
 - **➡️ Next:** CD generates the remaining art (map + vendor cards) in ChatGPT from the prepared
   zip/prompts, then runs a **3–4-player human playtest**.
 
