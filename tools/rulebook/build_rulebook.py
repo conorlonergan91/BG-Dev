@@ -16,7 +16,9 @@ Output: always writes .html; writes .pdf too if WeasyPrint is installed
 from __future__ import annotations
 
 import argparse
+import base64
 import html
+import io
 import math
 import re
 import sys
@@ -39,24 +41,154 @@ ICON_TOKEN = "{{ICONOGRAPHY}}"
 # placeholder sized for the illustrator's art) with the brief kept as a caption — instead of the plain
 # bordered-callout fallback. Only fires on blockquotes carrying a [FIG-…] code, so rulebooks without them
 # (Beacon) are byte-identical. Optionally, `[FIG-CODE|path.png]` embeds a real image if the file exists.
-FIG_BLOCK_RE = re.compile(r'<blockquote>\s*(<p>.*?\[FIG-[A-Z0-9-]+.*?\].*?</p>)\s*</blockquote>', re.DOTALL)
+# Tempered so the match stays INSIDE a single blockquote — `(?!</blockquote>)` stops `.` (DOTALL) from
+# spilling across into a later FIG blockquote, which previously swallowed any plain callout sitting between
+# two FIG blocks. Beacon has no FIG blockquotes at all, so this never matches there (byte-identical).
+FIG_BLOCK_RE = re.compile(
+    r'<blockquote>\s*((?:(?!</blockquote>).)*?\[FIG-[A-Z0-9-]+(?:\|[^\]]+)?\](?:(?!</blockquote>).)*?)\s*</blockquote>',
+    re.DOTALL)
 FIG_CODE_RE = re.compile(r'\[FIG-([A-Z0-9-]+)(?:\|([^\]]+))?\]')
+# In --rich, drop the `🖼 [FIG-CODE|path] —` authoring marker from the caption, leaving just the brief.
+FIG_CAP_MARKER_RE = re.compile(r'🖼\s*(?:<strong>)?\s*\[FIG-[A-Z0-9-]+(?:\|[^\]]+)?\]\s*(?:</strong>)?\s*(?:—|–|-)?\s*')
+
+# ---------------------------------------------------------------------------
+# Asset helpers (used only in --rich mode / by TA-content-driven code paths, so the default rulebook
+# render, e.g. Beacon, never touches any of this and stays byte-identical).
+# ---------------------------------------------------------------------------
+_ASSET_BASES: list[Path] = [Path.cwd()]  # extended in main() with the markdown's dir + its parent
 
 
-def insert_figure_boxes(body_html: str) -> str:
-    """Turn [FIG-…] blockquotes into reserved figure boxes. Non-matching content is untouched."""
+def _find_asset(p: str) -> Path | None:
+    """Resolve an asset path against CWD, then the markdown's dir / parent (robust to where we're run)."""
+    cand = Path(p)
+    if cand.is_absolute():
+        return cand if cand.exists() else None
+    for b in _ASSET_BASES:
+        q = b / p
+        if q.exists():
+            return q
+    return None
+
+
+def _embed_image_datauri(path: Path, max_w: int) -> str:
+    """Downscale (if wider than max_w) and base64-embed a PNG so the rulebook is self-contained."""
+    from PIL import Image
+    im = Image.open(path)
+    if im.mode not in ("RGB", "RGBA"):
+        im = im.convert("RGBA")
+    if im.width > max_w:
+        im = im.resize((max_w, round(im.height * max_w / im.width)), Image.LANCZOS)
+    buf = io.BytesIO()
+    im.save(buf, format="PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+def insert_figure_boxes(body_html: str, embed: bool = False) -> str:
+    """Turn [FIG-…] blockquotes into reserved figure boxes. Non-matching content is untouched.
+
+    Default (embed=False): a real image is referenced by relative `src` and a code-only figure becomes a
+    dashed placeholder — the original behaviour, so rulebooks without [FIG-…|path] (e.g. Beacon) are
+    byte-identical. With embed=True (--rich) a resolvable image is downscaled + base64-embedded so the
+    output HTML/PDF is fully self-contained.
+    """
     def repl(m: re.Match) -> str:
         inner = m.group(1)
         cm = FIG_CODE_RE.search(inner)
         code = cm.group(1) if cm else ""
         img = (cm.group(2).strip() if (cm and cm.group(2)) else "")
-        if img and Path(img).exists():
+        resolved = _find_asset(img) if (embed and img) else (Path(img) if img else None)
+        have = bool(resolved and resolved.exists())
+        if have and embed:
+            reserve = f'<img class="figimg" src="{_embed_image_datauri(resolved, 900)}" alt="{html.escape(code)}"/>'
+        elif have:
             reserve = f'<img class="figimg" src="{html.escape(img)}" alt="{html.escape(code)}"/>'
         else:
             reserve = (f'<div class="figreserve"><span class="figcode">🖼 FIG · {html.escape(code)}</span>'
                        f'<span class="fignote">illustration reserved — see art brief</span></div>')
-        return f'<figure class="figbox">{reserve}<figcaption>{inner}</figcaption></figure>'
+        caption = FIG_CAP_MARKER_RE.sub("", inner) if embed else inner
+        return f'<figure class="figbox">{reserve}<figcaption>{caption}</figcaption></figure>'
     return FIG_BLOCK_RE.sub(repl, body_html)
+
+
+# ---------------------------------------------------------------------------
+# "Meet the Agents" flavour section (--rich, TA-content-driven). Each agent's h3 + prose in the markdown
+# is wrapped into a portrait-beside-text card. The portrait is matched by the English name in the heading
+# (names-first rail) → FIG-CHAR-<slug>.png. Fires only when a "Meet the Agents" <h2> is present, so a
+# rulebook without that section is untouched.
+# ---------------------------------------------------------------------------
+AGENT_SLUGS: list[tuple[str, str]] = [
+    ("Old Councillor", "old-councillor"),
+    ("Homebody", "homebody"),
+    ("Big Eater", "big-eater"),
+    ("Influencer", "influencer"),
+    ("Big Brother", "big-brother"),
+    ("Globetrotter", "globetrotter"),
+]
+
+
+def _slug_for_agent(heading_html: str) -> str:
+    plain = re.sub(r"<[^>]+>", "", heading_html)
+    for name, slug in AGENT_SLUGS:
+        if name in plain:
+            return slug
+    return ""
+
+
+def _build_agent_card(chunk: str, portraits_dir: str, alt_index: int) -> str:
+    hm = re.match(r'<h3[^>]*>(.*?)</h3>(.*)', chunk, re.DOTALL)
+    if not hm:
+        return chunk
+    head, rest = hm.group(1), hm.group(2)
+    slug = _slug_for_agent(head)
+    portrait = _find_asset(f"{portraits_dir.rstrip('/')}/FIG-CHAR-{slug}.png") if (portraits_dir and slug) else None
+    if portrait and portrait.exists():
+        img = f'<img src="{_embed_image_datauri(portrait, 520)}" alt="{html.escape(re.sub(chr(60)+"[^"+chr(62)+"]+"+chr(62), "", head))}"/>'
+        pcol = f'<div class="agent-portrait">{img}</div>'
+    else:
+        pcol = ('<div class="agent-portrait agent-portrait--empty">'
+                f'<span>🖼 FIG-CHAR-{html.escape(slug or "?")}</span></div>')
+    flip = " agent-card--flip" if alt_index % 2 else ""
+    return (f'<div class="agent-card{flip}">{pcol}'
+            f'<div class="agent-text"><h3>{head}</h3>{rest}</div></div>')
+
+
+def wrap_agent_cards(body: str, portraits_dir: str) -> str:
+    m = re.search(r'<h2[^>]*>[^<]*Meet the Agents[^<]*</h2>', body)
+    if not m:
+        return body
+    start = m.end()
+    nxt = re.search(r'<h2', body[start:])
+    end = start + nxt.start() if nxt else len(body)
+    region = body[start:end]
+    parts = re.split(r'(?=<h3)', region)
+    intro, cards, idx = "", [], 0
+    for p in parts:
+        if not p.strip():
+            continue
+        if p.lstrip().startswith("<h3"):
+            cards.append(_build_agent_card(p, portraits_dir, idx))
+            idx += 1
+        else:
+            intro += p
+    new_region = intro + '<section class="agents">' + "".join(cards) + "</section>"
+    return body[:start] + new_region + body[end:]
+
+
+def cover_page_html(theme: dict, title: str, subtitle: str, cover_image: str) -> str:
+    """A full-page title spread: the game's cover render if we have one, else a themed title card."""
+    ink, accent, muted = theme["ink"], theme["accent"], theme["muted"]
+    tfont = theme["title_font"]
+    resolved = _find_asset(cover_image) if cover_image else None
+    if resolved and resolved.exists():
+        hero = f'<img class="cover-hero" src="{_embed_image_datauri(resolved, 1000)}" alt="{html.escape(title)}"/>'
+        return f'<section class="coverpage coverpage--image">{hero}</section>'
+    sub = f'<p class="cover-sub">{html.escape(subtitle)}</p>' if subtitle else ""
+    dots = "".join(f'<span class="lantern" style="background:{c}"></span>'
+                   for c in (accent, "#E6A930", ink, "#1F8A7A"))
+    return (f'<section class="coverpage coverpage--card">'
+            f'<div class="cover-lanterns">{dots}</div>'
+            f'<h1 class="cover-title">{html.escape(title)}</h1>{sub}'
+            f'<div class="cover-rule"></div></section>')
 
 
 def _star_svg(cx, cy, r, color):
@@ -336,19 +468,82 @@ def css(theme: dict) -> str:
     """
 
 
+def rich_css(theme: dict) -> str:
+    """Extra styling layered ON TOP of css(theme), only in --rich mode: a full-page cover, portrait-
+    beside-text agent cards, warmer section headers, and softened callouts. Appended after css(theme),
+    so every base rule (and the iconography page) is preserved."""
+    ink, accent, text, muted = theme["ink"], theme["accent"], theme["text"], theme["muted"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    top, bottom = theme["page"]
+    return f"""
+    /* --- warm page ground + comfortable rhythm ------------------------------------------------ */
+    body {{ background: {top}; }}
+    p {{ margin: 5pt 0; }}
+    /* Section headers: a lantern-dot ornament + a hairline over the h1 band's siblings. */
+    h2 {{ margin-top: 18pt; }}
+    h2::before {{ content: "●"; color: {accent}; font-size: 9pt; margin-right: 6pt; vertical-align: 2pt; }}
+    h3 {{ letter-spacing: .2pt; }}
+    /* Softer, card-like callouts (the > blockquote tips). */
+    blockquote {{ border-left: 4pt solid {accent}; border-radius: 0 6pt 6pt 0;
+                  box-shadow: inset 0 0 0 1pt rgba(0,0,0,.04); }}
+    /* --- full-page cover ---------------------------------------------------------------------- */
+    .coverpage {{ page-break-after: always; }}
+    .coverpage--image {{ display: flex; align-items: center; justify-content: center; height: 100%; }}
+    .cover-hero {{ max-width: 100%; max-height: 96%; border-radius: 8pt;
+                   box-shadow: 0 3pt 14pt rgba(0,0,0,.22); }}
+    .coverpage--card {{ text-align: center; padding-top: 40pt; }}
+    .cover-lanterns {{ margin-bottom: 18pt; }}
+    .cover-lanterns .lantern {{ display: inline-block; width: 12pt; height: 16pt; border-radius: 6pt;
+                   margin: 0 4pt; box-shadow: 0 2pt 5pt rgba(0,0,0,.2); }}
+    .cover-title {{ font-family: {tfont}; color: {ink}; background: none; border: none; padding: 0;
+                   font-size: 34pt; line-height: 1.1; margin: 0 0 8pt; }}
+    .cover-sub {{ color: {muted}; font-style: italic; font-size: 12pt; max-width: 70%; margin: 0 auto; }}
+    .cover-rule {{ width: 40%; height: 3pt; background: {accent}; border-radius: 2pt; margin: 22pt auto 0; }}
+    /* --- Meet the Agents: portrait-beside-text cards ------------------------------------------ */
+    .agents {{ margin-top: 8pt; }}
+    .agent-card {{ display: flex; gap: 12pt; align-items: flex-start; margin: 0 0 14pt;
+                   padding: 9pt 10pt; border: 1pt solid {accent}; border-left: 5pt solid {accent};
+                   border-radius: 8pt; background: linear-gradient(180deg,#ffffff, {top});
+                   page-break-inside: avoid; }}
+    .agent-card--flip {{ flex-direction: row-reverse; border-left: 1pt solid {accent};
+                   border-right: 5pt solid {accent}; }}
+    .agent-portrait {{ flex: 0 0 33%; }}
+    .agent-portrait img {{ width: 100%; height: auto; border-radius: 6pt; border: 2pt solid #fff;
+                   box-shadow: 0 2pt 8pt rgba(0,0,0,.2); display: block; }}
+    .agent-portrait--empty {{ display: flex; align-items: center; justify-content: center; min-height: 120pt;
+                   border: 2pt dashed {accent}; border-radius: 6pt; color: {muted}; font-size: 8.5pt;
+                   text-align: center; padding: 6pt; }}
+    .agent-text {{ flex: 1 1 auto; }}
+    .agent-text h3 {{ margin: 0 0 3pt; color: {ink}; font-size: 13pt; }}
+    .agent-text blockquote {{ margin: 0 0 6pt; padding: 4pt 8pt; background: none; border-left: 3pt solid {accent};
+                   color: {accent}; font-size: 10pt; box-shadow: none; }}
+    .agent-text p {{ margin: 4pt 0; }}
+    """
+
+
 def main():
     ap = argparse.ArgumentParser(description="Render a rules markdown file to a themed rulebook.")
     ap.add_argument("--md", required=True, type=Path)
     ap.add_argument("--out", type=Path, default=Path("build/rulebook.pdf"))
     ap.add_argument("--theme", default="clean")
     ap.add_argument("--title", default=None)
+    # --- opt-in styling (default OFF → the plain themed render is byte-identical for Beacon et al.) ---
+    ap.add_argument("--rich", action="store_true",
+                    help="Enable the stylish layout: full-page cover, embedded art, agent portrait cards.")
+    ap.add_argument("--subtitle", default="", help="Subtitle for the themed fallback title page (--rich).")
+    ap.add_argument("--cover-image", default="", help="Hero image for the cover page (--rich); themed card if absent.")
+    ap.add_argument("--portraits-dir", default="", help="Dir holding FIG-CHAR-<slug>.png for Meet the Agents (--rich).")
     args = ap.parse_args()
+
+    # Resolve assets against the markdown's location too, not just CWD (robust to where we're invoked).
+    _ASSET_BASES.extend([args.md.resolve().parent, args.md.resolve().parent.parent])
 
     theme = get_theme(args.theme)
     raw = args.md.read_text(encoding="utf-8")
     body = md_to_html(raw)
     # Reserve image boxes for any [FIG-…] directives (no-op for rulebooks without them, e.g. Beacon).
-    body = insert_figure_boxes(body)
+    # In --rich, resolvable images are downscaled + base64-embedded (self-contained output).
+    body = insert_figure_boxes(body, embed=args.rich)
     # Inject the drawn-SVG iconography page wherever the {{ICONOGRAPHY}} token appears (as its own last
     # page). Absent → untouched, so rulebooks without the token (e.g. Beacon) are byte-identical.
     if ICON_TOKEN in raw:
@@ -356,8 +551,16 @@ def main():
         body = re.sub(r'<p>\s*' + re.escape(ICON_TOKEN) + r'\s*</p>', legend, body)
         body = body.replace(ICON_TOKEN, legend)
     title = args.title or args.md.stem
-    doc = (f"<!doctype html><html><head><meta charset='utf-8'><title>{html.escape(title)}</title>"
-           f"<style>{css(theme)}</style></head><body>{body}</body></html>")
+    if args.rich:
+        # TA-content-driven: wrap "Meet the Agents" prose into portrait cards (no-op without that section).
+        body = wrap_agent_cards(body, args.portraits_dir)
+        cover = cover_page_html(theme, title, args.subtitle, args.cover_image)
+        style = css(theme) + rich_css(theme)
+        doc = (f"<!doctype html><html><head><meta charset='utf-8'><title>{html.escape(title)}</title>"
+               f"<style>{style}</style></head><body>{cover}{body}</body></html>")
+    else:
+        doc = (f"<!doctype html><html><head><meta charset='utf-8'><title>{html.escape(title)}</title>"
+               f"<style>{css(theme)}</style></head><body>{body}</body></html>")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     html_path = args.out.with_suffix(".html")

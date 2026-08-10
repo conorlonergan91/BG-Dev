@@ -11,6 +11,101 @@ complete the most before the **last train** to be **Top Agent**.
 
 **3–6 players · 30–45 min**
 
+## Meet the Agents
+
+*Pure flavour — nothing to learn here. Each agent's actual ability and flaw live on their board and in
+**The six agents** near the end. Pour a tea and enjoy the introductions.*
+
+### The Old Councillor 里長伯
+
+> *"Why trust Google Maps when the whole neighbourhood has my number?"*
+
+Need a reservation? He knows the owner.  
+Need a shortcut? He built it.  
+Need directions? Three aunties have already argued about the best route before you've finished asking.
+
+The Old Councillor has spent so long looking after his neighbourhood that the neighbourhood now looks after him. Every market greets him like a returning celebrity. Stall owners wave him over, locals quietly slip today's freshest ingredients into his bag, and somehow he hasn't paid full price for lunch since 1998.
+
+If your tour stays close to home, you'll eat like royalty.  
+If it leaves… well… now you're just another tourist.
+
+### The Homebody 媽寶
+
+> *"You call it over-packing. Mum calls it being prepared."*
+
+His mother packed "a few snacks."  
+The backpack now weighs more than he does.
+
+Every journey begins with enough dumplings, tea eggs, fruit, drinks and emergency pineapple cakes to survive crossing the Pacific. Halfway through the trip he's somehow collected even more food than he started with.
+
+People laugh.  
+Until they realise he's the only guide who never wastes time shopping because Mum already thought of everything.  
+She probably packed something for you too.
+
+### The Big Eater 大胃王
+
+> *"I've personally taste-tested the entire island. More than once."*
+
+Her tour has one simple guarantee:  
+If it's delicious, you'll eat it.
+
+Breakfast becomes second breakfast.  
+Second breakfast becomes an "important cultural tasting."  
+Lunch somehow lasts until dinner.
+
+By sunset everyone's carrying food babies and questioning their life choices while she's cheerfully asking,  
+"Dessert?"
+
+She's personally inspected every famous stall in Taiwan.  
+Several times.  
+For quality assurance, obviously.
+
+### The Influencer 網紅
+
+> *"Tomorrow's biggest food trend starts wherever I point my camera."*
+
+By the time you've discovered a hidden gem…  
+…she's already uploaded it.  
+By the time you've posted your lunch…  
+…she's moved onto dinner.
+
+Entire markets panic when they see her ring light appear over the horizon because they know what's coming next:  
+Twenty thousand hungry followers.
+
+She doesn't chase trends.  
+She accidentally causes them.
+
+### The Big Brother 大哥
+
+> *"Funny thing… everything always works out better when I'm around."*
+
+Nobody's quite sure what he actually does.  
+They just know everybody knows him.
+
+The queue mysteriously speeds up.  
+The best table suddenly becomes available.  
+The vendor insists you try the expensive seafood "on the house."
+
+Nobody argues.  
+Nobody asks questions.  
+Everyone simply agrees that Big Brother's tour should probably go first.  
+Just… seems easier that way.
+
+### The Globetrotter 阿嬤
+
+> *"Keep up if you can, dear — I already booked tomorrow."*
+
+She claims she's "slowing down."  
+Nobody has ever witnessed evidence.
+
+One minute she's buying breakfast in Taipei.  
+Five minutes later she's waving from Tainan.  
+By lunchtime she's somehow already eaten in Kaohsiung and is recommending dessert in Hualien.
+
+Nobody knows how.  
+Nobody asks.  
+At this point people simply assume Taiwan rearranges itself to make life easier for Grandma.
+
 ## 1. What you're going for
 
 Your score is your **Bookings, and nothing else.** A Booking is a little tour you promise to run — *three
@@ -19,7 +114,7 @@ you. Vendors and Followers never score. Most Booking points at the last train is
 
 ## 2. Setup
 
-> 🖼 **[FIG-SETUP]** — the shared board with its callouts.
+> 🖼 **[FIG-SETUP|build/map-day.png]** — the shared board: four regions in a ring, the HSR link between North and South, and each region's vendor slots and market deck.
 
 Everything sits on **one shared board, readable from any seat. Everyone starts in Taipei (North).**
 
@@ -155,6 +250,8 @@ and the **market decks** (ingredients & events) reshuffle and keep coming — on
 - **Night Market 夜市** — the **12 nighttime vendors** (11 unique + 1 duplicate): pricier, fought-over, the ★ apex.
 - **末班車 LAST TRAIN** — the moment the **night vendors are all gone**: finish the current round so everyone
   has had equal turns, then the game ends.
+
+> 🖼 **[FIG-DIE|build/die-closing-time.png]** — the Closing-Time die 關門: four region faces (北/中/南/東) and two blank reprieves.
 
 > **The Closing-Time die 關門.** A stall left too long closes. Track rounds on the board's **1·2·3 clock**;
 > after round **L** for your count (**2** at 3 players, **3** at 4–6 — the setup chart says which), roll the

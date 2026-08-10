@@ -131,7 +131,16 @@ python3 $T/boards/build_board.py --type aid    --spec components/player-aid.json
 # Cover + rulebook.
 python3 $T/cards/build_cover.py --title "$title" --subtitle "A crowded market of rival agencies — a warm Taiwan food-tour scrum" \
     --theme "$theme" --players "3–6" --time "30–45 min" --weight 2.2 --out build/cover.png
-python3 $T/rulebook/build_rulebook.py --md design/rules-draft.md --title "$title" --theme "$theme" --out build/rulebook.pdf
+# --rich = the stylish layout (full-page cover, embedded board/die art, the "Meet the Agents" portrait
+# cards); --portraits-dir feeds the six approved FIG-CHAR playtest illustrations (AI-art rail lifted for
+# this prototype). All of this is opt-in — Beacon renders through the SAME script WITHOUT --rich, so its
+# rulebook is byte-identical. --cover-image points at FIG-COVER.png: it auto-embeds a dedicated cover
+# illustration WHEN the illustrator delivers one, and until then falls back to a tasteful themed title
+# page (the CD's stated fallback). Swap to build/cover.png here if you prefer the auto box-cover render.
+python3 $T/rulebook/build_rulebook.py --md design/rules-draft.md --title "$title" --theme "$theme" \
+    --rich --cover-image art/mockups/FIG-COVER.png --portraits-dir art/mockups \
+    --subtitle "A crowded market of rival agencies — a warm Taiwan food-tour scrum" \
+    --out build/rulebook.pdf
 
 echo "→ snapshotting deliverables into exports/ (committed)"
 mkdir -p exports
