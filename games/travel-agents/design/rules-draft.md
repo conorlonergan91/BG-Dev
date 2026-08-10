@@ -2,6 +2,20 @@
 
 <!-- Canon: design/followers-meeples-redesign.md (V7-M) + components/*.csv. -->
 
+<!-- complexity:ignore-start | FLAVOUR — front-of-book world intro (setting/premise). STORY, not rules-teaching load; excluded from the rulebook_words proxy, exactly like "Meet the Agents". Do not put any rule here. -->
+## Your Assignment
+
+Somewhere on this island, the greatest street-food tour ever run is waiting to be booked. You intend to book it first.
+
+You're a travel agent. You have chosen, for reasons best left unexamined, to treat this like a covert operation — trench coat over the Hawaiian shirt, head office crackling in your earpiece, codename already assigned: **Operation Beef Noodle**.
+
+The mission is simple. One eating day: a Taipei breakfast at dawn, the last train south at dusk. Win the island's most beloved stalls onto your tour — every vendor happily goes with whoever's driving the biggest, hungriest crowd — line up your bookings, and out-hype the rival agents circling the very same bowl of noodles.
+
+Complete the most tours before that last train and the island crowns you its finest food-tour agency.
+
+Now. Grab your coat. Try to look casual.
+<!-- complexity:ignore-end -->
+
 Rival travel agencies chase the same food stalls through one eating day. Ride between four regions, gather
 ingredients, and pile **Followers** on the stalls you want: win a stall by drawing the **biggest crowd**
 and it joins your tour, making the next one cheaper. Your only points are the **Bookings** you run —
