@@ -151,6 +151,15 @@ VISIT_MODE    = os.environ.get("TA_VISIT_MODE", "straight")      # "straight" (A
 VISIT_VARIETY  = os.environ.get("TA_VISIT_VARIETY", "mono").strip()   # "mono" | "split:8"
 SPLIT_TAXONOMY = VISIT_VARIETY.startswith("split")
 
+# --- §19.5 EAST-DEPTH lever (split:8 only) — NON-DESTRUCTIVE A/B on the Rice/Noodles sub-pool split -----
+# The split East deck ships (in ingredients-split.csv) as Rice 7 (day 4 / night 3) + Noodles 4 (day 2 /
+# night 2). Noodles is the intended-thinnest sub-pool (M6 probe) but the last split smoke showed it
+# starving to supply_min→0 with ~60% stall. This lever re-balances the FIXED East depth WITHOUT editing
+# the CSV: "rice6_nood5" moves ONE card from Rice→Noodles in the East NIGHT deck (where the depletion
+# clock bites) → Rice 6 (day 4 / night 2) + Noodles 5 (day 2 / night 3). Total East depth is unchanged
+# (11), so this is a pure within-region rebalance, not a pool-size change. Default keeps the CSV depths.
+EAST_DEPTH = os.environ.get("TA_EAST_DEPTH", "rice7_nood4").strip()   # "rice7_nood4" (CSV) | "rice6_nood5"
+
 # --- §15.9 the two cancelled-tour BOONS (CLEAR + SALVAGE) -----------------------------------------
 # ⚠ DATA GAP (flag to bg-developer): §15.8 scheduled the verb count 13 → 15 IN DATA, but events.csv still
 # holds only the 13 pre-boon verbs — the CLEAR (central-night, 1 copy) and SALVAGE (south-night, 1 copy)
@@ -431,7 +440,25 @@ def _load_ingredients():
             qty = int(row["quantity"]) if row.get("quantity", "").strip() else 1
             if (r, ph) in out:
                 out[(r, ph)].append((typ, qty))
+    _apply_east_depth(out)
     return out
+
+
+def _apply_east_depth(out):
+    """§19.5 NON-DESTRUCTIVE East-depth A/B. Only fires under split:8 + TA_EAST_DEPTH=rice6_nood5:
+    move ONE East-NIGHT card from Rice→Noodles (Rice night 3→2, Noodles night 2→3). Rebuilds the
+    (E, night) type→qty list in place; the CSV is untouched, so this is a switchable sim lever."""
+    if not (SPLIT_TAXONOMY and EAST_DEPTH == "rice6_nood5"):
+        return
+    key = ("E", 2)                                          # East night deck
+    lst = out.get(key)
+    if not lst:
+        return
+    q = {typ: qty for typ, qty in lst}
+    if q.get("rice", 0) >= 1:                               # shift one Rice → Noodles
+        q["rice"] -= 1
+        q["noodles"] = q.get("noodles", 0) + 1
+        out[key] = [(t, n) for t, n in ((typ, q[typ]) for typ in q) if n > 0]
 
 
 INGREDIENTS = _load_ingredients()
@@ -2649,12 +2676,15 @@ def _plan(s, p, legal, rng, prefs):
     #    Bots maintain a working hand of WORK_HAND objectives (< HAND_LIMIT) so most turns go to
     #    vendor-work, not claiming; the deck-clock still drains because COMPLETING a Booking (a vendor
     #    win) frees its slot → a fresh claim. A bounded cancel-valve unsticks a fully-stale hand.
-    # a claim-hungry human books MORE ambitiously when cancelling is cheap (flat:1) — the downside of
-    # holding a big-but-incomplete tour is capped, so the working hand widens. Faithful incentive model of
-    # the CANCEL_COST lever's intent; the load-bearing hoarder read is pure scoring (needs no bot change).
-    _cc = _cancel_cost()
-    _cheap_cancel = _cc.startswith("flat:") and int(_cc.split(":", 1)[1]) <= 1
-    WORK_HAND = HAND_LIMIT if (prefs.get("collect") or (prefs.get("human") and _cheap_cancel)) else 2
+    # A sharp claim-hungry human keeps a TIGHT working hand (2) even when cancelling is cheap: the point
+    # of cheap cancel is a cheap ESCAPE HATCH from a stale tour, not licence to hoard 3 incomplete tours.
+    # Over-filling the hand under flat:1 (the old `human`+cheap-cancel → HAND_LIMIT clause) spent turns
+    # booking instead of WINNING vendors, so the night pool never drained (claims/plyr 2.3–2.9 vs the
+    # balanced 2.7–4.0, stall spiked 30–60% at 4–6p). The honest line books to 2 and pours the rest into
+    # vendor-work; the deck-clock still drains because COMPLETING a Booking frees its slot → a fresh claim,
+    # and the bounded cancel-valve below still unsticks a fully-stale hand. Only the explicit breadth line
+    # (`collect`) widens to the full hand. The load-bearing hoarder read is pure scoring (needs no bot change).
+    WORK_HAND = HAND_LIMIT if prefs.get("collect") else 2
     _can_book = (("claim",) in legal or ("wild_book",) in legal)
     if _can_book and not prefs.get("no_tickets"):
         inprog = GAME._in_progress(pl)
