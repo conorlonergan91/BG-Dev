@@ -141,6 +141,20 @@ VISIT_MODE    = os.environ.get("TA_VISIT_MODE", "straight")      # "straight" (A
 TOURS_BOONS   = os.environ.get("TA_TOURS_BOONS", "0") == "1"    # LEGACY synthetic inject (now default OFF)
 NUDGE_CAP     = int(os.environ.get("TA_NUDGE_CAP", "1"))        # §15.5 rail 6: max ✦ leader-hazard hits / leader / round
 
+# --- CD PLAYTEST LEVER: CANCELLED-TOUR COST (2026-08-10, spec/sim-only A/B — NOT the shipped rule) ---
+# A Cancelled tour's scoring penalty. BASELINE "half_value" = −⌊V/2⌋ (scales with the tour's ambition, so
+# it punishes exactly the big tours the two-track intent wants people to book). The CD A/B is a gentler,
+# predictable FLAT cost — "flat:N" charges a fixed −N per cancelled ticket regardless of V — lowering the
+# risk of booking ambitious tours (the scoring-side companion to agnostic-tours safety). Sweep N∈{1,2}.
+CANCEL_COST   = os.environ.get("TA_CANCEL_COST", "half_value")  # "half_value" (baseline) | "flat:1" | "flat:2"
+
+
+def _cancel_pen_one(v):
+    """Penalty for ONE cancelled tour of value V under the active CANCEL_COST lever."""
+    if CANCEL_COST.startswith("flat:"):
+        return int(CANCEL_COST.split(":", 1)[1])
+    return v // 2                                               # baseline: −⌊V/2⌋
+
 # ==================================================================================================
 #  DATA LOADING — the built component CSV/JSON are the SOURCE OF TRUTH
 # ==================================================================================================
@@ -1845,7 +1859,7 @@ class TravelAgentsGame:
     def _booking_vp(self, pl):
         # §14/§15.9: completed-tour VP (day+night) + SALVAGE half-value Completed tours − Σ⌊V/2⌋ over the
         # still-standing Cancelled pile (CLEAR/SALVAGE shed entries from the pile, lightening this penalty).
-        cancel_pen = sum(v // 2 for v in pl["cancelled"])
+        cancel_pen = sum(_cancel_pen_one(v) for v in pl["cancelled"])   # CANCEL_COST lever (half_value | flat:N)
         return pl["day_book_score"] + pl["night_book_score"] + pl["salvage_score"] - cancel_pen
 
     def scores(self, s):
@@ -2115,6 +2129,57 @@ def _pick_target(s, p, prefs):
     return best
 
 
+def _pick_target_human(s, p, prefs):
+    """CLAIM-HUNGRY realistic picker (the honest baseline the band is measured against). A sharp human
+    chasing Bookings claims the vendors those Bookings need AND clears the stalls that pay off FASTEST —
+    so this maximises VALUE-PER-TURN rather than raw value: vendor VP + the Bookings a stall advances +
+    a little icon-ramp, all divided by the estimated turns to bring the claim home (travel + source +
+    the follower fight). Two velocity levers a naive re-pick-every-turn brain lacks:
+      * TARGET STICKINESS — a stall you already committed followers to (×1.5), or last turn's focus
+        (×1.25), is favoured, so the bot FINISHES claims instead of thrashing and wasting sourced
+        ingredients (the #1 cause of the 4-travel/4-visit-per-claim overhead the action-mix probe found);
+      * a QUIET-WIN tempo bonus (×1.2) for an uncontested stall it already stands on and can win now.
+    Feasibility-gated (never fixates on a stall it cannot win even by emptying its whole pool) and
+    spread/margin-aware via _needed_to_win, exactly like the fair picker. Fidelity: this is a PREF flag on
+    the one shared brain — every seat/character that carries `human` gets the identical policy (no seat is
+    juiced), and the six character lanes inherit it uniformly (see LANE_H)."""
+    pl = s["players"][p]
+    reachable = pl["board"] + pl["supply_f"]
+    focus = pl.get("_focus")
+    best, bscore = None, -1e9
+    for vid in GAME._board(s):
+        v = VENDORS[vid]
+        if prefs.get("no_drinks") and v["is_drink"]:
+            continue
+        add = GAME._needed_to_win(s, p, vid)
+        if add > reachable:
+            continue                                       # unwinnable this game → don't fixate (no deadlock)
+        val = v["vp"] + _booking_marginal(s, p, vid, prefs)
+        if not v["is_drink"] and v["icon"]:
+            val += 0.3 * pl["icons"].get(v["icon"], 0)      # ramp: same-region icons discount future claims
+        if prefs.get("marquee") and v["apex"]:
+            val += 1.0
+        est = _est_actions(s, p, vid)                       # ~turns to travel + source + win this stall
+        score = val / max(1.0, est)                         # VALUE PER TURN — the claim-velocity brain
+        if s["fol"][vid][p] > 0:
+            score *= 1.5                                    # already invested here → finish it (anti-thrash)
+        if vid == focus:
+            score *= 1.25                                   # last turn's plan → stick unless clearly beaten
+        rival = max((s["fol"][vid][q] for q in range(s["n"]) if q != p), default=0)
+        if rival == 0 and GAME._present(s, p, vid):
+            score *= 1.2                                    # a ready, quiet win → grab it, keep tempo
+        if prefs.get("avoid_contest") and rival > 0:
+            score *= 0.5
+        if prefs.get("contest") and rival > 0:
+            score *= 1.3
+        if prefs.get("spread") and v["region"] not in {w["region"] for w in pl["won"]}:
+            score *= 1.2
+        if score > bscore:
+            bscore, best = score, vid
+    pl["_focus"] = best                                     # bot-only scratch (no game rule reads it)
+    return best
+
+
 def _token_source(s, p, tok, legal):
     pl = s["players"][p]
     targets = list(COMMONS[tok]) if _is_common(tok) else [TYPE_SIG_REGION[tok]]
@@ -2193,7 +2258,11 @@ def _plan(s, p, legal, rng, prefs):
     #    Bots maintain a working hand of WORK_HAND objectives (< HAND_LIMIT) so most turns go to
     #    vendor-work, not claiming; the deck-clock still drains because COMPLETING a Booking (a vendor
     #    win) frees its slot → a fresh claim. A bounded cancel-valve unsticks a fully-stale hand.
-    WORK_HAND = HAND_LIMIT if prefs.get("collect") else 2
+    # a claim-hungry human books MORE ambitiously when cancelling is cheap (flat:1) — the downside of
+    # holding a big-but-incomplete tour is capped, so the working hand widens. Faithful incentive model of
+    # the CANCEL_COST lever's intent; the load-bearing hoarder read is pure scoring (needs no bot change).
+    _cheap_cancel = CANCEL_COST.startswith("flat:") and int(CANCEL_COST.split(":", 1)[1]) <= 1
+    WORK_HAND = HAND_LIMIT if (prefs.get("collect") or (prefs.get("human") and _cheap_cancel)) else 2
     if ("claim",) in legal and not prefs.get("no_tickets"):
         inprog = GAME._in_progress(pl)
         if len(inprog) < WORK_HAND:
@@ -2205,7 +2274,7 @@ def _plan(s, p, legal, rng, prefs):
             if best_row > worst_held * 1.3:
                 return ("claim",)
 
-    tgt = _pick_target(s, p, prefs)
+    tgt = _pick_target_human(s, p, prefs) if prefs.get("human") else _pick_target(s, p, prefs)
     if tgt is None:
         return ("visit",) if ("visit",) in legal else legal[0]
 
@@ -2274,6 +2343,14 @@ RUSH        = {**BAL, "rush": True, "w_drink": 1.1}                   # tempo: m
 ENGINE      = {**BAL, "engine": True, "w_ramp": 1.4, "w_food": 1.15} # economy: stack region icons → discounts
 COLLECTOR   = {**BAL, "collect": True, "spread": True, "w_ticket": 1.2}  # spread-thin: breadth Bookings + regions
 CONCENTRATE = {**BAL, "concentrate": True, "contest": True}          # concentrate: dominate one region hard
+# ---- THE CLAIM-HUNGRY REALISTIC BASELINE (2026-08-10) --------------------------------------------
+# The honest human line: value-per-turn target choice + target stickiness → claims vendors its Bookings
+# need at a realistic velocity, WHILE still playing tours (draws + completes Bookings, WORK_HAND=2).
+# This is the baseline the L-band should be measured against (a claim-naive bot forces the die to clock
+# the game and yields a false pacing read). Uniform pref → fair across seats/characters.
+HUMAN       = {**BAL, "human": True}
+HUMAN_CONTEST   = {**HUMAN, "contest": True}                          # human who also hunts the fight
+HUMAN_SPREAD    = {**HUMAN, "spread": True, "collect": True, "w_ticket": 1.2}  # human breadth-Booking line
 # ---- ADVERSARIAL EXPLOIT-HUNTERS (each from a bg-critic hypothesis — try to BREAK the design) ----
 LATE_BATTLER = {**BAL, "bank": True, "late_battle": True, "w_food": 1.15}  # banked-board late-battler (媽寶 line)
 DODGER       = {**BAL, "avoid_contest": True, "w_food": 1.3}              # ignore-the-contest dodger
@@ -2295,6 +2372,15 @@ LANE = {
     "bigbrother":   {**CONTESTER},                     # margin dial → the fight is his edge
     "globetrotter": {**SNIPER, "spread": True},        # travel-anywhere → snipe uncontested across regions
 }
+# six CHARACTER-LANE lines carrying the claim-hungry `human` brain (fair, uniform kit-appropriate tilts)
+LANE_H = {
+    "councillor":   {**HUMAN, "engine": True, "w_ramp": 1.4, "w_food": 1.15},
+    "homebody":     {**HUMAN, "avoid_contest": True, "w_food": 1.3},
+    "bigeater":     {**HUMAN, "rush": True, "w_food": 1.3},
+    "influencer":   {**HUMAN, "concentrate": True, "contest": True},
+    "bigbrother":   {**HUMAN, "contest": True},
+    "globetrotter": {**HUMAN, "snipe": True, "spread": True},
+}
 # back-compat aliases (older run scripts referenced these names)
 HOMEBODY_DODGE, HOMEBODY_LATE = DODGER, LATE_BATTLER
 
@@ -2312,6 +2398,10 @@ STRATEGIES = {
     "engine": _make(ENGINE),
     "collector": _make(COLLECTOR),
     "concentrate": _make(CONCENTRATE),
+    # claim-hungry realistic baseline (the honest band-reference line)
+    "human": _make(HUMAN),
+    "human_contest": _make(HUMAN_CONTEST),
+    "human_spread": _make(HUMAN_SPREAD),
     # adversarial exploit bots
     "late_battler": _make(LATE_BATTLER),
     "dodger": _make(DODGER),
@@ -2327,6 +2417,13 @@ STRATEGIES = {
     "lane_influencer": _make(LANE["influencer"]),
     "lane_bigbrother": _make(LANE["bigbrother"]),
     "lane_globetrotter": _make(LANE["globetrotter"]),
+    # six character-lane lines carrying the claim-hungry human brain
+    "laneh_councillor": _make(LANE_H["councillor"]),
+    "laneh_homebody": _make(LANE_H["homebody"]),
+    "laneh_bigeater": _make(LANE_H["bigeater"]),
+    "laneh_influencer": _make(LANE_H["influencer"]),
+    "laneh_bigbrother": _make(LANE_H["bigbrother"]),
+    "laneh_globetrotter": _make(LANE_H["globetrotter"]),
     # controls
     "random": s_random,
 }
