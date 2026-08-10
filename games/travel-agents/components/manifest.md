@@ -82,12 +82,15 @@ Booking deck itself.
 | **Bookings — DAY deck** (3·(N+1)) | 12 | 15 | 18 | 21 |
 | **Bookings — NIGHT deck** (4·(N+1)) | 16 | 20 | 24 | 28 |
 | **Followers per colour** (`max`) | 6 · 網紅 8 | 6 · 網紅 8 | 6 · 網紅 8 | 6 · 網紅 8 |
-| **Face-up vendor slots** N/C/S/E (V7-M — tightened, SLOW/per-round refill) | 1/1/1/1 | 2/1/1/1 | 2/1/1/1 | 2/2/1/1 |
+| **Face-up vendor slots** N/C/S/E (corrected scaling, dbd7dda) | 1/1/1/1 | 1/1/1/1 | 1/1/2/1 | 2/1/2/1 |
 
 The follower pool no longer scales with player count — it is a **fixed per-colour pool = your character's
-`max`** (a physical component ceiling, not a shared table pool). **V7-M scarcity:** face-up slots are cut to
-~1.0–1.33 stalls/agent (floor 1/region) AND refill is now **SLOW / per-round** (a claimed/cleared slot stays
-empty; refill all at end of round) — the load-bearing lever that forces the contested crowd-fight. The
+`max`** (a physical component ceiling, not a shared table pool). **V7-M scarcity:** the FULL vendor pool
+(13 day / 11 night) is used at every count — **NO per-count pool subset** (dbd7dda: shrinking it backfires);
+only the face-up SLOTS scale, thematically (base N1/C1/S1/E1 → +1 South @5p → +1 North @6p, East kept
+thinnest), still ~1.0–1.33 stalls/agent (floor 1/region) with **SLOW / per-round** refill — the load-bearing
+lever that forces the contested crowd-fight. The 3p Bookings deck drops the 7 HEAVY ≥4-claim tours (a
+`counts` tag; ~38 rows); 4–6p use all 45 (on-ramp default IN). The
 45-card Bookings set covers the deepest single-phase draw; at higher counts the common/easy patterns are
 duplicated to keep the shared face-up row refilling (a print-quantity step, not new patterns). The DAY/NIGHT
 deck sizes above are the **clock** — seed the 黃昏 / 末班車 boundary card below each.

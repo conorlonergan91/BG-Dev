@@ -31,7 +31,7 @@ rm -rf build
 # Vendor decks (24 vendors, day+night, drinks mixed in). recipe-glyphs.csv feeds the recipe chip glyphs
 # (the 5 ingredient ids → 繁體 label; decoupled from tokens.csv now that ingredient tokens are dropped).
 python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build --theme "$theme" --formats png --tokens-csv components/recipe-glyphs.csv
-# Bookings (開團) — 20 DAY + 25 NIGHT = 45 cards / 44 patterns — the SOLE scoring vector (成團 / 取消).
+# Bookings (開團) — 6 DAY + 8 NIGHT + 31 ANY-time (§20/§21) = 45 cards — the SOLE scoring vector (成團 / 取消).
 python3 $T/cards/build_cards.py --csv components/bookings.csv    --out build --theme "$theme" --formats png
 # Ingredient market decks (5-palette; K in C/S) — the Visit / CS / Travel draw.
 python3 $T/cards/build_cards.py --csv components/ingredients.csv  --out build --theme "$theme" --formats png --tokens-csv components/tokens.csv
@@ -50,7 +50,7 @@ python3 $T/cards/split_decks.py --out build/decks --prefix market --key deck \
     --csv components/ingredients.csv --csv components/events.csv
 # 8 vendor decks split by region + phase (face-up: North 2, others 1 — see the setup note).
 python3 $T/cards/split_decks.py --out build/decks --prefix vend --key type,phase --csv components/vendors.csv
-# 2 Bookings decks by phase (DAY / NIGHT — the deck-driven clock; reveal a face-up row).
+# 3 Bookings decks by phase (DAY / NIGHT / ANY-time — §20 agnostic tours; reveal a face-up row).
 python3 $T/cards/split_decks.py --out build/decks --prefix booking --key phase --csv components/bookings.csv
 for d in build/decks/*.csv; do
     tok=""
@@ -149,6 +149,9 @@ cp build/top/sheets/bookings_day_sheet_*.png    exports/ 2>/dev/null || true
 cp build/top/sheets/bookings_day_back.png       exports/ 2>/dev/null || true
 cp build/top/sheets/bookings_night_sheet_*.png  exports/ 2>/dev/null || true
 cp build/top/sheets/bookings_night_back.png     exports/ 2>/dev/null || true
+# §20 ANY-time (agnostic) tour pile — 31 tours drawable throughout; its own sheet + neutral back.
+cp build/top/sheets/bookings_any_sheet_*.png    exports/ 2>/dev/null || true
+cp build/top/sheets/bookings_any_back.png       exports/ 2>/dev/null || true
 # Character BOARDS — 6 A4-landscape player mats. Snapshot the PLACEHOLDER renders (no AI final art — the
 # binding rail); the warm art-embedded boards stay in build/boards/ (gitignored, CD preview only).
 cp build/boards-placeholder/board-*.png   exports/ 2>/dev/null || true
