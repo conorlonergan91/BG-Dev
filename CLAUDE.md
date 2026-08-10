@@ -91,6 +91,19 @@ items), and **English names first**.
 | Rulebook | `bg-rulebook` | The rulebook & player aids as DOCUMENTS — structure, teaching order, worked examples, layout, teachability, FAQ presentation. Presents the rules clearly; never changes a rule (that's `bg-design`/`bg-elegance`). Uses `tools/rulebook/build_rulebook.py`. |
 | Presentation UX | `bg-ux` | How players PERCEIVE & PARSE the presentation — information hierarchy, reading order, comprehension, player-aid design, first-time-user comprehension. Researches how best to PRESENT the rules and designs that presentation; never changes them. Distinct from `bg-playtest` (mechanics/balance); merges a UX-researcher + UX-designer remit. |
 
+### Project management (production pod)
+
+A pod that keeps the project **on track, current, and legible** — separate from *making* the game, it makes
+sure a human (or a fresh session) can always see where the game **is now**, what's been decided, what the CD
+actually asked for, and what's next — without wading through every past version. **Project-management +
+doc-currency only: this pod never changes mechanics, rules, balance, or component-data VALUES**; a
+design/balance issue it spots is flagged to the design side.
+
+| Role | Agent | What it does |
+|------|-------|--------------|
+| Producer | `bg-producer` | The showrunner — owns `status.md` (the current-state dashboard) and curates `director-brief.md` (the CD's own steers, per version, so good input never gets lost); tracks pipeline stage, done/in-flight/next, open CD decisions, guardrail health & risks; confirms the living docs reflect the current version and the project is on track; routes staleness/drift to the right owner. |
+| Archivist | `bg-archivist` | The doc steward — keeps `game-bible.md`/`identity.md` a clean CURRENT-STATE snapshot, relocates superseded/dead-version content to `archive/` (nothing lost, just out of the way), and keeps `decision-log.md` skimmable (in-force summary + archived ranges). Distinct from `bg-continuity` (inconsistency/drift-catching); this one restructures for **currency + readability**. |
+
 **How to invoke an agent:** use the `Agent` tool with the matching `subagent_type` (e.g.
 `bg-design`). Give it the game slug and point it at that game's `game-bible.md`. When work is
 independent, launch agents in parallel.
@@ -102,6 +115,13 @@ touched **component data / the theme** — **`bg-access`** (colour-blind/contras
 met?) and **`bg-infodesign`** (still parseable at a glance?). Cheap by default; only surface to the human
 when one actually flags something. (Full cadence in the `board-game-studio` skill.)
 
+**The keep-current sweep (at milestones / version close):** run **`bg-producer`** to refresh `status.md`
+and curate `director-brief.md`, and **`bg-archivist`** to prune the living docs to current-state + relocate
+the closed version's history to `archive/`. This is what stops `game-bible.md` / `identity.md` /
+`decision-log.md` from silently growing into a stratigraphy of every past version. And carry the
+**orchestrator reflex**: the moment the Creative Director sends a substantive steer, capture it into
+`director-brief.md` (same habit as the decision-log) — `bg-producer` curates it later.
+
 ---
 
 ## One source of truth per game
@@ -111,10 +131,12 @@ document the human and every agent read and update. Supporting files:
 
 ```
 games/<slug>/
-├── game-bible.md        # THE living design document — single source of truth
-├── identity.md          # THE living creative identity — concept/theme/tone/lore/look&feel/naming (bg-theme)
+├── game-bible.md        # THE living design document — CURRENT-STATE single source of truth (kept current by bg-archivist)
+├── status.md            # CURRENT state of play — dashboard: version · stage · done/in-flight/next · open decisions (bg-producer)
+├── identity.md          # THE living creative identity — concept/theme/tone/lore/look&feel/naming, CURRENT-STATE (bg-theme)
 ├── prose-identity.md    # THE living VOICE bible — how every player-facing word sounds; copy briefs cite it (bg-copywriter)
-├── decision-log.md      # every key decision + the rationale (fast to skim)
+├── decision-log.md      # append-only: every key decision + rationale (fast to skim; bg-archivist keeps it skimmable)
+├── director-brief.md    # the CD's OWN steers + context, per version — so good input never gets lost (bg-producer)
 ├── design/              # deeper design notes, math/economy spreadsheets, rules drafts
 ├── components/          # component DATA (CSV/JSON) — cards, tiles, tokens (the real source)
 ├── build/               # SCRATCH renders (PDF/PNG/TTS/STL) — gitignored, fully regenerated
@@ -122,9 +144,20 @@ games/<slug>/
 ├── make.sh              # regenerates build/ from data, then snapshots deliverables into exports/
 ├── playtests/           # playtest logs and feedback synthesis
 ├── builds/              # frozen build snapshots (build-N/) + BUILDS.md ledger — see "Scaling" below
+├── archive/             # superseded / dead-version content pruned from the living docs — history preserved (bg-archivist)
 ├── art/                 # art briefs, references, and assets
 └── marketing/           # pitch, sell sheet, campaign copy
 ```
+
+**Current state vs history — the doc model (owned by the Production pod).** The living docs are a
+**current-state snapshot**, not an accreted history. `game-bible.md` / `identity.md` / `prose-identity.md`
+describe the game *as it is now* (pruned to the current version); `status.md` is the one-screen "where are
+we" dashboard; `decision-log.md` stays the append-only rationale record; **`director-brief.md`** logs the
+CD's own steers + context per version so a good idea sent mid-thread is never lost; and superseded /
+dead-version content is relocated to `archive/` (nothing deleted). `bg-archivist` keeps the living docs
+pruned + the history archived; `bg-producer` keeps `status.md` + `director-brief.md` true and the project on
+track. **Orchestrator reflex:** capture each substantive CD steer into `director-brief.md` the moment it
+arrives (same habit as the decision-log) — `bg-producer` then curates it.
 
 **The three canonical identities.** A game is anchored by `game-bible.md` (the design), and — once it has a
 felt identity, art, and words — by three living identity files a `bg-*` agent points at for direction:

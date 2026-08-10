@@ -93,8 +93,10 @@ A/B/C choice, get the call, record it, and move to the next stage.
    *accommodate* it. If not, **keep it a focused single-mode game and let scope emerge later** only when
    it clearly adds fun/variety/replayability. A focused game (even 2p-only) is a valid, often best
    answer. **A base game must be complete and great on its own.**
-2. **Resume:** read `game-bible.md` + `decision-log.md`, give a 3-line "where we are / what's next"
-   recap, then propose the next stage as an A/B/C choice.
+2. **Resume:** read **`status.md`** first (the current-state dashboard — the fast "where are we") then
+   `game-bible.md` + recent `decision-log.md`, give a 3-line "where we are / what's next" recap, then
+   propose the next stage as an A/B/C choice. (If `status.md` is missing or stale, run `bg-producer` to cut/
+   refresh it.)
 3. If no game exists yet and the human is unsure, offer: **(A)** ideate from a blank slate, **(B)**
    develop an idea they bring, or **(C)** just explore the studio.
 
@@ -104,7 +106,9 @@ For each stage:
 1. **Frame** the stage in one line ("Let's lock the core loop.").
 2. **Dispatch** the agent (or do light work inline if trivial).
 3. **Surface** the agent's output + its decision as **A/B/C with a recommendation**.
-4. **Record** the human's choice in `game-bible.md` + `decision-log.md`.
+4. **Record** the human's choice in `game-bible.md` + `decision-log.md` — and **capture the CD's own steer
+   into `director-brief.md` the moment it lands** (what they asked · the context/why · status). This reflex
+   is what stops a good idea sent mid-thread from getting lost; `bg-producer` curates it later.
 5. **Advance** — propose the next stage.
 
 Keep each loop short. If the human says "you decide," make the call, note it, and keep going.
@@ -152,11 +156,28 @@ whether the human is ready to sim, **ask** — a wasted sim burns real time.
 
 ## Living documents
 
-- `game-bible.md` — the concept, positioning, core loop, components, rules summary, status. Always current.
-- `identity.md` — the felt identity: north star, target aesthetics, tone/vibe, story/lore (scaled),
-  look & feel, naming. Owned by `bg-theme`; kept coherent and evolving alongside the bible.
-- `decision-log.md` — dated one-liners: *decision — why — alternatives rejected*. Fast to skim.
+Living docs are a **current-state snapshot, not an accreted history** — keep the *now* clean and relocate
+the *history* to `archive/` (nothing deleted). Owned/kept-current by the **Production pod** (`bg-producer`,
+`bg-archivist`).
+
+- `game-bible.md` — concept, positioning, core loop, components, rules summary. **CURRENT-STATE**, readable
+  in one sitting; no dead-version cruft (`bg-archivist` prunes; history → `archive/`).
+- `status.md` — the one-screen dashboard: version · pipeline stage · done/in-flight/next · open CD
+  decisions · guardrail health · risks · next step. Owned by `bg-producer`. **Read this first on resume.**
+- `identity.md` — the felt identity (north star, aesthetics, tone/vibe, story/lore, look & feel, naming),
+  CURRENT-STATE. Owned by `bg-theme`; kept coherent and evolving alongside the bible.
+- `prose-identity.md` — the voice bible (how every player-facing word reads). Owned by `bg-copywriter`;
+  every copy brief cites it.
+- `decision-log.md` — append-only dated one-liners: *decision — why — alternatives rejected*. Fast to skim
+  (`bg-archivist` keeps a "currently in force" summary up top + archives stale ranges).
+- `director-brief.md` — the **CD's own steers**, per version: *the ask · the context · status*. Captured in
+  real-time (cadence step 4), curated by `bg-producer`, so good input is never lost.
+- `archive/` — superseded / dead-version content, labelled. Owned by `bg-archivist`.
 - Stage outputs live in `design/`, `components/`, `playtests/`, `marketing/`, `art/` (see `CLAUDE.md`).
+
+**Keep-current sweep (milestones / version close):** run `bg-producer` (refresh `status.md`, curate
+`director-brief.md`) + `bg-archivist` (prune living docs to current, archive the closed version) so the
+docs never drift into a stratigraphy of every past version.
 
 ## Tooling & knowledge
 
