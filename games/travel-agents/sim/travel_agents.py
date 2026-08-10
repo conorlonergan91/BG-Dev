@@ -33,10 +33,30 @@ WHAT CHANGED FROM THE OLD SIM (the whole economy):
     Big Eater greedy-4th-returns-1-follower + hazard×2, Globetrotter Travel-anywhere-costs-1-follower +
     HSR-immune, Big Brother margin dial. Prestige Bookings target total ingredient_cost (day≥4 /
     total≥9 / g≥7).
-  * SOURCING is STRUCTURALLY UNTOUCHED (ingredients come from region MARKET decks, not vendors) — the
-    §6b sourcing-by-type shares must read INVARIANT vs the old closed values (probe #2 anchor). The pool
-    model, event fractions, Visit keep-2/3, Convenience Store, and per-count market depth are ported
-    verbatim so the shares hold.
+  * SOURCING moved to an EXPLICIT DECK-FLOW (§16, folded in 2026-08): region MARKET decks are now REAL
+    card lists (ingredients.csv fixed depths + a per-count slice of events.csv via map.event_deck_mix),
+    recycling through a per-region face-up discard with reshuffle-on-empty. Sourcing shares are NO LONGER
+    expected invariant (§12 amends this) — they track the NEW multi-ingredient demand vector; probe #2 is
+    retargeted (§12.5).
+
+FOLDED IN 2026-08 (on top of the LOCKED meeple+scarcity baseline — specs §12/§14/§15/§16, all CD-locked):
+  * §12.2 MIN-FOLLOWER CLAIM GATE — a contested stall claims only if the plurality/margin leader ALSO
+    holds ≥ the vendor's tier-scaled `min_followers` (1/2/3, read from vendors.csv); below-floor → no
+    claim. At DUSK/LAST TRAIN a below-floor top crowd clears UNCLAIMED (§12.3 interaction 2).
+  * §12.1 MULTI-INGREDIENT COSTS — `recipe`/`ingredient_cost` (avg 2.71, range 2–5) read from the CSV;
+    the stale `expensive = cost>=3` predicate is fixed to `>=4` (§13.1/§14.3).
+  * §14 VP TWO-TRACK SCORING — final score = completed-Booking VP + won-vendor `vp` (both from CSV). The
+    vendor-only HOARDER probe + vendor-VP-share / claims-per-player / apex-per-player instruments verify
+    "vendor-only loses / tours dominate."
+  * §15 EVENT SYSTEM — events.csv modelled as VERB · SCOPE · DURATION: the 12 verbs wired to the real
+    subsystems (RALLY/DISPERSE↔follower pool, GIFT/PINCH/SPOIL/SWIPE/SINK↔Larder/deck, TREND/RESTOCK/WASH↔
+    vendor board, BLOCK/DETOUR↔action/travel), the 5 scopes (self/✦rival/⬢region/➤neighbour/▦board) with
+    the CD tied-leader refinement (a ✦ loss hits all tied leaders EXCLUDING the drawer; fizzles if the
+    drawer is the sole top), and ⏳ persistence (turn/round). Dealt per event_deck_mix.
+  * §16 DISCARD/RESHUFFLE LOOP — four discard feeders + reshuffle-on-empty per region+phase; phase-to-box
+    (day decks+discards → box at dusk; a carried concluded-phase Larder card spent in night → box) with a
+    reshuffle-phase-purity ASSERTION (a night reshuffle contains only night cards). Metrics: cycle-rate,
+    reshuffled-deck size, live-deck event-fraction, Pantry supply_min.
 
 BOTS ARE SPREAD-AWARE (the critic's key point): the planner's follower-fight logic reads the true
 `needed-to-win` accounting for co-located Big-Brother rivals (a rival BB needs +N to be beaten) and for
@@ -81,13 +101,14 @@ LARDER_CAP     = int(os.environ.get("TA_LARDER_CAP", "7"))    # hand-limit on ca
 AMA_LARDER_CAP = int(os.environ.get("TA_AMA_LARDER_CAP", str(LARDER_CAP)))
 HAND_LIMIT     = int(os.environ.get("TA_HAND_LIMIT", "3"))    # in-progress Bookings held at once
 
-# --- sourcing model (PORTED VERBATIM from the old sim so the §6b shares stay INVARIANT) -----------
-SIG_SUPPLY = int(os.environ.get("TA_SIG_SUPPLY", "10"))       # per-region-phase signature pool (2p base)
-K_SUPPLY   = int(os.environ.get("TA_K_SUPPLY", "6"))          # 糖 Sugar common pool in C & S
-VEG_SUPPLY = int(os.environ.get("TA_VEG_SUPPLY", "3"))        # 菜 Veg common pool in N & E
-DAY_EVENT_FRAC   = float(os.environ.get("TA_DAY_EVENT", "0.25"))
-NIGHT_EVENT_FRAC = float(os.environ.get("TA_NIGHT_EVENT", "0.42"))
-EVENT_HAZARD_FRAC = float(os.environ.get("TA_HAZARD", "0.55"))
+# --- sourcing / event model (V7-M+ EXPLICIT DECK-FLOW — §15 events, §16 discard/reshuffle) --------
+# The old abstract-Counter sourcing pool (SIG/K/VEG_SUPPLY + a random event-fraction) is RETIRED. Region
+# MARKET decks are now REAL card lists built from ingredients.csv (fixed depths) + a per-count slice of
+# events.csv dealt via map.json.event_deck_mix (§15.4). Cards recycle through a per-region face-up discard
+# and reshuffle on deck-out (§16); a concluded-phase card leaving a Larder goes to the BOX, never a
+# current-phase discard (the phase-to-box guarantee the night-reshuffle assertion checks).
+EVENT_SCALE   = float(os.environ.get("TA_EVENT_SCALE", "1.0"))   # switchable event-density multiplier (§15.7 knob)
+EVENTS_OFF    = os.environ.get("TA_EVENTS_OFF", "0") == "1"       # deal ZERO events (A/B: event contribution delta)
 STALL_CAP  = int(os.environ.get("TA_STALL_CAP", "60"))       # safety net (deck-clock is guaranteed to fire)
 
 # ==================================================================================================
@@ -137,6 +158,9 @@ def _load_vendors():
                 "phase": 1 if row["phase"].strip() == "day" else 2,
                 "is_drink": is_drink,
                 "cost": cost, "total_cost": int(row["ingredient_cost"]),
+                # §12.2 min-follower FLOOR (tier-scaled 1/2/3) + §14 vendor VP — read from the CSV, never hardcoded
+                "floor": int(row["min_followers"]),
+                "vp": int(row["vp"]),
                 "icon": row["icon"].strip() or None,
                 "trending": row.get("trending", "").strip() == "yes",
                 "apex": tier >= 3,
@@ -151,6 +175,61 @@ VID_BY_KEY = {v["vid"]: v["id"] for v in VENDORS}
 
 def _region_deck(region, phase):
     return [v["id"] for v in VENDORS if v["region"] == region and v["phase"] == phase]
+
+
+# --------------------------------------------------------------------------------------------------
+#  EVENTS (§15) — load events.csv into the framework model: VERB · SCOPE · DURATION. The card's `verb`
+#  is the machine-readable hook; effects are wired to the MEEPLE / Larder / vendor / board subsystems.
+#  EVENT_POOL[(region, phase)] is the POOL (quantity-expanded); the per-count event_deck_mix deals a
+#  slice into each region+phase market deck at setup / at dusk (§15.4).
+# --------------------------------------------------------------------------------------------------
+def _load_events():
+    out = []
+    pool = {(r, ph): [] for r in REGIONS for ph in (1, 2)}
+    with open(os.path.join(_COMP, "events.csv"), encoding="utf-8", newline="") as f:
+        for row in csv.DictReader(f):
+            r = row["region"].strip()
+            ph = 1 if row["phase"].strip() == "day" else 2
+            tags = row.get("tags", "")
+            kind = "hazard" if "hazard" in tags else ("boon" if "boon" in tags else "neutral")
+            ev = {
+                "idx": len(out), "id": row["id"], "region": r, "phase": ph,
+                "scope": row["scope"].strip(),        # self | rival | region | neighbour | board
+                "duration": row["duration"].strip(),  # now | turn | round | phase
+                "verb": row["verb"].strip(),
+                "target": row.get("target", "").strip(),
+                "value": int(row["value"]) if row.get("value", "").strip() else 1,
+                "qty": int(row["quantity"]) if row.get("quantity", "").strip() else 1,
+                "kind": kind,
+            }
+            out.append(ev)
+            if (r, ph) in pool:
+                pool[(r, ph)].extend([ev["idx"]] * ev["qty"])
+    return out, pool
+
+
+EVENTS, EVENT_POOL = _load_events()
+
+
+# --------------------------------------------------------------------------------------------------
+#  INGREDIENTS (§16) — the FIXED per-region-phase market-deck depths (ingredients.csv is the source).
+#  INGREDIENTS[(region, phase)] = list of (type, quantity). Cards are ("I", type, phase); events are
+#  ("E", idx, phase). Every card carries its phase → the phase-to-box sort (§16.3) reads it directly.
+# --------------------------------------------------------------------------------------------------
+def _load_ingredients():
+    out = {(r, ph): [] for r in REGIONS for ph in (1, 2)}
+    with open(os.path.join(_COMP, "ingredients.csv"), encoding="utf-8", newline="") as f:
+        for row in csv.DictReader(f):
+            r = row["region"].strip()
+            ph = 1 if row["phase"].strip() == "day" else 2
+            typ = row["ingredient"].strip()
+            qty = int(row["quantity"]) if row.get("quantity", "").strip() else 1
+            if (r, ph) in out:
+                out[(r, ph)].append((typ, qty))
+    return out
+
+
+INGREDIENTS = _load_ingredients()
 
 
 # --------------------------------------------------------------------------------------------------
@@ -169,7 +248,9 @@ def _wstat(won):
         "night_food": sum(1 for v in won if v["phase"] == 2 and not v["is_drink"]),
         "early": sum(1 for v in won if v["act_won"] == 1),                 # won before dusk
         "cheap": sum(1 for v in won if v["total_cost"] <= 2),
-        "expensive": sum(1 for v in won if v["total_cost"] >= 3),
+        # §13.1 / §14.3: expensive is now cost >= 4 (was >= 3) — the §12 cost curve made day S02/C02 cost-3,
+        # so "marquee" splurge Bookings (n_expensive1/2) retarget to >= 4 to stay night-marquee-only.
+        "expensive": sum(1 for v in won if v["total_cost"] >= 4),
         "apex": sum(1 for v in won if v["apex"]),
         "cross": sum(1 for v in won if v["cross"]),
         "contested": sum(1 for v in won if v["contested"]),
@@ -357,6 +438,40 @@ def _booking_deck_sizes(n):
     return t["day"], t["night"]
 
 
+def _event_mix_for(n):
+    """§15.4 per-count events-per-region-phase draw ratio (from map.json.event_deck_mix)."""
+    t = MAP["event_deck_mix"].get(str(n)) or MAP["event_deck_mix"].get(str(min(max(n, 3), 6)))
+    return t["day"], t["night"]
+
+
+def _ing_cards(r, phase):
+    """The fixed ingredient-card multiset for a region+phase market deck (ingredients.csv)."""
+    cards = []
+    for typ, qty in INGREDIENTS[(r, phase)]:
+        cards.extend([("I", typ, phase)] * qty)
+    return cards
+
+
+def _deal_events(r, phase, n_players, rng):
+    """Deal the per-count slice of the (r, phase) event POOL into this region's market deck (§15.4)."""
+    if EVENTS_OFF:
+        return []
+    day_ct, night_ct = _event_mix_for(n_players)
+    count = int(round((day_ct if phase == 1 else night_ct) * EVENT_SCALE))
+    pool = list(EVENT_POOL[(r, phase)])
+    rng.shuffle(pool)
+    return [("E", idx, phase) for idx in pool[:min(count, len(pool))]]
+
+
+def _build_market(s, r, phase, rng):
+    """Build one region's live market deck (ingredient cards + dealt events), shuffled; fresh empty
+    discard. This is the §16 physical model: one live face-down deck + one face-up discard per region."""
+    deck = _ing_cards(r, phase) + _deal_events(r, phase, s["n"], rng)
+    rng.shuffle(deck)
+    s["deck"][r] = deck
+    s["disc"][r] = []
+
+
 # ==================================================================================================
 #  GAME
 # ==================================================================================================
@@ -368,11 +483,6 @@ class TravelAgentsGame:
         chars = list(characters) if characters else ["neutral"] * n
         slots = _slots_for(n)
         day_size, night_size = _booking_deck_sizes(n)
-        # per-count market depth (ported): more agents sourcing shouldn't starve the market
-        ing_factor = 1.0 + 0.4 * (n - 2)
-        sig = int(round(SIG_SUPPLY * ing_factor))
-        ksup = int(round(K_SUPPLY * ing_factor))
-        vsup = int(round(VEG_SUPPLY * ing_factor))
         mrow_w = 3 if n < 4 else 4
 
         # deal the day face-up vendor slots + build region decks
@@ -381,16 +491,6 @@ class TravelAgentsGame:
             d = _region_deck(r, 1); rng.shuffle(d)
             up = [d.pop() for _ in range(min(slots[r], len(d)))]
             vdeck[r] = d; faceup[r] = up
-
-        ing_pool, ing_discard = {}, {}
-        for r in REGIONS:
-            pool = Counter({SIG_TYPE[r]: sig})
-            if r in COMMONS["sugar"]:
-                pool["sugar"] += ksup
-            if r in COMMONS["veg"]:
-                pool["veg"] += vsup
-            ing_pool[r] = pool
-            ing_discard[r] = Counter()
 
         # the DAY booking deck IS the clock (deck-driven)
         day_deck = self._build_booking_deck(DAY_POOL, day_size, rng)
@@ -404,11 +504,17 @@ class TravelAgentsGame:
             players.append({
                 "char": ch, "pos": "N",                       # common Taipei start hub (map.start_hub)
                 "max": mx, "board": START_MEEPLES, "supply_f": mx - START_MEEPLES,
-                "larder": Counter(), "icons": Counter(), "won": [],
+                # §16 Larder split by PHASE-ORIGIN: `larder` = current-phase cards (recycle to region
+                # discard when spent), `larder_prev` = carried concluded-phase cards (go to the BOX when
+                # spent — the phase-to-box guarantee). At dusk, larder → larder_prev.
+                "larder": Counter(), "larder_prev": Counter(), "icons": Counter(), "won": [],
                 "home_region": home,
                 "tickets": [], "counted_done": set(),
                 "day_book_score": 0, "night_book_score": 0, "cancel_penalty": 0,
-                "next_bribe_disc": 0, "tempo_tax": 0,
+                "next_bribe_disc": 0, "tempo_tax": 0, "promote_bonus": 0, "visit_keep_bonus": 0,
+                # §15 lingering BLOCK markers (⏳TURN): expiry = the turn at which they clear (this player's
+                # next turn start). -1 = inactive.
+                "block_promote": -1, "block_travel": -1, "block_travel_grow": -1, "block_draw": -1,
                 "ms1_done": False, "ms2_done": False,
                 # per-lane fingerprint accumulators
                 "fp_contest_entries": 0, "fp_wins": 0, "fp_fol_per_win": 0,
@@ -418,14 +524,17 @@ class TravelAgentsGame:
                 "win_streak": 0, "best_win_streak": 0,
             })
 
-        return {
+        s = {
             "_rng": rng, "n": n, "slots": slots,
             "vdeck": vdeck, "faceup": faceup,
-            "ing_pool": ing_pool, "ing_discard": ing_discard,
-            "sig": sig, "ksup": ksup, "vsup": vsup,
+            # §16 explicit market DECK-FLOW: one live deck + one face-up discard per region (current phase)
+            "deck": {}, "disc": {},
             "fol": {vid: [0] * n for r in REGIONS for vid in faceup[r]},   # committed followers per stall
             "commit_turn": {},                                             # (vid,p) -> first-commit turn
             "star": set(),                                                  # Trending markers on stalls
+            "linger": [],                                                   # §15 lingering (round/phase) effects
+            "hsr_closed_until": {},                                         # p -> turn (detour hsr, ⏳TURN)
+            "region_out_block": {},                                         # r -> round-end (detour link, ⏳ROUND)
             "mrow": mrow, "mreserve": day_deck, "mrow_w": mrow_w,
             "day_size": day_size, "night_size": night_size,
             "players": players, "act": 1, "turn": 0, "cur": 0, "round": 0,
@@ -434,18 +543,32 @@ class TravelAgentsGame:
             # ---- diagnostics / §9 probes ----
             "claims": 0, "contested_claims": 0, "claim_by_region": {r: 0 for r in REGIONS},
             "night_claims": 0, "prestige_completions": 0, "cancels": 0,
-            "food_wins": 0, "drink_wins": 0,
+            "food_wins": 0, "drink_wins": 0, "apex_claims": 0,
             "src_by_type": Counter(), "empty_draws": 0,
             "travels": 0, "visits": 0, "cstores": 0, "promotes": 0, "passes": 0,
             "grow_total": 0, "grow_homebody_tick": 0, "return_to_supply": 0,
             "legal_counts": [], "forced_turns": 0,
             "tie_blocks": 0, "resolver_fires": 0, "frozen_at_boundary": 0,
+            "below_floor_blocks": 0,                                        # §12.2 min-follower gate blocks
             "max_committed_on_stall": 0, "max_committed_by_player": 0,
             "dage_edge_fires": 0, "dage_claims": 0,
             "ama_claims": 0, "ama_snipes": 0, "ama_travel_cost_paid": 0,
             "events_fired": 0, "trending_grows": 0,
+            # ---- §15 event probes ----
+            "ev_by_verb": Counter(), "ev_leader_fires": 0, "ev_leader_fizzles": 0,
+            "swipes": 0, "spoils": 0, "gifts": 0, "restocks": 0, "washes": 0, "blocks": 0, "detours": 0,
+            # ---- §16 deck-flow probes ----
+            "reshuffles": {(r, ph): 0 for r in REGIONS for ph in (1, 2)},
+            "reshuffle_sizes": {(r, ph): [] for r in REGIONS for ph in (1, 2)},
+            "evfrac_samples": {(r, ph): [] for r in REGIONS for ph in (1, 2)},
+            "pantry_supply_min": 10 ** 9, "box_from_larder": 0,
             "commit_hist": [],   # (turn, vid, p) for fingerprints / earliest committer
         }
+        # build the four DAY live market decks (ingredient cards + dealt day events) + fresh discards
+        for r in REGIONS:
+            _build_market(s, r, 1, rng)
+        self._sample_pantry_min(s)
+        return s
 
     def _build_booking_deck(self, pool, size, rng):
         deck = []
@@ -480,7 +603,10 @@ class TravelAgentsGame:
         return sum(b[p] for b in s["fol"].values())
 
     def _hsr_open(self, s):
-        return True   # V7-M sim: the Scheduled-Maintenance HSR outage is not modelled here (event-light)
+        """§15 DETOUR [hsr] event (⏳TURN): the HSR N↔S link is down for the acting player until their
+        next turn. Globetrotter 阿嬤 is immune (handled in neighbours() by char)."""
+        p = s["cur"]
+        return s["hsr_closed_until"].get(p, -1) <= s["turn"]
 
     def _board(self, s):
         return [vid for r in REGIONS for vid in s["faceup"][r]]
@@ -515,13 +641,40 @@ class TravelAgentsGame:
             top = max((fol[q] for q in range(s["n"]) if q != p), default=0)
             req = max(0, top - (DAGE_N - 1))
         need_more = max(0, req - mine)
-        # need at least 1 of your own on the stall
-        if mine + need_more < 1:
-            need_more = 1 - mine
+        # §12.2 MIN-FOLLOWER FLOOR (tier-scaled 1/2/3): you must also hold at least the stall's floor of
+        # your OWN followers — the floor is an absolute personal minimum, stacked on the relative fight,
+        # and Big Brother's margin never waives it (§12.3 interaction 1).
+        floor = VENDORS[vid]["floor"]
+        if mine + need_more < floor:
+            need_more = floor - mine
         return need_more
 
     def _can_claim_margin(self, s, p, vid):
-        return self._needed_to_win(s, p, vid) == 0 and s["fol"][vid][p] >= 1
+        # claim needs BOTH the plurality/margin (needed_to_win == 0) AND meeting the floor with own crowd
+        return self._needed_to_win(s, p, vid) == 0 and s["fol"][vid][p] >= VENDORS[vid]["floor"]
+
+    # -------- Larder (phase-origin split, §16) --------
+    def _have(self, pl, t):
+        return pl["larder"].get(t, 0) + pl["larder_prev"].get(t, 0)
+
+    def _larder_total(self, pl):
+        return sum(pl["larder"].values()) + sum(pl["larder_prev"].values())
+
+    def _spend_one(self, s, pl, t):
+        """Spend 1 ingredient of type t. A CURRENT-phase card recycles to its region's face-up discard
+        (§16.2 feeder 2); a carried CONCLUDED-phase card goes to the BOX (§16.3) — never a current
+        discard, which is what keeps a night reshuffle night-only. Current spent first (feeds the loop)."""
+        if pl["larder"].get(t, 0) > 0:
+            pl["larder"][t] -= 1
+            self._discard_ingredient(s, t)
+        elif pl["larder_prev"].get(t, 0) > 0:
+            pl["larder_prev"][t] -= 1
+            s["box_from_larder"] += 1        # stale card leaves the game
+
+    def _discard_ingredient(self, s, t):
+        """Route a current-phase ingredient token to its home region's face-up discard (§16.2)."""
+        home = COMMON_HOME[t] if _is_common(t) else TYPE_SIG_REGION[t]
+        s["disc"][home].append(("I", t, s["act"]))
 
     # -------- cost / affordability --------
     def _pay_plan(self, s, p, vid):
@@ -542,13 +695,16 @@ class TravelAgentsGame:
 
     def _can_afford(self, s, p, vid):
         pl = s["players"][p]
-        return all(pl["larder"].get(t, 0) >= c for t, c in self._pay_plan(s, p, vid).items())
+        return all(self._have(pl, t) >= c for t, c in self._pay_plan(s, p, vid).items())
 
     def _can_bribe(self, s, p, vid):
         return self._present(s, p, vid) and self._can_claim_margin(s, p, vid) and self._can_afford(s, p, vid)
 
     def _promote_ok(self, s, p, vid):
-        return s["players"][p]["board"] > 0 and self._present(s, p, vid)
+        pl = s["players"][p]
+        if pl["block_promote"] > s["turn"]:               # §15 BLOCK [promote] (⏳TURN)
+            return False
+        return pl["board"] > 0 and self._present(s, p, vid)
 
     # -------- legal actions --------
     def legal_actions(self, s, p):
@@ -564,8 +720,10 @@ class TravelAgentsGame:
         acts.append(("visit",))
         for r in REGIONS:
             acts.append(("cstore", r))
-        for d in neighbours(pl["pos"], pl["char"], self._hsr_open(s)):
-            acts.append(("travel", d))
+        # §15 DETOUR [link] (⏳ROUND): can't Travel OUT of a region under an active roadworks/landslide lock
+        if s["region_out_block"].get(pl["pos"], -1) < s["round"]:
+            for d in neighbours(pl["pos"], pl["char"], self._hsr_open(s)):
+                acts.append(("travel", d))
         if s["mrow"]:                                      # cancel-to-claim keeps the deck-clock draining
             acts.append(("claim",))
         return acts
@@ -583,13 +741,17 @@ class TravelAgentsGame:
         p = s["cur"]
         pl = s["players"][p]
         act = actions[p]
+        # §15 lingering ⏳TURN blocks clear at the START of the affected player's next turn (their block_*
+        # flags carry the turn they were set; if that is < now, they have lapsed — legal_actions/grow read
+        # them live, so nothing more to clear here; the hsr closure likewise lapses by turn compare).
         legal = self.legal_actions(s, p)
         s["legal_counts"].append(len(legal))
         if len(legal) <= 1:
             s["forced_turns"] += 1
 
-        # 里長伯 HOME-GATED FAVOURS DRAW: while in home region, start of turn draw 1 ingredient (no action)
-        if pl["char"] == "councillor" and pl["pos"] == pl["home_region"]:
+        # 里長伯 HOME-GATED FAVOURS DRAW: while in home region, start of turn draw 1 ingredient (no action).
+        # §15 BLOCK [draw] suppresses it (⏳TURN).
+        if pl["char"] == "councillor" and pl["pos"] == pl["home_region"] and pl["block_draw"] <= s["turn"]:
             self._councillor_draw(s, p)
 
         kind = act[0]
@@ -611,11 +773,14 @@ class TravelAgentsGame:
         self._track_committed(s, p)
 
         s["turn"] += 1
-        # END OF ROUND (every player has taken one turn) → SLOW REFILL of empty face-up slots
+        # END OF ROUND (every player has taken one turn) → SLOW REFILL of empty face-up slots + expire the
+        # ⏳ROUND lingering boons (Golden Week visit-keep bonus) at the same beat slow-refill already uses.
         if s["turn"] % s["n"] == 0:
             s["round"] += 1
             if SLOW_REFILL:
                 self._refill_round(s)
+            for q in range(s["n"]):
+                s["players"][q]["visit_keep_bonus"] = 0
         s["cur"] = s["turn"] % s["n"]
 
         if s["end_turn"] is None and s["turn"] >= STALL_CAP * s["n"]:
@@ -660,14 +825,19 @@ class TravelAgentsGame:
         """Place up to 2 from your board onto stall(s) you stand with. MAY SPREAD across two co-located
         face-up stalls (spread_vid = the 2nd stall to receive the 2nd follower)."""
         pl = s["players"][p]
-        n_place = min(2, pl["board"])
+        cap = 2 + pl["promote_bonus"]                     # §15 Blogger boon: next Promote places +1
+        n_place = min(cap, pl["board"])
         if n_place <= 0:
             return
         s["promotes"] += 1
-        first = 1 if (spread_vid is not None and n_place >= 2) else n_place
-        self._place(s, p, vid, first)
+        if pl["promote_bonus"] > 0:
+            pl["promote_bonus"] = 0                        # one-shot: consumed on this Promote
+        # spread puts 1 on the partner stall and the rest on the primary (keeps the old split behaviour)
         if spread_vid is not None and n_place >= 2:
+            self._place(s, p, vid, n_place - 1)
             self._place(s, p, spread_vid, 1)
+        else:
+            self._place(s, p, vid, n_place)
 
     def _place(self, s, p, vid, k):
         pl = s["players"][p]
@@ -682,10 +852,10 @@ class TravelAgentsGame:
     def _do_bribe(self, s, p, vid, rng):
         pl = s["players"][p]
         v = VENDORS[vid]
-        # pay ingredients
+        # pay ingredients — each spent card recycles to its region discard, or to the box if stale (§16)
         for t, c in self._pay_plan(s, p, vid).items():
-            pl["larder"][t] -= c
-        pl["larder"] = +pl["larder"]
+            for _ in range(c):
+                self._spend_one(s, pl, t)
         if pl["next_bribe_disc"] > 0:
             pl["next_bribe_disc"] -= 1
         contested = any(s["fol"][vid][q] > 0 for q in range(s["n"]) if q != p)
@@ -713,8 +883,11 @@ class TravelAgentsGame:
         pl["won"].append({
             "id": vid, "region": v["region"], "is_drink": v["is_drink"], "phase": v["phase"],
             "total_cost": v["total_cost"], "tier": v["tier"], "apex": v["apex"], "cross": v["cross"],
+            "vp": v["vp"],                                  # §14 vendor VP (the second scoring track)
             "contested": contested, "act_won": s["act"], "final_round": s["end_turn"] is not None,
         })
+        if v["apex"]:
+            s["apex_claims"] += 1
         if not v["is_drink"] and v["icon"]:
             pl["icons"][v["icon"]] += 1
         # Trending: winning a marked stall grows 1 follower
@@ -792,7 +965,7 @@ class TravelAgentsGame:
         """Old Favours (home-gated): draw 1 ingredient card from ANY region's market into hand, no action.
         Bot heuristic: draw the ingredient TYPE it is most short of for a face-up food stall it can reach."""
         pl = s["players"][p]
-        if sum(pl["larder"].values()) >= self._larder_cap(pl):
+        if self._larder_total(pl) >= self._larder_cap(pl):
             return
         need = Counter()
         for vid in self._board(s):
@@ -800,7 +973,7 @@ class TravelAgentsGame:
             if v["is_drink"]:
                 continue
             for t, c in self._pay_plan(s, p, vid).items():
-                short = c - pl["larder"].get(t, 0)
+                short = c - self._have(pl, t)
                 if short > 0:
                     need[t] += short
         tok = need.most_common(1)[0][0] if need else SIG_TYPE[pl["pos"]]
@@ -870,7 +1043,7 @@ class TravelAgentsGame:
             if v["is_drink"]:
                 continue
             for t, c in self._pay_plan(s, p, vid).items():
-                short = c - pl["larder"].get(t, 0)
+                short = c - self._have(pl, t)
                 if short > 0:
                     need[t] += short
         return need.most_common(1)[0][0] if need else SIG_TYPE[pl["pos"]]
@@ -914,13 +1087,17 @@ class TravelAgentsGame:
             s["vdeck"][r] = nd; s["faceup"][r] = up
             for vid in up:
                 s["fol"].setdefault(vid, [0] * s["n"])
-            pool = Counter({SIG_TYPE[r]: s["sig"]})
-            if r in COMMONS["sugar"]:
-                pool["sugar"] += s["ksup"]
-            if r in COMMONS["veg"]:
-                pool["veg"] += s["vsup"]
-            s["ing_pool"][r] = pool; s["ing_discard"][r] = Counter()
+            # §16.4 PHASE-TO-BOX: the day market deck + its face-up discard go to the BOX; build the fresh
+            # NIGHT market deck (night ingredient cards + dealt night events) with an empty night discard.
+            _build_market(s, r, 2, rng)
+        # §16.4 Larder cards survive dusk (Option A) but become CONCLUDED-phase: carried day cards move to
+        # `larder_prev` so a later spend routes them to the box, never the night discard.
+        for q in range(s["n"]):
+            plq = s["players"][q]
+            plq["larder_prev"] += plq["larder"]
+            plq["larder"] = Counter()
         s["commit_turn"] = {}
+        self._sample_pantry_min(s)
         # deal the NIGHT booking deck (its exhaustion = LAST TRAIN)
         nd = self._build_booking_deck(NIGHT_POOL, s["night_size"], rng)
         s["mrow"] = [nd.pop() for _ in range(min(s["mrow_w"], len(nd)))]
@@ -928,8 +1105,9 @@ class TravelAgentsGame:
 
     def _resolve_all_ties(self, s, boundary, rng):
         """§2.6 baseline resolver: every still-tied contested stall force-resolves to most-followers →
-        earliest committer; that agent claims (paying if able), losers → own supply. If the winner cannot
-        pay, the frozen stall just clears (followers home) so nothing stays barricaded."""
+        earliest committer; that agent claims (paying if able), losers → own supply. §12.3 interaction 2:
+        the min-follower FLOOR still applies — a stall whose TOP crowd is BELOW the floor is NOT force-
+        claimed; it clears UNCLAIMED (followers home). If the winner cannot pay, the stall likewise clears."""
         for r in REGIONS:
             for vid in list(s["faceup"][r]):
                 fol = s["fol"].get(vid, [0] * s["n"])
@@ -937,25 +1115,26 @@ class TravelAgentsGame:
                 if len(committers) < 2:
                     continue
                 s["frozen_at_boundary"] += 1
-                # is it actually tied (no one has a plain claiming plurality)? if someone could already
-                # claim they'd have done so; treat all multi-committer boundary stalls via the resolver.
                 top = max(fol)
                 top_players = [q for q in committers if fol[q] == top]
                 winner = min(top_players, key=lambda q: s["commit_turn"].get((vid, q), 10 ** 9))
-                s["resolver_fires"] += 1
-                if self._can_afford(s, winner, vid):
-                    for t, c in self._pay_plan(s, winner, vid).items():
-                        s["players"][winner]["larder"][t] -= c
-                    s["players"][winner]["larder"] = +s["players"][winner]["larder"]
-                    self._award(s, winner, vid, contested=True, rng=rng)
-                else:
-                    # cannot pay → clear the frozen stall; followers go home (board at dusk / stay at end)
+                floor = VENDORS[vid]["floor"]
+                # §12.2/§12.3: below-floor top crowd → clears UNCLAIMED (not a denied prize; no stranding)
+                if top < floor or not self._can_afford(s, winner, vid):
+                    if top < floor:
+                        s["below_floor_blocks"] += 1
                     for q in committers:
                         if boundary == "dusk":
                             s["players"][q]["board"] += fol[q]
                         else:
                             s["players"][q]["supply_f"] += fol[q]
                     s["fol"][vid] = [0] * s["n"]
+                    continue
+                s["resolver_fires"] += 1
+                for t, c in self._pay_plan(s, winner, vid).items():
+                    for _ in range(c):
+                        self._spend_one(s, s["players"][winner], t)
+                self._award(s, winner, vid, contested=True, rng=rng)
 
     def _trigger_end(self, s, cause):
         if s["end_turn"] is not None:
@@ -978,63 +1157,256 @@ class TravelAgentsGame:
                         if BOOKINGS[key]["phase"] == 2)
             pl["night_book_score"] = night
 
-    # -------- sourcing (PORTED so §6b shares stay invariant) --------
+    # -------- sourcing / Larder cap --------
     def _larder_cap(self, pl):
         return AMA_LARDER_CAP if pl["char"] == "globetrotter" else LARDER_CAP
 
-    def _event_frac(self, s):
-        return DAY_EVENT_FRAC if s["act"] == 1 else NIGHT_EVENT_FRAC
+    # -------- §16 explicit market deck-flow (draw / reshuffle / discard / phase-to-box) --------
+    def _sample_pantry_min(self, s):
+        """§16.5 guard: track the minimum recyclable Pantry (糧) card count in East's deck + discard."""
+        cnt = sum(1 for c in s["deck"].get("E", []) if c[0] == "I" and c[1] == "pantry")
+        cnt += sum(1 for c in s["disc"].get("E", []) if c[0] == "I" and c[1] == "pantry")
+        s["pantry_supply_min"] = min(s["pantry_supply_min"], cnt)
 
-    def _draw_market(self, s, r, rng):
-        """Draw one card from region r's market: an EVENT (by fraction) or an ingredient TOKEN (a type)."""
-        if rng.random() < self._event_frac(s):
-            kind = "hazard" if rng.random() < EVENT_HAZARD_FRAC else "boon"
-            return ("ev", kind)
-        pool = s["ing_pool"][r]
-        if sum(pool.values()) == 0:
-            pool += s["ing_discard"][r]; s["ing_discard"][r] = Counter()
-        if sum(pool.values()) == 0:
+    def _draw_card(self, s, r, rng):
+        """Draw the top card of region r's live deck. On deck-out, RESHUFFLE the face-up current-phase
+        discard into the deck (§16.2) — asserting phase-purity (the night-only guarantee, §16.4). Returns
+        an ("I",type,phase) / ("E",idx,phase) card, or None if both deck and discard are empty."""
+        if not s["deck"][r]:
+            disc = s["disc"][r]
+            if disc:
+                for c in disc:                                   # PHASE-TO-BOX correctness check
+                    assert c[2] == s["act"], f"phase leak: {c} in {r} discard during act {s['act']}"
+                s["reshuffles"][(r, s["act"])] += 1
+                s["reshuffle_sizes"][(r, s["act"])].append(len(disc))
+                rng.shuffle(disc)
+                s["deck"][r] = disc
+                s["disc"][r] = []
+        if not s["deck"][r]:
             s["empty_draws"] += 1
             return None
-        toks = list(pool.elements())
-        tok = rng.choice(toks)
-        pool[tok] -= 1; s["ing_pool"][r] = +pool
-        return tok
+        dk = s["deck"][r]
+        s["evfrac_samples"][(r, s["act"])].append(sum(1 for c in dk if c[0] == "E") / len(dk))
+        card = dk.pop()
+        if r == "E":
+            self._sample_pantry_min(s)
+        return card
 
-    def _return_token(self, s, tok):
-        home = COMMON_HOME[tok] if _is_common(tok) else TYPE_SIG_REGION[tok]
-        s["ing_pool"][home][tok] += 1
-        s["ing_pool"][home] = +s["ing_pool"][home]
+    def _discard_card(self, s, r, card):
+        """A spent / fired / forced / passed-over CURRENT-phase market card → region r's face-up discard."""
+        s["disc"][r].append(card)
 
-    def _fire_event(self, s, p, ev, during_visit):
-        """Event payloads (abstracted, wired to the MEEPLE economy): a boon grows 1 follower or a free
-        ingredient / Trending marker; a hazard returns 1 follower to supply or a tempo tax on keeps."""
-        _, kind = ev
-        s["events_fired"] += 1
-        rng = s["_rng"]
-        if kind == "boon":
-            roll = rng.random()
-            if roll < 0.34:
-                self._grow(s, p, "event")               # "+1 follower" event (supply → board)
-            elif roll < 0.56:
-                self._place_star(s)                      # Trending marker onto a stall
+    def _keep_ing(self, s, p, r, card):
+        """Keep an ingredient card into the current-phase Larder (records the sourcing-share probe)."""
+        pl = s["players"][p]
+        t = card[1]
+        pl["larder"][t] += 1
+        s["src_by_type"][t] += 1
+
+    # -------- §15 EVENTS — VERB · SCOPE · DURATION, wired to the real subsystems --------
+    def _leaders(self, s):
+        """Leader set by the game's own tiebreak order (§15.5): most completed tours → most vendors →
+        most board followers."""
+        def key(q):
+            pl = s["players"][q]
+            return (len(pl["counted_done"]), len(pl["won"]), pl["board"])
+        best = max(key(q) for q in range(s["n"]))
+        return [q for q in range(s["n"]) if key(q) == best]
+
+    def _scope_targets(self, s, p, ev, r):
+        """Who an event hits, from its scope icon, resolved relative to the drawn region r."""
+        sc = ev["scope"]
+        if sc == "self":
+            return [p]
+        if sc == "board":
+            return list(range(s["n"]))
+        if sc == "region":
+            return [q for q in range(s["n"]) if s["players"][q]["pos"] == r]
+        if sc == "neighbour":
+            nb = set(neighbours(r, None, self._hsr_open(s)))
+            return [q for q in range(s["n"]) if s["players"][q]["pos"] in nb]
+        if sc == "rival":
+            # ✦ loss auto-targets the LEADER; CD tied-leader refinement — hits ALL tied leaders EXCLUDING
+            # the drawer; fizzles if the drawer is the sole/only-remaining top.
+            tgt = [q for q in self._leaders(s) if q != p]
+            if not tgt:
+                s["ev_leader_fizzles"] += 1
+                return None                                      # fizzle
+            s["ev_leader_fires"] += 1
+            return tgt
+        return [p]
+
+    def _steal_one(self, s, thief, victim, typ):
+        """SWIPE: move 1 ingredient (named type or any) from victim → thief's current-phase Larder."""
+        pv = s["players"][victim]
+        cands = [typ] if typ and typ != "any" else \
+            [t for t in list(pv["larder"]) + list(pv["larder_prev"]) if self._have(pv, t) > 0]
+        for t in cands:
+            if pv["larder"].get(t, 0) > 0:
+                pv["larder"][t] -= 1
+            elif pv["larder_prev"].get(t, 0) > 0:
+                pv["larder_prev"][t] -= 1
             else:
-                tok = SIG_TYPE[s["players"][p]["pos"]]   # ingredient windfall (the region signature)
-                s["players"][p]["larder"][tok] += 1; s["src_by_type"][tok] += 1
-            return 0
-        # hazard
-        if rng.random() < 0.40:
-            self._return_one_to_supply(s, p)             # bad-review — return 1 follower to your supply
-            return 0
-        if during_visit:
-            return 1                                     # a tempo tax on this Visit's keep
-        s["players"][p]["tempo_tax"] += 1
-        return 0
+                continue
+            s["players"][thief]["larder"][t] += 1
+            s["swipes"] += 1
+            return
 
-    def _place_star(self, s):
-        cand = [vid for r in REGIONS for vid in s["faceup"][r] if vid not in s["star"]]
+    def _spoil_one(self, s, q, typ, r):
+        """SPOIL: a held ingredient of the named type(s) (or any) goes off → region discard (§16 feeder 4)."""
+        pl = s["players"][q]
+        types = [x for x in typ.split(";")] if (typ and typ != "any") else None
+        cands = types if types else [t for t in list(pl["larder"]) + list(pl["larder_prev"])]
+        for t in cands:
+            if pl["larder"].get(t, 0) > 0:
+                pl["larder"][t] -= 1
+                self._discard_ingredient(s, t)          # current-phase card recycles
+                s["spoils"] += 1
+                return
+            if pl["larder_prev"].get(t, 0) > 0:
+                pl["larder_prev"][t] -= 1
+                s["box_from_larder"] += 1               # stale card → box
+                s["spoils"] += 1
+                return
+
+    def _fire_event(self, s, p, idx, r, during_visit):
+        """Apply one event's VERB to its SCOPE with its DURATION persistence. Returns the PINCH amount to
+        apply to THIS actor's current Visit keep (0 unless a pinch hit the visitor now)."""
+        ev = EVENTS[idx]
+        s["events_fired"] += 1
+        s["ev_by_verb"][ev["verb"]] += 1
+        aff = self._scope_targets(s, p, ev, r)
+        if aff is None:
+            return 0                                     # fizzled ✦
+        verb, val, dur, tgt = ev["verb"], ev["value"], ev["duration"], ev["target"]
+        pinch_here = 0
+        turn_expiry = s["turn"] + s["n"]                 # ⏳TURN: covers exactly the affected player's next turn
+
+        if verb == "rally":
+            for q in aff:
+                for _ in range(val):
+                    self._grow(s, q, "event")
+        elif verb == "disperse":
+            for q in aff:
+                for _ in range(val):
+                    self._return_one_to_supply(s, q)
+        elif verb == "gift":
+            if tgt:                                      # a named ingredient windfall
+                for q in aff:
+                    s["players"][q]["larder"][tgt] += val
+                    s["src_by_type"][tgt] += val
+                    s["gifts"] += 1
+            else:                                        # Golden Week — a ⏳ROUND "+val Visit keep" boon
+                for q in aff:
+                    s["players"][q]["visit_keep_bonus"] += val
+        elif verb == "pinch":
+            for q in aff:
+                if q == p and during_visit:
+                    pinch_here += val
+                else:
+                    s["players"][q]["tempo_tax"] += val
+        elif verb == "spoil":
+            for q in aff:
+                self._spoil_one(s, q, tgt, r)
+        elif verb == "swipe":
+            for q in aff:
+                self._steal_one(s, p, q, tgt)
+        elif verb == "sink":
+            if s["deck"][r]:
+                s["deck"][r].insert(0, s["deck"][r].pop())   # top card → BOTTOM (stays live)
+        elif verb == "trend":
+            self._place_star(s, r)
+        elif verb == "restock":
+            self._fill_slot(s, r); s["restocks"] += 1
+        elif verb == "wash":
+            self._wash_region(s, r); s["washes"] += 1
+        elif verb == "promote":
+            if dur == "round":                           # Blogger — next Promote places +val
+                for q in aff:
+                    s["players"][q]["promote_bonus"] += val
+            else:                                        # Anniversary — a free Promote now
+                for q in aff:
+                    self._free_promote(s, q)
+        elif verb == "block":
+            key = "block_" + (tgt.replace("-", "_") if tgt else "promote")
+            for q in aff:
+                if key in s["players"][q]:
+                    s["players"][q][key] = turn_expiry
+            s["blocks"] += 1
+        elif verb == "detour":
+            s["detours"] += 1
+            if tgt == "hsr" and ev["kind"] == "boon":    # EV-N30 free HSR sprint (a self boon)
+                pl = s["players"][p]
+                if pl["pos"] in HSR:
+                    pl["pos"] = HSR[1] if pl["pos"] == HSR[0] else HSR[0]
+            elif tgt == "hsr":                           # HSR down (⏳TURN) for the affected agents
+                for q in aff:
+                    if s["players"][q]["char"] != "globetrotter":   # 阿嬤 immune
+                        s["hsr_closed_until"][q] = turn_expiry
+            else:                                        # link severed — approximate as a region travel-out lock
+                s["region_out_block"][r] = s["round"]
+        return pinch_here
+
+    def _place_star(self, s, r=None):
+        pool = ([vid for vid in s["faceup"].get(r, [])] if r else
+                [vid for rr in REGIONS for vid in s["faceup"][rr]])
+        cand = [vid for vid in pool if vid not in s["star"]]
         if cand:
             s["star"].add(min(cand, key=lambda vid: VENDORS[vid]["total_cost"]))
+
+    def _wash_region(self, s, r):
+        """WASH: clear the region's face-up vendor(s) (committed followers → owners' boards) and refill now."""
+        for vid in list(s["faceup"][r]):
+            for q in range(s["n"]):
+                if s["fol"].get(vid, [0] * s["n"])[q] > 0:
+                    s["players"][q]["board"] += s["fol"][vid][q]
+            s["fol"][vid] = [0] * s["n"]
+            s["star"].discard(vid)
+            s["faceup"][r].remove(vid)
+        while len(s["faceup"][r]) < s["slots"][r] and s["vdeck"][r]:
+            nv = s["vdeck"][r].pop()
+            s["faceup"][r].append(nv); s["fol"].setdefault(nv, [0] * s["n"])
+
+    def _free_promote(self, s, q):
+        """A free Promote (Market Anniversary): place up to 2 board followers on a co-located face-up stall."""
+        pl = s["players"][q]
+        if pl["board"] <= 0:
+            return
+        co = [vid for vid in s["faceup"].get(pl["pos"], [])]
+        if co:
+            self._place(s, q, co[0], min(2, pl["board"]))
+
+    def _keep_cap(self, pl):
+        base = 3 if pl["char"] == "bigeater" else 2
+        return base + pl["visit_keep_bonus"]             # §15 Golden Week ⏳ROUND boon
+
+    def _do_visit(self, s, p, rng):
+        pl = s["players"][p]
+        r = pl["pos"]
+        s["visits"] += 1; pl["fp_src_visit"] += 1
+        # §15 BLOCK [draw] (⏳TURN): the market is shut for this agent — no cards this Visit
+        if pl["block_draw"] >= s["turn"]:
+            return
+        cards = [self._draw_card(s, r, rng) for _ in range(3)]
+        ings = [c for c in cards if c is not None and c[0] == "I"]
+        events = [c for c in cards if c is not None and c[0] == "E"]
+        pinch = 0
+        for c in events:
+            pinch += self._fire_event(s, p, c[1], r, during_visit=True)
+            self._discard_card(s, r, c)                  # §16 feeder 3: a fired event → discard (recurs)
+        if pl["char"] == "bigeater":
+            pinch *= 2                                   # 大胃王 flaw: hazards bite TWICE on his Visit
+        keep = max(0, self._keep_cap(pl) - pinch)
+        keep = max(0, self._apply_tempo(pl, keep))
+        # 大胃王 greedy 4th: keep one extra, then RETURN 1 follower to your supply (the greed sink)
+        if pl["char"] == "bigeater" and len(ings) > keep and self._hungry(s, p):
+            keep += 1
+            for _ in range(BIGEATER_COST):
+                self._return_one_to_supply(s, p)
+        for c in ings[:keep]:
+            self._keep_ing(s, p, r, c)
+        for c in ings[keep:]:
+            self._discard_card(s, r, c)                  # §16 feeder 1: passed-over → discard
 
     def _apply_tempo(self, pl, keep):
         if pl["tempo_tax"] > 0 and keep > 0:
@@ -1042,35 +1414,7 @@ class TravelAgentsGame:
             return keep - 1
         return keep
 
-    def _keep_cap(self, pl):
-        return 3 if pl["char"] == "bigeater" else 2
-
-    def _do_visit(self, s, p, rng):
-        pl = s["players"][p]
-        r = pl["pos"]
-        s["visits"] += 1; pl["fp_src_visit"] += 1
-        cards = [self._draw_market(s, r, rng) for _ in range(3)]
-        toks = [c for c in cards if isinstance(c, str)]
-        events = [c for c in cards if isinstance(c, tuple)]
-        haz = 0
-        for ev in events:
-            haz += self._fire_event(s, p, ev, during_visit=True)
-        if pl["char"] == "bigeater":
-            haz *= 2                                     # 大胃王 flaw: hazards fire TWICE on his Visit
-        keep = max(0, self._keep_cap(pl) - haz)
-        keep = max(0, self._apply_tempo(pl, keep))
-        # 大胃王 greedy 4th: keep one extra, then RETURN 1 follower to your supply (the greed sink)
-        if pl["char"] == "bigeater" and len(toks) > keep and self._hungry(s, p):
-            keep += 1
-            for _ in range(BIGEATER_COST):
-                self._return_one_to_supply(s, p)
-        for c in toks[:keep]:
-            pl["larder"][c] += 1; s["src_by_type"][c] += 1
-        for c in toks[keep:]:
-            self._return_token(s, c)
-
     def _hungry(self, s, p):
-        pl = s["players"][p]
         for vid in self._board(s):
             if VENDORS[vid]["is_drink"]:
                 continue
@@ -1081,57 +1425,79 @@ class TravelAgentsGame:
     def _do_cstore(self, s, p, r, rng):
         pl = s["players"][p]
         s["cstores"] += 1; pl["fp_src_cstore"] += 1
-        c = self._draw_market(s, r, rng)
-        if isinstance(c, str):
+        if pl["block_draw"] >= s["turn"]:
+            return
+        c = self._draw_card(s, r, rng)
+        if c is None:
+            return
+        if c[0] == "I":
             if self._apply_tempo(pl, 1) > 0:
-                pl["larder"][c] += 1; s["src_by_type"][c] += 1
+                self._keep_ing(s, p, r, c)
             else:
-                self._return_token(s, c)
-        elif isinstance(c, tuple):
-            self._fire_event(s, p, c, during_visit=False)
+                self._discard_card(s, r, c)
+        else:
+            self._fire_event(s, p, c[1], r, during_visit=False)
+            self._discard_card(s, r, c)
 
     def _do_travel(self, s, p, dest, rng):
         pl = s["players"][p]
         src = pl["pos"]
         pl["pos"] = dest
         s["travels"] += 1
-        # grow your following (Travel +1: supply → board). Homebody grow-tick switchable (reserve g′).
-        self._grow(s, p, "travel")
+        # grow your following (Travel +1: supply → board). Homebody grow-tick switchable (reserve g′);
+        # §15 BLOCK [travel-grow] (⏳TURN) suppresses the grow this Travel.
+        if pl["block_travel_grow"] < s["turn"]:
+            self._grow(s, p, "travel")
         # 阿嬤 Travel-anywhere COSTS 1 follower to supply (baseline ON: "the trip tires her crowd")
         if pl["char"] == "globetrotter" and AMA_TRAVEL_COST:
             if pl["board"] > 0:
                 pl["board"] -= 1; pl["supply_f"] += 1; s["ama_travel_cost_paid"] += 1
-        # 媽寶 is the SOLE Travel-sourcer: draw HOMEBODY_DRAW (2) cards of the region she LEFT, keep all
-        if pl["char"] == "homebody":
+        # 媽寶 is the SOLE Travel-sourcer: draw HOMEBODY_DRAW (2) cards of the region she LEFT, keep all.
+        # §15 BLOCK [travel] = "arrives with no ingredient" → suppress the travel-source this Travel.
+        if pl["char"] == "homebody" and pl["block_travel"] < s["turn"]:
             pl["fp_src_travel"] += 1
             for _ in range(HOMEBODY_DRAW):
-                c = self._draw_market(s, src, rng)
-                if isinstance(c, str):
+                c = self._draw_card(s, src, rng)
+                if c is None:
+                    continue
+                if c[0] == "I":
                     if self._apply_tempo(pl, 1) > 0:
-                        pl["larder"][c] += 1; s["src_by_type"][c] += 1
+                        self._keep_ing(s, p, src, c)
                     else:
-                        self._return_token(s, c)
-                # an event on a Travel fly-by whiffs (not fired)
+                        self._discard_card(s, src, c)
+                else:
+                    self._discard_card(s, src, c)        # an event on a Travel fly-by whiffs (not fired) → discard
 
     def _discard_to_cap(self, s, pl):
+        """Larder over the hand-limit: dump the most-plentiful token(s). A current-phase card → region
+        discard; a stale carried card → box (§16.2 feeder 1 / §16.3 box)."""
         cap = self._larder_cap(pl)
-        total = sum(pl["larder"].values())
-        if total <= cap:
-            return
-        for _ in range(total - cap):
-            tok = max((k for k in pl["larder"] if pl["larder"][k] > 0), key=lambda k: pl["larder"][k])
-            pl["larder"][tok] -= 1
-            self._return_token(s, tok)
-        pl["larder"] = +pl["larder"]
+        while self._larder_total(pl) > cap:
+            cur = [k for k in pl["larder"] if pl["larder"][k] > 0]
+            if cur:
+                tok = max(cur, key=lambda k: pl["larder"][k])
+                pl["larder"][tok] -= 1
+                self._discard_ingredient(s, tok)
+            else:
+                tok = max((k for k in pl["larder_prev"] if pl["larder_prev"][k] > 0),
+                          key=lambda k: pl["larder_prev"][k])
+                pl["larder_prev"][tok] -= 1
+                s["box_from_larder"] += 1
 
-    # -------- scoring --------
+    # -------- scoring (§14 TWO-TRACK: completed-Booking VP + won-vendor VP) --------
+    def _vendor_vp(self, pl):
+        return sum(w["vp"] for w in pl["won"])
+
+    def _booking_vp(self, pl):
+        return pl["day_book_score"] + pl["night_book_score"] - pl["cancel_penalty"]
+
     def scores(self, s):
         if not s["_finalized"]:
             self._finalize(s)
         out = {}
         for p in range(s["n"]):
             pl = s["players"][p]
-            base = pl["day_book_score"] + pl["night_book_score"] - pl["cancel_penalty"]
+            base = self._booking_vp(pl) + self._vendor_vp(pl)   # §14 two-track final score
             st = _wstat(pl["won"])
             tie = 1e-3 * st["n"] + 1e-4 * len(st["regions"])   # tiebreak: most vendors → most regions
             out[p] = base + tie
@@ -1154,6 +1520,25 @@ class TravelAgentsGame:
         def share(t):
             return src[t] / src_tot
 
+        # §14 two-track scoring diagnostics: the WINNER's vendor-VP share of their winning score
+        wp = winners[0]
+        w_vendor = self._vendor_vp(s["players"][wp])
+        w_book = self._booking_vp(s["players"][wp])
+        w_total = w_vendor + w_book
+        vendor_vp_share = (w_vendor / w_total) if w_total > 0 else 0.0
+
+        # §16 deck-flow reads: reshuffles/game, reshuffled-deck size, live-deck event-fraction (enrichment)
+        def _rs(r, ph):
+            return float(s["reshuffles"][(r, ph)])
+
+        def _rsz(r, ph):
+            v = s["reshuffle_sizes"][(r, ph)]
+            return float(statistics.mean(v)) if v else 0.0
+
+        def _evf(r, ph):
+            v = s["evfrac_samples"][(r, ph)]
+            return float(statistics.mean(v)) if v else 0.0
+
         return {
             "margin": float(margin),
             "tie": 1.0 if len(winners) > 1 else 0.0,
@@ -1169,6 +1554,29 @@ class TravelAgentsGame:
             "contested_frac": float(s["contested_claims"] / claims),
             "night_claims_per_player": float(s["night_claims"] / n),
             "prestige_completions_per_game": float(s["prestige_completions"]),
+            # ---- §14 TWO-TRACK scoring probes (vendor-only loses / tours dominate) ----
+            "claims_per_player": float(s["claims"] / n),
+            "apex_claims_per_player": float(s["apex_claims"] / n),
+            "winner_vendor_vp": float(w_vendor),
+            "winner_booking_vp": float(w_book),
+            "vendor_vp_share_of_winner": float(vendor_vp_share),
+            "below_floor_blocks_per_game": float(s["below_floor_blocks"]),
+            # ---- §15 EVENT probes ----
+            "events_fired_per_game": float(s["events_fired"]),
+            "events_fired_per_player": float(s["events_fired"] / n),
+            "ev_leader_fires_per_game": float(s["ev_leader_fires"]),
+            "ev_leader_fizzles_per_game": float(s["ev_leader_fizzles"]),
+            "swipes_per_game": float(s["swipes"]), "spoils_per_game": float(s["spoils"]),
+            "gifts_per_game": float(s["gifts"]), "blocks_per_game": float(s["blocks"]),
+            "detours_per_game": float(s["detours"]), "restocks_per_game": float(s["restocks"]),
+            "washes_per_game": float(s["washes"]),
+            # ---- §16 DECK-FLOW probes (cycle-rate, thinning, event-enrichment, pantry supply) ----
+            "reshuffles_E_night": _rs("E", 2), "reshuffles_N_night": _rs("N", 2),
+            "reshuffle_size_E_night": _rsz("E", 2), "reshuffle_size_N_night": _rsz("N", 2),
+            "evfrac_E_night": _evf("E", 2), "evfrac_N_night": _evf("N", 2),
+            "evfrac_E_day": _evf("E", 1), "evfrac_N_day": _evf("N", 1),
+            "pantry_supply_min": float(s["pantry_supply_min"]),
+            "box_from_larder_per_game": float(s["box_from_larder"]),
             # ---- MAKE-OR-BREAK PROBE #2: sourcing/throughput health ----
             "src_share_meat_N": share("meat"), "src_share_tea_C": share("tea"),
             "src_share_seafood_S": share("seafood"), "src_share_pantry_E": share("pantry"),
@@ -1223,7 +1631,7 @@ TEMPO = 1.1
 def _needs(s, p, vid):
     pay = GAME._pay_plan(s, p, vid)
     pl = s["players"][p]
-    return Counter({t: c - pl["larder"].get(t, 0) for t, c in pay.items() if c - pl["larder"].get(t, 0) > 0})
+    return Counter({t: c - GAME._have(pl, t) for t, c in pay.items() if c - GAME._have(pl, t) > 0})
 
 
 def _booking_marginal(s, p, vid, prefs):
@@ -1409,6 +1817,9 @@ MARQUEE = {**BAL, "marquee": True, "w_val": 1.2}
 HOMEBODY_DODGE = {**BAL, "avoid_contest": True, "no_tickets": False, "w_food": 1.3}      # (i) ignore-the-contest
 HOMEBODY_LATE = {**BAL, "late_battle": True, "w_food": 1.2}                              # (i) banked-board late-battler
 NO_TICKETS = {**BAL, "no_tickets": True}                                                # objectives-blind control
+# §14.5 MAKE-OR-BREAK probe: the vendor-only HOARDER — ignores Bookings, hoards stalls (biased to the
+# high-VP marquees). It must WIN < ~10% of the time (tours must dominate the two-track scoring).
+HOARDER = {**BAL, "no_tickets": True, "marquee": True, "w_val": 1.2}
 
 
 def s_random(s, p, legal, rng):
@@ -1423,6 +1834,7 @@ STRATEGIES = {
     "homebody_dodge": _make(HOMEBODY_DODGE),
     "homebody_late": _make(HOMEBODY_LATE),
     "no_tickets": _make(NO_TICKETS),
+    "hoarder": _make(HOARDER),
     "random": s_random,
 }
 
@@ -1443,7 +1855,7 @@ def _step_with_spread(self, s, actions, rng):
         # apply the spread promote directly, then run the normal end-of-turn bookkeeping
         s["_rng"] = rng
         pl = s["players"][p]
-        if pl["char"] == "councillor" and pl["pos"] == pl["home_region"]:
+        if pl["char"] == "councillor" and pl["pos"] == pl["home_region"] and pl["block_draw"] <= s["turn"]:
             self._councillor_draw(s, p)   # home-gated draw fires at the start of the turn, before the action
         self._do_promote(s, p, a[1], spread_vid=a[2])
         self._discard_to_cap(s, pl)
@@ -1453,6 +1865,8 @@ def _step_with_spread(self, s, actions, rng):
             s["round"] += 1
             if SLOW_REFILL:
                 self._refill_round(s)
+            for q in range(s["n"]):
+                s["players"][q]["visit_keep_bonus"] = 0
         s["cur"] = s["turn"] % s["n"]
         if s["end_turn"] is None and s["turn"] >= STALL_CAP * s["n"]:
             self._trigger_end(s, "stall")
@@ -1552,8 +1966,25 @@ if __name__ == "__main__":
                   f"max_committed(stall {mt['max_committed_on_stall']:.1f}/player {mt['max_committed_by_player']:.1f})  "
                   f"promotes/gm {mt['promotes_per_game']:.1f}  cancels/gm {mt['cancels_per_game']:.1f}")
             print(f"  scarcity/tie: resolver_fires/gm {mt['resolver_fires_per_game']:.2f}  "
-                  f"frozen@boundary/gm {mt['frozen_at_boundary_per_game']:.2f}  runaway best_win_streak {mt['best_win_streak']:.1f}")
-            print(f"  decision density: avg_legal {mt['avg_legal_actions']:.1f}  forced_turn_frac {mt['forced_turn_frac']:.3f}\n")
+                  f"frozen@boundary/gm {mt['frozen_at_boundary_per_game']:.2f}  below_floor_blocks/gm "
+                  f"{mt['below_floor_blocks_per_game']:.2f}  runaway best_win_streak {mt['best_win_streak']:.1f}")
+            print(f"  §14 VP two-track: winner vendor-VP {mt['winner_vendor_vp']:.1f} + booking-VP "
+                  f"{mt['winner_booking_vp']:.1f}  → vendor-share {mt['vendor_vp_share_of_winner']*100:.0f}% "
+                  f"(target 25–35%)  claims/plyr {mt['claims_per_player']:.1f}  apex/plyr {mt['apex_claims_per_player']:.2f}")
+            print(f"  §15 events: fired/plyr {mt['events_fired_per_player']:.1f}  ✦leader fires/gm "
+                  f"{mt['ev_leader_fires_per_game']:.2f} (fizzles {mt['ev_leader_fizzles_per_game']:.2f})  "
+                  f"swipe/gm {mt['swipes_per_game']:.2f} spoil {mt['spoils_per_game']:.2f} gift {mt['gifts_per_game']:.1f} "
+                  f"block {mt['blocks_per_game']:.2f} detour {mt['detours_per_game']:.2f} restock/wash "
+                  f"{mt['restocks_per_game']:.2f}/{mt['washes_per_game']:.2f}")
+            print(f"  §16 deck-flow: reshuffles(E-night {mt['reshuffles_E_night']:.1f}/N-night {mt['reshuffles_N_night']:.1f})  "
+                  f"reshuffle-size(E {mt['reshuffle_size_E_night']:.1f})  live evfrac(E-night {mt['evfrac_E_night']*100:.0f}%/"
+                  f"N-night {mt['evfrac_N_night']*100:.0f}%)  Pantry supply_min {mt['pantry_supply_min']:.0f}  "
+                  f"→box/gm {mt['box_from_larder_per_game']:.1f}")
+            print(f"  decision density: avg_legal {mt['avg_legal_actions']:.1f}  forced_turn_frac {mt['forced_turn_frac']:.3f}")
+            # §14.5 MAKE-OR-BREAK: vendor-only HOARDER in seat0 vs balanced field — must win < ~10%
+            hoard_field = {0: STRATEGIES["hoarder"], **{p: STRATEGIES["balanced"] for p in range(1, c)}}
+            hw, _ = _run(hoard_field, N, seed=777, n_players=c)
+            print(f"  §14.5 vendor-only HOARDER seat0 win% {hw[0]*100:.0f}% (target <10% — tours must dominate)\n")
 
         # per-lane probe spot-check at 4p: each character in seat0 vs 3 balanced-neutrals. Confirms the
         # six kits run AND the lane-specific instruments emit sane, non-trivial numbers with the real char.
