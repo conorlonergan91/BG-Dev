@@ -1314,7 +1314,7 @@ thereafter is self-explaining.
 
 ### (a) Effect VERBS — a compact closed set, grouped in three families
 
-Plain-language verbs, **not** memorised keywords — the card text is always authoritative. Grouped so a
+Plain-language verbs, **not** memorised terms — the card text is always authoritative. Grouped so a
 player learns them as three intuitions ("my crowd / my pantry / the street"):
 
 | Family | Verb | What it does | Sign |
