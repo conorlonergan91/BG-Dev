@@ -2326,3 +2326,352 @@ the day/night→any flips. **The signature twist (the follower crowd-fight over 
 - **`bg-playtest` (sim):** **this re-opens the booking economy → land it BEFORE the CD-gated full sim.** The
   run must model `locale`/`dishtype` completion, the `phase=any` availability/judging, and re-verify §14 on
   the new deck (§20.9). Running the sim on the *old* risky deck would misread the "tours dominate" intent.
+
+---
+
+# 21. THE WILD BOOKING + THE 3P CLAIM-THROUGHPUT HELPER (CD steer, 2026-08-10)
+
+> **Status: SPEC (bg-design, 2026-08-10). SPEC-ONLY — no data/rules/sim edited here;** the change lists are
+> §21.10. Builds on the CD's locked calls: **accept the ~40–48 turns/player band** (a meatier game), **4–6p
+> validated healthy** (bg-playstrat scaling sweep, sim `1c22551`: pace ~40–45, tours dominate, contested
+> 24–27%, stall 1–2%), and **fix 3p with a helper package — NOT by shortening the game.** Two deliverables:
+> **(1) a WILD BOOKING** action option (general, all counts) and **(2) a 3p claim-throughput helper**
+> (simpler tours count-tagged into the 3p deck). This layers on top of §20's agnostic tours — it does not
+> change the fight, the pools, the scarcity levers, or the §14 VP ladder.
+
+## 21.0 Executive read
+
+The 3p failure is **not** a VP problem (§14 already makes tours out-score vendors) — it is a **completion**
+problem. A 3p player gets only ~**6–9 total claims** in a whole game, and the healthy 4–6p tour deck is
+full of tours that each need **4–6 vendor claims** to finish. So a 3p player completes **<1 tour** and the
+vendor-only **HOARDER wins 46–55%**. The fix has to make tours **completable at low claim volume**, without
+touching the validated 4–6p deck.
+
+- **Wild booking** removes the *hoard-don't-book hesitation*: if none of the (thin, at 3p) face-up tours
+  suit, you may **decline the row and draw the top booking blind** — so you are **never stuck with no tour
+  worth booking**. Bounded downside (a whiff costs one action + the flat **−1** cancel), push-your-luck
+  upside (a fresh tour when the row is barren). General benefit; **strongest at 3p** where the face-up row
+  is thinnest.
+- **The 3p subset** is the load-bearing lever: **pull the ~7 heaviest 4+-claim collection/coverage tours
+  OUT of the 3p deck** (via a per-count `counts` tag), leaving a 3p deck of ~38 tours **all completable in
+  ≤3 claims.** Now a 3p player's ~7 claims each *contribute to finishing a tour* — they complete **3–4 small
+  tours** and out-earn the hoarder.
+- **The simpler tours are FLEXIBLE at 4–6p (CD refinement).** The 8 easy "on-ramp" tours are **guaranteed
+  in at 3p** (the fix), but at 4–6p they sit behind a **switch** (`onramp_high_count`, default **IN**):
+  **IN** = the validated 45-tour deck (gentler on-ramp + variety, no regression); **OUT** = a meatier 4–6p.
+  The sim A/Bs it. So the 4–6p deck is **untouched by default**, with a deliberate meatier variant on tap.
+
+## 21.1 The WILD BOOKING — the mechanic (a variant of Book, not a new action)
+
+**Recommendation: make it a variant of the existing Book action (§6), not a new always-on action.** This is
+the cleanest — it mints **no new action keyword** (bg-elegance rail) and the "instead of the face-up row"
+framing *structurally* makes it the fallback rather than a parallel default.
+
+> **Rule (extends rules-draft §6 — the Book action).** When you **Book a tour**, you may **either** take one
+> card from the **face-up Booking row** (as now, then refill the row) **or** decline the whole face-up row
+> and **draw the top card of the current Booking deck blind** and take it into your hand. **One Book = one
+> tour, one way or the other** — you never do both, and you never see the blind card before committing.
+> A blind-drawn tour is **kept** (it does not go back); if it does not fit your plan you may **Cancel** it
+> later for the flat cancel (**−1**). Normal Book limits apply: you still hold at most **3**, and if you are
+> at the limit you must Cancel one first (−1) to make room. Because you took no face-up card, the face-up
+> row is **not** refilled on a wild Book.
+
+- **Which deck:** the top of whichever Booking deck currently feeds the face-up row — the **DAY** deck by
+  day, the **NIGHT** deck at night. Under §20 the decks are ~2/3 **agnostic (`phase=any`)** tours, so a
+  blind draw very often lands a *safe, holdable* tour anyway — the wild booking and the agnostic rework
+  reinforce each other (the gamble is mild because the deck is mostly safe tours).
+- **You keep it (no peek-and-discard).** Keeping the blind card *is* the gamble; letting a player look then
+  decline would make it strictly better than a face-up Book and trivialise the row (§21.2).
+
+## 21.2 The WILD BOOKING — the guard (why it stays the fallback, not a strictly-better default)
+
+The design constraint is that the wild booking must **not** become the default line that trivialises the
+face-up choice. It does not, for three structural reasons — **no extra token cost is needed** (a cost would
+be bloat):
+
+1. **Information asymmetry self-selects it as the fallback.** A face-up tour is a **known** value; the blind
+   draw is **unknown**. A rational player takes a suitable face-up tour when one exists (known good) and
+   only gambles blind **when none of the face-up tours suit** — which is exactly the intended trigger. The
+   either/or gate (one Book = one tour) prevents cherry-picking both.
+2. **The action cost limits "digging."** Each wild Book is a **whole turn**. In a claim-limited game
+   (especially 3p, ~6–9 claims total) an action is worth far more than the **−1** flat cancel, so spamming
+   wild Books to dig for a specific easy tour is self-punishing — you burn tempo you cannot spare. The flat
+   **−1** cancel makes the downside *cheap enough to never be stuck*, while the action cost makes it *too
+   expensive to abuse*. That is the exact bounded-downside / push-your-luck shape the CD asked for.
+3. **The hand-limit + keep rule caps the whiff.** A whiffed blind draw occupies a hand slot until you cancel
+   it (−1), so a bad gamble has a small, real, bounded cost — never zero, never catastrophic.
+
+**Verdict:** the gate "**instead of** the face-up row, one tour per Book, kept blind" is sufficient. It is
+the fallback/gamble by construction; the face-up row remains the primary, better-informed line.
+
+## 21.3 The WILD BOOKING — effect (general benefit, strongest at low counts)
+
+The behaviour it kills is **hoard-don't-book hesitation**: today, if the face-up row shows nothing a player
+can realistically complete, the rational line is to *not book at all* and just hoard vendors — which starves
+tour-completion and hands the game to the hoarder. Wild booking means **a bookable tour is always one action
+away**, so:
+
+- **more tours enter play → more tours complete → tours-dominate strengthens** (the §14 intent finally
+  fires in practice, not just on paper);
+- **general across all counts**, but **strongest at 3p**, where the face-up row is thinnest (fewest slots,
+  fewest draws cycling) and therefore most often shows nothing suitable. At 4–6p the row is wider and a
+  suitable face-up tour is usually present, so the wild booking fires **rarely** there — which is precisely
+  why it does **not** regress the validated 4–6p economy (§21.9). It is a *floor under booking*, not a new
+  dominant strategy.
+
+## 21.4 The 3P PROBLEM restated — it is COMPLETABILITY, not VP
+
+From the bg-playstrat scaling sweep (sim `1c22551`): 3p is **claim-throughput-limited**. The chain:
+
+- deep-claiming design (multi-ingredient recipes + the follower fight) → ~**13 turns per claim** → in a
+  ~40–48-turn 3p game a player lands only ~**6–9 claims** all game;
+- the healthy 4–6p tour deck is thick with **4–6-claim collection/coverage tours** (`n_collect6` = 6,
+  `g_collect5` = 5, `n_allfood5` = 5, `d_collect4`/`n_four` = 4, `n_all4` = 4 regions);
+- a 3p player cannot finish those **and** complete anything else → **<1 tour completed/player** → the
+  vendor-only **HOARDER wins 46–55%** (vendors score their §14 VP with none of the tour overhead).
+
+**Key correction (from the locked steer): pacing 3p faster does NOT fix this.** The CD's "3p clock ticks on
+fewer vendors" *shortens* the game → **fewer** claims → **fewer** completed tours → it makes tours-dominate
+**worse**. The lever that bites is **making each tour completable within the low 3p claim budget** — i.e.
+shrinking the *claims-per-tour* the 3p deck demands, not shrinking the game.
+
+## 21.5 CORE LEVER — a FLEXIBLE per-count `counts` tag (three groups + one switch)
+
+Extend §20's tour-tagging machinery with a **`counts:` tag** naming the player counts at which a tour is
+dealt into the deck. At setup you **build the DAY and NIGHT Booking decks from only the rows whose `counts`
+tag includes your player count.** This is a **pure setup filter** — zero in-play rules, no new components,
+invisible once the game starts (bg-elegance-friendly). It reuses the exact `tags`-column mechanism §20
+already added, so it costs nothing structurally.
+
+Per the CD's refinement, the tag is **not** a hard 3p-exclusive lock. Tours fall into **three groups**, the
+third of which is **switchable at 4–6p** (a tuning A/B), while its 3p inclusion is guaranteed:
+
+| Group | `counts` tag | Rows | 3p? | 4–6p? | Role |
+|---|---|:--:|:--:|:--:|---|
+| **CORE** | `counts:3456` | ~30 | ✅ always | ✅ always | the backbone — in at every count |
+| **HEAVY** | `counts:456` | **7** | ❌ out (unreachable) | ✅ always | 4+-claim collection/coverage — a 3p ~7-claim budget can't finish these |
+| **ON-RAMP (simpler)** | `counts:3456` **+ `onramp` group** | **8** | ✅ **always (the fix)** | **switchable** (`onramp_high_count`, default **IN**) | the easy 1–2-vendor tours; guaranteed at 3p, optional at 4–6p |
+
+**Group 2 — HEAVY (hard-out at 3p; not switchable — they simply can't be completed at 3p):**
+
+| id | Tour | Target | min claims |
+|---|---|---|:--:|
+| `n_collect6` | The Grand Tour | `vendors_total>=6` | 6 |
+| `g_collect5` | New-Year Market Haul | `vendors_total>=5` | 5 |
+| `n_allfood5` | Big Eater's Feast | `food_vendors>=5` | 5 |
+| `d_collect4` | Full-Day Itinerary | `vendors_total>=4` | 4 |
+| `n_four` | Four-Stop Night Run | `vendors_total>=4` | 4 |
+| `n_all4` | Round-Taiwan · Route No.1 | `regions>=4` | 4 |
+| `n_prestige14` | Top of the Charts | `ingredient_cost_total>=9` | ~3–4 pricey |
+
+**Group 3 — ON-RAMP simpler tours (the flexible set — the 8 value-3, 1–2-vendor easiest tours):**
+
+| id | Tour | Target | VP | vendors |
+|---|---|---|:--:|:--:|
+| `d_cheap2` | Budget Bites | `cheap_vendors>=2` | 3 | 2 |
+| `d_deep2` | Become a Regular | `region_depth>=2` | 3 | 2 |
+| `d_east1` | Taroko Day Trip | `vendors_region:E>=1` | 3 | 1 |
+| `d_pairNC` | Taipei–Taichung Line | `pair:N+C` | 3 | 2 |
+| `d_pairSE` | South-Link Coast Run | `pair:S+E` | 3 | 2 |
+| `d_drinks2` | Hand-Shaken Run → `dishtype:drink>=2` | `dishtype:drink>=2` | 3 | 2 |
+| `d_mix1` | A Bite & a Sip | `food>=1;drink>=1` | 3 | 2 |
+| `d_daymix` | The Breakfast Set | `day_food>=1;drink>=1` | 3 | 2 |
+
+- **The switch:** a per-count setup flag **`onramp_high_count`** governs whether the ON-RAMP group is dealt
+  at **4/5/6p** (it is **always** dealt at 3p — that is the throughput fix). Two settings:
+  - **IN (RECOMMENDED DEFAULT):** on-ramp tours stay in the deck at 4–6p → a **gentler on-ramp + more deck
+    variety.** This is the deck the 4–6p sweep (`1c22551`) already validated as healthy (it ran the
+    near-full 44-tour deck), so **default IN is the no-regression, safe default.**
+  - **OUT (the "meatier 4–6p" variant):** the 8 on-ramp tours drop at 4–6p → higher counts are forced onto
+    the ambitious tours, preserving a meatier feel. This is the A/B the sim must judge (§21.12 Q4).
+- **Why default IN:** it reproduces the validated 4–6p deck exactly — zero risk to the healthy balance —
+  and the CD's "harmless variety/accessibility win vs meatier" question is then answered *empirically* by
+  the OUT run, not guessed on paper.
+
+**The 3p deck, net:** CORE (~30) + ON-RAMP (8) = **~38 completable tours** (HEAVY 7 excluded), skewed hard
+toward 1–2-claim tours — exactly the low-claim-budget completability the fix needs. **At 4–6p:** CORE +
+HEAVY (+ ON-RAMP if the switch is IN) = the full **45** by default.
+
+*(The 3p Booking-deck **size** parameter already scales down at low counts in per-count setup, so a ~38-row
+3p pool is consistent with the smaller 3p deck — no deck runs thin.)*
+
+## 21.6 The 3P COMPLETABILITY MATH — how tours now out-earn hoarding
+
+**Assumptions:** 3p player ~**7 claims** all game (mid of 6–9); vendor-only hoarder ceiling ≈ **~22 VP**
+(§14.5, unchanged); tour VP on the §14 ladder (2-vendor patterned = **5**, 1-vendor premium = **5–7**,
+3-vendor = **7**). Claims are **shared** — a vendor you claim scores its vendor VP **and** counts toward
+every tour it satisfies (§14.5).
+
+**A tour-focused 3p line with 7 claims and the simpler deck:**
+
+| Source | detail | VP |
+|---|---|:--:|
+| completed tours | 3× 2-vendor tours (5+5+5) + 1× 1-vendor premium (5) — claims SHARED across them | **~20** |
+| vendor VP | those same ~6–7 claims also score vendor VP (mix of 1–3 each) | **~10** |
+| **total** | ~7 claims | **~30** |
+
+- **~30 (tour line) > ~22 (hoarder ceiling)** — tours out-earn hoarding at 3p, the whole point.
+- The hoarder's ceiling is *unchanged*; what changed is that the tour player can now **convert** their 7
+  claims into **3–4 completed tours** instead of **<1**, because the 3p deck no longer demands 4–6-claim
+  tours. Completability, not VP, was the missing piece.
+- **Wild booking is the enabler underneath this:** it guarantees the 3p player can *always* have a simple,
+  completable tour in hand to point those 7 claims at — no dead "nothing worth booking" turns.
+
+**Target for the sim (§21.10):** 3p **tours-completed/player rises above ~1** (aim ~2.5–3.5), **hoarder
+winrate falls from 46–55% → ≤ fair (~33%)**, **vendor-VP share ~22–25%** (matching the healthy 4–6p band),
+**pace stays in ~40–48 tpp**, **stall ≤ ~2%.**
+
+## 21.7 The CD's CLOCK idea — a PACE aid only, NOT the tours-dominate fix
+
+"3p clock ticks on fewer vendors" is evaluated **strictly as a pace lever, held OFF by default.** It does
+**not** fix tours-dominate — it makes it worse (fewer claims → fewer completions, §21.4). **Do not adopt it
+to fix 3p.** Adopt it **only if**, after the completability fix + wild booking, the sim shows 3p **drags
+long** (pace pushes past ~48 tpp). That is unlikely: the completability fix does **not** lengthen the game
+(same claim count — it just makes more of those claims *finish* tours), so 3p pace should already sit in
+band. If a pace trim is ever needed, it is the already-flagged **die-clock track length L=2 at 3p**
+(`map.json`, the L-sweep from the Closing-Time-die decision), not a claim-volume change.
+
+## 21.8 RESERVE (last resort) — a modest 3p claim speedup
+
+If completability (§21.5) + wild booking (§21.1) still leave the 3p tour line short of the hoarder in the
+sim, a **modest 3p-only claim speedup** is the reserve — but it is the **lever of last resort** because
+cheapening claiming ripples into the 4–6p spread depth and the scarcity economy. **Prefer the tour-side fix.**
+If forced, ranked least-invasive first:
+
+| # | Reserve | Change | Why held |
+|---|---|---|---|
+| **3p-a** | **+1 face-up Booking slot at 3p** | 3p Booking row shows +1 tour | Pure tour-supply widening — helps completion without touching claiming; try FIRST. |
+| **3p-b** | **1 more `counts:456` demotion** | pull 3-claim coverage tours (`d_travel3`/`g_travel3d`/`n_deep3`) from 3p too | Deepens the subset skew; still tour-side, no claim change. |
+| **3p-c** | **modest 3p claim speedup** | e.g. −1 follower floor OR +1 face-up **vendor** slot at 3p | LAST — cheapening claiming ripples into 4–6p spread depth; adopt only if a/b insufficient. |
+
+## 21.9 COUNT-SCOPING — 4–6p are UNTOUCHED (confirmed)
+
+- The `counts` tag is a **per-count setup filter by construction.** With **`onramp_high_count = IN`
+  (default)**, the **4p/5p/6p deck keeps all 45 tours** — the validated 4–6p config (sim `1c22551`) is
+  **byte-for-byte the same deck**, so the default has **no regression path.** The **OUT** setting is the
+  only thing that changes a 4–6p deck (drops the 8 on-ramp tours), and it is a deliberate, sim-judged A/B —
+  never a silent side effect (§21.12 Q4). Only **3p** ever loses the 7 HEAVY tours.
+- **Wild booking is general** (all counts) but is a **pure add** — an *option* on an existing action that a
+  player only takes when the face-up row is barren. At 4–6p the wider row rarely leaves a player with
+  nothing suitable, so it fires seldom there. The sim's job is to **confirm** it does not shift 4–6p
+  hoarder-winrate / pace / contested_frac vs `1c22551` (expected: negligible).
+- **Net:** the only count whose deck changes is **3p**; the only new *option* (wild booking) is a floor that
+  bites at low counts and is near-silent at high counts. 4–6p stay as-is.
+
+## 21.10 CHANGE LISTS (SPEC-ONLY — for the owning agents to execute)
+
+**`design/rules-draft.md` §6 (the Book action) — the WILD BOOKING (bg-design/bg-developer):**
+- Add the either/or option to **Book a tour**: *"…or decline the face-up row and draw the top card of the
+  current Booking deck **blind**, taking it into your hand (you keep it; the row is not refilled). One Book =
+  one tour. A blind tour that doesn't fit can be Cancelled later for the flat −1."* Keep the 3-hold limit and
+  the at-limit-Cancel-first rule consistent.
+- Add a one-line rationale in §6 or the FAQ: *"You are never stuck with no tour worth booking — if the row
+  is barren, take a chance on the next one off the pile."*
+- **Confirm the flat cancel value is −1** (rules-draft §9 currently reads "−half"; the healthy config uses
+  **flat:1** per the CD's accepted band — align §9's cancel wording to flat −1 when this lands, coordinating
+  with §20's cancel references). Flag to bg-developer to reconcile in one pass.
+
+**`components/bookings.csv` — the 3P count-tags, three groups (bg-developer):**
+- Add a **`counts:` tag** to every row's `tags` field (reusing the §20 tag mechanism):
+  - **HEAVY → `counts:456`** on the **7** rows: `n_collect6`, `g_collect5`, `n_allfood5`, `d_collect4`,
+    `n_four`, `n_all4`, `n_prestige14`. (Hard-out at 3p; not switchable.)
+  - **ON-RAMP → `counts:3456` + `onramp`** on the **8** value-3 rows: `d_cheap2`, `d_deep2`, `d_east1`,
+    `d_pairNC`, `d_pairSE`, `d_drinks2`, `d_mix1`, `d_daymix`. (Always in at 3p; the `onramp` group tag lets
+    the `onramp_high_count` switch drop them at 4–6p.)
+  - **CORE → `counts:3456`** on the **other ~30** rows.
+- **No value / target / phase / quantity changes** here — this is a tag-only add. (§20's phase/type/value
+  reworks are a separate, already-spec'd change list — §20.7; execute both together but keep them distinct.)
+- Deck stays **45 rows** total (protects `booking_deck_sizes` + complexity/cost budgets); the **3p deck is a
+  ~38-row subset** (CORE + ON-RAMP, HEAVY excluded); the **4–6p deck is 45** by default, or **37** if
+  `onramp_high_count = OUT`.
+- **Reserve rows (do NOT add yet):** if the sim needs reserve **3p-b**, demote `d_travel3`/`g_travel3d`/
+  `n_deep3` from CORE to `counts:456`; no new rows are created in any reserve.
+- Run `tools/lint/check_game.py` after (new `counts`/`onramp` tag values on existing rows).
+
+**`map.json` — per-count setup + the on-ramp switch + (conditional) clock (bg-developer):**
+- Register that per-count Booking-deck composition **filters by the `counts` tag** (3p deck = rows tagged
+  with 3). This is the setup-side plumbing for §21.5.
+- Register the **`onramp_high_count`** switch (default **IN**): at 4/5/6p, deal the `onramp` group iff IN;
+  at 3p always deal it. Expose it as a first-class sim/setup toggle for the §21.12 Q4 A/B.
+- **Only IF §21.7 pace-trim is adopted** (not by default): set the 3p Closing-Time-die **track length L=2**
+  as the 3p clock param. **Do not adopt unless the sim shows 3p drags.**
+- **Only IF reserve 3p-a is adopted:** +1 to the 3p face-up **Booking** row count. Held.
+
+**`sim/travel_agents.py` — model both, then validate (bg-playstrat / bg-playtest):**
+- **Wild booking:** model Book as **either** a face-up pick **or** a top-of-deck blind draw; a bot chooses
+  blind when no face-up tour is completable given its held + reachable vendors; the blind tour enters hand
+  and is Cancelled at flat **−1** if it whiffs. Meter the wild-book **fire-rate by count** (expect high at
+  3p, low at 4–6p) and its **completion contribution**.
+- **3p deck:** build the 3p Booking decks from CORE + ON-RAMP (exclude the 7 HEAVY `counts:456`); ~38 rows.
+- **The on-ramp switch:** model **`onramp_high_count`** as a toggle. 4–6p **IN** run = full 45 (the
+  regression baseline vs `1c22551`); 4–6p **OUT** run = drop the 8 `onramp` rows (37) — the "meatier 4–6p"
+  A/B.
+- **Make-or-break metrics (3p):** tours-completed/player **> ~1** (aim ~2.5–3.5); hoarder winrate **46–55%
+  → ≤ ~33%**; vendor-VP share **~22–25%**; pace **~40–48 tpp**; stall **≤ ~2%**; contested_frac holds.
+- **Regression guard (4–6p, switch IN):** with wild booking ON and `onramp_high_count = IN`, confirm
+  hoarder-winrate / pace / contested_frac / vendor-share are **within noise of sim `1c22551`.**
+- **On-ramp A/B (4–6p, switch OUT):** does dropping the 8 easy tours make 4–6p **meatier** (fewer trivial
+  completions, longer tail) **without** breaking tours-dominate — or is it neutral (default IN wins on
+  variety/accessibility)? Report the delta so the CD can set the default (§21.12 Q4).
+
+## 21.11 HANDOFF / FLAGS (per the contract)
+
+**Mechanics that moved this pass:** (1) the **Book action gains a blind-draw variant** (the wild booking) —
+a general throughput floor; (2) a **per-count `counts` tag** on tours yielding a **~38-row 3p deck** (the 7
+HEAVY tours drop at 3p only); (3) a **flexible `onramp` group + `onramp_high_count` switch** — 8 easy tours
+guaranteed at 3p, switchable at 4–6p (default IN = the validated deck). **The signature twist (the follower
+crowd-fight over scarce vendors) is untouched** — no change to the fight, the scarcity levers, the pools,
+the recipes, or the §14 VP ladder. This pass only adds a booking *option* and a per-count deck *filter*.
+
+- **`bg-elegance` (budget — please re-gauge):** the wild booking is **+1 option on an existing action**
+  (Book), **not a new keyword** — the smallest possible add; the `counts` tag is a **setup-only filter,
+  invisible in play** (no in-game rules text beyond one setup line). It *buys* the removal of the 3p
+  hoard-don't-book dead-turn problem (a fun/clarity gain). Confirm both sit within the complexity budget;
+  flag if the Book action's rules-text grows past a clean sentence.
+- **`bg-playstrat` (sim — validates next):** engineer (a) a bot that uses the wild booking rationally
+  (blind only when the row is barren) and (b) the 3p exploit probe — does the 3p subset + wild booking make
+  a **tour line beat the vendor-only HOARDER**, with pace in band, **without** regressing 4–6p? This is the
+  make-or-break read (§21.10).
+- **`bg-theme` (naming — light):** the wild booking wants a warm night-market name — *"Pot-Luck Booking /
+  隨緣開團"* (take what the pile gives you) or *"Chance a Tour."* English-first, secular, 繁體. Confirm it
+  reads as *taking a chance on the next tour*, not a penalty.
+- **`bg-developer` (data):** owns §21.10 execution; reconcile the **flat −1 cancel** wording across
+  rules-draft §9 + §20 in the same pass.
+- **`bg-playtest` (sim harness):** this rides with §20 (both re-open the booking economy) → land §20 + §21
+  together, then ONE combined re-smoke, **before** the CD-gated full run.
+
+## 21.12 Open questions (top 3) + decision for the human
+
+**Top-3 balance/open questions for playtest & sim:**
+1. **Does the 38-row 3p subset get tours ABOVE the hoarder without over-simplifying 3p?** If tours-completed
+   overshoots and 3p turns into a shallow tour-rush, dial the subset back (demote fewer tours) or lift a few
+   3-claim tours back in. (make-or-break §21.6.)
+2. **How often does the wild booking actually fire — and only when it should?** If it fires *often at 4–6p*
+   (not just 3p), the either/or gate isn't self-selecting as intended and we may need a small friction; if it
+   never fires at 3p, the 3p row is already fine and the subset alone carries it.
+3. **Is the flat −1 cancel the right downside for a wild whiff?** Too cheap → players dig with blind draws
+   (watch the fire-rate); too dear → the "never stuck" promise weakens. Tune the cancel value on the sim's
+   wild-book fire-rate + dig-rate.
+4. **(CD's flexible-inclusion A/B) Should the 8 ON-RAMP tours stay in at 4–6p, or drop?** IN = gentler
+   on-ramp + variety (and the validated deck); OUT = meatier higher counts. **Does leaving them in harm the
+   already-healthy 4–6p balance, or is it a harmless variety/accessibility win?** The sim runs both and
+   reports the delta — this sets the `onramp_high_count` default.
+
+**Decision for the human (two calls):**
+
+**Call 1 — how aggressive should the 3p HEAVY drop be?**
+- **(A · RECOMMENDED) Drop the 7 heaviest (4+-claim) tours at 3p** — `counts:456` on `n_collect6`,
+  `g_collect5`, `n_allfood5`, `d_collect4`, `n_four`, `n_all4`, `n_prestige14`; keep all ≤3-claim tours in.
+  Minimal, surgical, keeps 3p feeling like the same game with completable goals.
+- **(B) Drop 10 (also the 3-region coverage + `n_deep3`)** — deeper skew to 1–2-claim tours; safer for
+  completability but risks 3p feeling shallow / same-y (reserve 3p-b from the start).
+- **(C) Drop none; rely on wild booking + reserve 3p-a (+1 Booking slot) alone** — smallest data change,
+  but likely under-fixes tours-dominate (the sweep says the heavy tours are the throughput sink); not
+  recommended.
+
+**Call 2 — the `onramp_high_count` default (the flexible 4–6p inclusion, from the CD's refinement):**
+- **(IN · RECOMMENDED DEFAULT) Keep the 8 on-ramp tours in at 4–6p** — reproduces the validated `1c22551`
+  deck (no regression), gentler on-ramp, more variety. Let the sim's OUT run prove whether the meatier
+  variant is worth switching to.
+- **(OUT) Drop them at 4–6p** — meatier higher counts, but changes the validated deck; adopt only if the
+  sim's A/B (Q4) shows a clear meatier-without-harm win.
