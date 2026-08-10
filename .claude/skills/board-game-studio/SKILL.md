@@ -154,6 +154,46 @@ This gate is **only** for simulation (the slow, model-a-thousand-games runs). Th
 linter/complexity/access checks, and quick probability sanity-checks are not gated. When in doubt about
 whether the human is ready to sim, **ask** — a wasted sim burns real time.
 
+### Orchestrating background agents (dispatch · liveness · report)
+
+Long specialist passes run as **background subagents** so the studio stays responsive. The harness fires a
+`<task-notification>` when an agent *completes*, so you never poll to learn it finished — you poll only to
+(a) catch a **hang** and (b) peek at **progress** on demand. Reuse these skeletons instead of rebuilding
+them each time; fill the `<slots>`.
+
+**Rails that apply to every dispatch** (state them in the prompt so the agent obeys):
+- **One committer at a time.** Subagents share the working tree + git index — never let two agents (or an
+  agent + you) `git commit` concurrently; corruption follows. Serialise commits.
+- **Targeted `git add` only** — the exact files the agent owns; **never `git add -A`**, never touch Beacon
+  or `tools/` unless that IS the task.
+- **Commit footer, verbatim** — `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>` + the
+  `Claude-Session:` line; **no model id** anywhere pushed. Push with backoff; **no PR** unless the CD asks.
+- **Never read an agent's `.output`** (it's the full JSONL transcript — it overflows context). Use
+  `tools/agents/agent_watch.py` instead.
+
+**1 · Dispatch skeleton** (`Agent` tool, `run_in_background: true`):
+> You are the **`<bg-agent>`** for **`<game>`** (slug `<slug>`), version `<vX>`. Your contract is
+> `.claude/agents/<bg-agent>.md` — follow it. Repo `<path>`, branch `<branch>` (checked out). Read
+> `<the living docs to ground on>` first. **Deliverable:** `<crisp spec>`. `git add` ONLY `<files>` — never
+> `-A`/Beacon/`tools/`. Commit (WHY-focused msg + the footer), push with backoff, **no PR**. Return a short
+> report: `<what to hand back>`.
+
+**2 · Liveness self-poll skeleton** (`send_later` back into THIS session; re-arm ~10 min while in flight):
+> LIVENESS POLL — `<what's running + why>`. STATE: `<done+pushed so far>`. NOW: `<agent id>` (task `<#>`) =
+> `<what it's doing>`. CHECK: `python tools/agents/agent_watch.py --all` + `ListAgents` (running vs done).
+> HANG = QUIET **and** ListAgents shows running **and** no repo write ~10 min → inspect, `TaskStop`, finish
+> manually. WHEN DONE: `<verify: lint 0 / tree clean / files committed+pushed / Beacon+tools untouched>`.
+> THEN: `<next step>`. If still in flight → re-arm 10 min + stay quiet (noop).
+
+**3 · CD status-report skeleton** (what you tell the human when a pass lands):
+> **Done + pushed:** `<commits + one-line each>`. **Running now:** `<agent + what>`. **When it lands:**
+> `<the verify → next step chain>`. **Needs you:** `<the one decision, or "nothing">`.
+
+**Liveness read, one call:** `python tools/agents/agent_watch.py --all` → each agent's `.output` mtime
+(ALIVE/QUIET), repo files touched in the last N min (the *truest* progress signal — mtimes don't lie), git
+status + recent commits. It never reads transcript contents. **QUIET ≠ hung:** a finished agent looks
+identical to a wedged one on the filesystem — confirm which with `ListAgents` before you `TaskStop`.
+
 ## Living documents
 
 Living docs are a **current-state snapshot, not an accreted history**, with **one canonical home per topic**

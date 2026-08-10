@@ -264,6 +264,10 @@ WebSearch). Offline-testable via `--thing-xml`.
 - **Print pre-flight** — `python tools/preflight/check_print.py --game games/<slug>`: validates a game's
   `print-spec.json` (bleed, safe margin, DPI, CMYK, card size, min font) before a physical run. Owned by
   `bg-production`; skipped for Screentop-only / licensed games.
+- **Agent liveness** — `python tools/agents/agent_watch.py --all`: one-call progress/hang digest for
+  background subagents (their `.output` mtime + repo files touched recently + git state), so the orchestrator
+  can check on a running pass without reading its transcript. The dispatch/liveness/report playbook lives in
+  the `board-game-studio` skill.
 
 ### Recommended free installs (macOS)
 
