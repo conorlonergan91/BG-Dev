@@ -120,6 +120,17 @@ TRACK_L_OVERRIDE = int(os.environ.get("TA_TRACK_L", "0"))    # 0 = per-count tra
 DIE_SEED_OVERRIDE = os.environ.get("TA_DIE_SEED", "")        # fixed die seed (all games) for exact replay
 DIE_FORCE  = os.environ.get("TA_DIE_FORCE", "")              # force EVERY roll to this face (test hook: "BLANK"/"N"…)
 
+# --- §17.6 PER-COUNT VENDOR-POOL SUBSET (2026-08-10, this tuning sweep) ----------------------------
+# The CD structural fix: scale the phase pool (deck) IN LINE with player count. The 24 unique dishes
+# (13 day / 11 night) are the SOURCE OF TRUTH; this lever models playing only a SUBSET of them in a given
+# game — draw N-of-13 day / M-of-11 night — so a low-count game drains a SMALLER pool (doesn't run long on
+# an oversized fixed pool) and a high-count game a bigger one. SUBSET (some dishes sit out; every dish stays
+# unique) is preferred over duplication. Per-region SLOT-FLOORS are always kept so no region starts starved.
+#   TA_POOL="" (default)   → full pool (13 day / 11 night) — the current fixed behaviour.
+#   TA_POOL="D,M"          → D-of-13 day + M-of-11 night this game (subset if < full; DUPES if > full,
+#                            see _phase_decks — dupes are FLAGGED, not the recommendation).
+POOL_OVERRIDE = os.environ.get("TA_POOL", "")               # "" = full 13/11; "D,M" = subset (or dupe) sizes
+
 # --- §18 VISIT_MODE toggle (the A/B the re-sim isolates) ------------------------------------------
 # "straight" = Option A (BASELINE, §18.2/§18.6): draw straight to your keep-count, events fire+discard
 #   and DO NOT count (§16.2 feeder-1 "passed-over card" is eliminated). "keep2" = status-quo control
@@ -529,6 +540,48 @@ def _track_length(n):
     return int(tab.get(str(n)) or tab.get(str(min(max(n, 3), 6))) or 3)
 
 
+def _pool_target(phase):
+    """§17.6 per-count subset size for a phase from TA_POOL ('D,M' = day,night). None → full pool."""
+    if not POOL_OVERRIDE:
+        return None
+    parts = [int(x) for x in POOL_OVERRIDE.split(",")]
+    return parts[0] if phase == 1 else parts[1]
+
+
+def _phase_decks(phase, n, rng):
+    """Build the per-region vendor decks for a phase as a per-count SUBSET of the full pool (§17.6).
+    Returns {region: [vid, ...]} already shuffled. The full pool is the 13 day / 11 night unique dishes;
+    TA_POOL trims (subset) or extends (dupe) the TOTAL toward its target while ALWAYS keeping each region's
+    slot-floor face-able (no region starts starved). SUBSET is preferred; a target > full DUPLICATES cards
+    (flagged — dupes share a vid, which the vid-keyed stall identity cannot cleanly distinguish, so dupes are
+    a diagnostic only, not the shipped recommendation)."""
+    slots = _slots_for(n)
+    decks = {r: _region_deck(r, phase) for r in REGIONS}
+    for r in REGIONS:
+        rng.shuffle(decks[r])
+    target = _pool_target(phase)
+    full = sum(len(decks[r]) for r in REGIONS)
+    if target is None or target == full:
+        return decks
+    if target < full:
+        # keep at least each region's slot-floor; remove the surplus at random down to the target
+        floors = {r: min(slots[r], len(decks[r])) for r in REGIONS}
+        target = max(target, sum(floors.values()))      # cannot drop below what the slots demand
+        removable = [(r, i) for r in REGIONS for i in range(floors[r], len(decks[r]))]
+        rng.shuffle(removable)
+        drop = set(removable[: full - target])
+        for r in REGIONS:
+            decks[r] = [decks[r][i] for i in range(len(decks[r])) if (r, i) not in drop]
+    else:
+        # DUPE (diagnostic): spread (target-full) duplicate cards across regions round-robin
+        pool = [(r, vid) for r in REGIONS for vid in decks[r]]
+        rng.shuffle(pool)
+        for k in range(target - full):
+            r, vid = pool[k % len(pool)]
+            decks[r].append(vid)
+    return decks
+
+
 def _ing_cards(r, phase):
     """The fixed ingredient-card multiset for a region+phase market deck (ingredients.csv)."""
     cards = []
@@ -570,16 +623,25 @@ class TravelAgentsGame:
         day_size, night_size = _booking_deck_sizes(n)
         mrow_w = 3 if n < 4 else 4
 
-        # deal the day face-up vendor slots + build region decks
+        # §17.6 decide the WHOLE-GAME vendor subset UP FRONT (day + night) so the Booking deck can co-scale
+        # coherently: a tour is dealt only if the count's vendor pool can complete it (no orphaned tours).
+        day_decks = _phase_decks(1, n, rng)
+        night_decks = _phase_decks(2, n, rng)
+        pool_vids = [vid for r in REGIONS for vid in day_decks[r]] + \
+                    [vid for r in REGIONS for vid in night_decks[r]]
+
+        # deal the day face-up vendor slots (pop from the day subset decks)
         vdeck, faceup = {}, {}
         for r in REGIONS:
-            d = _region_deck(r, 1); rng.shuffle(d)
+            d = day_decks[r]
             up = [d.pop() for _ in range(min(slots[r], len(d)))]
             vdeck[r] = d; faceup[r] = up
 
-        # the DAY booking deck IS the clock (deck-driven)
-        day_deck = self._build_booking_deck(DAY_POOL, day_size, rng)
-        mrow = [day_deck.pop() for _ in range(min(mrow_w, len(day_deck)))]
+        # §17.6 CO-SCALED Booking decks: filter DAY / NIGHT tour pools to those COMPLETABLE at this pool
+        day_keys = self._completable_keys(pool_vids, DAY_POOL)
+        night_keys = self._completable_keys(pool_vids, NIGHT_POOL)
+        day_deck = self._build_booking_deck(day_keys, day_size, rng)
+        mrow = [day_deck.pop() for _ in range(min(mrow_w, len(day_deck)))] if day_deck else []
 
         players = []
         for p in range(n):
@@ -627,6 +689,8 @@ class TravelAgentsGame:
             "hsr_closed_until": {},                                         # p -> turn (detour hsr, ⏳TURN)
             "region_out_block": {},                                         # r -> round-end (detour link, ⏳ROUND)
             "mrow": mrow, "mreserve": day_deck, "mrow_w": mrow_w,
+            # §17.6 pre-decided night vendor subset + the co-scaled completable NIGHT tour pool (used at dusk)
+            "night_decks": night_decks, "night_keys": night_keys, "pool_vids": pool_vids,
             "day_size": day_size, "night_size": night_size,
             "players": players, "act": 1, "turn": 0, "cur": 0, "round": 0,
             "end_turn": None, "end_cause": None, "done": False, "_finalized": False,
@@ -679,11 +743,36 @@ class TravelAgentsGame:
         return s
 
     def _build_booking_deck(self, pool, size, rng):
+        if not pool:
+            return []
         deck = []
         while len(deck) < size:
             chunk = list(pool); rng.shuffle(chunk); deck.extend(chunk)
         deck = deck[:size]; rng.shuffle(deck)
         return deck
+
+    def _completable_keys(self, pool_vids, keys):
+        """§17.6 CO-SCALING coherence: return the subset of `keys` whose target is COMPLETABLE given the
+        count's vendor pool — i.e. if ONE player could win EVERY vendor in the pool, the tour completes.
+        A tour that even a whole-pool monopoly cannot finish (no apex left for apex_wins, pool total < the
+        collection target, a region below its region-count, no cross/expensive dish, …) is ORPHANED and is
+        NOT dealt at this count (the fix for the falsely-low completion / falsely-high hoarder read). Dynamic
+        targets (contested/early/final wins) are treated as satisfiable — they depend on play, not the pool —
+        by marking the upper-bound win pile contested + early + final."""
+        upper = []
+        for vid in pool_vids:
+            v = VENDORS[vid]
+            upper.append({"id": vid, "region": v["region"], "is_drink": v["is_drink"], "phase": v["phase"],
+                          "total_cost": v["total_cost"], "tier": v["tier"], "apex": v["apex"],
+                          "cross": v["cross"], "vp": v["vp"],
+                          "contested": True, "act_won": 1, "final_round": True})
+        st = _wstat(upper)
+        out = []
+        for k in keys:
+            d, need = BOOKINGS[k]["progress"](st)
+            if d >= need:
+                out.append(k)
+        return out
 
     def _pick_home(self, faceup, ch):
         """里長伯 names one home region at setup (bot heuristic: the region with the most face-up food
@@ -1270,6 +1359,7 @@ class TravelAgentsGame:
                     keep.append(key)
             pl["tickets"] = keep
         # sweep the day layer: uncommitted followers on cleared UNCLAIMED day stalls → owners' BOARDS
+        night_decks = s["night_decks"]   # §17.6 per-count SUBSET night pool, pre-decided at setup
         for r in REGIONS:
             for vid in list(s["faceup"][r]):
                 for q in range(s["n"]):
@@ -1277,7 +1367,7 @@ class TravelAgentsGame:
                         s["players"][q]["board"] += s["fol"][vid][q]
                 s["fol"][vid] = [0] * s["n"]
                 s["star"].discard(vid)
-            nd = _region_deck(r, 2); rng.shuffle(nd)
+            nd = night_decks[r]
             up = [nd.pop() for _ in range(min(s["slots"][r], len(nd)))]
             s["vdeck"][r] = nd; s["faceup"][r] = up
             for vid in up:
@@ -1293,9 +1383,9 @@ class TravelAgentsGame:
             plq["larder"] = Counter()
         s["commit_turn"] = {}
         self._sample_pantry_min(s)
-        # deal the NIGHT booking deck (its exhaustion = LAST TRAIN)
-        nd = self._build_booking_deck(NIGHT_POOL, s["night_size"], rng)
-        s["mrow"] = [nd.pop() for _ in range(min(s["mrow_w"], len(nd)))]
+        # deal the NIGHT booking deck (§17.6 CO-SCALED to the completable night tour pool decided at setup)
+        nd = self._build_booking_deck(s["night_keys"], s["night_size"], rng)
+        s["mrow"] = [nd.pop() for _ in range(min(s["mrow_w"], len(nd)))] if nd else []
         s["mreserve"] = nd
 
     def _resolve_all_ties(self, s, boundary, rng):
