@@ -191,7 +191,7 @@ python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build/pnp
 python3 $T/cards/build_cards.py --csv components/bookings.csv    --out build/pnp/bookings    --theme "$theme" --formats png
 python3 $T/cards/build_cards.py --csv components/ingredients.csv --out build/pnp/ingredients --theme "$theme" --formats png --tokens-csv components/tokens.csv
 python3 $T/cards/build_cards.py --csv components/events.csv      --out build/pnp/events      --theme "$theme" --formats png
-cardblurb="All play cards, in real deck quantities: 24 Vendors, 45 Bookings + 2 boundary cards, 62 Ingredients (16 faces × copies), 52 Events (the V7-M pool — day + night; setup deals a per-count subset per region)."
+cardblurb="All play cards, in real deck quantities: 24 Vendors, 45 Bookings, 62 Ingredients (16 faces × copies), 54 Events (the V7-M pool — day + night; setup deals a per-count subset per region)."
 carddecks="build/pnp/vendors/png build/pnp/bookings/png build/pnp/ingredients/png build/pnp/events/png"
 # Repeat each card by its deck `quantity` (so e.g. the 16 ingredient faces print as the real 62-card
 # deck). No-op for vendors/bookings/events (all quantity 1).

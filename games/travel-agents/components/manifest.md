@@ -55,6 +55,12 @@ lose it → your followers go back to **your own** supply (they never join the w
 | **COMPLETED 成團 pile marker** | **6** | Win-pile area marker, per player. |
 | **CANCELLED 取消 pile marker** | **6** | Lose-pile area marker, per player. |
 | **Agent pawns** | **6** | One per agent on the region ring — all start in **Taipei (North hub)**. Scaled 4 → 6 for the 3–6p roster. |
+| **Closing-Time die** 關 | **1** | **The game's FIRST die / randomness** (CD refinement 2026-08-10, §17.3/§17.9b). A **CUSTOM d6**: 4 region faces **North / Central / South / East** (each drawn with that region's colour + emblem + 繁體 — dual-coded, CVD-safe, matching the board's region encoding) + **2 BLANK faces** (a 1/3 reprieve). After track round 3, roll it — a region face closes that region's oldest face-up stall (die-removal is no-loss; committed crowds come home). **bg-architect flag:** a custom-printed d6 is a real COGS line (custom tooling/MOQ vs stock) — see the fallback (stock d6 + a region↔number key: 1–4 = N/C/S/E, 5–6 = BLANK). |
+| **Closing-Time track marker** 關 | **1** | Sits on the **3-space round track (1 · 2 · 3)** printed on the board's clock band; advance 1 per round. After round 3 → roll the die + reset to 1. The track prints on the board (`map.json` art), so only the marker is a punch-out token. |
+
+**NEW in tokens.csv (§17.9b — the Closing-Time die):** the **Closing-Time die** and **Closing-Time track
+marker** — the game's **first dice / randomness** (a deliberate excitement add per the CD). The die is the
+vendor clock's forcing function (§17.3); the track paces it (roll once per 3 rounds).
 
 **DROPPED from tokens.csv (V7-M):** the single grey **Followers** row and the **Followers-max dial** row
 (both replaced by the 48 per-colour Follower meeples above). *(Earlier, in V7: the 5 ingredient tokens →
