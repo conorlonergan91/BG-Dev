@@ -2032,3 +2032,297 @@ of both the VISIT sourcing action and every Bribe cost. Flag the Director to run
   is flagged as bloat to cut.
 - **`bg-critic` / `bg-playtest`:** the ripple to watch is **thin sub-pools** (Noodles §19.5), not spread
   erosion (spread is preserved). B-split does NOT reopen the §12 spread game the way B-wild did.
+
+---
+
+# 20. AGNOSTIC TOURS — make booking SAFE by default (CD steer, 2026-08-10)
+
+> **Status: SPEC (bg-design, 2026-08-10). SPEC-ONLY — no data/sim edited here;** the change lists are
+> §20.6–20.9. **This re-opens the booking economy** (the deck's phase mix + a handful of §14.3 values move),
+> so it must **land BEFORE the CD-gated full sim** — otherwise the run measures the *old* risky deck and the
+> "tours dominate" VP intent (§14) can't be read honestly.
+
+## 20.0 The problem, in one paragraph (the CD's diagnosis)
+
+Too many tours judge at **DUSK** — every `phase=day` Booking (20 of 45) must be *completed before the day
+vendor pool empties*, or it **cancels at −⌊V/2⌋** (design-doc §17.7). Under the vendor-depletion clock (§17)
+the player does **not** control when DUSK fires (the Closing-Time die can slam it shut early), so holding a
+day tour is a real gamble. Players respond rationally: **don't book, hoard vendors** — which starves
+tour-completion and lets the vendor-only hoarder over-win, defeating the §14 "tours are the win engine"
+intent (the diagnosis's downstream finding #1). The clock is now vendor-driven so booking-avoidance no
+longer *freezes* the game (§17 fixed that) — but booking must still be made **attractive and safe** or the
+VP economy never fires. **The fix: make the majority of tours completable ACROSS the day→night transition
+(judged at LAST TRAIN, not DUSK), so a booked tour is safe by default; keep a spicy minority phase-specific
+and pay them a premium for the cancel risk.**
+
+## 20.1 The mechanism that creates the risk (and the one lever that removes it)
+
+The cancel risk lives entirely in **when a tour JUDGES**, not in what it targets:
+
+- **`phase=day` → judges at DUSK.** Held-and-unfinished → CANCELLED −⌊V/2⌋. **This is the only acute risk.**
+- **`phase=night` → judges at LAST TRAIN** (game end). No mid-game cancel; you have the whole night.
+
+So the load-bearing move is a **new third phase value, `phase=any` (AGNOSTIC)**: *available to draw and hold
+from the start, judged at LAST TRAIN.* An agnostic tour can be booked early, worked on across the flip, and
+completed any time before the game ends — **near-zero cancel risk** (it only cancels in the rare event it's
+still unfinished at LAST TRAIN, exactly like a night tour). No new penalty rule, no new component — one new
+enum value on the existing `phase` column.
+
+> **Design rule (agnostic-by-construction).** A tour is **AGNOSTIC** iff (a) it judges at **LAST TRAIN**
+> and (b) its target is satisfiable by vendors **won in either phase** (any-phase counts, or a target that
+> deliberately spans a day+night pair). A tour is **PHASE-SPECIFIC** iff it judges at DUSK (day-cancel risk)
+> **or** its target can only be met within one phase.
+
+## 20.2 The recommended RATIO — majority agnostic (point 1)
+
+45 scoring tours. Recommended mix — **~2/3 agnostic, ~1/3 phase-specific premium:**
+
+| Bucket | Count | Share | Judges | Risk | Pay |
+|---|:--:|:--:|---|---|---|
+| **AGNOSTIC** (`phase=any`, any-phase / day+night-spanning) | **29** | **64%** | LAST TRAIN | low (safe default line) | base rung |
+| **PHASE-SPECIFIC — DAY** (`phase=day`, DUSK cancel risk) | **8** | 18% | DUSK | high (cancel) | **+1 rung premium** |
+| **PHASE-SPECIFIC — NIGHT-locked** (`phase=night`, single-phase target) | **8** | 18% | LAST TRAIN | mid (completion-difficulty) | difficulty-priced (§14) |
+
+Rationale for ~2/3: a player should almost always be able to hold a **safe** tour, so **booking is the
+default attractive line** (fixes hoard-don't-book). The ~1/3 phase-specific keeps the day/night texture of
+the theme alive and gives a **high-reward gamble** for players who want it. The DAY bucket is deliberately
+**small (8)** — those are the only tours carrying the acute cancel risk, and they now *pay for it*.
+
+*(The 8 NIGHT-locked are the tours whose target only night vendors can satisfy — `night_food_vendors`,
+`apex_wins`, `expensive_vendors ≥4-cost`, `cross_region`, `final_round_wins`. They judge at LAST TRAIN so
+they carry **no DUSK cancel**; their "risk" is completion difficulty within the shorter night, already
+premium-priced in §14. They are counted phase-specific because they are NOT freely any-phase.)*
+
+## 20.3 The two new tour TYPES (point 2)
+
+Both are **agnostic by construction** and both lean on real day+night vendor pairs (§20.4).
+
+### A. STREET / MARKET CRAWL (place-based)
+> **Target syntax:** `locale:<key>>=N` — win **N vendors whose `locale` = key**. Judges at LAST TRAIN.
+
+Complete the stalls of one walkable food district that spans a **day stall + a night stall**. The flagship
+is **Dihua Street / Dadaocheng** — `locale:dadaocheng>=2`, whose only two members are N02 Egg Crepe (day) +
+N07 Bubble Tea (night), so `>=2` **forces the transition span** — the cleanest showcase of the whole idea.
+Honest crawl locales (real contiguous food destinations) in §20.4: **Dadaocheng, Tainan 府城, Taichung,
+Hualien.**
+
+### B. DISH-TYPE tour (food-based)
+> **Target syntax:** `dishtype:<type>>=N` — win **N vendors whose `dish_type` = type**. Judges at LAST TRAIN.
+
+"Try the island's best ___." The showcase is **bubble tea** — `dishtype:bubble_tea>=2`, whose only two
+members are C03 (春水堂, the *birthplace*, day) + N07 (大稻埕 riverside neon, night): again exactly 1 day +
+1 night, so `>=2` **forces the span**. Broader dish tours (`dishtype:noodle>=2`, `dishtype:bun>=2`,
+`dishtype:rice>=3`, the existing `drinks` tours re-expressed as `dishtype:drink>=N`) don't *force* a span but
+are still agnostic (LAST-TRAIN, any-phase) — the safe accumulation line.
+
+### Existing types — kept, rebalanced (not deleted)
+`region-pattern` (regions / region_depth / vendors_region / pair), `collection` (vendors_total /
+food_vendors any), `cost-threshold` (cheap / expensive / ingredient_cost), `contest-win`, `apex/star`,
+`cross-region`, `speed` all remain. The rebalance is **not** "delete types" — it is **flip most of them from
+`phase=day` to `phase=any`** so they stop judging at DUSK (§20.6). Only the genuinely single-phase targets
+stay phase-locked.
+
+## 20.4 The DAY+NIGHT-PAIR AUDIT + the two new vendor tags (point 3)
+
+**Answer up front: the existing 24 vendors already contain enough day+night pairs — by locale AND by
+dish-type — to build every agnostic tour above. NO phase re-slotting is needed** (which is the right
+outcome: re-slotting a vendor day↔night would break the **13-day / 11-night die-clock pools** (§17.1) and
+would have to be done in balanced pairs; it also risks the 24-unique-dishes identity and the recipe/sourcing
+economy). **The only vendor-data change is adding two grouping tags** — `locale` and `dish_type` — which
+touch **no** recipe, cost, floor, phase, region, or VP value. Zero economic ripple.
+
+**`locale` audit (which districts already give a day+night pair):**
+
+| locale (key · 繁體) | day members | night members | pair? | crawl anchor |
+|---|---|---|:--:|---|
+| **dadaocheng 大稻埕** | N02 Egg Crepe | N07 Bubble Tea | ✅ 1+1 | **FLAGSHIP** (Dihua crawl; `>=2` forces span) |
+| **tainan 府城** | S01 Congee, S02 Rice Cake | S05 Coffin Bread, S06 Tan-tsú-mī | ✅ 2+2 | Old-Capital crawl |
+| **taichung 臺中** | C02 Misua, C03 Bubble Tea, C06 Wintermelon | C04 Sausage-in-Sausage, C05 Fengjia | ✅ 3+2 | City crawl (looser) |
+| **hualien 花蓮** | E01 Bamboo Rice | E03 Mochi | ✅ 1+1 | Hualien crawl |
+| taitung 臺東 | E05 Roselle | E04 Stone-Slab BBQ | ⚠ 1+1 | **DO NOT anchor** — E04 is the consultant-gated Indigenous item; no light-tour naming on it |
+| taipei-core 臺北 | N03 Soy Milk | N04 Pepper Bun, N05 Beef Noodle, N06 Big Sausage | (span, but spread across the city) | not a tight crawl — use Dadaocheng instead |
+| houlong / changhua / kaohsiung / chiayi / luodong | (solo, day-only or night-only) | — | ❌ | cannot anchor a crawl (fine) |
+
+→ **4 honest crawl locales** (Dadaocheng flagship + Tainan + Taichung + Hualien). Ample.
+
+**`dish_type` audit (which food-forms already span day+night):**
+
+| dish_type (繁體) | members (d=day, n=night) | span? | usable for agnostic tour |
+|---|---|:--:|---|
+| **bubble_tea 珍奶** | C03(d), N07(n) | ✅ 1+1 | **SHOWCASE** — `>=2` forces span |
+| **drink 飲品** | N03(d),C03(d),C06(d),S03(d),E05(d), N07(n) | ✅ (via N07) | `drinks` tours → `dishtype:drink>=N` |
+| **noodle 麵食** | C02(d), N05(n),S06(n) | ✅ | `dishtype:noodle>=2` |
+| **bun 包餅** | N01(d),N02(d), N04(n),S05(n) | ✅ 2+2 | `dishtype:bun>=2` |
+| **rice 米食** | C01(d),S01(d),S02(d),E01(d),E02(d), S04(n),E03(n) | ✅ | `dishtype:rice>=3` |
+| grill 燒烤 | N06(n),C04(n),C05(n),E04(n) | ❌ night-only | backs no agnostic tour (fine — premium night dishes) |
+
+`bubble_tea` is a granular sub-type of `drink` (a vendor carries both, or `bubble_tea` is the `dish_type` and
+"drink" tours count it too — dev's call; recommend `dish_type=bubble_tea` for C03/N07 and a `drink` **tag**
+so `dishtype:drink` still counts them). Every other vendor gets one `dish_type`. **Grill is night-only by
+nature** — it correctly produces no agnostic tour and instead sits behind the premium night bucket.
+
+**Verdict:** existing set + the 2 tags **suffice**. No re-slotting; 13/11 pools, 24 dishes, and the
+recipe/sourcing economy all untouched.
+
+## 20.5 VP on the effort curve — premium compensates risk (point 4)
+
+Anchored to the **locked §14 ladder (3·5·7·9·11)**. Two rules:
+
+1. **New agnostic tours slot at the base rung for their effort.** A 2-vendor patterned tour (a forced-span
+   locale/dish pair, or a region-2 / dish-2) = **5**. A 3-vendor accumulation (rice-3, drink-3) = **7**.
+2. **At EQUAL effort, a phase-specific tour pays ONE rung MORE than the agnostic** (the premium that
+   compensates the DUSK cancel / single-phase difficulty). **Agnostic must never out-pay a riskier
+   phase-specific tour for equal effort** (the CD's explicit constraint).
+
+**New-tour values:**
+
+| New tour | target | phase | effort | VP |
+|---|---|:--:|---|:--:|
+| Dihua St Food Crawl | `locale:dadaocheng>=2` | any | 2, forced-span | **5** |
+| Tainan Old-Capital Crawl | `locale:tainan>=2` | any | 2 patterned | **5** |
+| Taichung City Crawl | `locale:taichung>=2` | any | 2 patterned | **5** |
+| Best Bubble Tea (Origin & Neon) | `dishtype:bubble_tea>=2` | any | 2, forced-span | **5** |
+| Noodle Run | `dishtype:noodle>=2` | any | 2 patterned | **5** |
+| Rice Tour | `dishtype:rice>=3` | any | 3 accumulation | **7** |
+
+**Ordering checks (premium holds):** agnostic region/locale-2 (5) **<** phase-specific `night_food>=2`
+n_nmfood2 (7) ✓; agnostic `food_vendors>=3` d_food3 (5) **<** phase-specific `night_food>=3` n_nightfood3 (9)
+✓. **One §14 violation to fix:** `d_breakfast3` (3 **day** foods before DUSK — riskier AND harder than the
+agnostic 3-any-food d_food3, yet both sit at 5). **Nudge d_breakfast3 → 7** to restore the premium (§20.7).
+And **tours stay dominant over vendors** everywhere: agnostic VP 5–11 still clears the vendor ceiling 6, so
+§14.5's "vendor-only is dominated" argument is untouched (the change only moves *when* tours judge and adds
+two lower-rung entry tours — it does not lower the tour ceiling).
+
+## 20.6 The risk/reward, confirmed (point 5)
+
+| | Agnostic (`any`) | Phase-specific (day / night-locked) |
+|---|---|---|
+| Judges | LAST TRAIN | DUSK (day) / LAST TRAIN (night-locked) |
+| Cancel risk | ~none (whole game to finish) | **real** (day: DUSK cancel −⌊V/2⌋) / completion-difficulty (night) |
+| Variance | **low** | high |
+| Pay for equal effort | base | **+1 rung premium** |
+| Role | **the default, always-safe booking line** | the spicy high-reward gamble |
+
+This is exactly the CD's target shape: **booking becomes safe and attractive by default** (a player can
+always hold an agnostic tour and work it across the flip → the hoard-don't-book problem dissolves), while
+**phase-specific tours remain a live, well-paid gamble** for players who want the swing. The §15.9
+cancel/salvage catch-up boons still backstop the minority of tours that do cancel.
+
+## 20.7 Change list — `bookings.csv` (DATA — spec only, `bg-developer` executes)
+
+**Core move — flip the any-phase-satisfiable DAY tours to `phase=any` (value UNCHANGED — kills their DUSK
+cancel):** `d_food3, d_travel3, d_collect4, d_cheap3, d_cheap2, d_deep2, d_east1, d_pairNC, d_pairSE, d_mix1,
+d_daymix, d_contest1, g_travel3d, d_north2*, d_south2*, d_central2*, d_drinks2**` (~16 rows). *(\*retargeted
+to the new locale type — see below; \*\*re-expressed as `dishtype:drink`.)*
+
+**KEEP `phase=day` (premium DAY bucket, 8) — the genuinely day-locked / day-flavoured:** `d_breakfast3`
+(`day_food_vendors>=3`), `d_early3` (`early_vendors>=3`, end-game driver), `d_prestige8`
+(`ingredient_cost_day>=7`) — plus retain ~5 more day tours here if the sim wants the bucket at 8 (candidates
+to keep day for flavour: one region-2, one pair). Dev/`bg-playtest` set the exact 8; the **rule** is: a tour
+stays `phase=day` **only** if it is day-locked or deliberately kept as a premium gamble.
+
+**Retheme to the new STREET-CRAWL type (`locale:...`), set `phase=any`:**
+- `d_north2` (was `vendors_region:N>=2`) → **Dihua Street Food Crawl**, `locale:dadaocheng>=2`, value 5.
+- `d_south2` (was `vendors_region:S>=2`, already "Tainan Old-Capital Walk") → **`locale:tainan>=2`**, value 5.
+- `d_central2` (was `vendors_region:C>=2`) → **Taichung City Crawl**, `locale:taichung>=2`, value 5.
+
+**Add / retheme the DISH-TYPE type (`dishtype:...`), `phase=any`:**
+- `d_drinks2` / `n_drinks3` → `dishtype:drink>=2` / `>=3` (rename to "Hand-Shaken Trail" etc.), values
+  unchanged (3 / 5).
+- **New:** **Best Bubble Tea** `dishtype:bubble_tea>=2`, value 5 (repurpose a redundant coverage slot — e.g.
+  one of the three `regions>=3` duplicates `d_travel3`/`g_travel3d`/`g_travel3n`).
+- **New:** **Noodle Run** `dishtype:noodle>=2`, value 5 (repurpose a second redundant slot).
+- **New:** **Rice Tour** `dishtype:rice>=3`, value 7 (repurpose a redundant collection slot).
+
+**VALUE nudge (premium ordering, §20.5):** `d_breakfast3` **5 → 7**.
+
+**Night bucket:** leave `n_nightfood3, n_nmfood2, n_final2` (and the difficulty-locked `n_star1,
+n_expensive1/2, n_cross1/2, g_cross1`) as `phase=night`. Flip the any-phase night tours (`n_four`,
+`n_collect6`, `n_all4`, `n_allfood5`, `n_deep3`, `n_east2`, `n_surfturf`, `n_eastnorth`, `n_censouth`,
+`n_contest2`, `n_prestige14`, `n_allvenue`, `g_collect5`, `g_prestige12`, `g_travel3n`) to **`phase=any`**
+too (they already judge at LAST TRAIN — the flip only makes them **drawable from the start**, so the safe
+line exists in Act I as well as Act II). Net deck: keep 45 rows; **no deck-size change** (protects
+`booking_deck_sizes` + complexity/cost budgets).
+
+Run `tools/lint/check_game.py` after (new `phase` enum value `any`, retargeted `target` strings, 3 value
+edits, tag adds). Add `booking;any;agnostic;v7` / `booking;street-crawl` / `booking;dish-type` tags to the
+reworked rows for downstream filtering.
+
+## 20.8 Change list — `vendors.csv` (DATA — spec only)
+
+- **ADD column `locale`** — controlled key per §20.4 (`dadaocheng, huashan, raohe, yongkang, shilin,
+  houlong` … recommend one key per district; the four crawl keys `dadaocheng / tainan / taichung / hualien`
+  are load-bearing, the rest are cosmetic grouping). No other field changes.
+- **ADD column `dish_type`** — one of `{bubble_tea, drink, noodle, bun, rice, grill}` per §20.4 (with C03/N07
+  = `bubble_tea`; keep a `drink` **tag** on them so `dishtype:drink` still counts them if the dev models
+  drink as a superset). No other field changes.
+- **NO phase / recipe / cost / floor / region / vp / quantity changes.** 13-day / 11-night pools, 24 unique
+  dishes, sourcing economy, and §14 vendor VP **all untouched.** Re-run `tools/lint` + `tools/access`
+  (tags-only; no palette/economy impact expected).
+
+## 20.9 Change list — `map.json` + SIM + RULEBOOK (spec only)
+
+- **`map.json`** — register the **third `phase` value `any`** for Bookings: available to draw from setup,
+  held across DUSK, **judged at LAST TRAIN** (never cancels at DUSK). Recommend a **single always-available
+  agnostic tour market** (or: agnostic tours present in *both* phase rows); `phase=day` tours remain
+  day-draw-only and DUSK-judged; `phase=night` remain night-draw. Note the deck-plumbing is a dev choice —
+  the invariant is *availability throughout + LAST-TRAIN judging* for `any`.
+- **SIM (`sim/travel_agents.py`, `bg-playtest` re-models) — the run must model the reworked deck or it
+  measures the wrong game:** (1) parse the two new target ops — `locale:<key>>=N` and `dishtype:<type>>=N`
+  (count a player's WON vendors matching the tag); (2) implement `phase=any` = drawable from setup, judged at
+  LAST TRAIN, no DUSK cancel; (3) **metrics:** booking-rate (bookings held/completed per player — must rise
+  vs the old risky deck), **DUSK-cancel rate** (must fall sharply — the whole point), agnostic vs
+  phase-specific **completion split**, and re-confirm §14.5/§14.6 (vendor-only winrate < ~10%, vendor-VP
+  share ~25–35%) on the **new** deck. Wire to the §14.6 tuning tripwires.
+- **RULEBOOK (`bg-rulebook`/`bg-elegance`):** teach the three tour kinds in one line — *"Most tours (marked
+  ⟳ **any-time**) can be finished any time before LAST TRAIN — book them freely. A few **day** tours must be
+  finished before DUSK or they're cancelled — riskier, but they pay more."* Plus the two new named types
+  (street crawl / dish trail). Presentation flag `bg-infodesign`: the tour card needs an **any-time ⟳ vs
+  day-only ☀ glyph** (dual-coded, not colour-only — flag `bg-access`).
+
+## 20.10 Open questions for playtest (top 3)
+
+1. **Is 2/3 agnostic too safe?** If booking-rate spikes but the *phase-specific* premium tours go
+   near-unbooked (nobody takes the gamble), widen the premium (day tours +2 rungs) or trim the DAY bucket to
+   6. Conversely if DUSK-cancels are still frequent, the day bucket is still too big — trim toward 6.
+2. **Does the forced-span showcase (Dadaocheng / bubble tea) actually get completed?** Both require the
+   *night* half (N07), which is a single-slot night stall the Closing-Time die can close (§17.3). If N07's
+   closure routinely orphans these signature tours, they read as traps — consider a 2nd cheap night drink
+   copy (the §17.6 "duplicate commodity stalls" lever) so the span is reliably completable.
+3. **Does `locale:taichung>=2` (a looser, city-spread crawl) feel like a real "crawl" or just a region-2 in
+   disguise?** If it reads as reskinned coverage, drop it and keep the 3 tight crawls (Dadaocheng / Tainan /
+   Hualien) only.
+
+## 20.11 Decision for the human
+
+**A/B on the DAY bucket size (the one dial the CD should set):**
+- **(A · RECOMMENDED) 8 day / 29 agnostic / 8 night-locked** — a real, well-paid phase-specific minority;
+  booking safe by default. Best balance of "safe default" + "spicy option survives."
+- **(B) 6 day / 31 agnostic / 8 night-locked** — booking even safer, cancel-risk nearly designed out; risk
+  the day/night texture thins and the premium gamble is a curio.
+- **(C) 10 day / 27 agnostic / 8 night-locked** — keeps more day flavour and end-game DUSK races, but leaves
+  more cancel-risk on the table (closer to today's problem).
+
+## 20.12 Handoff / coherence flags (per the contract)
+
+**Mechanics that moved this pass:** (1) a **third `phase` value `any` (agnostic)** — tours now split
+safe-LAST-TRAIN vs risky-DUSK; (2) **two new tour TYPES** — street-crawl (`locale`) + dish-type
+(`dishtype`); (3) two **vendor tags** (`locale`, `dish_type`); (4) a **value nudge** (`d_breakfast3` 5→7) +
+the day/night→any flips. **The signature twist (the follower crowd-fight over scarce vendors) is untouched**
+— this pass only changes *when tours judge* and *how they're described*, not the fight or the pools.
+
+- **`bg-theme` (naming — please bless the voice):** the new tour names live in the night-market world and
+  should sing — "Dihua Street Food Crawl 迪化街美食巡禮," "Tainan Old-Capital Crawl 府城巡禮," "Best Bubble
+  Tea — the Origin & the Neon Cup 珍奶朝聖," "Noodle Run 麵食巡禮," "Rice Tour 米食之旅." Secular, 繁體,
+  English-first. Confirm the ⟳ any-time / ☀ day-only framing reads warm ("finish it whenever" vs "before the
+  breakfast stalls pack up"), not bureaucratic. **Do NOT name a tour on E04 (Stone-Slab BBQ)** — Taitung is
+  excluded as a crawl anchor pending the paid Indigenous consultant (§20.4).
+- **`bg-elegance` (budget):** net rules add = one new `phase` enum value + two target operators + one
+  glyph; it **replaces** no prose but is small — confirm within the complexity budget (it *buys* the removal
+  of the biggest source of feel-bad cancels, a fun/clarity gain).
+- **`bg-access`:** the any-time vs day-only glyph must dual-code (⟳ / ☀ + text, never colour-only); the two
+  new vendor tags are non-visual (no palette impact) — a tags-only `tools/access` pass.
+- **`bg-developer` (data):** owns §20.7/20.8/20.9 execution.
+- **`bg-playtest` (sim):** **this re-opens the booking economy → land it BEFORE the CD-gated full sim.** The
+  run must model `locale`/`dishtype` completion, the `phase=any` availability/judging, and re-verify §14 on
+  the new deck (§20.9). Running the sim on the *old* risky deck would misread the "tours dominate" intent.
