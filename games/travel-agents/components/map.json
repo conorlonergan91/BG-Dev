@@ -16,7 +16,7 @@
     "_note": "V7-M VENDOR-DEPLETION CLOCK + the CLOSING-TIME DIE (§17, CD refinement 2026-08-10): the finite vendor pools ARE the clock (DUSK = day pool exhausted; LAST TRAIN = night pool exhausted), and the Closing-Time die — the game's FIRST dice/randomness — is the forcing function that thins the board when claiming stalls. It REPLACES the deterministic sell-out cadence.",
     "day_pool": 13,
     "night_pool": 12,
-    "track_length": {"3": 2, "4": 3, "5": 3, "6": 3},
+    "track_length": {"3": 2, "4": 2, "5": 2, "6": 3},
     "_track_note": "rounds per Closing-Time track cycle, per player count. ★ CORRECTED (decision-log dbd7dda, 2026-08-10): L=2 at 3p, L=3 at 4/5/6p — the die is a 3p-only PACE aid (a shorter track ticks the 3p clock a touch faster so the meatier 3p game doesn't drag), NOT a per-count balance lever. ONE physical die + ONE 3-space track printed on the board serve every count (at 3p you simply roll after space 2). L stays the #1 sim PACING KNOB — the CD-gated full run may test L=2 at 4/5p too if ~48-50 tpp reads long.",
     "die_faces": ["N", "C", "S", "E", "BLANK", "BLANK"],
     "roll_timing": "after round L of the track completes (at end-of-round), roll the Closing-Time die, then reset the track to round 1.",

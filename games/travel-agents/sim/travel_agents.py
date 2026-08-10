@@ -152,13 +152,13 @@ VISIT_VARIETY  = os.environ.get("TA_VISIT_VARIETY", "mono").strip()   # "mono" |
 SPLIT_TAXONOMY = VISIT_VARIETY.startswith("split")
 
 # --- §19.5 EAST-DEPTH lever (split:8 only) — NON-DESTRUCTIVE A/B on the Rice/Noodles sub-pool split -----
-# The split East deck ships (in ingredients-split.csv) as Rice 7 (day 4 / night 3) + Noodles 4 (day 2 /
-# night 2). Noodles is the intended-thinnest sub-pool (M6 probe) but the last split smoke showed it
-# starving to supply_min→0 with ~60% stall. This lever re-balances the FIXED East depth WITHOUT editing
-# the CSV: "rice6_nood5" moves ONE card from Rice→Noodles in the East NIGHT deck (where the depletion
-# clock bites) → Rice 6 (day 4 / night 2) + Noodles 5 (day 2 / night 3). Total East depth is unchanged
-# (11), so this is a pure within-region rebalance, not a pool-size change. Default keeps the CSV depths.
-EAST_DEPTH = os.environ.get("TA_EAST_DEPTH", "rice7_nood4").strip()   # "rice7_nood4" (CSV) | "rice6_nood5"
+# The split East deck ships (in ingredients-split.csv) as Rice 10 (day 4 / night 6) + Noodles 7 (day 3 /
+# night 4), East signature total 17 — deepened from the original 11 (commit 52fac5a) to un-starve the
+# specific-subtype sourcing that hit supply_min→0 with ~60% stall at 4-6p. Noodles stays the
+# intended-thinnest sub-pool (7 < Rice 10, the M6 probe). This lever re-balances the FIXED East depth
+# WITHOUT editing the CSV: "rice6_nood5" moves ONE card from Rice→Noodles in the East NIGHT deck (where the
+# depletion clock bites). Default ("rice7_nood4") = use the CSV depths as-is (now Rice 10 / Noodles 7).
+EAST_DEPTH = os.environ.get("TA_EAST_DEPTH", "rice7_nood4").strip()   # default = CSV depths | "rice6_nood5" A/B
 
 # --- §15.9 the two cancelled-tour BOONS (CLEAR + SALVAGE) -----------------------------------------
 # ⚠ DATA GAP (flag to bg-developer): §15.8 scheduled the verb count 13 → 15 IN DATA, but events.csv still
@@ -174,17 +174,18 @@ EAST_DEPTH = os.environ.get("TA_EAST_DEPTH", "rice7_nood4").strip()   # "rice7_n
 TOURS_BOONS   = os.environ.get("TA_TOURS_BOONS", "0") == "1"    # LEGACY synthetic inject (now default OFF)
 NUDGE_CAP     = int(os.environ.get("TA_NUDGE_CAP", "1"))        # §15.5 rail 6: max ✦ leader-hazard hits / leader / round
 
-# --- CD PLAYTEST LEVER: CANCELLED-TOUR COST (2026-08-10, spec/sim-only A/B — NOT the shipped rule) ---
-# A Cancelled tour's scoring penalty. BASELINE "half_value" = −⌊V/2⌋ (scales with the tour's ambition, so
-# it punishes exactly the big tours the two-track intent wants people to book). The CD A/B is a gentler,
-# predictable FLAT cost — "flat:N" charges a fixed −N per cancelled ticket regardless of V — lowering the
-# risk of booking ambitious tours (the scoring-side companion to agnostic-tours safety). Sweep N∈{1,2}.
-CANCEL_COST   = os.environ.get("TA_CANCEL_COST", "half_value")  # "half_value" (baseline) | "flat:1" | "flat:2"
+# --- CANCELLED-TOUR COST (SHIPPED rule = flat:1, per rules-draft "cancel −1 everywhere") ---
+# A Cancelled tour's scoring penalty. SHIPPED "flat:1" charges a fixed −1 per cancelled ticket regardless
+# of the tour's value V — the locked V7-M rule (predictable, keeps the risk of booking ambitious agnostic
+# tours low). A/B alternatives for balance sweeps: "half_value" = −⌊V/2⌋ (scales with ambition, punishes
+# the big tours harder), "flat:2" = −2. The default now matches the shipped rule (was "half_value", which
+# left env-less runs on a non-shipped config — flagged by the N=400 mono confirmation run).
+CANCEL_COST   = os.environ.get("TA_CANCEL_COST", "flat:1")  # "flat:1" (SHIPPED) | "half_value" | "flat:2"
 
 
 def _cancel_cost():
     """Live-read of the CANCEL_COST lever (so a driver can sweep configs in one process)."""
-    return os.environ.get("TA_CANCEL_COST", "half_value")
+    return os.environ.get("TA_CANCEL_COST", "flat:1")
 
 
 def _cancel_pen_one(v):
