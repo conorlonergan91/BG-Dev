@@ -1088,21 +1088,34 @@ def render_playerboard(theme, row, mockups_dir=None):
         P.append(f'<rect x="{dx}" y="{dy:.0f}" width="{dw}" height="{dh}" rx="18" fill="#ffffff" '
                  f'opacity="0.55" stroke="{sec}" stroke-width="4" stroke-dasharray="16 11"/>')
 
-    # ==================== FULL-WIDTH PROSE banner (bottom) — the funny one-liner =========================
-    # One horizontal band spanning the whole board width. The 28-39-word blurb wraps to the wide measure
-    # (comfortably 2 lines); the band is tall enough that even the longest blurb seats with margin — the
-    # board never truncates (textwrap keeps every word). Any overrun is flagged to the copywriter.
-    P.append(f'<rect x="{ban_x}" y="{ban_y}" width="{ban_w}" height="{ban_h}" rx="24" fill="{char_col}" opacity="0.14"/>')
-    P.append(f'<rect x="{ban_x}" y="{ban_y}" width="14" height="{ban_h}" rx="7" fill="{char_col}"/>')
-    P.append(f'<text x="{ban_x+56}" y="{ban_y+130}" font-size="120" fill="{char_col}" opacity="0.5" '
+    # ==================== FULL-WIDTH HERO TAGLINE banner (bottom) — the one-line mat quote ==============
+    # A single punchy mat quote presented as the character's TAGLINE. The banner is a SOLID character-
+    # colour bar that bookends the solid title band at the top; the quote sits in auto-contrast band_text,
+    # LARGE + centred + italic and VERTICALLY CENTRED, flanked by big ghosted quotation marks. A one-liner
+    # therefore reads as an intentional tagline rather than a short sentence stranded in a box sized for
+    # prose. A rare long quote still wraps to the wide measure and re-centres; the band never truncates.
+    P.append(f'<rect x="{ban_x}" y="{ban_y}" width="{ban_w}" height="{ban_h}" rx="28" fill="{char_col}"/>')
+    P.append(f'<rect x="{ban_x}" y="{ban_y}" width="{ban_w}" height="{ban_h}" rx="28" fill="none" '
+             f'stroke="{ink}" stroke-width="4" opacity="0.30"/>')
+    # big ghosted quotation marks flanking the quote (auto-contrast band ink, low opacity) — a subtle,
+    # decorative frame that says "quote" without competing with the words.
+    P.append(f'<text x="{ban_x+78}" y="{ban_y+188}" font-size="230" fill="{band_text}" opacity="0.26" '
              f'font-family="{tfont}" font-weight="bold">&#8220;</text>')
-    prose_wrap = max(40, int((ban_w - 300) / 21))    # ~char budget at the 46px body size, across the width
-    plines = textwrap.wrap(blurb, prose_wrap)
-    pstep = 62
-    pbase = ban_y + (ban_h - (len(plines) - 1) * pstep) / 2 + 18
-    for i, ln in enumerate(plines):
-        P.append(f'<text x="{ban_x+170}" y="{pbase + i*pstep:.0f}" font-size="46" fill="{ink}" '
-                 f'font-family="{bfont}" font-style="italic">{esc(ln)}</text>')
+    P.append(f'<text x="{ban_x+ban_w-78}" y="{ban_y+ban_h-46}" font-size="230" fill="{band_text}" '
+             f'opacity="0.26" font-family="{tfont}" font-weight="bold" text-anchor="end">&#8221;</text>')
+    # the quote itself — the hero line: large centred italic, vertically centred in the band.
+    qsize = 70
+    qwrap = max(26, int((ban_w - 560) / (qsize * 0.52)))   # char budget between the flanking quote marks
+    qlines = textwrap.wrap(blurb, qwrap) or [""]
+    if len(qlines) > 2:                                    # only step the hero down for a rare long quote
+        qsize = 54
+        qlines = textwrap.wrap(blurb, max(26, int((ban_w - 560) / (qsize * 0.52))))
+    qstep = int(qsize * 1.34)
+    qbase = ban_y + (ban_h - (len(qlines) - 1) * qstep) / 2 + qsize / 3
+    for i, ln in enumerate(qlines):
+        P.append(f'<text x="{ban_x+ban_w/2:.0f}" y="{qbase + i*qstep:.0f}" font-size="{qsize}" '
+                 f'fill="{band_text}" text-anchor="middle" font-family="{bfont}" '
+                 f'font-style="italic">{esc(ln)}</text>')
 
     return _svg(W, H, P), W, H
 
