@@ -1683,3 +1683,352 @@ every Bribe). Flag the Director to run the guardian sweep on whichever option th
 - **`bg-critic` / `bg-playtest`** — the ripples to watch: **A → §16 discard-feeder loss** (reshuffle
   cadence + Pantry `supply_min`); **B → §12 spread-forcing erosion** (travel rate M2 must not fall) **and**
   the §12.5 Pantry rebalance the wild causes. Both are wired into the M1–M5 probes above.
+
+---
+
+# 19. OPTION B-SPLIT — the finer regional taxonomy (the CD's ACTUAL Option B)
+
+> **Status: SPEC-ONLY — no data/rules/sim touched.** §18 mis-analysed the CD's Option B. §18 evaluated
+> three *foreign-injection / value / wild* variants and rejected all but B-wild. The CD's actual Option B is
+> a **fourth, structurally different thing**: SPLIT each existing category into **finer subtypes that stay
+> REGION-LOCAL**. This section specs it honestly, wires it as a third value of the §18.4 `VISIT_VARIETY`
+> toggle (non-destructive — Option A stays runnable), and re-judges **A vs B-split** (a stronger B than the
+> B-wild §18 landed on). **Bottom line up front:** B-split *preserves* cross-region spread (it is NOT
+> B-naive), the **Pantry→Rice+Noodles** split is an excellent idea, the **Veg→Spices** split is near-
+> vestigial and should be dropped, and the **decisive question is accessibility** — 8–10 ingredient suits at
+> chip scale. The finer taxonomy's real value (recipe specificity + theme) is **orthogonal to the keep-2
+> question**, which reframes the whole A/B (§19.8).
+
+## 19.1 Why this is NOT the rejected B-naive — the spread test
+
+§18.3 rejected "B-naive = add a foreign secondary signature to each region" because it **dissolves
+cross-region sourcing** (if North also carries Pantry, an East-Pantry recipe is sourced at North → nobody
+travels). **B-split does the opposite of what B-naive does:**
+
+| | B-naive (§18, REJECTED) | **B-split (this section)** |
+|---|---|---|
+| What changes | Adds a **foreign region's category** to a region | Splits a category into **finer subtypes that stay in their ORIGINAL region** |
+| North gains… | Pantry (East's category) → sourceable off-region | Nothing foreign — its Veg just resolves finer |
+| Rice/Noodles live in… | (n/a) | **East only** — exactly where Pantry lived |
+| Cross-region span of a recipe | **DESTROYED** (source anything anywhere) | **PRESERVED** — same region required, now a *specific subtype* of it |
+| Effect on §12 spread-forcing | Kills it | **Neutral-to-reinforcing** (§19.3) |
+
+**The spread test, run on all 24 recipes (§19.3): every ✱ cross-region requirement is identical before and
+after the split.** Because subtypes co-locate (Rice+Noodles both East; Sugar+Pearls both Central&South;
+Veg+Spices both North&East), no recipe can now be sourced anywhere it couldn't before, and none loses a
+travel it used to force. B-split is **cross-region-neutral by construction** — the exact property B-naive
+lacked. This is the crux of the CD's correction, and it holds.
+
+## 19.2 The finer taxonomy (6 → 9, and why 8 is the honest number)
+
+The CD's splits, mapped to the mono-6 taxonomy (Meat 肉 / Tea 茶 / Seafood 海鮮 / Pantry 糧 / Sugar 糖 /
+Veg 菜) and the region-local map (N={Meat,Veg}, C={Tea,Sugar}, S={Seafood,Sugar}, E={Pantry,Veg}):
+
+| # | Subtype (EN) | 繁體 | From | Region(s) it lives in | Role | New demand (of old total) |
+|---|---|---|---|---|---|:--:|
+| 1 | Meat | 肉 | Meat (unsplit) | North | signature (deep) | **14** (was 14) |
+| 2 | Seafood | 海鮮 | Seafood (unsplit) | South | signature (deep) | **11** (was 11) |
+| 3 | Tea | 茶 | Tea (unsplit) | Central | signature (deep) | **10** (was 10) |
+| 4 | **Rice** | **米** | Pantry split | **East** | signature (deep) | **10** ⎫ Pantry 16 |
+| 5 | **Noodles** | **麵** | Pantry split | **East** | signature (deep) | **6** ⎭ |
+| 6 | **Sugar** | **糖** | Sugar split | **Central & South** | common (thin) | **5** ⎫ Sugar 7 |
+| 7 | **Pearls (tapioca)** | **珍珠** | Sugar split | **Central & South** | common (thin) | **2** ⎭ |
+| 8 | **Vegetables** | **菜** | Veg split | **North & East** | common (thin) | **6** ⎫ Veg 7 |
+| 9 | **Spices / Herbs** | **香料** | Veg split | **North & East** | common (thin) | **1** ⎭ |
+
+**"Meat + Fish, already two — keep distinct":** these are already separate categories in separate regions
+(Meat=North, Seafood=South); no split needed. **Tea stays.** So only three categories split (Pantry, Sugar,
+Veg), yielding **9 types**. Region identity is preserved exactly: each region still owns its signature +
+its thin common, now resolved one level finer.
+
+**Honest quality read of the three splits — they are NOT equal:**
+
+- **Pantry → Rice 米 + Noodles 麵 — EXCELLENT, the whole reason to consider B-split.** 10/6 demand split,
+  both well-used and iconic, and it splits a **signature** (the thing you Visit East *for*) into two
+  high-demand subtypes → this is the *only* split that makes keep-2 genuinely real (§19.4). It also fixes a
+  real fiction gap: "beef noodle = meat + noodles" and "congee = fish + rice" are obviously different foods
+  the mono-6 taxonomy flattened into "Pantry."
+- **Sugar → Sugar 糖 + Pearls 珍珠 — GOOD theme, MARGINAL mechanics.** Pearls demand is only **2** (both
+  bubble teas), but boba is the single most iconic Taiwanese street ingredient and it is thematically wrong
+  to file tapioca pearls under "sugar." Cheap identity win; low mechanical load. Borderline-keep.
+- **Veg → Veg 菜 + Spices 香料 — WEAK, recommend DROP.** Spices demand is **1** (garlic on the Big Sausage).
+  A whole ingredient suit — colour, emblem, deck cards, chips, art — for one token of demand is exactly the
+  point-salad / component bloat `bg-elegance` and `bg-architect` exist to kill. And it does not even fix
+  North's keep-2 (§19.4: North's problem is a low-utility common, not a lack of variety — adding a *second*
+  low-utility common is noise, not a decision). **The refined B-split drops the Veg split → 8 types**, not 9.
+
+> **Recommended taxonomy for testing: 8 types** (Meat, Seafood, Tea, Rice, Noodles, Sugar, Pearls, Veg) —
+> the Pantry split (load-bearing) + the Pearls split (cheap identity), **without** the Spices split
+> (vestigial). The 9-type version is specced for completeness but is not recommended.
+
+## 19.3 The 24 recipes re-expressed (cost + cross-region span PRESERVED)
+
+Subtype codes: **M**=Meat, **T**=Tea, **S**=Seafood, **Ri**=Rice, **No**=Noodles, **Su**=Sugar,
+**Pe**=Pearls, **Ve**=Veg, **Sp**=Spices. Split choices are made by **dish fidelity** (a bao is flour→
+Noodles; congee is rice→Rice; bubble tea's defining ingredient is Pearls). Cost = token count (unchanged
+per dish). ✱ = forces cross-region travel (needs a non-home-local subtype). Home-local family unchanged:
+N={M,Ve/Sp}, C={T,Su/Pe}, S={S,Su/Pe}, E={Ri/No,Ve/Sp}.
+
+| id | Dish | tier | §12.7 recipe (mono-6) | **B-split recipe** | cost | ✱ span (was → now) | specificity added? |
+|---|---|:--:|---|---|:--:|---|---|
+| N01 | Pork Bao | 1 | M;P | **M;No** | 2 | ✱ P→E → No→E | needs **Noodles** (flour bun) |
+| N02 | Egg Crepe | 1 | M;V | **M;Ve** | 2 | — local | — |
+| N03 | Soy Milk | 1 | P;K | **No;Su** | 2 | ✱ P→E,K→C/S → No→E,Su→C/S | you-tiao = **Noodles** |
+| N04 | Pepper Bun | 2 | M;M;T | **M;M;T** | 3 | ✱ T→C (same) | — (no P/K/V) |
+| N05 | Beef Noodle | 2 | M;P;V | **M;No;Ve** | 3 | ✱ P→E → No→E | **the CD's example — Noodles, not "Pantry"** |
+| N06 | ★ Big Sausage | 3 | M;M;S;V | **M;M;S;Sp**¹ | 4 | ✱ S→S (same) | garlic = **Spices** (¹9-type only; else Ve) |
+| N07 | Bubble Tea | 1 | T;K | **T;Pe** | 2 | ✱ T→C,K→C/S → T→C,Pe→C/S | **Pearls** (珍奶 = pearl tea) |
+| C01 | Ba-wan | 1 | M;T | **M;T** | 2 | ✱ M→N (same) | — |
+| C02 | Misua | 1 | T;S;P | **T;S;No** | 3 | ✱ S→S,P→E → S→S,No→E | thread **Noodles** (麵線) |
+| C03 | Bubble Tea (orig) | 1 | T;K | **T;Pe** | 2 | — local | **Pearls** (珍珠奶茶) |
+| C04 | Sausage-in-Sausage | 2 | M;P;T | **M;Ri;T** | 3 | ✱ M→N,P→E → M→N,Ri→E | 糯米腸 = glutinous **Rice** |
+| C05 | ★ Fengjia Signature | 3 | T;S;S;P | **T;S;S;Ri** | 4 | ✱ S→S,P→E → same | **Rice** plate |
+| C06 | Wintermelon Tea | 1 | T;K | **T;Su** | 2 | — local | **Sugar** (no pearls) |
+| S01 | Milkfish Congee | 1 | S;P | **S;Ri** | 2 | ✱ P→E → Ri→E | congee = **Rice** (粥) |
+| S02 | Rice Bowl Cake | 1 | S;S;P | **S;S;Ri** | 3 | ✱ P→E → Ri→E | 碗粿 = **Rice** batter |
+| S03 | Papaya Milk | 1 | V;K | **Ve;Su** | 2 | ✱ V→N/E → Ve→N/E | **Sugar** |
+| S04 | Turkey Rice | 2 | M;P;V | **M;Ri;Ve** | 3 | ✱ M→N,P→E → M→N,Ri→E | 火雞肉**飯** = **Rice** |
+| S05 | Coffin Bread | 2 | S;S;P | **S;S;No** | 3 | ✱ P→E → No→E | fried bread = **Noodles**(flour) |
+| S06 | ★ Tan-tsú-mī | 3 | S;S;M;P | **S;S;M;No** | 4 | ✱ M→N,P→E → same | 擔仔**麵** = **Noodles** |
+| E01 | Bamboo Rice | 1 | P;V | **Ri;Ve** | 2 | — local | 竹筒**飯** = **Rice** |
+| E02 | Rice Cake | 1 | P;M | **Ri;M** | 2 | ✱ M→N (same) | 米糕 = **Rice** |
+| E03 | Mochi | 2 | P;K;T | **Ri;Su;T** | 3 | ✱ T→C,K→C/S → same | 糯米 = **Rice**; **Sugar** |
+| E04 | ★ Stone-Slab BBQ | 3 | P;P;M;M;V | **Ri;Ri;M;M;Ve**² | 5 | ✱ M→N (same) | highland grain = **Rice**; ²**keep Ve, do NOT reinterpret as Spices** (Indigenous — consultant-gated framing untouched) |
+| E05 | Roselle Tea | 1 | T;K | **T;Su** | 2 | ✱ T→C (same) | **Sugar** |
+
+**Verification (the CD's core ask):**
+- **Cost totals per dish: identical** (every re-expression is a within-category relabel; no token added or
+  removed). Deck cost distribution stays 2×14 · 3×8 · 4×3 · 5×1, avg 2.71 (§12.7).
+- **Cross-region span: identical on all 24.** Every ✱ before is ✱ after; the 4 local dishes (N02, C03, C06,
+  E01) stay local; 20/24 still force travel. **No recipe gains OR loses a required region.**
+- **Aggregate demand preserved and re-verified against §12.5:** Meat 14, Tea 10, Seafood 11 (unchanged);
+  **Pantry 16 → Rice 10 + Noodles 6; Sugar 7 → Sugar 5 + Pearls 2; Veg 7 → Veg 6 + Spices 1.** Σ = 65. ✓
+
+**Where specificity ADDS spread vs is NEUTRAL — the honest answer:** the split adds **zero cross-region
+span** (subtypes co-locate, so it cannot force a *new* region). Its reinforcement of §12 is on a **different
+axis**: (a) **within-region specificity** — you must now draw the *right* subtype at the region you already
+had to travel to (Noodles, not just "Pantry"), and (b) **anti-hoard pressure** — a single-region hoarder of
+East gets a Rice+Noodles *mix*, so stockpiling no longer satisfies an arbitrary Pantry need; you need the
+specific subtype, whose sub-pool is thinner. So B-split does not *widen* the map game; it *deepens* the
+sourcing game and makes single-region hoarding modestly weaker. That is a genuine, if narrower, reinforcement
+— and it is the opposite of B-naive's erosion.
+
+## 19.4 Does keep-2 become a genuine choice? — YES at East, marginal elsewhere (be precise)
+
+keep-2 is real **iff a Visit flips ≥2 distinct subtypes you would actually want to keep differently.** That
+happens only where a region's **signature** (the thing you Visit it *for*) splits into two high-demand
+subtypes — which, under the CD's list, is **East alone.** Region-by-region:
+
+| Region | Deck under B-split | Distinct types shown | keep-2 verdict |
+|---|---|:--:|---|
+| **East** | **Rice** + **Noodles** (both signature-deep) + Veg | **3, two of them high-demand** | **GENUINELY REAL** — recipe-driven Rice-vs-Noodles |
+| Central | Tea (signature-deep) + Sugar + Pearls | 3, but the pair is the *thin common* | Marginal — real only when you specifically need Pearls (2 dishes) |
+| South | Seafood (signature-deep) + Sugar + Pearls | 3, pair is thin common | Marginal — as Central |
+| North | Meat (signature-deep) + Veg (+Spices, 9-type) | 2 (or 3) all-low-utility beyond Meat | **Still shallow** — you Visit North for Meat; the common(s) are low-demand; adding Spices adds noise not a decision |
+
+**Worked demonstration (the payoff, at East).** You are building **Beef Noodle** (M;**No**;Ve) and
+**Milkfish Congee** (S;**Ri**). You Visit East and flip three: **{Rice, Noodles, Veg}**.
+- **Mono-6 (status quo):** the flip reads {Pantry, Pantry, Veg} — keep any 2 Pantry; the two Pantry cards
+  are interchangeable → **no decision** (the §18.1 diagnosis).
+- **B-split:** Rice ≠ Noodles, and your two target dishes need *different* ones → keep **Noodles** (beef
+  noodle now) **+ Rice** (congee later)? or **Noodles + Veg** if congee is off-plan? → **a real, recipe-
+  driven keep decision.** Contrast a North Visit flipping {Meat, Meat, Veg}: still a rubber-stamp keep of the
+  two Meat.
+
+So B-split **restores keep-2 exactly where a signature splits** (East), and only there under the CD's list.
+Across all 24 dishes, **9 touch Rice** (C04, C05, S01, S02, S04, E01, E02, E03, E04) and **6 touch Noodles**
+(N01, N03, N05, C02, S05, S06), so which you want genuinely depends on your current Booking — the choice has
+real information. **If the CD wants keep-2 real in ALL regions**, the move is to also split the other three
+signatures (Meat, Seafood, Tea) and leave the commons mono — a larger, more symmetric variant flagged in
+§19.8, but it pushes the suit count and the accessibility problem harder.
+
+## 19.5 Sourcing rebalance — thinner sub-pools are the real economy risk
+
+Aggregate demand is preserved (§19.3), so the §12.5 per-*category* balance is untouched at the family level.
+The new risk is **within a split family: the deck must split too, so each subtype's effective pool is
+thinner.** Reasoning from the current decks (`ingredients.csv` depths):
+
+- **East (Pantry) deck** currently ≈ Pantry 6(day)/5(night) + Veg 2/1. Under B-split this Pantry depth must
+  divide into Rice + Noodles cards. Demand is Rice 10 / Noodles 6 (≈ 5:3), so a proportional split of an
+  11-card East signature depth is roughly **Rice ~7, Noodles ~4** across day+night. **Noodles at ~4 physical
+  cards covering 6 demand is now the tightest sub-pool in the game** (worse than mono-Pantry's 11-vs-16,
+  because it can't borrow Rice cards). A Visit that flips {Rice, Rice, Veg} gives a Noodle-hungry player
+  nothing → travel-back or wait. **This is the #1 re-sim probe for B-split** (per-subtype `supply_min`,
+  Noodles especially).
+- **Sugar 5 / Pearls 2:** Sugar was already over-supplied (§12.5, 19.4% deck-share vs 10.8% demand), so even
+  after peeling 2 Pearls demand off, Sugar stays comfortable. Pearls at 2 demand needs only a **shallow
+  seed** (≈2–3 cards across Central+South decks). Fine.
+- **Veg 6 / Spices 1** (9-type only): Spices at 1 demand needs 1–2 cards — a near-dead suit, reinforcing the
+  §19.2 recommendation to **drop the Veg split**.
+
+**Deck-depth spec (do NOT pre-change data; this is the branch target for the re-sim):** split the East
+signature depth **Rice ≈ 60% / Noodles ≈ 40%**, seed **Pearls 2–3** off the existing Sugar depth (Sugar
+absorbs the loss — it was over-supplied), and (9-type only) seed **Spices 1–2** off Veg. Keep total deck
+depth ≈ 62 (redistribute, don't add). **Same aggregate demand, more categories → the binding question is
+whether the thinnest sub-pool (Noodles) starves.** Flag for the re-sim; conditional fix if Noodles starves
+= shift 1–2 cards from Rice → Noodles (the §12.5-style rebalance, held not baked).
+
+## 19.6 THE CRUX — accessibility (this decides B-split)
+
+**The problem stated honestly: 8–10 ingredient suits, each a CVD-safe, squint-legible colour+emblem pair, at
+BOTH card scale and chip scale.** Ten mutually-distinguishable colours is beyond what any CVD-safe
+categorical palette delivers (Okabe-Ito tops out ~8, and that degrades on small shapes). **A naïve "10
+distinct colours" B-split is NOT accessible — full stop.** But the split's own structure hands us the only
+encoding that can work:
+
+> **Colour = the 6 original category/region FAMILIES (reuse the already-CVD-validated mono-6 palette).
+> Emblem = the specific subtype within a family.** We do NOT mint new colours for Rice-vs-Noodles,
+> Sugar-vs-Pearls, Veg-vs-Spices — the split pair **shares its family colour** and is told apart by a
+> strongly-contrasting **emblem silhouette.**
+
+This keeps the colour count at **6** (safe) and moves the discrimination load onto **9–10 emblems**. The
+split pairs are conceptual cousins that co-locate, so a shared family hue is coherent, not confusing. The
+emblem set must give each split pair a **maximally different silhouette**:
+
+| Family (colour) | Subtype | Proposed emblem (silhouette-first) | Within-pair contrast |
+|---|---|---|---|
+| Meat (family A) | Meat 肉 | meat-cut / drumstick | — (mono) |
+| Seafood (family B) | Seafood 海鮮 | whole fish | — (mono) |
+| Tea (family C) | Tea 茶 | single tea leaf | — (mono) |
+| **Pantry (family D)** | **Rice 米** | **cluster of small grains (dots)** | **grains-cluster vs long-wavy — STRONG** |
+| | **Noodles 麵** | **long wavy strands** | |
+| **Sugar (family E)** | **Sugar 糖** | **diamond/cube crystal** | **hard-edged diamond vs 3 filled circles — STRONG** |
+| | **Pearls 珍珠** | **three filled circles (boba)** | |
+| **Veg (family F)** | **Veg 菜** | **leafy green** | **leaf vs 8-point star-anise — STRONG** (9-type only) |
+| | **Spices 香料** | **star anise (radial star)** | |
+
+**Verdict — feasible, but a real, measurable downgrade concentrated at chip scale:**
+1. **Colour:** FEASIBLE — reuse the 6 validated family colours; do not attempt 9–10 hues.
+2. **Emblem at CARD scale:** FEASIBLE — cards are large; the silhouettes above read cleanly and pass a squint
+   test.
+3. **Emblem at CHIP scale:** **MARGINAL — this is where it bites and where the decision lives.** Under a
+   shared family colour, colour **no longer identifies the suit** — you *must* read the emblem every time, and
+   a chip is small. Mono-6 had colour sufficient + emblem redundant; B-split **inverts** that to emblem-
+   primary. The Rice/Noodles pair (both pale-starch family) is the worst case.
+4. **Linter:** likely **PASSES** `tools/access/check_access.py` (it is dual-coding/emblem-aware and the 6
+   colours are already safe) — **but a linter pass would understate the real cost**: at-a-glance,
+   across-the-table chip reading degrades for *everyone*, most for CVD and low-vision players.
+
+**This is the decisive argument.** B-split is not *inaccessible*, but it trades the mono-6's clean colour-
+sufficient encoding for an emblem-primary one that is materially harder at chip scale — and Option A pays
+none of that. **Every added suit worsens it, which is the strongest reason to (a) drop the Veg→Spices split
+and (b) prefer the smallest split that delivers the value (Pantry only, or Pantry+Pearls).**
+
+> **FLAG `bg-access` (BINDING before any B-split ships):** verify the 8-type (Rice/Noodles/Pearls) emblem set
+> against the actual theme palette with `tools/access/check_access.py`, AND run a **chip-scale squint test**
+> the linter can't (physical-size legibility of the split-pair emblems under a shared family colour). If the
+> chip-scale test fails, B-split fails on its decisive axis regardless of the linter result.
+
+## 19.7 Component cost (flag `bg-architect`)
+
+- **Ingredient CARDS:** total deck depth stays ≈ 62 (redistributed, not added), so card *count* is roughly
+  unchanged — but each new subtype needs its **own card face + art asset** (8–10 vs 6). More unique
+  illustration/mock-up work; a real but one-time art cost.
+- **Ingredient CHIPS/tokens:** **confirm the pay mechanism first.** If a Bribe is paid straight from the
+  Larder (a hand of ingredient *cards*), there are **no typed ingredient chips** and chip cost is ~nil (the
+  "ingredient-cost chips" in §12.10 are the *number* on the vendor card, not typed tokens). If the game uses
+  typed ingredient tokens, 8–10 denominations vs 6 means more punchboard, more sort space, bigger insert.
+- **Net:** B-split's marginal COGS is dominated by **art assets** (more unique faces) and, *if* typed chips
+  exist, punchboard. Flag `bg-architect` to run `tools/cost/check_cost.py` on the 8-type branch and confirm
+  the pay mechanism. Likely small, but non-zero, and it stacks on the accessibility cost.
+
+## 19.8 Switchable branch — extend the §18.4 VISIT_VARIETY toggle (non-destructive)
+
+B-split is a third value of the existing `VISIT_VARIETY` axis — it does not disturb `mono` (Option A) or
+`wild:K` (§18's B-wild):
+
+```
+VISIT_MODE    ∈ { straight-draw , keep-2 }
+VISIT_VARIETY ∈ { mono , wild:K , split[:8|:9] }   # NEW: split = finer region-local taxonomy
+```
+
+| Cell | VISIT_MODE | VISIT_VARIETY | = | Purpose |
+|:--:|---|---|---|---|
+| **1** | `straight-draw` | `mono` | **Option A** | §18 recommendation; baseline. |
+| **2** | `keep-2` | `mono` | Control (status quo) | The diagnosed non-choice. |
+| **3** | `keep-2` | `wild:2` | Option B-wild | §18's B (erodes spread). |
+| **4** | `keep-2` | `split:8` | **Option B-split** | **This section — keep-2 on the finer taxonomy.** |
+| **4a** | `straight-draw` | `split:8` | **A + finer taxonomy** | **The decoupled hybrid (§19.9) — theme/specificity WITHOUT reviving keep-2.** |
+
+- **Cell 4 vs 3** isolates B-split vs B-wild: does the *region-local finer taxonomy* restore keep-2 (M1) with
+  **no travel-rate loss** (M2), where wild traded travel away?
+- **Cell 4a** is the key insight (§19.9): the finer taxonomy is orthogonal to the draw mode — you can have
+  Rice/Noodles under straight-draw and get the theme + specificity win with none of the keep-2 fakery.
+- **Non-destructive DATA:** the split taxonomy lives in a **branch** `ingredients-split.csv` (subtype rows +
+  split deck depths, §19.5) + a **branch recipe re-expression** of `vendors.csv` (the §19.3 column), behind a
+  `SPLIT_TAXONOMY` flag. The mono-6 `ingredients.csv` / `vendors.csv` are **untouched** — Option A and Cells
+  1–3 stay runnable exactly as specced.
+- **Metrics:** reuse §18.5 M1–M5, **plus** a new **M6 = per-subtype `supply_min` (Noodles watch, §19.5)** and
+  **M1 refined** to require ≥2 *distinct high-utility* subtypes (so the East signature-split counts and the
+  North common-noise does not).
+
+## 19.9 A vs B-split — the re-judgement (and the reframe the CD should see)
+
+§18 recommended **A over B-wild**. Re-judging **A vs B-split**, B-split is a **stronger B than wild** on the
+one axis that mattered most in §18:
+
+| Axis | Option A (straight-draw, mono-6) | B-wild (§18) | **B-split (§19)** |
+|---|---|---|---|
+| Restores keep-2 | No (moves choice to map) | Yes (signature-vs-wild) | **Yes at East (recipe-driven); marginal elsewhere** |
+| §12 cross-region spread | Holds/rises | **Erodes** (wild = travel-avoidance) | **PRESERVED exactly** (the win over wild) |
+| Theme / fidelity | neutral | neutral | **UP** (rice≠noodles, boba pearls — a real identity gain) |
+| Elegance | **net trim** (fewer sub-steps) | net add (1 type+rule) | **net add** (+2–4 suits, keeps keep-2 sub-step) |
+| Accessibility | **6 clean suits, colour-sufficient** | +1 suit | **8–10 suits, emblem-primary at chip scale (§19.6 — the crux)** |
+| Component cost | none | small | small–moderate (art assets; maybe chips) |
+| Sourcing risk | discard-feeder loss (§18.2a) | Pantry-ease | **thin Noodles sub-pool (§19.5)** |
+
+**Recommendation — and the reframe:** the CD framed B-split as a way to *rescue keep-2*, but §19.4 shows keep-2
+only genuinely revives at **one region (East)**, while §19.6 shows the accessibility cost lands on **every**
+chip. Judged as "keep-2 rescue," **B-split does not beat A** — it buys one region's local choice at the price
+of the whole game's chip-scale readability, and A already relocated that choice to the map coherently.
+
+**But the finer taxonomy's real value — recipe specificity + theme (beef *noodle*, boba *pearls*) — is
+ORTHOGONAL to the draw mode.** That unlocks a better answer than either §18 option:
+
+1. **PRIMARY — Ship A (straight-draw), and seriously consider adopting the Pantry→Rice+Noodles split UNDER A
+   (Cell 4a).** This is the **decoupled hybrid**: straight-draw kills the dead keep-choice (A's coherence +
+   elegance win), while Rice/Noodles delivers B-split's genuine upside (theme + recipe specificity + anti-hoard
+   pressure + preserved spread) with the accessibility cost held to **+1 suit** (7 total, or +2 with Pearls) —
+   *not* the +3–4 of the full keep-2 B-split. You get the best of both and pay the smallest access bill.
+2. **SECONDARY — full B-split (Cell 4)** only if the human table at A/Cell-4a genuinely misses an *in-region*
+   keep decision AND `bg-access` clears the emblem set **at chip scale** (§19.6). B-split beats B-wild, so if
+   any keep-2 B is tested, test this one — retire `wild:2` from the plan.
+3. **DROP the Veg→Spices split in all cases** (demand 1; pure bloat) — test **8 types**, not 9.
+
+**My money: A + Rice/Noodles (Cell 4a).** It is the honest synthesis of the CD's correct instinct (the finer
+taxonomy is a real improvement) and §18's correct instinct (the keep-choice belongs on the map, not faked
+in-region).
+
+## 19.10 Data-change list (SPEC-ONLY — branch, non-destructive; for the owning agents AFTER the A/B)
+
+- **`ingredients-split.csv` (NEW branch file — do NOT edit mono `ingredients.csv`):** subtype rows for the
+  **8-type** taxonomy (Rice 米, Noodles 麵, Sugar 糖, Pearls 珍珠 + unchanged Meat/Seafood/Tea/Veg), region-
+  locked per §19.2, deck depths split per §19.5 (East signature ≈ Rice 60% / Noodles 40%; Pearls 2–3 seeded
+  off Sugar; total ≈ 62). 9-type variant adds Spices 香料 (1–2 cards) — specced, not recommended.
+- **`vendors-split.csv` (NEW branch, or a `recipe_split` column):** the §19.3 re-expressed recipes for all 24
+  rows. **Costs and cross-region span unchanged** — this is a pure within-category relabel.
+- **`bookings.csv`:** **no change** — prestige targets read `ingredient_cost` totals, which are invariant
+  under B-split.
+- **Sim (`bg-playtest`):** add `VISIT_VARIETY = split[:8|:9]` behind `SPLIT_TAXONOMY`; encode subtype-specific
+  recipe payment and per-subtype decks; add **M6 per-subtype `supply_min`** + refined M1 (§19.8). Baseline
+  main run stays **Cell 1 (A, mono)**; run Cell 4 and Cell 4a as deltas.
+- Run `tools/lint/check_game.py` on the branch (new subtype rows + new `recipe_split`).
+- **Option A requires NO data change** (mono baseline). B-split is entirely additive/branchable.
+
+## 19.11 Handoff / coherence flag (extends §18.8 / §11)
+
+Mechanic that moves (spec-only until the A/B resolves): the **ingredient taxonomy granularity** — upstream
+of both the VISIT sourcing action and every Bribe cost. Flag the Director to run:
+- **`bg-access` (DECISIVE — §19.6):** verify the 8-type emblem set against the palette AND a **chip-scale
+  squint test** the linter can't run. This is the make-or-break for any B-split/hybrid — a linter pass alone
+  is NOT sufficient sign-off.
+- **`bg-architect` (§19.7):** cost-gauge the 8-type branch; confirm the Bribe pay-mechanism (cards vs typed
+  chips) that determines whether chip COGS applies.
+- **`bg-theme`:** the re-expressed recipes are *more* faithful (beef noodle = noodles; congee = rice; boba =
+  pearls) — a coherence GAIN; confirm. **Rail-critical:** E04 Stone-Slab BBQ keeps **Veg** (not Spices) — do
+  NOT reinterpret an Indigenous dish's tokens; framing stays consultant-gated and untouched.
+- **`bg-elegance`:** B-split is a net ADD (+2–4 suits, keeps the keep-2 sub-step); the decoupled hybrid
+  (§19.9, A + Rice/Noodles) is the lower-complexity path — re-gauge against the budget. The Veg→Spices split
+  is flagged as bloat to cut.
+- **`bg-critic` / `bg-playtest`:** the ripple to watch is **thin sub-pools** (Noodles §19.5), not spread
+  erosion (spread is preserved). B-split does NOT reopen the §12 spread game the way B-wild did.
