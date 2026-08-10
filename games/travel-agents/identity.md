@@ -161,7 +161,7 @@ free from good illustration without chasing it. Chasing all eight = chasing none
 The felt *strategic* identity, distinct from the kinds of fun above: v6.2 opens **five legible ways to
 chase the best-tour title**, and the design's health bar is that **all five stay live** (none dominant;
 some rock-paper-scissors between them). Each is a warm travel-agent fantasy:
-1. **The character-lean agent** — lean hard into your agent's kit (里長伯's old favours, 大哥's clout,
+1. **The character-lean agent** — lean hard into your agent's kit (里長伯's old favours, 老大's clout,
    大胃王's haul). *"I play to who I am."*
 2. **The opportunist** — read the board and pounce: snap the newly-hot ★ stall, the cheap easy win, the
    high-**Draw** name the moment it surfaces (a big-Draw vendor is the stop that finishes a fat ticket).
@@ -536,19 +536,20 @@ colour+emblem). Suits carry **colour *and* an emblem/icon** always — never col
   | Ma-pó | **The Homebody** | 媽寶 | Deliberately warmer read of literal 媽寶 ("mama's boy"). "Homebody" lands affectionate (loves home), NOT the pejorative. PASS — the warm portrayal (phones home, swears home food is best) carries it. |
   | Tuā-uī-ông | **The Big Eater** | 大胃王 | Celebrated competitive-eater / food-challenge figure. Neutral-warm, fits a food game joyfully. PASS (clean). |
   | Bāng-âng | **The Influencer** | 網紅 | Contemporary, neutral role; framed as genuinely loving the food (affectionate self-aware wink). PASS (clean). |
-  | Tuā-ko | **The Big Brother** | 大哥 | The warm elder / neighbourhood-figure 大哥 (a lovable rogue every stall-owner is glad to see), NOT a menacing gangster or an Orwellian "Big Brother". PASS **only while the warm portrayal stays load-bearing.** |
+  | Lāu-tuā | **The Big Boss** | 老大 | A PLAYFUL, affectionate boss — the lovable fixer everyone's mysteriously glad to see; warm and comedic, NOT menacing or a triad/gang caricature. 老大 carries a boss/gang-leader connotation → **consultant-gated** (the paid consultant signs off the name + depiction before final/print). PASS **only while the warm portrayal stays load-bearing.** *(Renamed from The Big Brother 大哥 / Tuā-ko — CD, 2026-08-10.)* |
   | A-má | **The Globetrotter** *(LOCKED & BLESSED v7, 2026-08-09 — CD auto-drive)* | 阿嬤 | The 6th character (mobility/tempo agent). Beloved spry grandma, everywhere-at-once on her **敬老卡 elder travel-pass** (reaches any region in one Travel + immune to the HSR maintenance outage); standard basket, **flaw-free**. **Age-as-superpower, never frailty** — the elder pass makes age a literal *advantage*, and the V7 close-out retiring her one flaw (the "small basket") removed the last age-as-deficit cue. **"The Globetrotter" names her *type*** (the tireless traveller who out-ranges everyone), not her demographic — the granny identity lives in 阿嬤 + art + blurb, exactly as the other five name a type not an age. 阿嬤 is the correct **Taigi/Hokkien** term for grandma (matches the Tâi-lô cast; warmer + more Taiwan-native than Mandarin 奶奶). PASS-WITH-BINDING — the spry/sharp portrayal is **load-bearing** (guard the frail/forgetful-granny stereotype, sibling to 媽寶/大哥); light watch that "Globetrotter" reads as a restless *local* wanderer, never a foreign-tourist gaze; native review of 阿嬤 + 敬老卡. *(Rejected: "The Free Rider" — reads freeloader, undercuts dignity; "A-má" — leaves the English column non-English, off-register; "The Globetrotter Granny" — names the demographic + is wordy, off the cast's "The [type]" register.)* |
   - **Dignity verdict: all SIX BLESS** (the Granny 阿嬤 / **The Globetrotter** added & blessed v7 — a
     PASS-WITH-BINDING sibling to the two edge cases below: her spry/dignified, age-as-superpower portrayal is
     load-bearing, guarding the frail/forgetful-granny stereotype, and flaw-free by design). The two original
-    edge cases (**The Homebody**, **The Big Brother**) pass *on
+    edge cases (**The Homebody**, **The Big Boss**) pass *on
     their portrayals*, not on the English alone — so their warmth is now **binding & load-bearing** (like the
     "Bribe = marketing opportunity" reframe): every surface (blurb, art note, rulebook voice) must keep 媽寶
-    affectionate-not-mocking and 大哥 warm-not-menacing. **The Big Brother is the #1 character-name consultant
-    watch-item** (the English doesn't *automatically* carry the warm 大哥 sense to a non-Taiwanese reader — the
-    art + voice must; if a blind test reads it as gangster/surveillance, warmer alts "Everybody's Big Brother"
-    / "The Local Legend" are a cheap swap). All 繁體 are **Traditional characters** (rail-compliant); 媽寶 and
-    大哥 also go to the native reviewer to confirm they read as gentle-teasing / warm-respectful in context.
+    affectionate-not-mocking and 老大 warm-not-menacing. **The Big Boss is the #1 character-name consultant
+    watch-item** (老大 carries an explicit boss/gang-leader connotation, so the warm-fixer read does NOT come
+    for free — the art + voice must carry it; **consultant-gated**: if a blind test reads it as gangster/triad,
+    warmer alts "The Local Legend" / "Everybody's Uncle" are a cheap swap). All 繁體 are **Traditional
+    characters** (rail-compliant); 媽寶 and 老大 also go to the native reviewer to confirm they read as
+    gentle-teasing / warm-respectful in context.
 - **New proper nouns from the re-frame (proposed — coherent with the above):**
   - **your travel agency** = who you are (you *run* it); your rival runs a competing agency.
   - **head office** = your dispatcher/boss on the phone/earpiece (and the voice of the rulebook).

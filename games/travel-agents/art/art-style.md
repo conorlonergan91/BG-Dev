@@ -39,8 +39,8 @@ for **charm and readability**:
 - **The Homebody** (媽寶) — an earnest young office worker clutching a mum-packed lunchbox, phone to ear.
 - **The Big Eater** (大胃王) — a joyful competitive eater, all appetite, mid-bite.
 - **The Influencer** (網紅) — a stylish food blogger framing the perfect bowl for the feed.
-- **The Big Brother** (大哥) — a **warm, lovable neighbourhood big-brother** in a bomber jacket, greeting a
-  delighted stall-owner like an old friend — **cinema-charm, never a threat** (the #1 dignity watch-item).
+- **The Big Boss** (老大) — a **warm, lovable neighbourhood big boss** (an affectionate fixer) in a bomber jacket, greeting a
+  delighted stall-owner like an old friend — **cinema-charm, never a threat, never a triad/gang caricature** (the #1 dignity watch-item; 老大 carries a boss/gang-leader connotation → **consultant-gated** before final art).
 - **The Globetrotter** (阿嬤 / A-má) — a spry, sharp-eyed granny with her elder travel-pass, already at the
   next market before everyone else — **age as her superpower, never frail**.
 
@@ -86,7 +86,7 @@ great animated ensemble — **NOT ethnic caricature, racial stereotype, or mocke
 respectfully, **secular** settings only (no temple/deity/ghost-month/funerary imagery), anti-extraction
 framing (celebration, never a tourist's gaze). Every character reads **warm, likeable, and dignified** — we
 are laughing *with* this world, never *at* it. When in doubt, dial toward affection. (Consultant reviews
-before final art; native-review watch-items: the Big Brother's warmth, the granny's spryness, the food/place
+before final art; native-review watch-items: the Big Boss's warmth, the granny's spryness, the food/place
 names.)
 
 ## How to cite this in a prompt
@@ -235,7 +235,7 @@ to a slot's **exact px size**, writing to the gitignored `build/mockups/<FIG-COD
 ```bash
 # Split a 2×2 grid of four characters, key the white bg, fit each to the board portrait slot:
 python tools/mockup/prep_mockup.py --grid ~/Downloads/cast.png --rows 2 --cols 2 \
-    --names homebody,big-eater,influencer,big-brother \
+    --names homebody,big-eater,influencer,big-boss \
     --key-bg --fit 900x1380 --pad --game games/travel-agents --prefix FIG-CHAR-
 
 # Clean one already-cropped portrait (e.g. the Globetrotter) to the same slot:

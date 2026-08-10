@@ -5,7 +5,7 @@ passport/dossier-style framed portrait). **Every brief below inherits `art/art-s
 **over-the-top & wacky but stylised** cartoon — Agent-Avenue-style *look*, travel-agent not spy *theme*;
 clean linework, bold flat colour, the night-market palette warm-day→neon-night; **warm, dignified, charming —
 never caricature/mockery**). **Human-illustrated only; no AI final art.** A **paid Taiwanese cultural
-consultant** reviews the cast before final art (watch-items: the Big Brother's warmth, the Globetrotter's
+consultant** reviews the cast before final art (watch-items: the Big Boss's warmth, the Globetrotter's
 spryness).
 
 Shared framing: each is a **single character, waist-up or full-figure**, mid-action, big expressive face, a
@@ -70,12 +70,13 @@ A **stylish food blogger** framing the perfect bowl for the feed — phone/ring-
 trendy fit, a delighted grin because they *genuinely* love the food. A little ring of hearts/📈 "going viral"
 sparkle. **Affectionate wink at influencer culture, never sneering. No background scenery — just them and their props.**
 
-## `[FIG-CHAR-big-brother]` — The Big Brother (Tuā-ko / 大哥) ⚑ #1 dignity watch
+## `[FIG-CHAR-big-boss]` — The Big Boss (Lāu-tuā / 老大) ⚑ #1 dignity watch
 
-The **warm neighbourhood big-brother** — a lovable rogue in a bomber jacket (a tiger patch + 大哥), a big
+The **warm neighbourhood big boss** — a lovable fixer in a bomber jacket (a tiger patch + 老大), a big
 warm cinema-charm laugh and a friendly thumbs-up, holding a takeaway bag of night-market food. **Solo — no
-stall-owner, no background scenery, just him and his props.** **Must read warm-elder-mate, NEVER
-gangster/menacing/Orwellian** (the load-bearing dignity item — art carries the warmth; consultant + blind-test confirm).
+stall-owner, no background scenery, just him and his props.** **Must read warm-affectionate-boss, NEVER
+gangster/menacing/triad-caricature** (the load-bearing dignity item — 老大 carries a boss/gang-leader
+connotation, so the warmth is what makes this safe; **consultant sign-off + blind-test required before final art**).
 
 ---
 
@@ -126,9 +127,10 @@ food; a little ring of hearts / "going viral" sparkle; a photogenic neon stall b
 wink at influencer culture, never sneering.** *Closing: framed for a 604×286 slot, ~2.11:1 wide letterbox
 aspect, transparent background, save as build/mockups/FIG-CHAR-influencer.png*
 
-**`FIG-CHAR-big-brother` — The Big Brother** ⚑ *#1 dignity watch.* A warm neighbourhood big-brother — a
-lovable rogue in a bomber jacket, greeting a **delighted** stall-owner like an old friend, arms open, big
+**`FIG-CHAR-big-boss` — The Big Boss** ⚑ *#1 dignity watch.* A warm neighbourhood big boss — a
+lovable fixer in a bomber jacket, greeting a **delighted** stall-owner like an old friend, arms open, big
 cinema-charm smile; the vendor is visibly pleased to see him; behind, a lane where everyone waves. **Must
-read warm-elder-mate — NEVER gangster, menacing, or a threat.** If a render leans cold or intimidating,
+read warm-affectionate-boss — NEVER gangster, menacing, or a threat** (老大 leans boss/gang-coded, so the
+warmth is load-bearing). If a render leans cold or intimidating,
 it is off-rail; dial back to the grin. *Closing: framed for a 604×286 slot, ~2.11:1 wide letterbox aspect,
-transparent background, save as build/mockups/FIG-CHAR-big-brother.png*
+transparent background, save as build/mockups/FIG-CHAR-big-boss.png*

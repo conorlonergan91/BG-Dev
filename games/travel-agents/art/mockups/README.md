@@ -11,4 +11,4 @@ they **persist across the ephemeral container** and the boards can re-render war
 - Source finals live here; `make.sh` preps them (transparent-key + fit) into gitignored `build/mockups/`
   for the board auto-embed.
 
-Files: `FIG-CHAR-<slug>.png` — globetrotter, old-councillor, homebody, big-eater, influencer, big-brother.
+Files: `FIG-CHAR-<slug>.png` — globetrotter, old-councillor, homebody, big-eater, influencer, big-boss.

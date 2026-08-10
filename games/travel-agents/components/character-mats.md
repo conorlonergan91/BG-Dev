@@ -12,7 +12,7 @@ rendered mat.
 | 媽寶 Ma-pó | Mum's Packed Lunch (Travel draws the region you LEFT) | none (Visit keep-2 normal) | 43.5% |
 | 大胃王 Tuā-uī-ông | Bottomless (Visit keep all 3) | hazards fire TWICE on his Visit | 54.8% |
 | 網紅 Bāng-âng | Going Viral (Promote places 3 Buzz, still Reach-capped) | **goes last** (turn order only — lost-turn flaw RETIRED) | 51.2% |
-| 大哥 Tuā-ko | Everybody Knows 大哥 (win a Buzz fight at a ≥1 lead, not the usual ≥2) | none (Option D) | 50.7% |
+| 老大 Lāu-tuā | Everybody Knows 老大 (win a Buzz fight at a ≥1 lead, not the usual ≥2) | none (Option D) | 50.7% |
 
 Everyone **starts Reach 2** and **starts in Taipei** (the North hub, CD-3). No kit changes those.
 
@@ -44,9 +44,9 @@ balance lock, which was CD-1/CD-2/CD-4.)* **Reserve dial** if it tests too stron
 light lost-turn (`late_to_night` — miss the first night-phase turn) or trim the ability (+1 Buzz on the
 first Promote only).
 
-## 大哥 — the Buzz-margin override (no vendor data changes)
+## 老大 — the Buzz-margin override (no vendor data changes)
 - ability `bribe_margin1` — win a Buzz fight at a lead of just **≥1** (everyone else needs ≥2).
-- The vendor data prints `buzz_cost = 2` as the ≥2-majority reminder for everyone; 大哥's ≥1 is a
+- The vendor data prints `buzz_cost = 2` as the ≥2-majority reminder for everyone; 老大's ≥1 is a
   **mat-level override**, not per-vendor data — no vendor rows change.
 - **Sensitivity (bound in identity.md):** warm cinema lovable-rogue; vendors respect and *like* him (never
   intimidated), fully secular (NOT 八家將 / gang imagery). Mat text stays warm.

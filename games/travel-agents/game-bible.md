@@ -299,16 +299,18 @@ CSVs are still pre-v6 — the data rebuild is gated.)*
   yet draw the verb/scope/duration icons — a separate presentation pass owns that; cards currently render as
   plain effect-text + the shipped ⦿/⬢/➤ scope chip.)*
 - **~24 Buzz tokens** (@2p; committed, public, contested — placed on vendors, cleared on a win).
-- **6 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 大哥 · 阿嬤**; V7 balance CLOSED —
+- **6 Character mats** (ability + flaw — **里長伯 · 媽寶 · 網紅 · 大胃王 · 老大 · 阿嬤**; V7 balance CLOSED —
   all six band across 3–6p, no crusher, no cold outlier).
   **English names LOCKED & BLESSED (v6.3.2 for the first five, v7 2026-08-09 for the Granny; CD "adopt as
   proposed"; dignity-passed by `bg-theme`)** — each
   mat prints the name in three scripts (Tâi-lô · English · 繁體): **Lí-tiúⁿ-peh / The Old Councillor / 里長伯 ·
   Ma-pó / The Homebody / 媽寶 · Bāng-âng / The Influencer / 網紅 · Tuā-uī-ông / The Big Eater / 大胃王 ·
-  Tuā-ko / The Big Brother / 大哥 · A-má / The Globetrotter / 阿嬤**. The warm portrayals of **The Homebody**
-  (media 媽寶) and **The Big
-  Brother** (大哥, warm elder/community figure — NOT a gangster) are binding/load-bearing; **The Big Brother**
-  is the #1 character-name consultant watch-item. **The Globetrotter** (阿嬤, the go-anywhere elder-pass
+  Lāu-tuā / The Big Boss / 老大 · A-má / The Globetrotter / 阿嬤**. The warm portrayal of **The Homebody**
+  (media 媽寶) is binding/load-bearing (affectionate stays-close-to-home, never a mocking "mama's boy").
+  **The Big Boss (老大)** — a PLAYFUL, affectionate boss: the lovable fixer everyone's mysteriously glad to
+  see. Warm and comedic, NEVER menacing or a triad/gang caricature. 老大 carries a boss/gang-leader
+  connotation, so this is a **consultant-gated portrayal** — the paid Taiwanese cultural consultant must
+  sign off on the name + depiction before any final/print use (the #1 character-name consultant watch-item). **The Globetrotter** (阿嬤, the go-anywhere elder-pass
   granny) is likewise blessed with a binding **spry / dignified, age-as-superpower** portrayal — never frail
   or doddering — and is **flaw-free by design** (the V7 close-out retired her small-basket flaw, a dignity
   win); native review of 阿嬤 + 敬老卡. All 繁體 are Traditional characters. **里長伯 REWORKED (v6.3.1 CD-1,
@@ -376,7 +378,7 @@ engine. Full teach order → `design/rules-draft.md` (v6.3, tickets-only).
   crisp mid-game dusk, ~14% stall). *Pacing watch:* bot games ran ~25 turns/player (over the 14–18 estimate)
   because the markets deliberately add travel; a human table should be tighter (~25–30 min) — lower the
   marks if it drags.
-- ✅ **Characters — RESOLVED (kits LOCKED):** **大哥 = lead-by-1, no flaw** (51.7%); **媽寶 = keep-2** (45.6%,
+- ✅ **Characters — RESOLVED (kits LOCKED):** **老大 = lead-by-1, no flaw** (51.7%); **媽寶 = keep-2** (45.6%,
   was 29% at keep-1); **大胃王 = H1-A** (52.6%); **網紅 = Going-Viral + misses its first night-phase turn**
   (CD refinement — a concrete lost-turn flaw replacing "starts behind"; **⚠ KEY table balance-check — may
   over-correct below 45%**, dial in reserve); 里長伯 unchanged (51.8%). No kit needs a day/night tweak.
@@ -402,7 +404,7 @@ engine. Full teach order → `design/rules-draft.md` (v6.3, tickets-only).
   component types near-full. The win/lose-pile model *reduces* scoring prose (helps the rulebook-over-cap
   flag). Component-load parse is a live FTUE check.
 - **Sensitivity:** a **real place & culture (Taiwan)** — the **East region is Indigenous-forward** (generic
-  respectful labels, consultant before art), "Bribe"/大哥 warmth rails, 繁體 + Tâi-lô discipline. Owned by
+  respectful labels, consultant before art), "Bribe"/老大 warmth rails, 繁體 + Tâi-lô discipline. Owned by
   `bg-theme` + `bg-publishing`; paid Taiwanese cultural + language consultant before art/print.
 
 ## Status by stage

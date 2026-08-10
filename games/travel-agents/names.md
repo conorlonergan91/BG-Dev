@@ -13,7 +13,7 @@
 > print — this table does not discharge that). Indigenous items (E01 竹筒飯, E04 石板烤肉) are consultant-
 > gated even for mock-ups.
 >
-> Status: **V7 (multiplayer 3–6)** · Last swept 2026-08-09 (`bg-continuity`, first sweep).
+> Status: **V7-M (multiplayer 3–6)** · Last swept 2026-08-10 (`bg-continuity`, C5 rename sweep: **The Big Brother 大哥 (Tuā-ko) → The Big Boss 老大 (Lāu-tuā)**).
 > Supersedes the roster table in `v7-plan.md` as the canonical name reference.
 
 ---
@@ -28,14 +28,20 @@ Always refer to a character by the **English name** in prose. Never use the 繁�
 | C2 | **The Homebody** | 媽寶 | Ma-pó | Sole on-the-move sourcer — on a **Travel**, draw 2 of the region left and keep both. Flaw-free. |
 | C3 | **The Big Eater** | 大胃王 | Tuā-uī-ông | On a **Visit**, keep all 3 (may grab a 4th). Flaw: hazards fire **twice** on his Visit. |
 | C4 | **The Influencer** | 網紅 | Bāng-âng | Followers-max **dial starts at 4** (floors at 4). Flaw: takes the **last** seat. |
-| C5 | **The Big Brother** | 大哥 | Tuā-ko | **Wins ties** — needs only to *match* the biggest crowd. Flaw-free. |
+| C5 | **The Big Boss** | 老大 | Lāu-tuā ¹ | **Wins ties** — needs only to *match* the biggest crowd. Flaw-free. |
 | C6 | **The Globetrotter** | 阿嬤 | A-má | **Travel reaches any region** in one action; immune to Scheduled Maintenance. Flaw-free. |
+
+¹ **老大 Tâi-lô = *Lāu-tuā*** (chosen for roster consistency — the whole cast is Tâi-lô). The CD wrote it as
+Mandarin pinyin **"Lao Ta"**; recorded here as a variant for the **paid consultant to confirm** the correct
+Tâi-lô romanisation of 老大.
 
 **Name-form watch (dignity / sensitivity, binding portrayals):**
 - **The Homebody (媽寶)** — an affectionate stays-close-to-home read; **never** a mocking "mama's boy".
-- **The Big Brother (大哥)** — the warm community elder / lovable rogue; **never** a menacing gangster or an
-  Orwellian "Big Brother". Blessed *only while the warm portrayal stays load-bearing* (#1 character-name
-  consultant watch-item).
+- **The Big Boss (老大)** — a PLAYFUL, affectionate boss: the lovable fixer everyone's mysteriously glad to
+  see; warm and comedic, **never** menacing or a triad/gang caricature. **老大 carries a boss/gang-leader
+  connotation → this is a consultant-gated portrayal:** the paid Taiwanese cultural consultant must sign off
+  on the name + depiction before any final/print use (#1 character-name consultant watch-item). *(Renamed
+  from The Big Brother 大哥 / Tuā-ko — CD, 2026-08-10.)*
 - **The Globetrotter (阿嬤)** — spry, sharp-eyed, unstoppable; age-as-superpower, **never** frail/forgetful.
   Names a *type*, not a demographic; guard against a foreign-tourist gaze (she is a restless *local*).
 - **The Old Councillor (里長伯)** — neighbourly standing, not graft; favours bounded to his one borough.
@@ -43,6 +49,8 @@ Always refer to a character by the **English name** in prose. Never use the 繁�
 > **Locked (do not re-litigate — `bg-theme` bless, logged in `decision-log.md`):** all six English names
 > are canonical. "The Globetrotter" is **locked** over "The Free Rider" (freeloader read) and "A-má / The
 > Globetrotter Granny" (off-register).
+> **2026-08-10 (CD):** C5 renamed **The Big Brother 大哥 (Tuā-ko) → The Big Boss 老大 (Lāu-tuā)** — English +
+> 漢字 both; id **C5** and all mechanics (margin dial N=1, etc.) **unchanged**. Logged in `decision-log.md`.
 
 ---
 
@@ -119,6 +127,7 @@ CURRENT form (§3), or flag it if resolving it is a mechanics/value question.
 | **Beverage Row / the drinks fork** | drinks are just low-value vendors | mixed into every region's deck. |
 | **Code Red** (end-trigger) | the plain last-train close | dropped. |
 | **"Bookings" as an old score/VP track** *(v6.3 sense)* | *(that sense retired)* | ⚠ Note: **"Bookings" is REUSED in V7** as the tour-card name (開團). Same word, different referent — the V7 sense is current. |
+| **The Big Brother / 大哥 / Tuā-ko** (C5 name forms) | **The Big Boss / 老大 / Lāu-tuā** | CD rename 2026-08-10. **id C5 + all mechanics unchanged.** Dated records (v6.* drafts, `design-doc.md`, changelog/decision-log history, the sim harness) keep the old forms as a point-in-time record — **map them to the new forms; do not churn the dated docs.** |
 
 ---
 

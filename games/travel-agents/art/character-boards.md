@@ -45,21 +45,22 @@
 - **Sensitivity:** an affectionate, self-aware wink at influencer culture — she really loves the food;
   never cynical or at Taiwan's expense.
 
-## [FIG-CHAR-big-brother] — Tuā-ko · The Big Brother · 大哥
+## [FIG-CHAR-big-boss] — Lāu-tuā · The Big Boss · 老大
 - **Portrait:** a beaming older man in a bomber jacket greeting a delighted stall-owner like an old
   friend — **warm cinema charm, never a threat.**
 - **Read at a glance:** *everybody knows him* — he wins a Buzz fight at just a 1-lead; no drawback.
-- **Sensitivity (LOAD-BEARING — `identity.md` 大哥 binding):** a warm, lovable rogue vendors **respect and
-  like** (never intimidated); secular; the neighbourhood big brother, **not** a gangster. If a rendering
-  ever reads as menace, it is off-rail — dial back to the grin.
+- **Sensitivity (LOAD-BEARING — `identity.md` 老大 binding; consultant-gated):** a warm, lovable fixer vendors
+  **respect and like** (never intimidated); secular; the neighbourhood big boss, **not** a gangster/triad
+  caricature. 老大 carries a boss/gang-leader connotation, so the paid consultant must sign off on the name +
+  depiction before final art. If a rendering ever reads as menace, it is off-rail — dial back to the grin.
 
 ---
 
 ## Data / naming flags (for the CD + `bg-theme`)
 - **English names are BLESSED & CANONICAL** (in `characters.csv` as `name_en`; CD "adopt as proposed"
   2026-08-08, dignity-passed by `bg-theme`): The Old Councillor · The Homebody · The Big Eater ·
-  The Influencer · The Big Brother. `The Homebody` (the warmer, de-fanged read of literal 媽寶 "mama's
-  boy") and `The Big Brother` (the warm elder/community-figure 大哥, NOT a gangster) both PASS the dignity
+  The Influencer · The Big Boss. `The Homebody` (the warmer, de-fanged read of literal 媽寶 "mama's
+  boy") and `The Big Boss` (the warm, affectionate 老大, NOT a gangster/triad caricature; consultant-gated) both PASS the dignity
   bar **only while their warm portrayals stay load-bearing on every surface** — carry the blurb/art-note
   warmth (never a mocking or menacing read). These two + the 里長→"Councillor" gloss are the character-name
   watch-items for the paid Taiwanese consultant (still required before art/print).
@@ -77,7 +78,7 @@
 > **Playtest props only** — permitted so testers feel each promoter's warmth during manual playtesting.
 > **Final art stays human-illustrated; NO AI final art.** Each PNG is a **MOCKUP** → save to the
 > **gitignored** `games/travel-agents/build/mockups/`, filename = the FIG code (e.g.
-> `FIG-CHAR-big-brother.png`); **never committed, never moved to `exports/`, never shipped.**
+> `FIG-CHAR-big-boss.png`); **never committed, never moved to `exports/`, never shipped.**
 >
 > **The portrait prompts live in [`art/character-art.md`](character-art.md) — do NOT duplicate them here.**
 > The six board portraits reserve the **same `FIG-CHAR-<slug>` slots**; generate them from the
@@ -92,6 +93,6 @@
   **COMPLETED 成團 / CANCELLED 取消** pile labels, Reach 及 / Tours-Completed 好評 tracks and 成團/取消 piles
   are all **rendered by code**, not by the mock-up. The mock-up supplies the cut-out character only; it
   must not paint any board chrome, labels, or track furniture.
-- **Rails carry over unchanged:** the Big Brother's warmth (load-bearing — vendors *like* him, never
+- **Rails carry over unchanged:** the Big Boss's warmth (load-bearing — vendors *like* him, never
   intimidated) and the Old Councillor's neighbourly-not-graft standing are the same dignity watch-items as
   in the portrait briefs; secular throughout. English names on any label the mock-up hints at.

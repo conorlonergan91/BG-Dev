@@ -30,7 +30,7 @@ Never use the 繁體/Tâi-lô name alone — the human can't follow it. English 
 | **The Homebody** | 媽寶 (Ma-pó) | Sole Travel-sourcer — on a Travel draws **2** cards of the region she LEFT (V7 re-theme) |
 | **The Big Eater** | 大胃王 (Tuā-uī-ông) | Keep all 3 on a Visit + a Greedy-Grab 4th; hazards fire twice on his Visit |
 | **The Influencer** | 網紅 (Bāng-âng) | Followers-max **starts at 4**; goes last in turn order |
-| **The Big Brother** | 大哥 (Tuā-ko) | Wins a Follower-fight on a **tie** (needs only to *match* the biggest crowd, not exceed it) |
+| **The Big Boss** | 老大 (Lāu-tuā) | Wins a Follower-fight on a **tie** (needs only to *match* the biggest crowd, not exceed it) |
 | **The Globetrotter** | 阿嬤 (A-má) | Reaches any region in one Travel + Scheduled-Maintenance-immune; flaw-free *(the fuel buff was NOT adopted — see `characters.csv` C6)* |
 
 ---
@@ -87,7 +87,7 @@ Phase-1 verdict: 3–5p healthy, **6p broken** (0% last-train / 71% stall — a 
 - [ ] **Reconcile** the deck-clock with the existing vendor-claims clock (replace it, or keep a per-count-scaled claims-clock as a secondary end) — pick the cleanest single model; scale the clock track per count.
 - [ ] **Lost-war dial-drop sink** — lose a promotion war → Followers-max dial down **1 (day) / 2 (night)**. Spec the **floor** (below start? at 1? at 0?) and the **committed-over-max** interaction (return Followers to supply, player's choice, until within cap).
 - [ ] Flag the load-bearing **sub-forks** for a CD quick-confirm (deck sizes, night "shift gears", clock reconciliation, dial-drop floor); commit + push the spec.
-- [ ] **Gated re-sim across 3–6** (CD go required): must show **6p now COMPLETES** (last-train, not stall), the **economy TIGHTENS** (slack_night down), and the **character band + tickets-only + seat fairness hold**. Re-read 阿嬤 (floor) + 網紅/大哥 (6p-hot) post-fix. Commit results.
+- [ ] **Gated re-sim across 3–6** (CD go required): must show **6p now COMPLETES** (last-train, not stall), the **economy TIGHTENS** (slack_night down), and the **character band + tickets-only + seat fairness hold**. Re-read 阿嬤 (floor) + 網紅/老大 (6p-hot) post-fix. Commit results.
 
 ## PHASE 2 — design review + lock (bg-design + guardian sweep)
 

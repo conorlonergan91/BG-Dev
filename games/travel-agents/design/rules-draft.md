@@ -75,7 +75,7 @@ Twenty thousand hungry followers.
 She doesn't chase trends.  
 She accidentally causes them.
 
-### The Big Brother 大哥
+### The Big Boss 老大
 
 > *"Funny thing… everything always works out better when I'm around."*
 
@@ -88,7 +88,7 @@ The vendor insists you try the expensive seafood "on the house."
 
 Nobody argues.  
 Nobody asks questions.  
-Everyone simply agrees that Big Brother's tour should probably go first.  
+Everyone simply agrees that Big Boss's tour should probably go first.  
 Just… seems easier that way.
 
 ### The Globetrotter 阿嬤
@@ -171,7 +171,7 @@ on a win or back to your **own supply** on a loss (§5).
 A face-up vendor goes to whoever draws the **biggest crowd** for it. To Bribe a vendor you stand with:
 
 1. hold **strictly more of your followers on it than any single rival** — an outright plurality (a *tie*
-   claims nothing; the Big Brother 大哥 alone wins by matching);
+   claims nothing; the Big Boss 老大 alone wins by matching);
 2. **pay its ingredients**, minus your region discounts (the crowd decides only *who* pays — there is
    **no follower cost**).
 
@@ -179,7 +179,7 @@ Take it onto your tour and complete any **Booking** it satisfies (§6). Your fol
 board**; each loser's scatter to their **own supply** (the crowd drifts to the rival's stall, never onto
 it) — the whole cost of losing. **Leave the slot empty** for now.
 
-**A tie just blocks.** Level for the lead (no Big Brother present)? None may claim; the crowds **ride** —
+**A tie just blocks.** Level for the lead (no Big Boss present)? None may claim; the crowds **ride** —
 Promote again to break it, or walk away and leave them.
 
 **Stalls are scarce.** A claimed or emptied slot stays **empty** until the round's-end refill, and a stall
@@ -289,7 +289,7 @@ short:
 - **The Big Eater 大胃王** — on a **Visit**, keep all **3** (may grab a 4th, but **send 1 follower back to
   your supply**). Flaw: hazards fire **twice** on his Visit.
 - **The Influencer 網紅** — a deeper crowd: **8** followers, not 6. Flaw: takes the **last** seat.
-- **The Big Brother 大哥** — he **wins ties** (need only to **match** the biggest crowd).
+- **The Big Boss 老大** — he **wins ties** (need only to **match** the biggest crowd).
 - **The Globetrotter 阿嬤** — her **Travel reaches any region** in one action; **immune** to Scheduled
   Maintenance. Each trip **tires her crowd**: 1 follower back to supply.
 

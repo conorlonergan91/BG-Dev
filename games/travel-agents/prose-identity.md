@@ -147,7 +147,7 @@ place**:
 | "'You're too thin!' She won't take no. Take 1 free Seafood." — the auntie is warm, generous, real. | "The pushy local forces food on you." — makes the local a caricature / an obstacle. **The #1 don't.** |
 | "This isn't a bribe, it's a marketing opportunity." — the joke is the *agent's* spy-caper self-image. | "You bribe the corrupt vendor." — makes the vendor corrupt; inverts the whole rail. |
 | "The whole coast smells like a smoothie." — specific, sensory, true (Mango Season). | "Exotic tropical fruits abound!" — generic, touristic, an outsider's gaze. |
-| "Nobody's quite sure what he actually does. They just know everybody knows him." — warm rogue, deadpan. | "He's a gangster who makes people afraid." — menace; breaks the warm-鄰居-大哥 read. |
+| "Nobody's quite sure what he actually does. They just know everybody knows him." — warm rogue, deadpan. | "He's a gangster who makes people afraid." — menace; breaks the warm-鄰居-老大 read. |
 | "You cut a corner and it showed — some of the crowd drifts elsewhere." — rueful shrug. | "You FAILED. Lose 2 Followers." — scold + a bare social-media feel-bad. |
 | "One more 關東煮 for the road." — the specific convenience-store staple, told plainly. | "Grab some snacks at the local mini-mart." — flattened, generic, no affection. |
 | A CANCELLED tour is *"ah, that one didn't run in time."* | A CANCELLED tour is *"failed / dead / lost."* — punitive register the piles' names guard against. |
@@ -180,9 +180,10 @@ Carry these in every pass. They cross-reference `identity.md` (§Tone & vibe, §
   `bg-publishing` for a paid community consultant before final/print. Don't write final copy around
   them until cleared.
 - **The two load-bearing character reads** (blessed *only while warm*): keep **The Homebody (媽寶)**
-  affectionate-not-mocking and **The Big Brother (大哥)** a warm neighbourhood rogue, never a menacing
-  gangster or an Orwellian "Big Brother." The Big Brother is the #1 name consultant watch-item — the
-  English doesn't automatically carry the warm 大哥 sense, so the *voice* (and art) must.
+  affectionate-not-mocking and **The Big Boss (老大)** a warm, affectionate fixer, never a menacing
+  gangster or a triad/gang caricature. The Big Boss is the #1 name consultant watch-item — 老大 carries a
+  boss/gang-leader connotation, so the warm-fixer read does NOT come for free; the *voice* (and art) must
+  carry it, and the portrayal is **consultant-gated** before final/print.
 
 ---
 

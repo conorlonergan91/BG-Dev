@@ -100,7 +100,7 @@ python3 $T/boards/build_board.py --type regionmap --spec components/map.json --t
 # when present, else the dashed placeholder. NOTE (CD 2026-08): the "no AI art in committed deliverables"
 # rail is LIFTED FOR THIS PROTOTYPE — the art-embedded boards below are what ships into exports/.
 mkdir -p build/mockups
-for slug in old-councillor homebody big-eater influencer big-brother globetrotter; do
+for slug in old-councillor homebody big-eater influencer big-boss globetrotter; do
     python3 $T/mockup/prep_mockup.py --image art/mockups/FIG-CHAR-$slug.png --key-bg \
         --fit 900x1330 --pad --outdir build/mockups --out FIG-CHAR-$slug.png
 done
