@@ -1,16 +1,29 @@
 # Mock-up kickoffs — paste one at a time (AFTER uploading the art-context zip)
 
 **Workflow (phone-friendly):**
-1. Upload **every `.md` from `ta-art-context.zip`** to ChatGPT as context/knowledge, in one go.
-2. **Attach a liked earlier character as a STYLE REFERENCE image** and tell the tool to *match that art
-   style* — this locks the look far better than words alone (CD's finding). Build the cast outward from
-   your favourite so they stay cohesive.
+1. Upload **every `.md` from `ta-art-context.zip`** to ChatGPT as context/knowledge, in one go. (The zip
+   sits at `games/travel-agents/art/ta-art-context.zip` — it bundles this file + `art-style.md` + the six
+   component briefs + one style-reference PNG. It is **regenerable** — rebuild it with the one-liner in the
+   zip's `README.txt` whenever a brief changes.)
+2. **Attach a liked earlier character/card as a STYLE REFERENCE image** and tell the tool to *match that art
+   style* — this locks the look far better than words alone (CD's finding). The zip ships
+   `FIG-CHAR-influencer.png` as the reference; build the whole set outward from your favourite so it stays
+   cohesive.
 3. Then paste **one kickoff block below per generation.**
 
 **The big idea:** each character's POSE should **dramatize their game ability** — not just "running."
 Zany, high-energy, competitive (it's a race-and-battle game), but warm — and the original polished cartoon
-style, a clean single-character cut-out on a plain background, no scenery. Mock-ups only (final art is
-human-illustrated). Send me the PNGs (or drop them in `build/mockups/`) and I'll key + fit + embed them.
+style, a clean single-subject cut-out on a plain background, no scenery. Send me the PNGs (or drop them in
+`build/mockups/`) and I'll key + fit + embed them.
+
+> **Policy note (CD steer 2026-08 — prototype).** The studio's default "no AI final art" rail is **lifted
+> for THIS prototype**: AI art is now wanted for the prototype deliverables (characters, vendors, tours,
+> map backdrop, cover), so the blocks below are **real, paste-ready generation prompts.** The
+> **sensitivity rails stay fully binding** — they are about *content*, not about AI-vs-human: Traditional
+> 繁體 (never Simplified); secular only; dignified locals (charming exaggeration, never ethnic caricature);
+> real dishes/places rendered faithfully; **the two Indigenous dishes (E01 竹筒飯, E04 石板烤肉) remain
+> consultant-gated** — generate only a generic, respectful placeholder and get a paid Paiwan/Rukai/Amis
+> community consultant's sign-off before any such art is used. English name first, everywhere.
 
 ---
 
@@ -48,27 +61,53 @@ Generate a mock-up illustration of THE BIG BROTHER (大哥) for the board game T
 
 ---
 
-## The shared MAP — NOT an AI mock-up (code-rendered functional board)
+## The shared MAP — an illustrated BACKDROP (not a replacement for the functional board)
 
-**There is NO map kickoff to paste.** The shared table map is the **code-rendered functional board**
-`tools/boards/build_board.py --type regionmap` (two states, `--phase day|night`), rendered by `make.sh`
-into `build/map-day.png` / `build/map-night.png` and committed to `exports/map-day.png` /
-`exports/map-night.png`. It is **not generated from an AI prompt.**
+**⚑⚑ INTEGRATION DECISION THE CD MUST MAKE — read before generating.** The map is a **functional
+play-board**: it carries real, correctly-scaled homes for physical components — the four-region diamond
+with per-region **vendor-card slots + MARKET decks**, the central **開團 Booking deck + face-up Booking
+row** (the sole prize row), the **HSR spine** with the on-track **停 Scheduled-Maintenance** event, the
+**Taipei pawn start**, and the **Followers / Trending** supply. A freeform AI map **cannot hold those play
+positions** — that is exactly why the earlier soft-watercolour AI map was retired and the board went
+code-rendered.
 
-**Why (CD steer 2026-08).** The earlier freeform DAY/NIGHT AI map came back a **soft watercolour** that was
-**off-style** with the bold stylised-cartoon character/player boards AND — fatally — had **nowhere to place
-the cards, decks, and tokens** that must physically sit on the board. A freeform illustration can't hold
-precise play positions. So the map is a **functional board first**, styled to match the house hand (bold
-vector linework, bold flat colour, night-market palette, day/night chrome, inner gold hairline frame). It
-already carries a real, correctly-scaled home for every component: the four-region diamond with per-region
-vendor-card slots + market decks, the deck-driven clock band + face-up Booking row, the HSR spine with the
-on-track 停 Scheduled-Maintenance event label, the Taipei pawn start, the Followers/Trending supply, and the
-per-count setup table.
+So there are two ways AI art can enter the map, and the CD picks:
 
-**If you want to change the map,** edit `render_regionmap` in `build_board.py` (owned by `bg-infodesign`,
-laid out with `bg-art-director`) and/or the spec `components/map.json` — never paste an AI map prompt.
-A *future* human-illustrated backdrop would paint **behind** the fixed functional zones, never move or bury
-them (see the Practicality rail in `art/art-style.md`).
+- **(A) ART-AS-BACKDROP — recommended.** Generate a **quiet illustrated Taiwan skin** (below) and
+  **composite the code-rendered functional overlay on top of it** — the slots, decks, clock/Booking row,
+  HSR spine + 停, labels, and supply stay exactly where `build_board.py --type regionmap` puts them. The
+  art is a warm underlay; **playability is fully preserved.** The compositing (functional layer over the
+  art) is a **follow-up render step** wiring the PNG in behind the icon layer in `render_regionmap` — it is
+  **not automatic** and needs `bg-infodesign` + `bg-prototyper` to do it.
+- **(B) FULL-REPLACEMENT — NOT recommended.** Let the AI image *be* the board. This looks lush but
+  **destroys every play position** (nowhere exact for cards/decks/tokens; the 停 slot, clock band, and
+  Booking row vanish into scenery). Only viable as a pure "table-dressing" image nobody actually places
+  components on.
+
+**My recommendation: (A) backdrop.** Generate the skin below, keep the code overlay, composite as a
+follow-up step. That keeps the warmth AND the function.
+
+**The map kickoff (paste — generate the DAY face first, then reference it for the NIGHT face so they
+register back-to-back).** Keep the **whole centre and the four region zones OPEN and low-contrast** — the
+functional overlay (vendor slots, market decks, Booking deck + row, HSR spine + 停, pawn start, supply)
+composites on top, so the art must not draw any slots, boxes, grid, clock, or text.
+
+### `FIG-MAP-ISLAND-day` — the daytime table backdrop
+```
+Generate a mock-up game-board BACKDROP for Travel Agents: Taiwan, in the art style of the attached reference. Cite art/art-style.md. A softly stylised warm-daytime map of TAIWAN as a night-market travel board: the island reads as four soft COLOUR-ZONES — North 北 top (lantern vermilion), Central 中 left (jade teal), South 南 bottom (golden amber), East 東 right (dusk indigo) — with a single clean drawn HSR rail line running down the North↔South spine. Warm dawn glow, soft gold light, night-market palette on bao-paper cream. Add only ONE or TWO tiny warm accents (e.g. one paper lantern, one little steaming bowl). Keep the WHOLE CENTRE and all four zones CLEAN, OPEN and LOW-CONTRAST — a quiet backdrop only. ABSOLUTELY NO card slots, boxes, grid, decks, clock, dials, tokens, buildings, crowds, people, dense stalls, lantern strings, NO text or labels of any kind (a functional layer will be drawn on top by code). Reads UPRIGHT from every seat (no single "front"). Secular only — no temple, deity, or worship imagery. Traditional 繁體 only if any glyph appears (prefer none). Landscape ~1.36:1, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-day.png.
+```
+
+### `FIG-MAP-ISLAND-night` — the matched nighttime face
+```
+Now generate the NIGHT face of the SAME map backdrop, matching the attached day face exactly in layout and composition so they register back-to-back (double-sided board). Identical island shape, identical four soft colour-zones (North 北 top vermilion · Central 中 left jade · South 南 bottom amber · East 東 right indigo), identical single HSR rail down the N↔S spine. ONLY the light flips: soft festive lantern-NEON glow (lavender / magenta) + a gentle moon — region identity colours stay WARM, never a cold or red-alarm register. Same one or two tiny accents. Whole centre and all four zones stay CLEAN, OPEN, LOW-CONTRAST. NO card slots, boxes, grid, decks, clock, dials, tokens, buildings, crowds, people, dense stalls, lantern strings, NO text or labels (code draws the functional layer on top). Upright from every seat. Secular only. Landscape ~1.36:1, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-night.png.
+```
+
+**Scale note.** The board slot is **2280 × 1680 px (~1.36:1)** at 300 DPI (see the SCALE TABLE). Generate
+large, export at that aspect. Prep with `python tools/mockup/prep_mockup.py --image <download> --fit
+2280x1680 --pad --game games/travel-agents --out FIG-MAP-ISLAND-day.png` (no `--key-bg` — the map is a
+full backdrop, not a cut-out). Per-region illustrated vignettes (`FIG-MAP-NORTH` etc.) are **NOT** part of
+this soft backdrop — the regions read as plain colour-zones (richer per-region scenes stay a future option
+in `art/map-board.md`, East consultant-gated).
 
 ---
 
@@ -244,4 +283,20 @@ FIG-ING-sugar — 糖 SUGAR (common — Central & South). Cane sugar: cut cane +
 ```
 ```
 FIG-ING-veg — 菜 VEGETABLES (common — North & East). A MIX: leafy greens + cabbage + radish/daikon + bamboo shoot + scallion + roselle + wintermelon. Emblem: a NEW leaf mark (green) — must read as clearly DISTINCT in shape from Meat's hex.
+```
+
+---
+
+## The BOX COVER — `FIG-COVER` (the night-market identity hero)
+
+**Shared rails (this section):** cite the uploaded `art/art-style.md` (the one look) + this file's STYLE
+ANCHOR; **attach an approved character mock-up as a STYLE-REFERENCE image** so the cover reads as the same
+hand as the cast. This is the game's **identity hero** — the warmth of the whole game at a glance: rival
+travel agents racing an island of street food. Unlike the drop-in slots, the cover is a **standalone hero
+image with no functional overlay** — so it CAN be a full painted scene (this is the one place scenery is
+wanted). Generate large; a **~1:1 to ~5:4 box-top framing** works for a mock-up. Save
+`build/mockups/FIG-COVER.png`. Mock-up prop — not the final printed cover.
+
+```
+Generate a mock-up BOX COVER illustration for the board game Travel Agents: Taiwan, in the art style of the attached reference. Cite art/art-style.md. HERO IDENTITY IMAGE: a joyful, chaotic race between rival TRAVEL AGENTS building the island's best Taiwanese street-food tour — capture the WARMTH and competitive glee at the heart of the game. Compose a lively night-market hero scene: two or three of the game's characters (e.g. the speed-demon granny on her scooter popping a wheelie, the influencer with her selfie-stick, the big-brother with his takeaway bag) scrambling through a glowing night-market lane strung with warm paper lanterns, steaming bowls and stalls of famous Taiwanese dishes (bao, beef noodle, bubble tea, grilled sausage) flying past, a stylised map of Taiwan and a drawn HSR rail hinted in the background, motion and speed lines. Leave a clean, calmer band across the TOP for a title treatment (do not draw the title text — leave space for it). STYLE: the warm, polished stylised cartoon of the cast — clean confident linework, bold mostly-flat colour with soft cel-shading, expressive dignified faces, NOT an over-caricatured big-head style; night-market palette (warm daytime golds/ambers glowing into neon-lit night violets/teals) on a warm ground. Dignified Taiwanese locals and faithfully-rendered real dishes; charming personality exaggeration, NEVER ethnic caricature or mockery; SECULAR only — no temple, deity, ghost-month or funerary imagery. Traditional 繁體 only if any glyph appears (prefer none — leave title space blank). Full painted scene (this is the ONE asset where scenery is wanted). Box-top framing ~1:1 to ~5:4, high-resolution PNG (not SVG). Save build/mockups/FIG-COVER.png.
 ```
