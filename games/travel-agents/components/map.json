@@ -7,7 +7,7 @@
   "hsr_closed_marker": true,
   "clock_model": {
     "model": "vendor-depletion",
-    "driver": "the finite VENDOR pools — the day pool (13) then the night pool (11) deplete; the phase ends when its pool is exhausted. NOT the Booking deck.",
+    "driver": "the finite VENDOR pools — the day pool (13) then the night pool (12) deplete; the phase ends when its pool is exhausted. NOT the Booking deck.",
     "dusk": "黃昏 DUSK — fires when the DAY vendor pool is exhausted (all day vendors claimed or sold out, deck empty, no day stall in play) — finish the turn, flip to night.",
     "last_train": "末班車 LAST TRAIN — fires when the NIGHT vendor pool is exhausted — finish the round, then end.",
     "retired": "the vendor-claims clock, its dusk@/last-train@ thresholds, the +1-on-Bribe step, and the stall backstop are ALL DELETED (§11 canon). ALSO DELETED (§17): the Booking-deck-driven clock and its seeded 黃昏/末班車 boundary cards — superseded by vendor depletion; the Booking deck is now pure tour-supply."
@@ -15,7 +15,7 @@
   "vendor_clock": {
     "_note": "V7-M VENDOR-DEPLETION CLOCK + the CLOSING-TIME DIE (§17, CD refinement 2026-08-10): the finite vendor pools ARE the clock (DUSK = day pool exhausted; LAST TRAIN = night pool exhausted), and the Closing-Time die — the game's FIRST dice/randomness — is the forcing function that thins the board when claiming stalls. It REPLACES the deterministic sell-out cadence.",
     "day_pool": 13,
-    "night_pool": 11,
+    "night_pool": 12,
     "track_length": {"3": 2, "4": 3, "5": 3, "6": 3},
     "_track_note": "rounds per Closing-Time track cycle, per player count. ★ CORRECTED (decision-log dbd7dda, 2026-08-10): L=2 at 3p, L=3 at 4/5/6p — the die is a 3p-only PACE aid (a shorter track ticks the 3p clock a touch faster so the meatier 3p game doesn't drag), NOT a per-count balance lever. ONE physical die + ONE 3-space track printed on the board serve every count (at 3p you simply roll after space 2). L stays the #1 sim PACING KNOB — the CD-gated full run may test L=2 at 4/5p too if ~48-50 tpp reads long.",
     "die_faces": ["N", "C", "S", "E", "BLANK", "BLANK"],
@@ -57,9 +57,9 @@
     "Win a contested stall → your followers on it come home to YOUR BOARD (kept). Lose it → your followers go back to YOUR OWN supply (re-rally them); they never join the winner."
   ],
   "vendor_pool": {
-    "_note": "★ CORRECTED SCALING (decision-log dbd7dda, 2026-08-10) — the FULL vendor pool is used at EVERY player count: NO per-count pool subset. The earlier `1c22551` sweep's per-count pool-SHRINK BACKFIRED — tours are completed by CLAIMING vendors, so fewer vendors starves tour completion → the vendor-only HOARDER wins at every count AND it regresses 4-6p. So the day pool stays the full 13 day vendors and the night pool the full 11 night vendors at 3/4/5/6p. The lever that fixes 3p is NOT here (it is the bookings `counts` tag — drop the 7 HEAVY >=4-claim tours at 3p — plus the die as a 3p pace aid); this block only documents that the pool must NOT be subset. Only the face-up SLOTS below scale (thematically), never the pool.",
+    "_note": "★ CORRECTED SCALING (decision-log dbd7dda, 2026-08-10) — the FULL vendor pool is used at EVERY player count: NO per-count pool subset. The earlier `1c22551` sweep's per-count pool-SHRINK BACKFIRED — tours are completed by CLAIMING vendors, so fewer vendors starves tour completion → the vendor-only HOARDER wins at every count AND it regresses 4-6p. So the day pool stays the full 13 day vendors and the night pool the full 12 night vendors at 3/4/5/6p (12 = 11 unique night dishes + the N08 §17.6 duplicate-commodity 珍奶 stall added 2026-08-10 to un-orphan the bubble-tea / Dadaocheng span tours). The lever that fixes 3p is NOT here (it is the bookings `counts` tag — drop the 7 HEAVY >=4-claim tours at 3p — plus the die as a 3p pace aid); this block only documents that the pool must NOT be subset. Only the face-up SLOTS below scale (thematically), never the pool.",
     "day": 13,
-    "night": 11,
+    "night": 12,
     "per_count_subset": false
   },
   "vendor_slots": {
