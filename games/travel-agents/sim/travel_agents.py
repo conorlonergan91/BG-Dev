@@ -78,6 +78,7 @@ from __future__ import annotations
 import csv
 import json
 import os
+import random
 import statistics
 import sys
 from collections import Counter, deque
@@ -109,7 +110,15 @@ HAND_LIMIT     = int(os.environ.get("TA_HAND_LIMIT", "3"))    # in-progress Book
 # current-phase discard (the phase-to-box guarantee the night-reshuffle assertion checks).
 EVENT_SCALE   = float(os.environ.get("TA_EVENT_SCALE", "1.0"))   # switchable event-density multiplier (§15.7 knob)
 EVENTS_OFF    = os.environ.get("TA_EVENTS_OFF", "0") == "1"       # deal ZERO events (A/B: event contribution delta)
-STALL_CAP  = int(os.environ.get("TA_STALL_CAP", "60"))       # safety net (deck-clock is guaranteed to fire)
+STALL_CAP  = int(os.environ.get("TA_STALL_CAP", "60"))       # ultimate net (vendor clock is guaranteed to fire)
+
+# --- §17 VENDOR-DEPLETION CLOCK + CLOSING-TIME DIE (2026-08-10, this re-model) ---------------------
+# The clock is now the finite VENDOR pools (day 13 / night 11); a phase ends when its pool empties. The
+# Closing-Time die (the game's FIRST randomness) is the forcing function that thins the board when claims
+# stall. These knobs drive the re-smoke (L is the #1 pacing knob); the die is SEEDABLE for reproducibility.
+TRACK_L_OVERRIDE = int(os.environ.get("TA_TRACK_L", "0"))    # 0 = per-count track_length from map.json; else force L
+DIE_SEED_OVERRIDE = os.environ.get("TA_DIE_SEED", "")        # fixed die seed (all games) for exact replay
+DIE_FORCE  = os.environ.get("TA_DIE_FORCE", "")              # force EVERY roll to this face (test hook: "BLANK"/"N"…)
 
 # --- §18 VISIT_MODE toggle (the A/B the re-sim isolates) ------------------------------------------
 # "straight" = Option A (BASELINE, §18.2/§18.6): draw straight to your keep-count, events fire+discard
@@ -126,7 +135,10 @@ VISIT_MODE    = os.environ.get("TA_VISIT_MODE", "straight")      # "straight" (A
 # INJECTS the two §15.9-spec'd cards synthetically into the night C/S pools (see _inject_tours_boons),
 # guarded by this flag so it is auditable + switchable. When bg-developer adds them to events.csv, set
 # this OFF and they load from the CSV like every other event.
-TOURS_BOONS   = os.environ.get("TA_TOURS_BOONS", "1") == "1"    # inject §15.9 CLEAR + SALVAGE (default ON)
+# §17 re-model: the real CLEAR (t_clear) + SALVAGE (t_salvage) rows now EXIST in events.csv, so the
+# synthetic injection is RETIRED (default OFF) — they load from the CSV like every other event and are
+# routed by VERB in _fire_event (the CSV's `rival` scope on salvage is ignored; verb dispatch wins).
+TOURS_BOONS   = os.environ.get("TA_TOURS_BOONS", "0") == "1"    # LEGACY synthetic inject (now default OFF)
 NUDGE_CAP     = int(os.environ.get("TA_NUDGE_CAP", "1"))        # §15.5 rail 6: max ✦ leader-hazard hits / leader / round
 
 # ==================================================================================================
@@ -490,6 +502,19 @@ def _event_mix_for(n):
     return t["day"], t["night"]
 
 
+# §17 CLOSING-TIME DIE — faces are DATA (map.json.vendor_clock.die_faces); 4 region faces + 2 BLANK.
+DIE_FACES = tuple(MAP["vendor_clock"]["die_faces"])
+
+
+def _track_length(n):
+    """Rounds per Closing-Time track cycle for this count. TA_TRACK_L overrides for the L-sweep; else the
+    per-count value from map.json.vendor_clock.track_length (baseline 3 for all counts)."""
+    if TRACK_L_OVERRIDE:
+        return TRACK_L_OVERRIDE
+    tab = MAP["vendor_clock"]["track_length"]
+    return int(tab.get(str(n)) or tab.get(str(min(max(n, 3), 6))) or 3)
+
+
 def _ing_cards(r, phase):
     """The fixed ingredient-card multiset for a region+phase market deck (ingredients.csv)."""
     cards = []
@@ -592,6 +617,15 @@ class TravelAgentsGame:
             "players": players, "act": 1, "turn": 0, "cur": 0, "round": 0,
             "end_turn": None, "end_cause": None, "done": False, "_finalized": False,
             "dusk_turn": None, "last_turn": None, "first_night_win_turn": None,
+            # §17 VENDOR-DEPLETION CLOCK + CLOSING-TIME DIE. The die is a SEPARATE seedable RNG so it is
+            # reproducible independently of the shuffle stream (TA_DIE_SEED pins it; else it is derived
+            # deterministically from this match's rng). `track` counts rounds 0→L-1; a roll fires at L.
+            "track": 0,
+            "die": random.Random(int(DIE_SEED_OVERRIDE)) if DIE_SEED_OVERRIDE else random.Random(rng.getrandbits(63)),
+            "die_rolls": 0, "die_blanks": 0, "die_noremovable": 0,
+            "die_removals": 0, "die_removals_contested": 0,
+            # deadlock backstop tracker: rounds the face-up SET has been unchanged (a proxy for "no progress")
+            "faceup_sig": None, "static_rounds": 0, "backstop_fires": 0,
             # ---- diagnostics / §9 probes ----
             "claims": 0, "contested_claims": 0, "claim_by_region": {r: 0 for r in REGIONS},
             "night_claims": 0, "prestige_completions": 0, "cancels": 0,
@@ -838,10 +872,11 @@ class TravelAgentsGame:
         if s["turn"] % s["n"] == 0:
             s["round"] += 1
             if SLOW_REFILL:
-                self._refill_round(s)
+                self._refill_round(s)       # rolls the Closing-Time die (§17) then slow-refills
             for q in range(s["n"]):
                 s["players"][q]["visit_keep_bonus"] = 0
             s["nudged_this_round"].clear()     # §15.5: the no-pile-on ceiling resets each round
+            self._check_pool_boundary(s)    # §17: DUSK / LAST-TRAIN off vendor-pool emptiness + backstop
         s["cur"] = s["turn"] % s["n"]
 
         if s["end_turn"] is None and s["turn"] >= STALL_CAP * s["n"]:
@@ -1014,7 +1049,11 @@ class TravelAgentsGame:
             s["fol"].setdefault(nv, [0] * s["n"])
 
     def _refill_round(self, s):
-        """End-of-round SLOW REFILL: top every region back up to its face-up count from its deck."""
+        """End-of-round: (1) roll the §17 CLOSING-TIME DIE (BEFORE topping up — it thins the board even when
+        claims stall), then (2) SLOW REFILL — top every region back up to its face-up count from its finite
+        deck. The die removal + the claim both net-drain the finite pool by one (a removed slot refills from
+        the deck), so the pool is monotone and the phase boundary is guaranteed."""
+        self._closing_time_die(s)
         for r in REGIONS:
             while len(s["faceup"][r]) < s["slots"][r] and s["vdeck"][r]:
                 nv = s["vdeck"][r].pop()
@@ -1022,6 +1061,71 @@ class TravelAgentsGame:
                     continue   # reserve d: apex stalls, once gone, do not come back (drop, try next)
                 s["faceup"][r].append(nv)
                 s["fol"].setdefault(nv, [0] * s["n"])
+
+    def _closing_time_die(self, s):
+        """§17.3 the Closing-Time die forcing function. Every L rounds (L = track_length, baseline 3), roll a
+        custom d6 [N,C,S,E,BLANK,BLANK] on the SEEDABLE die RNG. A region face → remove the OLDEST (leftmost,
+        by insertion order) face-up stall in that region — CONTESTED OR NOT — it is GONE (never returned to
+        the deck); every committed follower on it (INCLUDING a live contest) returns HOME to its owner's BOARD
+        (kept, no re-grow, NO resource penalty). BLANK, or a rolled region with no removable face-up stall →
+        nothing (no reroll). The die can only SPEED the close, never block it."""
+        L = _track_length(s["n"])
+        s["track"] += 1
+        if s["track"] < L:
+            return
+        s["track"] = 0
+        face = DIE_FORCE if DIE_FORCE else s["die"].choice(DIE_FACES)
+        s["die_rolls"] += 1
+        if face == "BLANK":
+            s["die_blanks"] += 1
+            return
+        stalls = s["faceup"].get(face, [])
+        if not stalls:
+            s["die_noremovable"] += 1        # rolled region has no removable face-up stall → nothing
+            return
+        vid = stalls[0]                       # OLDEST / leftmost by insertion order
+        stalls.remove(vid)
+        fol = s["fol"].get(vid, [0] * s["n"])
+        contested = sum(1 for q in range(s["n"]) if fol[q] > 0) >= 2
+        for q in range(s["n"]):
+            if fol[q] > 0:
+                s["players"][q]["board"] += fol[q]   # HOME to board (no loss) — the DUSK-unclaimed treatment
+        s["fol"].pop(vid, None)
+        for q in range(s["n"]):
+            s["commit_turn"].pop((vid, q), None)
+        s["star"].discard(vid)
+        s["die_removals"] += 1
+        if contested:
+            s["die_removals_contested"] += 1
+
+    def _check_pool_boundary(self, s):
+        """§17.1/§17.3 fire DUSK / LAST-TRAIN off VENDOR-POOL emptiness (NOT the Booking deck). Called once
+        per end-of-round. DAY pool exhausted (all vdeck + all faceup empty) → DUSK; NIGHT pool exhausted →
+        LAST TRAIN. The deadlock backstop covers the all-BLANK / zero-claim tail: the pool is monotone, so a
+        static face-up set for a full track cycle with an empty deck (or, as an intent-faithful ultimate
+        guard against a full-deck zero-progress freeze, static for 3 cycles) fires the boundary too."""
+        if s["done"]:
+            return
+        L = _track_length(s["n"])
+        decks_empty = all(not s["vdeck"][r] for r in REGIONS)
+        faceup_empty = all(not s["faceup"][r] for r in REGIONS)
+        sig = tuple(sorted(vid for r in REGIONS for vid in s["faceup"][r]))
+        if sig == s["faceup_sig"]:
+            s["static_rounds"] += 1
+        else:
+            s["faceup_sig"] = sig
+            s["static_rounds"] = 0
+        pool_gone = decks_empty and faceup_empty
+        backstop = decks_empty and s["static_rounds"] >= L        # §17.3 spec backstop (realistic endgame)
+        freeze_guard = s["static_rounds"] >= 3 * L                # intent-faithful net for the pathological case
+        if not (pool_gone or backstop or freeze_guard):
+            return
+        if not pool_gone:
+            s["backstop_fires"] += 1
+        if s["act"] == 1:
+            self._dusk(s)
+        elif s["end_turn"] is None:
+            self._trigger_end(s, "lasttrain")
 
     # -------- councillor home-gated draw --------
     def _councillor_draw(self, s, p):
@@ -1063,8 +1167,9 @@ class TravelAgentsGame:
         pl["tickets"].append(key)
         if s["mreserve"]:
             s["mrow"].append(s["mreserve"].pop())
-        else:
-            self._booking_deck_out(s)   # the deck ran out → the boundary card → phase transition
+        # §17: the Booking deck is NO LONGER the clock — it is finite tour-supply and does NOT reshuffle.
+        # If it runs dry the face-up row simply stops refilling; drawing a tour is optional supply, not a
+        # boundary trigger. DUSK / LAST-TRAIN now fire off VENDOR-POOL emptiness (see _check_pool_boundary).
 
     def _booking_want(self, s, p, key):
         """How much a bot wants to hold/claim a Booking. Favours ACHIEVABLE + near-complete Bookings
@@ -1111,8 +1216,11 @@ class TravelAgentsGame:
                     need[t] += short
         return need.most_common(1)[0][0] if need else SIG_TYPE[pl["pos"]]
 
-    # -------- the deck clock --------
+    # -------- DEPRECATED (§17): the old Booking-deck clock --------
     def _booking_deck_out(self, s):
+        """RETIRED by §17 (the vendor-depletion clock). No longer called — DUSK / LAST-TRAIN fire off
+        vendor-pool emptiness in _check_pool_boundary, not Booking-deck exhaustion. Kept only so any
+        stale external reference resolves; do not re-wire the clock to this."""
         if s["act"] == 1:
             self._dusk(s)
         elif s["end_turn"] is None:
@@ -1123,6 +1231,11 @@ class TravelAgentsGame:
             return
         s["act"] = 2
         s["dusk_turn"] = s["turn"]
+        # §17: NIGHT starts on a fresh clock — reset the Closing-Time track + the deadlock tracker so the
+        # night pool gets a full cycle before the first night roll and the day's static-count doesn't leak.
+        s["track"] = 0
+        s["faceup_sig"] = None
+        s["static_rounds"] = 0
         rng = s["_rng"]
         # baseline endgame-tie resolver: force-clear any still-tied contested DAY stall
         if TIE_RESOLVER:
@@ -1791,6 +1904,14 @@ class TravelAgentsGame:
             "last_turn": float(s["last_turn"]) if s["last_turn"] is not None else float(s["turn"]),
             "end_by_lasttrain": 1.0 if s["end_cause"] == "lasttrain" else 0.0,
             "end_by_stall": 1.0 if s["end_cause"] == "stall" else 0.0,
+            "rounds": float(s["round"]),
+            # ---- §17 CLOSING-TIME DIE + vendor-depletion clock instruments ----
+            "die_rolls_per_game": float(s["die_rolls"]),
+            "die_removals_per_game": float(s["die_removals"]),
+            "die_removals_contested_per_game": float(s["die_removals_contested"]),
+            "die_blank_frac": float(s["die_blanks"] / s["die_rolls"]) if s["die_rolls"] else 0.0,
+            "die_noremovable_per_game": float(s["die_noremovable"]),
+            "backstop_fires_per_game": float(s["backstop_fires"]),
             "first_night_win_turn": float(s["first_night_win_turn"]) if s["first_night_win_turn"] else float(s["turn"]),
             # ---- MAKE-OR-BREAK PROBE #1: does the battle happen more? (numerator + denominator) ----
             "claims_per_game": float(s["claims"]),
@@ -1891,7 +2012,8 @@ class TravelAgentsGame:
 
 GAME = TravelAgentsGame()
 TITLE = ("Travel Agents: Taiwan — V7-M (Follower MEEPLES + VENDOR SCARCITY · six lanes · "
-         "plurality [tie blocks] · 大哥 margin dial N · slow per-round refill · deck-driven clock)")
+         "plurality [tie blocks] · 大哥 margin dial N · slow per-round refill · §17 VENDOR-DEPLETION clock "
+         "+ Closing-Time die)")
 
 
 # ==================================================================================================
@@ -2238,10 +2360,11 @@ def _step_with_spread(self, s, actions, rng):
         if s["turn"] % s["n"] == 0:
             s["round"] += 1
             if SLOW_REFILL:
-                self._refill_round(s)
+                self._refill_round(s)       # rolls the Closing-Time die (§17) then slow-refills
             for q in range(s["n"]):
                 s["players"][q]["visit_keep_bonus"] = 0
             s["nudged_this_round"].clear()     # §15.5: the no-pile-on ceiling resets each round
+            self._check_pool_boundary(s)    # §17: DUSK / LAST-TRAIN off vendor-pool emptiness + backstop
         s["cur"] = s["turn"] % s["n"]
         if s["end_turn"] is None and s["turn"] >= STALL_CAP * s["n"]:
             self._trigger_end(s, "stall")
