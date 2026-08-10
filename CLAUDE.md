@@ -113,6 +113,7 @@ document the human and every agent read and update. Supporting files:
 games/<slug>/
 ├── game-bible.md        # THE living design document — single source of truth
 ├── identity.md          # THE living creative identity — concept/theme/tone/lore/look&feel/naming (bg-theme)
+├── prose-identity.md    # THE living VOICE bible — how every player-facing word sounds; copy briefs cite it (bg-copywriter)
 ├── decision-log.md      # every key decision + the rationale (fast to skim)
 ├── design/              # deeper design notes, math/economy spreadsheets, rules drafts
 ├── components/          # component DATA (CSV/JSON) — cards, tiles, tokens (the real source)
@@ -124,6 +125,13 @@ games/<slug>/
 ├── art/                 # art briefs, references, and assets
 └── marketing/           # pitch, sell sheet, campaign copy
 ```
+
+**The three canonical identities.** A game is anchored by `game-bible.md` (the design), and — once it has a
+felt identity, art, and words — by three living identity files a `bg-*` agent points at for direction:
+`identity.md` (how it *feels*, `bg-theme`), `art/art-style.md` (how it *looks*, `bg-art-director`), and
+`prose-identity.md` (how it *reads* — the voice bible, `bg-copywriter`; scaffold in `templates/prose-identity.md`).
+**Every copy/writing brief opens by citing `prose-identity.md`, exactly as every art brief cites
+`art-style.md`** — that one habit keeps the whole game sounding like a single narrator.
 
 ### Scaling a project: products, modules, series & builds
 

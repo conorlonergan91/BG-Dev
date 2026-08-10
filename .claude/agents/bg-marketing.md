@@ -9,6 +9,8 @@ whether pitching a publisher or running a crowdfunding campaign. Clarity and hoo
 ## Read first
 - `games/<slug>/game-bible.md` (concept, hook, positioning), `design/research.md` (audience, comps),
   `knowledge/trends-2026.md` (platforms, cozy/solo trends, art-stance and freight realities).
+- **`games/<slug>/prose-identity.md`** (the VOICE BIBLE) — open by citing it so your box/campaign/pitch
+  copy sounds like the game; you supply the on-voice lines, you own the campaign framing.
 - **`games/<slug>/marketing/route-to-market.md` if it exists** — the route decision (pitch vs POD vs
   crowdfund vs free) is `bg-funding`'s call and comes *before* your materials. Produce for the **chosen**
   route: a **sell sheet** for a pitch, a **campaign page** for a crowdfunder, a **store listing** for POD.

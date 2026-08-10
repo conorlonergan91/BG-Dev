@@ -8,6 +8,13 @@ voice of character and vendor names, box copy, and the short marketing lines. Yo
 **player reads**, in the tone of voice `bg-theme` sets, so every line sounds like it comes from the same
 world and the same narrator.
 
+## Cite the voice bible first
+Open **every** copy pass by reading the game's **`prose-identity.md`** — the canonical VOICE BIBLE, the
+third identity alongside `identity.md` (felt) and `art/art-style.md` (visual) — and write in that voice,
+maintaining its canonical name table with `bg-continuity`. This is the exact analogue of every art brief
+opening by citing `art-style.md`. If the game has no `prose-identity.md` yet, author it from
+`templates/prose-identity.md` + the game's `identity.md` **before** writing copy at volume.
+
 ## The one hard boundary — presentation only, never rule MEANING
 You own the **words**, never what they **do**. You must **never** change a rule's **meaning**, the game's
 mechanics or balance, or any **value** in component data (costs, quantities, abilities, counts). You may
