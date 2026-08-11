@@ -320,204 +320,186 @@ def _perk_visual(perk_code: str, region_suit: dict, theme: dict) -> tuple[str, s
 
 
 def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> str:
+    """CD REDESIGN 2026-08-11 (bg-infodesign) — the vendor FRONT is stripped to a HERO-FOOD card that still
+    carries every game-critical read, mirroring the ingredient-card discipline (embedded art + a clean,
+    label-light face).
+
+    CUT (decoration / duplication, not data): the 攤/小吃/名店 tier-fiction pill; the four verbose bilingual
+    section headers PAY 付 / CROWD 人潮 / POINTS 分 / ICON 圖示 (icons + values carry them now); the italic
+    strip-hint ("trophy / discount engine / drink"); the real-world place/flavour line (freed for the art —
+    it still lives in the data + rulebook); and the DUPLICATE apex mark — the old '名店 MARQUEE' pill AND the
+    separate '★ APEX 名店' box were the same fact twice, now ONE small ★.
+
+    KEPT as compact icon+value cells: REGION (band colour + emblem + N/C/S/E letter); PHASE (frame colour +
+    the bottom day/night ribbon); the PAY recipe COMPRESSED to grouped ×N chips drawn in the ingredient-card
+    pay-glyph language (white roundel + the type's colour+shape) so a chip and its ingredient card read as
+    ONE object, with the exact type-counts still readable; the cross-region → target badges + tag; the crowd
+    FLOOR (min_followers); the POINTS (vp); the day-engine DISCOUNT icon (region emblem + −1, on day FOOD
+    vendors only — night/drinks carry none); and the single ★ apex mark. A HERO IMAGE band embeds
+    FIG-VEND-<id>.png (self-contained data URI, never cropped); a vendor with no art falls back to the drawn
+    region emblem, exactly like an art-less ingredient card. Gated by _is_vendor → Beacon & every non-vendor
+    deck are byte-identical."""
     ink, text, muted, accent = theme["ink"], theme["text"], theme["muted"], theme["accent"]
     radius = theme["radius"]
     tfont, bfont = theme["title_font"], theme["body_font"]
     region = (row.get("type") or "").strip().lower()
     rsuit = resolve_suit(theme, region)
     rcol, remb = rsuit["color"], rsuit["emblem"]
-    # --- day/night treatment (data-driven off the `phase` column) ---
+    gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
+    violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
+    # --- phase (day/night): the OUTER frame colour + the bottom ribbon carry WHEN (region carries WHERE) ---
     pstyle = phase_style(row.get("phase"))
     frame_col = pstyle["frame"] if pstyle else ink
     page_cols = pstyle["page"] if pstyle else None
     ribbon = phase_ribbon_svg(pstyle, CARD_W, CARD_H, MARGIN, tfont)
-    gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
 
-    # V7-M MEEPLE/SCARCITY MODEL (bg-infodesign render rebuild 2026-08): a vendor's cost is its INGREDIENTS
-    # only (the recipe chips) and it is won by MOST FOLLOWERS on the stall (pure plurality — no printed
-    # number). Both the old violet Buzz badge (from the dropped `buzz_cost`) and the gold DRAW 人氣 gauge
-    # (from the dropped `draw`) are REMOVED — they now draw empty. The face carries: recipe chips + region +
-    # tier/apex marker + place/flavour + a textless "won by the biggest crowd" reminder. buzz/draw are not
-    # read at all now.
     recipe = [s.strip() for s in (row.get("recipe") or "").split(";") if s.strip()]
-    tier = str(row.get("tier", "")).strip()
-    icon = str(row.get("icon", "")).strip().upper()  # v6.3: N/C/S/E discount icon, or blank (trophy/drink)
+    icon = str(row.get("icon", "")).strip().upper()  # N/C/S/E discount icon (day food), or blank (night/drink)
     tags = str(row.get("tags", "")).lower()
-    is_apex = ("apex" in tags) or ("trophy" in tags)
-    is_drink = "drink" in tags
-    strip_hint = ("★ trophy" if is_apex else ("drink" if is_drink else
-                  ("discount engine" if icon else "no icon")))
+    is_apex = "apex" in tags                          # ★ marks the APEX vendor only (not every trophy)
+    tid = str(row.get("id", "")).strip()
 
-    # --- header band (region colour): Tâi-lô title (wraps) + 繁體 subtitle -------
-    # wrap at 16 so a long title breaks BEFORE the top-right tier pill instead of under it
-    title_lines = wrap(row.get("name", ""), max_chars=16) or [""]
-    han = esc(row.get("hanzi", ""))
-    ty0 = MARGIN + 42
+    # --- header band (region colour): ENGLISH name FIRST (primary), 繁體 · Tâi-lô secondary/smaller --------
+    eng = _english_name(row.get("effect", "")) or str(row.get("hanzi", "")).strip() or str(row.get("name", ""))
+    han = str(row.get("hanzi", "")).strip()
+    romaji = str(row.get("name", "")).strip()
+    secondary = " · ".join([s for s in (han, romaji) if s])
+    title_lines = wrap(eng, max_chars=16) or [""]
+    ty0 = MARGIN + 44
     title_tspans = "".join(
         f'<tspan x="{MARGIN}" y="{ty0 + i * TITLE_LINE_H}">{esc(l)}</tspan>'
         for i, l in enumerate(title_lines))
-    han_y = ty0 + (len(title_lines) - 1) * TITLE_LINE_H + 52
-    header_h = (han_y + 22) - 26
+    sec_y = ty0 + (len(title_lines) - 1) * TITLE_LINE_H + 46
+    header_h = (sec_y + 22) - 26
     header_end = 26 + header_h
+    sec_line = (f'<text x="{MARGIN}" y="{sec_y}" font-size="30" fill="#ffffff" opacity="0.92" '
+                f'font-family="{tfont}">{esc(secondary)}</text>') if secondary else ""
 
-    # tier pill (top-right on the band) — CJK glyphs are ~full-width, so size for them
-    tier_label = TIER_FICTION.get(tier, f"T{tier}")
-    cjk = sum(1 for ch in tier_label if ord(ch) > 0x2E7F)
-    pill_w = 34 + cjk * 26 + (len(tier_label) - cjk) * 14
+    # region pill (top-right of band): dual-codes the band colour by SHAPE + letter (colour never alone)
+    rletter = {"north": "N", "central": "C", "south": "S", "east": "E"}.get(region, region[:1].upper())
+    pill_w, pill_h = 96, 46
     pill_x = CARD_W - MARGIN - pill_w
-    tier_pill = (
-        f'<rect x="{pill_x}" y="{MARGIN - 6}" width="{pill_w}" height="46" rx="23" '
-        f'fill="#ffffff" opacity="0.9"/>'
-        f'<text x="{pill_x + pill_w/2}" y="{MARGIN + 24}" font-size="24" fill="{rcol}" '
-        f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(tier_label)}</text>')
+    pill_y = MARGIN - 8
+    region_pill = (
+        f'<rect x="{pill_x}" y="{pill_y}" width="{pill_w}" height="{pill_h}" rx="{pill_h/2}" '
+        f'fill="#ffffff" opacity="0.92"/>'
+        + emblem_svg(remb, pill_x + 30, pill_y + pill_h/2, 15, rcol, stroke=ink) +
+        f'<text x="{pill_x + 62}" y="{pill_y + pill_h*0.68:.0f}" font-size="28" fill="{rcol}" '
+        f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(rletter)}</text>')
+    # apex ★ — the SINGLE small gold star (replaces BOTH the old marquee pill and the old ★ APEX box)
+    apex_mark = ""
+    if is_apex:
+        ax, ay = pill_x - 36, pill_y + pill_h/2
+        apex_mark = (f'<circle cx="{ax}" cy="{ay}" r="26" fill="#ffffff" opacity="0.92"/>'
+                     + emblem_svg("spark", ax, ay, 18, gold, stroke=ink))
 
-    # --- region strip + English dish name (just under the header) ---------------
-    strip_y = header_end + 46
-    region_strip = (
-        emblem_svg(remb, MARGIN + 16, strip_y - 10, 15, rcol) +
-        f'<text x="{MARGIN + 44}" y="{strip_y}" font-size="30" fill="{rcol}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="1">'
-        f'{esc(REGION_LABEL.get(region, region.upper()))}</text>'
-        f'<text x="{CARD_W - MARGIN}" y="{strip_y}" font-size="24" fill="{muted}" '
-        f'text-anchor="end" font-family="{bfont}" font-style="italic">{esc(strip_hint)}</text>')
-    eng = _english_name(row.get("effect", ""))
-    eng_line = ""
-    if eng:
-        eng_line = (f'<text x="{MARGIN}" y="{strip_y + 40}" font-size="30" fill="{text}" '
-                    f'font-family="{bfont}" font-style="italic">{esc(eng)}</text>')
-    # place / flavour — the real-world stall location (data `place`), small muted subtitle under the dish
-    place = str(row.get("place", "")).strip()
-    place_line = ""
-    if place:
-        for pl in wrap(place, max_chars=42)[:1]:
-            place_line = (f'<text x="{MARGIN}" y="{strip_y + 76}" font-size="22" fill="{muted}" '
-                          f'font-family="{bfont}" font-style="italic">{esc(pl)}</text>')
+    # --- HERO IMAGE band: embed FIG-VEND-<id>.png (meet → never cropped); art-less → drawn region emblem ---
+    px, py = MARGIN, header_end + 22
+    pay_cy = CARD_H - 278                              # PAY chips baseline
+    stat_cy = CARD_H - 128                             # crowd / points / discount baseline
+    pw = CARD_W - 2 * MARGIN
+    ph = (pay_cy - 92) - py          # leave a clear gap-band under the image for an optional cross-region tag
+    pcx, pcy = px + pw/2, py + ph/2
+    _mock = _embed_fig_png(f"FIG-VEND-{tid}", px, py, pw, ph)
+    if _mock:
+        plate = (f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" opacity="0.5"/>'
+                 + _mock +
+                 f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="none" '
+                 f'stroke="{rcol}" stroke-width="3"/>')
+    else:
+        plate = (f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" opacity="0.4" '
+                 f'stroke="{rcol}" stroke-width="3" stroke-dasharray="14 9"/>'
+                 + f'<circle cx="{pcx}" cy="{pcy}" r="130" fill="{rcol}" opacity="0.12"/>'
+                 + emblem_svg(remb, pcx, pcy, 104, rcol, stroke=ink)
+                 + f'<rect x="{pcx-140}" y="{py+ph-58}" width="280" height="40" rx="20" fill="{ink}"/>'
+                 + f'<text x="{pcx}" y="{py+ph-30}" font-size="22" fill="#ffffff" text-anchor="middle" '
+                   f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[FIG-VEND-{esc(tid)}]</text>')
 
-    # --- PAY row: ingredient chips only (V7-M: cost = ingredients; the Buzz badge is DROPPED) ---
-    # v6.3.1 CD-4: every NIGHT marquee is CROSS-REGION — a chip whose ingredient belongs to a DIFFERENT
-    # signature region than this vendor is flagged with an out-of-region "→" badge (and a header
-    # CROSS-REGION tag) so the two-region bill parses at a glance, not just as a differently-coloured chip.
-    ING_REGION = {"pork": "N", "tea": "C", "seafood": "S", "rice": "E"}   # sugar = common (never foreign)
+    # --- PAY recipe: GROUP by ingredient type → one chip per type with a ×N count (exact counts readable) --
+    # NOTE (bg-infodesign flag): ING_REGION is preserved EXACTLY as the shipped render used it (keys
+    # pork/tea/seafood/rice) so which chips flag "cross-region" is byte-for-byte unchanged from before this
+    # redesign — presentation-only pass. It is STALE vs the v7 category ids (meat/pantry/… never match), so
+    # in practice only `tea`/`seafood` ever flag foreign. Correcting it to {meat:N,tea:C,seafood:S,pantry:E}
+    # is a design/data call (it would change the displayed requirement) → left for bg-design to confirm.
+    ING_REGION = {"pork": "N", "tea": "C", "seafood": "S", "rice": "E"}   # sugar/veg = common (never foreign)
     card_letter = {"north": "N", "central": "C", "south": "S", "east": "E"}.get(region, "")
-    pay_label_y = strip_y + 132
-    chips_cy = pay_label_y + 66
-    r = 34
-    x = MARGIN + 6
+    order, counts = [], {}
+    for iid in recipe:
+        if iid not in counts:
+            counts[iid] = 0
+            order.append(iid)
+        counts[iid] += 1
+    Rc = 38
+    cell_w = 112
+    x0 = (CARD_W - len(order) * cell_w) / 2
     chips = ""
     cross_letters: list[str] = []
-    for iid in recipe:
+    for i, iid in enumerate(order):
         isuit = resolve_suit(theme, iid) if iid in theme["suits"] else {"color": muted, "emblem": "circle"}
-        icol = isuit["color"]
-        lab = esc((glyph_map or {}).get(iid, {}).get("label", "")) if glyph_map else ""
-        tcol = pick_text_color(icol, dark=ink, light="#ffffff")
-        chips += emblem_svg(isuit["emblem"], x + r, chips_cy, r, icol, stroke=ink)
-        chips += (f'<text x="{x + r}" y="{chips_cy + r * 0.34}" font-size="30" fill="{tcol}" '
-                  f'text-anchor="middle" font-family="{bfont}" font-weight="bold">{lab}</text>')
+        icol, iemb = isuit["color"], isuit["emblem"]
+        ccx = x0 + i * cell_w + cell_w/2
+        chips += (f'<circle cx="{ccx}" cy="{pay_cy}" r="{Rc}" fill="#ffffff" stroke="{ink}" stroke-width="3"/>'
+                  + emblem_svg(iemb, ccx, pay_cy, Rc*0.60, icol, stroke=ink))
+        if counts[iid] > 1:
+            chips += (f'<text x="{ccx}" y="{pay_cy + Rc + 32}" font-size="34" fill="{ink}" '
+                      f'text-anchor="middle" font-family="{tfont}" font-weight="bold">×{counts[iid]}</text>')
         foreign = ING_REGION.get(iid)
         if foreign and card_letter and foreign != card_letter:
             cross_letters.append(foreign)
-            # a small out-of-region badge riding the chip's top-right: arrow + the region letter
-            bx, by = x + 2 * r - 6, chips_cy - r - 4
-            chips += (f'<circle cx="{bx}" cy="{by}" r="18" fill="#ffffff" stroke="{icol}" stroke-width="3"/>'
+            bx, by = ccx + Rc - 4, pay_cy - Rc + 2      # out-of-region badge riding the chip's top-right
+            chips += (f'<circle cx="{bx}" cy="{by}" r="17" fill="#ffffff" stroke="{icol}" stroke-width="3"/>'
                       + emblem_svg("arrow", bx - 3, by, 7, icol) +
-                      f'<text x="{bx + 8}" y="{by + 7}" font-size="20" fill="{icol}" text-anchor="middle" '
+                      f'<text x="{bx + 7}" y="{by + 7}" font-size="18" fill="{icol}" text-anchor="middle" '
                       f'font-family="{tfont}" font-weight="bold">{esc(foreign)}</text>')
-        x += 2 * r + 20
-    # (V7-M: no "+" and no Buzz badge — the recipe chips ARE the whole cost.)
-    # CROSS-REGION tag riding the PAY label — reads the two-region requirement without decoding chip colours
+    # CROSS-REGION tag above the chips — names the two-region requirement without decoding chip colours
     cross_tag = ""
     if cross_letters:
         seen = "".join(dict.fromkeys(cross_letters))
-        ctx = MARGIN + 170
+        tag_w = 152 + 20 * len(seen)
+        tx = (CARD_W - tag_w) / 2
+        tyy = pay_cy - 50            # seated in the gap-band between the hero image and the PAY chips
         cross_tag = (
-            f'<rect x="{ctx}" y="{pay_label_y - 30}" width="{150 + 22*len(seen)}" height="40" rx="20" '
-            f'fill="#ffffff" opacity="0.85" stroke="{accent}" stroke-width="2"/>'
-            + emblem_svg("arrow", ctx + 22, pay_label_y - 10, 11, accent) +
-            f'<text x="{ctx + 44}" y="{pay_label_y - 2}" font-size="23" fill="{accent}" '
-            f'font-family="{tfont}" font-weight="bold" letter-spacing="1">CROSS-REGION →{esc(seen)}</text>')
-    pay_block = (
-        f'<text x="{MARGIN}" y="{pay_label_y}" font-size="28" fill="{accent}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">PAY 付</text>'
-        + cross_tag + chips)
+            f'<rect x="{tx}" y="{tyy-26}" width="{tag_w}" height="38" rx="19" fill="#ffffff" opacity="0.9" '
+            f'stroke="{accent}" stroke-width="2"/>'
+            + emblem_svg("arrow", tx + 24, tyy - 7, 10, accent) +
+            f'<text x="{tx + 44}" y="{tyy}" font-size="22" fill="{accent}" font-family="{tfont}" '
+            f'font-weight="bold" letter-spacing="1">CROSS-REGION →{esc(seen)}</text>')
+    pay_block = cross_tag + chips
 
-    # --- STATS row (V7-M, ICONS + NUMBERS, no prose): the crowd FLOOR (min_followers) + the VP payoff (vp).
-    # The old "WON BY 得標 · a plurality — no set number" line is REMOVED — it is now factually wrong (there
-    # IS a min_followers floor). Two labelled stat cells replace it: a crowd-on-a-floor glyph + the floor
-    # number (1/2/3 followers you must MEET to claim; a plurality still decides the winner), and a gold VP
-    # pip + the payoff number (1–6, what the won stall scores). No sentences — the rulebook + icon sheet
-    # carry the tie/大哥/plurality words.
-    violet = theme["suits"].get("buzz", {}).get("color", "#6A4C93")
+    # --- bottom stats: crowd FLOOR + POINTS, plus the day-engine DISCOUNT cell (day food only) ------------
     min_f = str(row.get("min_followers", "")).strip()
     vp = str(row.get("vp", "")).strip()
-    stats_label_y = chips_cy + 118
-    stats_cy = stats_label_y + 74
-    # left cell — CROWD FLOOR: a crowd glyph resting on a drawn floor bar + the number
-    fx = MARGIN + 44
-    crowd_stat = (
-        f'<text x="{MARGIN}" y="{stats_label_y}" font-size="28" fill="{accent}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">CROWD 人潮</text>'
-        + emblem_svg("crowd", fx, stats_cy - 4, 32, violet) +
-        f'<line x1="{fx-42}" y1="{stats_cy+40}" x2="{fx+42}" y2="{stats_cy+40}" stroke="{violet}" '
-        f'stroke-width="7" stroke-linecap="round"/>'
-        f'<text x="{fx+96}" y="{stats_cy+24}" font-size="74" fill="{violet}" '
-        f'font-family="{tfont}" font-weight="bold">{esc(min_f)}</text>')
-    # right cell — VP payoff: a gold pip + the number
-    vlx = CARD_W/2 + 40
-    vx = vlx + 42
-    vp_stat = (
-        f'<text x="{vlx}" y="{stats_label_y}" font-size="28" fill="{accent}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">POINTS 分</text>'
-        + emblem_svg("spark", vx, stats_cy - 4, 30, gold) +
-        f'<text x="{vx+64}" y="{stats_cy+24}" font-size="74" fill="{gold}" '
-        f'font-family="{tfont}" font-weight="bold">{esc(vp)}</text>')
-    stats_block = crowd_stat + vp_stat
+    cells = [("crowd", min_f, violet, "crowd"), ("points", vp, gold, "spark")]
+    if icon and not is_apex:                           # discount icon = the DAY-engine (night/drinks carry none)
+        drs = resolve_suit(theme, {"N": "north", "C": "central",
+                                   "S": "south", "E": "east"}.get(icon, region))
+        cells.append(("disc", "-1", drs["color"], drs["emblem"]))
+    ncells = len(cells)
+    col_w = (CARD_W - 2 * MARGIN) / ncells
+    stats = ""
+    for i, (kind, num, ncol, emb) in enumerate(cells):
+        cs = MARGIN + i * col_w
+        ix = cs + col_w * 0.30
+        stats += emblem_svg(emb, ix, stat_cy - 6, 30 if kind != "disc" else 28,
+                            ncol, stroke=(ink if kind == "disc" else "none"))
+        stats += (f'<text x="{cs + col_w*0.52}" y="{stat_cy + 24}" font-size="68" fill="{ncol}" '
+                  f'font-family="{tfont}" font-weight="bold">{esc(num)}</text>')
 
-    # --- ICON box: region discount icon, ★ apex trophy, or drink — ICON + a terse tag (no sentence) ------
-    icon_label_y = stats_cy + 108
-    box_y = icon_label_y + 18
-    box_h = CARD_H - MARGIN - box_y
-    disc_chip = ""
-    if icon:
-        isuit = resolve_suit(theme, {"N": "north", "C": "central",
-                                     "S": "south", "E": "east"}.get(icon, icon.lower()))
-        iemb, icol = isuit["emblem"], isuit["color"]
-        icon_tag = f"DISCOUNT 折 · {icon}"
-        # a '-1' chip = each held makes this region's ingredients 1 cheaper (the number, not a sentence)
-        disc_chip = (f'<circle cx="{MARGIN + 96 + 300}" cy="{box_y + 44}" r="26" fill="#ffffff" '
-                     f'stroke="{icol}" stroke-width="4"/>'
-                     f'<text x="{MARGIN + 96 + 300}" y="{box_y + 54}" font-size="34" fill="{icol}" '
-                     f'text-anchor="middle" font-family="{tfont}" font-weight="bold">-1</text>')
-    elif is_apex:
-        iemb, icol = "spark", gold
-        icon_tag = "★ APEX 名店"
-    else:
-        iemb, icol = "circle", muted
-        icon_tag = "DRINK 飲"
-    icon_block = (
-        f'<text x="{MARGIN}" y="{icon_label_y}" font-size="28" fill="{accent}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="3">ICON 圖示</text>'
-        f'<rect x="{MARGIN}" y="{box_y}" width="{CARD_W - 2*MARGIN}" height="{box_h}" rx="18" '
-        f'fill="#ffffff" opacity="0.45" stroke="{icol}" stroke-width="3"/>'
-        + emblem_svg(iemb, MARGIN + 46, box_y + 44, 30, icol) +
-        f'<text x="{MARGIN + 96}" y="{box_y + 56}" font-size="34" fill="{text}" '
-        f'font-family="{tfont}" font-weight="bold" letter-spacing="1">{esc(icon_tag)}</text>'
-        + disc_chip)
-
+    inner_frame = (f'<rect x="14" y="14" width="{CARD_W-28}" height="{CARD_H-28}" rx="{radius-4}" '
+                   f'fill="none" stroke="{frame_col}" stroke-width="2" opacity="0.45"/>') if pstyle else ""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
   <defs>{page_gradient(theme, 'pg', page_cols)}</defs>
   <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{frame_col}" stroke-width="6"/>
-  <rect x="14" y="14" width="{CARD_W-28}" height="{CARD_H-28}" rx="{radius-4}" fill="none" stroke="{frame_col}" stroke-width="2" opacity="0.45"/>
+  {inner_frame}
   <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{rcol}" stroke-width="2" opacity="0.5"/>
   <path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{rcol}"/>
   <text font-size="{TITLE_SIZE}" fill="#ffffff" font-family="{tfont}" font-weight="bold">{title_tspans}</text>
-  <text x="{MARGIN}" y="{han_y}" font-size="40" fill="#ffffff" font-family="{tfont}" opacity="0.92">{han}</text>
-  {tier_pill}
-  {region_strip}
-  {eng_line}
-  {place_line}
+  {sec_line}
+  {region_pill}
+  {apex_mark}
+  {plate}
   {pay_block}
-  {stats_block}
-  {icon_block}
+  {stats}
   {ribbon}
 </svg>"""
 
@@ -546,6 +528,18 @@ def _is_boundary(row: dict) -> bool:
     """A Travel-Agents deck-clock BOUNDARY card (黃昏 DUSK / 末班車 LAST TRAIN) seeded at the bottom of the
     Booking deck. Marked type=boundary. No other game uses that type → byte-safe elsewhere."""
     return str(row.get("type", "")).strip().lower() == "boundary"
+
+
+def _deck_is_tour(rows: list[dict]) -> bool:
+    """True when a deck is a Travel-Agents TOUR/BOOKING deck — every row is a booking / mission / boundary
+    card (the seeded DUSK/LAST-TRAIN clock cards ride along). CD 2026-08-11: any-time tours shuffle INTO the
+    day/night tour decks, so a phase-distinct back would make them SORTABLE face-down — bad. Such a deck gets
+    ONE unified boarding-pass back (see main(): back_phase forced to 'any'). Market decks (vendors carry
+    tier+recipe, ingredients carry `ingredient`, events carry `verb`; all typed by region) never match, so
+    they KEEP their phase+region market backs byte-identical. Beacon (cargo/passenger/…) never matches."""
+    types = {(r.get("type") or "").strip().lower() for r in rows}
+    types.discard("")
+    return bool(types) and types <= {"booking", "mission", "boundary"}
 
 
 def _hazard_stripes(x: float, y: float, w: float, h: float, a: str, b: str) -> str:
@@ -1370,6 +1364,13 @@ def main() -> int:
     regions = {(r.get("region") or "").strip().lower() for r in rows}
     regions.discard("")
     back_region = next(iter(regions)) if len(regions) == 1 else None
+    # TOUR/BOOKING decks: force the SINGLE unified boarding-pass 'any' back (deck-type-aware, CD 2026-08-11).
+    # Any-time tours shuffle into the day/night tour decks, so day/night/any tour backs MUST be identical or
+    # they become sortable face-down. Only the tour deck collapses; market decks (vendors/ingredients) keep
+    # their computed phase+region back untouched (byte-identical), so BACK_PHASE stays shared but the tour
+    # branch never reads its day/night market variants.
+    if _deck_is_tour(rows):
+        back_phase, back_region = "any", None
     back_svg = render_back_svg(slug, theme, back_phase, back_region)
     (args.out / "svg" / "_back.svg").write_text(back_svg, encoding="utf-8")
     print(f"[svg]  wrote {len(svg_paths)} card SVGs -> {args.out/'svg'}  "

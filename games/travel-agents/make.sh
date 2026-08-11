@@ -24,6 +24,12 @@ echo "→ regenerating into build/ (scratch)"
 # sheet) can't linger in build/sheets and get re-snapshotted into exports/. build/ is
 # disposable scratch (gitignored) — always regenerate from scratch.
 rm -rf build
+# VENDOR hero art (CD-provided illustrations): copy FIG-VEND-<id>.png into build/mockups BEFORE the vendor
+# render below, so render_vendor_svg (reads _ING_MOCKUPS_DIR = build/mockups) embeds the food art on the
+# per-card build/png set the CD reviews too — mirrors the FIG-ING copy that precedes the ingredient render.
+# A vendor with no FIG-VEND file falls back to the drawn region emblem (graceful, like an art-less ingredient).
+mkdir -p build/mockups
+cp art/mockups/FIG-VEND-*.png build/mockups/ 2>/dev/null || true
 # The PHASED decks (vendors / tickets / ingredients / events) render as `png` only here — their
 # play-ready sheets come from the day/night SPLITS below (top-level PnP + Screentop), so the mixed
 # full-CSV screentop sheet (one NEUTRAL back) is deliberately NOT produced: it would hide the
