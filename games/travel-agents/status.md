@@ -83,8 +83,10 @@ table is the next arbiter, not more sim.
   the six kits band, and the open event questions (forced-placement-as-tax, the SINK shrug, hazard:boon
   ratio). The CD also generates the remaining art (map + vendor cards) from `art/ta-art-context.zip`.
 - **⏭ Deferred design follow-ups (surfaced by the sweep — not blocking; a later design pass):**
-  **N06 Big Sausage recipe oddity** — the recipe carries seafood×3 in a pork sausage; looks wrong,
-  needs a design/theme sanity check (→ `bg-design`); then migrate
+  **N06 Big Sausage recipe oddity** — the recipe still carries seafood×2 in a pork sausage (was ×3;
+  the 2026-08-11 apex swap dropped one and moved the ★ apex OFF the sausage onto Beef Noodle, so the
+  oddity now sits on a lesser trophy). A fuller de-seafood is still a design/theme sanity check
+  (→ `bg-design`); then migrate
   `design-doc.md` §15/§17 (event framework + clock) into `game-bible.md`, then archive it + fix its stale
   header (→ `bg-design`); reconcile `art/rulebook-figures.md`'s stale 2p / Buzz / Reach mechanics to V7-M
   (→ `bg-continuity` / `bg-infodesign`); the portrait-slot size mismatch (604×286 vs 900×1380 →
