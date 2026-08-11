@@ -71,6 +71,15 @@ at 6p) the extra face-up vendor sits beside the printed pair — the spaces are 
 > the **rulebook / player aid** instead. The data is in `components/map.json`
 > (`booking_deck_sizes`, `vendor_slots`, `followers_supply`).
 
+> **→ bg-infodesign (FLAG only — not a redesign, and NOT an art-director call):** a rules change (CD-signed,
+> sim-validated) — the **Closing-Time die now rolls EVERY round at night** ("closing time"). If/where a
+> **Closing-Time band or indicator** is shown to players (on the board chrome, or on the player aid), it may
+> want a small **"Night: roll every round"** annotation so the every-round cadence reads at a glance. Note
+> this board currently has **no printed clock/claims track** (the beat is deck-driven + the DUSK / LAST TRAIN
+> boundary cards), so bg-infodesign should decide *whether* a Closing-Time cue belongs on the board at all
+> vs the player aid. **Do not add a clock track** (retired) — this is a flag to reconcile, nothing to draw
+> here.
+
 ---
 
 ## Shared art direction (unchanged — for the future human-illustrated board)

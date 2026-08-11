@@ -110,6 +110,12 @@ Then add the component-specific subject, composition, and the reserved size/figu
 - Night-market palette: lantern vermilion `#D64545`, jade teal `#1F8A7A`, golden amber `#E6A930`, dusk
   indigo `#26324D`, on bao-paper cream `#F7F1E3`.
 - **Vendors = dish-hero cut-outs** (the dish alone, no people/stall/scene) — CD steer, locked.
+- **Vendor day/night roles (V7-M, locked):** **DAY vendors = cheap everyday ENGINE SEEDS** — humble,
+  generous, warm-gold, and they carry the **region discount icon** on the card face; **NIGHT food vendors =
+  scarce, expensive TROPHIES** — dramatic neon, hero weight, and they carry **NO region icon** so the face
+  reads as a *prize, not an engine piece*. Drinks are the cheap connective fillers (no icon, either palette).
+  The reshaped deck is **29 unique vendor dishes** (18 day + 11 night; N08 reuses N07's 珍奶 art). Full
+  per-card + role briefs in `vendor-art.md`; mock-up blocks in `mockup-kickoffs.md`.
 - **Map = the CODE-RENDERED FUNCTIONAL BOARD** (`build_board.py --type regionmap`, two states via
   `--phase day|night`), styled to match the character/player-board house hand — bold vector linework, bold
   flat colour, night-market palette, day/night chrome, inner gold hairline frame. It carries a real,
