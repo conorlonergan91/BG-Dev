@@ -351,6 +351,20 @@ def _load_vendors():
 VENDORS = _load_vendors()
 VID_BY_KEY = {v["vid"]: v["id"] for v in VENDORS}
 
+# NIGHT signature-ingredient demand by region — the total count of each region's signature ingredient
+# across the NIGHT trophy recipes. This is the true, data-derived "worth" of a region's discount icon
+# for the payoff phase (a North icon removes 1 meat from every meat-heavy trophy). Computed once from the
+# real recipes so an engine-aware bot can forward-value a day icon-seed at its actual cashing power —
+# the fix for the bot-myopia trap (the honest baseline credits any icon a flat ~0.3, blind to the fact
+# that North/East icons cash the trophies while Central-tea icons barely pay off at night).
+NIGHT_SIG_DEMAND = Counter()
+for _v in VENDORS:
+    if _v["phase"] == 2:
+        for _t, _c in _v["cost"].items():
+            if not _is_common(_t):
+                NIGHT_SIG_DEMAND[TYPE_SIG_REGION[_t]] += _c
+# → {N:22, E:18, S:15, C:5} for the V7-M reshape (North & East are the load-bearing engine lanes).
+
 
 def _region_deck(region, phase):
     return [v["id"] for v in VENDORS if v["region"] == region and v["phase"] == phase]
@@ -370,6 +384,7 @@ def _load_events():
             r = row["region"].strip()
             ph = 1 if row["phase"].strip() == "day" else 2
             tags = row.get("tags", "")
+            tagset = {t.strip() for t in tags.split(";") if t.strip()}
             kind = "hazard" if "hazard" in tags else ("boon" if "boon" in tags else "neutral")
             target = row.get("target", "").strip()
             if SPLIT_TAXONOMY and target:
@@ -387,6 +402,16 @@ def _load_events():
                 "value": int(row["value"]) if row.get("value", "").strip() else 1,
                 "qty": int(row["quantity"]) if row.get("quantity", "").strip() else 1,
                 "kind": kind,
+                # §15 COMBO rider: a card whose PRIMARY verb is not `rally` but which carries a `rally`
+                # rider tag ALSO grows follower(s) supply→board (e.g. EV-D05 The Long Queue: pinch
+                # "keep 1 fewer" AND rally "grow 1"). Data-driven off the tags so it can't drift from the
+                # card text; the rider amount = the card's `value`.
+                # A `combo` tag marks a genuine mechanical rider (EV-D05: `rally;combo`); a bare `rally`
+                # tag elsewhere (EV-N26 typhoon "crowd;rally") is descriptive theme, NOT a rider — so the
+                # discriminator is `combo` + `rally`, never `rally` alone.
+                "rider_rally": (int(row["value"]) if row.get("value", "").strip() else 1)
+                               if ("combo" in tagset and "rally" in tagset
+                                   and row["verb"].strip() != "rally") else 0,
             }
             out.append(ev)
             if (r, ph) in pool:
@@ -725,10 +750,40 @@ def _event_mix_for(n):
 # §17 CLOSING-TIME DIE — faces are DATA (map.json.vendor_clock.die_faces); 4 region faces + 2 BLANK.
 DIE_FACES = tuple(MAP["vendor_clock"]["die_faces"])
 
+# §17b PHASE-SPLIT DICE (CD steer 2026-08-11) — independent DAY (gentle) / NIGHT (harsh) close-probability
+# to resolve the die's double-duty tension: a gentle DAY die spares engine seeds (deeper lanes), a harsh
+# NIGHT die drains the night pool so the game ENDS (kills the 4-5p stall). Default None => BOTH phases use
+# the single DIE_FACES above, so the current single-die model is preserved byte-identical. The sweep driver
+# sets these module globals (resolved at roll time) to explore the 2-D face space without editing map.json.
+DIE_FACES_DAY = None
+DIE_FACES_NIGHT = None
 
-def _track_length(n):
-    """Rounds per Closing-Time track cycle for this count. TA_TRACK_L overrides for the L-sweep; else the
-    per-count value from map.json.vendor_clock.track_length (baseline 3 for all counts)."""
+
+def _die_faces_for(s):
+    """Phase-appropriate Closing-Time die faces. act==1 (day) -> DIE_FACES_DAY; else (night) ->
+    DIE_FACES_NIGHT; either unset (None) falls back to the single DIE_FACES (single-die model)."""
+    if s.get("act", 1) == 1:
+        return DIE_FACES_DAY or DIE_FACES
+    return DIE_FACES_NIGHT or DIE_FACES
+
+
+# §17b PER-PHASE ROLL CADENCE (CD two-dice model, 2026-08-11). The roll FREQUENCY (L = rounds per track
+# cycle) is what actually drains a pool — a harsh die that rolls rarely still won't end the night. A gentle
+# DAY die wants a LONG cadence (high L → spare engine seeds); a harsh NIGHT die wants a SHORT cadence (low
+# L → drain the pool, end the game). These per-phase overrides let the sweep roll the two dice at DIFFERENT
+# frequencies. Default None => fall back to TRACK_L_OVERRIDE / the map per-count value (single-cadence).
+TRACK_L_DAY = None
+TRACK_L_NIGHT = None
+
+
+def _track_length(n, phase=None):
+    """Rounds per Closing-Time track cycle for this count + phase. Per-phase overrides (TRACK_L_DAY/NIGHT,
+    the two-dice cadence) win first; then TA_TRACK_L (global L-sweep); else the per-count value from
+    map.json.vendor_clock.track_length (baseline 3 for all counts)."""
+    if phase == 1 and TRACK_L_DAY:
+        return TRACK_L_DAY
+    if phase == 2 and TRACK_L_NIGHT:
+        return TRACK_L_NIGHT
     if TRACK_L_OVERRIDE:
         return TRACK_L_OVERRIDE
     if _scaling_recommended() and n in REC_TRACK:
@@ -915,6 +970,15 @@ class TravelAgentsGame:
             "books_faceup": 0, "books_wild": 0, "books_wild_day": 0, "books_wild_night": 0,
             "wild_keys_taken": [], "wild_completed": 0, "wild_cancelled": 0,
             "food_wins": 0, "drink_wins": 0, "apex_claims": 0,
+            # §14.x FREE-CLAIM / NET-COST-AT-CLAIM probes (the CD's engine-depth vs casual read). At each
+            # claim we record the NET ingredient cost paid (recipe minus the claimer's icon discounts) and
+            # the claimer's RELEVANT-icon depth (icons in the recipe's signature regions — the engine that
+            # discounts THIS dish). free_claims = net-cost==0 grabs, split deep (≥7 relevant icons) vs
+            # shallow (<7). apex_netcost_* is the net-cost distribution for APEX claims specifically.
+            "free_claims": 0, "free_claims_deep": 0, "free_claims_shallow": 0,
+            "free_apex_claims": 0,
+            "claim_netcost_sum": 0.0, "claim_netcost_n": 0,
+            "apex_netcost_sum": 0.0, "apex_netcost_n": 0, "apex_netcost_hist": Counter(),
             "src_by_type": Counter(), "empty_draws": 0,
             "travels": 0, "visits": 0, "cstores": 0, "promotes": 0, "passes": 0,
             "grow_total": 0, "grow_homebody_tick": 0, "return_to_supply": 0,
@@ -1270,19 +1334,59 @@ class TravelAgentsGame:
         pl = s["players"][p]
         v = VENDORS[vid]
         # pay ingredients — each spent card recycles to its region discard, or to the box if stale (§16)
-        for t, c in self._pay_plan(s, p, vid).items():
+        plan = self._pay_plan(s, p, vid)
+        net_cost = sum(plan.values())                          # §14.x net cost paid (post-icon-discount)
+        for t, c in plan.items():
             for _ in range(c):
                 self._spend_one(s, pl, t)
         if pl["next_bribe_disc"] > 0:
             pl["next_bribe_disc"] -= 1
         contested = any(s["fol"][vid][q] > 0 for q in range(s["n"]) if q != p)
-        self._award(s, p, vid, contested, rng)
+        self._award(s, p, vid, contested, rng, net_cost=net_cost)
 
-    def _award(self, s, p, vid, contested, rng):
-        """Resolve a claim: winner takes the stall; winner's committed → board; losers' committed → own
-        supply; the slot stays EMPTY (slow refill). Records fingerprints + Big-Brother/Globetrotter probes."""
+    def _hero_region(self, vid):
+        """The marquee's HERO region — its icon region if it has one, else (apex/trophy stalls carry no
+        icon) the region of the most-demanded signature type in its recipe. Deterministic tie-break."""
+        v = VENDORS[vid]
+        if v["icon"]:
+            return v["icon"]
+        sig = Counter({t: c for t, c in v["cost"].items() if not _is_common(t)})
+        if not sig:
+            return None
+        best = max(sig.items(), key=lambda kv: (kv[1], kv[0]))[0]
+        return TYPE_SIG_REGION[best]
+
+    def _record_claim_cost(self, s, p, vid, net_cost):
+        """§14.x record the NET ingredient cost paid for this claim and the claimer's RELEVANT-icon engine
+        depth (sum of icons in the recipe's signature regions — the icons that discount THIS dish), taken
+        BEFORE this claim's own icon is added. Buckets free-claims (net==0) by deep (≥7) vs shallow."""
         pl = s["players"][p]
         v = VENDORS[vid]
+        rel_regions = {TYPE_SIG_REGION[t] for t in v["cost"] if not _is_common(t)}
+        depth = sum(pl["icons"].get(r, 0) for r in rel_regions)
+        s["claim_netcost_sum"] += net_cost
+        s["claim_netcost_n"] += 1
+        if net_cost == 0:
+            s["free_claims"] += 1
+            if depth >= 7:
+                s["free_claims_deep"] += 1
+            else:
+                s["free_claims_shallow"] += 1
+            if v["apex"]:
+                s["free_apex_claims"] += 1
+        if v["apex"]:
+            s["apex_netcost_sum"] += net_cost
+            s["apex_netcost_n"] += 1
+            s["apex_netcost_hist"][int(net_cost)] += 1
+
+    def _award(self, s, p, vid, contested, rng, net_cost=None):
+        """Resolve a claim: winner takes the stall; winner's committed → board; losers' committed → own
+        supply; the slot stays EMPTY (slow refill). Records fingerprints + Big-Brother/Globetrotter probes.
+        `net_cost` = ingredients actually paid this claim (from the caller's pay_plan, BEFORE spend)."""
+        pl = s["players"][p]
+        v = VENDORS[vid]
+        if net_cost is not None:
+            self._record_claim_cost(s, p, vid, net_cost)
         won_followers = s["fol"][vid][p]
         top_rival = max((s["fol"][vid][q] for q in range(s["n"]) if q != p), default=0)
         # WIN direction: your committed followers come home to YOUR BOARD (kept)
@@ -1393,12 +1497,12 @@ class TravelAgentsGame:
         the deck); every committed follower on it (INCLUDING a live contest) returns HOME to its owner's BOARD
         (kept, no re-grow, NO resource penalty). BLANK, or a rolled region with no removable face-up stall →
         nothing (no reroll). The die can only SPEED the close, never block it."""
-        L = _track_length(s["n"])
+        L = _track_length(s["n"], s.get("act"))
         s["track"] += 1
         if s["track"] < L:
             return
         s["track"] = 0
-        face = DIE_FORCE if DIE_FORCE else s["die"].choice(DIE_FACES)
+        face = DIE_FORCE if DIE_FORCE else s["die"].choice(_die_faces_for(s))
         s["die_rolls"] += 1
         if face == "BLANK":
             s["die_blanks"] += 1
@@ -1430,7 +1534,7 @@ class TravelAgentsGame:
         guard against a full-deck zero-progress freeze, static for 3 cycles) fires the boundary too."""
         if s["done"]:
             return
-        L = _track_length(s["n"])
+        L = _track_length(s["n"], s.get("act"))
         decks_empty = all(not s["vdeck"][r] for r in REGIONS)
         faceup_empty = all(not s["faceup"][r] for r in REGIONS)
         sig = tuple(sorted(vid for r in REGIONS for vid in s["faceup"][r]))
@@ -1572,6 +1676,33 @@ class TravelAgentsGame:
                     need[t] += short
         return need.most_common(1)[0][0] if need else SIG_TYPE[pl["pos"]]
 
+    def _type_shortfall(self, s, p):
+        """Per-type shortfall Counter over the affordable board vendors (the demand vector _most_useful
+        ranks). Shared by gift-choice resolution so an OR-gift picks the type the player actually needs."""
+        pl = s["players"][p]
+        need = Counter()
+        for vid in self._board(s):
+            v = VENDORS[vid]
+            if v["is_drink"]:
+                continue
+            for t, c in self._pay_plan(s, p, vid).items():
+                short = c - self._have(pl, t)
+                if short > 0:
+                    need[t] += short
+        return need
+
+    def _resolve_gift_type(self, s, p, tgt):
+        """Resolve a gift `target` to ONE concrete ingredient type. `any` = most-needed (wildcard);
+        an `a;b` OR-list = the more-needed of the offered types (player choice); a single type as-is.
+        Never returns a raw multi-token / 'any' string (which is not a real ingredient type)."""
+        if tgt == "any":
+            return self._most_useful(s, p)
+        opts = [t.strip() for t in tgt.split(";") if t.strip()]
+        if len(opts) <= 1:
+            return opts[0] if opts else self._most_useful(s, p)
+        need = self._type_shortfall(s, p)
+        return max(opts, key=lambda t: need.get(t, 0))     # ties → first (stable), i.e. the listed order
+
     # -------- DEPRECATED (§17): the old Booking-deck clock --------
     def _booking_deck_out(self, s):
         """RETIRED by §17 (the vendor-depletion clock). No longer called — DUSK / LAST-TRAIN fire off
@@ -1671,10 +1802,12 @@ class TravelAgentsGame:
                     s["fol"][vid] = [0] * s["n"]
                     continue
                 s["resolver_fires"] += 1
-                for t, c in self._pay_plan(s, winner, vid).items():
+                plan = self._pay_plan(s, winner, vid)
+                net_cost = sum(plan.values())                  # §14.x net cost at the boundary claim
+                for t, c in plan.items():
                     for _ in range(c):
                         self._spend_one(s, s["players"][winner], t)
-                self._award(s, winner, vid, contested=True, rng=rng)
+                self._award(s, winner, vid, contested=True, rng=rng, net_cost=net_cost)
 
     def _trigger_end(self, s, cause):
         if s["end_turn"] is not None:
@@ -1919,6 +2052,15 @@ class TravelAgentsGame:
         pinch_here = 0
         turn_expiry = s["turn"] + s["n"]                 # ⏳TURN: covers exactly the affected player's next turn
 
+        # §15 COMBO rider: a non-rally verb carrying a `rally` rider ALSO grows follower(s) supply→board
+        # for each affected player (EV-D05 The Long Queue: pinch keep-1-fewer AND grow-1). Applied to the
+        # SAME scope as the primary verb so a self-scope card grows the drawer.
+        if ev.get("rider_rally"):
+            for q in aff:
+                for _ in range(ev["rider_rally"]):
+                    self._grow(s, q, "event")
+            s["rally_riders_fired"] = s.get("rally_riders_fired", 0) + 1
+
         if verb == "rally":
             for q in aff:
                 for _ in range(val):
@@ -1930,8 +2072,15 @@ class TravelAgentsGame:
         elif verb == "gift":
             if tgt:                                      # a named ingredient windfall
                 for q in aff:
-                    s["players"][q]["larder"][tgt] += val
-                    s["src_by_type"][tgt] += val
+                    # §15 gift target resolution — never store a raw token, always a real ingredient type:
+                    #   • `any`  (EV-D08 24-Hour Convenience wildcard): "grab whatever's on the shelf" →
+                    #     the type the player most needs (else region signature).
+                    #   • `a;b`  (EV-N12 One More for the Road, "Sugar OR Tea"): a PLAYER CHOICE → the more
+                    #     useful of the offered types for this player.
+                    #   • single type: given as-is.
+                    give = self._resolve_gift_type(s, q, tgt)
+                    s["players"][q]["larder"][give] += val
+                    s["src_by_type"][give] += val
                     s["gifts"] += 1
             else:                                        # Golden Week — a ⏳ROUND "+val Visit keep" boon
                 for q in aff:
@@ -2299,7 +2448,29 @@ class TravelAgentsGame:
             "prestige_completions_per_game": float(s["prestige_completions"]),
             # ---- §14 TWO-TRACK scoring probes (vendor-only loses / tours dominate) ----
             "claims_per_player": float(s["claims"] / n),
+            "night_claims_per_game": float(s["night_claims"]),
+            "day_claims_per_player": float((s["claims"] - s["night_claims"]) / n),
             "apex_claims_per_player": float(s["apex_claims"] / n),
+            "apex_claims_per_game": float(s["apex_claims"]),
+            # ---- DOES AN ENGINE FORM? end-of-game icon depth (the reshape's whole thesis) ----
+            # total region-icons held per player, and each player's DEEPEST single-region lane (the
+            # discount that actually cashes a cross trophy). Field means + the WINNER's depth.
+            "mean_icons_end": float(statistics.mean([sum(pl["icons"].values()) for pl in s["players"]])),
+            "mean_lane_depth": float(statistics.mean(
+                [max(pl["icons"].values(), default=0) for pl in s["players"]])),
+            "winner_icons_end": float(sum(s["players"][wp]["icons"].values())),
+            "winner_lane_depth": float(max(s["players"][wp]["icons"].values(), default=0)),
+            # winner's icons in the two load-bearing night-engine lanes (North+East)
+            "winner_NE_icons": float(s["players"][wp]["icons"].get("N", 0)
+                                     + s["players"][wp]["icons"].get("E", 0)),
+            # §14.x FREE-CLAIM / NET-COST-AT-CLAIM probes
+            "free_claims_per_game": float(s["free_claims"]),
+            "free_claims_deep_per_game": float(s["free_claims_deep"]),
+            "free_claims_shallow_per_game": float(s["free_claims_shallow"]),
+            "free_apex_claims_per_game": float(s["free_apex_claims"]),
+            "mean_net_cost_per_claim": float(s["claim_netcost_sum"] / s["claim_netcost_n"]) if s["claim_netcost_n"] else 0.0,
+            "mean_apex_net_cost": float(s["apex_netcost_sum"] / s["apex_netcost_n"]) if s["apex_netcost_n"] else 0.0,
+            "apex_netcost_n": float(s["apex_netcost_n"]),
             "winner_vendor_vp": float(w_vendor),
             "winner_booking_vp": float(w_book),
             "vendor_vp_share_of_winner": float(vendor_vp_share),
@@ -2547,6 +2718,19 @@ def _pick_target_human(s, p, prefs):
         val = v["vp"] + _booking_marginal(s, p, vid, prefs)
         if not v["is_drink"] and v["icon"]:
             val += 0.3 * pl["icons"].get(v["icon"], 0)      # ramp: same-region icons discount future claims
+            if prefs.get("engine") and s["act"] == 1:
+                # COMPETENT ENGINE-BUILDER forward-value (the bot-myopia fix, bg-design-flagged): in the
+                # DAY, a claimed icon-seed's real payoff is the discount it will unlock on the NIGHT
+                # trophies. Value it by the region's TRUE night demand (N22/E18/S15/C5 — data-derived,
+                # never hand-set), so the bot builds the lanes that actually cash (North & East) and does
+                # NOT waste the short day dabbling in Central-tea. Diminishing per-icon return past a
+                # region's max useful depth (a trophy's ingredient count is finite) keeps it from
+                # over-monopolising one lane and pushes the cross-region N+E spread the trophies want.
+                R = v["icon"]
+                stack = pl["icons"].get(R, 0)
+                demand = NIGHT_SIG_DEMAND.get(R, 0)
+                taper = 1.0 if stack < 3 else 0.35          # first ~3 icons/region do the discounting
+                val += prefs.get("w_ramp", 1.0) * 0.11 * demand * taper
         if prefs.get("marquee") and v["apex"]:
             val += 1.0
         est = _est_actions(s, p, vid)                       # ~turns to travel + source + win this stall
@@ -2777,6 +2961,12 @@ CONCENTRATE = {**BAL, "concentrate": True, "contest": True}          # concentra
 HUMAN       = {**BAL, "human": True}
 HUMAN_CONTEST   = {**HUMAN, "contest": True}                          # human who also hunts the fight
 HUMAN_SPREAD    = {**HUMAN, "spread": True, "collect": True, "w_ticket": 1.2}  # human breadth-Booking line
+# THE COMPETENT ENGINE-BUILDER (2026-08-11, the bot-myopia fix): the claim-hungry velocity brain PLUS the
+# night-demand-aware icon forward-value. It (a) values day-icon accumulation at its true cashing power,
+# (b) claims day seeds to build a real N/E region-lane, and (c) — because the velocity brain reads the
+# discount via _est_actions — naturally cashes that engine on the now-cheap night trophies + tour
+# completion. This is the line the thesis rides: does a player who ACTUALLY builds the engine win?
+ENGINE_H    = {**HUMAN, "engine": True, "w_ramp": 1.4, "w_food": 1.15}
 # ---- ADVERSARIAL EXPLOIT-HUNTERS (each from a bg-critic hypothesis — try to BREAK the design) ----
 LATE_BATTLER = {**BAL, "bank": True, "late_battle": True, "w_food": 1.15}  # banked-board late-battler (媽寶 line)
 DODGER       = {**BAL, "avoid_contest": True, "w_food": 1.3}              # ignore-the-contest dodger
@@ -2828,6 +3018,7 @@ STRATEGIES = {
     "human": _make(HUMAN),
     "human_contest": _make(HUMAN_CONTEST),
     "human_spread": _make(HUMAN_SPREAD),
+    "engine_h": _make(ENGINE_H),                 # competent engine-builder (velocity brain + forward-value)
     # adversarial exploit bots
     "late_battler": _make(LATE_BATTLER),
     "dodger": _make(DODGER),

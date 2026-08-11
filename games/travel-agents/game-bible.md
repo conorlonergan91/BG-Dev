@@ -56,10 +56,13 @@ voice bible: `prose-identity.md`.
 ## Mechanism spine
 <!-- mechanism families + the blend; why each part needs the others. -->
 A **3–6-player area-majority engine-builder** with a genuine *fight* at its centre, built on:
-- **Region vendor markets.** Each of the 4 regions (**North 北 · Central 中 · South 南 · East 東**) has its
-  own face-down vendor deck — a **DAY** deck, then a **NIGHT** deck at dusk — with drinks mixed in as the
-  low-value stalls. Face-up slots per region scale with player count (setup chart on the board). There are
-  deliberately **fewer stalls than agents** — so you collide over them.
+- **Region vendor markets — a DAY engine, a NIGHT payoff.** Each of the 4 regions (**North 北 · Central 中 ·
+  South 南 · East 東**) has its own face-down vendor deck — a **DAY** deck of cheap, varied, low-VP **engine
+  seeds** (claim them to build your region-discount engine), then, at dusk, a **NIGHT** deck of scarce,
+  expensive, high-VP **trophies** (the prizes the built engine lets you afford) — with drinks mixed in as the
+  low-value stalls. The DAY is the long engine-building phase; the NIGHT is the short payoff. Face-up slots per
+  region scale with player count (setup chart on the board). There are deliberately **fewer stalls than
+  agents** — so you collide over them.
 - **Follower meeples + area-majority (the contested currency).** You win **Vendors** (**Bribe**) by holding
   the **biggest crowd** of your committed **follower meeples** on a stall (strict plurality; a **tie
   blocks** — the Big Boss 老大 alone wins ties) **and** paying its ingredients (minus region discounts).
@@ -73,13 +76,15 @@ A **3–6-player area-majority engine-builder** with a genuine *fight* at its ce
 - **Push-your-luck ingredient sourcing.** Each region has a face-down market deck (its signature + commons +
   salted **events**). **Visit** = flip 3, keep 2 (events fire by scope). **Convenience Store** = top card of
   any region, blind. **Travel** = move + grow your crowd +1 (no ingredient — except the Homebody 媽寶).
-- **The vendor-depletion Day→Night clock + the Closing-Time die.** The vendors ARE the clock: **13 day
+- **The vendor-depletion Day→Night clock + the Closing-Time die.** The vendors ARE the clock: **18 day
   vendors → 黃昏 DUSK** (flip to night) → **12 night vendors (11 unique + 1 duplicate) → 末班車 LAST TRAIN**
-  → finish the round → end. A vendor leaves by being claimed or closed. The **Closing-Time die 關門** is the
-  forcing function: a 3-round track (roll after round **L** — L=2 at 3p, L=3 at 4–6p) rolls a custom d6
-  `[N,C,S,E,BLANK,BLANK]`; a region face closes that region's oldest face-up stall (contested or not —
-  followers home, no penalty), BLANK = a 1/3 reprieve. Booking decks are NOT the clock; ingredient + event
-  decks reshuffle.
+  → finish the round → end. A vendor leaves by being claimed or closed. The **Closing-Time die 關門** — one
+  custom d6 `[N,C,S,E,BLANK,BLANK]`, the game's only die — is the forcing function, and it rolls on a
+  **per-phase cadence**: by **DAY** it rolls only after **L** rounds (L=2 at 3p, L=3 at 4–6p) — a gentle
+  cadence that protects day-engine formation; by **NIGHT** it rolls at the **end of every round** ("closing
+  time"), draining the night pool down to the last train. A rolled region face closes that region's oldest
+  face-up stall (contested or not — followers home to boards, kept, no penalty), BLANK = a reprieve. Booking
+  decks are NOT the clock; ingredient + event decks reshuffle.
 - **Bookings — the tour objectives.** A face-up row of tours you **Book** (hand-limit 3, cancel-to-claim),
   in three kinds — **⟳ any-time / ☀ day / ☾ night** — or **Pot-Luck (隨緣開團)**: decline the row, draw the
   deck's top blind. Complete a Booking (成團) when your won vendors satisfy its pattern; leave one unfinished
@@ -118,12 +123,15 @@ opportunity," never corruption.)*
   (N↔S). North's hub = **Taipei**, the **common start** for every agent. Carries the region vendor slots
   (scaled per count) + market decks, the HSR (with a Scheduled-Maintenance reminder), the **Closing-Time
   3-round clock band**, and per-player Followers-max dials / Tours-Completed. Phase-split day/night slots.
-- **~25 Vendor cards** — a day set + night set per region (drinks mixed in), one per real locked dish
+- **30 Vendor cards** — a day set + night set per region (drinks mixed in), one per real locked dish
   (繁體 + Tâi-lô), anchored to real Taiwan food-places (`design/vendor-places.md`). Each carries a
-  multi-ingredient recipe (mostly cross-region), a **region icon** (food only — the discount ramp; drinks
-  and ★ apex carry none), a **`min_followers` crowd-floor** (star tier 1/2/3), and a **`vp`** (= cost +
-  floor − 2, range 1–6). **13 day + 12 night** (11 unique night + 1 duplicate 珍奶 stall = 24 unique + 1
-  dup). One ★ apex per region in the night set. Data: `components/vendors.csv`.
+  multi-ingredient recipe (mostly cross-region), a **`min_followers` crowd-floor** (star tier 1/2/3), and a
+  **`vp`** (= cost + floor − 2, range 0–11). **Icons split the two phases:** the **day food seeds carry their
+  region's discount icon** (they ARE the engine); **the day drinks and ALL night vendors — trophies and ★
+  apex included — carry NO icon** (night stalls are prizes, not engine). **18 day** (cheap low-VP seeds: 13
+  food each with a region icon + 5 drinks) **+ 12 night** (scarce high-VP no-icon trophies + 2 珍奶 drink
+  clock-fillers; 11 unique night + 1 duplicate 珍奶 stall = 29 unique + 1 dup). One ★ apex per region in the
+  night set. Data: `components/vendors.csv`.
 - **45 Booking cards (開團 — the tours)** — split **6 day (☀, cancel at dusk) / 8 night (☾) / 31 any-time
   (⟳, judged at last train, never cancel at dusk)**, with a per-count `counts` tag (HEAVY `456` ×7, ON-RAMP
   `3456`+onramp ×8, CORE ×30 → 3p deck ≈38, 4–6p 45). Drawn into a face-up row; Booked from the row or blind
@@ -164,14 +172,15 @@ opportunity," never corruption.)*
   age-as-superpower — never frail.
 
 ## Win condition & scoring
-**TWO-TRACK VP.** At game end score **two ways**: the **`vp` printed on every vendor you won (1–6 each)**
-**plus** the **full value of every tour (Booking) you completed (3–11 each)**. Completed tours score far
-more and remain the main path to victory; won vendors are a steady bonus on top (a vendor-only hoard is
-structurally dominated — sim N=400: vendor-only hoarder deeply sub-fair at every count, winner vendor-VP
-share ~28–35%). **Cancelled Bookings = flat −1 each** (any Booking still unfinished in hand at the last
-train is cancelled too). Followers score nothing. **Top Agent** = most points; ties break to most vendors →
-most regions covered → fewest cancelled Bookings. §14 invariant: `vp = ingredient_cost + min_followers − 2`;
-Booking values widened so the tour ceiling clears the vendor ceiling. Detail: `followers-meeples-redesign.md`
+**TWO-TRACK VP.** At game end score **two ways**: the **`vp` printed on every vendor you won (0–11 each —
+cheap day seeds score low, 1–2; scarce night trophies score high, 5–11; ★ apex 10–11)** **plus** the
+**full value of every tour (Booking) you completed (3–11 each)**. Completed tours carry the bulk of a
+winner's score and remain the main path to victory (sim N=400: booking-share ~67–75% vs vendor-share
+~25–33%); the high-VP night trophies are the vendor track's payoff, but a vendor-only hoard is structurally
+dominated (vendor-only hoarder deeply sub-fair at every count — ~12–27% win share). **Cancelled Bookings =
+flat −1 each** (any Booking still unfinished in hand at the last train is cancelled too). Followers score
+nothing. **Top Agent** = most points; ties break to most vendors → most regions covered → fewest cancelled
+Bookings. §14 invariant: `vp = ingredient_cost + min_followers − 2`. Detail: `followers-meeples-redesign.md`
 §14; vendor VP in `components/vendors.csv`, Booking values in `components/bookings.csv`.
 *(⚠ see the Currency flags at the top — `rules-draft.md` §1/§9 + `names.md` §3 still read tickets-only.)*
 
@@ -214,10 +223,11 @@ unfinished ☀ day Booking is cancelled. At the **last train** (night vendors go
 
 ## Status by stage
 - [x] Ideation · [x] Research · [x] Exploration
-- [x] **Design ← V7-M CLOSED (2026-08-10):** the multiplayer area-majority core, vendor-depletion clock +
-  Closing-Time die, two-track VP, agnostic tours + Pot-Luck, the 6-type mono taxonomy, and the six V7-M
-  character kits — sim-validated N=400, paced (die L2@3–5p / L3@6p).
-- [x] **Development ← DONE (bg-developer):** component data built to V7-M (25 vendors, 45 bookings, 6-type
+- [x] **Design ← V7-M CLOSED:** the multiplayer area-majority core, the day-engine / night-payoff vendor
+  economy, the vendor-depletion clock + per-phase Closing-Time die (day cadence L2@3p / L3@4–6p, night every
+  round), two-track VP, agnostic tours + Pot-Luck, the 6-type mono taxonomy, and the six V7-M character kits —
+  sim-validated N=400 (engine forms, tours lead, hoarder sub-fair, stall killed at every count).
+- [x] **Development ← DONE (bg-developer):** component data built to V7-M (30 vendors, 45 bookings, 6-type
   mono ingredients + the parked split branch, ~52 events, six character mats, Closing-Time die + track).
   Linter 0 errors; `make.sh` renders; prototype kit (Screentop sheets + A4/A3 print-and-play + rulebook) current in `exports/`.
 - [ ] Prototype (Screentop.gg / PnP) — kit shipped; ready for the table

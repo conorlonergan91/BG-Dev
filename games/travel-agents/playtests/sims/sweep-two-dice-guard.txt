@@ -1,0 +1,13 @@
+GUARDRAIL (N=300) — hoarder + no_tickets seat0 winrate vs fair (MUST be < fair)
+
+## 1die d6 dayL3/d6 nightL1
+  3p (fair 33%): hoarder  21.2% ok   no_tickets  25.0% ok   marquee  42.3%
+  4p (fair 25%): hoarder  21.5% ok   no_tickets  20.0% ok   marquee  34.5%
+  5p (fair 20%): hoarder  15.0% ok   no_tickets  16.5% ok   marquee  28.7%
+  6p (fair 17%): hoarder  16.7% ok   no_tickets  12.7% ok   marquee  19.0%
+
+## 2die d10 dayL3/d6 nightL1
+  3p (fair 33%): hoarder  25.2% ok   no_tickets  23.7% ok   marquee  37.2%
+  4p (fair 25%): hoarder  20.8% ok   no_tickets  18.7% ok   marquee  30.8%
+  5p (fair 20%): hoarder  16.3% ok   no_tickets  16.8% ok   marquee  26.9%
+  6p (fair 17%): hoarder  13.0% ok   no_tickets   9.3% ok   marquee  27.3%

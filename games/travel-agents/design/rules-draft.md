@@ -125,12 +125,12 @@ At this point people simply assume Taiwan rearranges itself to make life easier 
 You score **two ways**, tallied once at the last train: the **full value of every tour (Booking) you
 complete**, **plus** the **printed points on every vendor you win**. Tours pay far more — your main path;
 won vendors are a steady bonus. A Booking is a little tour you promise to run — *three breakfast stalls*,
-*a ★ marquee name*; complete it to score, or leave it unfinished for a flat **−1**. Followers never score.
-Most points is **Top Agent** (§9).
+*a ★ marquee name*. Followers never score; vendor points are **small on day stalls, big on night
+trophies** (§5). Most points is **Top Agent** (§9).
 
 ## 2. Setup
 
-> 🖼 **[FIG-SETUP|build/map-day.png]** — the shared board: four regions in a ring, the HSR link between North and South, and each region's vendor slots and market deck.
+> 🖼 **[FIG-SETUP|build/map-day.png]** — the shared board: four regions in a ring, each with its vendor slots and market deck.
 
 Everything sits on **one shared board, readable from any seat. Everyone starts in Taipei (North).**
 
@@ -149,8 +149,7 @@ Everything sits on **one shared board, readable from any seat. Everyone starts i
 - Each player takes a **character board** (read its ability and flaw aloud), a pawn in Taipei, an empty
   **Larder** face-up, and their **COMPLETED 成團** and **CANCELLED 取消** pile markers.
 
-The **setup chart on the board** gives, for your count, the vendor slots per region and the Booking-deck
-sizes. There are deliberately **fewer stalls than agents** — so you'll collide over them. First player is
+There are deliberately **fewer stalls than agents** — so you'll collide over them. First player is
 whoever ate street food most recently, then clockwise; the Influencer 網紅 takes the **last** seat.
 
 ## 3. Your turn
@@ -176,10 +175,10 @@ Take **ONE** action. Then, if your Larder holds more than **7** ingredients, dis
 
 ## 4. Followers — your crowd
 
-**Followers** are the hype you pile on a stall — never in hand, always in full view. Each is in one of
-three places: your **supply** (un-rallied), **your board** (rallied), or **on a stall** (committed). You
-own a fixed pool in your colour and can never commit more than you own. They flow supply → board
-(**grow**, on Travel) → stall (**Promote**), then resolve on a win or loss (§5).
+**Followers** are the hype you pile on a stall — never in hand, always in full view. Each sits in one of
+three places — your **supply** (un-rallied), **your board** (rallied), or **on a stall** (committed) — and
+flows supply → board (**grow**, on Travel) → stall (**Promote**), then resolves on a win or loss (§5). You
+can never commit more than the pool you own.
 
 ## 5. Bribing a vendor — the biggest crowd wins
 
@@ -189,7 +188,7 @@ fill the stall. To Bribe a vendor you stand with:
 1. **draw the biggest crowd** — hold **strictly more of your followers on it than any single rival**, an
    outright plurality (a *tie* claims nothing; the Big Boss 老大 alone wins by matching);
 2. **meet its crowd-floor** — have at least the stall's printed **minimum crowd** of your own followers on
-   it (**1** at an everyday stall, **2** at a bigger night stall, **3** at an apex): even unopposed, a thin
+   it (**1** at a day stall, **2–3** at a night trophy, **4** at an ★ apex): even unopposed, a thin
    crowd can't claim it;
 3. **pay its ingredients**, minus your region discounts (the crowd decides only *who* pays — there is
    **no follower cost**).
@@ -202,12 +201,13 @@ for now.
 Promote again to break it, or walk away and leave them.
 
 **Stalls are scarce.** A claimed or emptied slot stays **empty** until the round's-end refill, and a stall
-no one queues at eventually **sells out** (§8). A stall may be the region's only one — out-commit a rival,
-or Travel on and risk it being gone.
+no one queues at eventually **sells out** (§8) — a region may have only one.
 
-**A won vendor works twice.** It scores its **printed points** (§9) — *and* most show a
-**region icon**: each icon you hold makes that region's ingredients **1 cheaper** to Bribe, your ramp.
-Drinks and ★ apex stalls carry no icon. Night stalls cost more and often want two regions' ingredients.
+**Day stalls are the engine; night stalls are the prizes.** A **day** food stall is cheap and scores little
+but carries a **region icon**: each icon you hold makes that region's ingredients **1 cheaper** to Bribe, and
+they **stack** — the ramp you build over breakfast. **Night** stalls carry **no icon** — pricey, high-scoring
+**trophies** (some want two regions' ingredients) you afford only *because* of that day engine. Drinks carry
+no icon.
 
 > **Trending 爆紅.** An event can drop a **Trending** marker on a stall; win it and your crowd **grows +1**
 > — it went viral. The printed **★ apex** stalls are a separate, permanent thing — a region's top table.
@@ -229,9 +229,8 @@ the card:
 
 - **from the row** — take one card from the face-up Booking row into your hand, then refill the row; **or**
 - **Pot-Luck (隨緣開團)** — decline the whole row and draw the **top of the current Booking deck blind**
-  (DAY deck by day, NIGHT at night). You **keep it** unseen; the row is **not** refilled.
-
-Use Pot-Luck when nothing in the row suits you.
+  (DAY deck by day, NIGHT at night). You **keep it** unseen; the row is **not** refilled — use it when
+  nothing in the row suits you.
 
 - **Complete it (成團).** The moment your won vendors satisfy a held Booking, flip it to your **COMPLETED
   成團** pile — it scores its full value, nudges your **Tours-Completed** meter, and frees a hand slot.
@@ -261,26 +260,28 @@ It's one eating day, and **the vendors are the clock**: when the day's stalls ar
 when those are gone, it's the last train home. The Booking decks aren't the clock (just your tour supply),
 and the **market decks** (ingredients & events) reshuffle and keep coming — only the **vendors** run out.
 
-- **Daytime 白天** — the **13 daytime vendors.** Build your ramp on them.
+- **Daytime 白天** — the **18 daytime vendors**: cheap engine-seeds. Build your ramp on them.
 - **黃昏 DUSK** — the moment the **day vendors are all gone** (claimed or sold out): finish the current turn,
   then flip to night — bring the **night** vendors and markets online and deal a fresh Booking row from the
   NIGHT deck. **Keep your Larder and Bookings.**
-- **Night Market 夜市** — the **12 nighttime vendors** (11 unique + 1 duplicate): pricier, fought-over, the ★ apex.
+- **Night Market 夜市** — the **12 nighttime vendors** (11 unique + 1 duplicate): pricey no-icon **trophies**, fought-over, one ★ apex per region.
 - **末班車 LAST TRAIN** — the moment the **night vendors are all gone**: finish the current round so everyone
   has had equal turns, then the game ends.
 
-> 🖼 **[FIG-DIE|build/die-closing-time.png]** — the Closing-Time die 關門: four region faces (北/中/南/東) and two blank reprieves.
+> 🖼 **[FIG-DIE|build/die-closing-time.png]** — the Closing-Time die 關門.
 
-> **The Closing-Time die 關門.** A stall left too long closes. Track rounds on the board's **1·2·3 clock**;
-> after round **L** for your count (**2** at 3 players, **3** at 4–6 — the setup chart says which), roll the
-> **Closing-Time die** and reset the clock. Four faces are regions (北/中/南/東), two are **blank** (a
-> reprieve). A region face **closes that region's oldest face-up stall** — even one with a crowd on it: the
-> stall is gone (not reshuffled), and **everyone's followers on it go home to their boards, kept** — no one
-> loses a contest, the die just called time. A blank, or a region with no stall to close, does nothing.
+> **The Closing-Time die 關門.** A stall left too long closes — and closing time comes faster after dark.
+> **By day**, track rounds on the board's **1·2·3 clock** and roll the die after round **L** for your count
+> (**2** at 3 players, **3** at 4–6 — the setup chart says which), then reset the clock. **By night, it's
+> closing time every round** — roll the die at the **end of every night round** (a stall shuts each round). Four
+> faces are regions (北/中/南/東), two are **blank** (a reprieve). A region face **closes
+> that region's oldest face-up stall** — even one with a crowd on it: the stall is gone (not reshuffled), and
+> **everyone's followers on it go home to their boards, kept** — no one loses a contest, the die just called
+> time. A blank, or a region with no stall to close, does nothing.
 
 > **At each boundary (DUSK and the last train).** First break any still-**tied** stall — to **most
 > followers, then earliest committer** (paying if able); losers scatter to their supply. Then followers on
-> **unclaimed** stalls return **home to their boards** — the stall simply closed, unwon. **At DUSK**, any
+> **unclaimed** stalls return **home to their boards**. **At DUSK**, any
 > unfinished **☀ day** tour you hold is **cancelled** (flat **−1**); your any-time and night tours carry on.
 > **At the last train**, every tour still unfinished in hand is cancelled the same way.
 
@@ -290,8 +291,7 @@ Total each player once — two tracks added together:
 
 - **+ the full value** of every Booking in your **COMPLETED 成團** pile.
 - **+ the printed points** on every **vendor you won**.
-- **−1** for every Booking in your **CANCELLED 取消** pile (flat, whatever its value); any Booking still
-  unfinished in hand at the last train is cancelled too.
+- **−1** for every Booking in your **CANCELLED 取消** pile (flat, whatever its value).
 
 Followers score nothing. Most points is **Top Agent**; ties break to most vendors, then most regions
 covered, then fewest cancelled Bookings.

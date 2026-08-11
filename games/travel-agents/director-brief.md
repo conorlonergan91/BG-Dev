@@ -17,6 +17,23 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-11 — Seriously strip down the player aids into a per-player, card-sized, double-sided aid.**
+  - **Ask:** *"Seriously strip down the player aids… fit in a card the same size as the others… one for each
+    player, on one side it lists the actions (save explanation for the rulebook), on the other side a very
+    brief explanation of the ability and flaw of the character."*
+  - **Context:** The old player aid was a single verbose sheet. The CD wanted the aid to become a real
+    component in the box — the same card size as everything else, one per player, with the turn actions on a
+    shared front and each agent's character-specific ability + flaw on the back, keeping the *teaching* in the
+    rulebook rather than crammed onto the aid.
+  - **Status:** `implemented` → the old verbose single sheet is **retired** and replaced by a **poker-card-
+    sized (750×1050), per-player, double-sided** aid: a shared FRONT listing the six turn actions (labels +
+    one-line reminder, full teach left to the rulebook) and one BACK per character with that agent's ability +
+    flaw in brief, tinted in the character's colour (漢字 + Tâi-lô + catchphrase). New `--type aidcard`
+    renderer in `tools/boards/build_board.py`; new schema `components/player-aid.json` pulling display fields
+    from `characters.csv` so it can't drift; `make.sh` renders into `build/aid/` → `exports/aid/` +
+    `exports/screentop/` + a true-size cut-out PnP `exports/print/pnp-player-aids.pdf`; `check_complexity.py`
+    taught the new schema (player_aid_lines 8/22). Guardians green. Commit `111c916`. (status.md Done bullet)
+
 - **2026-08-10 — SCRAP the secret-agent premise; pivot to "Wacky Races, Taiwan-food edition"; retitle.**
   - **Ask:** The secret-agent / spy backstory was scrapped a while back — kill it everywhere. The direction
     is **over-the-top, wacky-racer, *battle-hungry* rival travel agents** in a zany all-out dash to **craft

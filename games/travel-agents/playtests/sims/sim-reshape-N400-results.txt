@@ -1,0 +1,129 @@
+# Travel Agents V7-M — DAY/NIGHT DECK RESHAPE · CD-GATED RE-SIM  (N=400/cell)
+# config: CANCEL_COST=flat:1  VISIT_MODE=straight  VARIETY=mono
+# night-engine demand by region (icon worth): {'N': 22, 'E': 18, 'S': 15, 'C': 5}
+
+================================================================================================
+HEADLINE (balanced field) — DOES THE ENGINE FORM + DO TOURS LEAD?  per player count
+================================================================================================
+
+## 3p
+  vendor-VP 9.1 + booking-VP 23.1  -> vendor-share 33% / booking-share 67%   (target 25-35%)
+  claims/plyr 3.41  = DAY 2.78 + NIGHT 0.63   (thesis wants DAY up toward ~4-6)
+  ENGINE DEPTH: mean lane 1.48  winner lane 1.81  winner N+E icons 1.88  mean icons 2.26
+  apex claims/gm 0.163  mean APEX net-cost 0.70 (n 0.16)  below-floor blocks/gm 0.00
+  free-claims/gm 0.63 (deep>=7 0.00 / shallow 0.63)  mean net-cost/claim 1.84
+  bookings-done/gm 6.0  prestige/gm 0.50  turns/plyr 55.0  LAST-TRAIN 70% / STALL 30%
+  die: removals/gm 13.31 (contested 0.46)  washes/gm 0.54  cancels/gm 2.52
+
+## 4p
+  vendor-VP 9.5 + booking-VP 31.5  -> vendor-share 26% / booking-share 74%   (target 25-35%)
+  claims/plyr 3.40  = DAY 2.88 + NIGHT 0.53   (thesis wants DAY up toward ~4-6)
+  ENGINE DEPTH: mean lane 1.50  winner lane 2.00  winner N+E icons 1.97  mean icons 2.28
+  apex claims/gm 0.172  mean APEX net-cost 0.70 (n 0.17)  below-floor blocks/gm 0.00
+  free-claims/gm 0.72 (deep>=7 0.00 / shallow 0.72)  mean net-cost/claim 1.81
+  bookings-done/gm 7.3  prestige/gm 0.86  turns/plyr 60.6  LAST-TRAIN 27% / STALL 73%
+  die: removals/gm 9.52 (contested 0.70)  washes/gm 1.18  cancels/gm 2.66
+
+## 5p
+  vendor-VP 8.4 + booking-VP 26.2  -> vendor-share 26% / booking-share 74%   (target 25-35%)
+  claims/plyr 2.83  = DAY 2.36 + NIGHT 0.48   (thesis wants DAY up toward ~4-6)
+  ENGINE DEPTH: mean lane 1.29  winner lane 1.78  winner N+E icons 1.56  mean icons 1.86
+  apex claims/gm 0.113  mean APEX net-cost 0.54 (n 0.11)  below-floor blocks/gm 0.01
+  free-claims/gm 0.46 (deep>=7 0.00 / shallow 0.46)  mean net-cost/claim 1.92
+  bookings-done/gm 6.9  prestige/gm 0.88  turns/plyr 59.4  LAST-TRAIN 38% / STALL 62%
+  die: removals/gm 9.38 (contested 0.74)  washes/gm 1.81  cancels/gm 3.57
+
+## 6p
+  vendor-VP 7.8 + booking-VP 26.3  -> vendor-share 25% / booking-share 75%   (target 25-35%)
+  claims/plyr 2.57  = DAY 2.07 + NIGHT 0.50   (thesis wants DAY up toward ~4-6)
+  ENGINE DEPTH: mean lane 1.18  winner lane 1.71  winner N+E icons 1.47  mean icons 1.63
+  apex claims/gm 0.060  mean APEX net-cost 0.30 (n 0.06)  below-floor blocks/gm 0.01
+  free-claims/gm 0.56 (deep>=7 0.00 / shallow 0.56)  mean net-cost/claim 1.91
+  bookings-done/gm 7.2  prestige/gm 0.75  turns/plyr 57.2  LAST-TRAIN 64% / STALL 36%
+  die: removals/gm 9.06 (contested 0.71)  washes/gm 2.87  cancels/gm 4.38
+
+================================================================================================
+ENGINE FORMATION — engine_h (COMPETENT builder) vs field + all-engine_h MIRROR
+================================================================================================
+
+## 3p  (fair 33%)
+  balanced  wr   43% (idx 1.28)  winnerLane 1.80  winnerN+E 1.80  apex/gm 0.203  apexNet 0.91(n0.20)  DAYclaims/plyr 2.77
+  human     wr   36% (idx 1.09)  winnerLane 1.80  winnerN+E 1.73  apex/gm 0.155  apexNet 0.74(n0.15)  DAYclaims/plyr 2.74
+  engine    wr   42% (idx 1.25)  winnerLane 1.88  winnerN+E 1.88  apex/gm 0.155  apexNet 0.67(n0.15)  DAYclaims/plyr 2.82
+  engine_h  wr   44% (idx 1.32)  winnerLane 1.87  winnerN+E 1.86  apex/gm 0.177  apexNet 0.76(n0.18)  DAYclaims/plyr 2.85
+  marquee   wr   42% (idx 1.25)  winnerLane 1.86  winnerN+E 1.81  apex/gm 0.172  apexNet 0.72(n0.17)  DAYclaims/plyr 2.77
+  [MIRROR all-engine_h] mean lane 1.24  winner lane 1.64  winner N+E 1.55  apex/gm 0.170  free-deep/gm 0.00  DAYclaims/plyr 2.22  vshare 37%
+
+## 4p  (fair 25%)
+  balanced  wr   34% (idx 1.35)  winnerLane 1.92  winnerN+E 1.91  apex/gm 0.180  apexNet 0.80(n0.18)  DAYclaims/plyr 2.85
+  human     wr   27% (idx 1.08)  winnerLane 1.93  winnerN+E 1.80  apex/gm 0.182  apexNet 0.79(n0.18)  DAYclaims/plyr 2.82
+  engine    wr   38% (idx 1.52)  winnerLane 1.98  winnerN+E 1.92  apex/gm 0.175  apexNet 0.77(n0.17)  DAYclaims/plyr 2.88
+  engine_h  wr   36% (idx 1.44)  winnerLane 1.96  winnerN+E 1.89  apex/gm 0.195  apexNet 0.87(n0.20)  DAYclaims/plyr 2.83
+  marquee   wr   28% (idx 1.14)  winnerLane 1.90  winnerN+E 1.89  apex/gm 0.158  apexNet 0.70(n0.16)  DAYclaims/plyr 2.88
+  [MIRROR all-engine_h] mean lane 1.19  winner lane 1.82  winner N+E 1.79  apex/gm 0.125  free-deep/gm 0.00  DAYclaims/plyr 2.23  vshare 32%
+
+## 5p  (fair 20%)
+  balanced  wr   27% (idx 1.33)  winnerLane 1.78  winnerN+E 1.52  apex/gm 0.085  apexNet 0.41(n0.09)  DAYclaims/plyr 2.36
+  human     wr   24% (idx 1.21)  winnerLane 1.77  winnerN+E 1.57  apex/gm 0.145  apexNet 0.66(n0.14)  DAYclaims/plyr 2.36
+  engine    wr   28% (idx 1.38)  winnerLane 1.83  winnerN+E 1.58  apex/gm 0.120  apexNet 0.55(n0.12)  DAYclaims/plyr 2.43
+  engine_h  wr   28% (idx 1.39)  winnerLane 1.76  winnerN+E 1.50  apex/gm 0.168  apexNet 0.74(n0.17)  DAYclaims/plyr 2.33
+  marquee   wr   28% (idx 1.40)  winnerLane 1.86  winnerN+E 1.56  apex/gm 0.152  apexNet 0.70(n0.15)  DAYclaims/plyr 2.42
+  [MIRROR all-engine_h] mean lane 1.07  winner lane 1.75  winner N+E 1.55  apex/gm 0.177  free-deep/gm 0.00  DAYclaims/plyr 1.97  vshare 30%
+
+## 6p  (fair 17%)
+  balanced  wr   24% (idx 1.47)  winnerLane 1.70  winnerN+E 1.45  apex/gm 0.068  apexNet 0.35(n0.07)  DAYclaims/plyr 2.06
+  human     wr   19% (idx 1.15)  winnerLane 1.70  winnerN+E 1.54  apex/gm 0.058  apexNet 0.28(n0.06)  DAYclaims/plyr 2.07
+  engine    wr   21% (idx 1.24)  winnerLane 1.73  winnerN+E 1.50  apex/gm 0.068  apexNet 0.33(n0.07)  DAYclaims/plyr 2.05
+  engine_h  wr   22% (idx 1.35)  winnerLane 1.68  winnerN+E 1.50  apex/gm 0.092  apexNet 0.47(n0.09)  DAYclaims/plyr 2.02
+  marquee   wr   20% (idx 1.23)  winnerLane 1.67  winnerN+E 1.46  apex/gm 0.075  apexNet 0.40(n0.07)  DAYclaims/plyr 2.07
+  [MIRROR all-engine_h] mean lane 1.06  winner lane 1.65  winner N+E 1.51  apex/gm 0.125  free-deep/gm 0.00  DAYclaims/plyr 1.83  vshare 31%
+
+================================================================================================
+HOARDER (vendor-only) + no_tickets (objectives-blind) — MUST be < ~fair share (tours must lead)
+================================================================================================
+
+## 3p  (fair 33%)
+  hoarder      27.3%  (idx 0.82)  <<< MAKE-OR-BREAK  ok
+  no_tickets   28.2%  (idx 0.85)
+  marquee      37.0%  (idx 1.11)
+  dodger       35.1%  (idx 1.05)
+  sniper       41.2%  (idx 1.24)
+
+## 4p  (fair 25%)
+  hoarder      18.2%  (idx 0.73)  <<< MAKE-OR-BREAK  ok
+  no_tickets   15.8%  (idx 0.63)
+  marquee      24.6%  (idx 0.98)
+  dodger       32.4%  (idx 1.29)
+  sniper       27.1%  (idx 1.08)
+
+## 5p  (fair 20%)
+  hoarder      17.8%  (idx 0.89)  <<< MAKE-OR-BREAK  ok
+  no_tickets   12.0%  (idx 0.60)
+  marquee      27.3%  (idx 1.36)
+  dodger       25.4%  (idx 1.27)
+  sniper       24.2%  (idx 1.21)
+
+## 6p  (fair 17%)
+  hoarder      12.5%  (idx 0.75)  <<< MAKE-OR-BREAK  ok
+  no_tickets    9.8%  (idx 0.58)
+  marquee      25.1%  (idx 1.51)
+  dodger       19.9%  (idx 1.19)
+  sniper       15.1%  (idx 0.91)
+
+================================================================================================
+HEALTH READ @4p — each line in seat0 vs balanced field (naive baselines + rule-aware)
+================================================================================================
+  engine          36.5%  (idx 1.46)
+  engine_h        33.6%  (idx 1.34)
+  balanced        32.6%  (idx 1.30)
+  dodger          32.0%  (idx 1.28)
+  sniper          30.0%  (idx 1.20)
+  human_spread    29.5%  (idx 1.18)
+  human           28.6%  (idx 1.15)
+  marquee         28.4%  (idx 1.14)
+  collector       25.4%  (idx 1.01)
+  no_tickets      19.5%  (idx 0.78)
+  hoarder         19.2%  (idx 0.77)
+  random           0.0%  (idx 0.00)
+
+  fair share @4p = 25%.  Healthy = rule-aware beats naive (random/no_tickets), no single line runs away, hoarder < fair.

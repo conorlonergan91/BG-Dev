@@ -111,7 +111,7 @@ in `art/map-board.md`, East consultant-gated).
 
 ---
 
-## The 24 VENDORS — `FIG-VEND-*` (grouped North / Central / South / East)
+## The 29 VENDORS — `FIG-VEND-*` (grouped North / Central / South / East)
 
 **The big idea for vendors (CD steer):** **the DISH is the hero.** No people, no stall, no market scene,
 no background — a **clean food CUT-OUT on a plain flat pale-cream ground, exactly like the character art**.
@@ -120,9 +120,16 @@ draw the place, the market, or any scene.** Every dish visually **distinct** (it
 colour). Think of the beautiful, faithfully-rendered bowls in the approved character art — that quality,
 isolated on the cream.
 
+> **Day vs night roles (V7-M).** The cut-out mock-up always sits on the plain cream ground, so day/night
+> palette does **not** change here — but the two roles differ on the finished card and in `vendor-art.md`:
+> **DAY vendors are cheap everyday ENGINE SEEDS** (the humble morning grab) and **NIGHT food vendors are
+> scarce, expensive TROPHIES that carry NO region icon** (they read as prizes). For the mock-up that means:
+> keep day dishes **generous but humble**, and render the **apex ★ night trophies the biggest / most
+> abundant / most dramatic** of their region (as the ★ blocks already say).
+
 **Before you paste (do once):** upload the art-context `.md` files, then **attach an approved character
 mock-up as a STYLE-REFERENCE image** and tell the tool to *match that art style* — it locks the look and
-keeps all 24 cohesive. Then paste **one block at a time.** Each block below is **complete and self-contained**
+keeps all 29 cohesive. Then paste **one block at a time.** Each block below is **complete and self-contained**
 — it already carries every constraint, so you can paste it as-is.
 
 **Every block ends with the same guardrails** (baked into each so nothing drifts): *NO people, NO stall or
@@ -140,6 +147,12 @@ FIG-VEND-N02 · Egg Crepe 蛋餅 (from Dihua St 迪化街, 大稻埕) — art st
 ```
 ```
 FIG-VEND-N03 · Soy Milk 豆漿 (drink; from 阜杭豆漿) — art style of the attached reference. HERO, big and appetising: a warm bowl of fresh soy milk with a crisp golden 油條 (fried dough stick) leaning on the rim. NO people, NO stall or market scene, NO background, NO text or labels. Single item, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N03.png.
+```
+```
+FIG-VEND-N09 · Rice Ball 飯糰 (from Shuanglian Morning Market 雙連晨市) — art style of the attached reference. HERO, big and appetising: a fat glutinous-rice roll (飯糰) split to show pickled radish, dried pork floss and a crisp fried 油條 (dough stick) rolled up tight inside, held in its little cloth wrapper. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N09.png.
+```
+```
+FIG-VEND-N10 · Gua-bao 割包 (from Wanhua 艋舺) — art style of the attached reference. HERO, big and appetising: a pillowy folded steamed bun cradling a slab of glossy braised pork belly, pickled mustard greens, crushed peanut and a dusting of sugar powder. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N10.png.
 ```
 ```
 FIG-VEND-N04 · Pepper Bun 胡椒餅 (from 饒河街夜市) — art style of the attached reference. HERO, big and appetising: a sesame-crusted charcoal-baked peppered-pork bun, one split open to show the juicy pork-and-scallion filling. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-N04.png.
@@ -162,6 +175,9 @@ FIG-VEND-C01 · Ba-wan 肉圓 (from Changhua 彰化) — art style of the attach
 FIG-VEND-C02 · Misua 麵線 (from 臺中第二市場) — art style of the attached reference. HERO, big and appetising: a bowl of fine thread-noodles in a glossy thick brown broth, a spoon resting in it, a little coriander on top. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-C02.png.
 ```
 ```
+FIG-VEND-C07 · Taro Noodle Soup 大麵羹 (from Taichung 臺中) — art style of the attached reference. HERO, big and appetising: a bowl of thick, soft alkaline noodles in a starchy taro-flecked broth, topped with fried shallots and a little pickle, a spoon resting in it. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-C07.png.
+```
+```
 FIG-VEND-C03 · Bubble Tea 珍珠奶茶 (drink; from 春水堂, the birthplace) — art style of the attached reference. HERO, big and appetising: a tall shaken pearl-milk-tea glass, frothy with a half-lid — the poised ORIGINAL teahouse cup (a shade more refined than N07's street cup). NO people, NO stall or market scene, NO background, NO text or labels. Single item, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-C03.png.
 ```
 ```
@@ -182,6 +198,9 @@ FIG-VEND-S01 · Milkfish Congee 虱目魚粥 (from Tainan 臺南) — art style 
 FIG-VEND-S02 · Rice Bowl Cake 碗粿 (from 富盛號, 國華街) — art style of the attached reference. HERO, big and appetising: a savoury steamed rice-cake set in its own little bowl, topped with dark braise and a shrimp, sauce drizzled over. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-S02.png.
 ```
 ```
+FIG-VEND-S07 · Oyster Omelette 蚵仔煎 (from Tainan 臺南) — art style of the attached reference. HERO, big and appetising: a sizzling griddle omelette of plump oysters, egg and leafy greens in a glossy translucent starch batter, sweet-red sauce ladled over the top, on a plate. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-S07.png.
+```
+```
 FIG-VEND-S03 · Papaya Milk 木瓜牛奶 (drink; from 六合夜市) — art style of the attached reference. HERO, big and appetising: a tall glass of thick frothy orange papaya-milk shake, a straw, bright and creamy. NO people, NO stall or market scene, NO background, NO text or labels. Single item, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-S03.png.
 ```
 ```
@@ -200,6 +219,9 @@ FIG-VEND-E01 ⚑ CONSULTANT-GATED EVEN FOR MOCK-UPS · Bamboo-Tube Rice 竹筒�
 ```
 ```
 FIG-VEND-E02 · Rice Cake 米糕 (from 羅東夜市) — art style of the attached reference. HERO, big and appetising: a small bowl of savoury glutinous rice topped with dark braise and a little pork floss. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-E02.png.
+```
+```
+FIG-VEND-E06 · Scallion Pancake 蔥油餅 (from Luodong 羅東, 三星蔥) — art style of the attached reference. HERO, big and appetising: a blistered, flaky pan-fried scallion pancake packed with green 三星蔥 spring onion, folded and crisp, one wedge cut to show the layers. NO people, NO stall or market scene, NO background, NO text or labels. Single dish, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-E06.png.
 ```
 ```
 FIG-VEND-E03 · Mochi 麻糬 (from 曾記, Hualien 花蓮) — art style of the attached reference. HERO, big and appetising: a little tray of soft dusted pastel glutinous-rice mochi, gift-shop sweet. NO people, NO stall or market scene, NO background, NO text or labels. Single tray, centred, soft contact shadow, plain flat pale-cream background, NO vignette or glow. Faithful, secular. High-res PNG (not SVG). Save build/mockups/FIG-VEND-E03.png.

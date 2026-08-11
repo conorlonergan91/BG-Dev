@@ -359,6 +359,155 @@ def render_aid(theme, spec):
     return _svg(W, H, parts), W, H
 
 
+# ---- player-aid CARD (poker-sized, double-sided, one per player) ------------
+# CD redesign 2026-08-11: the aid is now a 750×1050 card. FRONT = the six turn
+# actions (labels + a one-line reminder; the full teach stays in the rulebook).
+# BACK = that character's ability + flaw in brief, tinted in the agent's colour.
+AIDCARD_W, AIDCARD_H = 750, 1050        # poker card @ 300 DPI, matches the deck
+
+
+def _aidcard_wrap(s, fs, avail_px):
+    """Wrap `s` to fit `avail_px` at font-size `fs`, honouring real glyph widths
+    (CJK counts full-width) rather than a flat char budget."""
+    words, lines, cur = s.split(" "), [], ""
+    for w in words:
+        trial = (cur + " " + w).strip()
+        if cur and _text_w(trial, fs) > avail_px:
+            lines.append(cur)
+            cur = w
+        else:
+            cur = trial
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def render_aidcard_front(theme, spec):
+    """FRONT face: the six turn actions, labels-first. No rule-teaching prose."""
+    W, H, pad = AIDCARD_W, AIDCARD_H, 48
+    ink, accent, text, muted = theme["ink"], theme["accent"], theme["text"], theme["muted"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    avail = W - 2 * pad
+
+    # header band: title + the one-action rule (wraps if needed)
+    rule_lines = _aidcard_wrap(spec.get("turn_rule", ""), 25, avail)
+    head_h = 128 + max(0, len(rule_lines) - 1) * 32
+
+    body = []
+    y = head_h + 60
+    ACTION_GAP = 26                      # extra breathing room between actions
+    for i, act in enumerate(spec.get("actions", [])):
+        name = str(act.get("name", ""))
+        where = str(act.get("where", "")).strip()
+        # action name (bold) + a muted "· where" chip on the same baseline
+        body.append(f'<circle cx="{pad+9}" cy="{y-11}" r="7" fill="{accent}"/>')
+        body.append(f'<text x="{pad+32}" y="{y}" font-size="34" fill="{ink}" '
+                    f'font-family="{tfont}" font-weight="bold" letter-spacing="0.5">{esc(name)}</text>')
+        if where:
+            # right-align the where-chip to the card edge so it never collides with a long name
+            body.append(f'<text x="{W-pad}" y="{y}" font-size="24" fill="{muted}" text-anchor="end" '
+                        f'font-family="{bfont}" font-style="italic">{esc(where)}</text>')
+        # the one-line reminder, indented under the name
+        y += 42
+        for j, ln in enumerate(_aidcard_wrap(act.get("brief", ""), 27, avail - 32)):
+            if j:
+                y += 34
+            body.append(f'<text x="{pad+32}" y="{y}" font-size="27" fill="{text}" '
+                        f'font-family="{bfont}">{esc(ln)}</text>')
+        y += 34 + ACTION_GAP
+
+    # footer pointer to the back
+    foot = spec.get("footer", "")
+    parts = [f'<defs>{page_gradient(theme, "pg")}</defs>',
+             f'<rect x="3" y="3" width="{W-6}" height="{H-6}" rx="30" fill="url(#pg)" '
+             f'stroke="{ink}" stroke-width="6"/>',
+             f'<path d="M3 33 Q3 3 33 3 L{W-33} 3 Q{W-3} 3 {W-3} 33 L{W-3} {head_h} L3 {head_h} Z" fill="{ink}"/>',
+             f'<rect x="3" y="{head_h}" width="{W-6}" height="6" fill="{accent}"/>',
+             f'<text x="{pad}" y="78" font-size="52" fill="#fff" font-family="{tfont}" '
+             f'font-weight="bold" letter-spacing="2">{esc(spec.get("title",""))}</text>']
+    sub_col = boost_contrast(accent, ink, 4.5)
+    for i, rl in enumerate(rule_lines):
+        parts.append(f'<text x="{pad}" y="{112 + i*32}" font-size="25" fill="{sub_col}" '
+                     f'font-family="{tfont}" font-style="italic">{esc(rl)}</text>')
+    parts += body
+    if foot:
+        parts.append(f'<line x1="{pad}" y1="{H-96}" x2="{W-pad}" y2="{H-96}" stroke="{accent}" '
+                     f'stroke-width="2" opacity="0.3"/>')
+        parts.append(f'<text x="{W//2}" y="{H-58}" font-size="24" fill="{muted}" text-anchor="middle" '
+                     f'font-family="{bfont}" font-style="italic">{esc(foot)}</text>')
+    return _svg(W, H, parts), W, H
+
+
+def render_aidcard_back(theme, spec, row, back):
+    """BACK face: this character's ability + flaw in brief, in the agent's colour.
+
+    `row` is the characters.csv row (English name, 漢字, Tâi-lô, colour, quote);
+    `back` is the {ability_name, ability, flaw} block from player-aid.json."""
+    W, H, pad = AIDCARD_W, AIDCARD_H, 48
+    ink, accent, text, muted = theme["ink"], theme["accent"], theme["text"], theme["muted"]
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    avail = W - 2 * pad
+
+    band = str(row.get("colour", "") or ink).strip() or ink
+    on_band = pick_text_color(band)                      # guaranteed-contrast text
+    name_en = str(row.get("name_en", "")).strip()
+    hanzi = str(row.get("hanzi", "")).strip()
+    tailo = str(row.get("name", "")).strip()
+    quote = str(row.get("blurb", "")).strip()
+
+    head_h = 216
+    body, y = [], head_h + 64
+
+    def block(label, label_col, title, prose):
+        nonlocal y
+        body.append(f'<text x="{pad}" y="{y}" font-size="26" fill="{label_col}" font-family="{tfont}" '
+                    f'font-weight="bold" letter-spacing="2">{esc(label)}</text>')
+        body.append(f'<line x1="{pad}" y1="{y+12}" x2="{W-pad}" y2="{y+12}" stroke="{label_col}" '
+                    f'stroke-width="2" opacity="0.3"/>')
+        y += 52
+        if title:
+            body.append(f'<text x="{pad}" y="{y}" font-size="32" fill="{ink}" font-family="{tfont}" '
+                        f'font-weight="bold">{esc(title)}</text>')
+            y += 44
+        for j, ln in enumerate(_aidcard_wrap(prose, 28, avail)):
+            if j:
+                y += 38
+            body.append(f'<text x="{pad}" y="{y}" font-size="28" fill="{text}" '
+                        f'font-family="{bfont}">{esc(ln)}</text>')
+        y += 38
+
+    block("ABILITY", accent, back.get("ability_name", ""), back.get("ability", ""))
+    y += 30
+    block("FLAW", muted, "", back.get("flaw", ""))
+
+    # header: English name (primary) + 漢字 top-right with Tâi-lô beneath it
+    parts = [f'<defs>{page_gradient(theme, "pg")}</defs>',
+             f'<rect x="3" y="3" width="{W-6}" height="{H-6}" rx="30" fill="url(#pg)" '
+             f'stroke="{ink}" stroke-width="6"/>',
+             f'<path d="M3 33 Q3 3 33 3 L{W-33} 3 Q{W-3} 3 {W-3} 33 L{W-3} {head_h} L3 {head_h} Z" fill="{band}"/>',
+             f'<rect x="3" y="{head_h}" width="{W-6}" height="6" fill="{ink}"/>',
+             f'<text x="{pad}" y="70" font-size="26" fill="{on_band}" font-family="{tfont}" '
+             f'opacity="0.85" letter-spacing="3">{esc(spec.get("back_kicker","YOUR AGENT"))}</text>',
+             f'<text x="{pad}" y="132" font-size="48" fill="{on_band}" font-family="{tfont}" '
+             f'font-weight="bold">{esc(name_en)}</text>']
+    if hanzi:
+        parts.append(f'<text x="{W-pad}" y="120" font-size="52" fill="{on_band}" text-anchor="end" '
+                     f'font-family="{tfont}" font-weight="bold">{esc(hanzi)}</text>')
+    if tailo:
+        parts.append(f'<text x="{W-pad}" y="160" font-size="24" fill="{on_band}" text-anchor="end" '
+                     f'font-family="{tfont}" font-style="italic" opacity="0.9">{esc(tailo)}</text>')
+    parts += body
+    # the character's own line, at the foot
+    if quote:
+        qy = H - 150
+        parts.append(f'<rect x="{pad-14}" y="{qy-30}" width="{W-2*(pad-14)}" height="118" rx="14" '
+                     f'fill="{band}" opacity="0.12"/>')
+        for j, ln in enumerate(_aidcard_wrap('“' + quote + '”', 27, avail - 24)):
+            parts.append(f'<text x="{W//2}" y="{qy + 10 + j*34}" font-size="27" fill="{ink}" '
+                         f'text-anchor="middle" font-family="{tfont}" font-style="italic">{esc(ln)}</text>')
+    return _svg(W, H, parts), W, H
+
+
 # ---- region map (NEUTRAL shared N-player board, V7 · v3 CD REDESIGN) --------
 def render_regionmap(theme, spec, phase="day"):
     """The shared TABLE board — V7 NEUTRAL board for 3-6 players, v3 (CD redesign 2026-08).
@@ -1216,7 +1365,7 @@ def _svg(W, H, parts):
 def main():
     ap = argparse.ArgumentParser(description="Render themed boards, tracks, and tokens.")
     ap.add_argument("--type", required=True,
-                    choices=["track", "tokens", "mat", "aid", "regionmap", "die", "scoretrack", "playerboard"])
+                    choices=["track", "tokens", "mat", "aid", "aidcard", "regionmap", "die", "scoretrack", "playerboard"])
     ap.add_argument("--theme", default="clean")
     ap.add_argument("--out", type=Path, default=Path("build/board.png"))
     # track
@@ -1280,6 +1429,37 @@ def main():
             svg, W, H = render_playerboard(theme, r, mockups_dir=mockups_dir)
             slug = _slugify(str(r.get("name_en", "")).strip() or r.get("id", ""))
             _save(svg, outdir / f"board-{slug}.png", W, H)
+        return 0
+
+    if args.type == "aidcard":
+        # Double-sided player-aid card: ONE shared FRONT (the actions) + one BACK per
+        # character (ability + flaw, tinted in the agent's colour). --spec = player-aid.json,
+        # --csv = characters.csv, --out = a DIRECTORY.
+        if not args.spec:
+            ap.error("--type aidcard requires --spec <player-aid.json>")
+        if not args.csv:
+            ap.error("--type aidcard requires --csv <characters.csv>")
+        spec = json.loads(args.spec.read_text(encoding="utf-8"))
+        import csv as _csv
+        with args.csv.open(newline="", encoding="utf-8") as f:
+            rows = list(_csv.DictReader(f))
+        rows = [r for r in rows if str(r.get("ability_code", "")).strip()
+                and str(r.get("flaw_code", "")).strip()]
+        outdir = args.out if args.out.suffix == "" else args.out.parent
+        # the shared FRONT
+        svg, W, H = render_aidcard_front(theme, spec)
+        _save(svg, outdir / "aidcard-front.png", W, H)
+        # one BACK per character that has a matching entry in the JSON `backs` map
+        backs = spec.get("backs", {})
+        for r in rows:
+            cid = str(r.get("id", "")).strip()
+            back = backs.get(cid)
+            if not back:
+                print(f"[board] aidcard: no back copy for character {cid} — skipped.")
+                continue
+            svg, W, H = render_aidcard_back(theme, spec, r, back)
+            slug = _slugify(str(r.get("name_en", "")).strip() or cid)
+            _save(svg, outdir / f"aidcard-back-{slug}.png", W, H)
         return 0
 
     if args.type == "track":
