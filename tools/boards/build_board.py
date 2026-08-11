@@ -770,19 +770,9 @@ def render_regionmap(theme, spec, phase="day"):
         parts.append(f'<text x="{X+16+68}" y="{Y+16+bh*0.70:.0f}" font-size="34" fill="#fff" '
                      f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(region_char.get(key,""))}</text>')
 
-        # signature-ingredient chips (emblem + 繁體 only; no English)
-        chips = r.get("chips", [])
-        ccx0 = X + 16 + bw + 30
-        ccy = Y + 16 + bh/2
-        for i, sp in enumerate(chips):
-            suit = resolve_suit(theme, sp.get("id", "")) if sp.get("id") in theme["suits"] else {}
-            scol = suit.get("color", rcol)
-            semb = suit.get("emblem", "circle")
-            cx = ccx0 + i*84
-            tcol = pick_text_color(scol, dark=ink, light="#ffffff")
-            parts.append(emblem_svg(semb, cx, ccy, 22, scol, stroke=ink))
-            parts.append(f'<text x="{cx}" y="{ccy+8:.0f}" font-size="24" fill="{tcol}" text-anchor="middle" '
-                         f'font-family="{bfont}" font-weight="bold">{esc(sp.get("label",""))}</text>')
+        # signature-ingredient chips REMOVED (CD steer 2026-08-11): the board no longer spoils which
+        # ingredients a region supplies — players DISCOVER each region's foods through play (the market
+        # decks). The `chips` data stays in map.json (still valid reference), it is simply not painted here.
 
         # bottom row (icon-only, FOUR card-footprints, left→right): the region's face-down VENDOR deck
         # (stall-badged — the stall deck that FEEDS the slot) → its single face-up VENDOR slot (dashed
