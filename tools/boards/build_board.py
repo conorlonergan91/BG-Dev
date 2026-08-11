@@ -556,11 +556,12 @@ def render_regionmap(theme, spec, phase="day"):
     steel = "#4A5A72"
     booking_col = theme["suits"].get("booking", {}).get("color", "#3A6EA5")
 
-    # PER-REGION vendor footprints (V7-M SCARCITY, bg-infodesign 2026-08): the tightened single-slot model
-    # draws each region's OWN slot count from map.json `regions[].slots_n` (the 4p HOME default: N 2, C/S/E
-    # 1) instead of a flat 2 everywhere. This shows the scarce single-slot regions honestly — most regions
-    # hold ONE contestable stall. The full per-count table (3p:4 / 4p:5 / 5p:5 / 6p:6, floor 1/region) and
-    # the SLOW-refill timing live in the off-board LEGEND panel + the rulebook, not as per-space clutter.
+    # PER-REGION vendor footprints (bg-infodesign, per-count scaling CD steer 2026-08-11): the board now
+    # prints the MAX face-up slots any player count uses, read straight from map.json `vendor_slots`
+    # (N/C/S/E per 3-6p). Base slots (present at every count) draw solid; the higher-count EXTRA slots
+    # (South's 2nd @5p, North's 2nd @6p) draw RECESSED with a small pawn+count gate chip ("5+"/"6") so a
+    # 3p/4p table plainly ignores them — no setup-table lookup. The full pool never scales; only these
+    # face-up slots do. SLOW-refill timing lives on the player aid + rulebook, not as per-space clutter.
 
     CARD_R = 0.714                 # 63.5 : 88.9 poker footprint ratio
     VW, VH = 120, 168             # a card-exact vendor / market / face-up footprint at board scale
@@ -640,6 +641,37 @@ def render_regionmap(theme, spec, phase="day"):
                 f'stroke="{rcol}" stroke-width="2.5" stroke-dasharray="9 6"/>'
                 + _stall(x + w/2, y + h/2, min(w, h)*0.24, rcol))
 
+    def _die(cx, cy, r, body_col="#ffffff", pip_col=None):
+        # the Closing-Time d6 glyph: a rounded square + 3 diagonal pips (same read as render_die's title die).
+        # ALL drawn (no ⚄ font glyph → no tofu, legible at board scale).
+        pc = pip_col or ink
+        s = (f'<rect x="{cx-r:.1f}" y="{cy-r:.1f}" width="{2*r:.1f}" height="{2*r:.1f}" '
+             f'rx="{r*0.28:.1f}" fill="{body_col}" stroke="{ink}" stroke-width="{max(2,r*0.09):.1f}"/>')
+        for ox, oy in [(-0.42, -0.42), (0.0, 0.0), (0.42, 0.42)]:
+            s += f'<circle cx="{cx+ox*r:.1f}" cy="{cy+oy*r:.1f}" r="{r*0.15:.1f}" fill="{pc}"/>'
+        return s
+
+    def _gate_badge(x, y, label, col):
+        # a per-count SLOT-GATE chip pinned to a vendor slot's top-left: a mini pawn (players) + the count
+        # that unlocks the slot (e.g. "5+" / "6"). Dual-coded — pawn SHAPE + numeral, never colour alone.
+        bw, bh = 62, 32
+        bx, by = x - 8, y - 14
+        px, py = bx + 17, by + bh / 2
+        return (f'<rect x="{bx:.1f}" y="{by:.1f}" width="{bw}" height="{bh}" rx="{bh/2:.0f}" '
+                f'fill="{col}" stroke="#ffffff" stroke-width="2.5"/>'
+                f'<circle cx="{px:.1f}" cy="{py-5:.1f}" r="5.5" fill="#ffffff"/>'
+                f'<path d="M{px-8:.1f} {py+10:.1f} q 8 -13 16 0 Z" fill="#ffffff"/>'
+                f'<text x="{bx+bw-9:.1f}" y="{by+bh*0.72:.0f}" font-size="21" fill="#ffffff" '
+                f'text-anchor="end" font-family="{tfont}" font-weight="bold">{esc(label)}</text>')
+
+    def _vendor_space_gated(x, y, w, h, rcol, label):
+        # a per-count EXTRA vendor slot (only in play at higher counts): the same card-exact footprint,
+        # drawn RECESSED (lighter dash + faded stall) so at 3p/4p it reads as 'not used yet' + a gate chip.
+        return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="#ffffff" fill-opacity="0.28" '
+                f'stroke="{rcol}" stroke-opacity="0.6" stroke-width="2.5" stroke-dasharray="4 8"/>'
+                + f'<g opacity="0.45">' + _stall(x + w/2, y + h/2, min(w, h)*0.24, rcol) + '</g>'
+                + _gate_badge(x, y, label, rcol))
+
     # ------------------------------------------------------------------ DEFS + base
     defs = [page_gradient(theme, "pg", ground),
             f'<radialGradient id="glowA" cx="50%" cy="54%" r="60%">'
@@ -693,6 +725,8 @@ def render_regionmap(theme, spec, phase="day"):
     centers = {"north": (1140, 560), "central": (520, 862), "east": (1760, 862), "south": (1140, 1164)}
     pwidth = {"north": PW_NS, "south": PW_NS, "central": PW_CE, "east": PW_CE}
     region_char = {"north": "北", "central": "中", "south": "南", "east": "東"}
+    region_letter = {"north": "N", "central": "C", "south": "S", "east": "E"}
+    vendor_slots_tbl = spec.get("vendor_slots", {})
 
     def tl(key):
         cx, cy = centers[key]
@@ -764,20 +798,35 @@ def render_regionmap(theme, spec, phase="day"):
             parts.append(f'<text x="{cx}" y="{ccy+8:.0f}" font-size="24" fill="{tcol}" text-anchor="middle" '
                          f'font-family="{bfont}" font-weight="bold">{esc(sp.get("label",""))}</text>')
 
-        # bottom row: this region's OWN vendor slots (slots_n) + the region MARKET deck (single phase)
+        # bottom row: this region's face-up VENDOR slots + the region MARKET deck (single phase).
+        # PER-COUNT SLOT SCALING (data-driven from map.json `vendor_slots`): the physical board PRINTS THE
+        # MAX slots any count uses; base slots are solid, the extra higher-count slots are drawn recessed
+        # with a count-gate chip (South's 2nd slot "5+", North's 2nd slot "6") so a 3p/4p table ignores
+        # them. No setup-table lookup needed; the pool never scales (only these face-up slots do).
         gap = 16
-        try:
-            nslots = int(r.get("slots_n", 1) or 1)
-        except (TypeError, ValueError):
-            nslots = 1
-        nslots = max(1, nslots)                    # floor 1 per region
-        n_cells = nslots + 1
+        letter = region_letter.get(key, "")
+        base_slots, max_slots, gate_label = 1, 1, {}
+        per = {int(c): int(v.get(letter, 0)) for c, v in vendor_slots_tbl.items()
+               if letter and str(c).isdigit() and isinstance(v, dict) and letter in v}
+        if per:
+            counts_sorted = sorted(per)
+            cmax = counts_sorted[-1]
+            base_slots = max(1, per[counts_sorted[0]])
+            max_slots = max(1, max(per.values()))
+            for i in range(base_slots, max_slots):                 # each EXTRA slot → its unlock count
+                gate = next((c for c in counts_sorted if per[c] > i), cmax)
+                gate_label[i] = f"{gate}" if gate >= cmax else f"{gate}+"
+        n_cells = max_slots + 1
         block_w = n_cells * VW + (n_cells - 1) * gap
         x_start = X + PWc - 26 - block_w
         row_y = Y + PH - VH - 18
-        for i in range(nslots):
-            parts.append(_vendor_space(x_start + i*(VW+gap), row_y, VW, VH, rcol))
-        parts.append(_deck(x_start + nslots*(VW+gap), row_y, VW, VH, rcol, _bowl))
+        for i in range(max_slots):
+            sx = x_start + i*(VW+gap)
+            if i < base_slots:
+                parts.append(_vendor_space(sx, row_y, VW, VH, rcol))
+            else:
+                parts.append(_vendor_space_gated(sx, row_y, VW, VH, rcol, gate_label.get(i, "")))
+        parts.append(_deck(x_start + max_slots*(VW+gap), row_y, VW, VH, rcol, _bowl))
 
         # North is the shared START (Taipei) — dashed PAWN spaces with the pawn glyph (no text)
         if r.get("start"):
@@ -788,13 +837,90 @@ def render_regionmap(theme, spec, phase="day"):
                              f'stroke="{rcol}" stroke-width="2" stroke-dasharray="6 5"/>')
                 parts.append(_pawn(px, py-2, PAWN_R*0.9, rcol))
 
-    # ------------------------------------------------------------------ NO OFF-BOARD LEGEND (CD steer 2026-08)
-    # The off-board LEGEND band is REMOVED per the CD ("get rid of the legend on the map"). The scarcity /
-    # slow-refill timing, the per-count face-up slot totals, and the win→board / lose→own-supply + 阿嬤
-    # Travel-cost notes now live on the PLAYER AID (components/player-aid.json) and in the rulebook — NOT on
-    # the shared table board, which stays a clean icon-only play surface. `vendor_slots` / `legend_notes`
-    # stay in map.json (still valid data; the per-region slot count is read above via slots_n) — they are
-    # simply no longer painted onto the map. The freed bottom strip is clean margin under the warm glow.
+    # ------------------------------------------------------------------ CLOSING-TIME COUNTER (bottom-right)
+    # DATA-DRIVEN from map.json `vendor_clock` (CD steer 2026-08-11). The DAY face shows a numbered round
+    # track (1..maxL) with the per-count Closing-Time-die ROLL point flagged (advance each round → at your
+    # flag roll the die → close the rolled region's oldest face-up stall → reset to 1); L is read from
+    # `track_length` = {3:2, 4-6:3}. The NIGHT face rolls the die EVERY round (`track_length_night` = 1 at
+    # every count) so it needs no track — it shows a matching single 每回合 EVERY-ROUND die cue in the SAME
+    # spot, keeping the two faces consistent. Icon-forward: a drawn die glyph + numerals + minimal 繁體
+    # (關門 = closing). Sits in the free bottom-right pocket (below the East panel, right of the South panel).
+    vc = spec.get("vendor_clock", {})
+
+    def _fmt_counts(cs):
+        cs = sorted(cs)
+        if len(cs) >= 2 and cs == list(range(cs[0], cs[-1] + 1)):
+            return f"{cs[0]}-{cs[-1]}"            # ASCII hyphen (font-safe), e.g. 4-6
+        return ",".join(str(c) for c in cs)
+
+    px0, py0, pw, ph = 1668, 1392, 568, 258
+    line = frame
+    parts.append(f'<rect x="{px0}" y="{py0}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" '
+                 f'fill-opacity="0.20" stroke="{line}" stroke-opacity="0.55" stroke-width="2.5"/>')
+    # header: die glyph + 關門 (closing) + a terse English caption
+    dhx, dhy = px0 + 46, py0 + 44
+    parts.append(_die(dhx, dhy, 24, "#ffffff", ink))
+    parts.append(f'<text x="{dhx+44}" y="{py0+40}" font-size="40" fill="{ink}" '
+                 f'font-family="{tfont}" font-weight="bold">關門</text>')
+    parts.append(f'<text x="{dhx+44}" y="{py0+66}" font-size="19" fill="{muted}" '
+                 f'font-family="{bfont}" letter-spacing="2">CLOSING TIME</text>')
+
+    tl_day = {int(c): int(v) for c, v in vc.get("track_length", {}).items()}
+    tl_night = {int(c): int(v) for c, v in vc.get("track_length_night", {}).items()}
+    if is_night:
+        # NIGHT: rolls EVERY round — no track. A single die + 每回合 EVERY ROUND cue with a cycle arrow.
+        cx, cy = px0 + 138, py0 + 168
+        Rr = 58
+        parts.append(f'<path d="M {cx+Rr} {cy} A {Rr} {Rr} 0 1 1 {cx} {cy-Rr}" fill="none" '
+                     f'stroke="{line}" stroke-width="6" stroke-linecap="round" opacity="0.85"/>')
+        parts.append(f'<path d="M{cx-14} {cy-Rr-11} L{cx} {cy-Rr} L{cx-14} {cy-Rr+11}" fill="none" '
+                     f'stroke="{line}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>')
+        parts.append(_die(cx, cy, 42, "#ffffff", ink))
+        parts.append(f'<text x="{cx+140}" y="{cy-4}" font-size="54" fill="{ink}" '
+                     f'font-family="{tfont}" font-weight="bold">每回合</text>')
+        parts.append(f'<text x="{cx+140}" y="{cy+42}" font-size="26" fill="{muted}" '
+                     f'font-family="{tfont}" font-weight="bold" letter-spacing="3">EVERY ROUND</text>')
+    else:
+        # DAY: numbered round track 1..maxL, each per-count roll node flagged (roll AFTER round L completes).
+        maxL = max(tl_day.values()) if tl_day else 1
+        roll_at = {}
+        for c, L in tl_day.items():
+            roll_at.setdefault(L, []).append(c)
+        node_y = py0 + 172
+        n0x = px0 + 120
+        step = 150
+        # advance arrows between nodes ("→ each round")
+        for i in range(1, maxL):
+            ax = n0x + (i-1)*step + 40
+            parts.append(f'<path d="M{ax} {node_y} h {step-80} m -14 -9 l 14 9 l -14 9" fill="none" '
+                         f'stroke="{muted}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>')
+        for i in range(1, maxL+1):
+            nx = n0x + (i-1)*step
+            is_roll = i in roll_at
+            parts.append(f'<circle cx="{nx}" cy="{node_y}" r="30" fill="#ffffff" fill-opacity="0.92" '
+                         f'stroke="{line if is_roll else muted}" stroke-width="{5 if is_roll else 3}"/>')
+            parts.append(f'<text x="{nx}" y="{node_y+11}" font-size="34" fill="{ink}" text-anchor="middle" '
+                         f'font-family="{tfont}" font-weight="bold">{i}</text>')
+            if i == 1:                              # START pennant above node 1
+                fx, fy = nx, node_y-58
+                parts.append(f'<line x1="{fx-15}" y1="{fy-14}" x2="{fx-15}" y2="{fy+18}" '
+                             f'stroke="{muted}" stroke-width="3.5" stroke-linecap="round"/>')
+                parts.append(f'<path d="M{fx-15} {fy-14} l 28 9 l -28 9 Z" fill="{muted}"/>')
+            if is_roll:                             # die + the player-count(s) that roll here, above the node
+                parts.append(_die(nx-40, node_y-62, 15, "#ffffff", ink))
+                parts.append(f'<text x="{nx-18}" y="{node_y-53}" font-size="27" fill="{line}" '
+                             f'text-anchor="start" font-family="{tfont}" font-weight="bold">'
+                             f'{esc(_fmt_counts(roll_at[i]))}人</text>')
+                parts.append(f'<line x1="{nx}" y1="{node_y-44}" x2="{nx}" y2="{node_y-30}" '
+                             f'stroke="{line}" stroke-width="3" stroke-linecap="round"/>')
+        # reset loop: roll → back to round 1 (dashed return arrow into node 1)
+        if maxL > 1:
+            lastx = n0x + (maxL-1)*step
+            parts.append(f'<path d="M{lastx} {node_y+34} C {lastx} {node_y+82}, {n0x} {node_y+82}, '
+                         f'{n0x} {node_y+40}" fill="none" stroke="{line}" stroke-width="4" '
+                         f'stroke-dasharray="2 7" stroke-linecap="round" opacity="0.8"/>')
+            parts.append(f'<path d="M{n0x-9} {node_y+52} l 9 -14 l 9 14" fill="none" stroke="{line}" '
+                         f'stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>')
 
     return _svg(W, H, parts), W, H
 
