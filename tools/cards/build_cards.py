@@ -899,6 +899,21 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
     frame_col = pstyle["frame"] if pstyle else ink
     page_cols = pstyle["page"] if pstyle else None
     ribbon = phase_ribbon_svg(pstyle, CARD_W, CARD_H, MARGIN, tfont)
+    # TA TOUR cards (bookings): the day/night/any phase now lives on the deck BACK, so drop the front phase
+    # ribbon. The ONLY phase that needs a front marker is a DAY-ONLY tour — it must be COMPLETED or CANCELLED
+    # at the day→night shift (dusk); night/any tours resolve at the last train, so they need nothing. Mark a
+    # day tour with the game's day glyph (drawn sun + 日) bottom-RIGHT, opposite the value chip.
+    day_glyph = ""
+    if (row.get("type") or "").strip().lower() in ("mission", "booking"):
+        ribbon = ""
+        if (row.get("phase") or "").strip().lower() == "day":
+            dc = pstyle["frame"] if pstyle else "#E6A930"
+            gx, gy, gr = CARD_W - MARGIN - 44, CARD_H - MARGIN - 40, 40
+            day_glyph = (
+                f'<circle cx="{gx}" cy="{gy}" r="{gr}" fill="#ffffff" stroke="{dc}" stroke-width="5"/>'
+                + emblem_svg("sun", gx, gy - 8, 19, dc)
+                + f'<text x="{gx}" y="{gy + 27}" font-size="26" fill="{dc}" text-anchor="middle" '
+                  f'font-family="{tfont}" font-weight="bold">日</text>')
     # inner phase-frame line only when there IS a phase → phase-less decks (characters, other games)
     # stay byte-identical to before this recolour.
     inner_frame = (f'<rect x="14" y="14" width="{CARD_W-28}" height="{CARD_H-28}" rx="{radius-4}" '
@@ -1075,6 +1090,7 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
   <!-- footer flourish -->
   <line x1="{MARGIN}" y1="{CARD_H-MARGIN-70}" x2="{CARD_W-MARGIN}" y2="{CARD_H-MARGIN-70}" stroke="{accent}" stroke-width="2" opacity="0.5"/>
   {value_row}
+  {day_glyph}
   {ribbon}
 </svg>"""
 
