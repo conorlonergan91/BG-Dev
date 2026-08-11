@@ -351,6 +351,20 @@ def _load_vendors():
 VENDORS = _load_vendors()
 VID_BY_KEY = {v["vid"]: v["id"] for v in VENDORS}
 
+# NIGHT signature-ingredient demand by region — the total count of each region's signature ingredient
+# across the NIGHT trophy recipes. This is the true, data-derived "worth" of a region's discount icon
+# for the payoff phase (a North icon removes 1 meat from every meat-heavy trophy). Computed once from the
+# real recipes so an engine-aware bot can forward-value a day icon-seed at its actual cashing power —
+# the fix for the bot-myopia trap (the honest baseline credits any icon a flat ~0.3, blind to the fact
+# that North/East icons cash the trophies while Central-tea icons barely pay off at night).
+NIGHT_SIG_DEMAND = Counter()
+for _v in VENDORS:
+    if _v["phase"] == 2:
+        for _t, _c in _v["cost"].items():
+            if not _is_common(_t):
+                NIGHT_SIG_DEMAND[TYPE_SIG_REGION[_t]] += _c
+# → {N:22, E:18, S:15, C:5} for the V7-M reshape (North & East are the load-bearing engine lanes).
+
 
 def _region_deck(region, phase):
     return [v["id"] for v in VENDORS if v["region"] == region and v["phase"] == phase]
@@ -2404,8 +2418,21 @@ class TravelAgentsGame:
             "prestige_completions_per_game": float(s["prestige_completions"]),
             # ---- §14 TWO-TRACK scoring probes (vendor-only loses / tours dominate) ----
             "claims_per_player": float(s["claims"] / n),
+            "night_claims_per_game": float(s["night_claims"]),
+            "day_claims_per_player": float((s["claims"] - s["night_claims"]) / n),
             "apex_claims_per_player": float(s["apex_claims"] / n),
             "apex_claims_per_game": float(s["apex_claims"]),
+            # ---- DOES AN ENGINE FORM? end-of-game icon depth (the reshape's whole thesis) ----
+            # total region-icons held per player, and each player's DEEPEST single-region lane (the
+            # discount that actually cashes a cross trophy). Field means + the WINNER's depth.
+            "mean_icons_end": float(statistics.mean([sum(pl["icons"].values()) for pl in s["players"]])),
+            "mean_lane_depth": float(statistics.mean(
+                [max(pl["icons"].values(), default=0) for pl in s["players"]])),
+            "winner_icons_end": float(sum(s["players"][wp]["icons"].values())),
+            "winner_lane_depth": float(max(s["players"][wp]["icons"].values(), default=0)),
+            # winner's icons in the two load-bearing night-engine lanes (North+East)
+            "winner_NE_icons": float(s["players"][wp]["icons"].get("N", 0)
+                                     + s["players"][wp]["icons"].get("E", 0)),
             # §14.x FREE-CLAIM / NET-COST-AT-CLAIM probes
             "free_claims_per_game": float(s["free_claims"]),
             "free_claims_deep_per_game": float(s["free_claims_deep"]),
@@ -2661,6 +2688,19 @@ def _pick_target_human(s, p, prefs):
         val = v["vp"] + _booking_marginal(s, p, vid, prefs)
         if not v["is_drink"] and v["icon"]:
             val += 0.3 * pl["icons"].get(v["icon"], 0)      # ramp: same-region icons discount future claims
+            if prefs.get("engine") and s["act"] == 1:
+                # COMPETENT ENGINE-BUILDER forward-value (the bot-myopia fix, bg-design-flagged): in the
+                # DAY, a claimed icon-seed's real payoff is the discount it will unlock on the NIGHT
+                # trophies. Value it by the region's TRUE night demand (N22/E18/S15/C5 — data-derived,
+                # never hand-set), so the bot builds the lanes that actually cash (North & East) and does
+                # NOT waste the short day dabbling in Central-tea. Diminishing per-icon return past a
+                # region's max useful depth (a trophy's ingredient count is finite) keeps it from
+                # over-monopolising one lane and pushes the cross-region N+E spread the trophies want.
+                R = v["icon"]
+                stack = pl["icons"].get(R, 0)
+                demand = NIGHT_SIG_DEMAND.get(R, 0)
+                taper = 1.0 if stack < 3 else 0.35          # first ~3 icons/region do the discounting
+                val += prefs.get("w_ramp", 1.0) * 0.11 * demand * taper
         if prefs.get("marquee") and v["apex"]:
             val += 1.0
         est = _est_actions(s, p, vid)                       # ~turns to travel + source + win this stall
@@ -2891,6 +2931,12 @@ CONCENTRATE = {**BAL, "concentrate": True, "contest": True}          # concentra
 HUMAN       = {**BAL, "human": True}
 HUMAN_CONTEST   = {**HUMAN, "contest": True}                          # human who also hunts the fight
 HUMAN_SPREAD    = {**HUMAN, "spread": True, "collect": True, "w_ticket": 1.2}  # human breadth-Booking line
+# THE COMPETENT ENGINE-BUILDER (2026-08-11, the bot-myopia fix): the claim-hungry velocity brain PLUS the
+# night-demand-aware icon forward-value. It (a) values day-icon accumulation at its true cashing power,
+# (b) claims day seeds to build a real N/E region-lane, and (c) — because the velocity brain reads the
+# discount via _est_actions — naturally cashes that engine on the now-cheap night trophies + tour
+# completion. This is the line the thesis rides: does a player who ACTUALLY builds the engine win?
+ENGINE_H    = {**HUMAN, "engine": True, "w_ramp": 1.4, "w_food": 1.15}
 # ---- ADVERSARIAL EXPLOIT-HUNTERS (each from a bg-critic hypothesis — try to BREAK the design) ----
 LATE_BATTLER = {**BAL, "bank": True, "late_battle": True, "w_food": 1.15}  # banked-board late-battler (媽寶 line)
 DODGER       = {**BAL, "avoid_contest": True, "w_food": 1.3}              # ignore-the-contest dodger
@@ -2942,6 +2988,7 @@ STRATEGIES = {
     "human": _make(HUMAN),
     "human_contest": _make(HUMAN_CONTEST),
     "human_spread": _make(HUMAN_SPREAD),
+    "engine_h": _make(ENGINE_H),                 # competent engine-builder (velocity brain + forward-value)
     # adversarial exploit bots
     "late_battler": _make(LATE_BATTLER),
     "dodger": _make(DODGER),
