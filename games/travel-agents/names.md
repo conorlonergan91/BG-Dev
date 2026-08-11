@@ -119,7 +119,7 @@ CURRENT form (§3), or flag it if resolving it is a mechanics/value question.
 | **Draw** (人氣) — as a vendor *value* | *(retired as a scored/printed vendor value)* | ⚠ **Data-vs-rules contradiction — FLAG, do not fix.** Still a `draw` column in `vendors.csv`, 5 `draw`-target rows in `bookings.csv`, a DRAW card panel (`art/art-style.md`) and Draw-target Bookings (`art/tour-art.md`) — but `rules-draft.md` has no Draw. → `bg-design` / `bg-elegance` to resolve. |
 | **★ Star token** | Trending marker (爆紅) | Rename of the *dynamic* token only. **The printed ★ apex is NOT retired** — do not conflate. |
 | **vendor-claims clock-track / numbered day-clock track** | vendor-depletion 黃昏 DUSK / 末班車 LAST TRAIN + the Closing-Time die 關門 | The *printed numbered track* is gone; the *concept* "day-clock" survives as a rules section name (§3). *(The clock is vendor depletion + the die — NOT the Booking decks; see §3.)* |
-| **蚵仔煎 oyster omelette (as S04)** | 火雞肉飯 turkey rice (S04) | Oyster omelette is **displaced** from the 24 vendors (top candidate for a future South slot). |
+| **蚵仔煎 oyster omelette (as S04)** | 火雞肉飯 turkey rice (S04) | Oyster omelette was **displaced** from the old 24 as the night South slot; in the 30-vendor V7-M reshape it **re-enters as a South *day* seed, S07** (S04 stays turkey rice). See §6. |
 | **the 2-player across-the-table map / the duel** | one neutral shared **3–6-player** board | V7 pivot — 2p dropped as a design target. |
 | **SOLD** (win label) | COMPLETED 成團 | Also removes the clash with the 完售 "Sold Out" event. |
 | **遺珠 / "the Ones That Got Away" / "Published Tours" / "Departures"** | CANCELLED 取消 | One canonical lose-pile name everywhere. |
@@ -152,3 +152,33 @@ CURRENT form (§3), or flag it if resolving it is a mechanics/value question.
   component-data file; not edited here per the presentation-only lane).
 - **S04 turkey rice Tâi-lô** — *hóe-ke-bah-pn̄g* is best-effort → **consultant confirms** (binding). Same
   for all Indigenous terms (E01 竹筒飯, E04 石板烤肉) → consultant, never AI romanisation. → `bg-publishing`.
+- **The 5 new V7-M day dishes (§6) Tâi-lô** — *Pn̄g-thoân · Kuah-pau · Tuā-mī-kⁿ · Ô-á-tsian ·
+  Tshang-iû-piáⁿ* are all best-effort → **paid Taiwanese language consultant confirms** before art/print
+  (binding). **None are Indigenous** — the gated Indigenous items remain **E01 竹筒飯** and **E04 石板烤肉**.
+  → `bg-publishing`.
+
+---
+
+## 6. New V7-M vendor dishes — names pending native-review (source: `components/vendors.csv`)
+
+> The five day-vendor dishes added in the 30-vendor V7-M deck reshape (18 cheap day engine-seeds + 12 night
+> trophies). English name **leads**; 繁體 is **Traditional**; **Tâi-lô is best-effort → FLAG for a paid
+> Taiwanese language consultant before art/print** (binding, per the cultural rails above — this table does
+> not discharge that). **None of the five are Indigenous**; the two consultant-gated Indigenous items remain
+> **E01 竹筒飯 Bamboo-Tube Rice** and **E04 石板烤肉 Stone-Slab BBQ** (§5).
+
+| id | English name (USE THIS) | 繁體 | Tâi-lô (best-effort — ⚠ consultant to confirm) | Region · role |
+|---|---|---|---|---|
+| N09 | **Rice Ball** | 飯糰 | Pn̄g-thoân | North · day engine-seed |
+| N10 | **Gua Bao** | 割包 | Kuah-pau | North · day engine-seed |
+| C07 | **Thick Noodle Soup** | 大麵羹 | Tuā-mī-kⁿ | Central · day engine-seed |
+| S07 | **Oyster Omelette** | 蚵仔煎 | Ô-á-tsian | South · day engine-seed |
+| E06 | **Scallion Pancake** | 蔥油餅 | Tshang-iû-piáⁿ | East · day engine-seed |
+
+**Name notes (`bg-copywriter`, 2026-08-11):**
+- **C07 大麵羹** — English set to **"Thick Noodle Soup"** (was a working "Taro Noodle Soup"). 大麵羹 is a
+  Taichung 古早味 bowl of fat, soft *alkaline* noodles in a thick starchy broth; taro is a common tinge, not
+  the defining ingredient, so the English no longer leads on taro (the taro note stays in the flavour + art).
+- **N10 割包** — English **"Gua Bao"** (the widely-known romanised form), 繁體 割包. The braised-pork-belly
+  folded bun.
+- **S07 蚵仔煎** — re-enters here as a South **day** seed (see the §4 note); distinct from any night slot.
