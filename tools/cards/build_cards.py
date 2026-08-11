@@ -1292,6 +1292,11 @@ def main() -> int:
                     help="pack each deck sheet into the tightest cols×rows grid (fewest blank cells) "
                          "instead of always maxing at 10 columns — cleaner Screentop imports for small "
                          "assembled decks. Card cell size is unchanged (409×585).")
+    ap.add_argument("--ing-mockups-dir", type=Path, default=None,
+                    help="override the dir searched for FIG-ING-<type>.png ingredient art. Default is "
+                         "<game>/build/mockups (the CSV's parent's parent) — but a CARVED deck CSV (e.g. "
+                         "build/decks/market_*.csv from split_decks) resolves that wrong, so pass this "
+                         "explicitly when rendering carved market decks so the ingredient art still embeds.")
     args = ap.parse_args()
 
     theme = get_theme(args.theme)
@@ -1299,7 +1304,8 @@ def main() -> int:
     # TA art-mock embed dir for ingredient cards: <game>/build/mockups next to the components CSV
     # (game dir = the CSV's parent's parent). Absent dir/file → the byte-identical placeholder path.
     global _ING_MOCKUPS_DIR
-    _ING_MOCKUPS_DIR = args.csv.resolve().parent.parent / "build" / "mockups"
+    _ING_MOCKUPS_DIR = (args.ing_mockups_dir if args.ing_mockups_dir
+                        else args.csv.resolve().parent.parent / "build" / "mockups")
     rows = load_rows(args.csv)
     if not rows:
         print(f"No rows in {args.csv}", file=sys.stderr)
