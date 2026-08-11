@@ -82,10 +82,10 @@ A player should be able to half-guess the rules from the fiction. The core moves
   "trust me, you HAVE to eat here." Two agencies piling followers on the same beef-noodle stall is a
   full-volume hype war over who puts the auntie on the poster — and she has never been happier. Holding
   the biggest crowd wins her over, and you have to *be there in person*, shouting, to rally them.
-- **Bribe a Vendor = a marketing opportunity, not corruption.** The gag is explicit: the agent
-  theatrically slides a "bribe" across the table that turns out to be *free publicity, a glowing review,
-  and a busload of hungry tourists.* The smarm lands on the over-the-top **agent**; the vendor is never
-  the butt and still freely **chooses the bigger fan**. This warm reframe rides on every "Bribe" line.
+- **Sign Up a Vendor = a marketing opportunity, not corruption.** The gag is explicit: the agent
+  theatrically pitches the vendor *free publicity, a glowing review, and a busload of hungry tourists* —
+  and the vendor happily **signs up**. The smarm lands on the over-the-top **agent**; the vendor is never
+  the butt and still freely **chooses the bigger fan**. This warm reframe rides on every **Sign-Up** line.
 - **Vendors are the engine, tours are the goal.** A travel agent can't pocket a night-market stall; what
   you bank is *tours that departed*. A won vendor is a **stop** you line up — its region icon makes the
   next stall an easier sign (a promoter's reputation snowballs), and it lets a held tour's pattern come
@@ -173,9 +173,9 @@ label coding is mandatory; palette is first-pass, not locked.
   scramble. Dish names stay authentic (romanised + 繁體), never invented or parodied — the comedy is in the
   antics and the flavour, never in mangling real food. *(The full voice bible lives in `prose-identity.md`;
   this is direction + the naming register only.)*
-- Read the term set aloud and kill anything that clashes. "Bribe" is the spiciest word, so its warm
-  neighbours ("the following you drummed up," "marketing opportunity," "put her on the poster," "night
-  market") are what keep it cheeky rather than corrupt.
+- Read the term set aloud and kill anything that clashes. Keep the warm neighbours close ("the following
+  you drummed up," "marketing opportunity," "put her on the poster," "night market") so the competitive
+  beats stay cheeky rather than corrupt.
 
 ## Sensitivity rails (binding)
 This is a real place and culture, so these are firm rails. A paid **Taiwanese cultural + language
@@ -186,8 +186,8 @@ consultant** signs off before art and print.
 - **Celebration, not extraction** — the agents are passionate fans, ideally **local promoters showing off
   home**; the tour is a love letter, not a harvest. The take-that is agent-vs-agent; reading extractive
   *toward the island* is a re-theme flag.
-- **"Bribe = marketing opportunity"** — the load-bearing warm reframe: smarm on the agent, the vendor
-  freely chooses the bigger fan, never corruption. The #1 consultant watch-item.
+- **"Sign Up = marketing opportunity"** — the load-bearing warm reframe: smarm on the agent, the vendor
+  freely chooses the bigger fan and is delighted to sign up, never corruption.
 - **Character warmth rails** — The Big Boss 老大 a lovable fixer, never triad/menace (consultant-gated);
   The Old Councillor 里長伯 neighbourly standing, never graft; The Homebody 媽寶 affectionate, not a dig at
   young people; The Globetrotter 阿嬤 age-as-superpower, never frail.
@@ -200,7 +200,7 @@ consultant** signs off before art and print.
 ## Locked vs fluid
 - **Locked:** title (Travel Agents: Taiwan Food Tour), setting, the one **tone** (silly / raucous /
   over-the-top, elbows-out between agents, warm toward Taiwan), the three aesthetics, the **evocative**
-  rung, take-that welcome *agent-vs-agent only*, the **Bribe = marketing opportunity** reframe, the
+  rung, take-that welcome *agent-vs-agent only*, the **Sign Up = marketing opportunity** reframe, the
   six-agent English names and their binding warm portrayals, human-illustrated final art, and every
   sensitivity rail above.
 - **Fluid:** the exact voice register wording (settling in `prose-identity.md`), final palette hues, and

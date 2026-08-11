@@ -8,7 +8,7 @@ rendered mat.
 ## The FIVE locked v6.3.1 mats
 | Mat | Ability | Flaw | Re-sim |
 |---|---|---|---:|
-| 里長伯 Lí-tiúⁿ-peh | **Old Favours (home turf)** — name ONE home region at setup; −1 ingredient discount there only | **The Away Tax** — +1 of any one ingredient to Bribe anywhere else | 55.2% |
+| 里長伯 Lí-tiúⁿ-peh | **Old Favours (home turf)** — name ONE home region at setup; −1 ingredient discount there only | **The Away Tax** — +1 of any one ingredient to Sign Up anywhere else | 55.2% |
 | 媽寶 Ma-pó | Mum's Packed Lunch (Travel draws the region you LEFT) | none (Visit keep-2 normal) | 43.5% |
 | 大胃王 Tuā-uī-ông | Bottomless (Visit keep all 3) | hazards fire TWICE on his Visit | 54.8% |
 | 網紅 Bāng-âng | Going Viral (Promote places 3 Buzz, still Reach-capped) | **goes last** (turn order only — lost-turn flaw RETIRED) | 51.2% |
@@ -24,13 +24,13 @@ advantage / away-from-home cost:**
   like everyone — home is a strategic *build* declaration, not a start position.
 - **Ability `discount_home`:** his **−1 ingredient** discount applies **only in his home region** (stacks
   with the region-icon ramp; floors at 0).
-- **Flaw `away_tax`:** Bribing in any region other than home costs **+1 of any one ingredient** (his choice
+- **Flaw `away_tax`:** Signing up in any region other than home costs **+1 of any one ingredient** (his choice
   of type). On a cross-region →X night dish it is still just +1 of one chosen type.
 - **⚠ CANON vs sim:** the committed sim module defaults to `TA_COUNCILLOR_REACH=1` (a start-Reach-1 variant
   the CD did **NOT** take). **Canon = start-Reach 2** (built here). The −1/+1 kit lands 55.2% (top-of-band)
   and the CD accepted it as-is.
 - **Two mat icons → bg-infodesign:** a **home-region discount marker** + an **away-tax reminder**.
-- **FTUE watch:** with the common Taipei start he picks North home ~60% and bribes home ~75% — a thematic
+- **FTUE watch:** with the common Taipei start he picks North home ~60% and signs up home ~75% — a thematic
   "borough boss," watch it doesn't read as a *stuck* camp. **Reserve levers (only if the table confirms a
   problem):** `+2 away-tax` → ~50% but deepens the camp; **start-Reach 1** → ~45.5% (a clean second flaw
   that does NOT worsen the camp) — the preferred brake if one is ever wanted, but **not adopted now.**

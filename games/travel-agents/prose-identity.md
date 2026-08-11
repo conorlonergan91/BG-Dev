@@ -116,13 +116,12 @@ never the place**:
   frame — cut-offs, snatches, busloads shouted louder than the next. A typhoon is a *comic
   inconvenience the whole field groans about*, never peril; the fizz is a game-show, never danger or
   dread. Loud about the fight, reverent about the bowl.
-- **The "marketing opportunity" running gag** (the load-bearing cushion on the word **Bribe**). The agent
-  theatrically slides a "bribe" across the table — *"this isn't a bribe, it's a **marketing
-  opportunity**."* What's actually on offer is free publicity, a glowing review, and a busload of hungry
-  tourists — a windfall the vendor is **delighted** to accept. The smarm lands on the agent; the vendor
-  freely picks whichever agent's driving the bigger crowd. Never *acquire / control / own / corrupt* a
-  vendor — always *win over / feature / champion / put on the poster*. This gag recurs wherever "Bribe"
-  appears; it's funny *and* it's the guardrail.
+- **The "marketing opportunity" running gag** (the warm frame that rides on **Sign Up**). The agent
+  theatrically pitches the vendor — *"sign up with me: free publicity, a glowing review, and a busload of
+  hungry tourists"* — a windfall the vendor is **delighted** to accept. The smarm lands on the agent; the
+  vendor freely picks whichever agent's driving the bigger crowd. Never *acquire / control / own / corrupt*
+  a vendor — always *win over / feature / champion / put on the poster / sign up*. This gag rides on every
+  **Sign Up**; it's funny *and* it's the guardrail.
 
 ---
 
@@ -153,7 +152,7 @@ never the place**:
 | ✅ DO | ❌ DON'T |
 |---|---|
 | "'You're too thin!' She won't take no. Take 1 free Seafood — before your rival does." — the auntie is warm and real; the fight is between agents. | "The pushy local forces food on you." — makes the local a caricature / an obstacle. **The #1 don't.** |
-| "This isn't a bribe, it's a marketing opportunity." — the joke is the *agent's* over-the-top hustle. | "You bribe the corrupt vendor." — makes the vendor corrupt; inverts the whole rail. |
+| "Sign up with me — free publicity and a busload of hungry tourists." — the joke is the *agent's* over-the-top hustle. | "You bribe the corrupt vendor." — makes the vendor corrupt; inverts the whole rail. |
 | "The whole coast smells like a smoothie — and every agent just turned their head." — specific, sensory, true, then loud. | "Exotic tropical fruits abound!" — generic, touristic, an outsider's gaze. |
 | "She just SNATCHED the beef-noodle king out from under him!" — elbows-out, aimed agent-at-agent, played for laughs. | "He's a gangster who makes people afraid." — menace; breaks the warm-鄰居-老大 read. |
 | "You cut a corner and it showed — some of the crowd drifts to a rival's stall." — rueful, no scold. | "You FAILED. Lose 2 Followers." — scold + a bare social-media feel-bad. |
