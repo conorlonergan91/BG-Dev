@@ -4,8 +4,8 @@
 > illustrator**; the board renders as a functional, **textless icon-only** layout
 > (`build_board.py --type regionmap`, two faces via `--phase day|night`) until real art lands. This brief
 > names the figure codes the board's composition RESERVES art space for, so an illustrated centrepiece
-> drops onto the *same* functional skeleton (region diamond, HSR spine, Booking deck + row, vendor slots,
-> market decks) without moving a single play position.
+> drops onto the *same* functional skeleton (region diamond, HSR spine, Booking deck + row, per-region
+> vendor deck + slot + market deck + discard, the Closing-Time counter) without moving a single play position.
 >
 > **What this board is (read first — V7 · v3):** the **neutral shared table** for **3–6 players**, read
 > **upright from any seat** (one orientation, no across-the-table mirror). The board is **DOUBLE-SIDED and
@@ -27,8 +27,9 @@
 2. **TEXTLESS · ICON-ONLY SPACES.** Every play position is a **space with one small drawn ICON** of the
    component that goes there — no sentences, no dev captions, no mm labels, no legend, no setup table. See
    the icon vocabulary below. The only characters on the board are the board **title** (identity) and the
-   compact **繁體 region glyphs** (▲北 / ◆中 / ●南 / ■東) + signature-ingredient chip glyphs. **No English
-   words** on play positions.
+   compact **繁體 region glyphs** (▲北 / ◆中 / ●南 / ■東). The region badges carry **NO signature-ingredient
+   chips** (removed, CD steer — players **DISCOVER** each region's foods through play, via the market decks).
+   **No English words** on play positions.
 3. **Followers 粉 + Trending 爆紅 are OFF the board.** Those tokens sit loose on the table; the reclaimed
    space became open warmth.
 4. **BARE HSR.** No **停** badge and no "played onto the HSR track" label. Just the double-rail spine with a
@@ -44,11 +45,12 @@
 
 | Play position | Icon (all DRAWN — no font glyphs, no tofu) | Dual-code |
 |---|---|---|
+| **Vendor deck** (face-down, feeds the slot) | a **face-down deck** (offset stack) badged with the **market-stall glyph** | region **colour** + stall shape; solid=deck |
 | **Vendor slot** (face-up vendor to claim) | card-exact **dashed footprint** + a **market-stall glyph** (scalloped awning + counter) | region **colour** + region **emblem** carried by the panel; empty=dashed |
 | **Booking deck** (開團, face-down) | a **face-down deck** (offset stack) badged with a **ticket** (boarding-pass stub) | booking **blue** + ticket shape; solid=deck |
 | **Face-up Booking** (the shared row) | a **face-up card** (light card + folded corner) badged with a **ticket** | booking **blue** + ticket; light card + folded corner = face-up |
-| **MARKET deck** (region ingredients, face-down) | a **face-down deck** badged with a **steaming bowl** | region **colour** + bowl shape (distinct from the ticket) |
-| **Taipei start** | dashed **pawn spaces** + a **pawn/meeple glyph** (North hub only) | region **colour**; pawn silhouette |
+| **MARKET deck** (region ingredients + events, face-down) | a **face-down deck** badged with a **steaming bowl** | region **colour** + bowl shape (distinct from the ticket) |
+| **Market discard** (spent ingredients/events) | a **dashed, greyed face-up footprint** (smaller) badged with a **bowl + ↻ cycle arrow** — reshuffles when the deck empties | region **colour** + bowl + cycle; the ONLY deck that recycles |
 | **HSR line** | double-rail spine + **stop node** at each end + a **train glyph** mid-spine | steel colour + rail/train shape |
 | **Region identity** | coloured header badge: **emblem + single 繁體 glyph** (▲北 ◆中 ●南 ■東) | **colour + emblem + 繁體** (triple-coded WHERE) |
 
@@ -57,28 +59,26 @@ fill/outline; **ticket** (bookings) vs **bowl** (ingredients/market) tells the t
 shape, not colour; region **emblem + colour + 繁體** triple-codes every region so colour-blind players
 never rely on hue. The board is legible at table distance and Screentop zoom with zero reading.
 
-### Vendor-slot count on the board (bg-infodesign choice — FLAGGED)
+### Vendor-slot count on the board (RESOLVED, CD steer)
 
-The live face-up vendor-slot count **scales with player count** (N2/C2/S1/E1 at 4p up to 3/2/2/2 at 6p —
-see the rulebook's setup table). Printing a per-count table on the board is clutter, so the board prints a
-**FIXED, count-agnostic 2 card-exact vendor spaces per region**. Two is the modal count (matches Central /
-South at 4p and North at 3–5p) and reads clean; players simply **use as many of the printed spaces as the
-round's count calls for**, and the exact per-count numbers live in the rulebook. If a count needs 3 (North
-at 6p) the extra face-up vendor sits beside the printed pair — the spaces are a guide, not a hard cap.
+The board prints a **FLAT single face-up vendor slot per region.** The per-count slot scaling (5p adds a 2nd
+South slot, 6p a 2nd North) is a **setup-rules thing and stays OFF the board** — the CD's call: no per-count
+clutter, no gate chips. The face-up count data still lives in `components/map.json` (`vendor_slots`); it is
+simply not painted. Each region shows one dashed stall slot, **fed by its own face-down vendor deck** (see
+the icon table).
 
 > **→ bg-rulebook:** the **setup-by-player-count table** (Booking-deck sizes, vendor slots N/C/S/E,
 > Followers supply per count) and the **how-to-read legend** were REMOVED from the board and must live in
 > the **rulebook / player aid** instead. The data is in `components/map.json`
 > (`booking_deck_sizes`, `vendor_slots`, `followers_supply`).
 
-> **→ bg-infodesign (FLAG only — not a redesign, and NOT an art-director call):** a rules change (CD-signed,
-> sim-validated) — the **Closing-Time die now rolls EVERY round at night** ("closing time"). If/where a
-> **Closing-Time band or indicator** is shown to players (on the board chrome, or on the player aid), it may
-> want a small **"Night: roll every round"** annotation so the every-round cadence reads at a glance. Note
-> this board currently has **no printed clock/claims track** (the beat is deck-driven + the DUSK / LAST TRAIN
-> boundary cards), so bg-infodesign should decide *whether* a Closing-Time cue belongs on the board at all
-> vs the player aid. **Do not add a clock track** (retired) — this is a flag to reconcile, nothing to draw
-> here.
+> **→ Closing-Time cue (RESOLVED, CD steer):** the board now carries a small **bottom-right round-counter**
+> — NOT a claims track. On the **DAY** face it's a 1→2→3 round track with the die roll-point flagged per
+> player count (3人 at round 2, 4–6人 at round 3) and a reset loop ("advance each round → roll at your flag →
+> reset"); on the **NIGHT** face it's a bare **die + ↻ cycle** icon (rolls every round). Icon-only, no
+> descriptive text (the rulebook carries the how-to). Cadence is read data-driven from `map.json`
+> `vendor_clock.track_length`. No clock/claims track (retired) — this small counter is the only Closing-Time
+> mark on the board.
 
 ---
 
@@ -125,8 +125,8 @@ at 6p) the extra face-up vendor sits beside the printed pair — the spaces are 
     **Indigenous-forward — the paid Taiwanese/Indigenous consultant sign-off binds here** (dish, naming,
     framing) BEFORE art; warm, specific, dignified, never exotic-punchline; **no tribal iconography** in any
     interim placeholder.
-- **Keep clear:** the region header badge (emblem + 繁體), the pawn spaces on North, the market-deck
-  footprint, and the face-up vendor-slot footprints.
+- **Keep clear:** the region header badge (emblem + 繁體), the vendor deck + slot + market deck + discard
+  footprints per region, the Booking deck + row, and the bottom-right Closing-Time counter.
 
 ## [FIG-MAP-FRAME] — the night-market border (carries the day/night chrome)
 - **Where:** the outer frame / margins of the whole board.
