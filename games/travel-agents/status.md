@@ -49,12 +49,18 @@ prototype kit is current in `exports/`. The next real work is a **human playtest
   are *felt* (does forced-placement read as a tax to those behind? is the SINK card a shrug? the warmer
   hazard:boon ratio) and the sim can't answer them. The CD also generates the remaining art (map + vendor
   cards) from `art/ta-art-context.zip`.
-- **⏸ Sim re-run — CD-GATED, with two hard watches when it runs** (owner: `bg-playtest` / `bg-playstrat`):
-  (1) **teach the encoder** The Long Queue (EV-D05)'s new `rally 1` rider first, or the balance read is
-  wrong; (2) **instrument the clock** — the `wash` card **New Management (EV-N29)** closes a vendor
-  *without a claim* and pulls a refill, so confirm it doesn't **drain the vendor deck too fast and end the
-  day early** (CD flag, 2026-08-11): measure game length + vendors-closed-without-claim vs the N=400
-  baseline. Changing event effects invalidated N=400 — a re-sim is required before any new balance claim.
+- **▶ Vendor economy RE-PRICED (Splendor-informed, checkpoint `3486f5e`) — sim RUNNING (CD signed off
+  2026-08-11).** Steepened day 1–4 / mid 5–6 / apex 8–9 cost, vp 0→11 back-loaded, apex floor 4, hero-depth
+  + breadth so a casual 1-per-region engine pays ~5–6 while only a deep engine zeroes an apex (~1–2/game).
+  **HEADLINE sim watch (CD's caveat): vendor-VP vs Booking-VP balance** — the re-price ~doubled vendor VP,
+  so confirm tours still dominate (vendor-only-hoarder <~10%, vendor share ~25–35% / ceiling 40%, Bookings
+  ≥60%); if it breaches, widen Bookings (`bookings.csv`) or compress the vendor top. Other measures:
+  free-claims/game by engine depth (~1–2 late / ~0 casual), Failure-Mode-B reachability (apex claim-rate
+  >0, floor-4 not a permanent block), engine→payoff arc, and the `wash`/clock drain (EV-N29: game length +
+  vendors-closed-without-claim) + the Long Queue (EV-D05) rally-rider encode.
+- **⏳ Pending the sim verdict:** vendor card **flavour** (`effect`/`art_note`) still describes the OLD
+  recipes → `bg-copywriter`/`bg-continuity` reconcile + deck-sheet rebuild are HELD until the numbers are
+  confirmed final (no point re-syncing text to recipes the balance check might retune).
 - **⏭ Deferred design follow-ups (surfaced by the sweep — not blocking; a later design pass):** migrate
   `design-doc.md` §15/§17 (event framework + clock) into `game-bible.md`, then archive it + fix its stale
   header (→ `bg-design`); reconcile `art/rulebook-figures.md`'s stale 2p / Buzz / Reach mechanics to V7-M
