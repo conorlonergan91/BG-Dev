@@ -17,6 +17,21 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-11 — Beef Noodle is the apex; vendor cards are too busy; any-tours share the day/night back.**
+  - **Ask (three steers, one message):** *(1)* *"Can we change beef noodle to be the apex dish instead of
+    the sausage."* *(2)* *"I also think the vendor cards are very busy and have way too much going on — we
+    could trim down everything unnecessary and leave space for the images (attached a few for reference)."*
+    *(3)* *"The 'any' tours shouldn't have a different back as they'll be mixed in with the respective
+    DAY / Night tour decks."*
+  - **Context:** CD shared 5 finished food illustrations (beef noodle, gua bao, bubble tea, egg crepe,
+    pepper bun) — clean hero-food-on-cream, the target look for a trimmed vendor card with room for art.
+    Beef noodle (牛肉麵) is Taiwan's national dish → it, not a Big Sausage, should be the marquee ★ apex.
+    Any-time tours physically shuffle into the day/night tour decks, so a distinct any-back would make them
+    sortable — they need to share the tour back.
+  - **Status:** `captured` → in flight. (1) → `bg-design` (vendors.csv, invariant-preserving swap). (2) →
+    `bg-infodesign` (vendor front redesign + embed the 5 images). (3) → unify the tour back (one
+    boarding-pass back for day/night/any bookings; market cards keep their morning/night-market backs).
+
 - **2026-08-11 — Seriously strip down the player aids into a per-player, card-sized, double-sided aid.**
   - **Ask:** *"Seriously strip down the player aids… fit in a card the same size as the others… one for each
     player, on one side it lists the actions (save explanation for the rulebook), on the other side a very
