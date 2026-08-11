@@ -63,7 +63,7 @@ A **3–6-player area-majority engine-builder** with a genuine *fight* at its ce
   low-value stalls. The DAY is the long engine-building phase; the NIGHT is the short payoff. Face-up slots per
   region scale with player count (setup chart on the board). There are deliberately **fewer stalls than
   agents** — so you collide over them.
-- **Follower meeples + area-majority (the contested currency).** You win **Vendors** (**Bribe**) by holding
+- **Follower meeples + area-majority (the contested currency).** You win **Vendors** (**Sign Up**) by holding
   the **biggest crowd** of your committed **follower meeples** on a stall (strict plurality; a **tie
   blocks** — the Big Boss 老大 alone wins ties) **and** paying its ingredients (minus region discounts).
   Followers live in three places — your supply, your board (rallied), on a stall (committed) — and flow
@@ -95,9 +95,9 @@ A **3–6-player area-majority engine-builder** with a genuine *fight* at its ce
 Full current spec: `design/rules-draft.md`. **A turn = ONE action** (then discard Larder down to 7):
 - **Visit** the market you stand in (flip 3, keep 2; events fire) ·
 - **Convenience Store** (top card of any region, blind) ·
-- **Travel** (move to a neighbour, or N↔S by HSR; flip 1 on arrival, event whiffs; grow your crowd +1) ·
+- **Travel** (move to a neighbour, or N↔S by HSR; grow your crowd +1 — no ingredient) ·
 - **Promote** (place up to 2 followers from your board onto stall(s) here) ·
-- **Bribe a vendor** (hold the biggest crowd + pay its ingredients − discounts → it joins your tour, may
+- **Sign Up a vendor** (hold the biggest crowd + pay its ingredients − discounts → it joins your tour, may
   complete a held Booking; your followers come home, losers' scatter to supply; leave the slot empty) ·
 - **Book a tour** (from the row, or blind via Pot-Luck).
 
@@ -114,7 +114,7 @@ is an engine piece (a compounding region-ingredient discount) — the engine you
 tours.** The travel-agent fiction (promote a vendor, out-woo your rivals, win their blessing) and the
 food-geography fiction (source where the food lives) drive the *same* decisions. The runaway brake is the
 **area-majority fight itself** — undiscounted, region-gated, raise-able by rivals — plus the lost-war
-Followers-max dial-drop. *(The "**Bribe a Vendor**" keyword is LOCKED — the warm, comedic "marketing
+Followers-max dial-drop. *(The "**Sign Up a Vendor**" keyword is LOCKED — the warm, comedic "marketing
 opportunity," never corruption.)*
 
 ## Components (summary)
@@ -193,9 +193,9 @@ Bookings. §14 invariant: `vp = ingredient_cost + min_followers − 2`. Detail: 
   carried a residual 5–6p hoarder tilt in keep-2 (its own payoff mode). Full rationale: `design/ingredient-taxonomy.md`.
 
 ## Rules summary
-Turn = one of **Visit / Convenience Store / Travel / Promote / Bribe / Book**; Larder cap 7; Greedy Grab
+Turn = one of **Visit / Convenience Store / Travel / Promote / Sign Up / Book**; Larder cap 7; Greedy Grab
 (keep 1 extra → return 1 follower). **Followers are committed meeples on vendors** (public; region-gated;
-everyone can pile on). To **Bribe**: be with the vendor, hold the **biggest crowd** (strict plurality; tie
+everyone can pile on). To **Sign Up**: be with the vendor, hold the **biggest crowd** (strict plurality; tie
 blocks — 老大 wins ties), pay its ingredients (− region discounts). Ingredient decks are face-down; events
 fire by scope on Visit + Convenience Store (Travel whiffs). **Day → Night:** at **dusk** (day vendors gone)
 bring the night vendors + markets online, deal a fresh night Booking row; keep your Larder and Bookings; any
@@ -218,7 +218,7 @@ unfinished ☀ day Booking is cancelled. At the **last train** (night vendors go
 - **Currency flags:** see the top-of-file block — two-track-vs-tickets-only rulebook lag, the min-followers
   floor not yet in `rules-draft.md` §5, and the character-kit drift in `names.md`/`v7-plan.md`.
 - **Sensitivity:** a **real place & culture (Taiwan)** — the **East region is Indigenous-forward** (E01 竹筒飯,
-  E04 石板烤肉 consultant-gated), "Bribe" / 老大 / 里長伯 warmth rails, 繁體 + Tâi-lô discipline. Owned by
+  E04 石板烤肉 consultant-gated), "Sign Up" / 老大 / 里長伯 warmth rails, 繁體 + Tâi-lô discipline. Owned by
   `bg-theme` + `bg-publishing`; **paid Taiwanese cultural + language consultant before art/print.** No AI final art.
 
 ## Status by stage

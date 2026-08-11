@@ -160,11 +160,11 @@ Take **ONE** action. Then, if your Larder holds more than **7** ingredients, dis
   fires now (§7), then discards. **Keep 2** ingredients (the Big Eater 大胃王 keeps 3).
 - **CONVENIENCE STORE** *(anywhere)* — flip the top **1** of **any** market: take the ingredient, or its
   **event** fires.
-- **TRAVEL** — move to a neighbour (or North↔South by HSR), then flip the top **1** where you arrive (an
-  event on arrival does nothing). Then **grow your crowd**: 1 follower, supply → your board.
+- **TRAVEL** — move to a neighbour (or North↔South by HSR), then **grow your crowd**: 1 follower, supply →
+  your board. **Travelling earns no ingredient** — only the Homebody 媽寶 sources on a Travel.
 - **PROMOTE** *(with a vendor here)* — place **up to 2** followers **from your board** onto stall(s) here,
   stacked or spread (§4).
-- **BRIBE a vendor** *(with it)* — win a stall you've drawn the biggest crowd for (§5).
+- **SIGN UP a vendor** *(with it)* — win a stall you've drawn the biggest crowd for (§5).
 - **BOOK a tour** — take a Booking into your hand (§6).
 
 > **Greedy Grab.** On a Visit or Convenience Store, keep **one extra** ingredient beyond your limit —
@@ -180,10 +180,10 @@ three places — your **supply** (un-rallied), **your board** (rallied), or **on
 flows supply → board (**grow**, on Travel) → stall (**Promote**), then resolves on a win or loss (§5). You
 can never commit more than the pool you own.
 
-## 5. Bribing a vendor — the biggest crowd wins
+## 5. Signing up a vendor — the biggest crowd wins
 
 A face-up vendor goes to whoever draws the **biggest crowd** for it — provided that crowd is big enough to
-fill the stall. To Bribe a vendor you stand with:
+fill the stall. To sign up a vendor you stand with:
 
 1. **draw the biggest crowd** — hold **strictly more of your followers on it than any single rival**, an
    outright plurality (a *tie* claims nothing; the Big Boss 老大 alone wins by matching);
@@ -204,7 +204,7 @@ Promote again to break it, or walk away and leave them.
 no one queues at eventually **sells out** (§8) — a region may have only one.
 
 **Day stalls are the engine; night stalls are the prizes.** A **day** food stall is cheap and scores little
-but carries a **region icon**: each icon you hold makes that region's ingredients **1 cheaper** to Bribe, and
+but carries a **region icon**: each icon you hold makes that region's ingredients **1 cheaper** to sign up, and
 they **stack** — the ramp you build over breakfast. **Night** stalls carry **no icon** — pricey, high-scoring
 **trophies** (some want two regions' ingredients) you afford only *because* of that day engine. Drinks carry
 no icon.
@@ -213,7 +213,7 @@ no icon.
 > — it went viral. The printed **★ apex** stalls are a separate, permanent thing — a region's top table.
 
 > **Rave Reviews 好評.** The first time you complete your **2nd** tour, **grow your crowd +1**; at your
-> **4th**, take **1 ingredient of choice** and your **next Bribe costs 1 less**. Once each, per player.
+> **4th**, take **1 ingredient of choice** and your **next sign-up costs 1 less**. Once each, per player.
 
 ## 6. Bookings — your tours
 
@@ -240,8 +240,8 @@ the card:
 ## 7. Markets & events
 
 Each region's market holds its foods plus a few **events**, mostly small hazards. **Working a market — a
-Visit or a Convenience Store — fires any event you flip, at once.** A card flipped as you *arrive* on a
-Travel does nothing.
+Visit or a Convenience Store — fires any event you flip, at once.** An event **on a Travel** does nothing —
+only the Homebody 媽寶 draws then, and it whiffs.
 
 - **Hazards** tax or delay — they never take what you already hold, nor cost a whole turn.
 - **Boons** hand out an ingredient, grow your crowd, or send a stall **Trending**.

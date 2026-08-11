@@ -5,9 +5,9 @@
   "actions": [
     { "name": "VISIT", "where": "here", "brief": "Reveal 3 from this market — keep 2. Events fire." },
     { "name": "CONVENIENCE STORE", "where": "anywhere", "brief": "Reveal 1 from any market — take it, or its event fires." },
-    { "name": "TRAVEL", "where": "", "brief": "Hop 1 region (HSR 北↔南), reveal 1, then grow 1 follower." },
+    { "name": "TRAVEL", "where": "", "brief": "Hop 1 region (HSR 北↔南) and grow 1 follower — no ingredient." },
     { "name": "PROMOTE", "where": "here", "brief": "Send up to 2 followers from your board onto stalls." },
-    { "name": "BRIBE", "where": "here", "brief": "Biggest crowd + crowd-floor wins it; pay its recipe, less your discounts." },
+    { "name": "SIGN UP", "where": "here", "brief": "Biggest crowd + crowd-floor wins it; pay its recipe, less your discounts." },
     { "name": "BOOK A TOUR", "where": "", "brief": "Take 1 Booking from the row into your hand." }
   ],
   "footer": "Your agent bends these rules — flip for your ability & flaw.",
