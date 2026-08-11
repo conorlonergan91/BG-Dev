@@ -750,10 +750,40 @@ def _event_mix_for(n):
 # §17 CLOSING-TIME DIE — faces are DATA (map.json.vendor_clock.die_faces); 4 region faces + 2 BLANK.
 DIE_FACES = tuple(MAP["vendor_clock"]["die_faces"])
 
+# §17b PHASE-SPLIT DICE (CD steer 2026-08-11) — independent DAY (gentle) / NIGHT (harsh) close-probability
+# to resolve the die's double-duty tension: a gentle DAY die spares engine seeds (deeper lanes), a harsh
+# NIGHT die drains the night pool so the game ENDS (kills the 4-5p stall). Default None => BOTH phases use
+# the single DIE_FACES above, so the current single-die model is preserved byte-identical. The sweep driver
+# sets these module globals (resolved at roll time) to explore the 2-D face space without editing map.json.
+DIE_FACES_DAY = None
+DIE_FACES_NIGHT = None
 
-def _track_length(n):
-    """Rounds per Closing-Time track cycle for this count. TA_TRACK_L overrides for the L-sweep; else the
-    per-count value from map.json.vendor_clock.track_length (baseline 3 for all counts)."""
+
+def _die_faces_for(s):
+    """Phase-appropriate Closing-Time die faces. act==1 (day) -> DIE_FACES_DAY; else (night) ->
+    DIE_FACES_NIGHT; either unset (None) falls back to the single DIE_FACES (single-die model)."""
+    if s.get("act", 1) == 1:
+        return DIE_FACES_DAY or DIE_FACES
+    return DIE_FACES_NIGHT or DIE_FACES
+
+
+# §17b PER-PHASE ROLL CADENCE (CD two-dice model, 2026-08-11). The roll FREQUENCY (L = rounds per track
+# cycle) is what actually drains a pool — a harsh die that rolls rarely still won't end the night. A gentle
+# DAY die wants a LONG cadence (high L → spare engine seeds); a harsh NIGHT die wants a SHORT cadence (low
+# L → drain the pool, end the game). These per-phase overrides let the sweep roll the two dice at DIFFERENT
+# frequencies. Default None => fall back to TRACK_L_OVERRIDE / the map per-count value (single-cadence).
+TRACK_L_DAY = None
+TRACK_L_NIGHT = None
+
+
+def _track_length(n, phase=None):
+    """Rounds per Closing-Time track cycle for this count + phase. Per-phase overrides (TRACK_L_DAY/NIGHT,
+    the two-dice cadence) win first; then TA_TRACK_L (global L-sweep); else the per-count value from
+    map.json.vendor_clock.track_length (baseline 3 for all counts)."""
+    if phase == 1 and TRACK_L_DAY:
+        return TRACK_L_DAY
+    if phase == 2 and TRACK_L_NIGHT:
+        return TRACK_L_NIGHT
     if TRACK_L_OVERRIDE:
         return TRACK_L_OVERRIDE
     if _scaling_recommended() and n in REC_TRACK:
@@ -1467,12 +1497,12 @@ class TravelAgentsGame:
         the deck); every committed follower on it (INCLUDING a live contest) returns HOME to its owner's BOARD
         (kept, no re-grow, NO resource penalty). BLANK, or a rolled region with no removable face-up stall →
         nothing (no reroll). The die can only SPEED the close, never block it."""
-        L = _track_length(s["n"])
+        L = _track_length(s["n"], s.get("act"))
         s["track"] += 1
         if s["track"] < L:
             return
         s["track"] = 0
-        face = DIE_FORCE if DIE_FORCE else s["die"].choice(DIE_FACES)
+        face = DIE_FORCE if DIE_FORCE else s["die"].choice(_die_faces_for(s))
         s["die_rolls"] += 1
         if face == "BLANK":
             s["die_blanks"] += 1
@@ -1504,7 +1534,7 @@ class TravelAgentsGame:
         guard against a full-deck zero-progress freeze, static for 3 cycles) fires the boundary too."""
         if s["done"]:
             return
-        L = _track_length(s["n"])
+        L = _track_length(s["n"], s.get("act"))
         decks_empty = all(not s["vdeck"][r] for r in REGIONS)
         faceup_empty = all(not s["faceup"][r] for r in REGIONS)
         sig = tuple(sorted(vid for r in REGIONS for vid in s["faceup"][r]))
