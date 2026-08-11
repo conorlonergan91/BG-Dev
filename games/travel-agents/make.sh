@@ -33,7 +33,13 @@ rm -rf build
 python3 $T/cards/build_cards.py --csv components/vendors.csv     --out build --theme "$theme" --formats png --tokens-csv components/recipe-glyphs.csv
 # Bookings (開團) — 6 DAY + 8 NIGHT + 31 ANY-time (§20/§21) = 45 cards — the SOLE scoring vector (成團 / 取消).
 python3 $T/cards/build_cards.py --csv components/bookings.csv    --out build --theme "$theme" --formats png
-# Ingredient market decks (5-palette; K in C/S) — the Visit / CS / Travel draw.
+# INGREDIENT art embed: the six approved playtest illustrations (one per ingredient TYPE) live in
+# art/mockups/FIG-ING-<type>.png; copy them into the gitignored build/mockups/ so build_cards.py's
+# ingredient renderer auto-embeds them (it reads _ING_MOCKUPS_DIR = build/mockups, preserveAspectRatio
+# meet → never stretched/cropped). Absent → the card falls back to the drawn emblem placeholder.
+mkdir -p build/mockups
+cp art/mockups/FIG-ING-*.png build/mockups/ 2>/dev/null || true
+# Ingredient market decks (5-palette; K in C/S) — the Market Run / CS / Travel draw.
 python3 $T/cards/build_cards.py --csv components/ingredients.csv  --out build --theme "$theme" --formats png --tokens-csv components/tokens.csv
 # Scoped EVENT cards (⦿/⬢/➤) — shuffled into the matching region+phase ingredient deck (night event-heavier).
 python3 $T/cards/build_cards.py --csv components/events.csv      --out build --theme "$theme" --formats png
@@ -55,7 +61,8 @@ python3 $T/cards/split_decks.py --out build/decks --prefix booking --key phase -
 for d in build/decks/*.csv; do
     tok=""
     case "$d" in *market_*|*vend_*) tok="--tokens-csv components/recipe-glyphs.csv";; esac
-    python3 $T/cards/build_cards.py --csv "$d" --out build --theme "$theme" --formats screentop --tight-grid $tok
+    # carved CSVs live in build/decks/, so pass the ingredient art dir explicitly (the default resolves wrong)
+    python3 $T/cards/build_cards.py --csv "$d" --out build --theme "$theme" --formats screentop --tight-grid --ing-mockups-dir build/mockups $tok
 done
 
 # --- DAY/NIGHT-SPLIT top-level PnP / overview sheets (phased decks carry their DISTINCT phase back) --
@@ -76,13 +83,22 @@ python3 $T/cards/split_decks.py --out build/top/decks --prefix bookings --key ph
 for d in build/top/decks/*.csv; do
     tok=""
     case "$d" in *vendors_*|*market_*) tok="--tokens-csv components/recipe-glyphs.csv";; esac
-    python3 $T/cards/build_cards.py --csv "$d" --out build/top --theme "$theme" --formats screentop --tight-grid $tok
+    # carved CSVs live in build/top/decks/, so pass the ingredient art dir explicitly (default resolves wrong)
+    python3 $T/cards/build_cards.py --csv "$d" --out build/top --theme "$theme" --formats screentop --tight-grid --ing-mockups-dir build/mockups $tok
 done
 
 # Board (the region-ring table-layout) — ring + HSR + vendor slots + per-region day/night market decks +
 # placeholder zones for every component. Rendered in BOTH states (mirrors the dusk flip): day / night.
-python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --out build/map-day.png
-python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --out build/map-night.png
+# The functional code board still renders (data-driven, always in sync with map.json) — kept as the
+# reference layer for future re-compositing → build/map-*-functional.png.
+python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --out build/map-day-functional.png
+python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --out build/map-night-functional.png
+# SHIPPED map = the CD's AI-illustrated composite (warm watercolour / neon-night island + the functional
+# overlay composited on top), committed at art/mockups/FIG-MAP-ISLAND-<phase>.png. This is what snapshots
+# into exports/ and embeds into the rulebook's FIG-SETUP. NOTE (curated asset): if the functional layout
+# changes again, re-composite from build/map-*-functional.png — the shipped map is not auto-regenerated.
+cp art/mockups/FIG-MAP-ISLAND-day.png   build/map-day.png
+cp art/mockups/FIG-MAP-ISLAND-night.png build/map-night.png
 
 # Per-player CHARACTER BOARDS (6 A4-LANDSCAPE mats, one per characters.csv row) — CD REDESIGN 2026-08 v2.
 # Each board carries: English name TOP-LEFT + 漢字 TOP-RIGHT with the Tâi-lô romanisation beneath it, and

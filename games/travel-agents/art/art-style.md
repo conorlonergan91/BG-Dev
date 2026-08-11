@@ -125,6 +125,18 @@ Then add the component-specific subject, composition, and the reserved size/figu
   illustration** — the earlier soft-watercolour AI map is RETIRED (off-style + no component spaces). Any
   future human-illustrated art is a quiet backdrop *behind* the fixed functional zones, never a scene that
   moves or buries them (see the Practicality rail above).
+- **Card backs = the traditional MARKET** (CD steer 2026-08, locked; owning brief `card-backs.md`). The
+  back evokes Taiwan's **local market**, not a boarding-pass: **DAY back = the morning / wet market**
+  (菜市場 · 傳統市場 · 早市) — dignified elders on their morning rounds choosing produce, baskets, hanging
+  greens, steam, warm morning gold; **NIGHT back = the 夜市 night market** — lanterns, neon glow, sizzling
+  stalls, evening crowd. **No game wordmark on the back** (removed — everyone knows what they're playing).
+  The shipping playtest back is the **code-rendered** `_render_back_travel_agents` (striped market-awning
+  valance + central market medallion: **produce basket (day) / hung lantern (night) / bamboo steamer
+  (neutral)**, drawn from SVG primitives + the 大字 早/夜/通 glyph + a stall-lane silhouette). **HARD
+  CONSTRAINT (function, never lose it):** the back stays **day-vs-night sortable face-down by MOTIF +
+  palette, never colour alone** (basket vs lantern + 早 vs 夜 + sun vs moon) — setup/storage rely on it; a
+  neutral/any-time variant stays working. Any future human-illustrated back keeps that basket-vs-lantern
+  silhouette so the sort survives.
 - Style-reference-image technique: build every new asset by attaching an approved piece and matching it.
 
 **FLUID (still open):**

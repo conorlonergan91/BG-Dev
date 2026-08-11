@@ -65,11 +65,11 @@ Generate a mock-up illustration of THE BIG BOSS (老大) for the board game Trav
 
 **⚑⚑ INTEGRATION DECISION THE CD MUST MAKE — read before generating.** The map is a **functional
 play-board**: it carries real, correctly-scaled homes for physical components — the four-region diamond
-with per-region **vendor-card slots + MARKET decks**, the central **開團 Booking deck + face-up Booking
-row** (the sole prize row), the **bare HSR spine** (the Scheduled-Maintenance event card simply sits on the
-track — no printed 停 marker), the **Taipei pawn start**, and the **Followers / Trending** supply. A freeform AI map **cannot hold those play
-positions** — that is exactly why the earlier soft-watercolour AI map was retired and the board went
-code-rendered.
+with, per region, a **vendor deck + vendor slot + market deck + discard**, the central **開團 Booking deck +
+face-up Booking row** (the sole prize row), the **bare HSR spine** (the Scheduled-Maintenance event card
+simply sits on the track — no printed 停 marker), and a bottom-right **Closing-Time round-counter**. A
+freeform AI map **cannot hold those play positions** — that is exactly why the earlier soft-watercolour AI
+map was retired and the board went code-rendered.
 
 So there are two ways AI art can enter the map, and the CD picks:
 
@@ -89,8 +89,8 @@ follow-up step. That keeps the warmth AND the function.
 
 **The map kickoff (paste — generate the DAY face first, then reference it for the NIGHT face so they
 register back-to-back).** Keep the **whole centre and the four region zones OPEN and low-contrast** — the
-functional overlay (vendor slots, market decks, Booking deck + row, the bare HSR spine, pawn start, supply)
-composites on top, so the art must not draw any slots, boxes, grid, clock, or text.
+functional overlay (vendor decks + slots, market decks + discards, Booking deck + row, the bare HSR spine,
+the Closing-Time counter) composites on top, so the art must not draw any slots, boxes, grid, clock, or text.
 
 ### `FIG-MAP-ISLAND-day` — the daytime table backdrop
 ```

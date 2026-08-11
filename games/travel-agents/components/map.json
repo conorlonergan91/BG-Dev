@@ -10,7 +10,7 @@
     "driver": "the finite VENDOR pools — the day pool (18) then the night pool (12) deplete; the phase ends when its pool is exhausted. NOT the Booking deck.",
     "dusk": "黃昏 DUSK — fires when the DAY vendor pool is exhausted (all day vendors claimed or sold out, deck empty, no day stall in play) — finish the turn, flip to night.",
     "last_train": "末班車 LAST TRAIN — fires when the NIGHT vendor pool is exhausted — finish the round, then end.",
-    "retired": "the vendor-claims clock, its dusk@/last-train@ thresholds, the +1-on-Bribe step, and the stall backstop are ALL DELETED (§11 canon). ALSO DELETED (§17): the Booking-deck-driven clock and its seeded 黃昏/末班車 boundary cards — superseded by vendor depletion; the Booking deck is now pure tour-supply."
+    "retired": "the vendor-claims clock, its dusk@/last-train@ thresholds, the +1-on-Sign-Up step, and the stall backstop are ALL DELETED (§11 canon). ALSO DELETED (§17): the Booking-deck-driven clock and its seeded 黃昏/末班車 boundary cards — superseded by vendor depletion; the Booking deck is now pure tour-supply."
   },
   "vendor_clock": {
     "_note": "V7-M VENDOR-DEPLETION CLOCK + the CLOSING-TIME DIE (§17; DAY/NIGHT-ROLE RESHAPE, CD steer 2026-08-11): the finite vendor pools ARE the clock (DUSK = day pool exhausted; LAST TRAIN = night pool exhausted), and the Closing-Time die — the game's FIRST dice/randomness — is the forcing function that thins the board when claiming stalls. THE RESHAPE: the DAY is now the long ENGINE-BUILDING phase (18 cheap low-VP seeds, up from 13) and the NIGHT the short PAYOFF phase (12 expensive no-icon trophies; content reshaped, count unchanged). So the day POOL grew and the night POOL held — day:night is now 18:12, a longer build-up into a compressed finish.",

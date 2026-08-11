@@ -737,74 +737,59 @@ def _embed_fig_png(fig_id, x, y, w, h, rx=20):
 def _render_ingredient_svg(row: dict, theme: dict) -> str:
     """A PICTORIAL ingredient/food card (Travel Agents, V7 language-agnostic).
 
-    The card is keyed off the `ingredient` column — NOT the region `type` — so its big picture-glyph is
-    the SAME shape + colour a player sees in the vendor's recipe chip and on the token key (pork = red hex,
-    tea = teal triangle, seafood = amber square, rice = indigo circle, sugar = caramel beam). That closes
-    the match-your-hand-to-the-recipe loop at a glance. Distinguishable by PICTURE + SHAPE, never colour
-    alone (bg-access): a large drawn ingredient emblem fills a framed art placeholder + a [FIG-ING-<id>]
-    brief for the human illustrator. 繁體 + English name are the CULTURAL name (kept, per the sensitivity
-    rails); nothing MECHANICAL relies on reading CJK."""
+    CD REDESIGN 2026-08-11 — the FRONT is stripped to "what is it + how do I spend it", nothing else:
+    the embedded food ART, the NAME (English + 繁體 alongside), and the TYPE (pay) GLYPH — the suit emblem
+    in the ingredient's colour that a player matches to a vendor's recipe chip to PAY. Everything that used
+    to sort the card face-UP is GONE from the front: no region/phase sort tabs, no effect text ("Take 1 into
+    your Larder"), no phase footer ribbon, and no phase tint on the ground/frame — so the same ingredient
+    reads identically in its day copy and its night copy. The region+phase deck-membership now lives ONLY on
+    the BACK (a face-DOWN card sorts to its market pile; see _render_back_travel_agents), which keeps the
+    front a clean, phase-agnostic ID card.
+
+    The card is keyed off the `ingredient` column — NOT the region `type` — so its pay glyph is the SAME
+    shape + colour a player sees in the vendor's recipe chip and on the token key (meat = red hex, tea =
+    teal triangle, seafood = amber square, pantry = indigo circle, sugar = caramel beam, veg = green leaf).
+    Distinguishable by PICTURE + SHAPE, never colour alone (bg-access); the pay glyph is drawn at the vendor
+    recipe-chip scale so the two read as one object. 繁體 + English name are the CULTURAL name (kept, per the
+    sensitivity rails); nothing MECHANICAL relies on reading CJK."""
     ink, text, muted, accent, radius = (theme["ink"], theme["text"], theme["muted"],
                                         theme["accent"], theme["radius"])
     tfont, bfont = theme["title_font"], theme["body_font"]
     ing = str(row.get("ingredient", "")).strip().lower()
     isuit = resolve_suit(theme, ing) if ing in theme["suits"] else theme["suits"]["_default"]
     scol, semb = isuit["color"], isuit["emblem"]
-    pstyle = phase_style(row.get("phase"))
-    frame_col = pstyle["frame"] if pstyle else ink
-    page_cols = pstyle["page"] if pstyle else None
-    ribbon = phase_ribbon_svg(pstyle, CARD_W, CARD_H, MARGIN, tfont)
+    # NO phase treatment on the FRONT (CD): neutral theme ground + a type-colour frame, so the card carries
+    # WHEN nowhere on its face — only WHAT (art + name) and HOW TO SPEND (the type glyph). Phase lives on the
+    # back now.
+    frame_col = scol
 
     han = str(row.get("hanzi", "")).strip() or str(row.get("name", "")).strip()
     name_full = str(row.get("name", "")).strip()
-    # English part of "豬肉 Pork" → "Pork" (strip a leading CJK run + space)
+    # English part of "海鮮 Seafood" → "Seafood" (strip a leading CJK run + space)
     en = re.sub(r'^[^\x00-\x7f]+\s*', '', name_full).strip() or name_full
-    region = str(row.get("region", "")).strip().lower()
-    # map the deck-region LETTER (n/c/s/e) → the region suit (colour + emblem) + its 繁體 glyph, so REGION
-    # is dual-coded on the card, not just a letter. A market card must sort to its region+phase discard
-    # pile at a glance (§16.7) — region here, phase in the ☀/☾ badge below.
-    region_key = {"n": "north", "c": "central", "s": "south", "e": "east"}.get(region, region)
-    rsuit = resolve_suit(theme, region_key) if region_key in theme["suits"] else {"color": scol, "emblem": "circle"}
-    rcol, remb = rsuit["color"], rsuit["emblem"]
-    region_char = {"north": "北", "central": "中", "south": "南", "east": "東"}.get(region_key, "")
     tcol_head = pick_text_color(scol, dark=ink, light="#ffffff")
 
-    # header band (grows nothing — single line): the ingredient's 繁體 name (region+phase live in the sort
-    # tab below the band, so the band stays clean).
+    # header band (type colour): the PAY GLYPH badge (top-left) + the 繁體 name. The badge is the ingredient's
+    # suit emblem in its colour on a white roundel — the exact object a player matches to a vendor recipe chip
+    # to pay, drawn at chip scale so the pairing is obvious. Region/phase are NOT here anymore.
     header_h = 118
     header_end = 26 + header_h
+    badge_cx, badge_cy, badge_r = MARGIN + 44, 26 + header_h/2, 44
+    pay_badge = (
+        f'<circle cx="{badge_cx}" cy="{badge_cy}" r="{badge_r}" fill="#ffffff" stroke="{ink}" stroke-width="3"/>'
+        + emblem_svg(semb, badge_cx, badge_cy, badge_r*0.66, scol, stroke=ink))
     head = (f'<path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} '
             f'h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} '
             f'v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{scol}"/>'
-            f'<text x="{MARGIN}" y="{MARGIN+60}" font-size="60" fill="{tcol_head}" '
+            + pay_badge +
+            f'<text x="{badge_cx + badge_r + 22}" y="{badge_cy + 20}" font-size="60" fill="{tcol_head}" '
             f'font-family="{tfont}" font-weight="bold">{esc(han)}</text>')
 
-    # --- REGION + PHASE sort tab (top-right, straddling the header edge): two dual-coded roundels — REGION
-    # (region colour + region emblem + 繁體 glyph) and PHASE (☀ day / ☾ night, DRAWN sun/moon — never a
-    # font emoji → no tofu — + 日/夜). Together they say "this card's discard pile" at a glance (§16.7),
-    # dual-coded by SHAPE (emblem + sun/moon), not colour alone (bg-access redundant-encoding). ---
-    tab_cy = 26 + header_h/2
-    tab_r = 40
-    ph_cx = CARD_W - MARGIN - tab_r
-    rg_cx = ph_cx - (2*tab_r + 14)
-    phc = pstyle["frame"] if pstyle else ink
-    phe = pstyle.get("emblem", "spark") if pstyle else "spark"
-    phch = "夜" if phe == "moon" else ("日" if phe == "sun" else "通")
-    sort_tab = (
-        f'<circle cx="{rg_cx}" cy="{tab_cy}" r="{tab_r}" fill="#ffffff" stroke="{rcol}" stroke-width="4"/>'
-        + emblem_svg(remb, rg_cx, tab_cy - 8, tab_r*0.42, rcol, stroke=ink) +
-        f'<text x="{rg_cx}" y="{tab_cy + tab_r*0.82:.0f}" font-size="24" fill="{rcol}" text-anchor="middle" '
-        f'font-family="{tfont}" font-weight="bold">{esc(region_char)}</text>'
-        f'<circle cx="{ph_cx}" cy="{tab_cy}" r="{tab_r}" fill="#ffffff" stroke="{phc}" stroke-width="4"/>'
-        + emblem_svg(phe, ph_cx, tab_cy - 8, tab_r*0.40, phc) +
-        f'<text x="{ph_cx}" y="{tab_cy + tab_r*0.82:.0f}" font-size="24" fill="{phc}" text-anchor="middle" '
-        f'font-family="{tfont}" font-weight="bold">{esc(phch)}</text>')
-    head += sort_tab
-
-    # PICTURE plate — a framed placeholder with the big ingredient emblem (the shape carries WHICH
-    # ingredient) + the illustrator brief code. This is the pictorial payload of the card.
+    # PICTURE plate — the pictorial payload (the star of the front). A framed placeholder with the big
+    # ingredient emblem (the shape carries WHICH ingredient) + the illustrator brief code when there is no
+    # mock-up; the embedded real illustration when there is one.
     px, py = MARGIN, header_end + 24
-    pw, ph = CARD_W - 2*MARGIN, 560
+    pw, ph = CARD_W - 2*MARGIN, 620
     pcx, pcy = px + pw/2, py + ph/2 - 30
     corners = "".join(
         f'<path d="M{cxx} {cyy+dy*34} L{cxx} {cyy} L{cxx+dx*34} {cyy}" fill="none" '
@@ -830,21 +815,19 @@ def _render_ingredient_svg(row: dict, theme: dict) -> str:
                  + f'<text x="{pcx}" y="{py+ph-35}" font-size="24" fill="#ffffff" text-anchor="middle" '
                    f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[FIG-ING-{esc(fig)}]</text>')
 
-    # foot: big English name (the at-a-glance label) + a terse "into your Larder" line
-    fy = py + ph + 64
-    foot = (f'<text x="{MARGIN}" y="{fy}" font-size="52" fill="{scol}" '
-            f'font-family="{tfont}" font-weight="bold">{esc(en)}</text>'
-            f'<text x="{MARGIN}" y="{fy+44}" font-size="28" fill="{text}" '
-            f'font-family="{bfont}">Take 1 into your Larder.</text>')
+    # foot: the big English name — the at-a-glance label (the 繁體 is in the header). No effect text, no
+    # phase ribbon — the front says only WHAT it is; the pay glyph above says HOW to spend it.
+    fy = py + ph + 72
+    foot = (f'<text x="{MARGIN}" y="{fy}" font-size="60" fill="{scol}" '
+            f'font-family="{tfont}" font-weight="bold">{esc(en)}</text>')
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
-  <defs>{page_gradient(theme, 'pg', page_cols)}</defs>
+  <defs>{page_gradient(theme, 'pg')}</defs>
   <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{frame_col}" stroke-width="6"/>
   <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{scol}" stroke-width="2" opacity="0.5"/>
   {head}
   {plate}
   {foot}
-  {ribbon}
 </svg>"""
 
 
@@ -1096,11 +1079,13 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
 </svg>"""
 
 
-def render_back_svg(slug: str, theme: dict, phase: str | None = None) -> str:
+def render_back_svg(slug: str, theme: dict, phase: str | None = None,
+                    region: str | None = None) -> str:
     """Shared card back. Themes that declare a `back` config (Travel Agents' night-market) get a bespoke
-    boarding-pass / passport-stamp back, with a day/night/general variant layered on from `phase`;
-    every other theme (Beacon's nautical, …) falls through to the unchanged generic ring back."""
-    bstyle = back_style(theme, phase)
+    local-market back, with a day/night/general variant layered on from `phase` and (optionally) a REGION
+    channel from `region` for a homogeneous region+phase market deck; every other theme (Beacon's nautical,
+    …) falls through to the unchanged generic ring back."""
+    bstyle = back_style(theme, phase, region)
     if bstyle is None:
         return _render_back_generic(slug, theme)
     return _render_back_travel_agents(slug, theme, bstyle)
@@ -1124,67 +1109,174 @@ def _render_back_generic(slug: str, theme: dict) -> str:
 </svg>"""
 
 
+# ---- card-back market motifs (CD steer 2026-08-11: local-market feel, NO game name) --------------
+# Deterministic SVG silhouettes, arithmetic only (no math import). `ink` = the phase silhouette colour
+# (b["stamp"]); `gap` = the light panel colour (ptop) used to carve weave/rib lines. A face-down pile
+# sorts day vs night by MOTIF (basket vs lantern) + glyph (早 vs 夜) + drawn sun/moon — never colour alone.
+
+def _awning_svg(x0, x1, y, h, colA, colB, n=9):
+    """A candy-stripe market valance: n vertical stripes with a scalloped (half-disc) bottom edge."""
+    w = (x1 - x0) / n
+    p = []
+    for i in range(n):
+        x = x0 + i * w
+        col = colA if i % 2 == 0 else colB
+        p.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" fill="{col}"/>')
+        p.append(f'<path d="M {x:.1f} {y+h:.1f} A {w/2:.1f} {w/2:.1f} 0 0 0 {x+w:.1f} {y+h:.1f} Z" fill="{col}"/>')
+    return "".join(p)
+
+
+def _basket_svg(cx, cy, r, ink, gap):
+    """A produce basket heaped with veg — the auntie's morning-market round (DAY motif)."""
+    rimY, botY = cy + 0.10 * r, cy + 0.92 * r
+    p = []
+    for dx, dy, rr in ((-0.52, -0.10, 0.34), (0.0, -0.30, 0.40), (0.52, -0.10, 0.34)):
+        p.append(f'<circle cx="{cx+dx*r:.1f}" cy="{cy+dy*r:.1f}" r="{rr*r:.1f}" fill="{ink}" opacity="0.85"/>')
+    for dx in (-0.22, 0.22):
+        x, topy = cx + dx * r, rimY - 0.62 * r
+        p.append(f'<path d="M {x:.1f} {rimY:.1f} Q {x+0.06*r:.1f} {topy:.1f} {x:.1f} {topy-0.10*r:.1f} '
+                 f'Q {x-0.06*r:.1f} {topy:.1f} {x:.1f} {rimY:.1f} Z" fill="{ink}" opacity="0.7"/>')
+    p.append(f'<path d="M {cx-0.98*r:.1f} {rimY:.1f} L {cx+0.98*r:.1f} {rimY:.1f} '
+             f'L {cx+0.66*r:.1f} {botY:.1f} L {cx-0.66*r:.1f} {botY:.1f} Z" fill="{ink}"/>')
+    p.append(f'<ellipse cx="{cx:.1f}" cy="{rimY:.1f}" rx="{0.98*r:.1f}" ry="{0.15*r:.1f}" fill="{ink}"/>')
+    for t in (0.34, 0.66):
+        ytab = rimY + t * (botY - rimY)
+        halfw = (0.98 - t * (0.98 - 0.66)) * r
+        p.append(f'<line x1="{cx-halfw:.1f}" y1="{ytab:.1f}" x2="{cx+halfw:.1f}" y2="{ytab:.1f}" '
+                 f'stroke="{gap}" stroke-width="3" opacity="0.6"/>')
+    for dx in (-0.5, 0.0, 0.5):
+        p.append(f'<line x1="{cx+dx*0.98*r:.1f}" y1="{rimY:.1f}" x2="{cx+dx*0.66*r:.1f}" y2="{botY:.1f}" '
+                 f'stroke="{gap}" stroke-width="3" opacity="0.5"/>')
+    return "".join(p)
+
+
+def _lantern_svg(cx, cy, r, ink, gap):
+    """A hung paper lantern — the night market (NIGHT motif)."""
+    p = [f'<line x1="{cx:.1f}" y1="{cy-1.02*r:.1f}" x2="{cx:.1f}" y2="{cy-0.90*r:.1f}" stroke="{ink}" stroke-width="4"/>',
+         f'<rect x="{cx-0.34*r:.1f}" y="{cy-0.90*r:.1f}" width="{0.68*r:.1f}" height="{0.16*r:.1f}" rx="3" fill="{ink}"/>',
+         f'<ellipse cx="{cx:.1f}" cy="{cy:.1f}" rx="{0.62*r:.1f}" ry="{0.74*r:.1f}" fill="{ink}"/>']
+    for dx in (-0.55, 0.0, 0.55):
+        x = cx + dx * 0.62 * r
+        p.append(f'<line x1="{x:.1f}" y1="{cy-0.72*0.74*r:.1f}" x2="{x:.1f}" y2="{cy+0.72*0.74*r:.1f}" '
+                 f'stroke="{gap}" stroke-width="3" opacity="0.5"/>')
+    p.append(f'<rect x="{cx-0.30*r:.1f}" y="{cy+0.72*r:.1f}" width="{0.60*r:.1f}" height="{0.14*r:.1f}" rx="3" fill="{ink}"/>')
+    p.append(f'<line x1="{cx:.1f}" y1="{cy+0.86*r:.1f}" x2="{cx:.1f}" y2="{cy+1.08*r:.1f}" stroke="{ink}" stroke-width="4"/>')
+    return "".join(p)
+
+
+def _steamer_svg(cx, cy, r, ink, gap):
+    """A stacked bamboo steamer with steam — the neutral / any-time motif (cooked-food read)."""
+    w, h = 0.92 * r, 0.34 * r
+    p = []
+    for ty in (cy + 0.16 * r, cy + 0.54 * r):
+        p.append(f'<rect x="{cx-w/2:.1f}" y="{ty-h/2:.1f}" width="{w:.1f}" height="{h:.1f}" rx="8" fill="{ink}"/>')
+        for dx in (-0.28, 0.0, 0.28):
+            x = cx + dx * w
+            p.append(f'<line x1="{x:.1f}" y1="{ty-h/2+3:.1f}" x2="{x:.1f}" y2="{ty+h/2-3:.1f}" '
+                     f'stroke="{gap}" stroke-width="2.5" opacity="0.5"/>')
+    lidY = cy + 0.16 * r - h / 2
+    p.append(f'<path d="M {cx-w/2:.1f} {lidY:.1f} Q {cx:.1f} {lidY-0.30*r:.1f} {cx+w/2:.1f} {lidY:.1f} Z" fill="{ink}"/>')
+    p.append(f'<circle cx="{cx:.1f}" cy="{lidY-0.24*r:.1f}" r="{0.06*r:.1f}" fill="{ink}"/>')
+    for dx in (-0.34, 0.0, 0.34):
+        x, syy = cx + dx * r, lidY - 0.34 * r
+        p.append(f'<path d="M {x:.1f} {syy:.1f} q {0.12*r:.1f} {-0.12*r:.1f} 0 {-0.24*r:.1f} '
+                 f'q {-0.12*r:.1f} {-0.12*r:.1f} 0 {-0.24*r:.1f}" fill="none" stroke="{ink}" '
+                 f'stroke-width="3" opacity="0.7" stroke-linecap="round"/>')
+    return "".join(p)
+
+
+_BACK_MOTIFS = {"basket": _basket_svg, "lantern": _lantern_svg, "steamer": _steamer_svg}
+
+
+def _lane_svg(x0, x1, base_y, ink, bulb, n=5, opacity=0.42):
+    """A faint receding row of awning-topped market booths with hanging bulbs (background texture)."""
+    slot = (x1 - x0) / n
+    p = [f'<g opacity="{opacity}">']
+    for i in range(n):
+        bx = x0 + i * slot + slot * 0.19
+        bw = bh = slot * 0.62
+        by = base_y - bh
+        p.append(f'<rect x="{bx:.1f}" y="{by:.1f}" width="{bw:.1f}" height="{bh:.1f}" fill="{ink}"/>')
+        p.append(f'<path d="M {bx-0.06*slot:.1f} {by:.1f} L {bx+bw+0.06*slot:.1f} {by:.1f} '
+                 f'L {bx+bw/2:.1f} {by-0.22*slot:.1f} Z" fill="{ink}"/>')
+        p.append(f'<circle cx="{bx+bw/2:.1f}" cy="{by-0.34*slot:.1f}" r="{0.06*slot:.1f}" fill="{bulb}"/>')
+    p.append('</g>')
+    return "".join(p)
+
+
 def _render_back_travel_agents(slug: str, theme: dict, b: dict) -> str:
-    """A night-market boarding-pass back: dusk-indigo ground, a passport-stamp roundel, a ticket-stub
-    perforation, and (when phased) a warm-sun 日 / neon-moon 夜 treatment so a face-down pile sorts into
-    day vs night at a glance — by MOTIF + palette, never colour alone. All shapes DRAWN (no ☀/☾ tofu)."""
+    """A LOCAL-MARKET back (CD steer): a striped market awning, a faint stall lane, and a central
+    produce-basket (day) / lantern (night) / steamer (any) medallion under the 繁體 market glyph. A
+    face-down pile still sorts day vs night by MOTIF + palette + 早/夜 glyph + drawn sun/moon — never
+    colour alone. Carries NO game name. All shapes DRAWN (no ☀/☾ tofu).
+
+    CD 2026-08-11: for a HOMOGENEOUS region+phase market deck the caller passes a region (via back_style),
+    adding a bold REGION banner just under the awning — region colour + region emblem + 繁體 (北/中/南/東)
+    + English, so a face-DOWN card names BOTH which region AND which phase market it belongs to (setup
+    sorting). A mixed deck (the combined market_<phase> PnP deck) carries no region fields → phase-only
+    back, unchanged."""
     radius = theme["radius"]
     tfont = theme["title_font"]
     ground = b["ground"]
     ptop, pbot = b["panel"]
-    stamp = b["stamp"]
-    glow = b.get("glow", stamp)
+    ink = b["stamp"]                       # phase silhouette ink (contrast-safe per phase)
+    glow = b.get("glow", ink)
     char = b.get("char", "")
-    label = b.get("label", b.get("sub", ""))
     emblem = b.get("emblem", "stamp")
+    awning = b.get("awning", ink)
+    market = b.get("market", "")
+    motif_fn = _BACK_MOTIFS.get(b.get("motif", "steamer"), _steamer_svg)
     cx = CARD_W / 2
-    # inner panel inset
     ix, iy, iw, ih = 40, 40, CARD_W - 80, CARD_H - 80
-    # ground colour under the panel that shows through the border + notches
     panel_txt = pick_text_color(pbot, dark=theme["ink"], light="#ffffff")
-    # ticket-stub perforation across the lower third, with edge notches punched out of the panel
-    perf_y = CARD_H - 300
-    dashes = "".join(
-        f'<line x1="{ix + 44 + i*46}" y1="{perf_y}" x2="{ix + 44 + i*46 + 24}" y2="{perf_y}" '
-        f'stroke="{stamp}" stroke-width="6" stroke-linecap="round" opacity="0.65"/>'
-        for i in range(int((iw - 88) // 46)))
-    notch_l = f'<circle cx="{ix}" cy="{perf_y}" r="22" fill="{ground}"/>'
-    notch_r = f'<circle cx="{ix + iw}" cy="{perf_y}" r="22" fill="{ground}"/>'
-    # central passport-stamp roundel: double ring + the drawn phase motif + the 繁體 phase char
-    sy = 430
-    roundel = (
-        f'<circle cx="{cx}" cy="{sy}" r="150" fill="none" stroke="{stamp}" stroke-width="10" opacity="0.9"/>'
-        f'<circle cx="{cx}" cy="{sy}" r="128" fill="none" stroke="{stamp}" stroke-width="3" opacity="0.6"/>'
-        + emblem_svg(emblem, cx, sy - 18, 66, stamp))
-    if char:
-        roundel += (f'<text x="{cx}" y="{sy + 96}" font-size="72" fill="{stamp}" text-anchor="middle" '
-                    f'font-family="{tfont}" font-weight="bold">{esc(char)}</text>')
-    # corner stamp flecks for texture (low opacity), always the neutral stamp mark
-    corners = "".join(
-        emblem_svg("stamp", x, y, 22, stamp) for (x, y) in
-        ((ix + 54, iy + 54), (ix + iw - 54, iy + 54),
-         (ix + 54, iy + ih - 54), (ix + iw - 54, iy + ih - 54)))
+    sy = 400
+    awn = _awning_svg(ix + 12, ix + iw - 12, iy + 8, 88, awning, ptop, 9)
+    # REGION banner (present only for a homogeneous region+phase deck): bold region-colour bar under the
+    # awning, dual-coded region emblem (white) + "SOUTH 南" (English + 繁體) — the primary setup sort key.
+    region_banner = ""
+    rcol = b.get("region_color")
+    if rcol:
+        remb = b.get("region_emblem", "circle")
+        rchar = b.get("region_char", "")
+        ren = b.get("region_en", "")
+        rtxt = pick_text_color(rcol, dark=theme["ink"], light="#ffffff")
+        by0, bh = 146, 88
+        bx0, bx1 = ix + 22, ix + iw - 22
+        region_banner = (
+            f'<rect x="{bx0}" y="{by0}" width="{bx1 - bx0}" height="{bh}" rx="20" fill="{rcol}" '
+            f'stroke="{ink}" stroke-width="3"/>'
+            + emblem_svg(remb, bx0 + 58, by0 + bh/2, 30, "#ffffff", stroke=ink) +
+            f'<text x="{cx + 34}" y="{by0 + bh*0.66:.0f}" font-size="48" fill="{rtxt}" text-anchor="middle" '
+            f'font-family="{tfont}" font-weight="bold" letter-spacing="3">{esc((ren + " " + rchar).strip())}</text>')
+    lane = _lane_svg(90, CARD_W - 90, CARD_H - 120, ink, glow)
+    plate = (f'<circle cx="{cx}" cy="{sy}" r="160" fill="none" stroke="{ink}" stroke-width="3" opacity="0.5"/>'
+             f'<circle cx="{cx}" cy="{sy}" r="142" fill="none" stroke="{ink}" stroke-width="2" opacity="0.35"/>')
+    motif = motif_fn(cx, sy, 118, ink, ptop)
+    accent = emblem_svg(emblem, cx - 96, sy - 100, 26, ink)
+    glyph = (f'<text x="{cx}" y="{sy + 250}" font-size="80" fill="{ink}" text-anchor="middle" '
+             f'font-family="{tfont}" font-weight="bold">{esc(char)}</text>') if char else ""
+    label = (f'<text x="{cx}" y="{sy + 320}" font-size="30" fill="{panel_txt}" text-anchor="middle" '
+             f'font-family="{tfont}" letter-spacing="3" opacity="0.85">{esc(market)}</text>') if market else ""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
   <defs>
     <linearGradient id="tab" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="{ptop}"/><stop offset="1" stop-color="{pbot}"/>
     </linearGradient>
-    <radialGradient id="tag" cx="0.5" cy="0.42" r="0.75">
+    <radialGradient id="tag" cx="0.5" cy="0.38" r="0.75">
       <stop offset="0" stop-color="{glow}" stop-opacity="0.28"/><stop offset="1" stop-color="{glow}" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="{CARD_W}" height="{CARD_H}" rx="{radius}" fill="{ground}"/>
-  <rect x="{ix}" y="{iy}" width="{iw}" height="{ih}" rx="{radius-10}" fill="url(#tab)" stroke="{stamp}" stroke-width="6"/>
+  <rect x="{ix}" y="{iy}" width="{iw}" height="{ih}" rx="{radius-10}" fill="url(#tab)" stroke="{ink}" stroke-width="6"/>
   <rect x="{ix}" y="{iy}" width="{iw}" height="{ih}" rx="{radius-10}" fill="url(#tag)"/>
-  <g opacity="0.28">{corners}</g>
-  <text x="{cx}" y="{iy + 108}" font-size="60" fill="{stamp}" text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="6">{esc(b.get('wordmark',''))}</text>
-  <text x="{cx}" y="{iy + 162}" font-size="34" fill="{panel_txt}" text-anchor="middle" font-family="{tfont}" letter-spacing="4" opacity="0.8">{esc(b.get('sub',''))}</text>
-  {roundel}
-  {dashes}
-  {notch_l}
-  {notch_r}
-  <text x="{cx}" y="{CARD_H - 190}" font-size="40" fill="{panel_txt}" text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="3">{esc(label)}</text>
-  <text x="{cx}" y="{CARD_H - 100}" font-size="30" fill="{panel_txt}" text-anchor="middle" font-family="{tfont}" font-style="italic" opacity="0.7">{esc(slug)}</text>
+  {awn}
+  {region_banner}
+  {lane}
+  {plate}
+  {motif}
+  {accent}
+  {glyph}
+  {label}
 </svg>"""
 
 
@@ -1209,6 +1301,11 @@ def main() -> int:
                     help="pack each deck sheet into the tightest cols×rows grid (fewest blank cells) "
                          "instead of always maxing at 10 columns — cleaner Screentop imports for small "
                          "assembled decks. Card cell size is unchanged (409×585).")
+    ap.add_argument("--ing-mockups-dir", type=Path, default=None,
+                    help="override the dir searched for FIG-ING-<type>.png ingredient art. Default is "
+                         "<game>/build/mockups (the CSV's parent's parent) — but a CARVED deck CSV (e.g. "
+                         "build/decks/market_*.csv from split_decks) resolves that wrong, so pass this "
+                         "explicitly when rendering carved market decks so the ingredient art still embeds.")
     args = ap.parse_args()
 
     theme = get_theme(args.theme)
@@ -1216,7 +1313,8 @@ def main() -> int:
     # TA art-mock embed dir for ingredient cards: <game>/build/mockups next to the components CSV
     # (game dir = the CSV's parent's parent). Absent dir/file → the byte-identical placeholder path.
     global _ING_MOCKUPS_DIR
-    _ING_MOCKUPS_DIR = args.csv.resolve().parent.parent / "build" / "mockups"
+    _ING_MOCKUPS_DIR = (args.ing_mockups_dir if args.ing_mockups_dir
+                        else args.csv.resolve().parent.parent / "build" / "mockups")
     rows = load_rows(args.csv)
     if not rows:
         print(f"No rows in {args.csv}", file=sys.stderr)
@@ -1249,9 +1347,17 @@ def main() -> int:
     phases = {(r.get("phase") or "").strip().lower() for r in rows}
     phases.discard("")
     back_phase = next(iter(phases)) if len(phases) == 1 else None
-    back_svg = render_back_svg(slug, theme, back_phase)
+    # REGION back (TA market decks): a deck whose cards all share one region gets that region's banner on
+    # the back (so a face-down region+phase pile sorts to its market at setup); a mixed-region deck (the
+    # combined market_<phase> PnP deck) or an unphased/other-game deck gets no region banner (phase-only /
+    # neutral). Non-TA decks have no `region` column → set stays empty → back_region None → byte-unchanged.
+    regions = {(r.get("region") or "").strip().lower() for r in rows}
+    regions.discard("")
+    back_region = next(iter(regions)) if len(regions) == 1 else None
+    back_svg = render_back_svg(slug, theme, back_phase, back_region)
     (args.out / "svg" / "_back.svg").write_text(back_svg, encoding="utf-8")
-    print(f"[svg]  wrote {len(svg_paths)} card SVGs -> {args.out/'svg'}  (back phase: {back_phase or 'neutral'})")
+    print(f"[svg]  wrote {len(svg_paths)} card SVGs -> {args.out/'svg'}  "
+          f"(back phase: {back_phase or 'neutral'}, region: {back_region or 'mixed/neutral'})")
 
     # cairosvg is needed for anything raster/PDF.
     try:

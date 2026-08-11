@@ -29,7 +29,7 @@ Never use the 繁體/Tâi-lô name alone — the human can't follow it. English 
 |---|---|---|
 | **The Old Councillor** | 里長伯 (Lí-tiúⁿ-peh) | *Old Favours* — name one home region; while home, start each turn drawing **1** ingredient from any market (no action); away, the engine is dark. Flaw-free. |
 | **The Homebody** | 媽寶 (Ma-pó) | Sole Travel-sourcer — on a Travel, draw the top **2** of the region you LEFT and keep both (event whiffs). Flaw-free. |
-| **The Big Eater** | 大胃王 (Tuā-uī-ông) | Keep all 3 on a Visit + a Greedy-Grab 4th (→ return 1 follower to supply); hazards fire twice on **her** Visit. |
+| **The Big Eater** | 大胃王 (Tuā-uī-ông) | Keep all 3 on a Market Run + a Greedy-Grab 4th (→ return 1 follower to supply); hazards fire twice on **her** Market Run. |
 | **The Influencer** | 網紅 (Bāng-âng) | Owns **8** follower meeples (the field owns 6) — a deeper pool; dial starts at **2** like everyone; goes last in turn order. |
 | **The Big Boss** | 老大 (Lāu-tuā) | Margin dial N=1 — wins a contested stall unless a rival exceeds his committed followers by N or more (**wins ties**). Flaw-free. |
 | **The Globetrotter** | 阿嬤 (A-má) | Reaches any region in one Travel + Scheduled-Maintenance-immune; each Travel-anywhere costs **1** follower to supply. Flaw-free. |

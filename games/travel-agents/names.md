@@ -14,7 +14,7 @@
 > print — this table does not discharge that). Indigenous items (E01 竹筒飯, E04 石板烤肉) are consultant-
 > gated even for mock-ups.
 >
-> Status: **V7-M (multiplayer 3–6)** · Last swept 2026-08-10 (`bg-continuity`: reconciled §1 character kits + §3 dial row to `components/characters.csv` canon — C1 Old Favours, C3 her/return-1, C4 deep pool of 8, C6 Travel-cost baseline; logged the retired spy-era framing + `tickets-only` + the retired kit shapes in §4. Earlier: retitled **Travel Agents: Taiwan Food Tour**; §3 flat −1 cancel + two-track VP; C5 name **老大 The Big Boss**).
+> Status: **V7-M (multiplayer 3–6)** · Last swept 2026-08-11 (`bg-continuity`: renamed the vendor-win action **Bribe → Sign Up** — §3 glossary row + §4 retired-terms row + §3 region-icon "on future sign-ups". Earlier 2026-08-10: reconciled §1 character kits + §3 dial row to `components/characters.csv` canon — C1 Old Favours, C3 her/return-1, C4 deep pool of 8, C6 Travel-cost baseline; logged the retired spy-era framing + `tickets-only` + the retired kit shapes in §4. Earlier: retitled **Travel Agents: Taiwan Food Tour**; §3 flat −1 cancel + two-track VP; C5 name **老大 The Big Boss**).
 > Supersedes the roster table in `v7-plan.md` as the canonical name reference.
 
 ---
@@ -27,7 +27,7 @@ Always refer to a character by the **English name** in prose. Never use the 繁�
 |---|---|---|---|---|
 | C1 | **The Old Councillor** | 里長伯 | Lí-tiúⁿ-peh | *Old Favours (home-gated):* name one **home region** at setup; while home, start each turn drawing **1** ingredient from any region's market (no action); away, the engine is dark. Flaw-free. |
 | C2 | **The Homebody** | 媽寶 | Ma-pó | Sole Travel-sourcer — on a **Travel**, draw the top **2** of the region you LEFT and keep both (event whiffs). Flaw-free. |
-| C3 | **The Big Eater** | 大胃王 | Tuā-uī-ông | *Bottomless:* on a **Visit**, keep all **3** (may Greedy-Grab a 4th → return 1 follower to supply). Flaw: hazards fire **twice** on **her** Visit. |
+| C3 | **The Big Eater** | 大胃王 | Tuā-uī-ông | *Bottomless:* on a **Market Run**, keep all **3** (may Greedy-Grab a 4th → return 1 follower to supply). Flaw: hazards fire **twice** on **her** Market Run. |
 | C4 | **The Influencer** | 網紅 | Bāng-âng | *Going Viral:* owns **8** follower meeples (the field owns 6) — a deeper crowd; her dial starts at **2** like everyone. Flaw: takes the **last** seat. |
 | C5 | **The Big Boss** | 老大 | Lāu-tuā ¹ | *Margin dial N=1:* wins a contested stall unless a rival exceeds his committed followers by N or more (N=1 → he **wins ties**). Flaw-free. |
 | C6 | **The Globetrotter** | 阿嬤 | A-má | *Elder Pass:* **Travel reaches any region** in one action; immune to Scheduled Maintenance; each Travel-anywhere costs **1** follower to supply. Flaw-free. |
@@ -81,7 +81,7 @@ The authoritative player term set. Canonical spellings and forms; use these ever
 | **Followers** | 粉 | The committed, public, contested hype you pile ON a vendor. A **Promote** places **2 Followers**; total committed ≤ your dial. *(renamed from Buzz)* |
 | **Followers-max (the dial)** | 盤 | Your live per-player ceiling on committed Followers, shown by a **dial**. Everyone starts at **2** (the Influencer 網紅's edge is a deeper *pool* — 8 meeples to the field's 6 — not a higher dial); raised by Travel + events; the lost-war sink drops it. **Never scores.** *(renamed from Reach)* |
 | **Promote** | — | The action that places 2 Followers on vendor(s) you stand with. |
-| **Bribe** | — | The action to win a face-up vendor: hold the **biggest crowd** (outright Followers majority) + pay its ingredients − region discounts. |
+| **Sign Up** | — | The action to sign up a face-up vendor to your tour: hold the **biggest crowd** (outright Followers majority) + pay its ingredients − region discounts. |
 | **Bookings** | 開團 *kāi-tuán* | The tour cards — the **main scoring path** (**two-track VP**: complete a tour → score its **full value 3–11**; PLUS each won vendor scores its printed **`vp` 1–6** — see `game-bible.md` §"Win condition & scoring" for detail). Hand-limit **3**, cancel-to-claim. **The Booking decks are NOT the clock** (the clock is vendor depletion + the Closing-Time die — see below). *(renamed from Tour Tickets / missions)* |
 | **COMPLETED** | 成團 | The WIN pile — a Booking whose tour ran; scores **+full value**. *(the win label, renamed from "SOLD" / "Published Tours")* |
 | **CANCELLED** | 取消 | The LOSE pile — a Booking that didn't run in time; scores **flat −1** (`game-bible.md` §"Win condition & scoring"). *(renamed from 遺珠 / "the Ones That Got Away")* |
@@ -94,8 +94,8 @@ The authoritative player term set. Canonical spellings and forms; use these ever
 | **Closing-Time die (關門)** | 關門 | The clock's forcing function — a **3-round track**; a custom d6 `[N,C,S,E,BLANK,BLANK]` rolled after round **L** (L=2 at 3p, L=3 at 4–6p). A region face closes that region's **oldest face-up stall** (contested or not — followers home, no penalty); **BLANK** = a reprieve. |
 | **the day-clock** | — | The day→night→end beat, carried by **vendor depletion + the Closing-Time die 關門** — **NOT** the Booking decks. *A concept/section name — there is **no printed numbered clock track** (see §4).* |
 | **Larder** | — | Your sourced ingredient cards, kept face-up; cap **7**. |
-| **Visit / Convenience Store / Travel** | — | The three sourcing/movement turn actions. |
-| **region icon / discount ramp** | — | Each region icon a won vendor carries makes that region's ingredients **1 cheaper** on future Bribes (floor 0). Drinks and ★ apex carry none. |
+| **Market Run / Convenience Store / Travel** | — | The three sourcing/movement turn actions. |
+| **region icon / discount ramp** | — | Each region icon a won vendor carries makes that region's ingredients **1 cheaper** on future sign-ups (floor 0). Drinks and ★ apex carry none. |
 | **Rave Reviews** | 好評 | The two per-player milestone boons at your **2nd** and **4th** completed tour (never pumps the leader). |
 | **Tours-Completed** | — | The per-player monotonic counter that hosts the Rave Reviews milestones. |
 | **Scheduled Maintenance** | 排班保養 | An island-wide event: the HSR is down for everyone for a round (the Globetrotter 阿嬤 is immune). |
@@ -116,6 +116,8 @@ CURRENT form (§3), or flag it if resolving it is a mechanics/value question.
 | **Buzz** | Followers | Pure rename (CD v6.4 lock). |
 | **Reach** (← Reputation / Prestige) | Followers-max (the dial) | Pure rename; the Reputation → Reach → Followers-max lineage. |
 | **Tour Tickets / Tour-Ticket / missions** | Bookings 開團 | Pure rename. |
+| **Bribe** (the vendor-win action) | **Sign Up** | CD rename 2026-08-11, **presentation only**. "Bribe" carried the wrong connotation; **Sign Up** fits the travel-agent frame (a vendor signs up to your tour) and keeps the warm, comedic, never-corruption tone. **Mechanic unchanged** (biggest committed-follower crowd + crowd-floor + pay recipe − region discounts → the vendor joins your tour); **no component-data value touched.** Verb *sign up a vendor*; gerund *signing up*; noun *sign-up*; keyword/label **Sign Up**. |
+| **Visit** (the local-market sourcing action) | **Market Run** | CD rename 2026-08-11, **presentation only**. "Visit" was too weak for what it is — doing the rounds of Taiwan's traditional local market (菜市場 / 早市). **Mechanic unchanged** (flip the top 3 of the region's market, keep 2; the Big Eater keeps 3); the sim's internal `visit_keep3` / `hazard_twice_visit` codes are opaque identifiers, left as-is. |
 | **Draw** (人氣) — as a vendor *value* | *(retired as a scored/printed vendor value)* | ⚠ **Data-vs-rules contradiction — FLAG, do not fix.** Still a `draw` column in `vendors.csv`, 5 `draw`-target rows in `bookings.csv`, a DRAW card panel (`art/art-style.md`) and Draw-target Bookings (`art/tour-art.md`) — but `rules-draft.md` has no Draw. → `bg-design` / `bg-elegance` to resolve. |
 | **★ Star token** | Trending marker (爆紅) | Rename of the *dynamic* token only. **The printed ★ apex is NOT retired** — do not conflate. |
 | **vendor-claims clock-track / numbered day-clock track** | vendor-depletion 黃昏 DUSK / 末班車 LAST TRAIN + the Closing-Time die 關門 | The *printed numbered track* is gone; the *concept* "day-clock" survives as a rules section name (§3). *(The clock is vendor depletion + the die — NOT the Booking decks; see §3.)* |

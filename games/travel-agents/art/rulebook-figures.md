@@ -38,14 +38,14 @@ face-up and hint at the NIGHT piles set aside. Friendly numbered roundels (passp
 **Where:** §3 Your turn. **Job:** a scannable icon row so the six actions read without re-reading prose.
 
 **Subject:** six small warm icon tiles in a single row (or 2×3 grid), each with its keyword label:
-1. **Visit the Local Market** — a hand flipping 3 ingredient cards.
+1. **Market Run** (the local market) — a hand flipping 3 ingredient cards.
 2. **Convenience Store** — a 24-hr storefront, one card flipped anywhere.
 3. **Travel** — a pawn hopping between regions along the HSR, with a small **+1 Reach** badge.
 4. **Promote** — 2 Buzz tokens dropping onto a vendor card.
-5. **Bribe a Vendor** — an agent sliding a "marketing opportunity" across a stall counter (warm, comedic).
+5. **Sign Up a Vendor** — an agent sliding a "marketing opportunity" across a stall counter (warm, comedic).
 6. **Line Up a Tour Ticket** — a hand taking a boarding-pass ticket from the row.
 
-**Notes:** each icon language-independent first, label second. Keep the Bribe icon unmistakably warm/cheeky
+**Notes:** each icon language-independent first, label second. Keep the Sign Up icon unmistakably warm/cheeky
 (the over-the-top travel-agent's hustle), never sinister — the vendor is delighted.
 
 ---
@@ -63,8 +63,8 @@ not a math diagram.
 
 ---
 
-## [FIG-BRIBE] — the three-step Bribe
-**Where:** §5 Bribing a vendor. **Job:** the three conditions + the payoff as a mini flow.
+## [FIG-BRIBE] — the three-step Sign Up
+**Where:** §5 Signing Up a vendor. **Job:** the three conditions + the payoff as a mini flow.
 
 **Subject:** a small left-to-right, three-panel strip ending in a payoff:
 1. **Be there** — the agent's pawn standing in the vendor's region.
@@ -103,7 +103,7 @@ groan, never a spiteful strike.
 
 **Subject:** a horizontal day-clock track climbing left→right from morning to night, with two labelled
 marks: **DUSK** (2p: the 5th vendor win — the street flips from warm-amber day to neon night market) and
-**LAST TRAIN** (2p: the 10th — a departing train, "catch the last train home"). A small "+1 each Bribe"
+**LAST TRAIN** (2p: the 10th — a departing train, "catch the last train home"). A small "+1 each Sign Up"
 badge on the track. Show the warm-amber **Act I 白天** half and the neon **Act II 夜市** half, with the dusk
 flip in the middle (day layer sweeping away, night stalls arriving).
 
@@ -133,8 +133,8 @@ night = festive lantern-neon (lavender/magenta), never a cold/red alarm register
   the region decks, the face-up vendor slots (2 North / 1 each elsewhere), the two tracks, and the Buzz
   pool, with a "everyone starts in Taipei" callout. Region colours warm + dual-coded.
 - **`FIG-TURN`** (the six actions): six small warm icon tiles in a row (or 2×3) with keyword labels —
-  Visit the Local Market (a hand flipping 3 ingredient cards), Convenience Store (a 24-hr storefront, one
-  card), Travel (a pawn hopping the HSR, +1 Reach badge), Promote (2 Buzz dropping on a vendor), Bribe a
+  Market Run — the local market (a hand flipping 3 ingredient cards), Convenience Store (a 24-hr storefront, one
+  card), Travel (a pawn hopping the HSR, +1 Reach badge), Promote (2 Buzz dropping on a vendor), Sign Up a
   Vendor (an agent sliding a warm, cheeky "marketing opportunity" across a stall counter — the vendor
   delighted, never sinister), Line Up a Tour Ticket (a hand taking a boarding-pass ticket). Icon first,
   label second.
@@ -142,7 +142,7 @@ night = festive lantern-neon (lavender/magenta), never a cold/red alarm register
   Reach marker on its track — a friendly gauge showing one OK state (stack under the Reach line) and one
   not-allowed state (a stack over the line, crossed out), plus a small inset: winning the vendor clears
   its Buzz and frees the cap. Buzz in violet `#6A4C93`. A gauge, not a math diagram.
-- **`FIG-BRIBE`** (the three-step Bribe): a warm left-to-right three-panel strip — ① Be there (pawn in the
+- **`FIG-BRIBE`** (the three-step Sign Up): a warm left-to-right three-panel strip — ① Be there (pawn in the
   vendor's region), ② Out-Buzz by 2 (both stacks shown, a +2 gap), ③ Pay the ingredients (chips paid, a
   region icon crossing out one chip) → payoff: the vendor sliding onto the player's tour as a stop, its
   Buzz clearing, the day-clock ticking +1, a little "next one's cheaper" spark. Celebration, not a
@@ -154,5 +154,5 @@ night = festive lantern-neon (lavender/magenta), never a cold/red alarm register
   完售 sold-out sign, a festival crowd) — a shared groan, never a spiteful strike.
 - **`FIG-CLOCK`** (Day → Night): a horizontal day-clock climbing left→right, two labelled marks —
   **DUSK** (the street flips warm-amber day → neon night market) and **LAST TRAIN** (a departing train,
-  "catch the last train home") — a "+1 each Bribe" badge on the track, the warm-amber Act I 白天 half and
+  "catch the last train home") — a "+1 each Sign Up" badge on the track, the warm-amber Act I 白天 half and
   the neon Act II 夜市 half with the dusk flip in the middle. Warm, not alarm.
