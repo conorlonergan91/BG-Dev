@@ -1,0 +1,35 @@
+# Travel Agents V7-M — TWO-DICE SWEEP: N=400 confirmation + per-count refinements (bg-playtest 2026-08-11)
+# All runs: balanced field. Levers set via the new per-phase harness globals (no rule/map value changed).
+
+## A. RECOMMENDED config confirm @ N=400 — single d6, DAY cadence L=3 / NIGHT cadence L=1
+N=400 CONFIRM — RECOMMENDED: single d6, day cadence L=3 / night cadence L=1
+cnt | STALL% turn/p | claim/p  day   nt | wLane wN+E apex/gm | vshr% turns
+ 3p |    25  54.3 |   3.70 3.31 0.40 | 2.08 2.14 0.072 |   30 lt 75%
+ 4p |    10  51.0 |   3.16 2.78 0.38 | 1.92 1.92 0.058 |   24 lt 90%
+ 5p |     7  48.6 |   2.71 2.39 0.33 | 1.81 1.66 0.045 |   26 lt 93%
+ 6p |     3  45.2 |   2.37 2.00 0.37 | 1.75 1.48 0.010 |   27 lt 97%
+
+## B. 3p day-cadence refinement @ N=400 (single d6, night L=1) — day L=2 vs L=3
+N=400 3p day-cadence refinement (single d6, night L=1):
+  3p dayL2/nightL1: STALL    3  turns/p 45.7  claims/p 3.16(day 2.73) wLane 1.85 vshr 30  LT 97%
+  3p dayL3/nightL1: STALL   21  turns/p 54.0  claims/p 3.69(day 3.27) wLane 2.04 vshr 27  LT 79%
+
+## C. NIGHT-FACE frontier @ night L=1 (day d6 L=map) — face is ~irrelevant once cadence=L1
+N=300 NIGHT-FACE frontier at night cadence L=1 (day=d6 L=3). Does a gentler night die spare trophies?
+ -- 4p --
+   night d4 /L1: STALL    5  claim/p 3.23 nt-claim/p 0.36  apex/gm 0.043  wLane 2.04  vshr 23  turns/p 50.1
+   night d6 /L1: STALL   10  claim/p 3.25 nt-claim/p 0.37  apex/gm 0.060  wLane 1.97  vshr 25  turns/p 51.3
+   night d8 /L1: STALL    8  claim/p 3.23 nt-claim/p 0.37  apex/gm 0.057  wLane 1.94  vshr 24  turns/p 49.8
+   night d10/L1: STALL    9  claim/p 3.15 nt-claim/p 0.36  apex/gm 0.057  wLane 1.92  vshr 24  turns/p 49.1
+ -- 5p --
+   night d4 /L1: STALL    7  claim/p 2.68 nt-claim/p 0.29  apex/gm 0.010  wLane 1.81  vshr 25  turns/p 48.1
+   night d6 /L1: STALL    3  claim/p 2.74 nt-claim/p 0.33  apex/gm 0.033  wLane 1.84  vshr 26  turns/p 47.6
+   night d8 /L1: STALL    4  claim/p 2.72 nt-claim/p 0.32  apex/gm 0.043  wLane 1.80  vshr 26  turns/p 47.6
+   night d10/L1: STALL    3  claim/p 2.62 nt-claim/p 0.28  apex/gm 0.047  wLane 1.86  vshr 28  turns/p 46.6
+
+## FINAL PER-COUNT RECOMMENDATION (single d6; DAY track_length {3:2,4:3,5:3,6:3} [= current map]; NIGHT roll every round L=1):
+#  3p: STALL 3%  turns/p 45.7  claims/p 3.16 (day 2.73)  wLane 1.85  vshr 30
+#  4p: STALL 10% turns/p 51.0  claims/p 3.16 (day 2.78)  wLane 1.92  vshr 24
+#  5p: STALL 7%  turns/p 48.6  claims/p 2.71 (day 2.39)  wLane 1.81  vshr 26
+#  6p: STALL 3%  turns/p 45.2  claims/p 2.37 (day 2.00)  wLane 1.75  vshr 27
+# Guardrail: hoarder < fair share at every count (21/22/15/17% vs 33/25/20/17%). Tours lead.
