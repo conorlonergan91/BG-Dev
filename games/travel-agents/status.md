@@ -49,18 +49,19 @@ prototype kit is current in `exports/`. The next real work is a **human playtest
   are *felt* (does forced-placement read as a tax to those behind? is the SINK card a shrug? the warmer
   hazard:boon ratio) and the sim can't answer them. The CD also generates the remaining art (map + vendor
   cards) from `art/ta-art-context.zip`.
-- **▶ Vendor economy RE-PRICED (Splendor-informed, checkpoint `3486f5e`) — sim RUNNING (CD signed off
-  2026-08-11).** Steepened day 1–4 / mid 5–6 / apex 8–9 cost, vp 0→11 back-loaded, apex floor 4, hero-depth
-  + breadth so a casual 1-per-region engine pays ~5–6 while only a deep engine zeroes an apex (~1–2/game).
-  **HEADLINE sim watch (CD's caveat): vendor-VP vs Booking-VP balance** — the re-price ~doubled vendor VP,
-  so confirm tours still dominate (vendor-only-hoarder <~10%, vendor share ~25–35% / ceiling 40%, Bookings
-  ≥60%); if it breaches, widen Bookings (`bookings.csv`) or compress the vendor top. Other measures:
-  free-claims/game by engine depth (~1–2 late / ~0 casual), Failure-Mode-B reachability (apex claim-rate
-  >0, floor-4 not a permanent block), engine→payoff arc, and the `wash`/clock drain (EV-N29: game length +
-  vendors-closed-without-claim) + the Long Queue (EV-D05) rally-rider encode.
-- **⏳ Pending the sim verdict:** vendor card **flavour** (`effect`/`art_note`) still describes the OLD
-  recipes → `bg-copywriter`/`bg-continuity` reconcile + deck-sheet rebuild are HELD until the numbers are
-  confirmed final (no point re-syncing text to recipes the balance check might retune).
+- **▶ Vendor economy — IN RESHAPE (day-engine / night-payoff), CD-approved 2026-08-11.** The Splendor-style
+  steep re-price (checkpoint `3486f5e`) FAILED the balance sim (N=400, log + encoder in `playtests/sims/` +
+  `sim/travel_agents.py`, commits `418e163`/`0df4c0d`): players make only **~2–3 vendor claims/game so no
+  engine forms** — the ★ apex is dead content (~0.05 claims/game), the deep-engine-free-claim arc is
+  unreachable, and the winning line is objectives-blind hoarding of the **tier-2 mid vendors (vp 5–6)** →
+  vendor-VP share breaches 41–42% at 4–5p, hoarder wins 24–35%. Root cause: TA's claim velocity ≠ Splendor's.
+  **New direction (bg-design in progress):** reshape the DECK — **DAY** = more, cheaper, VARIED low-VP engine
+  seeds (so an engine actually forms) → build toward Bookings; **NIGHT** = scarce + expensive high-VP trophies
+  winnable only with a built engine. Re-tune the vendor-depletion clock for the new deck sizes (may fix the 6p
+  stall). **Rails: keep variety + flow (cheap ≠ clones); the sim is a guide, the table is the gauge.**
+- **⏳ Held until the reshape's numbers are final:** vendor card **flavour** reconcile + deck-sheet rebuild
+  (`bg-copywriter`/`bg-continuity`), then a **CD-gated re-sim** (does an engine form? apex reachable-but-earned?
+  hoarder dead? tours dominate?), then the whole line (events/tours + economy) is ready to PR+merge to main.
 - **⏭ Deferred design follow-ups (surfaced by the sweep — not blocking; a later design pass):** migrate
   `design-doc.md` §15/§17 (event framework + clock) into `game-bible.md`, then archive it + fix its stale
   header (→ `bg-design`); reconcile `art/rulebook-figures.md`'s stale 2p / Buzz / Reach mechanics to V7-M
