@@ -1,0 +1,116 @@
+# Travel Agents V7-M — vendor RE-PRICE + event redesign · CD-GATED RE-SIM  (N=400/cell)
+# config: CANCEL_COST=flat:1  VISIT_MODE=straight  VARIETY=mono
+
+============================================================================================
+HEADLINE — vendor-VP share of winner (target 25-35%, ceiling 40%)  +  field reachability
+============================================================================================
+
+## 3p
+  vendor-VP 8.3 + booking-VP 18.3  -> vendor-share 34% / booking-share 66%
+  apex claims/game 0.07  (per plyr 0.023)  below-floor blocks/gm 0.00
+  free-claims/gm 0.29  (deep>=7icons 0.00 / shallow 0.29 / apex 0.00)
+  mean net-cost/claim 2.08  | mean APEX net-cost 0.31 (n=0.07)
+  prestige-done/gm 0.39  bookings-done/gm 4.4  LAST-TRAIN end 92% / STALL 8%
+  turns/plyr 50.2  washes/gm 0.76  restocks/gm 1.16  cancels/gm 2.42
+
+## 4p
+  vendor-VP 8.2 + booking-VP 17.4  -> vendor-share 41% / booking-share 59%  <<< BREACH
+  apex claims/game 0.08  (per plyr 0.020)  below-floor blocks/gm 0.01
+  free-claims/gm 0.28  (deep>=7icons 0.00 / shallow 0.28 / apex 0.00)
+  mean net-cost/claim 2.20  | mean APEX net-cost 0.40 (n=0.08)
+  prestige-done/gm 0.41  bookings-done/gm 3.7  LAST-TRAIN end 94% / STALL 6%
+  turns/plyr 48.7  washes/gm 1.23  restocks/gm 2.50  cancels/gm 2.79
+
+## 5p
+  vendor-VP 7.9 + booking-VP 16.9  -> vendor-share 42% / booking-share 58%  <<< BREACH
+  apex claims/game 0.04  (per plyr 0.009)  below-floor blocks/gm 0.00
+  free-claims/gm 0.26  (deep>=7icons 0.00 / shallow 0.26 / apex 0.00)
+  mean net-cost/claim 2.33  | mean APEX net-cost 0.24 (n=0.04)
+  prestige-done/gm 0.45  bookings-done/gm 3.7  LAST-TRAIN end 98% / STALL 2%
+  turns/plyr 46.4  washes/gm 1.61  restocks/gm 2.42  cancels/gm 3.62
+
+## 6p
+  vendor-VP 8.6 + booking-VP 21.7  -> vendor-share 34% / booking-share 66%
+  apex claims/game 0.07  (per plyr 0.012)  below-floor blocks/gm 0.01
+  free-claims/gm 0.35  (deep>=7icons 0.00 / shallow 0.35 / apex 0.00)
+  mean net-cost/claim 2.19  | mean APEX net-cost 0.32 (n=0.07)
+  prestige-done/gm 0.55  bookings-done/gm 5.1  LAST-TRAIN end 76% / STALL 24%
+  turns/plyr 54.0  washes/gm 2.69  restocks/gm 4.86  cancels/gm 4.80
+
+============================================================================================
+HOARDER (vendor-only) winrate — MUST be < ~10% (tours must dominate) + exploit panel
+============================================================================================
+
+## 3p  (fair share 33%)
+    hoarder        35.2%  (idx 1.06)  <<< MAKE-OR-BREAK  FAIL
+    no_tickets     44.1%  (idx 1.32)
+    marquee        41.0%  (idx 1.23)
+    dodger         36.2%  (idx 1.09)
+    denier         36.2%  (idx 1.09)
+    sniper         36.4%  (idx 1.09)
+    late_battler    2.2%  (idx 0.07)
+
+## 4p  (fair share 25%)
+    hoarder        34.4%  (idx 1.38)  <<< MAKE-OR-BREAK  FAIL
+    no_tickets     38.0%  (idx 1.52)
+    marquee        27.4%  (idx 1.09)
+    dodger         30.0%  (idx 1.20)
+    denier         24.5%  (idx 0.98)
+    sniper         27.6%  (idx 1.10)
+    late_battler    1.2%  (idx 0.05)
+
+## 5p  (fair share 20%)
+    hoarder        26.2%  (idx 1.31)  <<< MAKE-OR-BREAK  FAIL
+    no_tickets     33.0%  (idx 1.65)
+    marquee        24.2%  (idx 1.21)
+    dodger         28.1%  (idx 1.41)
+    denier         19.6%  (idx 0.98)
+    sniper         23.2%  (idx 1.16)
+    late_battler    2.0%  (idx 0.10)
+
+## 6p  (fair share 17%)
+    hoarder        24.4%  (idx 1.46)  <<< MAKE-OR-BREAK  FAIL
+    no_tickets     27.4%  (idx 1.64)
+    marquee        23.2%  (idx 1.40)
+    dodger         19.2%  (idx 1.15)
+    denier         10.5%  (idx 0.63)
+    sniper         18.4%  (idx 1.10)
+    late_battler    1.2%  (idx 0.07)
+
+============================================================================================
+FREE-CLAIM PATH — do DEEP-ENGINE lines reach the discounted/free apex? (engine, marquee)
+============================================================================================
+
+## 3p  engine/marquee in seat0 vs balanced field
+    engine   wr   42%  apex/gm 0.08  free/gm 0.30 (deep 0.00)  mean-apex-net 0.38 (n 0.08)  vendor-share 41%
+    marquee  wr   39%  apex/gm 0.10  free/gm 0.31 (deep 0.00)  mean-apex-net 0.41 (n 0.10)  vendor-share 37%
+    [MIRROR all-engine] apex/gm 0.07  free/gm 0.28 (deep 0.00 / apex 0.00)  mean-apex-net 0.38 (n 0.07)  vendor-share 41%
+    [MIRROR all-marquee] apex/gm 0.11  free/gm 0.28 (deep 0.00 / apex 0.00)  mean-apex-net 0.47 (n 0.11)
+
+## 4p  engine/marquee in seat0 vs balanced field
+    engine   wr   33%  apex/gm 0.07  free/gm 0.27 (deep 0.00)  mean-apex-net 0.31 (n 0.07)  vendor-share 43%
+    marquee  wr   31%  apex/gm 0.06  free/gm 0.27 (deep 0.00)  mean-apex-net 0.29 (n 0.06)  vendor-share 42%
+    [MIRROR all-engine] apex/gm 0.06  free/gm 0.22 (deep 0.00 / apex 0.00)  mean-apex-net 0.29 (n 0.06)  vendor-share 43%
+    [MIRROR all-marquee] apex/gm 0.10  free/gm 0.24 (deep 0.00 / apex 0.00)  mean-apex-net 0.47 (n 0.10)
+
+============================================================================================
+HEALTH READ — each line in seat0 vs balanced field @4p (naive baselines + rule-aware)
+============================================================================================
+    no_tickets      37.5%  (idx 1.50)
+    engine          34.5%  (idx 1.38)
+    balanced        33.5%  (idx 1.34)
+    hoarder         30.8%  (idx 1.23)
+    dodger          30.5%  (idx 1.22)
+    rush            30.5%  (idx 1.22)
+    marquee         30.5%  (idx 1.22)
+    contester       29.8%  (idx 1.19)
+    avoider         28.0%  (idx 1.12)
+    sniper          28.0%  (idx 1.12)
+    concentrate     27.4%  (idx 1.09)
+    human_contest   26.0%  (idx 1.04)
+    human           24.1%  (idx 0.96)
+    collector       22.4%  (idx 0.90)
+    human_spread    21.0%  (idx 0.84)
+    random           0.0%  (idx 0.00)
+
+  fair share @4p = 25%.  Healthy = rule-aware beats naive (random/no_tickets), no single line runs away, hoarder < ~10%.
