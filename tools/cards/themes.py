@@ -255,14 +255,33 @@ BACK_PHASE = {
 }
 
 
-def back_style(theme: dict, phase: str | None) -> dict | None:
-    """Resolve a theme's card-back styling, merged with the day/night/general treatment.
+# Region → the 繁體 glyph + English label a REGION+PHASE market back carries (colour + emblem come from the
+# theme's region suit, so there is a single source of truth for the region hue/shape). The per-region+phase
+# market decks (market_<region>-<phase>) are homogeneous, so their shared back can name the region; the
+# combined market_<phase> PnP deck mixes regions, so it passes region=None and stays phase-only (flagged).
+REGION_BACK = {
+    "north":   {"char": "北", "en": "NORTH"},
+    "central": {"char": "中", "en": "CENTRAL"},
+    "south":   {"char": "南", "en": "SOUTH"},
+    "east":    {"char": "東", "en": "EAST"},
+}
+_REGION_LETTER = {"n": "north", "c": "central", "s": "south", "e": "east"}
+
+
+def back_style(theme: dict, phase: str | None = None, region: str | None = None) -> dict | None:
+    """Resolve a theme's card-back styling, merged with the day/night/general treatment and (optionally) a
+    REGION.
 
     Returns None when the theme carries no `back` key → the caller renders the shared generic back
     (so Beacon and every non-opted-in theme are byte-unchanged). When a `back` key IS present, returns
     a dict of {ground, panel, stamp, wordmark, sub, emblem, char?, label?, glow?} with the phase layered
     on: day = warm sunrise + sun 日, night = neon night-market + moon 夜, general = gold + 通, and a bare
-    phase (or None) = the neutral passport back."""
+    phase (or None) = the neutral passport back.
+
+    `region` (a letter n/c/s/e or a word north/…) layers a REGION channel on top for a homogeneous
+    region+phase market deck: the back then also carries region_color / region_emblem / region_char /
+    region_en so a face-DOWN card sorts to its region+phase market pile (dual-coded colour+emblem+繁體+EN).
+    region=None (a mixed deck) omits those keys → the back stays phase-only."""
     back = theme.get("back")
     if not back:
         return None
@@ -280,6 +299,15 @@ def back_style(theme: dict, phase: str | None) -> dict | None:
         out["motif"] = bp["motif"]         # central silhouette: basket (day) / lantern (night) / steamer
         out["market"] = bp["market"]       # 繁體 · EN market label under the medallion
         out["awning"] = bp.get("awning", pstyle.get("frame"))     # candy-stripe valance colour
+    rk = (region or "").strip().lower()
+    rk = _REGION_LETTER.get(rk, rk)
+    rsuit = theme.get("suits", {}).get(rk)
+    rb = REGION_BACK.get(rk)
+    if rsuit and rb:
+        out["region_color"] = rsuit["color"]      # region hue (single source: the region suit)
+        out["region_emblem"] = rsuit["emblem"]    # region emblem (dual-code the hue by SHAPE)
+        out["region_char"] = rb["char"]           # 北 / 中 / 南 / 東
+        out["region_en"] = rb["en"]               # NORTH / CENTRAL / SOUTH / EAST
     return out
 
 
