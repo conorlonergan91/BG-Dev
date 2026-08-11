@@ -556,25 +556,16 @@ def render_regionmap(theme, spec, phase="day"):
     steel = "#4A5A72"
     booking_col = theme["suits"].get("booking", {}).get("color", "#3A6EA5")
 
-    # PER-REGION vendor footprints (bg-infodesign, per-count scaling CD steer 2026-08-11): the board now
-    # prints the MAX face-up slots any player count uses, read straight from map.json `vendor_slots`
-    # (N/C/S/E per 3-6p). Base slots (present at every count) draw solid; the higher-count EXTRA slots
-    # (South's 2nd @5p, North's 2nd @6p) draw RECESSED with a small pawn+count gate chip ("5+"/"6") so a
-    # 3p/4p table plainly ignores them — no setup-table lookup. The full pool never scales; only these
-    # face-up slots do. SLOW-refill timing lives on the player aid + rulebook, not as per-space clutter.
+    # PER-REGION card row (bg-infodesign, CD steer 2026-08-11): each region draws THREE card-footprints —
+    # a face-down VENDOR (stall) deck + ONE face-up vendor slot + a face-down MARKET (bowl) deck. Exactly
+    # one face-up slot per region on the board; the per-count face-up-slot scaling (South's 2nd @5p, North's
+    # 2nd @6p) is intentionally kept OFF the board and lives in the setup rules / rulebook, along with the
+    # SLOW-refill timing. No START pawns on the board (start = North/Taipei is a setup rule, not an icon).
 
     CARD_R = 0.714                 # 63.5 : 88.9 poker footprint ratio
     VW, VH = 120, 168             # a card-exact vendor / market / face-up footprint at board scale
-    PAWN_R = 24
 
     # ------------------------------------------------------------------ ICON VOCABULARY (all drawn)
-    def _pawn(cx, cy, r, col):
-        head = f'<circle cx="{cx:.1f}" cy="{cy-r*0.5:.1f}" r="{r*0.42:.1f}" fill="{col}"/>'
-        body = (f'<path d="M{cx-r*0.62:.1f} {cy+r*0.95:.1f} '
-                f'C {cx-r*0.62:.1f} {cy+r*0.05:.1f} {cx-r*0.32:.1f} {cy-r*0.05:.1f} {cx:.1f} {cy-r*0.05:.1f} '
-                f'C {cx+r*0.32:.1f} {cy-r*0.05:.1f} {cx+r*0.62:.1f} {cy+r*0.05:.1f} {cx+r*0.62:.1f} {cy+r*0.95:.1f} Z" '
-                f'fill="{col}"/>')
-        return head + body
 
     def _stall(cx, cy, r, col):
         # a market STALL: a scalloped awning over two posts + a counter — the vendor icon
@@ -641,6 +632,24 @@ def render_regionmap(theme, spec, phase="day"):
                 f'stroke="{rcol}" stroke-width="2.5" stroke-dasharray="9 6"/>'
                 + _stall(x + w/2, y + h/2, min(w, h)*0.24, rcol))
 
+    def _market_discard(x, y, w, h, rcol):
+        # the MARKET DISCARD: a face-up, dashed, greyed card footprint (distinct from the SOLID face-down
+        # market deck beside it) badged with a BOWL wrapped in a ↻ CYCLE arrow → 'spent ingredient/event
+        # cards land here and RESHUFFLE when the market deck empties'. The market deck is the ONLY recycling
+        # pile, so it is the only footprint carrying the cycle mark (vendor + Booking decks are finite).
+        cx, cy = x + w/2, y + h/2
+        br = min(w, h) * 0.20
+        Rr = min(w, h) * 0.34
+        aw = max(2.5, Rr*0.16)
+        card = (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="#ffffff" fill-opacity="0.32" '
+                f'stroke="{rcol}" stroke-opacity="0.7" stroke-width="2.5" stroke-dasharray="7 6"/>')
+        cyc = (f'<path d="M {cx+Rr:.1f} {cy:.1f} A {Rr:.1f} {Rr:.1f} 0 1 1 {cx:.1f} {cy-Rr:.1f}" fill="none" '
+               f'stroke="{rcol}" stroke-width="{aw:.1f}" stroke-linecap="round" opacity="0.9"/>'
+               f'<path d="M{cx-7:.1f} {cy-Rr-6:.1f} L{cx:.1f} {cy-Rr:.1f} L{cx-7:.1f} {cy-Rr+7:.1f}" '
+               f'fill="none" stroke="{rcol}" stroke-width="{aw:.1f}" stroke-linecap="round" '
+               f'stroke-linejoin="round" opacity="0.9"/>')
+        return card + cyc + _bowl(cx, cy + br*0.15, br, rcol)
+
     def _die(cx, cy, r, body_col="#ffffff", pip_col=None):
         # the Closing-Time d6 glyph: a rounded square + 3 diagonal pips (same read as render_die's title die).
         # ALL drawn (no ⚄ font glyph → no tofu, legible at board scale).
@@ -650,27 +659,6 @@ def render_regionmap(theme, spec, phase="day"):
         for ox, oy in [(-0.42, -0.42), (0.0, 0.0), (0.42, 0.42)]:
             s += f'<circle cx="{cx+ox*r:.1f}" cy="{cy+oy*r:.1f}" r="{r*0.15:.1f}" fill="{pc}"/>'
         return s
-
-    def _gate_badge(x, y, label, col):
-        # a per-count SLOT-GATE chip pinned to a vendor slot's top-left: a mini pawn (players) + the count
-        # that unlocks the slot (e.g. "5+" / "6"). Dual-coded — pawn SHAPE + numeral, never colour alone.
-        bw, bh = 62, 32
-        bx, by = x - 8, y - 14
-        px, py = bx + 17, by + bh / 2
-        return (f'<rect x="{bx:.1f}" y="{by:.1f}" width="{bw}" height="{bh}" rx="{bh/2:.0f}" '
-                f'fill="{col}" stroke="#ffffff" stroke-width="2.5"/>'
-                f'<circle cx="{px:.1f}" cy="{py-5:.1f}" r="5.5" fill="#ffffff"/>'
-                f'<path d="M{px-8:.1f} {py+10:.1f} q 8 -13 16 0 Z" fill="#ffffff"/>'
-                f'<text x="{bx+bw-9:.1f}" y="{by+bh*0.72:.0f}" font-size="21" fill="#ffffff" '
-                f'text-anchor="end" font-family="{tfont}" font-weight="bold">{esc(label)}</text>')
-
-    def _vendor_space_gated(x, y, w, h, rcol, label):
-        # a per-count EXTRA vendor slot (only in play at higher counts): the same card-exact footprint,
-        # drawn RECESSED (lighter dash + faded stall) so at 3p/4p it reads as 'not used yet' + a gate chip.
-        return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="#ffffff" fill-opacity="0.28" '
-                f'stroke="{rcol}" stroke-opacity="0.6" stroke-width="2.5" stroke-dasharray="4 8"/>'
-                + f'<g opacity="0.45">' + _stall(x + w/2, y + h/2, min(w, h)*0.24, rcol) + '</g>'
-                + _gate_badge(x, y, label, rcol))
 
     # ------------------------------------------------------------------ DEFS + base
     defs = [page_gradient(theme, "pg", ground),
@@ -725,8 +713,6 @@ def render_regionmap(theme, spec, phase="day"):
     centers = {"north": (1140, 560), "central": (520, 862), "east": (1760, 862), "south": (1140, 1164)}
     pwidth = {"north": PW_NS, "south": PW_NS, "central": PW_CE, "east": PW_CE}
     region_char = {"north": "北", "central": "中", "south": "南", "east": "東"}
-    region_letter = {"north": "N", "central": "C", "south": "S", "east": "E"}
-    vendor_slots_tbl = spec.get("vendor_slots", {})
 
     def tl(key):
         cx, cy = centers[key]
@@ -798,53 +784,33 @@ def render_regionmap(theme, spec, phase="day"):
             parts.append(f'<text x="{cx}" y="{ccy+8:.0f}" font-size="24" fill="{tcol}" text-anchor="middle" '
                          f'font-family="{bfont}" font-weight="bold">{esc(sp.get("label",""))}</text>')
 
-        # bottom row: this region's face-up VENDOR slots + the region MARKET deck (single phase).
-        # PER-COUNT SLOT SCALING (data-driven from map.json `vendor_slots`): the physical board PRINTS THE
-        # MAX slots any count uses; base slots are solid, the extra higher-count slots are drawn recessed
-        # with a count-gate chip (South's 2nd slot "5+", North's 2nd slot "6") so a 3p/4p table ignores
-        # them. No setup-table lookup needed; the pool never scales (only these face-up slots do).
-        gap = 16
-        letter = region_letter.get(key, "")
-        base_slots, max_slots, gate_label = 1, 1, {}
-        per = {int(c): int(v.get(letter, 0)) for c, v in vendor_slots_tbl.items()
-               if letter and str(c).isdigit() and isinstance(v, dict) and letter in v}
-        if per:
-            counts_sorted = sorted(per)
-            cmax = counts_sorted[-1]
-            base_slots = max(1, per[counts_sorted[0]])
-            max_slots = max(1, max(per.values()))
-            for i in range(base_slots, max_slots):                 # each EXTRA slot → its unlock count
-                gate = next((c for c in counts_sorted if per[c] > i), cmax)
-                gate_label[i] = f"{gate}" if gate >= cmax else f"{gate}+"
-        n_cells = max_slots + 1
-        block_w = n_cells * VW + (n_cells - 1) * gap
+        # bottom row (icon-only, FOUR card-footprints, left→right): the region's face-down VENDOR deck
+        # (stall-badged — the stall deck that FEEDS the slot) → its single face-up VENDOR slot (dashed
+        # footprint) → the face-down MARKET / ingredient deck (bowl-badged) → the MARKET DISCARD (dashed
+        # face-up + bowl + ↻ cycle → the ONLY recycling pile: reshuffle when the market deck empties; the
+        # vendor + Booking decks are finite, no discard). Per region + phase; each single-phase face shows
+        # one discard beside its market deck. ONE face-up vendor slot per region — per-count face-up-slot
+        # scaling + SLOW-refill timing live in the setup rules / rulebook (CD steer). No START pawns.
+        # The discard is drawn a touch SMALLER than a full deck so the 4-cell row stays clean in the
+        # 560-wide C/E panels (and reads as a discard, not another deck).
+        gap = 12
+        DW, DH = 88, 124                                     # discard footprint (smaller than a full deck)
+        block_w = 3*VW + DW + 3*gap
         x_start = X + PWc - 26 - block_w
         row_y = Y + PH - VH - 18
-        for i in range(max_slots):
-            sx = x_start + i*(VW+gap)
-            if i < base_slots:
-                parts.append(_vendor_space(sx, row_y, VW, VH, rcol))
-            else:
-                parts.append(_vendor_space_gated(sx, row_y, VW, VH, rcol, gate_label.get(i, "")))
-        parts.append(_deck(x_start + max_slots*(VW+gap), row_y, VW, VH, rcol, _bowl))
-
-        # North is the shared START (Taipei) — dashed PAWN spaces with the pawn glyph (no text)
-        if r.get("start"):
-            for i in range(3):
-                px = X + 60 + i*58
-                py = Y + PH - VH/2 - 6
-                parts.append(f'<circle cx="{px}" cy="{py:.0f}" r="{PAWN_R}" fill="#ffffff" opacity="0.5" '
-                             f'stroke="{rcol}" stroke-width="2" stroke-dasharray="6 5"/>')
-                parts.append(_pawn(px, py-2, PAWN_R*0.9, rcol))
+        parts.append(_deck(x_start, row_y, VW, VH, rcol, _stall))                    # face-down VENDOR deck
+        parts.append(_vendor_space(x_start + (VW+gap), row_y, VW, VH, rcol))          # face-up vendor SLOT
+        parts.append(_deck(x_start + 2*(VW+gap), row_y, VW, VH, rcol, _bowl))         # face-down MARKET deck
+        parts.append(_market_discard(x_start + 3*(VW+gap), row_y + (VH-DH)/2, DW, DH, rcol))  # MARKET DISCARD
 
     # ------------------------------------------------------------------ CLOSING-TIME COUNTER (bottom-right)
-    # DATA-DRIVEN from map.json `vendor_clock` (CD steer 2026-08-11). The DAY face shows a numbered round
-    # track (1..maxL) with the per-count Closing-Time-die ROLL point flagged (advance each round → at your
-    # flag roll the die → close the rolled region's oldest face-up stall → reset to 1); L is read from
-    # `track_length` = {3:2, 4-6:3}. The NIGHT face rolls the die EVERY round (`track_length_night` = 1 at
-    # every count) so it needs no track — it shows a matching single 每回合 EVERY-ROUND die cue in the SAME
-    # spot, keeping the two faces consistent. Icon-forward: a drawn die glyph + numerals + minimal 繁體
-    # (關門 = closing). Sits in the free bottom-right pocket (below the East panel, right of the South panel).
+    # DATA-DRIVEN from map.json `vendor_clock`, ICON+NUMBER ONLY — no prose (CD steer 2026-08-11: "the
+    # rulebook is our friend for text"). The DAY face shows a numbered round track (1..maxL) with the
+    # per-count Closing-Time-die ROLL point flagged (advance each round → at your flag roll the die → reset
+    # to 1); L is read from `track_length` = {3:2, 4-6:3}, the flag shows the die + the count(s) (e.g. 3人).
+    # The NIGHT face rolls the die EVERY round (`track_length_night` = 1 at every count) so it needs no
+    # track — just a die + cycle arrow (reads "every round" on its own), in the SAME spot for consistency.
+    # All glyphs drawn (no tofu); the only 繁體 is 人 in the count flags (a counter notation, not prose).
     vc = spec.get("vendor_clock", {})
 
     def _fmt_counts(cs):
@@ -857,36 +823,24 @@ def render_regionmap(theme, spec, phase="day"):
     line = frame
     parts.append(f'<rect x="{px0}" y="{py0}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" '
                  f'fill-opacity="0.20" stroke="{line}" stroke-opacity="0.55" stroke-width="2.5"/>')
-    # header: die glyph + 關門 (closing) + a terse English caption
-    dhx, dhy = px0 + 46, py0 + 44
-    parts.append(_die(dhx, dhy, 24, "#ffffff", ink))
-    parts.append(f'<text x="{dhx+44}" y="{py0+40}" font-size="40" fill="{ink}" '
-                 f'font-family="{tfont}" font-weight="bold">關門</text>')
-    parts.append(f'<text x="{dhx+44}" y="{py0+66}" font-size="19" fill="{muted}" '
-                 f'font-family="{bfont}" letter-spacing="2">CLOSING TIME</text>')
 
     tl_day = {int(c): int(v) for c, v in vc.get("track_length", {}).items()}
-    tl_night = {int(c): int(v) for c, v in vc.get("track_length_night", {}).items()}
     if is_night:
-        # NIGHT: rolls EVERY round — no track. A single die + 每回合 EVERY ROUND cue with a cycle arrow.
-        cx, cy = px0 + 138, py0 + 168
-        Rr = 58
+        # NIGHT: rolls EVERY round — no track, no words. A single die + a cycle arrow (centred in the panel).
+        cx, cy = px0 + pw/2, py0 + ph/2
+        Rr = 74
         parts.append(f'<path d="M {cx+Rr} {cy} A {Rr} {Rr} 0 1 1 {cx} {cy-Rr}" fill="none" '
-                     f'stroke="{line}" stroke-width="6" stroke-linecap="round" opacity="0.85"/>')
-        parts.append(f'<path d="M{cx-14} {cy-Rr-11} L{cx} {cy-Rr} L{cx-14} {cy-Rr+11}" fill="none" '
-                     f'stroke="{line}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>')
-        parts.append(_die(cx, cy, 42, "#ffffff", ink))
-        parts.append(f'<text x="{cx+140}" y="{cy-4}" font-size="54" fill="{ink}" '
-                     f'font-family="{tfont}" font-weight="bold">每回合</text>')
-        parts.append(f'<text x="{cx+140}" y="{cy+42}" font-size="26" fill="{muted}" '
-                     f'font-family="{tfont}" font-weight="bold" letter-spacing="3">EVERY ROUND</text>')
+                     f'stroke="{line}" stroke-width="8" stroke-linecap="round" opacity="0.9"/>')
+        parts.append(f'<path d="M{cx-18} {cy-Rr-14} L{cx} {cy-Rr} L{cx-18} {cy-Rr+14}" fill="none" '
+                     f'stroke="{line}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>')
+        parts.append(_die(cx, cy, 52, "#ffffff", ink))
     else:
         # DAY: numbered round track 1..maxL, each per-count roll node flagged (roll AFTER round L completes).
         maxL = max(tl_day.values()) if tl_day else 1
         roll_at = {}
         for c, L in tl_day.items():
             roll_at.setdefault(L, []).append(c)
-        node_y = py0 + 172
+        node_y = py0 + 138
         n0x = px0 + 120
         step = 150
         # advance arrows between nodes ("→ each round")

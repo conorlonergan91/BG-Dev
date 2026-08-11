@@ -130,7 +130,7 @@ trophies** (§5). Most points is **Top Agent** (§9).
 
 ## 2. Setup
 
-> 🖼 **[FIG-SETUP|build/map-day.png]** — the shared board: four regions in a ring, each with its vendor slots and market deck.
+> 🖼 **[FIG-SETUP|build/map-day.png]** — the shared board: four regions in a ring, each with its vendor deck, stall slot, market deck, and discard.
 
 Everything sits on **one shared board, readable from any seat. Everyone starts in Taipei (North).**
 
