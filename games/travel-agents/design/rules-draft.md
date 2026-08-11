@@ -1,4 +1,4 @@
-# Travel Agents: Taiwan — Rules
+# Travel Agents: Taiwan Food Tour — Rules
 
 <!-- Canon: design/followers-meeples-redesign.md (V7-M) + components/*.csv. -->
 
@@ -18,8 +18,8 @@ Elbows out on your rivals. Never on Taiwan. Now floor it.
 
 Rival travel agencies chase the same food stalls through one eating day. Ride between four regions, gather
 ingredients, and pile **Followers** on the stalls you want: win a stall by drawing the **biggest crowd**
-and it joins your tour, making the next one cheaper. Your only points are the **Bookings** you run —
-complete the most before the **last train** to be **Top Agent**.
+and it joins your tour, making the next one cheaper. Score the **tours** you complete **and** the
+**vendors** you win before the **last train** to be **Top Agent**.
 
 > These are real Taiwanese dishes and night markets — celebrated with care. Eat them with a grin.
 
@@ -122,9 +122,11 @@ At this point people simply assume Taiwan rearranges itself to make life easier 
 
 ## 1. What you're going for
 
-Your score is your **Bookings, and nothing else.** A Booking is a little tour you promise to run — *three
-breakfast stalls*, *a ★ marquee name*. Complete it to score its value; leave it unfinished and it costs
-you. Vendors and Followers never score. Most Booking points at the last train is **Top Agent** (§9).
+You score **two ways**, tallied once at the last train: the **full value of every tour (Booking) you
+complete**, **plus** the **printed points on every vendor you win**. Tours pay far more — your main path;
+won vendors are a steady bonus. A Booking is a little tour you promise to run — *three breakfast stalls*,
+*a ★ marquee name*; complete it to score, or leave it unfinished for a flat **−1**. Followers never score.
+Most points is **Top Agent** (§9).
 
 ## 2. Setup
 
@@ -176,22 +178,25 @@ Take **ONE** action. Then, if your Larder holds more than **7** ingredients, dis
 
 **Followers** are the hype you pile on a stall — never in hand, always in full view. Each is in one of
 three places: your **supply** (un-rallied), **your board** (rallied), or **on a stall** (committed). You
-own a fixed pool in your colour — **6**, or **8** for the Influencer 網紅 — and can never commit more than
-you own. They flow supply → board (**grow**, on Travel) → stall (**Promote**), then **home to your board**
-on a win or back to your **own supply** on a loss (§5).
+own a fixed pool in your colour and can never commit more than you own. They flow supply → board
+(**grow**, on Travel) → stall (**Promote**), then resolve on a win or loss (§5).
 
 ## 5. Bribing a vendor — the biggest crowd wins
 
-A face-up vendor goes to whoever draws the **biggest crowd** for it. To Bribe a vendor you stand with:
+A face-up vendor goes to whoever draws the **biggest crowd** for it — provided that crowd is big enough to
+fill the stall. To Bribe a vendor you stand with:
 
-1. hold **strictly more of your followers on it than any single rival** — an outright plurality (a *tie*
-   claims nothing; the Big Boss 老大 alone wins by matching);
-2. **pay its ingredients**, minus your region discounts (the crowd decides only *who* pays — there is
+1. **draw the biggest crowd** — hold **strictly more of your followers on it than any single rival**, an
+   outright plurality (a *tie* claims nothing; the Big Boss 老大 alone wins by matching);
+2. **meet its crowd-floor** — have at least the stall's printed **minimum crowd** of your own followers on
+   it (**1** at an everyday stall, **2** at a bigger night stall, **3** at an apex): even unopposed, a thin
+   crowd can't claim it;
+3. **pay its ingredients**, minus your region discounts (the crowd decides only *who* pays — there is
    **no follower cost**).
 
 Take it onto your tour and complete any **Booking** it satisfies (§6). Your followers come **home to your
-board**; each loser's scatter to their **own supply** (the crowd drifts to the rival's stall, never onto
-it) — the whole cost of losing. **Leave the slot empty** for now.
+board**; each loser's scatter to their **own supply** — the whole cost of losing. **Leave the slot empty**
+for now.
 
 **A tie just blocks.** Level for the lead (no Big Boss present)? None may claim; the crowds **ride** —
 Promote again to break it, or walk away and leave them.
@@ -200,9 +205,9 @@ Promote again to break it, or walk away and leave them.
 no one queues at eventually **sells out** (§8). A stall may be the region's only one — out-commit a rival,
 or Travel on and risk it being gone.
 
-**A won vendor is pure engine.** Most show a **region icon**: each icon you hold makes
-that region's ingredients **1 cheaper** to Bribe — your ramp. Drinks and ★ apex stalls carry no icon.
-Night stalls cost more and often want two regions' ingredients.
+**A won vendor works twice.** It scores its **printed points** (§9) — *and* most show a
+**region icon**: each icon you hold makes that region's ingredients **1 cheaper** to Bribe, your ramp.
+Drinks and ★ apex stalls carry no icon. Night stalls cost more and often want two regions' ingredients.
 
 > **Trending 爆紅.** An event can drop a **Trending** marker on a stall; win it and your crowd **grows +1**
 > — it went viral. The printed **★ apex** stalls are a separate, permanent thing — a region's top table.
@@ -226,13 +231,12 @@ the card:
 - **Pot-Luck (隨緣開團)** — decline the whole row and draw the **top of the current Booking deck blind**
   (DAY deck by day, NIGHT at night). You **keep it** unseen; the row is **not** refilled.
 
-One Book = one tour, one way — never both. Use Pot-Luck when nothing in the row suits you.
+Use Pot-Luck when nothing in the row suits you.
 
 - **Complete it (成團).** The moment your won vendors satisfy a held Booking, flip it to your **COMPLETED
   成團** pile — it scores its full value, nudges your **Tours-Completed** meter, and frees a hand slot.
 - **Cancel it (取消).** At your 3-Booking limit and want a new one — or holding a Pot-Luck tour that
-  doesn't fit? **Cancel** a held Booking into your **CANCELLED 取消** pile: a flat **−1** at scoring,
-  whatever the tour's value.
+  doesn't fit? **Cancel** a held Booking into your **CANCELLED 取消** pile: a flat **−1** at scoring.
 
 ## 7. Markets & events
 
@@ -278,18 +282,19 @@ and the **market decks** (ingredients & events) reshuffle and keep coming — on
 > followers, then earliest committer** (paying if able); losers scatter to their supply. Then followers on
 > **unclaimed** stalls return **home to their boards** — the stall simply closed, unwon. **At DUSK**, any
 > unfinished **☀ day** tour you hold is **cancelled** (flat **−1**); your any-time and night tours carry on.
-> **At the last train**, every tour still unfinished in hand is cancelled the same way (flat **−1** each).
+> **At the last train**, every tour still unfinished in hand is cancelled the same way.
 
 ## 9. Scoring
 
-Total each player once:
+Total each player once — two tracks added together:
 
-- **+ the full value** of every Booking in your **COMPLETED 成團** pile — the tours that ran.
-- **−1** for every Booking in your **CANCELLED 取消** pile (a flat one point each, whatever its value); any
-  Booking still unfinished in hand at the last train is cancelled too.
+- **+ the full value** of every Booking in your **COMPLETED 成團** pile.
+- **+ the printed points** on every **vendor you won**.
+- **−1** for every Booking in your **CANCELLED 取消** pile (flat, whatever its value); any Booking still
+  unfinished in hand at the last train is cancelled too.
 
-Vendors and Followers score nothing. Most points is **Top Agent**; ties break to most vendors, then most
-regions covered, then fewest cancelled Bookings.
+Followers score nothing. Most points is **Top Agent**; ties break to most vendors, then most regions
+covered, then fewest cancelled Bookings.
 
 ## The six agents
 
@@ -313,5 +318,3 @@ short:
   leave the game. The **vendor** and **Booking** decks never reshuffle: the vendors are the clock and must
   run out (§8); an emptied Booking deck just stops refilling its row (you've seen all the tours) — that
   ends nothing.
-- **Nothing in the Booking row suits me.** Book **Pot-Luck** (§6): decline the row, draw the current deck's
-  top tour **blind**, keep it — you're never stuck with no tour worth booking.
