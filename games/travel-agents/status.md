@@ -3,14 +3,15 @@
 > **The live dashboard.** Owned by `bg-producer`. Always reflects the CURRENT version — readable in under a
 > minute. If you want the *why* behind a decision, see `decision-log.md`; the *history* lives in `archive/`;
 > the CD's own steers live in `director-brief.md`. This doc answers only: **where are we right now?**
-> _Last updated: 2026-08-11 · by bg-producer_
+> _Last updated: 2026-08-11 · by bg-archivist (vendor-economy reshape + die-cadence currency pass)_
 
 ## Version
 - **Current:** `V7-M` — *the 3–6-player Taiwan street-food area-majority race: pile follower meeples on
   vendors to win the biggest crowd, race a vendor-depletion clock (+ a Closing-Time die) through one eating
   day, and score on two tracks — completed tours + won vendors.*
-- **Shipped / frozen builds:** V7-M merged to `main` in **PR #13** (2026-08-10). No `builds/build-N/`
-  snapshot cut yet — the merge + `exports/` are the known-good state.
+- **Shipped / frozen builds:** V7-M merged to `main` in **PR #13** (2026-08-10). The **2026-08-11
+  vendor-economy reshape + per-phase die fix** are landed on-branch and re-sim-validated (N=400); the
+  presentation rebuild is in flight, pending the next merge. No `builds/build-N/` snapshot cut yet.
 - **Theme (pivot COMPLETE 2026-08-11):** the secret-agent wrapper is **scrapped** → **"Wacky Races,
   Taiwan-food edition"** (over-the-top, battle-hungry rival agents), title **Travel Agents: Taiwan Food
   Tour** applied everywhere (docs, rulebook, `make.sh`, art briefs). Felt identity, voice, names, rulebook,
@@ -18,12 +19,21 @@
   **Mechanics unchanged** — presentation/prose only.
 
 ## Pipeline stage
-**Prototype-ready.** Design + development are CLOSED for V7-M at a clean, sim-validated state (N=400). The
-prototype kit is current in `exports/`. The next real work is a **human playtest** (CD testing mainly at
-**3–4 players**) — that table is the next arbiter, not more sim.
+**Prototype-ready.** Design + development are CLOSED for V7-M at a clean, sim-validated state (N=400) —
+including the day-engine / night-payoff **vendor-economy reshape** and the **per-phase Closing-Time die**
+fix. The prototype kit is being rebuilt to the reshaped 30-vendor deck. The next real work is a **blind
+human playtest at 4p + 6p** — that table is the next arbiter, not more sim.
 
 ## Done · In-flight · Next
 - **✅ Done (this version):**
+  - **Vendor-economy reshape + die-cadence fix (2026-08-11) — CD-signed, sim-validated N=400.** The deck was
+    reshaped into a **DAY engine / NIGHT payoff**: 18 cheap low-VP day **engine-seeds** (build the region-icon
+    discount engine) → 12 scarce, expensive, **no-icon** night **trophies** (the payoff the built engine
+    affords). Stripping night icons killed the old mid-vendor hoarder double-dip. The Closing-Time die moved to
+    a **per-phase cadence** (day after L rounds L=2/3/3/3; night every round). Re-sim confirms **an engine
+    forms, tours lead** (booking-share 67–75% / vendor-share 25–33%), **hoarder dead** (sub-fair 12–27% every
+    count), and the 4–5p **stall killed** (3/10/7/3%). Vendors 25→30. Authority: `components/vendors.csv`,
+    `components/map.json`, `playtests/sims/sim-reshape-N400-results.txt` + `sweep-two-dice-N400-confirm.txt`.
   - **Systems design** — area-majority follower-meeple fight, vendor-depletion Day→Night clock + Closing-Time
     die, two-track VP, agnostic tours + Pot-Luck, the 6-type mono ingredient taxonomy, the six V7-M character
     kits. Spine LOCKED.
@@ -43,25 +53,21 @@ prototype kit is current in `exports/`. The next real work is a **human playtest
     **Sharing Tables 併桌**, funnier on-voice titles; tour flavour punched up + one hanzi fix. Counts held
     flat (map.json / pacing stable, no new keywords); **bg-critic: ship-to-table, no blockers, warmth rail
     holds**; guardians green; market + booking deck sheets regenerated.
-- **⏳ In-flight:** none — the theme-currency sweep **and** the events/tours pass are complete and merged;
-  no studio work is blocking.
-- **➡️ Next (recommended): a 3–4-player human table** — bg-critic's steer, since the open event questions
-  are *felt* (does forced-placement read as a tax to those behind? is the SINK card a shrug? the warmer
-  hazard:boon ratio) and the sim can't answer them. The CD also generates the remaining art (map + vendor
-  cards) from `art/ta-art-context.zip`.
-- **▶ Vendor economy — IN RESHAPE (day-engine / night-payoff), CD-approved 2026-08-11.** The Splendor-style
-  steep re-price (checkpoint `3486f5e`) FAILED the balance sim (N=400, log + encoder in `playtests/sims/` +
-  `sim/travel_agents.py`, commits `418e163`/`0df4c0d`): players make only **~2–3 vendor claims/game so no
-  engine forms** — the ★ apex is dead content (~0.05 claims/game), the deep-engine-free-claim arc is
-  unreachable, and the winning line is objectives-blind hoarding of the **tier-2 mid vendors (vp 5–6)** →
-  vendor-VP share breaches 41–42% at 4–5p, hoarder wins 24–35%. Root cause: TA's claim velocity ≠ Splendor's.
-  **New direction (bg-design in progress):** reshape the DECK — **DAY** = more, cheaper, VARIED low-VP engine
-  seeds (so an engine actually forms) → build toward Bookings; **NIGHT** = scarce + expensive high-VP trophies
-  winnable only with a built engine. Re-tune the vendor-depletion clock for the new deck sizes (may fix the 6p
-  stall). **Rails: keep variety + flow (cheap ≠ clones); the sim is a guide, the table is the gauge.**
-- **⏳ Held until the reshape's numbers are final:** vendor card **flavour** reconcile + deck-sheet rebuild
-  (`bg-copywriter`/`bg-continuity`), then a **CD-gated re-sim** (does an engine form? apex reachable-but-earned?
-  hoarder dead? tours dominate?), then the whole line (events/tours + economy) is ready to PR+merge to main.
+- **⏳ In-flight: the presentation rebuild.** Vendor **flavour** reconcile + deck-sheet / Screentop /
+  print-and-play regen to the reshaped **30-vendor** deck (`bg-copywriter` / `bg-continuity` /
+  `bg-prototyper`), so `exports/` matches the new day-engine / night-payoff economy. Once it lands, the whole
+  line (events/tours + economy reshape + die fix) is ready to PR + merge to `main`.
+- **➡️ Next (recommended): a blind human table at 4p + 6p.** The reshape + die fix are sim-clean, so the
+  table is the arbiter. **#1 watch: does the NIGHT still *feel* like a payoff phase** — the one accepted sim
+  trade-off is that the per-round night die can close trophies faster than players claim them, so a couple
+  fewer trophies get bought. Also felt-only / unmeasurable in sim: is the area-majority fight fun/tense, do
+  the six kits band, and the open event questions (forced-placement-as-tax, the SINK shrug, hazard:boon
+  ratio). The CD also generates the remaining art (map + vendor cards) from `art/ta-art-context.zip`.
+- **✅ Vendor economy + die cadence — LANDED (2026-08-11).** The earlier Splendor-style steep re-price
+  (checkpoint `3486f5e`) FAILED the sim (no engine formed, dead apex, tier-2 hoarding breaching 41–42%
+  vendor-share). Fixed by **reshaping the DECK** (day-engine / night-payoff, night icons stripped) + a
+  **per-phase die cadence**, not by re-pricing — CD-signed, re-sim-validated N=400 (see the Done bullet
+  above + `decision-log.md`). Presentation rebuild is the remaining in-flight work.
 - **⏭ Deferred design follow-ups (surfaced by the sweep — not blocking; a later design pass):** migrate
   `design-doc.md` §15/§17 (event framework + clock) into `game-bible.md`, then archive it + fix its stale
   header (→ `bg-design`); reconcile `art/rulebook-figures.md`'s stale 2p / Buzz / Reach mechanics to V7-M
@@ -82,12 +88,16 @@ not a decision.
 | Complexity (`check_complexity.py`) | ✅ **in budget** — rulebook_words **2277 / 2280** (trimmed by bg-elegance after the two-track + crowd-floor teaching landed); keywords 9/15; component types 8/8 (mono ship config) |
 | Accessibility (`check_access.py`) | ✅ **pass** on the shipping mono config; MARGINAL flag exists **only** on the PARKED 8-type split (Rice/Noodles share the indigo hue) — not in play |
 | Cost (`check_cost.py`) | **n/a** — Screentop-first prototype; physical COGS deferred until a physical run |
-| Simulation | ✅ **last read balanced** (N=400): hoarder sub-fair all counts, tours dominate, contested_frac ~24–27% at multiplayer, paced (die L2@3–5p / L3@6p) |
+| Simulation | ✅ **last read balanced** (N=400, post-reshape): engine forms, tours lead (booking-share 67–75% / vendor-share 25–33%), hoarder dead (sub-fair 12–27% all counts), 4–5p stall killed (3/10/7/3%); paced by the per-phase die (day L2@3p / L3@4–6p, night every round) |
 
 ## Risks · watch-items
 - ⚠️ **The human playtest is the real arbiter — sim ≠ table.** The make-or-break question (is the
   area-majority fight *fun/tense*, not degenerate?) and whether the six kits band with no crusher are
-  *unmeasurable* in sim. 3–4p is the focus; 5–6p downtime is the high-count watch.
+  *unmeasurable* in sim. **4p + 6p is the focus** (6p is the downtime watch).
+- ⚠️ **Does the NIGHT still feel like a payoff phase? (the reshape's one accepted trade-off).** The
+  per-round night die can close trophies faster than players claim them → a couple fewer trophies bought.
+  Sim-clean, but whether the night reads as a *satisfying payoff* (not a rushed scramble) is table-only — the
+  #1 thing to watch at the blind table.
 - ⚠️ **Two consultant-gated content items — must clear a paid Taiwanese cultural + language consultant
   before any physical/public release:** (1) the character **The Big Boss (老大)** affectionate-fixer framing
   (warm, never a triad/gang caricature), and (2) the **2 Indigenous East-region dishes** (E01 竹筒飯,
@@ -99,7 +109,8 @@ not a decision.
   follow-ups** listed under *Next* above.
 
 ## Next real step
-**The Creative Director's call:** generate the remaining art (map + vendor cards) in ChatGPT from
-`art/ta-art-context.zip` + the art prompts, then run a **3–4-player human playtest** to answer RISK #1 (is
-the fight fun?) and RISK #2 (do the six kits band, is the Old Councillor rework balanced?). No studio work is
-blocking it.
+**The Creative Director's call:** finish the presentation rebuild to the reshaped 30-vendor deck (deck
+sheets + rulebook flavour), generate the remaining art (map + vendor cards) from `art/ta-art-context.zip`,
+then run a **blind 4p + 6p human playtest** to answer RISK #1 (is the fight fun?), RISK #2 (do the six kits
+band, is the Old Councillor rework balanced?), and the reshape's one accepted trade-off (**does the night
+still feel like a payoff phase?**).
