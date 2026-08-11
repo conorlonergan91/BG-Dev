@@ -6,18 +6,6 @@
 > **Status:** V7-M development CLOSED at a clean, sim-validated state (N=400); the next arbiter is a human
 > playtest (CD testing mainly at 3–4 players). Full pre-V7 design stratigraphy (v6.2 → v6.3 → v6.3.1 → V7)
 > is preserved in `archive/game-bible-history.md`; the pre-V7 decision entries in `archive/decision-log-pre-v7.md`.
->
-> **⚠ Currency flags (for `bg-design` / `bg-rulebook` / `bg-continuity`, not resolved here):**
-> - **Scoring:** this bible + the CD brief + the sim (N=400) + `components/vendors.csv` (`vp` column) +
->   `followers-meeples-redesign.md` §14 are **two-track VP** (vendors score `vp` 1–6 **plus** completed
->   tours). But `design/rules-draft.md` §1/§9 and `names.md` §3 still read **"tickets-only / vendors never
->   score,"** and `names.md` §3 says cancel = **−½ value** where the current rule is **flat −1**. Stale
->   rulebook/continuity prose → reconcile to two-track + flat −1.
-> - **min-followers floor:** vendors carry a `min_followers` crowd-floor (claim requirement); `rules-draft.md`
->   §5 teaches only the biggest-crowd plurality and does not yet state the floor. → `bg-design`/`bg-rulebook`.
-> - **Character kits:** `components/characters.csv` is canon for the six V7-M kits; `names.md` §1 and
->   `v7-plan.md` still describe the Old Councillor / Big Eater / Influencer / Big Boss by their earlier
->   (pre-V7-M) shapes. → `bg-continuity`.
 
 ## One-liner
 <!-- The hook a stranger would repeat. -->

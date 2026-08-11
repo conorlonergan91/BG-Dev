@@ -14,7 +14,7 @@
 > print — this table does not discharge that). Indigenous items (E01 竹筒飯, E04 石板烤肉) are consultant-
 > gated even for mock-ups.
 >
-> Status: **V7-M (multiplayer 3–6)** · Last swept 2026-08-10 (`bg-continuity`: retitled **Travel Agents: Taiwan Food Tour**; reconciled §3 to `game-bible.md` — flat −1 cancel, two-track VP, vendor-depletion + Closing-Time-die clock; C5 name **老大 The Big Boss**).
+> Status: **V7-M (multiplayer 3–6)** · Last swept 2026-08-10 (`bg-continuity`: reconciled §1 character kits + §3 dial row to `components/characters.csv` canon — C1 Old Favours, C3 her/return-1, C4 deep pool of 8, C6 Travel-cost baseline; logged the retired spy-era framing + `tickets-only` + the retired kit shapes in §4. Earlier: retitled **Travel Agents: Taiwan Food Tour**; §3 flat −1 cancel + two-track VP; C5 name **老大 The Big Boss**).
 > Supersedes the roster table in `v7-plan.md` as the canonical name reference.
 
 ---
@@ -25,12 +25,12 @@ Always refer to a character by the **English name** in prose. Never use the 繁�
 
 | # | English name (USE THIS) | 繁體 | Tâi-lô | One-line kit (see `characters.csv` / `rules-draft.md` for the exact rule) |
 |---|---|---|---|---|
-| C1 | **The Old Councillor** | 里長伯 | Lí-tiúⁿ-peh | Pick one **home region**: Bribing there costs 1 less; anywhere else the away-tax adds +2. |
-| C2 | **The Homebody** | 媽寶 | Ma-pó | Sole on-the-move sourcer — on a **Travel**, draw 2 of the region left and keep both. Flaw-free. |
-| C3 | **The Big Eater** | 大胃王 | Tuā-uī-ông | On a **Visit**, keep all 3 (may grab a 4th). Flaw: hazards fire **twice** on his Visit. |
-| C4 | **The Influencer** | 網紅 | Bāng-âng | Followers-max **dial starts at 4** (floors at 4). Flaw: takes the **last** seat. |
-| C5 | **The Big Boss** | 老大 | Lāu-tuā ¹ | **Wins ties** — needs only to *match* the biggest crowd. Flaw-free. |
-| C6 | **The Globetrotter** | 阿嬤 | A-má | **Travel reaches any region** in one action; immune to Scheduled Maintenance. Flaw-free. |
+| C1 | **The Old Councillor** | 里長伯 | Lí-tiúⁿ-peh | *Old Favours (home-gated):* name one **home region** at setup; while home, start each turn drawing **1** ingredient from any region's market (no action); away, the engine is dark. Flaw-free. |
+| C2 | **The Homebody** | 媽寶 | Ma-pó | Sole Travel-sourcer — on a **Travel**, draw the top **2** of the region you LEFT and keep both (event whiffs). Flaw-free. |
+| C3 | **The Big Eater** | 大胃王 | Tuā-uī-ông | *Bottomless:* on a **Visit**, keep all **3** (may Greedy-Grab a 4th → return 1 follower to supply). Flaw: hazards fire **twice** on **her** Visit. |
+| C4 | **The Influencer** | 網紅 | Bāng-âng | *Going Viral:* owns **8** follower meeples (the field owns 6) — a deeper crowd; her dial starts at **2** like everyone. Flaw: takes the **last** seat. |
+| C5 | **The Big Boss** | 老大 | Lāu-tuā ¹ | *Margin dial N=1:* wins a contested stall unless a rival exceeds his committed followers by N or more (N=1 → he **wins ties**). Flaw-free. |
+| C6 | **The Globetrotter** | 阿嬤 | A-má | *Elder Pass:* **Travel reaches any region** in one action; immune to Scheduled Maintenance; each Travel-anywhere costs **1** follower to supply. Flaw-free. |
 
 ¹ **老大 Tâi-lô = *Lāu-tuā*** (chosen for roster consistency — the whole cast is Tâi-lô). The CD wrote it as
 Mandarin pinyin **"Lao Ta"**; recorded here as a variant for the **paid consultant to confirm** the correct
@@ -79,7 +79,7 @@ The authoritative player term set. Canonical spellings and forms; use these ever
 | Term | 繁體 | What it is |
 |---|---|---|
 | **Followers** | 粉 | The committed, public, contested hype you pile ON a vendor. A **Promote** places **2 Followers**; total committed ≤ your dial. *(renamed from Buzz)* |
-| **Followers-max (the dial)** | 盤 | Your live per-player ceiling on committed Followers, shown by a **dial**. Start **2** (the Influencer 網紅 starts **4**); raised by Travel + events; the lost-war sink drops it. **Never scores.** *(renamed from Reach)* |
+| **Followers-max (the dial)** | 盤 | Your live per-player ceiling on committed Followers, shown by a **dial**. Everyone starts at **2** (the Influencer 網紅's edge is a deeper *pool* — 8 meeples to the field's 6 — not a higher dial); raised by Travel + events; the lost-war sink drops it. **Never scores.** *(renamed from Reach)* |
 | **Promote** | — | The action that places 2 Followers on vendor(s) you stand with. |
 | **Bribe** | — | The action to win a face-up vendor: hold the **biggest crowd** (outright Followers majority) + pay its ingredients − region discounts. |
 | **Bookings** | 開團 *kāi-tuán* | The tour cards — the **main scoring path** (**two-track VP**: complete a tour → score its **full value 3–11**; PLUS each won vendor scores its printed **`vp` 1–6** — see `game-bible.md` §"Win condition & scoring" for detail). Hand-limit **3**, cancel-to-claim. **The Booking decks are NOT the clock** (the clock is vendor depletion + the Closing-Time die — see below). *(renamed from Tour Tickets / missions)* |
@@ -130,28 +130,20 @@ CURRENT form (§3), or flag it if resolving it is a mechanics/value question.
 | **Code Red** (end-trigger) | the plain last-train close | dropped. |
 | **"Bookings" as an old score/VP track** *(v6.3 sense)* | *(that sense retired)* | ⚠ Note: **"Bookings" is REUSED in V7** as the tour-card name (開團). Same word, different referent — the V7 sense is current. |
 | **The Big Brother / 大哥 / Tuā-ko** (C5 name forms) | **The Big Boss / 老大 / Lāu-tuā** | CD rename 2026-08-10. **id C5 + all mechanics unchanged.** Dated records (v6.* drafts, `design-doc.md`, changelog/decision-log history, the sim harness) keep the old forms as a point-in-time record — **map them to the new forms; do not churn the dated docs.** |
+| **The secret-agent / covert-op framing** — *Operation Beef Noodle · dossier · mission · assignment · head-office handler · trench coat · earpiece · "covert"* | the **Travel Agents: Taiwan Food Tour** frame — rival *travel agents* in a Wacky-Races dash; **Bookings** (開團) for the tour cards | **Whole framing SCRAPPED (CD, 2026).** The game is warm-toward-Taiwan, elbows-out on rivals only — no spy/covert register anywhere. **⚠ Live remnants still sit in `art/character-boards.md`, `art/character-art.md`, `art/rulebook-figures.md`, `design/events-rework.md`, `playtests/sim-notes.md` → route to `bg-copywriter`/`bg-art-director`/`bg-theme`.** Dated `archive/*` + exploration drafts keep them as history. |
+| **tickets-only scoring** (Σ Booking value − Σ floor(v/2) cancelled) | **two-track VP** — vendors score `vp` 1–6 **plus** completed tours 3–11; **cancelled = flat −1** | Sim-validated N=400 (`game-bible.md` §"Win condition & scoring"). The old floor(v/2) / −½ cancel is retired. |
+| **home −1 discount / +2 away-tax** (C1 Old Councillor kit) | **Old Favours** — home-gated ingredient-draw engine | V7-M rework; `characters.csv` C1 is canon. |
+| **Followers-max dial starts/floors at 4** (C4 Influencer kit) | **deep pool of 8 follower meeples** (dial starts at 2 like the field) | V7-M rework; `characters.csv` C4 is canon. Keep **pool (8) vs dial (2)** distinct. |
 
 ---
 
 ## 5. Open flags (mechanics / ambiguous — for other agents, not fixed here)
 
-- **Character-kit drift (§1 roster + §3 dial numbers) — SURFACED, values left alone** → a kit reconcile
-  for the CD / design side to verify (matches the `game-bible.md` top Currency flag routing §1 kit drift to
-  `bg-continuity`). Several §1 kit one-liners still describe **pre-V7-M shapes** and disagree with
-  `components/characters.csv` (canon) + `game-bible.md` §"The six characters"; not rewritten here to avoid
-  guessing the exact current phrasing:
-  - **C1 The Old Councillor (§1)** — still teaches the **retired** "home −1 discount / +2 away-tax." Current
-    kit (CSV + bible) = **Old Favours**: name one home region; while home, start turn drawing **1** ingredient
-    from any market (no action); away, the engine is dark.
-  - **C4 The Influencer — §1 line + the §3 "Followers-max (the dial)" row** — both still carry the **retired**
-    "dial **starts at 4** / floors at 4." Per CSV + bible that dial-start-4 is **RETIRED**: the Influencer's
-    edge is now a **deep pool of 8 follower meeples** (the field owns 6) and her dial starts at **2 like
-    everyone**. Keep **pool (8) vs dial (starts 2)** straight — the §3 dial row's "*(the Influencer 網紅
-    starts 4)*" is the same retired number.
-  - **C3 The Big Eater (§1)** — reads "**his** Visit"; the character is **she/her** (CSV + bible + decision-log).
-    Greedy-4th sink is now "**return 1 follower to supply**" (CSV), not a dial-drop.
-  - **C6 The Globetrotter (§1)** — omits the current baseline cost "**each Travel-anywhere costs 1 follower to
-    supply**" (CSV + bible).
+- **Character-kit drift (§1 roster + §3 dial row) — RECONCILED 2026-08-10** (`bg-continuity`): §1 C1/C3/C4/C6
+  and the §3 dial row now match `components/characters.csv` (canon) + `game-bible.md` §"The six characters".
+  Fixes applied: C1 → Old Favours home-gated draw (was home −1 / away-tax); C3 → "**her** Visit" + Greedy-4th
+  returns 1 follower (was "his"); C4 → deep pool of 8, dial starts at 2 (was dial-start/floor 4); C6 → added
+  the Travel-anywhere 1-follower baseline cost. Retired shapes logged in §4. **No values changed.**
 - **Draw's V7 status** (see §4) → `bg-design` / `bg-elegance`. Presentation depends on it: the vendor card
   DRAW panel (`art/art-style.md`), Draw-target Bookings (`art/tour-art.md`, `bookings.csv`), and the
   `vendors.csv` `draw` column all live-reference it.

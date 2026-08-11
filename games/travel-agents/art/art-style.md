@@ -1,4 +1,4 @@
-# Travel Agents: Taiwan — Art Style Reference (the one look)
+# Travel Agents: Taiwan Food Tour — Art Style Reference (the one look)
 
 **Purpose:** the single, canonical art-direction anchor for the whole game. **Every art-prompt / illustrator
 brief in this project — characters, map, vendor cards, ingredient/food cards, icons, tokens, cover, rulebook
@@ -12,10 +12,11 @@ nothing drifts.
 ---
 
 ## The touchstone
-The CD's reference is the art style of **Agent Avenue** — specifically its **fun, lighthearted, cartoonish
-but *stylised*** look. **Take the LOOK, not the lore:** Travel Agents has stripped the secret-agent theme
-entirely. The world here is **rival travel agents building the island's best street-food tour** — warm,
-characterful **Taiwanese street-food & neighbourhood personalities**, a bustling day-to-night-market vibe.
+The CD's look touchstone is the art style of **Agent Avenue** — its **fun, lighthearted, cartoonish but
+*stylised*** look. **Take the LOOK, not the lore** — borrow the cartoon style only, none of that game's
+setting. The world here is a **Wacky-Races-style dash between battle-hungry rival travel agents building the
+island's best Taiwan street-food tour** — warm, characterful **Taiwanese street-food & neighbourhood
+personalities**, a bustling, over-the-top day-to-night-market race.
 
 ## The look (what "stylised cartoon" means here)
 - **Fun, lighthearted, cartoonish — but polished and STYLISED**, not crude doodle. Clean, confident linework;
@@ -26,10 +27,10 @@ characterful **Taiwanese street-food & neighbourhood personalities**, a bustling
   a character, a dish, a region must read instantly at component size.
 - **One cohesive cast:** the six characters and the vendors all look like they belong to the same charming,
   slightly-exaggerated world — same linework weight, same colour language, same level of stylisation.
-- **Dial the ENERGY up — dynamic, competitive, a little CHAOTIC** (CD steer; **this is a race-and-battle
-  game**). Characters and **events** especially: high-energy action poses, a sense of urgency and scramble,
-  competitive fire and glee, motion / speed lines — capture the frantic contest of rivals racing the island
-  and battling over vendors. Keep the **polished original style** (NOT an over-caricatured big-head look)
+- **Dial the ENERGY up — dynamic, competitive, a little CHAOTIC** (CD steer; **this is a Wacky-Races-style
+  race-and-battle game**). Characters and **events** especially: high-energy action poses, a sense of urgency
+  and scramble, competitive fire and glee, motion / speed lines — capture the frantic, elbows-out contest of
+  rivals racing the island and battling over vendors. Keep the **polished original style** (NOT an over-caricatured big-head look)
   and the dignity guardrail (competitive/chaotic ≠ mean or mocking).
 
 ## The characters (the six)
@@ -91,9 +92,10 @@ names.)
 
 ## How to cite this in a prompt
 Open every brief with one line, e.g.:
-> *Style: per `art/art-style.md` — fun, lighthearted, **stylised** cartoon (Agent Avenue-style look, travel-agent
-> not spy theme); clean linework, bold flat colour, night-market palette (warm day → neon night); warm,
-> dignified Taiwanese characters, charming not caricatured. Human-illustrated; no AI final art.*
+> *Style: per `art/art-style.md` — fun, lighthearted, **stylised** cartoon (Agent Avenue-style cartoon look;
+> Taiwan street-food travel-agent theme — a wacky, over-the-top food-tour race); clean linework, bold flat
+> colour, night-market palette (warm day → neon night); warm, dignified Taiwanese characters, charming not
+> caricatured. Human-illustrated; no AI final art.*
 Then add the component-specific subject, composition, and the reserved size/figure code.
 
 ---
@@ -147,7 +149,8 @@ Then add the component-specific subject, composition, and the reserved size/figu
 ### STYLE ANCHOR (paste this verbatim at the start of EVERY mock-up prompt)
 
 > A warm, lighthearted, **over-the-top-but-dignified stylised cartoon** illustration — the fun,
-> characterful *look* of Agent Avenue but with a **travel-agent, Taiwanese street-food theme (no spies)**.
+> characterful cartoon *look* of Agent Avenue applied to **our own theme: a wacky, over-the-top race between
+> battle-hungry rival Taiwanese street-food travel agents** (its art style only, not its setting).
 > Clean, confident linework; bold, mostly-flat colour with simple stylised shading; strong readable
 > silhouettes; expressive, affectionate faces — lively and appealing, **NOT an over-caricatured big-head
 > style**. **Compose the character and their own props ONLY — a clean cut-out with NO background scenery

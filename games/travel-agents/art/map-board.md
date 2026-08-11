@@ -108,7 +108,7 @@ at 6p) the extra face-up vendor sits beside the printed pair — the spaces are 
 - **Direction (one signature scene each, dish-typed & generic — NEVER a real named business):**
   - **北 NORTH (Taipei / Meat 肉 signature · vermilion ▲):** a capital night-market lane, steam off a
     pork-bun cart; this panel is the **common START (台北 Taipei)** for every agent — carry a subtle
-    "head-office / departure" cue.
+    **home-base / departure** cue (every agency's tour sets off from here).
   - **中 CENTRAL (Tea 茶 signature · jade ◆):** tea terraces + a 手搖飲 hand-shaken-drink stand.
   - **南 SOUTH (Seafood 海鮮 signature · amber ●):** a Tainan/Kaohsiung quayside seafood counter (a generic
     **海鮮 Seafood** scene — not a single displaced dish; the old oyster-omelette scene was retired).

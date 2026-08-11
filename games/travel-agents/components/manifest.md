@@ -105,7 +105,7 @@ over-budget flag unchanged by this pass; bg-elegance owns whether to consciously
 physical type. Boundary cards live inside the Bookings deck. (bg-elegance owns the check.)
 
 ## Notes / flags
-- **TICKETS-ONLY scoring:** vendors give NO points; score = Σ COMPLETED 成團 value − Σ floor(value/2) CANCELLED 取消.
+- **Two-track scoring:** score = Σ COMPLETED 成團 tour value **+** Σ printed `vp` on won vendors **−** 1 per CANCELLED 取消 Booking (flat −1).
 - **Deck-driven clock:** the Bookings deck IS the clock — needs the 2 seeded boundary cards (黃昏 / 末班車) at print.
 - **Ingredients are pictorial CARDS** (5 types) → bg-infodesign (art) + bg-access (distinguishable by picture + shape, not colour alone).
 - **6 character boards, icon-only ability/flaw** → **V7-M recoded** `ability_code`s: `favours_home_draw` (Old Councillor — REPLACES `discount_home` + `away_tax`), `deep_pool` (Influencer — REPLACES `start_max_4`; the pool size now lives in the `max` column), `margin_win:1` (Big Boss — REPLACES `win_ties`; baseline N=1). Unchanged: `travel_draw_left`, `visit_keep3` + `hazard_twice_visit`, `travel_anywhere`, `goes_last`, `none`. **bg-infodesign owes glyphs** for `favours_home_draw`, `deep_pool`, `margin_win` (the renderer already has an unused `bribe_margin1` glyph — two bars + '1' — that fits `margin_win`; wire it to read the `:N`); the retired `discount_home` / `away_tax` / `start_max_4` / `win_ties` glyphs can be dropped. **NB the board renderer still draws a Followers DIAL** in the left column — that dial-face must become a collected-follower pool + per-colour supply tray (presentation pass).

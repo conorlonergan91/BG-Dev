@@ -6,10 +6,10 @@
 > `art_note`), and the binding tone/sensitivity rails from `identity.md`.
 >
 > **Shared direction (all five):** warm night-market palette (lantern vermilion / jade teal / golden amber
-> / dusk indigo on bao-paper cream); a **half-body character portrait** framed like a passport / dossier
+> / dusk indigo on bao-paper cream); a **half-body character portrait** framed like a passport / boarding-pass
 > photo (ties the boards to the boarding-pass identity); expressive, affectionate, **dignified — never a
-> gag at Taiwan's expense** (the comedy lands on the trench-coat-over-Hawaiian-shirt *agent* act, not the
-> people or the food). Secular only — no temple/deity/ghost-month motifs. Portraits should read as
+> gag at Taiwan's expense** (the comedy lands on the over-the-top travel-agent *act* — the elbows-out,
+> Wacky-Races food-tour race — not the people or the food). Secular only — no temple/deity/ghost-month motifs. Portraits should read as
 > **local Taiwanese promoters**, warm and specific; where relevant reflect Taiwan's multi-ethnic range.
 > Art fills the reserved box on each landscape board (roughly 560×320 px at the current render scale,
 > upper-left); keep the face/expression in the top 2/3 so it survives the passport-frame crop.
@@ -89,7 +89,7 @@
   **604 × 286 px, ~2.11:1 wide letterbox** — a WIDE band sitting top-left (44,176) on the 1680×1380
   landscape board. Generate at **2×** and export at that exact aspect so it drops into the slot without a
   reflow. Keep the **face/expression in the upper-centre** so it survives the passport-frame crop.
-- **Background:** **transparent** — the board's passport/dossier frame, name plate, and the
+- **Background:** **transparent** — the board's passport / boarding-pass frame, name plate, and the
   **COMPLETED 成團 / CANCELLED 取消** pile labels, Reach 及 / Tours-Completed 好評 tracks and 成團/取消 piles
   are all **rendered by code**, not by the mock-up. The mock-up supplies the cut-out character only; it
   must not paint any board chrome, labels, or track furniture.

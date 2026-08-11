@@ -1,4 +1,4 @@
-# Travel Agents: Taiwan — V7 Work Plan (the multiplayer re-home)
+# Travel Agents: Taiwan Food Tour — V7 Work Plan (the multiplayer re-home)
 
 **This is the authoritative job checklist for the V7 arc.** Work top to bottom, tick each box as you
 finish it, and **commit + push after each meaningful item** so progress is never stranded. Do NOT skip
@@ -22,20 +22,27 @@ pushing after every meaningful step; surface to the CD only a genuine blocker or
 Never use the 繁體/Tâi-lô name alone — the human can't follow it. English first; original in parentheses only if precision needs it.
 
 > **Canonical name/term table now lives in `games/travel-agents/names.md`** (`bg-continuity`, 2026-08-09).
-> The roster below is kept current for convenience; `names.md` is the authority if the two ever disagree.
+> The roster below is kept current for convenience; `names.md` + `components/characters.csv` are the
+> authority if they ever disagree.
 
-| English name (USE THIS) | 繁體 (Tâi-lô) | Kit (post-V7) |
+| English name (USE THIS) | 繁體 (Tâi-lô) | Kit (V7-M — `characters.csv` is canon) |
 |---|---|---|
-| **The Old Councillor** | 里長伯 (Lí-tiúⁿ-peh) | Home-region −1 ingredient discount; **+2 away-tax** (V7 trim) |
-| **The Homebody** | 媽寶 (Ma-pó) | Sole Travel-sourcer — on a Travel draws **2** cards of the region she LEFT (V7 re-theme) |
-| **The Big Eater** | 大胃王 (Tuā-uī-ông) | Keep all 3 on a Visit + a Greedy-Grab 4th; hazards fire twice on his Visit |
-| **The Influencer** | 網紅 (Bāng-âng) | Followers-max **starts at 4**; goes last in turn order |
-| **The Big Boss** | 老大 (Lāu-tuā) | Wins a Follower-fight on a **tie** (needs only to *match* the biggest crowd, not exceed it) |
-| **The Globetrotter** | 阿嬤 (A-má) | Reaches any region in one Travel + Scheduled-Maintenance-immune; flaw-free *(the fuel buff was NOT adopted — see `characters.csv` C6)* |
+| **The Old Councillor** | 里長伯 (Lí-tiúⁿ-peh) | *Old Favours* — name one home region; while home, start each turn drawing **1** ingredient from any market (no action); away, the engine is dark. Flaw-free. |
+| **The Homebody** | 媽寶 (Ma-pó) | Sole Travel-sourcer — on a Travel, draw the top **2** of the region you LEFT and keep both (event whiffs). Flaw-free. |
+| **The Big Eater** | 大胃王 (Tuā-uī-ông) | Keep all 3 on a Visit + a Greedy-Grab 4th (→ return 1 follower to supply); hazards fire twice on **her** Visit. |
+| **The Influencer** | 網紅 (Bāng-âng) | Owns **8** follower meeples (the field owns 6) — a deeper pool; dial starts at **2** like everyone; goes last in turn order. |
+| **The Big Boss** | 老大 (Lāu-tuā) | Margin dial N=1 — wins a contested stall unless a rival exceeds his committed followers by N or more (**wins ties**). Flaw-free. |
+| **The Globetrotter** | 阿嬤 (A-má) | Reaches any region in one Travel + Scheduled-Maintenance-immune; each Travel-anywhere costs **1** follower to supply. Flaw-free. |
 
 ---
 
 ## Decisions carried in — LOCKED, do NOT re-litigate (re-scope them for N players)
+
+> **Historical record (V7-arc, mostly executed).** The in-flight decisions below are a point-in-time
+> record of the V7 arc and some were superseded during V7-M — e.g. **scoring is now two-track VP + flat −1
+> cancel, not "tickets-only"**, and **the Influencer's edge is a deep pool of 8, not a dial that "starts at
+> 4."** The current game is `game-bible.md` (V7-M); the current names/terms are `names.md` (see its §4
+> retired table). Read this section as arc history, not current spec.
 
 These are signed off by the CD. Re-validate/re-scale them for multiplayer; do not reopen the decision.
 

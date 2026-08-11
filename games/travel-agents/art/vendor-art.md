@@ -7,8 +7,8 @@
 > places, dishes, and romanisation follow [`design/vendor-places.md`](../design/vendor-places.md).
 
 **The style line to open every brief:**
-> *Style: per `art/art-style.md` — fun, lighthearted, **stylised** cartoon (Agent Avenue-style look,
-> travel-agent not spy theme); clean confident linework, bold flat colour with simple stylised shading,
+> *Style: per `art/art-style.md` — fun, lighthearted, **stylised** cartoon (Agent Avenue-style cartoon look;
+> Taiwan street-food travel-agent theme); clean confident linework, bold flat colour with simple stylised shading,
 > night-market palette (warm day golds/ambers → neon night violets/teals); at-a-glance readability at card
 > size. Human-illustrated; no AI final art.*
 

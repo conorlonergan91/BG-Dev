@@ -171,8 +171,8 @@ label coding is mandatory; palette is first-pass, not locked.
 - **Voice direction (high level):** player-facing words run in an over-the-top, over-caffeinated
   **race-commentator / hype-man travel-guide** register — second person, short, loud, funny, all-in on the
   scramble. Dish names stay authentic (romanised + 繁體), never invented or parodied — the comedy is in the
-  antics and the flavour, never in mangling real food. *(The full voice bible lives in `prose-identity.md`,
-  re-founded separately; this is direction + the naming register only.)*
+  antics and the flavour, never in mangling real food. *(The full voice bible lives in `prose-identity.md`;
+  this is direction + the naming register only.)*
 - Read the term set aloud and kill anything that clashes. "Bribe" is the spiciest word, so its warm
   neighbours ("the following you drummed up," "marketing opportunity," "put her on the poster," "night
   market") are what keep it cheeky rather than corrupt.

@@ -331,7 +331,7 @@ WebSearch). Offline-testable via `--thing-xml`.
   an original-language name (繁體 / Tâi-lô / etc.) on its own** — the human can't tell who you mean. Put the
   original-language name in parentheses *after* the English only when precision or the cultural-sensitivity/
   component-data context genuinely needs it (e.g. "the Homebody (媽寶)"). Each game keeps a canonical
-  English↔original name table in its own docs (for Travel Agents: `games/travel-agents/v7-plan.md`).
+  English↔original name table in its own docs (for Travel Agents: `games/travel-agents/names.md`).
 - **Keep the human in the loop, but keep it moving.** Present tight, opinionated options (A/B/C with a
   recommendation) rather than open-ended questions. Decide fast, log it, iterate.
 - **Update the living docs as you go.** Every meaningful choice → `game-bible.md` + `decision-log.md`.
