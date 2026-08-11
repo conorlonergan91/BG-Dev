@@ -37,9 +37,24 @@ prototype kit is current in `exports/`. The next real work is a **human playtest
     complexity budget (2277/2280), title A. `exports/rulebook.{html,pdf}` + `cover.png` regenerated.
   - **Voice bible** — `prose-identity.md` authored and promoted to a studio standard.
   - **Art prep** — art prompts + `art/ta-art-context.zip` (2.7 MB) ready for the CD's ChatGPT art generation.
-- **⏳ In-flight:** none — the theme-currency sweep is complete and merged; no studio work is blocking.
-- **➡️ Next:** CD generates the remaining art (map + vendor cards) in ChatGPT from `art/ta-art-context.zip`
-  + the prompts, then runs a **3–4-player human playtest**.
+  - **Events + tours currency/variety pass (2026-08-11)** — event deck de-monotonised (the "keep 1 fewer"
+    pinch pile 10→6, the rest converted to spoil/sink/block/restock; weather now 5 distinct verbs; the triple
+    "Sold Out" split into 3 cards; gifts split by scope), the "Fully Booked 客滿" logic bug fixed →
+    **Sharing Tables 併桌**, funnier on-voice titles; tour flavour punched up + one hanzi fix. Counts held
+    flat (map.json / pacing stable, no new keywords); **bg-critic: ship-to-table, no blockers, warmth rail
+    holds**; guardians green; market + booking deck sheets regenerated.
+- **⏳ In-flight:** none — the theme-currency sweep **and** the events/tours pass are complete and merged;
+  no studio work is blocking.
+- **➡️ Next (recommended): a 3–4-player human table** — bg-critic's steer, since the open event questions
+  are *felt* (does forced-placement read as a tax to those behind? is the SINK card a shrug? the warmer
+  hazard:boon ratio) and the sim can't answer them. The CD also generates the remaining art (map + vendor
+  cards) from `art/ta-art-context.zip`.
+- **⏸ Sim re-run — CD-GATED, with two hard watches when it runs** (owner: `bg-playtest` / `bg-playstrat`):
+  (1) **teach the encoder** The Long Queue (EV-D05)'s new `rally 1` rider first, or the balance read is
+  wrong; (2) **instrument the clock** — the `wash` card **New Management (EV-N29)** closes a vendor
+  *without a claim* and pulls a refill, so confirm it doesn't **drain the vendor deck too fast and end the
+  day early** (CD flag, 2026-08-11): measure game length + vendors-closed-without-claim vs the N=400
+  baseline. Changing event effects invalidated N=400 — a re-sim is required before any new balance claim.
 - **⏭ Deferred design follow-ups (surfaced by the sweep — not blocking; a later design pass):** migrate
   `design-doc.md` §15/§17 (event framework + clock) into `game-bible.md`, then archive it + fix its stale
   header (→ `bg-design`); reconcile `art/rulebook-figures.md`'s stale 2p / Buzz / Reach mechanics to V7-M
