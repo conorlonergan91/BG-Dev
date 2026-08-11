@@ -1,26 +1,47 @@
 {
-  "_note": "V7-M quick-glance aid for build_board.py --type aid. The ON-YOUR-TURN section, PLUS the words the icon-only components dropped: the character boards are icon-only, the follower slot + scoring piles carry no text, and the map legend was removed (CD steer) — so the aid now backfills the follower lifecycle, the region+phase ☀/☾ discard cue, and the market reshuffle/SINK rule. Deeper detail (per-count scarcity counts, the boundary tie-resolver, event framework, the deck-driven clock, Rave Reviews, full scoring) stays in the RULEBOOK. V7-M vocabulary: Followers are physical meeples in your colour (max 6 / Influencer 8); zones = your supply / your board / on a stall. Actions keep Travel + Promote (no dial / Buzz / Reach / Draw). One action per turn. ☀/☾ are DRAWN by the aid renderer (sun/moon shapes), never a font emoji.",
-  "title": "Travel Agents: Taiwan — Player Aid",
-  "subtitle": "On your turn: do ONE action · then trim your Larder to 7",
-  "sections": [
-    {
-      "heading": "Do ONE action",
-      "lines": [
-        "VISIT (here): flip 3 from this region's market — the event fires by scope, keep 2 ingredients (Big Eater 大胃王 keeps 3).",
-        "CONVENIENCE STORE (anywhere): flip 1 from any region's market — take the ingredient, or the event fires.",
-        "TRAVEL: move 1 region (HSR = 北↔南); flip 1 on arrival (event whiffs). Then GROW: 1 follower, supply → your board. (Homebody 媽寶 draws 2 from the region she LEFT; Globetrotter 阿嬤 reaches ANY region, tiring 1 follower to supply.)",
-        "PROMOTE (here): place up to 2 followers FROM YOUR BOARD onto face-up stall(s) here — stacked or spread, in full view.",
-        "BRIBE A STALL (here): win it if you hold STRICTLY MORE followers on it than every rival AND meet its crowd floor (Big Boss 老大 wins ties) + pay its ingredients − your region discounts (no follower cost). It joins your tour + may complete a Booking. Your followers come HOME to your board; each loser's scatter to their OWN supply. Leave the slot empty.",
-        "LINE UP A BOOKING: take 1 from the face-up row, then refill. Your Bookings are your whole score (成團 completed / 取消 cancelled)."
-      ]
+  "_note": "V7-M PLAYER-AID CARD (CD redesign 2026-08-11). Poker-card sized (750×1050), ONE per player, DOUBLE-SIDED: FRONT lists the six turn actions (labels only — the full explanation lives in the rulebook); BACK gives that character's ability + flaw in brief. Rendered by build_board.py --type aidcard (front once + one back per characters.csv row, tinted in the character's colour). This REPLACES the old verbose single-sheet aid — the follower lifecycle / market-discard / SINK detail it used to backfill now lives ONLY in the rulebook, per the CD steer 'save explanation for the rulebook'. Backs are keyed by characters.csv id; display fields (English name, 漢字, Tâi-lô, colour) are pulled from characters.csv at render time so this file never drifts from the roster.",
+  "title": "YOUR TURN",
+  "turn_rule": "Take ONE action. Then trim your Larder down to 7.",
+  "actions": [
+    { "name": "VISIT", "where": "here", "brief": "Reveal 3 from this market — keep 2. Events fire." },
+    { "name": "CONVENIENCE STORE", "where": "anywhere", "brief": "Reveal 1 from any market — take it, or its event fires." },
+    { "name": "TRAVEL", "where": "", "brief": "Hop 1 region (HSR 北↔南), reveal 1, then grow 1 follower." },
+    { "name": "PROMOTE", "where": "here", "brief": "Send up to 2 followers from your board onto stalls." },
+    { "name": "BRIBE", "where": "here", "brief": "Biggest crowd + crowd-floor wins it; pay its recipe, less your discounts." },
+    { "name": "BOOK A TOUR", "where": "", "brief": "Take 1 Booking from the row into your hand." }
+  ],
+  "footer": "Your agent bends these rules — flip for your ability & flaw.",
+  "back_kicker": "YOUR AGENT",
+  "backs": {
+    "C1": {
+      "ability_name": "Old Favours",
+      "ability": "At home, start each turn by drawing 1 ingredient from any market — free, no action.",
+      "flaw": "Leave your home region and the favours dry up."
     },
-    {
-      "heading": "Followers · piles · market",
-      "lines": [
-        "FOLLOWERS (your colour meeples): a TRAVEL grows 1 (your supply → your board); a PROMOTE places up to 2 (your board → onto a stall). Win the stall → they come HOME to your board; lose → back to your OWN supply.",
-        "Your board's three card slots: your FOLLOWERS slot, plus the two Booking piles — 成團 COMPLETE (ran → full value) and 取消 CANCELLED (didn't run → half value). The piles are your whole score.",
-        "Every market card shows its region (colour + emblem) and ☀ day / ☾ night — that pair IS its discard pile. Spent / fired / passed-over cards go to that region+phase discard; when a deck runs out, shuffle its discard back in. SINK = to the BOTTOM of the live deck (stays in play). At DUSK / LAST TRAIN the ending phase's decks AND discards go to the BOX."
-      ]
+    "C2": {
+      "ability_name": "Mum's Packed Lunch",
+      "ability": "On a Travel, draw the top 2 of the region you just left — and keep both.",
+      "flaw": "None. Mum thought of everything."
+    },
+    "C3": {
+      "ability_name": "Bottomless",
+      "ability": "On a Visit, keep all 3 you reveal — not 2.",
+      "flaw": "Hazards bite TWICE on your Visit."
+    },
+    "C4": {
+      "ability_name": "Going Viral",
+      "ability": "You command 8 followers; everyone else gets 6.",
+      "flaw": "You take the LAST seat every round."
+    },
+    "C5": {
+      "ability_name": "Everybody Knows",
+      "ability": "You win a contested stall on a tie — a rival needs the bigger crowd to beat you.",
+      "flaw": "None. It's good to be the Boss."
+    },
+    "C6": {
+      "ability_name": "Elder Pass",
+      "ability": "Your Travel reaches ANY region in one go, and shrugs off HSR outages.",
+      "flaw": "Every long hop tires 1 follower back to your supply."
     }
-  ]
+  }
 }

@@ -99,7 +99,13 @@ def measure(game: Path) -> dict:
     aid = comp / "player-aid.json"
     if aid.exists():
         spec = json.loads(aid.read_text(encoding="utf-8"))
-        m["player_aid_lines"] = sum(len(s.get("lines", [])) for s in spec.get("sections", []))
+        if "actions" in spec:
+            # Card-aid schema (double-sided): the lines ONE player actually reads = the shared
+            # action list on the front + the ability & flaw on their single character back.
+            m["player_aid_lines"] = len(spec.get("actions", [])) + 2
+        else:
+            # Legacy single-sheet schema: sum the bullet lines across all sections.
+            m["player_aid_lines"] = sum(len(s.get("lines", [])) for s in spec.get("sections", []))
     return m
 
 

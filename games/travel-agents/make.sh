@@ -126,7 +126,11 @@ python3 $T/boards/build_board.py --type tokens --from-csv components/tokens.csv 
 # established colour + emblem + 繁體) + 2 BLANK faces (the 1/3 reprieve). Dual-coded colour + emblem +
 # CJK (bg-access), region hues/emblems reused straight from map.json — none minted here.
 python3 $T/boards/build_board.py --type die --spec components/map.json --theme "$theme" --out build/die-closing-time.png
-python3 $T/boards/build_board.py --type aid    --spec components/player-aid.json --theme "$theme" --out build/player-aid.png
+# Player-aid CARD (CD redesign 2026-08-11) — a poker-sized DOUBLE-SIDED card, ONE per player: FRONT lists
+# the six turn actions (labels only — the full teach is in the rulebook); BACK gives that character's
+# ability + flaw in brief, tinted in the agent's colour. Renders one shared aidcard-front.png + one
+# aidcard-back-<slug>.png per characters.csv row into build/aid/. Replaces the old verbose single sheet.
+python3 $T/boards/build_board.py --type aidcard --spec components/player-aid.json --csv components/characters.csv --theme "$theme" --out build/aid/
 
 # Cover + rulebook.
 python3 $T/cards/build_cover.py --title "$title" --subtitle "A crowded market of rival agencies — a warm Taiwan food-tour scrum" \
@@ -177,7 +181,9 @@ cp build/map-day.png                      exports/map-day.png 2>/dev/null || tru
 cp build/map-night.png                    exports/map-night.png 2>/dev/null || true
 cp build/token-key.png                    exports/token-key.png 2>/dev/null || true
 cp build/die-closing-time.png             exports/die-closing-time.png 2>/dev/null || true
-cp build/player-aid.png                   exports/player-aid.png 2>/dev/null || true
+# Player-aid CARDS — the shared FRONT + one per-character BACK (double-sided, one card per player).
+rm -rf exports/aid; mkdir -p exports/aid
+cp build/aid/aidcard-*.png                exports/aid/ 2>/dev/null || true
 cp build/rulebook.pdf                     exports/rulebook.pdf 2>/dev/null || true
 cp build/rulebook.html                    exports/rulebook.html 2>/dev/null || true   # keep the tracked HTML in sync (build always emits it) so it can't silently drift
 
@@ -199,6 +205,8 @@ cp build/map-day.png                      exports/screentop/map-day.png 2>/dev/n
 cp build/map-night.png                    exports/screentop/map-night.png 2>/dev/null || true
 # The Closing-Time die reference sheet — the Screentop module stands the custom d6 up from this key too.
 cp build/die-closing-time.png             exports/screentop/die-closing-time.png 2>/dev/null || true
+# Player-aid cards — the shared FRONT + each character's BACK (each player takes the front + their agent's back).
+cp build/aid/aidcard-*.png                exports/screentop/ 2>/dev/null || true
 echo "✓ exports/ refreshed — commit these."
 
 # --- HOME PRINT-AND-PLAY (library A4 / A3, print-at-100%-and-cut) --------------------------------
@@ -241,9 +249,16 @@ python3 $T/print/build_pnp.py --mode images --page A4 --landscape --per-page 1 -
     --title "$title — Region Map (A4 fallback)" \
     --blurb "A4-landscape fallback if the library has no A3: the 193×142 mm map fits on one A4 landscape sheet at true size — no taping needed. Day + night." \
     --out exports/print/pnp-map-A4.pdf exports/map-day.png exports/map-night.png
-# Tokens key + player aid — one asset per sheet.
+# Token key — one large reference sheet per page.
 python3 $T/print/build_pnp.py --mode images --page A4 --per-page 1 --theme "$theme" \
-    --title "$title — Tokens & Player Aid" \
-    --blurb "The token key (Followers / Trending / dials / markers) on sheet 1, and the player aid on sheet 2, at true 300-DPI size." \
-    --out exports/print/pnp-tokens-aid.pdf exports/token-key.png exports/player-aid.png
+    --title "$title — Token Key" \
+    --blurb "The token key (Followers / Trending / dials / markers) at true 300-DPI size." \
+    --out exports/print/pnp-tokens-aid.pdf exports/token-key.png
+# Player-aid CARDS — the shared FRONT + each character's BACK, tiled at true 63.5×88.9 mm poker size so
+# they cut out as double-sided cards (print the front, print the backs, glue back-to-back — or single-side
+# and stand them up). 9 per A4.
+python3 $T/print/build_pnp.py --mode cards --page A4 --theme "$theme" \
+    --title "$title — Player-Aid Cards" \
+    --blurb "The double-sided player-aid cards: one shared ACTIONS front (aidcard-front) + one ABILITY/FLAW back per character. Each player takes the front plus their agent's back." \
+    --out exports/print/pnp-player-aids.pdf exports/aid
 echo "✓ exports/print/ refreshed — print at 100% / Actual Size and cut. Commit these."
