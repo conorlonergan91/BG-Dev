@@ -156,7 +156,7 @@ whoever ate street food most recently, then clockwise; the Influencer 網紅 tak
 
 Take **ONE** action. Then, if your Larder holds more than **7** ingredients, discard down to 7.
 
-- **VISIT the market** *(where you stand)* — flip the top **3** of this region's market. Any **event**
+- **MARKET RUN** *(where you stand)* — flip the top **3** of this region's local market. Any **event**
   fires now (§7), then discards. **Keep 2** ingredients (the Big Eater 大胃王 keeps 3).
 - **CONVENIENCE STORE** *(anywhere)* — flip the top **1** of **any** market: take the ingredient, or its
   **event** fires.
@@ -167,7 +167,7 @@ Take **ONE** action. Then, if your Larder holds more than **7** ingredients, dis
 - **SIGN UP a vendor** *(with it)* — win a stall you've drawn the biggest crowd for (§5).
 - **BOOK a tour** — take a Booking into your hand (§6).
 
-> **Greedy Grab.** On a Visit or Convenience Store, keep **one extra** ingredient beyond your limit —
+> **Greedy Grab.** On a Market Run or Convenience Store, keep **one extra** ingredient —
 > **send 1 follower back to your supply** (the crowd tuts and drifts).
 
 > **Characters bend the rules.** Each board has one ability and one flaw for that player alone; where a
@@ -240,8 +240,8 @@ the card:
 ## 7. Markets & events
 
 Each region's market holds its foods plus a few **events**, mostly small hazards. **Working a market — a
-Visit or a Convenience Store — fires any event you flip, at once.** An event **on a Travel** does nothing —
-only the Homebody 媽寶 draws then, and it whiffs.
+Market Run or a Convenience Store — fires any event you flip, at once.** An event **on a Travel** does nothing
+(only the Homebody 媽寶 draws then).
 
 - **Hazards** tax or delay — they never take what you already hold, nor cost a whole turn.
 - **Boons** hand out an ingredient, grow your crowd, or send a stall **Trending**.
@@ -305,8 +305,8 @@ short:
   ingredient** from any market, free (neighbours look after their beloved local); away, it sleeps.
 - **The Homebody 媽寶** — sole on-the-move sourcer: on a **Travel**, draw the top **2** of the region you
   **left** and keep both (event whiffs).
-- **The Big Eater 大胃王** — on a **Visit**, keep all **3** (may grab a 4th, but **send 1 follower back to
-  your supply**). Flaw: hazards fire **twice** on his Visit.
+- **The Big Eater 大胃王** — on a **Market Run**, keep all **3** (may grab a 4th, but **send 1 follower back to
+  your supply**). Flaw: hazards fire **twice** on his Market Run.
 - **The Influencer 網紅** — a deeper crowd: **8** followers, not 6. Flaw: takes the **last** seat.
 - **The Big Boss 老大** — he **wins ties** (need only to **match** the biggest crowd).
 - **The Globetrotter 阿嬤** — her **Travel reaches any region** in one action; **immune** to Scheduled

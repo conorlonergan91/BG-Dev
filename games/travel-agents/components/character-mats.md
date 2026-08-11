@@ -9,8 +9,8 @@ rendered mat.
 | Mat | Ability | Flaw | Re-sim |
 |---|---|---|---:|
 | 里長伯 Lí-tiúⁿ-peh | **Old Favours (home turf)** — name ONE home region at setup; −1 ingredient discount there only | **The Away Tax** — +1 of any one ingredient to Sign Up anywhere else | 55.2% |
-| 媽寶 Ma-pó | Mum's Packed Lunch (Travel draws the region you LEFT) | none (Visit keep-2 normal) | 43.5% |
-| 大胃王 Tuā-uī-ông | Bottomless (Visit keep all 3) | hazards fire TWICE on his Visit | 54.8% |
+| 媽寶 Ma-pó | Mum's Packed Lunch (Travel draws the region you LEFT) | none (Market Run keep-2 normal) | 43.5% |
+| 大胃王 Tuā-uī-ông | Bottomless (Market Run keep all 3) | hazards fire TWICE on his Market Run | 54.8% |
 | 網紅 Bāng-âng | Going Viral (Promote places 3 Buzz, still Reach-capped) | **goes last** (turn order only — lost-turn flaw RETIRED) | 51.2% |
 | 老大 Lāu-tuā | Everybody Knows 老大 (win a Buzz fight at a ≥1 lead, not the usual ≥2) | none (Option D) | 50.7% |
 
@@ -52,11 +52,11 @@ first Promote only).
   intimidated), fully secular (NOT 八家將 / gang imagery). Mat text stays warm.
 
 ## 媽寶 — the floor-watch
-43.5% is the field floor; its flaw is effectively dropped (Visit keep-2 = normal). Its routing-flexibility
+43.5% is the field floor; its flaw is effectively dropped (Market Run keep-2 = normal). Its routing-flexibility
 ability is a documented greedy-bot blind spot (a floor, not a real break). Flagged `table-watch` — carry
 the win-rate + fun to the table; **do not shotgun a kit change on the number.** If it seats too weak, the
-reserve is a **light non-Visit flaw** for silhouette (e.g. cannot claim a Tour Ticket on the same turn it
-Travels). Do NOT re-add a Visit-crippling flaw (the old 29% trap).
+reserve is a **light non-Market Run flaw** for silhouette (e.g. cannot claim a Tour Ticket on the same turn it
+Travels). Do NOT re-add a Market Run-crippling flaw (the old 29% trap).
 
 ## 大胃王 — unchanged
 Ability `visit_keep3` + flaw `hazard_twice_visit` hold (54.8%). Note his Greedy Grab (§4a) starts from

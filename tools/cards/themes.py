@@ -111,10 +111,14 @@ THEMES = {
         "back": {
             "ground": "#1B2338",        # deep dusk indigo — the constant TA border on every back
             "panel": ("#F7F1E3", "#E4D4B4"),  # bao-paper panel for the NEUTRAL (unphased/mixed) back
-            "stamp": "#D64545",         # lantern-vermilion stamp roundel (neutral)
-            "wordmark": "TRAVEL AGENTS",
-            "sub": "台灣 · TAIWAN",
-            "emblem": "stamp",          # neutral central motif = a passport/dossier stamp
+            "stamp": "#D64545",         # lantern-vermilion silhouette ink (neutral)
+            "emblem": "stamp",          # neutral phase accent
+            # CD steer 2026-08-11: the back evokes Taiwan's LOCAL MARKET (菜市場/夜市), NOT a boarding-pass,
+            # and carries NO game name ("everyone knows what they're playing"). Neutral motif = a bamboo
+            # steamer. day/night VARIANTS layer their own motif+palette (basket vs lantern) via BACK_PHASE.
+            "motif": "steamer",
+            "market": "市場 · MARKET",
+            "awning": "#D64545",
         },
         "suits": {
             # --- dish deck: suit = REGION (colour) + a distinct emblem (the dual-code) ---
@@ -237,13 +241,17 @@ def phase_style(phase: str) -> dict | None:
 # Phase → the character + drawn motif a card back carries (font-covered 繁體 + a DRAWN sun/moon, so a
 # face-down pile sorts by shape, never colour alone — bg-access). Neutral (mixed/unphased) decks get no
 # phase mark, just the base TA passport identity.
+# Phase → the LOCAL-MARKET treatment a card back carries: a central produce/lantern/steamer silhouette
+# (motif), the 繁體 glyph, a drawn sun/moon accent, a market label, and the awning stripe colour. A
+# face-down pile still sorts day vs night by MOTIF + palette (basket vs lantern + 早 vs 夜 + sun vs moon),
+# never colour alone (bg-access). 繁體 market labels are PROVISIONAL playtest text — consultant-gated.
 BACK_PHASE = {
-    "day":     {"char": "日", "label": "DAY · 早", "emblem": "sun"},
-    "night":   {"char": "夜", "label": "NIGHT · 夜市", "emblem": "moon"},
-    "general": {"char": "通", "label": "ANY · 通用", "emblem": "spark"},
-    # AGNOSTIC (phase=any) Bookings back — the ⟳ cycle motif + 全天, so a face-down any-time pile sorts by
-    # MOTIF, not colour alone (bg-access). 全天 ("all-day") is PROVISIONAL playtest 繁體 — consultant-gated.
-    "any":     {"char": "全", "label": "ANY · 全天", "emblem": "cycle"},
+    "day":     {"char": "早", "label": "MORNING MARKET · 早市", "emblem": "sun",   "motif": "basket",  "market": "早市 · MORNING MARKET", "awning": "#D64545"},
+    "night":   {"char": "夜", "label": "NIGHT MARKET · 夜市",   "emblem": "moon",  "motif": "lantern", "market": "夜市 · NIGHT MARKET",   "awning": "#B14FD8"},
+    "general": {"char": "通", "label": "ANY TIME · 通用",       "emblem": "spark", "motif": "steamer", "market": "市場 · MARKET",         "awning": "#C9A227"},
+    # AGNOSTIC (phase=any) Bookings back — steamer + 全 + cycle, and it keeps the tour deck's cool
+    # boarding-pass-blue awning so a face-down any-time pile reads distinct from day & night.
+    "any":     {"char": "全", "label": "ANY TIME · 全天",       "emblem": "cycle", "motif": "steamer", "market": "市場 · MARKET",         "awning": "#3A6EA5"},
 }
 
 
@@ -264,11 +272,14 @@ def back_style(theme: dict, phase: str | None) -> dict | None:
     bp = BACK_PHASE.get(ph)
     if pstyle and bp:
         out["panel"] = pstyle["page"]      # warm/neon panel ground
-        out["stamp"] = pstyle.get("back_stamp", pstyle["frame"])  # prefer a contrast-safe back stamp (day bronze); else the phase frame
+        out["stamp"] = pstyle.get("back_stamp", pstyle["frame"])  # prefer a contrast-safe silhouette ink (day bronze); else the phase frame
         out["glow"] = pstyle.get("glow")
-        out["emblem"] = bp["emblem"]       # drawn sun / moon / spark
-        out["char"] = bp["char"]           # 日 / 夜 / 通  (font-covered, never ☀/☾ tofu)
+        out["emblem"] = bp["emblem"]       # drawn sun / moon / spark accent
+        out["char"] = bp["char"]           # 早 / 夜 / 通  (font-covered, never ☀/☾ tofu)
         out["label"] = bp["label"]
+        out["motif"] = bp["motif"]         # central silhouette: basket (day) / lantern (night) / steamer
+        out["market"] = bp["market"]       # 繁體 · EN market label under the medallion
+        out["awning"] = bp.get("awning", pstyle.get("frame"))     # candy-stripe valance colour
     return out
 
 

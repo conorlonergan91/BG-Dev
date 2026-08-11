@@ -34,8 +34,8 @@
 ## [FIG-CHAR-big-eater] — Tuā-uī-ông · The Big Eater · 大胃王
 - **Portrait:** a grinning competitive eater mid-bite, the table piled with empty bowls — all appetite,
   no brakes, delighted.
-- **Read at a glance:** *bottomless haul* (keeps all 3 on a Visit) balanced by *greed bites back*
-  (hazards fire twice on his Visit).
+- **Read at a glance:** *bottomless haul* (keeps all 3 on a Market Run) balanced by *greed bites back*
+  (hazards fire twice on his Market Run).
 - **Sensitivity:** joyful gluttony, celebratory of the food; the joke is his appetite, never the cuisine.
 
 ## [FIG-CHAR-influencer] — Bāng-âng · The Influencer · 網紅

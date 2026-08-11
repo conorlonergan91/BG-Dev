@@ -38,7 +38,7 @@ face-up and hint at the NIGHT piles set aside. Friendly numbered roundels (passp
 **Where:** §3 Your turn. **Job:** a scannable icon row so the six actions read without re-reading prose.
 
 **Subject:** six small warm icon tiles in a single row (or 2×3 grid), each with its keyword label:
-1. **Visit the Local Market** — a hand flipping 3 ingredient cards.
+1. **Market Run** (the local market) — a hand flipping 3 ingredient cards.
 2. **Convenience Store** — a 24-hr storefront, one card flipped anywhere.
 3. **Travel** — a pawn hopping between regions along the HSR, with a small **+1 Reach** badge.
 4. **Promote** — 2 Buzz tokens dropping onto a vendor card.
@@ -133,7 +133,7 @@ night = festive lantern-neon (lavender/magenta), never a cold/red alarm register
   the region decks, the face-up vendor slots (2 North / 1 each elsewhere), the two tracks, and the Buzz
   pool, with a "everyone starts in Taipei" callout. Region colours warm + dual-coded.
 - **`FIG-TURN`** (the six actions): six small warm icon tiles in a row (or 2×3) with keyword labels —
-  Visit the Local Market (a hand flipping 3 ingredient cards), Convenience Store (a 24-hr storefront, one
+  Market Run — the local market (a hand flipping 3 ingredient cards), Convenience Store (a 24-hr storefront, one
   card), Travel (a pawn hopping the HSR, +1 Reach badge), Promote (2 Buzz dropping on a vendor), Sign Up a
   Vendor (an agent sliding a warm, cheeky "marketing opportunity" across a stall counter — the vendor
   delighted, never sinister), Line Up a Tour Ticket (a hand taking a boarding-pass ticket). Icon first,

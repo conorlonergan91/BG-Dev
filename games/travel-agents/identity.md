@@ -152,10 +152,11 @@ label coding is mandatory; palette is first-pass, not locked.
   in 繁體字 (Taiwan uses Traditional, never Simplified). Titles can push loud, comic, over-the-top energy.
 - **Iconography — three language-independent families:** food (dish silhouettes), transport (HSR, local
   rail, scooter, bus, ferry), and region/place (the island of Taiwan + N/C/S/E glyphs).
-- **Shape language:** cards frame as a **passport / boarding-pass / stall menu-board**; places visited are
-  recorded as **stamps** (the collected-travel feel and the Discovery reveal). Tour cards lean into the
-  literal boarding-pass / ticket look. Rounded corners, warm — these are *travel* motifs, all about the
-  journey and the crowd, not secrecy.
+- **Shape language:** card **faces** frame as a **passport / boarding-pass / stall menu-board**; places
+  visited are recorded as **stamps** (the collected-travel feel and the Discovery reveal). Tour cards lean
+  into the literal boarding-pass / ticket look. Card **backs** carry the **local-market** motif — a striped
+  market awning over a produce-basket (day) or hung-lantern (night) medallion, no game name. Rounded
+  corners, warm — these are *travel* and *market* motifs, all about the journey and the crowd, not secrecy.
 - **Day/night grammar — warm, not alarm.** Day = warm amber/gold; night = festive night-market **neon**
   (lantern-glow lavender/magenta), never a cold or red alarm register. Region colours and ingredient chips
   hold their warm palette in *both* states, tethering the night board to the warm-dusk north star.

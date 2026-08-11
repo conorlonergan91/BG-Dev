@@ -1124,67 +1124,150 @@ def _render_back_generic(slug: str, theme: dict) -> str:
 </svg>"""
 
 
+# ---- card-back market motifs (CD steer 2026-08-11: local-market feel, NO game name) --------------
+# Deterministic SVG silhouettes, arithmetic only (no math import). `ink` = the phase silhouette colour
+# (b["stamp"]); `gap` = the light panel colour (ptop) used to carve weave/rib lines. A face-down pile
+# sorts day vs night by MOTIF (basket vs lantern) + glyph (早 vs 夜) + drawn sun/moon — never colour alone.
+
+def _awning_svg(x0, x1, y, h, colA, colB, n=9):
+    """A candy-stripe market valance: n vertical stripes with a scalloped (half-disc) bottom edge."""
+    w = (x1 - x0) / n
+    p = []
+    for i in range(n):
+        x = x0 + i * w
+        col = colA if i % 2 == 0 else colB
+        p.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" fill="{col}"/>')
+        p.append(f'<path d="M {x:.1f} {y+h:.1f} A {w/2:.1f} {w/2:.1f} 0 0 0 {x+w:.1f} {y+h:.1f} Z" fill="{col}"/>')
+    return "".join(p)
+
+
+def _basket_svg(cx, cy, r, ink, gap):
+    """A produce basket heaped with veg — the auntie's morning-market round (DAY motif)."""
+    rimY, botY = cy + 0.10 * r, cy + 0.92 * r
+    p = []
+    for dx, dy, rr in ((-0.52, -0.10, 0.34), (0.0, -0.30, 0.40), (0.52, -0.10, 0.34)):
+        p.append(f'<circle cx="{cx+dx*r:.1f}" cy="{cy+dy*r:.1f}" r="{rr*r:.1f}" fill="{ink}" opacity="0.85"/>')
+    for dx in (-0.22, 0.22):
+        x, topy = cx + dx * r, rimY - 0.62 * r
+        p.append(f'<path d="M {x:.1f} {rimY:.1f} Q {x+0.06*r:.1f} {topy:.1f} {x:.1f} {topy-0.10*r:.1f} '
+                 f'Q {x-0.06*r:.1f} {topy:.1f} {x:.1f} {rimY:.1f} Z" fill="{ink}" opacity="0.7"/>')
+    p.append(f'<path d="M {cx-0.98*r:.1f} {rimY:.1f} L {cx+0.98*r:.1f} {rimY:.1f} '
+             f'L {cx+0.66*r:.1f} {botY:.1f} L {cx-0.66*r:.1f} {botY:.1f} Z" fill="{ink}"/>')
+    p.append(f'<ellipse cx="{cx:.1f}" cy="{rimY:.1f}" rx="{0.98*r:.1f}" ry="{0.15*r:.1f}" fill="{ink}"/>')
+    for t in (0.34, 0.66):
+        ytab = rimY + t * (botY - rimY)
+        halfw = (0.98 - t * (0.98 - 0.66)) * r
+        p.append(f'<line x1="{cx-halfw:.1f}" y1="{ytab:.1f}" x2="{cx+halfw:.1f}" y2="{ytab:.1f}" '
+                 f'stroke="{gap}" stroke-width="3" opacity="0.6"/>')
+    for dx in (-0.5, 0.0, 0.5):
+        p.append(f'<line x1="{cx+dx*0.98*r:.1f}" y1="{rimY:.1f}" x2="{cx+dx*0.66*r:.1f}" y2="{botY:.1f}" '
+                 f'stroke="{gap}" stroke-width="3" opacity="0.5"/>')
+    return "".join(p)
+
+
+def _lantern_svg(cx, cy, r, ink, gap):
+    """A hung paper lantern — the night market (NIGHT motif)."""
+    p = [f'<line x1="{cx:.1f}" y1="{cy-1.02*r:.1f}" x2="{cx:.1f}" y2="{cy-0.90*r:.1f}" stroke="{ink}" stroke-width="4"/>',
+         f'<rect x="{cx-0.34*r:.1f}" y="{cy-0.90*r:.1f}" width="{0.68*r:.1f}" height="{0.16*r:.1f}" rx="3" fill="{ink}"/>',
+         f'<ellipse cx="{cx:.1f}" cy="{cy:.1f}" rx="{0.62*r:.1f}" ry="{0.74*r:.1f}" fill="{ink}"/>']
+    for dx in (-0.55, 0.0, 0.55):
+        x = cx + dx * 0.62 * r
+        p.append(f'<line x1="{x:.1f}" y1="{cy-0.72*0.74*r:.1f}" x2="{x:.1f}" y2="{cy+0.72*0.74*r:.1f}" '
+                 f'stroke="{gap}" stroke-width="3" opacity="0.5"/>')
+    p.append(f'<rect x="{cx-0.30*r:.1f}" y="{cy+0.72*r:.1f}" width="{0.60*r:.1f}" height="{0.14*r:.1f}" rx="3" fill="{ink}"/>')
+    p.append(f'<line x1="{cx:.1f}" y1="{cy+0.86*r:.1f}" x2="{cx:.1f}" y2="{cy+1.08*r:.1f}" stroke="{ink}" stroke-width="4"/>')
+    return "".join(p)
+
+
+def _steamer_svg(cx, cy, r, ink, gap):
+    """A stacked bamboo steamer with steam — the neutral / any-time motif (cooked-food read)."""
+    w, h = 0.92 * r, 0.34 * r
+    p = []
+    for ty in (cy + 0.16 * r, cy + 0.54 * r):
+        p.append(f'<rect x="{cx-w/2:.1f}" y="{ty-h/2:.1f}" width="{w:.1f}" height="{h:.1f}" rx="8" fill="{ink}"/>')
+        for dx in (-0.28, 0.0, 0.28):
+            x = cx + dx * w
+            p.append(f'<line x1="{x:.1f}" y1="{ty-h/2+3:.1f}" x2="{x:.1f}" y2="{ty+h/2-3:.1f}" '
+                     f'stroke="{gap}" stroke-width="2.5" opacity="0.5"/>')
+    lidY = cy + 0.16 * r - h / 2
+    p.append(f'<path d="M {cx-w/2:.1f} {lidY:.1f} Q {cx:.1f} {lidY-0.30*r:.1f} {cx+w/2:.1f} {lidY:.1f} Z" fill="{ink}"/>')
+    p.append(f'<circle cx="{cx:.1f}" cy="{lidY-0.24*r:.1f}" r="{0.06*r:.1f}" fill="{ink}"/>')
+    for dx in (-0.34, 0.0, 0.34):
+        x, syy = cx + dx * r, lidY - 0.34 * r
+        p.append(f'<path d="M {x:.1f} {syy:.1f} q {0.12*r:.1f} {-0.12*r:.1f} 0 {-0.24*r:.1f} '
+                 f'q {-0.12*r:.1f} {-0.12*r:.1f} 0 {-0.24*r:.1f}" fill="none" stroke="{ink}" '
+                 f'stroke-width="3" opacity="0.7" stroke-linecap="round"/>')
+    return "".join(p)
+
+
+_BACK_MOTIFS = {"basket": _basket_svg, "lantern": _lantern_svg, "steamer": _steamer_svg}
+
+
+def _lane_svg(x0, x1, base_y, ink, bulb, n=5, opacity=0.42):
+    """A faint receding row of awning-topped market booths with hanging bulbs (background texture)."""
+    slot = (x1 - x0) / n
+    p = [f'<g opacity="{opacity}">']
+    for i in range(n):
+        bx = x0 + i * slot + slot * 0.19
+        bw = bh = slot * 0.62
+        by = base_y - bh
+        p.append(f'<rect x="{bx:.1f}" y="{by:.1f}" width="{bw:.1f}" height="{bh:.1f}" fill="{ink}"/>')
+        p.append(f'<path d="M {bx-0.06*slot:.1f} {by:.1f} L {bx+bw+0.06*slot:.1f} {by:.1f} '
+                 f'L {bx+bw/2:.1f} {by-0.22*slot:.1f} Z" fill="{ink}"/>')
+        p.append(f'<circle cx="{bx+bw/2:.1f}" cy="{by-0.34*slot:.1f}" r="{0.06*slot:.1f}" fill="{bulb}"/>')
+    p.append('</g>')
+    return "".join(p)
+
+
 def _render_back_travel_agents(slug: str, theme: dict, b: dict) -> str:
-    """A night-market boarding-pass back: dusk-indigo ground, a passport-stamp roundel, a ticket-stub
-    perforation, and (when phased) a warm-sun 日 / neon-moon 夜 treatment so a face-down pile sorts into
-    day vs night at a glance — by MOTIF + palette, never colour alone. All shapes DRAWN (no ☀/☾ tofu)."""
+    """A LOCAL-MARKET back (CD steer): a striped market awning, a faint stall lane, and a central
+    produce-basket (day) / lantern (night) / steamer (any) medallion under the 繁體 market glyph. A
+    face-down pile still sorts day vs night by MOTIF + palette + 早/夜 glyph + drawn sun/moon — never
+    colour alone. Carries NO game name. All shapes DRAWN (no ☀/☾ tofu)."""
     radius = theme["radius"]
     tfont = theme["title_font"]
     ground = b["ground"]
     ptop, pbot = b["panel"]
-    stamp = b["stamp"]
-    glow = b.get("glow", stamp)
+    ink = b["stamp"]                       # phase silhouette ink (contrast-safe per phase)
+    glow = b.get("glow", ink)
     char = b.get("char", "")
-    label = b.get("label", b.get("sub", ""))
     emblem = b.get("emblem", "stamp")
+    awning = b.get("awning", ink)
+    market = b.get("market", "")
+    motif_fn = _BACK_MOTIFS.get(b.get("motif", "steamer"), _steamer_svg)
     cx = CARD_W / 2
-    # inner panel inset
     ix, iy, iw, ih = 40, 40, CARD_W - 80, CARD_H - 80
-    # ground colour under the panel that shows through the border + notches
     panel_txt = pick_text_color(pbot, dark=theme["ink"], light="#ffffff")
-    # ticket-stub perforation across the lower third, with edge notches punched out of the panel
-    perf_y = CARD_H - 300
-    dashes = "".join(
-        f'<line x1="{ix + 44 + i*46}" y1="{perf_y}" x2="{ix + 44 + i*46 + 24}" y2="{perf_y}" '
-        f'stroke="{stamp}" stroke-width="6" stroke-linecap="round" opacity="0.65"/>'
-        for i in range(int((iw - 88) // 46)))
-    notch_l = f'<circle cx="{ix}" cy="{perf_y}" r="22" fill="{ground}"/>'
-    notch_r = f'<circle cx="{ix + iw}" cy="{perf_y}" r="22" fill="{ground}"/>'
-    # central passport-stamp roundel: double ring + the drawn phase motif + the 繁體 phase char
-    sy = 430
-    roundel = (
-        f'<circle cx="{cx}" cy="{sy}" r="150" fill="none" stroke="{stamp}" stroke-width="10" opacity="0.9"/>'
-        f'<circle cx="{cx}" cy="{sy}" r="128" fill="none" stroke="{stamp}" stroke-width="3" opacity="0.6"/>'
-        + emblem_svg(emblem, cx, sy - 18, 66, stamp))
-    if char:
-        roundel += (f'<text x="{cx}" y="{sy + 96}" font-size="72" fill="{stamp}" text-anchor="middle" '
-                    f'font-family="{tfont}" font-weight="bold">{esc(char)}</text>')
-    # corner stamp flecks for texture (low opacity), always the neutral stamp mark
-    corners = "".join(
-        emblem_svg("stamp", x, y, 22, stamp) for (x, y) in
-        ((ix + 54, iy + 54), (ix + iw - 54, iy + 54),
-         (ix + 54, iy + ih - 54), (ix + iw - 54, iy + ih - 54)))
+    sy = 400
+    awn = _awning_svg(ix + 12, ix + iw - 12, iy + 8, 88, awning, ptop, 9)
+    lane = _lane_svg(90, CARD_W - 90, CARD_H - 120, ink, glow)
+    plate = (f'<circle cx="{cx}" cy="{sy}" r="160" fill="none" stroke="{ink}" stroke-width="3" opacity="0.5"/>'
+             f'<circle cx="{cx}" cy="{sy}" r="142" fill="none" stroke="{ink}" stroke-width="2" opacity="0.35"/>')
+    motif = motif_fn(cx, sy, 118, ink, ptop)
+    accent = emblem_svg(emblem, cx - 96, sy - 100, 26, ink)
+    glyph = (f'<text x="{cx}" y="{sy + 250}" font-size="80" fill="{ink}" text-anchor="middle" '
+             f'font-family="{tfont}" font-weight="bold">{esc(char)}</text>') if char else ""
+    label = (f'<text x="{cx}" y="{sy + 320}" font-size="30" fill="{panel_txt}" text-anchor="middle" '
+             f'font-family="{tfont}" letter-spacing="3" opacity="0.85">{esc(market)}</text>') if market else ""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
   <defs>
     <linearGradient id="tab" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="{ptop}"/><stop offset="1" stop-color="{pbot}"/>
     </linearGradient>
-    <radialGradient id="tag" cx="0.5" cy="0.42" r="0.75">
+    <radialGradient id="tag" cx="0.5" cy="0.38" r="0.75">
       <stop offset="0" stop-color="{glow}" stop-opacity="0.28"/><stop offset="1" stop-color="{glow}" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="{CARD_W}" height="{CARD_H}" rx="{radius}" fill="{ground}"/>
-  <rect x="{ix}" y="{iy}" width="{iw}" height="{ih}" rx="{radius-10}" fill="url(#tab)" stroke="{stamp}" stroke-width="6"/>
+  <rect x="{ix}" y="{iy}" width="{iw}" height="{ih}" rx="{radius-10}" fill="url(#tab)" stroke="{ink}" stroke-width="6"/>
   <rect x="{ix}" y="{iy}" width="{iw}" height="{ih}" rx="{radius-10}" fill="url(#tag)"/>
-  <g opacity="0.28">{corners}</g>
-  <text x="{cx}" y="{iy + 108}" font-size="60" fill="{stamp}" text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="6">{esc(b.get('wordmark',''))}</text>
-  <text x="{cx}" y="{iy + 162}" font-size="34" fill="{panel_txt}" text-anchor="middle" font-family="{tfont}" letter-spacing="4" opacity="0.8">{esc(b.get('sub',''))}</text>
-  {roundel}
-  {dashes}
-  {notch_l}
-  {notch_r}
-  <text x="{cx}" y="{CARD_H - 190}" font-size="40" fill="{panel_txt}" text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="3">{esc(label)}</text>
-  <text x="{cx}" y="{CARD_H - 100}" font-size="30" fill="{panel_txt}" text-anchor="middle" font-family="{tfont}" font-style="italic" opacity="0.7">{esc(slug)}</text>
+  {awn}
+  {lane}
+  {plate}
+  {motif}
+  {accent}
+  {glyph}
+  {label}
 </svg>"""
 
 

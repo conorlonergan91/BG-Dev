@@ -3,7 +3,7 @@
   "title": "YOUR TURN",
   "turn_rule": "Take ONE action. Then trim your Larder down to 7.",
   "actions": [
-    { "name": "VISIT", "where": "here", "brief": "Reveal 3 from this market — keep 2. Events fire." },
+    { "name": "MARKET RUN", "where": "here", "brief": "Reveal 3 from this market — keep 2. Events fire." },
     { "name": "CONVENIENCE STORE", "where": "anywhere", "brief": "Reveal 1 from any market — take it, or its event fires." },
     { "name": "TRAVEL", "where": "", "brief": "Hop 1 region (HSR 北↔南) and grow 1 follower — no ingredient." },
     { "name": "PROMOTE", "where": "here", "brief": "Send up to 2 followers from your board onto stalls." },
@@ -25,8 +25,8 @@
     },
     "C3": {
       "ability_name": "Bottomless",
-      "ability": "On a Visit, keep all 3 you reveal — not 2.",
-      "flaw": "Hazards bite TWICE on your Visit."
+      "ability": "On a Market Run, keep all 3 you reveal — not 2.",
+      "flaw": "Hazards bite TWICE on your Market Run."
     },
     "C4": {
       "ability_name": "Going Viral",

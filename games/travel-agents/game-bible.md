@@ -74,7 +74,7 @@ A **3–6-player area-majority engine-builder** with a genuine *fight* at its ce
   (N sig) · **茶 Tea** (C sig) · **海鮮 Seafood** (S sig) · **糧 Pantry** (E sig) · **糖 Sugar** (common C&S)
   · **菜 Vegetables** (common N&E). Real food geography; most night dishes force a two-region engine.
 - **Push-your-luck ingredient sourcing.** Each region has a face-down market deck (its signature + commons +
-  salted **events**). **Visit** = flip 3, keep 2 (events fire by scope). **Convenience Store** = top card of
+  salted **events**). **Market Run** = flip 3, keep 2 (events fire by scope). **Convenience Store** = top card of
   any region, blind. **Travel** = move + grow your crowd +1 (no ingredient — except the Homebody 媽寶).
 - **The vendor-depletion Day→Night clock + the Closing-Time die.** The vendors ARE the clock: **18 day
   vendors → 黃昏 DUSK** (flip to night) → **12 night vendors (11 unique + 1 duplicate) → 末班車 LAST TRAIN**
@@ -93,7 +93,7 @@ A **3–6-player area-majority engine-builder** with a genuine *fight* at its ce
 ## Core loop
 <!-- The repeated cycle of decisions and rewards. -->
 Full current spec: `design/rules-draft.md`. **A turn = ONE action** (then discard Larder down to 7):
-- **Visit** the market you stand in (flip 3, keep 2; events fire) ·
+- **Market Run** — do the rounds of the market you stand in (flip 3, keep 2; events fire) ·
 - **Convenience Store** (top card of any region, blind) ·
 - **Travel** (move to a neighbour, or N↔S by HSR; grow your crowd +1 — no ingredient) ·
 - **Promote** (place up to 2 followers from your board onto stall(s) here) ·
@@ -160,8 +160,8 @@ opportunity," never corruption.)*
   **#1 paid-consultant item:** must read as warm civic affection, never patronage.)*
 - **The Homebody 媽寶 (Ma-pó)** — *sole Travel-sourcer:* on a Travel, draw the top **2** of the region you
   LEFT and keep both (event whiffs). Flaw-free.
-- **The Big Eater 大胃王 (Tuā-uī-ông)** — *Bottomless:* on a Visit, keep all **3** (may Greedy-Grab a 4th →
-  return 1 follower). Flaw: hazards fire **twice** on her Visit. **She/her.**
+- **The Big Eater 大胃王 (Tuā-uī-ông)** — *Bottomless:* on a Market Run, keep all **3** (may Greedy-Grab a 4th →
+  return 1 follower). Flaw: hazards fire **twice** on her Market Run. **She/her.**
 - **The Influencer 網紅 (Bāng-âng)** — *Going Viral:* owns **8** follower meeples (the field owns 6) — a
   deeper crowd. Flaw: takes the **last** seat each round.
 - **The Big Boss 老大 (Lāu-tuā)** — *Everybody Knows 老大:* **margin dial N=1** — wins a contested stall
@@ -193,11 +193,11 @@ Bookings. §14 invariant: `vp = ingredient_cost + min_followers − 2`. Detail: 
   carried a residual 5–6p hoarder tilt in keep-2 (its own payoff mode). Full rationale: `design/ingredient-taxonomy.md`.
 
 ## Rules summary
-Turn = one of **Visit / Convenience Store / Travel / Promote / Sign Up / Book**; Larder cap 7; Greedy Grab
+Turn = one of **Market Run / Convenience Store / Travel / Promote / Sign Up / Book**; Larder cap 7; Greedy Grab
 (keep 1 extra → return 1 follower). **Followers are committed meeples on vendors** (public; region-gated;
 everyone can pile on). To **Sign Up**: be with the vendor, hold the **biggest crowd** (strict plurality; tie
 blocks — 老大 wins ties), pay its ingredients (− region discounts). Ingredient decks are face-down; events
-fire by scope on Visit + Convenience Store (Travel whiffs). **Day → Night:** at **dusk** (day vendors gone)
+fire by scope on a Market Run + Convenience Store (Travel whiffs). **Day → Night:** at **dusk** (day vendors gone)
 bring the night vendors + markets online, deal a fresh night Booking row; keep your Larder and Bookings; any
 unfinished ☀ day Booking is cancelled. At the **last train** (night vendors gone) finish the round → score.
 **The clock is vendor depletion + the Closing-Time die.** Full teach order → `design/rules-draft.md`.
