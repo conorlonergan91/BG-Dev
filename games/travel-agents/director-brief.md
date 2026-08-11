@@ -17,6 +17,19 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-10 — SCRAP the secret-agent premise; pivot to "Wacky Races, Taiwan-food edition"; retitle.**
+  - **Ask:** The secret-agent / spy backstory was scrapped a while back — kill it everywhere. The direction
+    is **over-the-top, wacky-racer, *battle-hungry* rival travel agents** in a zany all-out dash to **craft
+    the best tours and sell the most tickets.** Retitle to **"Travel Agents: Taiwan Food Tour."**
+  - **Context:** The living docs (identity.md AND game-bible.md) still carried the covert-agent wordplay
+    (trench-coat-over-Hawaiian-shirt, dossier, earpiece, "Operation: ___", mission-dossier voice) as the
+    north star; the CD caught it mid-way through a doc-currency sweep and halted it to fix the *premise*.
+    **Take-that BETWEEN agents is now welcome** (elbows-out competition; the old "warm rivalry, never
+    take-that" rail relaxes agent-vs-agent). **Taiwan, the food, and the vendors stay beloved and every
+    sensitivity rail holds.** This is a THEME / felt-identity pivot only — all V7-M mechanics are unchanged.
+  - **Status:** `captured` → re-founding `identity.md` (bg-theme) + `prose-identity.md` voice (bg-copywriter);
+    game-bible theme-framing + title corrected; retitle propagating. (this entry; decision-log 2026-08-10 pivot)
+
 - **2026-08-10 — Close off V7 (commit, PR, merge).**
   - **Ask:** Make sure everything's committed, then open a PR and merge V7.
   - **Context:** Wrapping V7-M at a clean, sim-validated state before moving to the human-playtest phase.

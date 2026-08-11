@@ -1,10 +1,10 @@
-# Travel Agents: Taiwan — Character-Board Art Briefs (V7, six characters)
+# Travel Agents: Taiwan Food Tour — Character-Board Art Briefs (six characters)
 
 Illustrator briefs for the six character-board portraits (the `[FIG-CHAR-<slug>]` slot on each board — a
-passport/dossier-style framed portrait). **Every brief below inherits `art/art-style.md`** (fun, lighthearted,
-**over-the-top & wacky but stylised** cartoon — Agent-Avenue-style *look*, travel-agent not spy *theme*;
-clean linework, bold flat colour, the night-market palette warm-day→neon-night; **warm, dignified, charming —
-never caricature/mockery**). **Human-illustrated only; no AI final art.** A **paid Taiwanese cultural
+passport / boarding-pass framed portrait). **Every brief below inherits `art/art-style.md`** (fun, lighthearted,
+**over-the-top & wacky but stylised** cartoon — Agent-Avenue-style cartoon *look*, Taiwan street-food
+travel-agent *theme*; clean linework, bold flat colour, the night-market palette warm-day→neon-night; **warm,
+dignified, charming — never caricature/mockery**). **Human-illustrated only; no AI final art.** A **paid Taiwanese cultural
 consultant** reviews the cast before final art (watch-items: the Big Boss's warmth, the Globetrotter's
 spryness).
 
@@ -90,7 +90,7 @@ connotation, so the warmth is what makes this safe; **consultant sign-off + blin
 > Every prompt below is **STYLE ANCHOR** (paste it verbatim from `art/art-style.md`) **+ the subject
 > below + the closing line**. These extend the briefs above — read them for the full personality; the
 > prompts distil the hero pose. All six use the character-portrait slot: **604 × 286 px, ~2.11:1 wide
-> letterbox, waist-up hero in a passport/dossier frame, transparent background, generate at 2×** — compose
+> letterbox, waist-up hero in a passport / boarding-pass frame, transparent background, generate at 2×** — compose
 > for the WIDE band (face/expression centred, signature-setting cue as a soft flank). Use **English
 > names**.
 

@@ -17,7 +17,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 T=../../tools
 theme=night-market
-title="Travel Agents: Taiwan"
+title="Travel Agents: Taiwan Food Tour"
 
 echo "→ regenerating into build/ (scratch)"
 # Clean-rebuild build/ every run so stale/renamed renders (e.g. a removed ticket_general

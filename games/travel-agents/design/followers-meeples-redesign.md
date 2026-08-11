@@ -336,7 +336,15 @@ add start 3.
 
 ---
 
-## 5. Vendor cost (locked A): pure most-followers-wins, no threshold
+## 5. Vendor cost: ingredients only — and the reserved claim-floor was ADOPTED
+
+> **Currency note (2026-08-11):** the "no threshold" conclusion below was **superseded**. The reserve at the
+> foot of this section — a minimum-N-to-claim threshold — was subsequently adopted: V7-M uses a tier-scaled
+> **`min_followers` crowd-floor (1/2/3)** to claim a stall (canon: `components/vendors.csv` + the sim §12.2 +
+> `game-bible.md`; `vp = cost + floor − 2`). The `buzz_cost`-drop below still holds; read the "pure plurality,
+> no floor" wording as the original rationale, not the current rule.
+
+### 5.0 (original rationale, kept as history) — pure most-followers-wins
 
 The V7 rules already resolve a stall by **plurality** ("strictly more committed followers than any rival"),
 not by clearing a per-vendor number. Confirmed in data: **`buzz_cost` = 2 for all 24 vendors and is

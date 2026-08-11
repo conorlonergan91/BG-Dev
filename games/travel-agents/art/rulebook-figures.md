@@ -46,7 +46,7 @@ face-up and hint at the NIGHT piles set aside. Friendly numbered roundels (passp
 6. **Line Up a Tour Ticket** — a hand taking a boarding-pass ticket from the row.
 
 **Notes:** each icon language-independent first, label second. Keep the Bribe icon unmistakably warm/cheeky
-(trench-coat-over-Hawaiian-shirt agent), never sinister — the vendor is delighted.
+(the over-the-top travel-agent's hustle), never sinister — the vendor is delighted.
 
 ---
 

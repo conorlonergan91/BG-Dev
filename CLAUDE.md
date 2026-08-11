@@ -167,6 +167,27 @@ pruned, **de-duplicated to their canonical home**, + the history archived; `bg-p
 reflex:** capture each substantive CD steer into `director-brief.md` the moment it arrives (same habit as the
 decision-log) — `bg-producer` then curates it.
 
+**Present-state discipline (binding — the anti-staleness rails).** Three rules keep the living docs from
+rotting into version-stratigraphy or drifting from the game the CD actually wants:
+- **No version cruft in a living-doc *body*.** The prose reads as the game *as it is now*. Banned from the
+  body: version tags sprinkled through the text (`v6.2` / `V7-M` / "(was X)"), inline changelogs,
+  "supersedes / formerly / retired-in-vN / was-X-now-Y" narration, "⚠ currency banner" / "outstanding pass"
+  flags, and pointers to the history archive. All of that lives in `archive/` + `decision-log.md`. The *only*
+  version marker allowed in a living doc is a single dated stamp in its metadata header (and even that stays
+  out of `identity.md`-style felt docs where it reads as jargon). `names.md`'s explicit **retired-terms
+  table** is the one sanctioned exception — it is a drift-catching *tool*, not narration.
+- **Flagging ≠ fixing.** When a keep-current pass finds stale prose it isn't the right agent to rewrite
+  (e.g. a felt-identity re-prose is `bg-theme`'s job, not `bg-archivist`'s), routing it to the owner is
+  correct — but the doc is **not current until the owner actually rewrites it.** A doc left carrying a
+  "re-prose outstanding → bg-theme" flag is a *to-do, not a resolution*; the orchestrator MUST then dispatch
+  that owner and confirm it landed, in the same pass. Never let a flag stand in for the fix.
+- **Currency is premise-deep, not just term-deep.** A doc can be correct on every mechanic and term yet
+  stale on creative *direction* — a scrapped premise still sitting as the north star (it has happened). Every
+  re-prose / reconcile checks the felt premise against the CD's **latest** steer (`director-brief.md` +
+  `decision-log.md`), not only the vocabulary — and **the source-of-truth docs are not exempt**: if
+  `game-bible.md` itself carries a dropped premise, fix it there too, or a faithful re-prose will just
+  reproduce it.
+
 **The three canonical identities.** A game is anchored by `game-bible.md` (the design), and — once it has a
 felt identity, art, and words — by three living identity files a `bg-*` agent points at for direction:
 `identity.md` (how it *feels*, `bg-theme`), `art/art-style.md` (how it *looks*, `bg-art-director`), and
@@ -310,7 +331,7 @@ WebSearch). Offline-testable via `--thing-xml`.
   an original-language name (繁體 / Tâi-lô / etc.) on its own** — the human can't tell who you mean. Put the
   original-language name in parentheses *after* the English only when precision or the cultural-sensitivity/
   component-data context genuinely needs it (e.g. "the Homebody (媽寶)"). Each game keeps a canonical
-  English↔original name table in its own docs (for Travel Agents: `games/travel-agents/v7-plan.md`).
+  English↔original name table in its own docs (for Travel Agents: `games/travel-agents/names.md`).
 - **Keep the human in the loop, but keep it moving.** Present tight, opinionated options (A/B/C with a
   recommendation) rather than open-ended questions. Decide fast, log it, iterate.
 - **Update the living docs as you go.** Every meaningful choice → `game-bible.md` + `decision-log.md`.
