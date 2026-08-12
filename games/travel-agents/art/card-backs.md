@@ -3,50 +3,66 @@
 > Owning brief for the **card back**. Cite `art/art-style.md` first (the one look), then this. Slug:
 > `travel-agents`. Owned by `bg-art-director`.
 >
-> **CD steer (2026-08):** the back should feel like **Taiwan's traditional local market**, not a
-> boarding-pass. **DAY back = the morning/wet market** (菜市場 / 傳統市場 / 早市) — a warm neighbourhood
-> covered lane where dignified elders do their morning rounds choosing produce; baskets, stacked veg,
-> hanging greens, steam. **NIGHT back = the 夜市 night market** — lanterns, neon glow, sizzling stalls,
-> evening crowd. **The game name (wordmark) is GONE from the back** — everyone already knows what they're
-> playing.
+> **CD steer (2026-08, updated — illustrated vendor backs, Ghibli hand, NO humans):** the vendor-deck backs
+> become **illustrated shop scenes** (replacing the code-drawn market motif) — **NO humans in either, just
+> the shop/stall.** **DAY back = a Taiwanese breakfast-shop (早餐店)** storefront — the soy-milk-and-egg-crepe
+> morning feel (a hot griddle, a 豆漿 urn, stacks of 蛋餅 egg crepes and 燒餅油條, a 繁體 menu board, gentle
+> steam, warm morning gold). **NIGHT back = the 夜市 night market** — a stall/lane of paper lanterns, neon
+> glow, sizzling griddles and rising steam. **NO people in either scene.** Painted in the warm hand-painted
+> **Studio-Ghibli-inspired** hand (per `art/art-style.md`). Embeddable filenames
+> **`FIG-BACK-VEND-DAY.png` / `FIG-BACK-VEND-NIGHT.png`** (portrait card-back, 750×1050). **The game name
+> (wordmark) stays GONE from the back** — everyone already knows what they're playing.
+>
+> *(This **supersedes** the earlier "morning/wet market 菜市場 with dignified elders doing their rounds" day
+> vision: the CD now wants a **breakfast-shop** and **no humans**. The two Indigenous/consultant rails and
+> the face-down sort function below are unchanged.)*
+>
+> **⚑ Wiring is a LATER step (orchestrator):** these two PNGs are **briefs only** for now. Dropping them in
+> as the vendor-deck backs is a follow-up render step (embed behind the back layer in `build_cards.py`) the
+> orchestrator does **once the CD delivers the art**; the deterministic code back below stays the shipping
+> playtest back until then. Paste-ready generation prompts live in `art/mockup-kickoffs.md`
+> (`FIG-BACK-VEND-DAY` / `FIG-BACK-VEND-NIGHT`).
 
 ---
 
 ## The hard function (never lose this)
 The back MUST stay **day-vs-night sortable face-down by MOTIF + palette, never colour alone** — setup and
-storage rely on splitting a face-down pile into day and night at a glance. Beyond palette, the sort is
-carried by **the central silhouette (produce basket by day vs hung lantern by night)**, the **大字 phase
-glyph (早 vs 夜)**, and the **drawn sun vs moon** accent. A colour-blind player must still sort the pile.
-Keep a **neutral / any-time** variant working (mixed or unphased decks, and the boarding-pass Bookings deck).
+storage rely on splitting a face-down pile into day and night at a glance. A colour-blind player must still
+sort the pile. Keep a **neutral / any-time** variant working (mixed or unphased decks, and the
+boarding-pass Bookings deck).
+- **On the shipping code back:** the sort is carried by **the central silhouette (produce basket by day vs
+  hung lantern by night)**, the **大字 phase glyph (早 vs 夜)**, and the **drawn sun vs moon** accent.
+- **On the illustrated vendor backs (`FIG-BACK-VEND-*`):** the sort is carried by the **whole scene** —
+  **a breakfast-shop (早餐店) in warm morning gold (DAY)** vs **a lantern-lit 夜市 stall/lane in neon
+  night (NIGHT)** — a distinct motif *and* a distinct palette, so the split survives without colour alone.
 
 ---
 
 ## The illustrated vision (for when real, human-illustrated art lands)
 This is the direction final art follows. The back has **no game UI on it**, so it can carry a richer
-painted scene than the card faces — a single centred market vignette or a quiet tiled market pattern, either
-reads. Same house hand as everything else (per `art/art-style.md`): clean confident linework, bold mostly-
-flat colour with soft cel-shading, the night-market palette, dignified locals, faithful real produce/dishes,
-**secular** settings only.
+painted scene than the card faces. Same house hand as everything else (per `art/art-style.md`, CD Ghibli
+pivot 2026-08): **warm hand-painted Studio-Ghibli-inspired anime** — soft painterly light, gentle organic
+outlines, luminous colour, delicious "Ghibli food" warmth, faithful real produce/dishes, **secular**
+settings only. **NO humans in either scene — just the shop/stall.**
 
-- **DAY — the morning / wet market (菜市場 · 傳統市場 · 早市).** A warm covered neighbourhood lane at
-  morning light. **Dignified elders — aunties and uncles — doing their morning rounds**, choosing produce
-  with a discerning eye: hefting a melon, filling a woven basket, pointing out the good greens. Stacked veg
-  and fruit crates, **hanging greens**, a **bamboo steamer** breathing steam, hand-painted **繁體** stall
-  signs. Warm morning gold; the calm, unhurried, everyone-knows-everyone feeling of a real 菜市場. The elders
-  are the warm heart of the scene — never frail, never a caricature; sharp, capable, at home in their patch
-  (the same dignity rail as The Old Councillor / The Globetrotter).
-- **NIGHT — the 夜市 night market.** The same lane after dark: **strings of lanterns**, neon glow, sizzling
-  griddles, rising steam, an evening crowd threading between stalls. Warm-neon violet/teal over dusk-indigo —
-  festive, never a cold/alarm register (identity.md's day/night grammar: warm, not alarm).
+- **DAY — the breakfast-shop (早餐店).** A warm, cheerful Taiwanese morning breakfast-shop storefront seen
+  head-on: a hot flat griddle, a big **豆漿 (soy-milk)** urn, stacks of rolled **蛋餅 (egg crepes)** and
+  **燒餅油條**, a hanging **繁體** menu board, gentle rising steam, warm morning-gold light. The cozy,
+  everyone's-neighbourhood-breakfast feeling — **but no people; the shop itself is the hero.**
+- **NIGHT — the 夜市 night market.** A food stall/lane after dark: **strings of paper lanterns**, a little
+  **neon** sign, sizzling griddles, hanging skewers and food, rising steam into a dusk-violet sky.
+  Warm-neon violet/teal over dusk-indigo — festive, never a cold/alarm register (identity.md's day/night
+  grammar: warm, not alarm). **No people — the stall/lane and its lights are the hero.**
 - **NEUTRAL / any-time.** A quieter any-time market read — a lone **bamboo-steamer** or a single stall
   vignette, or a simple tiled market pattern. Gold-neutral.
 
-Even fully illustrated, keep the **basket-dominant (day) vs lantern-dominant (night)** silhouette so the
+Even fully illustrated, keep the **breakfast-shop-dominant (day) vs lantern-dominant (night)** read so the
 face-down sort survives at a glance.
 
 **Rails (binding):** 繁體 (Traditional) never Simplified; secular (no temple/deity/ghost-month/funerary);
 dignified locals, faithful produce; **English names first**; human-illustrated final art (AI = labelled,
-gitignored mock-ups only). Elders and any real produce/signage are **consultant-gated** before final/print.
+gitignored mock-ups only). Any real produce / stall signage / 繁體 menu text is **consultant-gated** before
+final/print.
 
 ---
 

@@ -148,12 +148,17 @@ THEMES = {
             # (accessibility.md). Each category's colour matches its home REGION suit hue but carries a
             # different emblem than that region's frame emblem, so a same-colour+same-emblem clash never
             # arises (meat/north, tea/central, seafood/south, pantry/east). ---
-            "meat":       {"color": "#D64545", "emblem": "hex"},       # 肉 red   — North signature (region north = triangle)
-            "tea":        {"color": "#1F8A7A", "emblem": "triangle"},  # 茶 teal  — Central signature (region central = diamond)
-            "seafood":    {"color": "#E6A930", "emblem": "square"},    # 海鮮 amber — South signature (region south = circle)
-            "pantry":     {"color": "#26324D", "emblem": "circle"},    # 糧 indigo — East signature (region east = square)
-            "sugar":      {"color": "#B5835A", "emblem": "beam"},      # 糖 caramel — the COMMON (Central & South)
-            "veg":        {"color": "#4C9A5A", "emblem": "leaf"},      # 菜 green  — the COMMON (North & East); leaf shape-distinct from meat-hex (CVD)
+            # v7.1 ILLUSTRATED icons (bg-art-director 2026-08): each category now carries a little drawn,
+            # food-true silhouette in the game's warm market hand (see the ing_* emblems in emblem_svg),
+            # replacing the abstract geometric glyphs. Each is a DISTINCT SHAPE (dual-coding by outline,
+            # not colour — bg-access) and still shape-distinct from its home region's frame emblem, so no
+            # same-colour+same-emblem clash arises (meat/north, tea/central, seafood/south, pantry/east).
+            "meat":       {"color": "#D64545", "emblem": "ing_meat"},     # 肉 red    — pork-belly slab
+            "tea":        {"color": "#1F8A7A", "emblem": "ing_tea"},      # 茶 teal   — tea-leaf sprig
+            "seafood":    {"color": "#E6A930", "emblem": "ing_seafood"},  # 海鮮 amber — a fish
+            "pantry":     {"color": "#26324D", "emblem": "ing_pantry"},   # 糧 indigo — a rice bowl
+            "sugar":      {"color": "#B5835A", "emblem": "ing_sugar"},    # 糖 caramel — boba pearls
+            "veg":        {"color": "#4C9A5A", "emblem": "ing_veg"},      # 菜 green  — leafy bok-choy
             # --- LEGACY per-specialty ingredient keys (pre-v7). NOT in any current component data — the
             # generic render keys off the 6 categories above — but retained (harmless dead keys) in case a
             # legacy render path or archived build still references them. Do not add new data on these. ---
@@ -466,12 +471,28 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
         return (f'<circle cx="{cx}" cy="{cy}" r="{r*0.95}" fill="none" stroke="{color}" '
                 f'stroke-width="{max(2, r*0.16)}" opacity="0.5"/>'
                 f'<circle cx="{cx}" cy="{cy}" r="{r*0.5}" fill="{color}"/>')
-    if kind == "ticket":  # a boarding-pass / booking stub — rounded rect + a torn perforation edge
-        w, h = r * 1.15, r * 0.82
-        perf_x = cx + w * 0.34
-        return (f'<rect x="{cx-w}" y="{cy-h}" width="{2*w}" height="{2*h}" rx="{h*0.3}" fill="{color}" {sw}/>'
-                f'<line x1="{perf_x}" y1="{cy-h*0.72}" x2="{perf_x}" y2="{cy+h*0.72}" '
-                f'stroke="#ffffff" stroke-width="{max(2, r*0.16)}" stroke-dasharray="{r*0.2} {r*0.15}" opacity="0.9"/>')
+    if kind == "ticket":  # an admission-ticket / tour-package stub — a rounded ticket body with a torn
+        # perforation line: semicircular NOTCHES bitten out of the top & bottom edge + three punched
+        # holes down the tear line (all evenodd holes, so it reads on ANY single colour over ANY ground —
+        # coloured ticket on a white type-line, or white ticket on a coloured reward pill). TA-only (no
+        # Beacon suit uses `ticket`), so this refit leaves Beacon byte-identical.
+        w, h = r * 1.08, r * 0.74
+        rr = h * 0.32
+        perf_x = cx + w * 0.32
+        body = (f"M {cx-w+rr} {cy-h} L {cx+w-rr} {cy-h} Q {cx+w} {cy-h} {cx+w} {cy-h+rr} "
+                f"L {cx+w} {cy+h-rr} Q {cx+w} {cy+h} {cx+w-rr} {cy+h} "
+                f"L {cx-w+rr} {cy+h} Q {cx-w} {cy+h} {cx-w} {cy+h-rr} "
+                f"L {cx-w} {cy-h+rr} Q {cx-w} {cy-h} {cx-w+rr} {cy-h} Z")
+        nr = h * 0.30
+        ntop = (f"M {perf_x+nr} {cy-h} A {nr} {nr} 0 1 0 {perf_x-nr} {cy-h} "
+                f"A {nr} {nr} 0 1 0 {perf_x+nr} {cy-h} Z")
+        nbot = (f"M {perf_x+nr} {cy+h} A {nr} {nr} 0 1 0 {perf_x-nr} {cy+h} "
+                f"A {nr} {nr} 0 1 0 {perf_x+nr} {cy+h} Z")
+        dr = h * 0.11
+        dots = "".join(
+            f"M {perf_x+dr} {dy} A {dr} {dr} 0 1 0 {perf_x-dr} {dy} A {dr} {dr} 0 1 0 {perf_x+dr} {dy} Z"
+            for dy in (cy - h * 0.34, cy, cy + h * 0.34))
+        return f'<path fill-rule="evenodd" fill="{color}" d="{body} {ntop} {nbot} {dots}" {sw}/>'
     if kind == "stamp":  # an inked passport/dossier seal — a ring around a filled block (for Missions)
         o, inner = r * 0.95, r * 0.46
         return (f'<rect x="{cx-o}" y="{cy-o}" width="{2*o}" height="{2*o}" rx="{o*0.28}" fill="none" '
@@ -511,5 +532,73 @@ def emblem_svg(kind: str, cx: float, cy: float, r: float, color: str, stroke: st
         head = (f'<polygon points="{tip[0]:.1f},{tip[1]:.1f} {b1[0]:.1f},{b1[1]:.1f} '
                 f'{b2[0]:.1f},{b2[1]:.1f}" fill="{color}"/>')
         return arc + head
+    # -----------------------------------------------------------------------------------------------
+    # ILLUSTRATED ingredient icons (Travel Agents). Little drawn, food-true silhouettes in the game's
+    # warm market hand — each a DISTINCT SHAPE so a colour-blind player tells them apart by outline
+    # alone (bg-access dual-coding: shape carries WHICH, colour is redundant). Each keeps its category's
+    # suit COLOUR; all read cleanly at chip scale (~40-46px) in a single flat colour + optional ink
+    # outline (multi-subpath fills, evenodd only where a hole is the point). NEW/additive kinds: no
+    # Beacon suit references any of them, so Beacon + every non-TA theme render byte-identically. The TA
+    # theme repoints its six ingredient suits (meat/tea/seafood/pantry/sugar/veg) at these.
+    # -----------------------------------------------------------------------------------------------
+    if kind == "ing_meat":  # 肉 Meat — a pork-belly slab: a horizontal capsule with two carved fat layers
+        hw, hh = r * 0.98, r * 0.56
+        body = (f"M {cx-hw} {cy-hh} L {cx+hw} {cy-hh} "
+                f"A {hh} {hh} 0 0 1 {cx+hw} {cy+hh} L {cx-hw} {cy+hh} "
+                f"A {hh} {hh} 0 0 1 {cx-hw} {cy-hh} Z")
+        s1 = (f"M {cx-hw*0.60} {cy-hh*0.46} L {cx+hw*0.94} {cy-hh*0.46} "
+              f"L {cx+hw*0.94} {cy-hh*0.16} L {cx-hw*0.60} {cy-hh*0.16} Z")
+        s2 = (f"M {cx-hw*0.94} {cy+hh*0.18} L {cx+hw*0.60} {cy+hh*0.18} "
+              f"L {cx+hw*0.60} {cy+hh*0.48} L {cx-hw*0.94} {cy+hh*0.48} Z")
+        return f'<path fill-rule="evenodd" fill="{color}" d="{body} {s1} {s2}" {sw}/>'
+    if kind == "ing_tea":  # 茶 Tea — a slender pointed tea leaf angled off a short stem (a sprig)
+        base_x, base_y = cx - r * 0.26, cy + r * 0.44
+        tip_x, tip_y = cx + r * 0.52, cy - r * 0.84
+        leaf = (f"M {base_x} {base_y} "
+                f"Q {cx-r*0.58} {cy-r*0.30} {tip_x} {tip_y} "
+                f"Q {cx+r*0.66} {cy} {base_x} {base_y} Z")
+        stem = (f"M {base_x+r*0.02} {base_y-r*0.04} L {cx-r*0.64} {cy+r*0.92} "
+                f"L {cx-r*0.44} {cy+r*0.98} L {base_x+r*0.22} {base_y+r*0.14} Z")
+        return f'<path fill="{color}" d="{leaf} {stem}" {sw}/>'
+    if kind == "ing_seafood":  # 海鮮 Seafood — a plump fish: oval body + a notched fan tail, eye punched out
+        body = (f"M {cx+r*0.45} {cy} "
+                f"C {cx+r*0.2} {cy-r*0.55} {cx-r*0.85} {cy-r*0.5} {cx-r*0.85} {cy} "
+                f"C {cx-r*0.85} {cy+r*0.5} {cx+r*0.2} {cy+r*0.55} {cx+r*0.45} {cy} Z")
+        tail = (f"M {cx+r*0.4} {cy} L {cx+r} {cy-r*0.48} "
+                f"L {cx+r*0.72} {cy} L {cx+r} {cy+r*0.48} Z")
+        ex, ey, re = cx - r * 0.52, cy - r * 0.12, r * 0.11
+        eye = (f"M {ex+re} {ey} A {re} {re} 0 1 0 {ex-re} {ey} "
+               f"A {re} {re} 0 1 0 {ex+re} {ey} Z")
+        return f'<path fill-rule="evenodd" fill="{color}" d="{body} {tail} {eye}" {sw}/>'
+    if kind == "ing_pantry":  # 糧 Pantry — a rice bowl: a small central mound of rice on a WIDE shallow bowl
+        rim = cy - r * 0.06
+        bowl = (f"M {cx-r*0.92} {rim} "
+                f"Q {cx-r*0.9} {cy+r*0.2} {cx-r*0.56} {cy+r*0.56} "
+                f"Q {cx} {cy+r*0.86} {cx+r*0.56} {cy+r*0.56} "
+                f"Q {cx+r*0.9} {cy+r*0.2} {cx+r*0.92} {rim} Z")
+        rice = (f"M {cx-r*0.5} {rim} Q {cx} {cy-r*0.86} {cx+r*0.5} {rim} Z")
+        return f'<path fill="{color}" d="{bowl} {rice}" {sw}/>'
+    if kind == "ing_sugar":  # 糖 Sugar — a cluster of four tapioca (boba) pearls (brown-sugar sweetness)
+        pr = r * 0.40
+        pts = [(cx, cy - r * 0.5), (cx - r * 0.52, cy + r * 0.06),
+               (cx + r * 0.52, cy + r * 0.06), (cx, cy + r * 0.62)]
+        return "".join(f'<circle cx="{px2}" cy="{py2}" r="{pr}" fill="{color}" {sw}/>'
+                       for (px2, py2) in pts)
+    if kind == "ing_veg":  # 菜 Vegetables — a leafy bok-choy: three rounded lobes rising from a base
+        p = (f"M {cx} {cy+r*0.92} "
+             f"Q {cx-r*0.95} {cy+r*0.4} {cx-r*0.62} {cy-r*0.52} "
+             f"Q {cx-r*0.44} {cy-r*0.86} {cx-r*0.26} {cy-r*0.42} "
+             f"Q {cx-r*0.13} {cy-r*0.98} {cx} {cy-r} "
+             f"Q {cx+r*0.13} {cy-r*0.98} {cx+r*0.26} {cy-r*0.42} "
+             f"Q {cx+r*0.44} {cy-r*0.86} {cx+r*0.62} {cy-r*0.52} "
+             f"Q {cx+r*0.95} {cy+r*0.4} {cx} {cy+r*0.92} Z")
+        return f'<path fill="{color}" d="{p}" {sw}/>'
+    if kind == "follower":  # a single fan / follower — head + shoulders bust (the crowd you drummed up)
+        hr = r * 0.42
+        head = (f"M {cx+hr} {cy-r*0.42} A {hr} {hr} 0 1 0 {cx-hr} {cy-r*0.42} "
+                f"A {hr} {hr} 0 1 0 {cx+hr} {cy-r*0.42} Z")
+        body = (f"M {cx-r*0.78} {cy+r} Q {cx-r*0.78} {cy+r*0.06} {cx} {cy+r*0.06} "
+                f"Q {cx+r*0.78} {cy+r*0.06} {cx+r*0.78} {cy+r} Z")
+        return f'<path fill="{color}" d="{head} {body}" {sw}/>'
     # fallback
     return f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{color}" {sw}/>'

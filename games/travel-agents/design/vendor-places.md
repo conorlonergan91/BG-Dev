@@ -16,8 +16,8 @@ imagery (secular rail), even where a place sits near a temple.
 | N02 | N (Taipei) | **迪化街 Dihua St, 大稻埕** ⚑ | 蛋餅 egg crepe · *tàn-piánn* | Old red-brick shophouse arcade at dawn; griddle rolling an egg crepe; dried-goods sacks + baroque façades. |
 | N03 | N (Taipei) | 阜杭豆漿, 華山市場 (Bib) | 豆漿 soy milk · *tāu-tsiunn* | The famous 2F market queue; warm soy milk + 油條; 燒餅 griddle steam. |
 | N04 | N (Taipei) | 饒河街夜市 (世祖胡椒餅, Michelin) | 胡椒餅 pepper bun · *hôo-tsio-piánn* | Charcoal clay-oven glowing; sesame peppered-pork buns on the oven wall; Songshan neon. |
-| N05 | N (Taipei) | 永康街 beef-noodle row | 牛肉麵 beef noodle · *gû-bah-mī* | Cosy Da'an backstreet; beef-shank noodle, chili-oil sheen; leafy Yongkang lane. |
-| N06 ★ | N (Taipei) | 士林夜市 (士林大香腸) | 大香腸 big sausage · *tuā-iân-tshiâng* | The island's most-famous market; oversized char-grilled sausage + raw garlic; dense neon — apex trophy. |
+| N05 ★ | N (Taipei) | 永康街 beef-noodle row | 牛肉麵 beef noodle · *gû-bah-mī* | Cosy Da'an backstreet; beef-shank noodle, chili-oil sheen; leafy Yongkang lane — Taiwan's national dish, the North apex. |
+| N06 | N (Taipei) | 士林夜市 (士林大香腸) | 大香腸 big sausage · *tuā-iân-tshiâng* | The island's most-famous market; oversized char-grilled sausage + raw garlic; dense neon — a North night trophy. |
 | N07 | N (Taipei) | **大稻埕碼頭 Wharf** ⚑ | 珍奶 bubble tea | Riverside golden-hour→neon; pearl-milk-tea against the Tamsui sunset; container-bar string-lights. |
 | C01 | C (Changhua) | 彰化 (阿璋/北門口肉圓) | 肉圓 ba-wan · *bah-uân* | Translucent chewy dumpling split to show pork + bamboo shoot, shallow red-sauce dish; small-city storefront. |
 | C02 | C (Taichung) | 臺中第二市場 | 麵線 misua · *mī-suànn* | 1917 ring-market hall; thread-noodles in glossy brown broth; wooden stalls. |

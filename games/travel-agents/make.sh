@@ -24,6 +24,37 @@ echo "→ regenerating into build/ (scratch)"
 # sheet) can't linger in build/sheets and get re-snapshotted into exports/. build/ is
 # disposable scratch (gitignored) — always regenerate from scratch.
 rm -rf build
+# VENDOR hero art (CD-provided illustrations): copy FIG-VEND-<id>.png into build/mockups BEFORE the vendor
+# render below, so render_vendor_svg (reads _ING_MOCKUPS_DIR = build/mockups) embeds the food art on the
+# per-card build/png set the CD reviews too — mirrors the FIG-ING copy that precedes the ingredient render.
+# A vendor with no FIG-VEND file falls back to the drawn region emblem (graceful, like an art-less ingredient).
+mkdir -p build/mockups
+cp art/mockups/FIG-VEND-*.png build/mockups/ 2>/dev/null || true
+# VENDOR-BACK illustrations (CD Ghibli pivot): the breakfast-shop (DAY) + night-market (NIGHT) shop scenes
+# for the vendor card BACKS. FIG-BACK-VEND-DAY.png / FIG-BACK-VEND-NIGHT.png (portrait 750×1050). When
+# present, render_back_svg embeds them as the full-bleed vendor-back backdrop (with a small region+phase
+# sort overlay); ABSENT → the vendor back stays the byte-identical code-drawn 早市/夜市 market back.
+cp art/mockups/FIG-BACK-VEND-*.png build/mockups/ 2>/dev/null || true
+# TOUR (booking) hero art (CD-provided tour illustrations): copy FIG-TOUR-<id>.png into build/mockups so
+# the booking render embeds each tour's illustration as its card face (render_card_svg dispatches to the
+# illustrated booking layout when FIG-TOUR-<id>.png is present). A tour with no FIG-TOUR file falls back
+# to the byte-identical text booking card (the ~43 art-less tours are unchanged).
+cp art/mockups/FIG-TOUR-*.png build/mockups/ 2>/dev/null || true
+# FUNCTIONAL ICONS (CD-provided AI art): illustrated versions of the 8 functional icons — the 6 ingredient
+# suit glyphs (meat/tea/seafood/pantry/sugar/veg), the follower cost-cell bust, and the ticket reward glyph.
+# The raw art is drawn on a DARK ground with a coloured glow, so KEY the background transparent at build time
+# into build/mockups/ (raw source in art/mockups/ stays untouched). build_cards.py's emblem_svg wrapper then
+# embeds build/mockups/FIG-ICON-<x>.png for those 8 emblem kinds (TA renders only) — pay chips, follower
+# cell, reward ticket pill, the ingredient pay-glyph roundel, and the booking value pill — falling back to
+# the drawn SVG emblem when a keyed file is absent. tea's glow reaches the corner as dark olive → a higher
+# flood tolerance; the rest sit on near-black. fit to a padded 320×320 square + a 2 px alpha feather so a
+# residual halo fades instead of ending in a hard edge.
+for ic in meat seafood pantry sugar veg follower ticket; do
+    python3 $T/mockup/prep_mockup.py --image art/mockups/FIG-ICON-$ic.png --key-bg --thresh 50 --feather 2 \
+        --fit 320x320 --pad --outdir build/mockups --out FIG-ICON-$ic.png 2>/dev/null || true
+done
+python3 $T/mockup/prep_mockup.py --image art/mockups/FIG-ICON-tea.png --key-bg --thresh 70 --feather 2 \
+    --fit 320x320 --pad --outdir build/mockups --out FIG-ICON-tea.png 2>/dev/null || true
 # The PHASED decks (vendors / tickets / ingredients / events) render as `png` only here — their
 # play-ready sheets come from the day/night SPLITS below (top-level PnP + Screentop), so the mixed
 # full-CSV screentop sheet (one NEUTRAL back) is deliberately NOT produced: it would hide the
@@ -87,18 +118,25 @@ for d in build/top/decks/*.csv; do
     python3 $T/cards/build_cards.py --csv "$d" --out build/top --theme "$theme" --formats screentop --tight-grid --ing-mockups-dir build/mockups $tok
 done
 
-# Board (the region-ring table-layout) — ring + HSR + vendor slots + per-region day/night market decks +
-# placeholder zones for every component. Rendered in BOTH states (mirrors the dusk flip): day / night.
-# The functional code board still renders (data-driven, always in sync with map.json) — kept as the
-# reference layer for future re-compositing → build/map-*-functional.png.
+# Board (the region-ring table layout) — ring + HSR + vendor slots + per-region market decks + the meeple
+# keep-clear halos + the round/dice clock. Rendered in BOTH states (mirrors the dusk flip): day / night.
+# TWO layers per phase, both from the SAME data-driven render (render_regionmap), so they can never drift:
+#   • build/map-<phase>-functional.png — the functional overlay on the CREAM ground (NO backdrop). Kept as
+#     the position REFERENCE layer (its geometry IS the map-board.md spec). Byte-identical to the pre-art
+#     render, so nothing downstream breaks before/without the island art.
+#   • build/map-<phase>.png (SHIPPED) — the SAME overlay COMPOSITED over the CD's AI island backdrop
+#     (FIG-MAP-ISLAND-<phase>.png) as the full-canvas base layer. render_regionmap swaps the cream ground for
+#     the illustration, drops the code island/glow (the art carries them), and bumps the region panels /
+#     tour row / clock to a stronger phase-ground scrim + reserves a per-region meeple keep-clear halo so
+#     everything stays legible on top of the art. This REPLACES the old `cp FIG-MAP-ISLAND → map-<phase>.png`
+#     that overwrote (threw away) the functional board.
+# Backdrops are copied into build/mockups/ (mirrors the FIG-VEND / FIG-ING copies). If a phase's island art
+# is absent the composite falls back GRACEFULLY to the cream functional board (never a backdrop-only map).
+cp art/mockups/FIG-MAP-ISLAND-*.png build/mockups/ 2>/dev/null || true
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --out build/map-day-functional.png
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --out build/map-night-functional.png
-# SHIPPED map = the CD's AI-illustrated composite (warm watercolour / neon-night island + the functional
-# overlay composited on top), committed at art/mockups/FIG-MAP-ISLAND-<phase>.png. This is what snapshots
-# into exports/ and embeds into the rulebook's FIG-SETUP. NOTE (curated asset): if the functional layout
-# changes again, re-composite from build/map-*-functional.png — the shipped map is not auto-regenerated.
-cp art/mockups/FIG-MAP-ISLAND-day.png   build/map-day.png
-cp art/mockups/FIG-MAP-ISLAND-night.png build/map-night.png
+python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --backdrop build/mockups/FIG-MAP-ISLAND-day.png   --out build/map-day.png
+python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --backdrop build/mockups/FIG-MAP-ISLAND-night.png --out build/map-night.png
 
 # Per-player CHARACTER BOARDS (6 A4-LANDSCAPE mats, one per characters.csv row) — CD REDESIGN 2026-08 v2.
 # Each board carries: English name TOP-LEFT + 漢字 TOP-RIGHT with the Tâi-lô romanisation beneath it, and

@@ -181,7 +181,7 @@ while **Booking completion and claim throughput HOLD**.
 
 If the re-sim shows the **marquee/apex** fights specifically are not materialising (top-apex contested
 rate stays flat) even as overall contested_frac rises — or the CD wants the *famous-stall* drama sharpened
-— add: **tier-3 apex stalls (N06 士林大香腸, C05 逢甲名物, S06 擔仔麵, E04 石板烤肉) do not refill at all
+— add: **tier-3 apex stalls (N05 牛肉麵, C05 逢甲名物, S06 擔仔麵, E04 石板烤肉) do not refill at all
 once claimed — gone for the game.** This makes the four trophies true one-shot prizes (a pure race-and-
 battle) while leaving the tier-1 sink stalls fungible so throughput is unaffected. Held in reserve because
 it is an extra rule and narrows the top-tier sink; trigger = flat apex-contest rate AND CD wants marquee
@@ -531,7 +531,7 @@ the rest remain specified-but-not-baked, each with its trigger.
 | # | Reserve (NOT baked) | Exact change | Trigger condition |
 |---|---|---|---|
 | **c** | **Influencer 網紅 `max` 7** | Drop her pool 8 → 7 | Re-sim seat-delta / `idx` shows 網紅 above band (reads hot). |
-| **d** | **Non-refilling apex marquees** (§1.6) | Tier-3 apex stalls (N06/C05/S06/E04) never refill once claimed | Overall contested_frac rises but the *apex* contested rate stays flat AND the CD wants the famous-stall brawl sharpened. |
+| **d** | **Non-refilling apex marquees** (§1.6) | Tier-3 apex stalls (N05/C05/S06/E04) never refill once claimed | Overall contested_frac rises but the *apex* contested rate stays flat AND the CD wants the famous-stall brawl sharpened. |
 | **e** | **`max` knob** | Field `max` 5 or 7 (sweep) | Re-sim: if the fight over-floods (too many followers per stall) → 5; if it under-fires / can't spread → 7. |
 | **g′** | **Homebody 媽寶 triple-dip denial** (§6.5a — the *preferred* lever) | **Travel grows a follower for everyone EXCEPT the Homebody** (his Travel keeps its move + sole-sourcer draw, but no free follower-grow) | Re-sim shows the **banked-board late-battler** line reads hot — the real exploit: Travel does 3 jobs (move + source + grow) and he Travels most, so he banks a full board *and* out-sources. Denying his grow-tick targets the actual axis. |
 | **g** | **Homebody 媽寶 spread trim** (secondary — **wrong axis**) | `travel_draw_left` 2 → 1 | Held only as a fallback. bg-critic: this trims his *sourcing spread*, not the banked-board exploit — reach for **g′** first. |
@@ -928,8 +928,8 @@ category). Home-local: N={M,V}, C={T,K}, S={S,K}, E={P,V}.
 | N02 | Egg Crepe | 1 | day | meat (1) | **M;V** | 2 | 1 | — (local) |
 | N03 | Soy Milk | 1 | day | sugar (1) | **P;K** | 2 | 1 | ✱ (P→E, K→C/S) |
 | N04 | Pepper Bun | 2 | night | meat;meat;tea (3) | **M;M;T** | 3 | 2 | ✱ (T→C) |
-| N05 | Beef Noodle | 2 | night | meat;pantry;veg (3) | **M;P;V** | 3 | 2 | ✱ (P→E) |
-| N06 | ★ Big Sausage | 3 | night | meat;meat;meat;seafood (4) | **M;M;S;V** | 4 | 3 | ✱ (S→S) |
+| N05 | ★ Beef Noodle | 3 | night | meat;pantry;veg (3) | **M;P;V;V** | 4 | 3 | ✱ (P→E) |
+| N06 | Big Sausage | 2 | night | meat;meat;meat;seafood (4) | **M;M;S** | 3 | 2 | ✱ (S→S) |
 | N07 | Bubble Tea | 1 | night | sugar (1) | **T;K** | 2 | 1 | ✱ (T→C) |
 | C01 | Ba-wan | 1 | day | tea (1) | **M;T** | 2 | 1 | ✱ (M→N) |
 | C02 | Misua | 1 | day | tea (1) | **T;S;P** | 3 | 1 | ✱ (S→S, P→E) |
@@ -1219,8 +1219,8 @@ and `bg-theme` (VP reads as "winning the famous stall is its own prestige 人氣
 | N02 | Egg Crepe | 1 | day | 2 | 1 | **1** |
 | N03 | Soy Milk | 1 | day | 2 | 1 | **1** |
 | N04 | Pepper Bun | 2 | night | 3 | 2 | **3** |
-| N05 | Beef Noodle | 2 | night | 3 | 2 | **3** |
-| N06 | ★ Big Sausage | 3 | night | 4 | 3 | **5** |
+| N05 | ★ Beef Noodle | 3 | night | 4 | 3 | **5** |
+| N06 | Big Sausage | 2 | night | 3 | 2 | **3** |
 | N07 | Bubble Tea | 1 | night | 2 | 1 | **1** |
 | C01 | Ba-wan | 1 | day | 2 | 1 | **1** |
 | C02 | Misua | 1 | day | 3 | 1 | **2** |
@@ -1330,7 +1330,7 @@ dominated** — it cannot win. The argument is numeric and rests on three struct
   several actions (source 2–5 ingredients + Promote to floor + Travel + Bribe). **Realistic total claims/
   player/game ≈ 6–9.** Anchor: the game's OWN collection Bookings treat 4–6 claims as a full-game haul —
   `n_collect6` "The Grand Tour" = **6 vendors**; `g_collect5` = 5; `d_collect4`/`n_four` = 4.
-- **High-VP stalls are scarce board-wide:** exactly **4 apex** (N06/C05/S06/E04, one per region,
+- **High-VP stalls are scarce board-wide:** exactly **4 apex** (N05/C05/S06/E04, one per region,
   region-locked, single-slot, floor 3, most-contested) and **6 night mains** (3 VP). Realistically **1–2
   apex and 2–3 mains per player** across a whole game.
 
@@ -1783,8 +1783,8 @@ N={M,Ve/Sp}, C={T,Su/Pe}, S={S,Su/Pe}, E={Ri/No,Ve/Sp}.
 | N02 | Egg Crepe | 1 | M;V | **M;Ve** | 2 | — local | — |
 | N03 | Soy Milk | 1 | P;K | **No;Su** | 2 | ✱ P→E,K→C/S → No→E,Su→C/S | you-tiao = **Noodles** |
 | N04 | Pepper Bun | 2 | M;M;T | **M;M;T** | 3 | ✱ T→C (same) | — (no P/K/V) |
-| N05 | Beef Noodle | 2 | M;P;V | **M;No;Ve** | 3 | ✱ P→E → No→E | **the CD's example — Noodles, not "Pantry"** |
-| N06 | ★ Big Sausage | 3 | M;M;S;V | **M;M;S;Sp**¹ | 4 | ✱ S→S (same) | garlic = **Spices** (¹9-type only; else Ve) |
+| N05 | ★ Beef Noodle | 3 | M;P;V;V | **M;No;Ve;Ve** | 4 | ✱ P→E → No→E | **the CD's marquee apex — Noodles, not "Pantry"** |
+| N06 | Big Sausage | 2 | M;M;S | **M;M;S** | 3 | ✱ S→S (same) | grilled-meat trophy (demoted from apex) |
 | N07 | Bubble Tea | 1 | T;K | **T;Pe** | 2 | ✱ T→C,K→C/S → T→C,Pe→C/S | **Pearls** (珍奶 = pearl tea) |
 | C01 | Ba-wan | 1 | M;T | **M;T** | 2 | ✱ M→N (same) | — |
 | C02 | Misua | 1 | T;S;P | **T;S;No** | 3 | ✱ S→S,P→E → S→S,No→E | thread **Noodles** (麵線) |

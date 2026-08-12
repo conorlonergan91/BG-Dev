@@ -509,7 +509,26 @@ def render_aidcard_back(theme, spec, row, back):
 
 
 # ---- region map (NEUTRAL shared N-player board, V7 · v3 CD REDESIGN) --------
-def render_regionmap(theme, spec, phase="day"):
+def _embed_map_backdrop(path, W, H, ink):
+    """Return an SVG fragment that lays a full-canvas PNG as the map's BASE layer (behind the functional
+    overlay), or None if the file is absent. The image is base64 **data-URI** embedded (a file-path href
+    would not survive cairosvg→PNG rasterisation), clipped to the board's rounded rect, and sized
+    edge-to-edge with preserveAspectRatio="xMidYMid slice" (cover — fills the canvas). The ink board frame
+    is redrawn ON TOP so the border still reads over the art. Used only by render_regionmap when a
+    --backdrop / auto-detected FIG-MAP-ISLAND-<phase>.png is present."""
+    if not path:
+        return None
+    p = Path(path)
+    if not p.is_file():
+        return None
+    b64 = base64.b64encode(p.read_bytes()).decode("ascii")
+    return (f'<clipPath id="mapbdclip"><rect x="0" y="0" width="{W}" height="{H}" rx="30"/></clipPath>'
+            f'<image href="data:image/png;base64,{b64}" x="0" y="0" width="{W}" height="{H}" '
+            f'preserveAspectRatio="xMidYMid slice" clip-path="url(#mapbdclip)"/>'
+            f'<rect x="0" y="0" width="{W}" height="{H}" rx="30" fill="none" stroke="{ink}" stroke-width="6"/>')
+
+
+def render_regionmap(theme, spec, phase="day", backdrop=None):
     """The shared TABLE board — V7 NEUTRAL board for 3-6 players, v3 (CD redesign 2026-08).
 
     SINGLE-PHASE PER FACE. The physical board is DOUBLE-SIDED and flips at dusk, so each `--phase`
@@ -669,17 +688,30 @@ def render_regionmap(theme, spec, phase="day"):
             f'<radialGradient id="glowB" cx="50%" cy="50%" r="60%">'
             f'<stop offset="0" stop-color="{frame}" stop-opacity="0.20"/>'
             f'<stop offset="1" stop-color="{frame}" stop-opacity="0"/></radialGradient>']
-    parts = [f'<defs>{"".join(defs)}</defs>',
-             f'<rect width="{W}" height="{H}" rx="30" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>']
+    # BACKDROP composite (CD 2026-08 "accurate island, keep the clean panel UI"): when a --backdrop PNG is
+    # present, embed it as the full-canvas BASE layer (behind everything) and draw the functional overlay on
+    # top; the code-drawn island silhouette + central glows are then SKIPPED (the illustration carries them).
+    # When ABSENT, render on the cream ground with the code underlay EXACTLY as before — so the
+    # functional-only output (build/map-<phase>-functional.png) stays byte-identical (every branch below
+    # keys off `over_art`, and its no-backdrop arm reproduces the pre-existing string verbatim).
+    bd_svg = _embed_map_backdrop(backdrop, W, H, ink) if backdrop else None
+    over_art = bd_svg is not None
+
+    parts = [f'<defs>{"".join(defs)}</defs>']
+    if over_art:
+        parts.append(bd_svg)
+    else:
+        parts.append(f'<rect width="{W}" height="{H}" rx="30" fill="url(#pg)" stroke="{ink}" stroke-width="6"/>')
 
     # ------------------------------------------------------------------ WARMTH underlay (behind spaces)
     # a soft stylised island of Taiwan down the spine + a gentle central glow (warm day / neon night)
-    parts.append(f'<path d="M1140 360 C 1376 512 1440 760 1308 1012 '
-                 f'C 1226 1198 1170 1332 1120 1376 '
-                 f'C 1072 1332 978 1198 944 1012 '
-                 f'C 850 760 914 512 1140 360 Z" fill="{frame}" opacity="0.06"/>')
-    parts.append(f'<ellipse cx="1140" cy="900" rx="1040" ry="720" fill="url(#glowA)"/>')
-    parts.append(f'<ellipse cx="1140" cy="820" rx="640" ry="520" fill="url(#glowB)"/>')
+    if not over_art:
+        parts.append(f'<path d="M1140 360 C 1376 512 1440 760 1308 1012 '
+                     f'C 1226 1198 1170 1332 1120 1376 '
+                     f'C 1072 1332 978 1198 944 1012 '
+                     f'C 850 760 914 512 1140 360 Z" fill="{frame}" opacity="0.06"/>')
+        parts.append(f'<ellipse cx="1140" cy="900" rx="1040" ry="720" fill="url(#glowA)"/>')
+        parts.append(f'<ellipse cx="1140" cy="820" rx="640" ry="520" fill="url(#glowB)"/>')
 
     # inner hairline frame — the SAME house treatment as the character boards
     parts.append(f'<rect x="26" y="26" width="{W-52}" height="{H-52}" rx="22" fill="none" '
@@ -696,8 +728,14 @@ def render_regionmap(theme, spec, phase="day"):
     fw, fh = 108, 150
     strip_w = dw + 44 + 4*fw + 3*14
     x0 = (W - strip_w) / 2
-    parts.append(f'<rect x="{x0-30:.0f}" y="{strip_y-22}" width="{strip_w+60:.0f}" height="{dh+44}" '
-                 f'rx="20" fill="#ffffff" opacity="0.20"/>')
+    if over_art:
+        # a strong phase-ground card so the booking-blue decks/ticket badges read on their intended base
+        # colour over the illustrated backdrop (not just a faint white wash)
+        parts.append(f'<rect x="{x0-30:.0f}" y="{strip_y-22}" width="{strip_w+60:.0f}" height="{dh+44}" '
+                     f'rx="20" fill="url(#pg)" opacity="0.86"/>')
+    else:
+        parts.append(f'<rect x="{x0-30:.0f}" y="{strip_y-22}" width="{strip_w+60:.0f}" height="{dh+44}" '
+                     f'rx="20" fill="#ffffff" opacity="0.20"/>')
     ticket = lambda cx, cy, r, c: emblem_svg("ticket", cx, cy, r, c)
     parts.append(_deck(x0, strip_y, dw, dh, booking_col, ticket))
     ax = x0 + dw + 8
@@ -759,8 +797,13 @@ def render_regionmap(theme, spec, phase="day"):
         rcol = r.get("color", accent)
         emb = r.get("emblem", "circle")
         rad = 18
-        # soft region colour-ZONE (warmth, tinted the region hue) + a crisp coloured border
-        parts.append(f'<rect x="{X}" y="{Y}" width="{PWc}" height="{PH}" rx="{rad}" fill="{rcol}" opacity="0.14"/>')
+        # soft region colour-ZONE (warmth, tinted the region hue) + a crisp coloured border. Over a backdrop,
+        # lay a soft phase-ground card UNDER the wash first so the panel's footprints/badge read on their
+        # intended base colour (the island still reads in the diamond gaps between panels), and bump the wash
+        # a touch so the region hue survives on top of art. No-backdrop path is byte-identical.
+        if over_art:
+            parts.append(f'<rect x="{X}" y="{Y}" width="{PWc}" height="{PH}" rx="{rad}" fill="url(#pg)" opacity="0.42"/>')
+        parts.append(f'<rect x="{X}" y="{Y}" width="{PWc}" height="{PH}" rx="{rad}" fill="{rcol}" opacity="{0.22 if over_art else 0.14}"/>')
         parts.append(f'<rect x="{X}" y="{Y}" width="{PWc}" height="{PH}" rx="{rad}" fill="none" '
                      f'stroke="{rcol}" stroke-width="3.5"/>')
         # compact region BADGE — colour + emblem + a single 繁體 glyph (NO English word)
@@ -788,6 +831,23 @@ def render_regionmap(theme, spec, phase="day"):
         block_w = 3*VW + DW + 3*gap
         x_start = X + PWc - 26 - block_w
         row_y = Y + PH - VH - 18
+        # Over a backdrop: a strong phase-ground card behind the whole 4-footprint row (so decks/slots read
+        # at full contrast on art) + a reserved MEEPLE keep-clear halo (~230×165 px, map-board.md §4) centred
+        # on the face-up vendor slot (slot 2 of the row), where up to 6 followers commit. Slot POSITIONS are
+        # unchanged from the functional layout — the reference render + map-board.md stay the single position
+        # source, so the halo is a quiet scrim that keeps that zone calm/high-contrast over busy art rather
+        # than moving the decks (which would desync the shared geometry). Both drawn UNDER the footprints.
+        if over_art:
+            rc_x, rc_y = x_start - 14, row_y - 16
+            rc_w, rc_h = block_w + 28, VH + 30
+            parts.append(f'<rect x="{rc_x:.0f}" y="{rc_y:.0f}" width="{rc_w:.0f}" height="{rc_h:.0f}" '
+                         f'rx="16" fill="url(#pg)" opacity="0.80"/>')
+            hcx = x_start + (VW + gap) + VW / 2
+            hcy = row_y + VH / 2
+            HW, HH = 230, 165
+            parts.append(f'<rect x="{hcx-HW/2:.0f}" y="{hcy-HH/2:.0f}" width="{HW}" height="{HH}" rx="20" '
+                         f'fill="url(#pg)" opacity="0.55" stroke="{rcol}" stroke-opacity="0.35" '
+                         f'stroke-width="2" stroke-dasharray="7 7"/>')
         parts.append(_deck(x_start, row_y, VW, VH, rcol, _stall))                    # face-down VENDOR deck
         parts.append(_vendor_space(x_start + (VW+gap), row_y, VW, VH, rcol))          # face-up vendor SLOT
         parts.append(_deck(x_start + 2*(VW+gap), row_y, VW, VH, rcol, _bowl))         # face-down MARKET deck
@@ -811,8 +871,13 @@ def render_regionmap(theme, spec, phase="day"):
 
     px0, py0, pw, ph = 1668, 1392, 568, 258
     line = frame
-    parts.append(f'<rect x="{px0}" y="{py0}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" '
-                 f'fill-opacity="0.20" stroke="{line}" stroke-opacity="0.55" stroke-width="2.5"/>')
+    if over_art:
+        # strong phase-ground card so the round-track / die read at full contrast over the backdrop
+        parts.append(f'<rect x="{px0}" y="{py0}" width="{pw}" height="{ph}" rx="20" fill="url(#pg)" '
+                     f'fill-opacity="0.86" stroke="{line}" stroke-opacity="0.7" stroke-width="2.5"/>')
+    else:
+        parts.append(f'<rect x="{px0}" y="{py0}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" '
+                     f'fill-opacity="0.20" stroke="{line}" stroke-opacity="0.55" stroke-width="2.5"/>')
 
     tl_day = {int(c): int(v) for c, v in vc.get("track_length", {}).items()}
     if is_night:
@@ -1471,6 +1536,11 @@ def main():
     # regionmap day/night state (mirrors the dusk flip)
     ap.add_argument("--phase", default="day", choices=["day", "night"],
                     help="regionmap: render the day (warm) or night (neon) state of the board")
+    ap.add_argument("--backdrop", type=Path, default=None,
+                    help="regionmap: full-canvas base image (PNG, e.g. FIG-MAP-ISLAND-<phase>.png) to "
+                    "COMPOSITE the functional overlay OVER. Absent → cream ground, byte-identical to the "
+                    "pre-art functional render. If omitted, auto-detects <out-dir>/mockups/"
+                    "FIG-MAP-ISLAND-<phase>.png (skipped when --out ends in '-functional').")
     args = ap.parse_args()
 
     theme = get_theme(args.theme)
@@ -1555,7 +1625,16 @@ def main():
         if not args.spec:
             ap.error("--type regionmap requires --spec <file.json>")
         spec = json.loads(args.spec.read_text(encoding="utf-8"))
-        svg, W, H = render_regionmap(theme, spec, args.phase)
+        # Backdrop: explicit --backdrop wins; else auto-detect <out-dir>/mockups/FIG-MAP-ISLAND-<phase>.png.
+        # The auto-detect is DELIBERATELY skipped for the functional reference render (--out …-functional)
+        # so build/map-<phase>-functional.png always renders on the cream ground (byte-identical fallback),
+        # even though the FIG island PNG sits right there in build/mockups/.
+        backdrop = args.backdrop
+        if backdrop is None and not args.out.stem.endswith("-functional"):
+            cand = args.out.parent / "mockups" / f"FIG-MAP-ISLAND-{args.phase}.png"
+            if cand.is_file():
+                backdrop = cand
+        svg, W, H = render_regionmap(theme, spec, args.phase, backdrop=backdrop)
     elif args.type == "die":
         if not args.spec:
             ap.error("--type die requires --spec <map.json> (region colours/emblems)")

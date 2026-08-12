@@ -6,9 +6,12 @@
 > boarding-pass tickets — the sole scoring vector — so **at-a-glance readability wins**: the tour name + a
 > single clear icon-motif, the mechanical requirement stays legible.
 
-**The style line to open every brief:**
-> *Style: per `art/art-style.md` — stylised cartoon, boarding-pass / ticket shape language, night-market
-> palette (warm day → neon night); one clear icon-motif, readable at card size. 繁體字. Human-illustrated; no AI final art.*
+**The style line to open every brief (CD Ghibli pivot 2026-08):**
+> *Style: per `art/art-style.md` — warm hand-painted **Studio-Ghibli-inspired anime**, boarding-pass /
+> ticket shape language, night-market palette (warm day → neon night); soft painterly light, luminous
+> colour; one clear icon-motif, readable at card size (readability wins — these are the sole scoring
+> vector). 繁體字. NOT photoreal, NOT a flat "AI cartoon"; Ghibli = the FEEL only. Human-illustrated final
+> art; AI for labelled mock-ups only.*
 
 ## ⚠ Sensitivity rails (BINDING — consultant verifies before print)
 - **DEFAULT = pure thematic re-skin.** Every shipped tour maps onto an **existing, sim-validated booking

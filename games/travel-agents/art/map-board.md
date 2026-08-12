@@ -82,6 +82,125 @@ the icon table).
 
 ---
 
+## EXACT DIMENSIONED LAYOUT SPEC (paste this — it fixes the geometry the AI keeps getting wrong)
+
+> **Why this exists.** The AI board keeps needing hand-correction because the earlier brief described the
+> layout in *prose* only. This section gives the **canvas, every play position, its size and its (x,y)
+> top-left corner — in board px AND as a fraction of the canvas** — so the AI reproduces the *exact*
+> geometry of `build_board.py --type regionmap` at whatever resolution it renders. **All numbers are
+> derived from the live renderer + `components/map.json`** (not invented). Coordinate origin = **top-left
+> (0,0)**; +x → right, +y → down. To scale to a render of width `RW` and height `RH`: `x_px = frac_x · RW`,
+> `y_px = frac_y · RH`.
+
+### 1 · CANVAS
+- **2280 × 1680 px**, **landscape**, aspect **≈ 1.357 : 1** (~19:14, close to 4:3). Fill it edge-to-edge
+  with the **accurate, bustling Ghibli island-of-Taiwan** backdrop (see `[FIG-MAP-ISLAND]`) — the
+  illustration is the **whole ground**; every functional element below is composited **on top** of it by
+  code. The functional layer (region panels + tints, card slots, tour row, HSR line, clock) is drawn by
+  code, so the **art must not draw any slot, box, deck, grid, clock, dial, text, colour-zone diamond, or
+  rail/HSR** — only the warm accurate island scene, with its busy market life pushed to the sea/coast/edges
+  and kept quiet under the UI zones.
+- **Board scale:** a card slot of 120 px = a real 63.5 mm poker card, so the board renders at **1.89 px/mm**
+  (0.16× the 750×1050 print-card scale). Use this to size any physical piece: e.g. a follower token.
+
+### 2 · REGIONS AS TRANSLUCENT OVERLAYS (not opaque boxes)
+Four region zones laid **over** the island as a **tinted wash (region hue @ ~14 % opacity) + a thin region-hue
+border (3.5 px)** — the illustration must read *through* them. Each carries a small solid **badge**
+(emblem + single 繁體 glyph, white on the region hue) at its top-left. **Diamond arrangement:** North top ·
+South bottom (both on the vertical HSR spine) · Central left · East right.
+
+| Region | 繁體 · emblem | Panel (x, y) px | Panel W×H px | Panel frac (x, y · w×h) | Badge (x, y) px 96×52 |
+|---|---|---|---|---|---|
+| **North 北** | 北 · triangle ▲ | (820, 390) | 640 × 340 | (0.360, 0.232 · 0.281×0.202) | (836, 406) |
+| **Central 中** | 中 · diamond ◆ | (240, 692) | 560 × 340 | (0.105, 0.412 · 0.246×0.202) | (256, 708) |
+| **East 東** | 東 · square ■ | (1480, 692) | 560 × 340 | (0.649, 0.412 · 0.246×0.202) | (1496, 708) |
+| **South 南** | 南 · circle ● | (820, 994) | 640 × 340 | (0.360, 0.592 · 0.281×0.202) | (836, 1010) |
+
+Region **centres** (for the connectors/HSR): North (1140, 560) · Central (520, 862) · East (1760, 862) ·
+South (1140, 1164). A thin muted **adjacency connector** runs edge-to-edge N–C, C–S, S–E, E–N.
+
+### 3 · CARD-PLACEHOLDER SLOTS AT TRUE CARD SIZE (empty rounded rectangles — cards get dealt ONTO them)
+Every slot is drawn **card-exact** so a real card drops in edge-to-edge. Slots are **empty placeholders**
+(dashed = face-up/empty; solid tinted = a face-down deck), **not** printed cards. **True sizes:**
+- **Deck / vendor-slot footprint = 120 × 168 px** (0.053 W × 0.100 H) — exact poker ratio 0.714. *(This IS a
+  card + a hairline; if you want a visible reveal, draw the placeholder rectangle 4–6 px larger, ~126×174.)*
+- **Face-up tour slot = 108 × 150 px** (0.047 × 0.089). **Market-discard = 88 × 124 px** (0.039 × 0.074),
+  drawn deliberately smaller so it reads as a discard, not another deck.
+
+**Per region, a 4-footprint row across the bottom of the panel, left→right:**
+`face-down VENDOR deck (stall-badged) → ONE face-up VENDOR slot (dashed) → face-down MARKET deck (bowl-badged)
+→ MARKET DISCARD (dashed + bowl + ↻ cycle)`. **Exactly one face-up vendor slot per region on the board**
+(the 5p/6p 2nd-slot scaling stays in the rulebook, off the board).
+
+| Region | Vendor deck (x,y) | Face-up vendor SLOT (x,y) | Market deck (x,y) | Market discard (x,y) |
+|---|---|---|---|---|
+| **North** | (950, 544) | (1082, 544) | (1214, 544) | (1346, 566) |
+| **Central** | (290, 846) | (422, 846) | (554, 846) | (686, 868) |
+| **East** | (1530, 846) | (1662, 846) | (1794, 846) | (1926, 868) |
+| **South** | (950, 1148) | (1082, 1148) | (1214, 1148) | (1346, 1170) |
+
+*(deck/slot/market = 120×168; discard = 88×124. The row is right-aligned inside its panel with a 26 px right
+margin and an 18 px bottom margin.)*
+
+### 4 · MEEPLE WHITESPACE PER REGION (keep clear of busy illustration)
+Followers (wooden meeples) are committed **onto the face-up vendor slot** and can pile up on a contested
+stall. A follower token is **22 mm → ≈ 42 px diameter** at board scale. Up to **6 meeples** in a loose
+2×3 cluster with finger-room needs **≈ 230 × 165 px** (0.101 W × 0.098 H). **Reserve that as a low-detail,
+uncluttered halo centred on each region's face-up vendor slot** — keep the island illustration quiet there so
+the wooden pieces read:
+
+| Region | Face-up-slot centre (x,y) px | Keep-clear halo (frac) |
+|---|---|---|
+| North | (1142, 628) — 0.501, 0.374 | ~0.101 × 0.098 centred here |
+| Central | (482, 930) — 0.211, 0.554 | ~0.101 × 0.098 centred here |
+| East | (1722, 930) — 0.755, 0.554 | ~0.101 × 0.098 centred here |
+| South | (1142, 1232) — 0.501, 0.733 | ~0.101 × 0.098 centred here |
+
+### 5 · TOP TOUR ROW (the 開團 Booking / Tours supply — the sole prize row)
+A **horizontal band centred at the top**, one soft backing panel behind it: **backing at (791, 130),
+698 × 212 px** (0.347, 0.077 · 0.306 × 0.126). Inside, left→right:
+- **1 face-down Tours (Booking) deck slot** — **(821, 152), 120 × 168 px** (0.360, 0.090), ticket-badged,
+  boarding-pass blue.
+- a short **→ draw arrow** (~44 px gap), then
+- **4 face-up tour-card slots** in a row — each **108 × 150 px** at **y = 161**, pitch **122 px**:
+  **x = 985 · 1107 · 1229 · 1351** (frac x = 0.432 · 0.485 · 0.539 · 0.593). The row centres on the canvas
+  mid-line (x = 1140).
+
+### 6 · BOTTOM-RIGHT DICE / CLOCK SECTION (Closing-Time)
+A single soft-bordered panel, **bottom-right: (1668, 1392), 568 × 258 px** (0.732, 0.829 · 0.249 × 0.154) —
+44 px from the right edge, 30 px from the bottom. **DAY face:** a 1→2→3 numbered round-track with the
+Closing-Time-**die** roll-point flagged per player count (3人 @ round 2, 4–6人 @ round 3) + a reset loop.
+**NIGHT face:** a bare **d6 + ↻ cycle** icon (rolls every round). Icon + number only, no prose.
+
+### 7 · HSR SPINE
+A vertical **double-rail** at **x = 1140** running **y ≈ 736 → 988** (0.438 → 0.588), rails offset ±9 px,
+~10 sleeper ties, a **stop node** (r ≈ 12 px) at each end (北 / 南), and a small **train glyph** mid-spine
+(~y = 862). Bare — no 停 marker; the Scheduled-Maintenance event card just sits on the track.
+
+### 8 · REGION COLOUR SPEC (exact hexes — the ONLY colours forced on the board)
+The board is a **layout** brief first. The only hues it *forces* are the **four region colours** — a genuinely
+functional board element: each region's wash + border + badge + its vendor/market footprints all carry that
+region's hue. Pulled verbatim from `tools/cards/themes.py` (the TA night-market region suits). By design each
+**region hue also equals its signature-ingredient hue** (verified region↔signature against `map.json` +
+`ingredients.csv`), so the wash doubles as a quiet, discovered-through-play signature cue — this is *colour on
+the region zone*, **not** the retired ingredient chips, and **no ingredient colours are painted anywhere else
+on the board.**
+
+| Region | 繁體 · signature | Hex | Applied to (functional) |
+|---|---|---|---|
+| **North 北** | 北 · Meat 肉 | **#D64545** (lantern red) | region wash @ ~14 %, 3.5 px border, badge fill, its 4-footprint row (dashed borders + stall/bowl glyphs) |
+| **Central 中** | 中 · Tea 茶 | **#1F8A7A** (jade teal) | same, Central panel |
+| **South 南** | 南 · Seafood 海鮮 | **#E6A930** (golden amber) | same, South panel |
+| **East 東** | 東 · Staples 糧 | **#26324D** (dusk indigo/navy) | same, East panel |
+
+Other functional board hues: **Tours/Booking deck + row = #3A6EA5** (boarding-pass blue); **HSR steel =
+#4A5A72**; **ground / bao-paper cream = #F7F1E3**; **ink = #26324D**. Keep these identical to the pay-chip and
+`FIG-ICON-*` colours already in use. **The full six-ingredient colour palette (incl. Vegetables 菜 #4C9A5A and
+Sugar & Pearls 糖珠 #B5835A) lives on the ingredient CARD prompts (`FIG-ING-*`), not on this board** — do not
+introduce green or caramel region zones.
+
+---
+
 ## Shared art direction (unchanged — for the future human-illustrated board)
 
 > The warm night-market palette (lantern vermilion `#D64545` / jade teal `#1F8A7A` / golden amber
@@ -99,17 +218,33 @@ the icon table).
 > scrim under an icon if a painted area would eat contrast). Art serves the at-a-glance read, never
 > buries it.
 
-## [FIG-MAP-ISLAND] — the Taiwan-island backdrop (behind the diamond)
-- **Where:** the central diamond area behind the four region panels + the HSR spine. A soft, stylised
-  **island of Taiwan** motif tying the four regions into one place — a gentle relief map (Central
-  mountains, western plain, east coast), not a literal atlas. The v3 code render already lays a faint
-  island silhouette + a warm/neon glow here; the illustrated version replaces it at higher fidelity.
-- **Tone:** a warm travel-poster / vintage-tourism feel. Dusk light on the day face; lantern-neon shimmer
-  at night.
+## [FIG-MAP-ISLAND] — the accurate Taiwan-island backdrop (the composite ground)
+- **What it is:** the whole-canvas ground the code composites the functional layer (region panels + tints,
+  card slots, tour row, HSR line, clock) **on top of**. The art draws **only the island scene** — no slots,
+  no panels, no rail, no colour-zone diamond, no text.
+- **The island — accurate, unmistakable Taiwan (CD fix 2026-08).** The recognisable **sweet-potato / leaf
+  silhouette**, long axis roughly **north (top) → south (bottom)**, with the **Central Mountain Range down
+  the spine**, the flatter **western plains**, the rugged **eastern coast**, and one or two tiny **offshore
+  isles** (Penghu) in the western sea. Centred and vertical, filling ~the central third of the landscape
+  canvas, open sea to left and right. It must read at a glance as **Taiwan**, never a generic blob. *(This
+  retires the earlier serene-watercolour blob island the CD rejected.)*
+- **Energy — HECTIC race + bustle, not a serene painting (CD fix 2026-08).** Evoke the game: a lively
+  cross-island food dash — clustered **breakfast shops (早餐店)** and **wet-/night-markets (菜市場 / 夜市)**,
+  steam, lanterns, hanging signs, a few tiny sampans, and a **few tiny distant figures** for life and
+  motion. Warm, energetic, joyful — in the Ghibli hand. A few tiny **secular** landmarks dotted in for
+  travel-poster charm (Taipei 101, a Penghu sea-arch, a Taroko-gorge cliff / Sun-Moon-Lake glint — lake +
+  mountains only). **No large foreground people.**
+- **NO rail / HSR in the art (CD fix 2026-08).** The HSR is a **code line** drawn between the regions — it
+  comes off the illustration entirely. (The old prompt drew a rail down the spine; removed.)
+- **Keep the UI zones quiet.** Concentrate the busy market energy in the **open/peripheral** areas — the
+  sea, coastline, corners, outer edges, and the gaps between the panels — and keep it **calmer / lower-detail
+  directly under the code UI**: the top-centre tour-row strip, the four region-panel areas, the bottom-right
+  clock corner, and the panel interiors (positions per the §"EXACT DIMENSIONED LAYOUT SPEC" fractions, which
+  stay as the code layout). Treat those areas as quiet ground so slots and text read on top.
+- **Tone:** a warm travel-poster feel with life and motion. Dawn morning-market gold on the day face;
+  lantern-neon night-market glow on the night face.
 - **Neutral / any-seat:** compose so it reads **upright from every seat** — no top/bottom hero orientation.
-- **Keep clear:** the HSR spine (a drawn double-rail N↔S) with its two **stop nodes**, and the region
-  adjacency connectors must read on top — treat the island as a low-contrast underlay. **No 停 marker** and
-  **no card slots/boxes/grid** in the art (the code draws the functional spaces on top).
+- **Secular only:** landmarks are secular sites/architecture; no temple, deity, shrine or worship imagery.
 
 ## [FIG-MAP-NORTH] · [FIG-MAP-CENTRAL] · [FIG-MAP-SOUTH] · [FIG-MAP-EAST] — the four region vignettes
 - **Where:** a small illustrated vignette in each region panel's ground, behind its face-up vendor slots
@@ -162,22 +297,32 @@ the icon table).
 > the **gitignored** `games/travel-agents/build/mockups/`, filename = the FIG code; **never committed,
 > never moved to `exports/`, never shipped.**
 >
-> **SOFT & SIMPLE direction (CD steer 2026-08).** The board is a **backdrop underlay**: the functional
-> icon spaces are rendered by code and sit **on top**, so the art stays **quiet and open** — mostly **soft
-> colour + a gentle glow**, four regions as soft **colour-zones**, a **single clean HSR line** down the
-> spine, a **clean open centre**, and only **ONE or TWO tiny accents.** Region identity colours stay
-> **warm in BOTH faces** (only the light flips). **Double-sided:** a matched **DAY** and **NIGHT** face —
+> **ACCURATE-ISLAND + BUSTLE direction (CD fix 2026-08 — supersedes the earlier "soft & simple blob").**
+> The board is a **composite**: the functional layer (region **panels + tints**, card slots, tour row, HSR
+> line, clock) is rendered by code and sits **on top**, so the art draws **only the island scene**. Two
+> things changed from the retired serene-watercolour attempt: (1) the island must be an **accurate,
+> unmistakable Taiwan** (sweet-potato/leaf shape, Central Mountain Range down the spine, western plains,
+> rugged east coast, a tiny Penghu isle), not a generic blob; and (2) the mood must be the game's **hectic
+> food-race BUSTLE** — breakfast shops, wet-/night-markets, steam, lanterns, hanging signs, a few tiny
+> distant figures, a few tiny secular landmarks — pushed into the **open/peripheral** areas (sea, coast,
+> corners, edges) and kept **quiet under the UI zones** so slots + text read. **No rail/HSR, no colour-zone
+> diamond, no slots/boxes/grid/text in the art** (code draws all of that). Region identity colours are
+> painted by the code tints; the art may keep only the **faintest** warm drift, never four hard washes.
+> **Double-sided:** a matched **DAY** (dawn morning-market gold) and **NIGHT** (lantern-neon) face —
 > generate the day face first, then reference it for the night face so they register back-to-back. Compose
 > **upright from any seat.** **Secular only.** The paste-ready DAY + NIGHT prompts live in
 > `art/mockup-kickoffs.md`.
 
 - **`FIG-MAP-ISLAND-day` / `FIG-MAP-ISLAND-night` — the whole-table backdrop (the main warmth prop).**
-  A softly stylised **island of Taiwan** with the four regions as **soft colour-zones** (北 top / 中 left /
-  南 bottom / 東 right) and a single clean **HSR line** down the N↔S spine. **Add only ONE or TWO tiny
-  accents** (e.g. one paper lantern + one little steaming bowl) — **no crowds, no people, no buildings, no
-  dense stalls, no lantern strings, no card slots/boxes/grid, no 停 marker, no text.** Keep the whole
-  **centre clean and open** (cards get placed on top). **DAY:** warm dawn glow, soft gold. **NIGHT:** soft
-  lantern-neon glow + a moon, region colours stay warm — only the light flips.
+  An **accurate, unmistakable island of Taiwan** (sweet-potato/leaf shape, Central Mountain Range spine,
+  western plains, rugged east coast, a tiny Penghu isle), alive with the game's **hectic cross-island food
+  race** — bustling breakfast shops + wet-/night-markets, steam, lanterns, hanging signs, a few tiny distant
+  figures, and a few tiny **secular** landmarks (Taipei 101, a Penghu sea-arch, a Taroko/Sun-Moon-Lake hint,
+  lake + mountains only). Push the busy energy to the **sea, coast, corners, edges and gaps between panels**;
+  keep the **UI zones quiet** (top-centre tour strip, the four region-panel areas, the bottom-right clock
+  corner — per the LAYOUT SPEC fractions). **No large foreground people** (tiny distant figures only), **no
+  rail/HSR, no card slots/boxes/grid, no colour-zone diamond, no text.** **DAY:** warm dawn morning-market
+  gold. **NIGHT:** lantern-neon night-market glow + a moon; region colours stay warm — only the light flips.
   *Closing: one image, framed 2280×1680, ~1.36:1, full background, high-res PNG (not SVG); reads upright
   from every seat; save build/mockups/FIG-MAP-ISLAND-day.png (then the matched night as
   FIG-MAP-ISLAND-night.png).*

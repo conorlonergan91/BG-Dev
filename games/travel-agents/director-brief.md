@@ -17,6 +17,68 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-12 — Wire the remaining tour art, then merge to main via PR.**
+  - **Ask:** *"Wire in the rest that I sent over as needed and then merge everything so far to main with a PR."*
+  - **Context:** everything else from the art batch is wired (map, ingredient cards, icons, vendor backs, vendor-card layout). The remaining unwired assets are the two tour illustrations (FIG-TOUR-n_all4 環島, FIG-TOUR-d_south2 府城); the bowl-count is held (generic count motif, no id). After wiring, cut a PR to main.
+  - **Status:** `captured` → `bg-infodesign` adds the booking-card tour-illustration slot (embed FIG-TOUR-<id> with the functional reads overlaid, graceful text fallback for the ~43 art-less tours); then orchestrator rebuilds, commits, and opens the PR.
+
+- **2026-08-12 — Vendor card: badges onto the illustration-border corners (engine bonus left, ticket VP right).**
+  - **Ask:** *"I like the way you have the icon in the border. How about we move the engine bonus to the left corner of the illustration border and the ticket VP pill to the right."*
+  - **Context:** the CD liked the engine-bonus gift-tag pinned to the hero-image border (currently top-centre). Move it to the illustration's top-LEFT corner and move the reward ticket pill from the header to the illustration's top-RIGHT corner — a symmetric pair riding the hero frame.
+  - **Status:** `captured` → `bg-infodesign` (engine-bonus badge → top-left corner of the hero border; reward ticket pill → top-right corner; keep both existing styles; region pill/title/cost row/footer intact).
+  - **Follow-on (same pass):** *"make the ingredient and follower costs centred vertically in that space and increase size appropriately."* → the cost row (pay chips + follower cell) vertically centred in the band below the hero image and scaled up to read boldly.
+
+- **2026-08-12 — Vendor engine bonus: top-centre, as the ingredient icon, no "−1".**
+  - **Ask:** *"Put the engine bonus for the card in the top centre and use the ingredient icons. No need for the −1 as that's obvious from the rules. Unless it's a multiple then use ×2 etc (although I'm not sure if we have such engine bonuses)."*
+  - **Context / verified:** the day-food region discount IS a signature-ingredient discount (sim: an owned region icon discounts that region's signature ingredient — N→Meat, C→Tea, S→Seafood, E→Staples; sugar/veg commons never discounted). So showing the ingredient icon is mechanically accurate. Every day-food vendor grants exactly ONE icon → no multiples exist in current data; the ×N path is coded for safety only.
+  - **Status:** `captured` → `bg-infodesign`: move the engine-bonus to top-centre as the region's signature-ingredient icon (FIG-ICON), drop the "−1", ×N only if a vendor ever grants >1; remove the old bottom-right region "−1" cell.
+
+- **2026-08-12 — Vendor card: move the VP ticket pill top-right under the location glyph; fix the day/night banner overlapping the border.**
+  - **Ask:** *"For the vendor cards I think the ticket VP pill should be on the top right under the location glyphs. Also the day and night banners down the bottom are overlapping with the card border and it looks sloppy."*
+  - **Context:** Reaction to the icon-swapped vendor card. Reward should sit top-right beneath the region pill (▲N); the bottom day/night footer banner currently collides with the rounded card frame.
+  - **Status:** `captured` → `bg-infodesign` (relocate the reward ticket pill to top-right under the region pill; inset/restyle the phase footer so it sits cleanly inside the border).
+
+- **2026-08-11 — Map: composite the functional layer over the backdrop; accurate Taiwan + bustling vibe.**
+  - **Ask:** the CD's first AI map (a serene watercolour blob) was wrong: *"the island doesn't look like Taiwan… Taiwan has mountains in the middle and the railway is around the coastline not through the middle… the HSR should be between the overlay regions, not on the island illustration. Where are the region overlays, the card-deck/pile spaces, the meeples, the clock? …the board should evoke the hectic race, bustling breakfast shops and local markets, some sites — not a serene picturesque watercolour, it's too much of a contrast from the game."*
+  - **Root cause (mine):** the functional board (region panels, card slots, tour row, HSR, clock) is fully code-rendered and always has been — but `make.sh` `cp`-overwrites it with the AI backdrop, shipping only the backdrop. The "follow-up composite step" was never wired.
+  - **CD decision (AskUserQuestion):** **"Accurate island, keep clean panel UI"** — accurate, bustling Taiwan as the illustrated BACKDROP, with the current clean diamond of region panels/slots composited on TOP as the play UI (panels are furniture, not a literal geographic map). HSR stays a code line between regions (off the illustration).
+  - **Status:** `captured` → (1) `bg-infodesign`: composite the functional layer over the backdrop (fix the `cp`-overwrite), reserve the missing 6-meeple keep-clear space, and make panels/labels legible over a busy backdrop. (2) `bg-art-director`: rewrite the FIG-MAP backdrop prompt — accurate Taiwan (central mountains, real coast), hectic/bustling market energy, no HSR/functional/colour-diamond, quiet zones where the UI lands; regen zip.
+
+- **2026-08-11 — Map mockup prompt needs an EXACT component-layout spec.**
+  - **Ask:** *"When it was generating the map I had to keep giving clear instructions about how to lay out the component spaces — regions more of an overlay, realistic-sized placeholder card slots, a reasonable amount of white space to put up to 6 meeples in a region, the slots at the top for the tours deck and 4 face-up cards, and the dice-clock section bottom-right. Update the map prompts to make this very clear and give exact dimensions so it sizes everything correctly."*
+  - **Context:** The CD generates the board as AI art and kept hand-correcting the layout each attempt. The map prompt must specify the playable geometry precisely — pulled from the real board spec + card sizes — so the AI gets slot sizes, meeple whitespace, the top tour row, and the clock corner right first time.
+  - **Status:** `captured` → `bg-infodesign` (derive exact dims from `map.json` + `build_board.py` + real card px + meeple footprint; rewrite the map kickoff/brief with an explicit dimensioned layout; regen the zip).
+
+- **2026-08-11 — "Staples" rename + a Studio-Ghibli art-direction pivot + illustrated vendor-card backs.**
+  - **Ask:** *"Change Rice & Noodles to 'Staples' and have the illustration include rice, noodles, flour & tofu. I've changed the meat card to raw instead of cooked (it's an ingredient) — add stuff so it looks less gross; the AI kept putting it on a plate all touching which was gross, so I asked for it floating. Overall the ingredient illustrations would be better more cartoonish rather than hyper-realistic — ideally a Studio Ghibli anime feel; the current art is very 'ChatGPT cartoon'. Characters should have exaggerated body features, and the food should look delicious like the famous Ghibli food style. Vendor card backs: day = a breakfast-shop illustration, night = a night-market illustration (no humans, just the shop)."*
+  - **Context:** The CD is generating the art themselves and steering the whole visual hand. Two tracks now: the tiny FUNCTIONAL icons stay flat **emoji** style (last steer); the ILLUSTRATIONS (ingredient/vendor/character/tour art + card backs) pivot to a **Studio Ghibli** feel — delicious hand-painted food, caricatured/exaggerated characters, warm and painterly, explicitly NOT photoreal or generic AI-cartoon.
+  - **Status:** `captured`. Data rename done (`recipe-glyphs.csv` / `ingredients.csv` / `names.md`: **Staples** over canonical 糧; illustration = rice·noodles·flour·tofu, floating; meat art-note → raw/floating/appetising). Art pivot → `bg-art-director` (rewrite `art-style.md` to the Ghibli direction; update every kickoff/brief; spec the two no-human vendor-back illustrations; regen the zip). Wiring the generated back illustrations into the renderer is a later step once the CD delivers the art.
+
+- **2026-08-11 — Drop the apex glyph; CD will AI-generate the icons in a cartoonish emoji style.**
+  - **Ask:** *"We can probably get rid of the old point glyph on the top right of vendor cards as well (or if that's only for apex then there's no need for a glyph — it should just be reflected in the cost and points value). I'm going to use AI art to generate the icons for points, ingredients and followers, so update the zip and the prompts etc. I don't want these icons hyper-realistic like the food pictures — more like emojis, cartoonish style."*
+  - **Context:** After the round-2 vendor polish. The top-right mark was the apex ★ — CD wants it gone (apex reads from the higher points + cost, no dedicated glyph). And the CD will generate the 8 functional icons (6 ingredients + followers + points/ticket) themselves via AI, in an **emoji / cartoonish** style — explicitly NOT the realistic look of the food-dish illustrations.
+  - **Status:** `captured` → apex ★ removed from the vendor card (`build_cards.py`). Icon-generation prompts + refreshed `ta-art-context.zip` → `bg-ai-prompt` (emoji-style anchor, shapes/colours matched to the SVG placeholders so the AI outputs drop in as `FIG-ICON-<type>.png`). Wiring the generated PNGs into the renderer is a later step once the CD delivers the art; the SVG icons stand in until then.
+
+- **2026-08-11 — Vendor card polish round 2: kill the cross-region badge, one cost row, booking-style ticket reward, illustrated icons.**
+  - **Ask:** *"No need for cross region badge — get rid of it. Also all the 'cost' should be on the same row (ingredients + followers), and then for the rewards the points should look the same as how they're displayed on the bookings. The glyph for points should be a ticket rather than a star thing. We should have illustrated icons instead of glyphs for ingredients and followers."*
+  - **Context:** Reaction to the round-1 vendor redesign. CD wants the card to read as **COST (ingredients + followers together) → REWARD (points)**, with the reward matching the Bookings' `+N value` pill and a **ticket** glyph replacing the gold star, and the abstract geometric type/follower glyphs upgraded to **illustrated** (little drawn) icons.
+  - **Status:** `captured` → in flight to `bg-art-director` (illustrated icon set + card visual simplification; Beacon byte-identical; dual-coding/CVD floor preserved). Cross-region badge → removed (this also closes the earlier A/B/C badge-accuracy question: answer = C, drop it).
+
+- **2026-08-11 — Beef Noodle is the apex; vendor cards are too busy; any-tours share the day/night back.**
+  - **Ask (three steers, one message):** *(1)* *"Can we change beef noodle to be the apex dish instead of
+    the sausage."* *(2)* *"I also think the vendor cards are very busy and have way too much going on — we
+    could trim down everything unnecessary and leave space for the images (attached a few for reference)."*
+    *(3)* *"The 'any' tours shouldn't have a different back as they'll be mixed in with the respective
+    DAY / Night tour decks."*
+  - **Context:** CD shared 5 finished food illustrations (beef noodle, gua bao, bubble tea, egg crepe,
+    pepper bun) — clean hero-food-on-cream, the target look for a trimmed vendor card with room for art.
+    Beef noodle (牛肉麵) is Taiwan's national dish → it, not a Big Sausage, should be the marquee ★ apex.
+    Any-time tours physically shuffle into the day/night tour decks, so a distinct any-back would make them
+    sortable — they need to share the tour back.
+  - **Status:** `captured` → in flight. (1) → `bg-design` (vendors.csv, invariant-preserving swap). (2) →
+    `bg-infodesign` (vendor front redesign + embed the 5 images). (3) → unify the tour back (one
+    boarding-pass back for day/night/any bookings; market cards keep their morning/night-market backs).
+
 - **2026-08-11 — Seriously strip down the player aids into a per-player, card-sized, double-sided aid.**
   - **Ask:** *"Seriously strip down the player aids… fit in a card the same size as the others… one for each
     player, on one side it lists the actions (save explanation for the rulebook), on the other side a very
