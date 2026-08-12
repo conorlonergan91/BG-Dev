@@ -104,22 +104,39 @@ register back-to-back).** Keep the **whole centre and the four region zones OPEN
 functional overlay (vendor decks + slots, market decks + discards, Booking deck + row, the bare HSR spine,
 the Closing-Time counter) composites on top, so the art must not draw any slots, boxes, grid, clock, or text.
 
+### LAYOUT SPEC — position the zones exactly (canvas fractions; full derivation in `art/map-board.md` §"EXACT DIMENSIONED LAYOUT SPEC")
+The backdrop must place its four colour-zones + the HSR line so the code-composited functional layer (tour
+row, decks, slots, clock) lands in the open areas. **Canvas 2280 × 1680 px, landscape ~1.36:1.** Coordinates
+below are **fractions of the canvas** (x·y = top-left; w×h). **Keep every listed area OPEN and low-contrast.**
+- **Four region colour-zones (diamond):** North 北 **top** centred at (0.50, 0.33); Central 中 **left** at
+  (0.23, 0.51); East 東 **right** at (0.77, 0.51); South 南 **bottom** at (0.50, 0.69). Each zone ≈
+  **0.25–0.28 W × 0.20 H**. North & South sit on the vertical spine; Central & East flank.
+- **HSR line:** a single clean vertical rail at **x = 0.50**, running **y 0.44 → 0.59** (North↔South).
+- **Top tour-row band:** keep a clear open strip across the top centre — **x 0.35–0.65, y 0.08–0.20**
+  (5 tour cards get placed here).
+- **Bottom-right clock:** keep an open rectangle at **x 0.73–0.98, y 0.83–0.98**.
+- **Per-region card + meeple areas:** keep the lower portion of each region-zone open and quiet (cards +
+  up to 6 wooden meeples get placed there). Region-zone hues (functional, match exactly): North **#D64545**,
+  Central **#1F8A7A**, South **#E6A930**, East **#26324D**; keep them as **soft ~14 % washes**, never solid.
+
 ### `FIG-MAP-ISLAND-day` — the daytime table backdrop
 ```
-Generate a mock-up game-board BACKDROP for Travel Agents: Taiwan Food Tour, in the art style of the attached reference. Cite art/art-style.md. A softly stylised warm-daytime map of TAIWAN as a night-market travel board: the island reads as four soft COLOUR-ZONES — North 北 top (lantern vermilion), Central 中 left (jade teal), South 南 bottom (golden amber), East 東 right (dusk indigo) — with a single clean drawn HSR rail line running down the North↔South spine. Warm dawn glow, soft gold light, night-market palette on bao-paper cream. Add only ONE or TWO tiny warm accents (e.g. one paper lantern, one little steaming bowl). Keep the WHOLE CENTRE and all four zones CLEAN, OPEN and LOW-CONTRAST — a quiet backdrop only. ABSOLUTELY NO card slots, boxes, grid, decks, clock, dials, tokens, buildings, crowds, people, dense stalls, lantern strings, NO text or labels of any kind (a functional layer will be drawn on top by code). Reads UPRIGHT from every seat (no single "front"). Secular only — no temple, deity, or worship imagery. Traditional 繁體 only if any glyph appears (prefer none). Landscape ~1.36:1, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-day.png.
+Generate a mock-up game-board BACKDROP for Travel Agents: Taiwan Food Tour, in the art style of the attached reference. Cite art/art-style.md. Canvas exactly 2280 × 1680 px, landscape ~1.36:1. A softly stylised warm-daytime map of TAIWAN as a night-market travel board, composed as a DIAMOND of four soft COLOUR-ZONES (each a gentle ~14% wash, never solid): North 北 at TOP-centre (lantern vermilion #D64545), Central 中 at LEFT (jade teal #1F8A7A), South 南 at BOTTOM-centre (golden amber #E6A930), East 東 at RIGHT (dusk indigo #26324D) — with a single clean drawn HSR rail line running vertically down the North↔South spine (screen centre). Warm dawn glow, soft gold light, night-market palette on bao-paper cream #F7F1E3. Add only ONE or TWO tiny warm accents (e.g. one paper lantern, one little steaming bowl). Keep these areas CLEAN, OPEN and LOW-CONTRAST for a functional layer placed on top: the WHOLE CENTRE, a top-centre strip, a bottom-right corner, and the lower half of each colour-zone. ABSOLUTELY NO card slots, boxes, grid, decks, clock, dials, tokens, buildings, crowds, people, dense stalls, lantern strings, NO text or labels of any kind (a functional layer will be drawn on top by code). Reads UPRIGHT from every seat (no single "front"). Secular only — no temple, deity, or worship imagery. Traditional 繁體 only if any glyph appears (prefer none). Landscape ~1.36:1, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-day.png.
 ```
 
 ### `FIG-MAP-ISLAND-night` — the matched nighttime face
 ```
-Now generate the NIGHT face of the SAME map backdrop, matching the attached day face exactly in layout and composition so they register back-to-back (double-sided board). Identical island shape, identical four soft colour-zones (North 北 top vermilion · Central 中 left jade · South 南 bottom amber · East 東 right indigo), identical single HSR rail down the N↔S spine. ONLY the light flips: soft festive lantern-NEON glow (lavender / magenta) + a gentle moon — region identity colours stay WARM, never a cold or red-alarm register. Same one or two tiny accents. Whole centre and all four zones stay CLEAN, OPEN, LOW-CONTRAST. NO card slots, boxes, grid, decks, clock, dials, tokens, buildings, crowds, people, dense stalls, lantern strings, NO text or labels (code draws the functional layer on top). Upright from every seat. Secular only. Landscape ~1.36:1, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-night.png.
+Now generate the NIGHT face of the SAME map backdrop, matching the attached day face exactly in layout and composition so they register back-to-back (double-sided board). Canvas exactly 2280 × 1680 px, ~1.36:1. Identical island shape, identical diamond of four soft colour-zones (North 北 top #D64545 · Central 中 left #1F8A7A · South 南 bottom #E6A930 · East 東 right #26324D, each a ~14% wash), identical single HSR rail down the N↔S spine at screen centre. ONLY the light flips: soft festive lantern-NEON glow (lavender / magenta) + a gentle moon — region identity colours stay WARM, never a cold or red-alarm register. Same one or two tiny accents. The same areas stay CLEAN, OPEN, LOW-CONTRAST (whole centre, top-centre strip, bottom-right corner, lower half of each zone). NO card slots, boxes, grid, decks, clock, dials, tokens, buildings, crowds, people, dense stalls, lantern strings, NO text or labels (code draws the functional layer on top). Upright from every seat. Secular only. Landscape ~1.36:1, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-night.png.
 ```
 
-**Scale note.** The board slot is **2280 × 1680 px (~1.36:1)** at 300 DPI (see the SCALE TABLE). Generate
-large, export at that aspect. Prep with `python tools/mockup/prep_mockup.py --image <download> --fit
-2280x1680 --pad --game games/travel-agents --out FIG-MAP-ISLAND-day.png` (no `--key-bg` — the map is a
-full backdrop, not a cut-out). Per-region illustrated vignettes (`FIG-MAP-NORTH` etc.) are **NOT** part of
-this soft backdrop — the regions read as plain colour-zones (richer per-region scenes stay a future option
-in `art/map-board.md`, East consultant-gated).
+**Scale note.** The board slot is **2280 × 1680 px (~1.36:1)** at 300 DPI (see the SCALE TABLE and the
+dimensioned layout in `art/map-board.md`). Real component sizes on this board: a **card slot = 120 × 168 px**
+(0.053 × 0.100 of canvas, poker ratio), a **follower meeple ≈ 42 px** across (22 mm at the board's 1.89 px/mm
+scale). Generate large, export at that aspect. Prep with `python tools/mockup/prep_mockup.py --image
+<download> --fit 2280x1680 --pad --game games/travel-agents --out FIG-MAP-ISLAND-day.png` (no `--key-bg` —
+the map is a full backdrop, not a cut-out). Per-region illustrated vignettes (`FIG-MAP-NORTH` etc.) are
+**NOT** part of this soft backdrop — the regions read as plain colour-zones (richer per-region scenes stay a
+future option in `art/map-board.md`, East consultant-gated).
 
 ---
 
@@ -333,22 +350,22 @@ colour alone** (bg-access: Meat-red and Veg-green are a red/green pair — the d
 redundant encoding). Real food rendered faithfully; secular. 繁體字. Mock-up only. Save
 `build/mockups/FIG-ING-<id>.png`.
 ```
-FIG-ING-meat — 肉 MEAT (North signature). A MIX of RAW cuts FLOATING APART (not plated, not stacked, not touching): a glossy striped slab of raw pork belly + a raw beef shank + a piece of raw poultry. Fresh, glistening and appetising — add a tasteful garnish sprig / clean highlights to keep it delicious; it is an INGREDIENT, so raw — but NOT gory, bloody, or gross. Ghibli-delicious. Emblem: hex.
+FIG-ING-meat — 肉 MEAT (North signature). A MIX of RAW cuts FLOATING APART (not plated, not stacked, not touching): a glossy striped slab of raw pork belly + a raw beef shank + a piece of raw poultry. Fresh, glistening and appetising — add a tasteful garnish sprig / clean highlights to keep it delicious; it is an INGREDIENT, so raw — but NOT gory, bloody, or gross. Ghibli-delicious. Emblem: hex. TYPE-COLOUR CUE: frame the card with a soft #D64545 (lantern red) accent — a faint edge vignette / gentle ground tint behind the items that ties the card to its type — but keep the ground light and do NOT recolour the food itself (it stays naturally appetising).
 ```
 ```
-FIG-ING-tea — 茶 TEA (Central signature). A MIX FLOATING APART (not plated/touching): high-mountain oolong leaves + black tea + the bubble-tea leaf base, a small teapot or cup floating alongside. Ghibli-delicious. Emblem: triangle.
+FIG-ING-tea — 茶 TEA (Central signature). A MIX FLOATING APART (not plated/touching): high-mountain oolong leaves + black tea + the bubble-tea leaf base, a small teapot or cup floating alongside. Ghibli-delicious. Emblem: triangle. TYPE-COLOUR CUE: frame the card with a soft #1F8A7A (jade teal) accent — a faint edge vignette / gentle ground tint behind the items that ties the card to its type — but keep the ground light and do NOT recolour the food itself (it stays naturally appetising).
 ```
 ```
-FIG-ING-seafood — 海鮮 SEAFOOD (South signature). A MIX FLOATING APART (not plated/touching, no shared ice bed): a plump oyster + a milkfish + a shrimp + a clam + a squid, each drifting separately, fresh and glistening. Ghibli-delicious. Emblem: square.
+FIG-ING-seafood — 海鮮 SEAFOOD (South signature). A MIX FLOATING APART (not plated/touching, no shared ice bed): a plump oyster + a milkfish + a shrimp + a clam + a squid, each drifting separately, fresh and glistening. Ghibli-delicious. Emblem: square. TYPE-COLOUR CUE: frame the card with a soft #E6A930 (golden amber) accent — a faint edge vignette / gentle ground tint behind the items that ties the card to its type — but keep the ground light and do NOT recolour the food itself (it stays naturally appetising).
 ```
 ```
-FIG-ING-staples — 糧 STAPLES (East signature) [renamed from "Rice & Noodles"/"Pantry"]. A MIX FLOATING APART (not plated/touching): a mound of steamed rice + a tangle of noodles + a scoop/dusting of flour + a soft white block of tofu, each drifting separately, fresh and appetising. Ghibli-delicious. Emblem: circle. [file: FIG-ING-pantry.png — the pipeline slug stays `pantry`.]
+FIG-ING-staples — 糧 STAPLES (East signature) [renamed from "Rice & Noodles"/"Pantry"]. A MIX FLOATING APART (not plated/touching): a mound of steamed rice + a tangle of noodles + a scoop/dusting of flour + a soft white block of tofu, each drifting separately, fresh and appetising. Ghibli-delicious. Emblem: circle. TYPE-COLOUR CUE: frame the card with a soft #26324D (dusk indigo/navy) accent — a faint edge vignette / gentle ground tint behind the items that ties the card to its type — but keep the ground light and do NOT recolour the food itself (it stays naturally appetising). [file: FIG-ING-pantry.png — the pipeline slug stays `pantry`.]
 ```
 ```
-FIG-ING-sugar — 糖 SUGAR (common — Central & South). Cane sugar FLOATING APART (not plated/touching): a cut length of sugar cane + a little heap of amber crystals + a drizzle of syrup, drifting separately. Ghibli-delicious. Emblem: beam.
+FIG-ING-sugar — 糖 SUGAR (common — Central & South). Cane sugar FLOATING APART (not plated/touching): a cut length of sugar cane + a little heap of amber crystals + a drizzle of syrup, drifting separately. Ghibli-delicious. Emblem: beam. TYPE-COLOUR CUE: frame the card with a soft #B5835A (caramel / brown) accent — a faint edge vignette / gentle ground tint behind the items that ties the card to its type — but keep the ground light and do NOT recolour the food itself (it stays naturally appetising).
 ```
 ```
-FIG-ING-veg — 菜 VEGETABLES (common — North & East). A MIX FLOATING APART (not plated/touching, no basket): leafy greens + a cabbage + a radish/daikon + a bamboo shoot + a scallion + roselle + wintermelon, each drifting separately, fresh and crisp. Ghibli-delicious. Emblem: a NEW leaf mark (green) — must read as clearly DISTINCT in shape from Meat's hex.
+FIG-ING-veg — 菜 VEGETABLES (common — North & East). A MIX FLOATING APART (not plated/touching, no basket): leafy greens + a cabbage + a radish/daikon + a bamboo shoot + a scallion + roselle + wintermelon, each drifting separately, fresh and crisp. Ghibli-delicious. Emblem: a NEW leaf mark (green) — must read as clearly DISTINCT in shape from Meat's hex. TYPE-COLOUR CUE: frame the card with a soft #4C9A5A (green) accent — a faint edge vignette / gentle ground tint behind the items that ties the card to its type — but keep the ground light and do NOT recolour the food itself (it stays naturally appetising). NOTE: this green must stay clearly distinguishable from Meat's #D64545 red by the emblem SHAPE too (red/green pair — shape is the redundant colour-blind cue).
 ```
 
 ---
