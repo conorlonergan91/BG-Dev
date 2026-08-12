@@ -322,3 +322,69 @@ wanted). Generate large; a **~1:1 to ~5:4 box-top framing** works for a mock-up.
 ```
 Generate a mock-up BOX COVER illustration for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. Cite art/art-style.md. HERO IDENTITY IMAGE: a joyful, chaotic race between rival TRAVEL AGENTS building the island's best Taiwanese street-food tour — capture the WARMTH and competitive glee at the heart of the game. Compose a lively night-market hero scene: two or three of the game's characters (e.g. the speed-demon granny on her scooter popping a wheelie, the influencer with her selfie-stick, the big boss with his takeaway bag) scrambling through a glowing night-market lane strung with warm paper lanterns, steaming bowls and stalls of famous Taiwanese dishes (bao, beef noodle, bubble tea, grilled sausage) flying past, a stylised map of Taiwan and a drawn HSR rail hinted in the background, motion and speed lines. Leave a clean, calmer band across the TOP for a title treatment (do not draw the title text — leave space for it). STYLE: the warm, polished stylised cartoon of the cast — clean confident linework, bold mostly-flat colour with soft cel-shading, expressive dignified faces, NOT an over-caricatured big-head style; night-market palette (warm daytime golds/ambers glowing into neon-lit night violets/teals) on a warm ground. Dignified Taiwanese locals and faithfully-rendered real dishes; charming personality exaggeration, NEVER ethnic caricature or mockery; SECULAR only — no temple, deity, ghost-month or funerary imagery. Traditional 繁體 only if any glyph appears (prefer none — leave title space blank). Full painted scene (this is the ONE asset where scenery is wanted). Box-top framing ~1:1 to ~5:4, high-resolution PNG (not SVG). Save build/mockups/FIG-COVER.png.
 ```
+
+---
+
+## Icon set — `FIG-ICON-*` (8 functional icons, ONE emoji-style set)
+
+**What this is.** The 8 tiny FUNCTIONAL icons — the six ingredient types + Followers + Points — that render
+**small (~40 px)** in pay chips, card headers, the board and the player aids. They must be drop-in
+compatible with the SVG placeholders `bg-art-director` drew, so **keep the SAME recognisable shape and the
+SAME type colour for each** — that's what keeps them colour-blind-safe (distinct by SHAPE, not hue alone).
+
+> **This set is a DELIBERATE style break from everything above.** The characters, vendors, map and cover
+> are the warm, semi-realistic hand referenced by `FIG-CHAR-influencer.png`. **These icons are NOT that.**
+> They are a cohesive **custom EMOJI / STICKER set** — flat, bold, chunky, friendly. **Do NOT attach a
+> character or a dish mock-up as the style reference here** — a realistic reference will drag the icons
+> realistic. Instead: generate **ONE icon first** (recommend the Meat pork-belly slab — the simplest bold
+> silhouette), approve it, then **attach THAT approved icon as the style-reference image** for the other 7
+> and say *"match this exact flat emoji style, line weight and finish."* Build the set outward from the
+> first icon so all 8 sit together as one hand.
+
+### ICON STYLE ANCHOR (paste this verbatim at the start of EVERY icon prompt — replaces the character STYLE ANCHOR)
+
+> A single **flat, bold, cartoonish EMOJI-STYLE icon** — one custom sticker in a cohesive set of eight.
+> Chunky, simple, rounded shapes with **ONE clean uniform-weight dark outline**; a **single flat fill in
+> the type colour** plus at most **one lighter tint of that same colour for a single soft highlight** — no
+> gradients, no rendering, no photo-realism, no texture, no drop shadow. **This is deliberately NOT the
+> realistic food-illustration style of the dish cards** — think a friendly, warm custom emoji/sticker, not
+> a painting. **Transparent background. Square canvas. One single subject, centred, with generous even
+> padding** so it never touches the edge. Must read as a **clear silhouette at ~40 px** and stay bold
+> enough to pop on BOTH a warm cream ground and a dark card ground. **Identical line weight, identical flat
+> finish, identical margins and scale to the other seven icons** so the whole set is one family. Warm,
+> food-market friendly. **NO text, letters, numbers or 繁體 glyphs inside the icon.** The dish/object stays
+> faithful and recognisable (a bok-choy is a bok-choy, boba is boba) and secular. High-resolution PNG (not
+> SVG), transparent.
+
+### Scale + naming
+Generate **1024 × 1024** (large for crispness), export **square with transparent background**. Prep each to
+its drop-in size with `python tools/mockup/prep_mockup.py --image <download> --key-bg --fit 512x512 --pad
+--game games/travel-agents --out FIG-ICON-<type>.png` (the renderer scales the square down to ~40 px in
+use). **File naming the pipeline expects: `FIG-ICON-<type>.png`**, where `<type>` is one of
+**`meat` · `tea` · `seafood` · `pantry` · `sugar` · `veg` · `follower` · `ticket`** — square, transparent.
+
+### The 8 per-icon kickoffs (paste one at a time, AFTER the ICON STYLE ANCHOR above)
+```
+FIG-ICON-meat — 肉 MEAT. Subject: a striped PORK-BELLY SLAB — a horizontal rounded-rectangle block showing 2–3 stacked layers (alternating lean-meat and pale fat stripes). Dominant fill colour: red #D64545 (fat stripes a paler warm tint). Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-meat.png.
+```
+```
+FIG-ICON-tea — 茶 TEA. Subject: a single pointed TEA LEAF / sprig on a short stem, one small offshoot leaf, a simple central vein. Dominant fill colour: teal #1F8A7A. Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-tea.png.
+```
+```
+FIG-ICON-seafood — 海鮮 SEAFOOD. Subject: a plump little FISH — a rounded oval body with a fan tail and one tiny punched-out eye. Dominant fill colour: amber #E6A930. Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-seafood.png.
+```
+```
+FIG-ICON-pantry — 糧 PANTRY (Rice & Noodles). Subject: a wide, shallow RICE BOWL holding a rounded mound of rice (a couple of noodle loops on top is fine). Dominant fill colour: indigo / navy #26324D. Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-pantry.png.
+```
+```
+FIG-ICON-sugar — 糖 SUGAR. Subject: a compact CLUSTER OF FOUR round BOBA / TAPIOCA PEARLS (brown-sugar sweetness), touching. Dominant fill colour: caramel / brown #B5835A. Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-sugar.png.
+```
+```
+FIG-ICON-veg — 菜 VEGETABLES. Subject: a leafy BOK-CHOY — three upright rounded leaf lobes rising from a short pale stem base. Dominant fill colour: green #4C9A5A (pale base). Must read clearly DISTINCT in shape from the Meat slab. Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-veg.png.
+```
+```
+FIG-ICON-follower — FOLLOWERS. Subject: a friendly "fan" — a simple HEAD-AND-SHOULDERS bust (round head over a shoulders shape), no face detail needed beyond a warm silhouette. Dominant fill colour: violet #6A4C93. Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-follower.png.
+```
+```
+FIG-ICON-ticket — POINTS. Subject: an admission-TICKET STUB (the tour-package reward) — a rounded ticket body with a small notch bitten out of each side and a dashed PERFORATION line across it. Dominant fill colour: gold #C9A227. NO number or text on it. Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-ticket.png.
+```

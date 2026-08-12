@@ -42,6 +42,15 @@ them straight into the rendered components. Proven on *Travel Agents: Taiwan* (t
   not a generic transit card).
 - AI tools return **raster PNG, not SVG**, and won't batch a cast — that's expected and fine.
 
+## Asset naming (what the renderers auto-embed)
+Every mock-up filename is its **FIG code**: `FIG-CHAR-<slug>.png` (characters), `FIG-VEND-<id>.png`
+(vendors), `FIG-ING-<id>.png` (ingredient cards), `FIG-TOUR-<id>.png` (tours), `FIG-COVER.png` (cover). For
+the game's small **functional emoji-style icons** the convention is **`FIG-ICON-<type>.png`** — `<type>` ∈
+`meat · tea · seafood · pantry · sugar · veg · follower · ticket` — each a **square, transparent** cut-out
+that matches the SVG placeholder's shape + type colour so it drops straight into the icon slot (pay chips,
+card headers, board, aids). Icons are their own **flat emoji/sticker style**, a deliberate break from the
+semi-realistic character/dish hand — seed the set from one approved icon, not from a character reference.
+
 ## Tools
 - `tools/mockup/prep_mockup.py` — grid-split · corner-flood key-to-transparent · fit-to-slot.
 - `tools/boards/build_board.py`, `tools/cards/build_cards.py` — auto-embed `build/mockups/<FIG>.png`.
