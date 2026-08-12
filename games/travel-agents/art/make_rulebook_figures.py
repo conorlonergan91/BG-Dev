@@ -124,14 +124,18 @@ def card_figure(base: Path, out: Path, title: str, left: list, right: list):
 
 
 # =================================================================================================
-# BOARD at a glance: numbered passport-stamp roundels on the board + a legend strip below.
+# BOARD at a glance: numbered passport-stamp roundels on the board + a big legend COLUMN beside it.
+# Laid out LANDSCAPE (board left, legend right) so build_rulebook can drop it on its own dedicated
+# A5-landscape page — this is the one comprehension figure every seat consults all game, so its ①–⑤
+# legend has to read comfortably large. (The board-below-legend strip it replaced rendered the legend
+# at ~5–6pt once the square figure was squeezed into the A5 content width.)
 # =================================================================================================
 def board_figure(base: Path, out: Path, title: str, marks: list, legend: list):
     """marks: {n, tx_f, ty_f, rx_f, ry_f} roundel at (rx,ry), leader to target (tx,ty), fractions of board.
-       legend: {n, term, gloss} entries laid out in the bottom strip (2 columns)."""
+       legend: {n, term, gloss} entries stacked down the right-hand column."""
     im = Image.open(base); bw, bh = im.size
-    STRIP = int(bh * 0.40)
-    W, H = bw, bh + STRIP
+    LEG_W = 1300                 # legend column width (px); board+column → a wide ≈A5-landscape figure
+    W, H = bw + LEG_W, bh
 
     parts = [f'<rect x="0" y="0" width="{W}" height="{H}" fill="{INK}"/>']
     parts.append(f'<image x="0" y="0" width="{bw}" height="{bh}" xlink:href="{_datauri(base)}"/>')
@@ -153,30 +157,31 @@ def board_figure(base: Path, out: Path, title: str, marks: list, legend: list):
         parts.append(f'<circle cx="{tx:.0f}" cy="{ty:.0f}" r="12" fill="#ffffff" stroke="{INK}" stroke-width="4"/>')
         parts.append(roundel(rx, ry, m["n"]))
 
-    # legend strip
-    sy = bh
-    parts.append(f'<rect x="0" y="{sy}" width="{W}" height="{STRIP}" fill="{PANEL}"/>')
-    parts.append(f'<rect x="0" y="{sy}" width="{W}" height="10" fill="{ACCENT}"/>')
-    parts.append(f'<text x="60" y="{sy+96}" font-family="{FONT}" font-size="60" font-weight="bold" '
+    # legend column (right-hand side) — big type, entries stacked top-to-bottom with a running cursor so
+    # occasional 3-line glosses never collide with the next entry.
+    lx, pad = bw, 64
+    parts.append(f'<rect x="{lx}" y="0" width="{LEG_W}" height="{H}" fill="{PANEL}"/>')
+    parts.append(f'<rect x="{lx}" y="0" width="12" height="{H}" fill="{ACCENT}"/>')
+    parts.append(f'<text x="{lx+pad}" y="120" font-family="{FONT}" font-size="72" font-weight="bold" '
                  f'fill="{INK}">{_esc(title)}</text>')
-    col_x = [60, W // 2 + 20]
-    rows_per_col = (len(legend) + 1) // 2
-    term_fs, gloss_fs = 42, 33
-    for idx, e in enumerate(legend):
-        col = idx // rows_per_col
-        row = idx % rows_per_col
-        x = col_x[col]
-        y = sy + 190 + row * 168
-        parts.append(roundel(x + 42, y - 12, e["n"], r=42))
-        tx = x + 108
-        parts.append(f'<text x="{tx}" y="{y}" font-family="{FONT}" font-size="{term_fs}" '
-                     f'font-weight="bold" fill="{INK}">{_esc(e["term"])}</text>')
-        gl = _wrap(e["gloss"], 50)
-        gy = y + 48
+    parts.append(f'<rect x="{lx+pad}" y="146" width="{LEG_W-2*pad}" height="6" fill="{ACCENT}"/>')
+
+    term_fs, gloss_fs, rr = 68, 50, 46
+    text_x = lx + pad + rr * 2 + 34            # term sits to the right of its roundel
+    gloss_inner = LEG_W - 2 * pad             # glosses wrap across the full column width
+    y = 208
+    for e in legend:
+        rcy = y + rr
+        parts.append(roundel(lx + pad + rr, rcy, e["n"], r=rr))
+        parts.append(f'<text x="{text_x}" y="{rcy + term_fs*0.36:.0f}" font-family="{FONT}" '
+                     f'font-size="{term_fs}" font-weight="bold" fill="{INK}">{_esc(e["term"])}</text>')
+        gl = _wrap(e["gloss"], max(10, int(gloss_inner / (gloss_fs * 0.55))))
+        gy = y + rr * 2 + 30
         for ln in gl:
-            parts.append(f'<text x="{tx}" y="{gy}" font-family="{FONT}" font-size="{gloss_fs}" '
-                         f'fill="{MUTED}">{_esc(ln)}</text>')
-            gy += 42
+            parts.append(f'<text x="{lx+pad}" y="{gy:.0f}" font-family="{FONT}" '
+                         f'font-size="{gloss_fs}" fill="{MUTED}">{_esc(ln)}</text>')
+            gy += int(gloss_fs * 1.30)
+        y = gy + 34                            # gap before the next entry
 
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
            f'width="{W}" height="{H}" viewBox="0 0 {W} {H}">' + "".join(parts) + '</svg>')
