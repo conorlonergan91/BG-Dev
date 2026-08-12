@@ -459,7 +459,6 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
     # --- HERO IMAGE band: embed FIG-VEND-<id>.png (meet → never cropped); art-less → drawn region emblem ---
     px, py = MARGIN, header_end + 22
     cost_cy = CARD_H - 278                             # COST row baseline (ingredient chips + follower floor)
-    reward_cy = CARD_H - 128                           # REWARD row baseline (points ticket pill + discount)
     pw = CARD_W - 2 * MARGIN
     ph = (cost_cy - 70) - py         # image runs to just above the cost row (no cross-region tag band now)
     pcx, pcy = px + pw/2, py + ph/2
@@ -530,10 +529,9 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
     # corner now reads top→bottom region pill → reward pill, and the bottom of the card is freed. It is
     # right-aligned to the same margin edge as the region pill and sized to sit neatly beneath it (inside the
     # region header band, clear of the left-aligned title and the hero image below). A thin white keyline
-    # separates the gold from the region-colour band. The day-engine DISCOUNT (-1 region icon, day FOOD
-    # vendors only — night/drinks/apex carry none) stays as a small perk mark on the bottom reward line.
+    # separates the gold from the region-colour band. The day-engine bonus is NOT here — it's the top-centre
+    # signature-ingredient badge (see bonus_badge below); night/drinks/apex carry no `icon` so no badge.
     stats = ""
-    have_disc = bool(icon) and not is_apex
     if vp != "":
         label = f"+{vp}"
         rp_h = 50
@@ -547,13 +545,36 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
             + emblem_svg("ticket", rp_x + 36, rp_cy, 19, "#ffffff") +
             f'<text x="{rp_x + rp_w - 24}" y="{rp_cy + 15}" font-size="42" fill="#ffffff" text-anchor="end" '
             f'font-family="{tfont}" font-weight="bold">{esc(label)}</text>')
-    if have_disc:                                      # discount icon = the DAY-engine perk this vendor grants
-        drs = resolve_suit(theme, {"N": "north", "C": "central",
-                                   "S": "south", "E": "east"}.get(icon, region))
-        dx0 = CARD_W - MARGIN - 132
-        stats += (emblem_svg(drs["emblem"], dx0 + 28, reward_cy - 4, 28, drs["color"], stroke=ink)
-                  + f'<text x="{dx0 + 66}" y="{reward_cy + 22}" font-size="64" fill="{drs["color"]}" '
-                    f'font-family="{tfont}" font-weight="bold">-1</text>')
+
+    # --- ENGINE-BONUS badge (TOP-CENTRE): a day-FOOD vendor grants a standing discount on its REGION'S
+    # SIGNATURE INGREDIENT. Show that ingredient's icon (same keyed FIG-ICON raster as the cost-row chips)
+    # as a BONUS THIS VENDOR GIVES YOU — never a pay chip. Disambiguated three ways from the bottom-row pay
+    # chips: (1) location — top-centre, straddling the header/hero seam, its own column between the title
+    # (left) and the region+reward pills (right); (2) framing — a region-colour ring + soft halo + a small
+    # DOWN-CHEVRON "gift/discount comes to you" cap, vs the pay chips' plain white/ink roundels in a row;
+    # (3) no "−1" (the rules carry the amount, per CD). Mapping (region discount → that region's signature
+    # ingredient, mechanically verified): N→meat, C→tea, S→seafood, E→pantry. ×N shows ONLY if a vendor ever
+    # grants >1 of the icon; with current data every day-food vendor grants exactly 1 letter → no number.
+    # Night/drink/apex vendors carry no `icon` → no badge (byte-unchanged for them).
+    bonus_badge = ""
+    if icon and not is_apex:
+        _sig_type = {"N": "meat", "C": "tea", "S": "seafood", "E": "pantry"}.get(icon[0])
+        _bonus_n = len(icon)                            # single region letter = 1; repeated letters = a multiple
+        if _sig_type:
+            ssuit = resolve_suit(theme, _sig_type)
+            bcx, bcy, br = CARD_W / 2, header_end + 26, 46
+            bonus_badge = (
+                f'<circle cx="{bcx}" cy="{bcy}" r="{br + 12}" fill="{ssuit["color"]}" opacity="0.16"/>'
+                # down-chevron cap: a "gift / discount flows to you" cue, sitting above the ring
+                f'<path d="M{bcx-22} {bcy-br-20} L{bcx} {bcy-br-2} L{bcx+22} {bcy-br-20}" fill="none" '
+                f'stroke="{ssuit["color"]}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>'
+                # white roundel with a REGION-COLOUR ring (pay chips use an ink ring → distinct read)
+                f'<circle cx="{bcx}" cy="{bcy}" r="{br}" fill="#ffffff" stroke="{ssuit["color"]}" stroke-width="6"/>'
+                + emblem_svg(ssuit["emblem"], bcx, bcy, br * 0.62, ssuit["color"], stroke=ink))
+            if _bonus_n > 1:                            # multiple of the same icon → small ×N (won't trigger now)
+                bonus_badge += (
+                    f'<text x="{bcx + br + 6}" y="{bcy + 14}" font-size="40" fill="{ssuit["color"]}" '
+                    f'text-anchor="start" font-family="{tfont}" font-weight="bold">×{_bonus_n}</text>')
 
     inner_frame = (f'<rect x="14" y="14" width="{CARD_W-28}" height="{CARD_H-28}" rx="{radius-4}" '
                    f'fill="none" stroke="{frame_col}" stroke-width="2" opacity="0.45"/>') if pstyle else ""
@@ -568,6 +589,7 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
   {region_pill}
   {apex_mark}
   {plate}
+  {bonus_badge}
   {pay_block}
   {stats}
   {ribbon}
