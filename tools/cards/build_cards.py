@@ -58,8 +58,54 @@ _SCOPE_GLYPHS = "⦿✦⬢➤▦"
 # The slate that ties the Scheduled-Maintenance island banner to its 停 board marker (bg-access §v6.3.1).
 MAINT_SLATE = "#8A8F98"
 
-from themes import (get_theme, resolve_suit, emblem_svg, page_gradient, pick_text_color,
-                    phase_style, phase_ribbon_svg, back_style, PHASE_STYLES)
+from themes import (get_theme, resolve_suit, emblem_svg as _emblem_svg_drawn, page_gradient,
+                    pick_text_color, phase_style, phase_ribbon_svg, back_style, PHASE_STYLES)
+
+# ---- TA functional-icon raster swap (CD-provided AI art) --------------------
+# The CD delivered illustrated versions of Travel Agents' 8 functional icons. Where one of those 8 emblem
+# KINDS renders (the 6 ingredient suit glyphs + the follower cost cell + the ticket reward glyph), embed the
+# keyed FIG-ICON-<x>.png raster instead of the drawn vector — WHEN the keyed art is on disk AND this is a TA
+# render. Every non-TA deck (Beacon et al.) never uses these kinds and never sets _ICON_MOCKUPS_DIR, so it
+# falls through to the drawn emblem → byte-identical output.
+_ICON_MOCKUPS_DIR = None                       # set in main() only for the night-market (TA) theme
+_ICON_SCALE = 1.30                             # raster box side = 2r × this (illustrations read a touch bigger)
+# emblem KIND → FIG-ICON-<basename>.png. Only these 8 kinds are ever swapped.
+_TA_ICON_KIND = {
+    "ing_meat": "meat", "ing_tea": "tea", "ing_seafood": "seafood",
+    "ing_pantry": "pantry", "ing_sugar": "sugar", "ing_veg": "veg",
+    "follower": "follower", "ticket": "ticket",
+}
+_ICON_B64_CACHE: dict[str, str] = {}
+
+
+def _icon_png_svg(basename, cx, cy, r):
+    """Return an SVG <image> embedding the keyed FIG-ICON-<basename>.png as a base64 data-URI, centred at
+    (cx,cy) in a (2r·_ICON_SCALE) square with xMidYMid meet (never distorts; the keyed PNG is transparent so
+    no clip is needed). Returns None when the keyed art is absent → caller keeps the drawn emblem."""
+    if not _ICON_MOCKUPS_DIR:
+        return None
+    p = Path(_ICON_MOCKUPS_DIR) / f"FIG-ICON-{basename}.png"
+    if not p.is_file():
+        return None
+    b64 = _ICON_B64_CACHE.get(basename)
+    if b64 is None:
+        b64 = base64.b64encode(p.read_bytes()).decode("ascii")
+        _ICON_B64_CACHE[basename] = b64
+    side = 2 * r * _ICON_SCALE
+    return (f'<image href="data:image/png;base64,{b64}" x="{cx - side/2}" y="{cy - side/2}" '
+            f'width="{side}" height="{side}" preserveAspectRatio="xMidYMid meet"/>')
+
+
+def emblem_svg(kind, cx, cy, r, color, stroke="none"):
+    """Icon-swap wrapper over themes.emblem_svg. For the 8 TA functional-icon kinds, embed the keyed
+    FIG-ICON raster when it is on disk (TA renders only); otherwise defer to the drawn vector emblem. The
+    signature is identical to the drawn function, so every existing call site routes through here unchanged
+    and non-TA decks stay byte-identical (they never hit the 8 kinds and never set _ICON_MOCKUPS_DIR)."""
+    if _ICON_MOCKUPS_DIR and kind in _TA_ICON_KIND:
+        img = _icon_png_svg(_TA_ICON_KIND[kind], cx, cy, r)
+        if img is not None:
+            return img
+    return _emblem_svg_drawn(kind, cx, cy, r, color, stroke=stroke)
 
 # ---- Card geometry (poker, trimmed, 300 DPI) --------------------------------
 CARD_W, CARD_H = 750, 1050          # px @ 300 DPI
@@ -1416,9 +1462,12 @@ def main() -> int:
     slug = args.slug or args.csv.stem
     # TA art-mock embed dir for ingredient cards: <game>/build/mockups next to the components CSV
     # (game dir = the CSV's parent's parent). Absent dir/file → the byte-identical placeholder path.
-    global _ING_MOCKUPS_DIR
+    global _ING_MOCKUPS_DIR, _ICON_MOCKUPS_DIR
     _ING_MOCKUPS_DIR = (args.ing_mockups_dir if args.ing_mockups_dir
                         else args.csv.resolve().parent.parent / "build" / "mockups")
+    # The keyed FIG-ICON functional-icon rasters live alongside the ingredient/vendor art in build/mockups.
+    # Gated to the night-market (TA) theme so no other game's render can ever pick them up → byte-identical.
+    _ICON_MOCKUPS_DIR = _ING_MOCKUPS_DIR if args.theme == "night-market" else None
     rows = load_rows(args.csv)
     if not rows:
         print(f"No rows in {args.csv}", file=sys.stderr)

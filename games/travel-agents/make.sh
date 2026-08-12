@@ -35,6 +35,21 @@ cp art/mockups/FIG-VEND-*.png build/mockups/ 2>/dev/null || true
 # present, render_back_svg embeds them as the full-bleed vendor-back backdrop (with a small region+phase
 # sort overlay); ABSENT → the vendor back stays the byte-identical code-drawn 早市/夜市 market back.
 cp art/mockups/FIG-BACK-VEND-*.png build/mockups/ 2>/dev/null || true
+# FUNCTIONAL ICONS (CD-provided AI art): illustrated versions of the 8 functional icons — the 6 ingredient
+# suit glyphs (meat/tea/seafood/pantry/sugar/veg), the follower cost-cell bust, and the ticket reward glyph.
+# The raw art is drawn on a DARK ground with a coloured glow, so KEY the background transparent at build time
+# into build/mockups/ (raw source in art/mockups/ stays untouched). build_cards.py's emblem_svg wrapper then
+# embeds build/mockups/FIG-ICON-<x>.png for those 8 emblem kinds (TA renders only) — pay chips, follower
+# cell, reward ticket pill, the ingredient pay-glyph roundel, and the booking value pill — falling back to
+# the drawn SVG emblem when a keyed file is absent. tea's glow reaches the corner as dark olive → a higher
+# flood tolerance; the rest sit on near-black. fit to a padded 320×320 square + a 2 px alpha feather so a
+# residual halo fades instead of ending in a hard edge.
+for ic in meat seafood pantry sugar veg follower ticket; do
+    python3 $T/mockup/prep_mockup.py --image art/mockups/FIG-ICON-$ic.png --key-bg --thresh 50 --feather 2 \
+        --fit 320x320 --pad --outdir build/mockups --out FIG-ICON-$ic.png 2>/dev/null || true
+done
+python3 $T/mockup/prep_mockup.py --image art/mockups/FIG-ICON-tea.png --key-bg --thresh 70 --feather 2 \
+    --fit 320x320 --pad --outdir build/mockups --out FIG-ICON-tea.png 2>/dev/null || true
 # The PHASED decks (vendors / tickets / ingredients / events) render as `png` only here — their
 # play-ready sheets come from the day/night SPLITS below (top-level PnP + Screentop), so the mixed
 # full-CSV screentop sheet (one NEUTRAL back) is deliberately NOT produced: it would hide the

@@ -38,7 +38,7 @@ import os
 import sys
 
 try:
-    from PIL import Image, ImageDraw
+    from PIL import Image, ImageDraw, ImageFilter
 except ImportError:
     sys.exit("Pillow is required: pip install pillow")
 
@@ -94,6 +94,20 @@ def key_background(img: "Image.Image", thresh: int = 32) -> "Image.Image":
     return out
 
 
+def feather_alpha(img: "Image.Image", radius: float) -> "Image.Image":
+    """Slightly soften the alpha edge with a Gaussian blur on the alpha channel only.
+
+    After a flood-key of an icon drawn on a dark ground with a coloured glow, the cut edge can carry a
+    faint hard step where the flood stopped. A small blur on ALPHA (colours untouched) feathers that step so
+    the residual halo fades out instead of ending in a crisp line — the glow softens but never leaves a hard
+    box. Keep the radius small (1–2 px at source resolution); a large radius makes small icons mushy.
+    """
+    img = img.convert("RGBA")
+    r, g, b, a = img.split()
+    a = a.filter(ImageFilter.GaussianBlur(radius))
+    return Image.merge("RGBA", (r, g, b, a))
+
+
 def _alpha_bbox(img: "Image.Image"):
     """Bounding box of non-transparent content (None if fully transparent)."""
     if img.mode != "RGBA":
@@ -130,6 +144,9 @@ def main() -> int:
     ap.add_argument("--names", help="comma-separated names for grid cells (row-major)")
     ap.add_argument("--key-bg", action="store_true", help="flood-key a flat background to transparent")
     ap.add_argument("--thresh", type=int, default=32, help="flood colour tolerance (default 32)")
+    ap.add_argument("--feather", type=float, default=0.0,
+                    help="after --key-bg, blur the ALPHA edge by this many px to soften a residual "
+                         "halo (colours untouched). Keep small (1–2); 0 = off (default).")
     ap.add_argument("--fit", help="target slot WxH, e.g. 604x286 (char), 642x560 (ingredient), 750x1050 (card)")
     ap.add_argument("--pad", action="store_true", help="pad to EXACTLY the --fit size (transparent letterbox)")
     ap.add_argument("--game", help="game dir; output goes to <game>/build/mockups/ (gitignored)")
@@ -152,6 +169,8 @@ def main() -> int:
     def process_and_save(im, name):
         if args.key_bg:
             im = key_background(im, thresh=args.thresh)
+            if args.feather > 0:
+                im = feather_alpha(im, args.feather)
         if slot:
             im = fit_slot(im, slot[0], slot[1], pad=args.pad)
         path = os.path.join(outdir, name)
