@@ -17,6 +17,11 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-11 — Drop the apex glyph; CD will AI-generate the icons in a cartoonish emoji style.**
+  - **Ask:** *"We can probably get rid of the old point glyph on the top right of vendor cards as well (or if that's only for apex then there's no need for a glyph — it should just be reflected in the cost and points value). I'm going to use AI art to generate the icons for points, ingredients and followers, so update the zip and the prompts etc. I don't want these icons hyper-realistic like the food pictures — more like emojis, cartoonish style."*
+  - **Context:** After the round-2 vendor polish. The top-right mark was the apex ★ — CD wants it gone (apex reads from the higher points + cost, no dedicated glyph). And the CD will generate the 8 functional icons (6 ingredients + followers + points/ticket) themselves via AI, in an **emoji / cartoonish** style — explicitly NOT the realistic look of the food-dish illustrations.
+  - **Status:** `captured` → apex ★ removed from the vendor card (`build_cards.py`). Icon-generation prompts + refreshed `ta-art-context.zip` → `bg-ai-prompt` (emoji-style anchor, shapes/colours matched to the SVG placeholders so the AI outputs drop in as `FIG-ICON-<type>.png`). Wiring the generated PNGs into the renderer is a later step once the CD delivers the art; the SVG icons stand in until then.
+
 - **2026-08-11 — Vendor card polish round 2: kill the cross-region badge, one cost row, booking-style ticket reward, illustrated icons.**
   - **Ask:** *"No need for cross region badge — get rid of it. Also all the 'cost' should be on the same row (ingredients + followers), and then for the rewards the points should look the same as how they're displayed on the bookings. The glyph for points should be a ticket rather than a star thing. We should have illustrated icons instead of glyphs for ingredients and followers."*
   - **Context:** Reaction to the round-1 vendor redesign. CD wants the card to read as **COST (ingredients + followers together) → REWARD (points)**, with the reward matching the Bookings' `+N value` pill and a **ticket** glyph replacing the gold star, and the abstract geometric type/follower glyphs upgraded to **illustrated** (little drawn) icons.

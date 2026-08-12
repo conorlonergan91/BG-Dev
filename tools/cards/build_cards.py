@@ -386,12 +386,9 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
         + emblem_svg(remb, pill_x + 30, pill_y + pill_h/2, 15, rcol, stroke=ink) +
         f'<text x="{pill_x + 62}" y="{pill_y + pill_h*0.68:.0f}" font-size="28" fill="{rcol}" '
         f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(rletter)}</text>')
-    # apex ★ — the SINGLE small gold star (replaces BOTH the old marquee pill and the old ★ APEX box)
+    # apex is NOT marked with a glyph any more (CD 2026-08-11): an apex reads from its higher points +
+    # cost, so a dedicated ★ top-right was redundant chrome. `is_apex` still gates the discount cell below.
     apex_mark = ""
-    if is_apex:
-        ax, ay = pill_x - 36, pill_y + pill_h/2
-        apex_mark = (f'<circle cx="{ax}" cy="{ay}" r="26" fill="#ffffff" opacity="0.92"/>'
-                     + emblem_svg("spark", ax, ay, 18, gold, stroke=ink))
 
     # --- HERO IMAGE band: embed FIG-VEND-<id>.png (meet → never cropped); art-less → drawn region emblem ---
     px, py = MARGIN, header_end + 22
