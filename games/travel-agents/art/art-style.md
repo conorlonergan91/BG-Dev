@@ -137,6 +137,26 @@ Then add the component-specific subject, composition, and the reserved size/figu
   palette, never colour alone** (basket vs lantern + 早 vs 夜 + sun vs moon) — setup/storage rely on it; a
   neutral/any-time variant stays working. Any future human-illustrated back keeps that basket-vs-lantern
   silhouette so the sort survives.
+- **Illustrated icon system (bg-art-director 2026-08, locked).** The six ingredient types and the
+  followers currency render as **little drawn, food-true silhouettes** in the warm market hand, NOT
+  abstract geometry: **Meat** = a striped pork-belly slab; **Tea** = a pointed tea-leaf sprig on a stem;
+  **Seafood** = a plump fish (body + fan tail); **Pantry** = a wide rice bowl with a rice mound; **Sugar**
+  = a four-pearl boba cluster; **Vegetables** = a three-lobe leafy bok-choy; **Followers** = a
+  head-and-shoulders fan bust. Each keeps its category's suit COLOUR and is a **distinct silhouette**, so a
+  colour-blind player tells them apart by shape alone (dual-coded; access = 0 errors, every confusable pair
+  differs by emblem). They live as new `ing_*` / `follower` emblem kinds in `themes.py` and are wired via
+  the TA ingredient suits, so the same icon appears on the vendor recipe chips, the ingredient-card pay
+  badge, the board and the player aids — one object everywhere. The region frame emblems stay geometric
+  (triangle/diamond/circle/square) so WHERE and WHAT never collide. Beacon's geometric emblems are
+  untouched (byte-identical).
+- **Reward = the tour-ticket pill (locked).** Both a vendor's points and a tour/Booking's value render as
+  the same **rounded reward pill carrying a drawn admission-TICKET stub + "+N"** (the tour-package
+  fiction), so a vendor's reward and a tour's reward read as one visual family. The old gold-star points
+  cell is retired.
+- **Vendor cost row (locked).** Signing a vendor reads as **COST → REWARD**: one balanced cost row
+  (ingredient pay chips grouped ×N, a "+" divider, then the follower-floor cell) above a reward row (the
+  ticket "+N" pill, plus the day-engine −1 region-discount mark on day food vendors). The per-chip
+  cross-region badge and the CROSS-REGION tag are **removed** (clutter, not data).
 - Style-reference-image technique: build every new asset by attaching an approved piece and matching it.
 
 **FLUID (still open):**

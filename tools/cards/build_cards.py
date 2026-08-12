@@ -395,10 +395,10 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
 
     # --- HERO IMAGE band: embed FIG-VEND-<id>.png (meet → never cropped); art-less → drawn region emblem ---
     px, py = MARGIN, header_end + 22
-    pay_cy = CARD_H - 278                              # PAY chips baseline
-    stat_cy = CARD_H - 128                             # crowd / points / discount baseline
+    cost_cy = CARD_H - 278                             # COST row baseline (ingredient chips + follower floor)
+    reward_cy = CARD_H - 128                           # REWARD row baseline (points ticket pill + discount)
     pw = CARD_W - 2 * MARGIN
-    ph = (pay_cy - 92) - py          # leave a clear gap-band under the image for an optional cross-region tag
+    ph = (cost_cy - 70) - py         # image runs to just above the cost row (no cross-region tag band now)
     pcx, pcy = px + pw/2, py + ph/2
     _mock = _embed_fig_png(f"FIG-VEND-{tid}", px, py, pw, ph)
     if _mock:
@@ -415,14 +415,14 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
                  + f'<text x="{pcx}" y="{py+ph-30}" font-size="22" fill="#ffffff" text-anchor="middle" '
                    f'font-family="{tfont}" font-weight="bold" letter-spacing="1">[FIG-VEND-{esc(tid)}]</text>')
 
-    # --- PAY recipe: GROUP by ingredient type → one chip per type with a ×N count (exact counts readable) --
-    # NOTE (bg-infodesign flag): ING_REGION is preserved EXACTLY as the shipped render used it (keys
-    # pork/tea/seafood/rice) so which chips flag "cross-region" is byte-for-byte unchanged from before this
-    # redesign — presentation-only pass. It is STALE vs the v7 category ids (meat/pantry/… never match), so
-    # in practice only `tea`/`seafood` ever flag foreign. Correcting it to {meat:N,tea:C,seafood:S,pantry:E}
-    # is a design/data call (it would change the displayed requirement) → left for bg-design to confirm.
-    ING_REGION = {"pork": "N", "tea": "C", "seafood": "S", "rice": "E"}   # sugar/veg = common (never foreign)
-    card_letter = {"north": "N", "central": "C", "south": "S", "east": "E"}.get(region, "")
+    # --- COST ROW (CD 2026-08): one row reads left→right "PAY these ingredients + HOLD this many followers".
+    # The ingredient PAY chips (grouped → one roundel per type with a ×N count, exact counts readable, drawn
+    # in the ingredient-card pay-glyph language so a chip and its ingredient card read as ONE object) sit as a
+    # centred group; a muted "+" divider; then the crowd FLOOR (min_followers) as its own cell in the SAME
+    # row — an illustrated follower bust + the threshold number. The old per-chip cross-region badge and the
+    # CROSS-REGION tag are GONE (CD steer — clutter, not data). min_followers of 0/blank => no follower cell.
+    min_f = str(row.get("min_followers", "")).strip()
+    vp = str(row.get("vp", "")).strip()
     order, counts = [], {}
     for iid in recipe:
         if iid not in counts:
@@ -430,60 +430,62 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
             order.append(iid)
         counts[iid] += 1
     Rc = 38
-    cell_w = 112
-    x0 = (CARD_W - len(order) * cell_w) / 2
+    cell_w = 106
+    plus_w = 46
+    show_follow = min_f not in ("", "0")
+    n_ing = len(order)
+    total_w = n_ing * cell_w + (plus_w + cell_w if show_follow else 0)
+    x0 = (CARD_W - total_w) / 2
     chips = ""
-    cross_letters: list[str] = []
     for i, iid in enumerate(order):
         isuit = resolve_suit(theme, iid) if iid in theme["suits"] else {"color": muted, "emblem": "circle"}
         icol, iemb = isuit["color"], isuit["emblem"]
         ccx = x0 + i * cell_w + cell_w/2
-        chips += (f'<circle cx="{ccx}" cy="{pay_cy}" r="{Rc}" fill="#ffffff" stroke="{ink}" stroke-width="3"/>'
-                  + emblem_svg(iemb, ccx, pay_cy, Rc*0.60, icol, stroke=ink))
+        chips += (f'<circle cx="{ccx}" cy="{cost_cy}" r="{Rc}" fill="#ffffff" stroke="{ink}" stroke-width="3"/>'
+                  + emblem_svg(iemb, ccx, cost_cy, Rc*0.60, icol, stroke=ink))
         if counts[iid] > 1:
-            chips += (f'<text x="{ccx}" y="{pay_cy + Rc + 32}" font-size="34" fill="{ink}" '
+            chips += (f'<text x="{ccx}" y="{cost_cy + Rc + 32}" font-size="34" fill="{ink}" '
                       f'text-anchor="middle" font-family="{tfont}" font-weight="bold">×{counts[iid]}</text>')
-        foreign = ING_REGION.get(iid)
-        if foreign and card_letter and foreign != card_letter:
-            cross_letters.append(foreign)
-            bx, by = ccx + Rc - 4, pay_cy - Rc + 2      # out-of-region badge riding the chip's top-right
-            chips += (f'<circle cx="{bx}" cy="{by}" r="17" fill="#ffffff" stroke="{icol}" stroke-width="3"/>'
-                      + emblem_svg("arrow", bx - 3, by, 7, icol) +
-                      f'<text x="{bx + 7}" y="{by + 7}" font-size="18" fill="{icol}" text-anchor="middle" '
-                      f'font-family="{tfont}" font-weight="bold">{esc(foreign)}</text>')
-    # CROSS-REGION tag above the chips — names the two-region requirement without decoding chip colours
-    cross_tag = ""
-    if cross_letters:
-        seen = "".join(dict.fromkeys(cross_letters))
-        tag_w = 152 + 20 * len(seen)
-        tx = (CARD_W - tag_w) / 2
-        tyy = pay_cy - 50            # seated in the gap-band between the hero image and the PAY chips
-        cross_tag = (
-            f'<rect x="{tx}" y="{tyy-26}" width="{tag_w}" height="38" rx="19" fill="#ffffff" opacity="0.9" '
-            f'stroke="{accent}" stroke-width="2"/>'
-            + emblem_svg("arrow", tx + 24, tyy - 7, 10, accent) +
-            f'<text x="{tx + 44}" y="{tyy}" font-size="22" fill="{accent}" font-family="{tfont}" '
-            f'font-weight="bold" letter-spacing="1">CROSS-REGION →{esc(seen)}</text>')
-    pay_block = cross_tag + chips
+    if show_follow:
+        # "+" divider between the ingredients you pay and the followers you must hold
+        dvx = x0 + n_ing * cell_w + plus_w/2
+        chips += (f'<text x="{dvx}" y="{cost_cy + 16}" font-size="52" fill="{muted}" text-anchor="middle" '
+                  f'font-family="{tfont}" font-weight="bold" opacity="0.7">+</text>')
+        # follower FLOOR cell — illustrated follower bust (violet) + the threshold number below (no ×: it's a
+        # crowd you HOLD, not a multiplier). Violet ink matches the Followers currency; white roundel keeps
+        # the row cohesive with the pay chips.
+        fcx = x0 + n_ing * cell_w + plus_w + cell_w/2
+        chips += (f'<circle cx="{fcx}" cy="{cost_cy}" r="{Rc}" fill="#ffffff" stroke="{ink}" stroke-width="3"/>'
+                  + emblem_svg("follower", fcx, cost_cy, Rc*0.62, violet, stroke=ink)
+                  + f'<text x="{fcx}" y="{cost_cy + Rc + 32}" font-size="34" fill="{violet}" '
+                    f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(min_f)}</text>')
+    pay_block = chips
 
-    # --- bottom stats: crowd FLOOR + POINTS, plus the day-engine DISCOUNT cell (day food only) ------------
-    min_f = str(row.get("min_followers", "")).strip()
-    vp = str(row.get("vp", "")).strip()
-    cells = [("crowd", min_f, violet, "crowd"), ("points", vp, gold, "spark")]
-    if icon and not is_apex:                           # discount icon = the DAY-engine (night/drinks carry none)
+    # --- REWARD ROW: the points (vp) render as a "+N" TICKET pill in the BOOKING value-chip language, so a
+    # vendor's reward and a tour's reward read as one visual family (CD steer — the ticket glyph is the
+    # tour-package fiction; replaces the old gold-★ points cell). The day-engine DISCOUNT (-1 region icon,
+    # day FOOD vendors only — night/drinks/apex carry none) stays as a small perk mark on the reward side.
+    stats = ""
+    have_disc = bool(icon) and not is_apex
+    if vp != "":
+        label = f"+{vp}"
+        pill_h = 66
+        pill_w = 100 + 30 * len(label)
+        # pill left when a discount shares the row; centred otherwise (keeps the row balanced)
+        pill_x = MARGIN if have_disc else (CARD_W - pill_w) / 2
+        pill_y = reward_cy - pill_h/2
+        stats += (
+            f'<rect x="{pill_x}" y="{pill_y}" width="{pill_w}" height="{pill_h}" rx="{pill_h/2}" fill="{gold}"/>'
+            + emblem_svg("ticket", pill_x + 44, reward_cy, 23, "#ffffff") +
+            f'<text x="{pill_x + 82}" y="{reward_cy + 17}" font-size="46" fill="#ffffff" '
+            f'font-family="{tfont}" font-weight="bold">{esc(label)}</text>')
+    if have_disc:                                      # discount icon = the DAY-engine perk this vendor grants
         drs = resolve_suit(theme, {"N": "north", "C": "central",
                                    "S": "south", "E": "east"}.get(icon, region))
-        cells.append(("disc", "-1", drs["color"], drs["emblem"]))
-    ncells = len(cells)
-    col_w = (CARD_W - 2 * MARGIN) / ncells
-    stats = ""
-    for i, (kind, num, ncol, emb) in enumerate(cells):
-        cs = MARGIN + i * col_w
-        ix = cs + col_w * 0.30
-        stats += emblem_svg(emb, ix, stat_cy - 6, 30 if kind != "disc" else 28,
-                            ncol, stroke=(ink if kind == "disc" else "none"))
-        stats += (f'<text x="{cs + col_w*0.52}" y="{stat_cy + 24}" font-size="68" fill="{ncol}" '
-                  f'font-family="{tfont}" font-weight="bold">{esc(num)}</text>')
+        dx0 = CARD_W - MARGIN - 132
+        stats += (emblem_svg(drs["emblem"], dx0 + 28, reward_cy - 4, 28, drs["color"], stroke=ink)
+                  + f'<text x="{dx0 + 66}" y="{reward_cy + 22}" font-size="64" fill="{drs["color"]}" '
+                    f'font-family="{tfont}" font-weight="bold">-1</text>')
 
     inner_frame = (f'<rect x="14" y="14" width="{CARD_W-28}" height="{CARD_H-28}" rx="{radius-4}" '
                    f'fill="none" stroke="{frame_col}" stroke-width="2" opacity="0.45"/>') if pstyle else ""
@@ -966,11 +968,18 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
             # value footer chip (bottom-left), no top index, no pip row. Travel Agents' Tour Tickets score
             # in the game's own "value" language (成團 win pile → +value); other games keep the generic VP.
             bonus_word = "value" if ctype.lower() in ("mission", "booking") else "VP"
-            chw, chh = (224 if bonus_word == "value" else 168), 60
+            # TA tours/missions carry a TICKET glyph on the value pill (CD steer) so a tour's reward and a
+            # vendor's points pill read as one visual family. Gated to the "value" word => any OTHER game's
+            # generic "+N VP" objective card renders byte-identically (no ticket, unchanged width/centre).
+            is_ticket_reward = bonus_word == "value"
+            chw, chh = (272 if is_ticket_reward else 168), 60
             cx0, cy0 = MARGIN, CARD_H - MARGIN - 60
+            tk = emblem_svg("ticket", cx0 + 40, cy0 + chh/2, 20, "#ffffff") if is_ticket_reward else ""
+            text_cx = cx0 + chw/2 + (24 if is_ticket_reward else 0)
             value_row = (
                 f'<rect x="{cx0}" y="{cy0}" width="{chw}" height="{chh}" rx="{chh/2}" fill="{scol}"/>'
-                f'<text x="{cx0 + chw/2}" y="{cy0 + chh*0.68}" font-size="38" fill="#ffffff" '
+                + tk +
+                f'<text x="{text_cx}" y="{cy0 + chh*0.68}" font-size="38" fill="#ffffff" '
                 f'text-anchor="middle" font-family="{tfont}" font-weight="bold">+{esc(value)} {bonus_word}</text>')
         else:
             # top-right index — only when no cost badge and a single-line title share the corner cleanly
