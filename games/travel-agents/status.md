@@ -83,16 +83,22 @@ table is the next arbiter, not more sim.
   the six kits band, and the open event questions (forced-placement-as-tax, the SINK shrug, hazard:boon
   ratio). The CD also generates the remaining art (map + vendor cards) from `art/ta-art-context.zip`.
 - **⏭ Deferred design follow-ups (surfaced by the sweep — not blocking; a later design pass):**
-  **N06 Big Sausage recipe oddity** — the recipe still carries seafood×2 in a pork sausage (was ×3;
-  the 2026-08-11 apex swap dropped one and moved the ★ apex OFF the sausage onto Beef Noodle, so the
-  oddity now sits on a lesser trophy). A fuller de-seafood is still a design/theme sanity check
-  (→ `bg-design`); then migrate
-  `design-doc.md` §15/§17 (event framework + clock) into `game-bible.md`, then archive it + fix its stale
-  header (→ `bg-design`); reconcile `art/rulebook-figures.md`'s stale 2p / Buzz / Reach mechanics to V7-M
-  (→ `bg-continuity` / `bg-infodesign`); the portrait-slot size mismatch (604×286 vs 900×1380 →
+  **N06 Big Sausage recipe oddity — PROPOSAL READY, FLAGGED for CD + re-sim (not applied).** The recipe
+  still carries seafood×2 in a pork sausage. A de-seafood is designed — `meat;meat;meat;meat;meat;veg;pantry`
+  (5 meat + garlic-as-veg + pantry) — which holds the §14 invariant (cost 7 · min_followers 3 · vp 8) and
+  keeps N06 cross-region. It is **held, not applied**, because it zeroes North's *entire* night-seafood
+  demand (2→0) and cuts total night seafood 14→12 — a structural change to the North↔South seafood contest
+  that wants a CD call + re-sim (→ `bg-design`). **`Draw`/人氣 data flag — CLEARED on the data side:** no
+  `draw` column in `vendors.csv`, no draw-target rows in `bookings.csv`, and the sim never reads `draw`
+  (retired in the vendor loader; not a scoring scalar) — component data already matches the rules. Residue
+  now lives only in a DRAW art panel + a `design-doc.md` mention and the `打卡人氣王` booking *name* (whose
+  mechanic is the real `ingredient_cost_total` target — fine) → `bg-art-director` / `bg-continuity`. Then:
+  migrate `design-doc.md` §15/§17 (event framework + clock) into `game-bible.md`, then archive it + fix its
+  stale header (→ `bg-design`); reconcile `art/rulebook-figures.md`'s stale 2p / Buzz / Reach mechanics to
+  V7-M (→ `bg-continuity` / `bg-infodesign`); the portrait-slot size mismatch (604×286 vs 900×1380 →
   `bg-infodesign`); the board clock-band vs deck-driven vs Closing-Time-die description mismatch
-  (→ `bg-architect`); and the pre-existing data flags (`Draw`/人氣, EV-D07 pork name, Indigenous
-  romanisation → `bg-design` / `bg-developer` / consultant).
+  (→ `bg-architect`); and the remaining data flags (EV-D07 pork name, Indigenous romanisation →
+  `bg-developer` / consultant).
 
 ## Open decisions (waiting on the Creative Director)
 *Nothing blocking.* All V7-M design decisions are made and logged (mono ship config, orphan-tour ceiling,
