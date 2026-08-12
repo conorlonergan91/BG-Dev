@@ -458,10 +458,12 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
 
     # --- HERO IMAGE band: embed FIG-VEND-<id>.png (meet → never cropped); art-less → drawn region emblem ---
     px, py = MARGIN, header_end + 22
-    cost_cy = CARD_H - 278                             # COST row baseline (ingredient chips + follower floor)
+    img_bottom = CARD_H - 348        # hero image bottom edge (unchanged; == old cost_cy(CARD_H-278) − 70)
     pw = CARD_W - 2 * MARGIN
-    ph = (cost_cy - 70) - py         # image runs to just above the cost row (no cross-region tag band now)
+    ph = img_bottom - py             # image runs to just above the lower COST band (decoupled from cost_cy)
     pcx, pcy = px + pw/2, py + ph/2
+    # the hero-illustration FRAME corners (top edge), for the two badges that ride it (bonus + reward ticket)
+    hero_x0, hero_x1, hero_top = px, px + pw, py
     _mock = _embed_fig_png(f"FIG-VEND-{tid}", px, py, pw, ph)
     if _mock:
         plate = (f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" opacity="0.5"/>'
@@ -491,9 +493,20 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
             counts[iid] = 0
             order.append(iid)
         counts[iid] += 1
-    Rc = 38
-    cell_w = 106
-    plus_w = 46
+    # CD 2026-08-12: the lower band (hero image bottom → phase-footer top) is now clear of the reward ticket
+    # (it rode up to the hero corner), so the COST row — the card's key at-a-glance read — is scaled UP and
+    # CENTRED vertically in that band, instead of sitting high just under the image. Larger roundels + larger
+    # icons + larger ×N / follower numbers, all one centred row. Rc/cell_w/number sizes scale together.
+    Rc = 52                                            # chip roundel radius (was 38)
+    cell_w = 140                                       # per-cell width (was 106); max 3 types + follower fits
+    plus_w = 60                                        # "+" divider column (was 46)
+    num_gap = 34                                       # roundel edge → ×N / follower number baseline
+    num_fs = 46                                        # ×N / follower number size (was 34)
+    _footer_top = (CARD_H - 26) - 16 - 40              # matches the phase-footer fb_y (fb_h = 40)
+    _band_c = (img_bottom + _footer_top) / 2           # centre of the lower band
+    # centre the roundel+number block (top = cost_cy−Rc, number baseline = cost_cy+Rc+num_gap) on the band
+    cost_cy = round(_band_c - num_gap / 2)
+    num_y = cost_cy + Rc + num_gap
     show_follow = min_f not in ("", "0")
     n_ing = len(order)
     total_w = n_ing * cell_w + (plus_w + cell_w if show_follow else 0)
@@ -503,41 +516,41 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
         isuit = resolve_suit(theme, iid) if iid in theme["suits"] else {"color": muted, "emblem": "circle"}
         icol, iemb = isuit["color"], isuit["emblem"]
         ccx = x0 + i * cell_w + cell_w/2
-        chips += (f'<circle cx="{ccx}" cy="{cost_cy}" r="{Rc}" fill="#ffffff" stroke="{ink}" stroke-width="3"/>'
+        chips += (f'<circle cx="{ccx}" cy="{cost_cy}" r="{Rc}" fill="#ffffff" stroke="{ink}" stroke-width="4"/>'
                   + emblem_svg(iemb, ccx, cost_cy, Rc*0.60, icol, stroke=ink))
         if counts[iid] > 1:
-            chips += (f'<text x="{ccx}" y="{cost_cy + Rc + 32}" font-size="34" fill="{ink}" '
+            chips += (f'<text x="{ccx}" y="{num_y}" font-size="{num_fs}" fill="{ink}" '
                       f'text-anchor="middle" font-family="{tfont}" font-weight="bold">×{counts[iid]}</text>')
     if show_follow:
         # "+" divider between the ingredients you pay and the followers you must hold
         dvx = x0 + n_ing * cell_w + plus_w/2
-        chips += (f'<text x="{dvx}" y="{cost_cy + 16}" font-size="52" fill="{muted}" text-anchor="middle" '
+        chips += (f'<text x="{dvx}" y="{cost_cy + 22}" font-size="68" fill="{muted}" text-anchor="middle" '
                   f'font-family="{tfont}" font-weight="bold" opacity="0.7">+</text>')
         # follower FLOOR cell — illustrated follower bust (violet) + the threshold number below (no ×: it's a
         # crowd you HOLD, not a multiplier). Violet ink matches the Followers currency; white roundel keeps
         # the row cohesive with the pay chips.
         fcx = x0 + n_ing * cell_w + plus_w + cell_w/2
-        chips += (f'<circle cx="{fcx}" cy="{cost_cy}" r="{Rc}" fill="#ffffff" stroke="{ink}" stroke-width="3"/>'
+        chips += (f'<circle cx="{fcx}" cy="{cost_cy}" r="{Rc}" fill="#ffffff" stroke="{ink}" stroke-width="4"/>'
                   + emblem_svg("follower", fcx, cost_cy, Rc*0.62, violet, stroke=ink)
-                  + f'<text x="{fcx}" y="{cost_cy + Rc + 32}" font-size="34" fill="{violet}" '
+                  + f'<text x="{fcx}" y="{num_y}" font-size="{num_fs}" fill="{violet}" '
                     f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(min_f)}</text>')
     pay_block = chips
 
     # --- REWARD (points): the vp renders as a "+N" gold TICKET pill in the BOOKING value-chip language, so a
     # vendor's reward and a tour's reward read as one visual family (the ticket glyph is the tour-package
-    # fiction). CD 2026-08-12: the pill lives TOP-RIGHT, directly UNDER the region ▲N pill — the top-right
-    # corner now reads top→bottom region pill → reward pill, and the bottom of the card is freed. It is
-    # right-aligned to the same margin edge as the region pill and sized to sit neatly beneath it (inside the
-    # region header band, clear of the left-aligned title and the hero image below). A thin white keyline
-    # separates the gold from the region-colour band. The day-engine bonus is NOT here — it's the top-centre
-    # signature-ingredient badge (see bonus_badge below); night/drinks/apex carry no `icon` so no badge.
+    # fiction). CD 2026-08-12: the pill rides the hero-illustration TOP-RIGHT CORNER — a badge ON the image's
+    # top border, mirroring the engine-bonus badge at the top-left corner (a symmetric left/right pair). It is
+    # right-aligned to the hero frame's right edge and its top crosses the frame edge by 6 px (overlapping the
+    # border, not floating in the header). It sits well below the region ▲N pill (which stays in the header),
+    # so the two never collide. Same gold ticket-glyph + "+N" style as before. A thin white keyline separates
+    # the gold from the illustration. The day-engine bonus badge is the mirror at the top-left corner below.
     stats = ""
     if vp != "":
         label = f"+{vp}"
         rp_h = 50
         rp_w = 78 + 26 * len(label)
-        rp_x = CARD_W - MARGIN - rp_w                   # right edge aligned with the region pill (CARD_W-MARGIN)
-        rp_y = (MARGIN - 8) + 46 + 14                   # 14 px below the region pill (its pill_y + pill_h)
+        rp_x = hero_x1 - rp_w                            # right edge flush with the hero frame's right edge
+        rp_y = hero_top - 6                              # top crosses the hero top border by 6 px (rides it)
         rp_cy = rp_y + rp_h / 2
         stats += (
             f'<rect x="{rp_x}" y="{rp_y}" width="{rp_w}" height="{rp_h}" rx="{rp_h/2}" fill="{gold}" '
@@ -546,23 +559,26 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
             f'<text x="{rp_x + rp_w - 24}" y="{rp_cy + 15}" font-size="42" fill="#ffffff" text-anchor="end" '
             f'font-family="{tfont}" font-weight="bold">{esc(label)}</text>')
 
-    # --- ENGINE-BONUS badge (TOP-CENTRE): a day-FOOD vendor grants a standing discount on its REGION'S
-    # SIGNATURE INGREDIENT. Show that ingredient's icon (same keyed FIG-ICON raster as the cost-row chips)
-    # as a BONUS THIS VENDOR GIVES YOU — never a pay chip. Disambiguated three ways from the bottom-row pay
-    # chips: (1) location — top-centre, straddling the header/hero seam, its own column between the title
-    # (left) and the region+reward pills (right); (2) framing — a region-colour ring + soft halo + a small
-    # DOWN-CHEVRON "gift/discount comes to you" cap, vs the pay chips' plain white/ink roundels in a row;
-    # (3) no "−1" (the rules carry the amount, per CD). Mapping (region discount → that region's signature
-    # ingredient, mechanically verified): N→meat, C→tea, S→seafood, E→pantry. ×N shows ONLY if a vendor ever
-    # grants >1 of the icon; with current data every day-food vendor grants exactly 1 letter → no number.
-    # Night/drink/apex vendors carry no `icon` → no badge (byte-unchanged for them).
+    # --- ENGINE-BONUS badge (hero TOP-LEFT CORNER): a day-FOOD vendor grants a standing discount on its
+    # REGION'S SIGNATURE INGREDIENT. Show that ingredient's icon (same keyed FIG-ICON raster as the cost-row
+    # chips) as a BONUS THIS VENDOR GIVES YOU — never a pay chip. Disambiguated three ways from the bottom-row
+    # pay chips: (1) location — riding the hero illustration's TOP-LEFT corner (mirror of the reward ticket at
+    # the top-right corner, a symmetric pair on the image's top border); (2) framing — a region-colour ring +
+    # soft halo + a small DOWN-CHEVRON "gift/discount comes to you" cap, vs the pay chips' plain white/ink
+    # roundels in a row; (3) no "−1" (the rules carry the amount, per CD). CD 2026-08-12: moved from top-centre
+    # to the top-left corner; its roundel top crosses the frame edge by 6 px (aligned with the reward pill's
+    # top) and it hangs into the image corner, clear of the header subtitle above. Mapping (region discount →
+    # that region's signature ingredient, mechanically verified): N→meat, C→tea, S→seafood, E→pantry. ×N shows
+    # ONLY if a vendor ever grants >1 of the icon; with current data every day-food vendor grants exactly 1
+    # letter → no number. Night/drink/apex vendors carry no `icon` → no badge (top-left corner stays empty).
     bonus_badge = ""
     if icon and not is_apex:
         _sig_type = {"N": "meat", "C": "tea", "S": "seafood", "E": "pantry"}.get(icon[0])
         _bonus_n = len(icon)                            # single region letter = 1; repeated letters = a multiple
         if _sig_type:
             ssuit = resolve_suit(theme, _sig_type)
-            bcx, bcy, br = CARD_W / 2, header_end + 26, 46
+            br = 46
+            bcx, bcy = hero_x0 + br, hero_top + 40       # roundel left ≈ frame left; top crosses border by 6 px
             bonus_badge = (
                 f'<circle cx="{bcx}" cy="{bcy}" r="{br + 12}" fill="{ssuit["color"]}" opacity="0.16"/>'
                 # down-chevron cap: a "gift / discount flows to you" cue, sitting above the ring
