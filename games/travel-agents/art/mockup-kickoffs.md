@@ -73,60 +73,65 @@ Generate a mock-up illustration of THE BIG BOSS (老大) for the board game Trav
 
 ---
 
-## The shared MAP — an illustrated BACKDROP (not a replacement for the functional board)
+## The shared MAP — an illustrated Taiwan BACKDROP (the functional UI composites ON TOP)
 
-**⚑⚑ INTEGRATION DECISION THE CD MUST MAKE — read before generating.** The map is a **functional
-play-board**: it carries real, correctly-scaled homes for physical components — the four-region diamond
-with, per region, a **vendor deck + vendor slot + market deck + discard**, the central **開團 Booking deck +
-face-up Booking row** (the sole prize row), the **bare HSR spine** (the Scheduled-Maintenance event card
-simply sits on the track — no printed 停 marker), and a bottom-right **Closing-Time round-counter**. A
-freeform AI map **cannot hold those play positions** — that is exactly why the earlier soft-watercolour AI
-map was retired and the board went code-rendered.
+**⚑ INTEGRATION — DECIDED with the CD (2026-08). The map is a COMPOSITE.** The functional board (the
+four region PANELS, the vendor/market card slots, the top tour row, the HSR line, the Closing-Time clock)
+is drawn by **CODE** and composited **ON TOP** of this AI backdrop. So the AI generates **ONLY the island
+scenery** — no slots, no panels, no HSR, no colour-zone diamond, no text. `bg-infodesign` wires the code
+overlay behind/over the PNG in `render_regionmap`. The CD's call: **an accurate Taiwan island as the warm
+backdrop + the existing clean panel UI composited on top** (the panels are game furniture, not a literal
+geographic map). **Playability is fully preserved** — every play position stays exactly where
+`build_board.py --type regionmap` puts it, on top of the art.
 
-So there are two ways AI art can enter the map, and the CD picks:
+**What the AI draws = the island scene only.** An **unmistakable, accurate Taiwan**, alive with the
+game's **hectic cross-island food race** — bustling breakfast shops (早餐店) and wet-/night-markets
+(菜市場 / 夜市), steam, lanterns, hanging signs, motion and life — with the busy energy pushed into the
+**open/peripheral** areas (sea, coastline, corners, edges, the gaps between panels) and kept **quiet under
+the UI zones** so slots and text read on top. This **replaces the retired soft-watercolour "blob island"**
+(off-Taiwan, too serene, and it drew the colour-zones + rail that the code now owns).
 
-- **(A) ART-AS-BACKDROP — recommended.** Generate a **quiet illustrated Taiwan skin** (below) and
-  **composite the code-rendered functional overlay on top of it** — the slots, decks, clock/Booking row,
-  the bare HSR spine, labels, and supply stay exactly where `build_board.py --type regionmap` puts them. The
-  art is a warm underlay; **playability is fully preserved.** The compositing (functional layer over the
-  art) is a **follow-up render step** wiring the PNG in behind the icon layer in `render_regionmap` — it is
-  **not automatic** and needs `bg-infodesign` + `bg-prototyper` to do it.
-- **(B) FULL-REPLACEMENT — NOT recommended.** Let the AI image *be* the board. This looks lush but
-  **destroys every play position** (nowhere exact for cards/decks/tokens; the HSR spine, clock band, and
-  Booking row vanish into scenery). Only viable as a pure "table-dressing" image nobody actually places
-  components on.
+**The map kickoff (paste — generate the DAY face first, then attach it as the reference for the NIGHT
+face so they register back-to-back).**
 
-**My recommendation: (A) backdrop.** Generate the skin below, keep the code overlay, composite as a
-follow-up step. That keeps the warmth AND the function.
+### KEEP-QUIET UI ZONES — leave these rectangles calm & low-detail (canvas fractions; derived from `art/map-board.md` §"EXACT DIMENSIONED LAYOUT SPEC" — the CODE layout, unchanged)
+The code composites the region panels, card slots, tour row, HSR line and clock **on top** of the art, so
+the backdrop must keep those areas **quiet, open and low-detail** (soft land / gentle mountain / calm
+water — no stalls, steam, signs or figures there). **Canvas 2280 × 1680 px, landscape ~1.36:1.** Rectangles
+are **fractions of the canvas** (x·y ranges). The art does **NOT** draw these as colour blocks — it just
+stays calm under them; the code paints the region tints + panel chrome:
+- **Top-centre tour-row strip:** x **0.35–0.65**, y **0.06–0.21**.
+- **North 北 panel (top-centre):** x **0.36–0.64**, y **0.22–0.44**.
+- **Central 中 panel (left):** x **0.10–0.36**, y **0.40–0.62**.
+- **East 東 panel (right):** x **0.64–0.90**, y **0.40–0.62**.
+- **South 南 panel (bottom-centre):** x **0.36–0.64**, y **0.58–0.80**.
+- **Bottom-right clock corner:** x **0.72–0.99**, y **0.82–0.99**.
 
-**The map kickoff (paste — generate the DAY face first, then reference it for the NIGHT face so they
-register back-to-back).** Keep the **whole centre and the four region zones OPEN and low-contrast** — the
-functional overlay (vendor decks + slots, market decks + discards, Booking deck + row, the bare HSR spine,
-the Closing-Time counter) composites on top, so the art must not draw any slots, boxes, grid, clock, or text.
-
-### LAYOUT SPEC — position the zones exactly (canvas fractions; full derivation in `art/map-board.md` §"EXACT DIMENSIONED LAYOUT SPEC")
-The backdrop must place its four colour-zones + the HSR line so the code-composited functional layer (tour
-row, decks, slots, clock) lands in the open areas. **Canvas 2280 × 1680 px, landscape ~1.36:1.** Coordinates
-below are **fractions of the canvas** (x·y = top-left; w×h). **Keep every listed area OPEN and low-contrast.**
-- **Four region colour-zones (diamond):** North 北 **top** centred at (0.50, 0.33); Central 中 **left** at
-  (0.23, 0.51); East 東 **right** at (0.77, 0.51); South 南 **bottom** at (0.50, 0.69). Each zone ≈
-  **0.25–0.28 W × 0.20 H**. North & South sit on the vertical spine; Central & East flank.
-- **HSR line:** a single clean vertical rail at **x = 0.50**, running **y 0.44 → 0.59** (North↔South).
-- **Top tour-row band:** keep a clear open strip across the top centre — **x 0.35–0.65, y 0.08–0.20**
-  (5 tour cards get placed here).
-- **Bottom-right clock:** keep an open rectangle at **x 0.73–0.98, y 0.83–0.98**.
-- **Per-region card + meeple areas:** keep the lower portion of each region-zone open and quiet (cards +
-  up to 6 wooden meeples get placed there). Region-zone hues (functional, match exactly): North **#D64545**,
-  Central **#1F8A7A**, South **#E6A930**, East **#26324D**; keep them as **soft ~14 % washes**, never solid.
+Concentrate **ALL** the busy market energy **OUTSIDE** those rectangles — in the sea, the corners, the
+outer edges, the coastline, and the gaps between the panels.
 
 ### `FIG-MAP-ISLAND-day` — the daytime table backdrop
 ```
-Generate a mock-up game-board BACKDROP for Travel Agents: Taiwan Food Tour, in the art style of the attached reference. Cite art/art-style.md. Canvas exactly 2280 × 1680 px, landscape ~1.36:1. A softly stylised warm-daytime map of TAIWAN as a night-market travel board, composed as a DIAMOND of four soft COLOUR-ZONES (each a gentle ~14% wash, never solid): North 北 at TOP-centre (lantern vermilion #D64545), Central 中 at LEFT (jade teal #1F8A7A), South 南 at BOTTOM-centre (golden amber #E6A930), East 東 at RIGHT (dusk indigo #26324D) — with a single clean drawn HSR rail line running vertically down the North↔South spine (screen centre). Warm dawn glow, soft gold light, night-market palette on bao-paper cream #F7F1E3. Add only ONE or TWO tiny warm accents (e.g. one paper lantern, one little steaming bowl). Keep these areas CLEAN, OPEN and LOW-CONTRAST for a functional layer placed on top: the WHOLE CENTRE, a top-centre strip, a bottom-right corner, and the lower half of each colour-zone. ABSOLUTELY NO card slots, boxes, grid, decks, clock, dials, tokens, buildings, crowds, people, dense stalls, lantern strings, NO text or labels of any kind (a functional layer will be drawn on top by code). Reads UPRIGHT from every seat (no single "front"). Secular only — no temple, deity, or worship imagery. Traditional 繁體 only if any glyph appears (prefer none). Landscape ~1.36:1, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-day.png.
+Generate a mock-up game-board BACKDROP for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached Ghibli reference. Cite art/art-style.md — warm, hand-painted STUDIO-GHIBLI-INSPIRED anime: soft painterly light, gentle organic outlines, luminous colour, delicious "Ghibli food" warmth; Ghibli = the FEEL only, never a copied frame. Canvas exactly 2280 × 1680 px, landscape ~1.36:1.
+
+SUBJECT — an ACCURATE, UNMISTAKABLE island of TAIWAN, alive with a hectic cross-island street-food race. Draw the REAL Taiwan silhouette: the recognisable sweet-potato / leaf shape, long axis running roughly NORTH (top) to SOUTH (bottom); the CENTRAL MOUNTAIN RANGE ridging down the spine; the flatter WESTERN plains; the rugged EASTERN coast; and one or two tiny offshore isles in the sea to the west (Penghu). The island sits centred and vertical, filling roughly the central third of the canvas, with open sea to the left and right. It must read at a glance as Taiwan — NOT a generic blob island.
+
+MOOD — bustling, joyful, HECTIC race energy (this is a Wacky-Races food dash, NOT a quiet painting). Fill the island's COASTLINE and the SEA toward the CORNERS and OUTER EDGES with the life of the game: clustered morning wet-markets (菜市場) and breakfast shops (早餐店) with striped awnings and hanging signs, curling steam off griddles and bamboo steamer baskets, strings of paper lanterns, a few tiny sampans / food-boats on the water, and a FEW tiny distant figures bustling between stalls for life and motion — energetic and warm. NO large foreground people (only tiny distant figures). Dot in a few TINY, distant, SECULAR landmarks as travel-poster charm: Taipei 101 rising in the north, a stone sea-arch on a little Penghu isle in the western sea, a Taroko marble-gorge cliff hint, and a calm Sun-Moon-Lake glint among the mountains (lake + mountains only — NO shrine, pagoda or temple).
+
+KEEP THESE AREAS CALM, OPEN and LOW-DETAIL — a functional UI layer (region panels, card slots, a tour row, a clock) is composited ON TOP by code, so leave quiet, uncluttered ground under each (soft land, gentle mountain, or calm water — no stalls, steam, signs or figures here): top-centre strip x 0.35–0.65 · y 0.06–0.21 (tour row); NORTH panel x 0.36–0.64 · y 0.22–0.44; CENTRAL panel (left) x 0.10–0.36 · y 0.40–0.62; EAST panel (right) x 0.64–0.90 · y 0.40–0.62; SOUTH panel x 0.36–0.64 · y 0.58–0.80; bottom-right corner x 0.72–0.99 · y 0.82–0.99 (clock). Concentrate ALL the busy market energy OUTSIDE those rectangles — sea, corners, outer edges, coastline, and the gaps BETWEEN the panels — and keep it quiet directly under them so slots and text read on top.
+
+LIGHT & PALETTE — fresh DAWN morning-market energy: warm gold morning light, night-market palette on bao-paper cream #F7F1E3 (lantern vermilion #D64545, jade teal #1F8A7A, golden amber #E6A930, dusk indigo #26324D as painterly accents). A very FAINT warm palette drift across the island is fine (a touch warmer up north), but do NOT paint four hard colour zones or any diamond of colour blocks — the code lays the region tints on top.
+
+DO NOT DRAW: any railway, rail line, train, or HSR (a code line handles that — keep the art free of rails); any card slots, boxes, decks, grid, dials, clock, tokens, or a colour-zone diamond; any text, labels, numbers or captions (Traditional 繁體 only if a shop-sign glyph is truly unavoidable — prefer none, NEVER Simplified). Reads UPRIGHT from every seat (no single "front"). SECULAR only — no temple, deity, shrine or worship imagery; landmarks are secular sites/architecture only. Dignified, warm, celebratory — Taiwan is the beloved, celebrated WITH, never a tourist-gaze postcard. Landscape ~1.36:1, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-day.png.
 ```
 
 ### `FIG-MAP-ISLAND-night` — the matched nighttime face
 ```
-Now generate the NIGHT face of the SAME map backdrop, matching the attached day face exactly in layout and composition so they register back-to-back (double-sided board). Canvas exactly 2280 × 1680 px, ~1.36:1. Identical island shape, identical diamond of four soft colour-zones (North 北 top #D64545 · Central 中 left #1F8A7A · South 南 bottom #E6A930 · East 東 right #26324D, each a ~14% wash), identical single HSR rail down the N↔S spine at screen centre. ONLY the light flips: soft festive lantern-NEON glow (lavender / magenta) + a gentle moon — region identity colours stay WARM, never a cold or red-alarm register. Same one or two tiny accents. The same areas stay CLEAN, OPEN, LOW-CONTRAST (whole centre, top-centre strip, bottom-right corner, lower half of each zone). NO card slots, boxes, grid, decks, clock, dials, tokens, buildings, crowds, people, dense stalls, lantern strings, NO text or labels (code draws the functional layer on top). Upright from every seat. Secular only. Landscape ~1.36:1, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-night.png.
+Now generate the NIGHT face of the SAME Taiwan backdrop — match the attached DAY face EXACTLY in island shape, composition, and the position of every calm UI zone, so the two faces register back-to-back (double-sided board). Canvas exactly 2280 × 1680 px, ~1.36:1. Identical accurate Taiwan silhouette (sweet-potato / leaf shape, long axis N–S, Central Mountain Range down the spine, flatter western plains, rugged east coast, the same tiny Penghu isle in the western sea). Identical placement of the bustling market energy in the sea / corners / outer edges / coastline / gaps between panels, and the SAME calm low-detail rectangles kept open for the UI (top-centre tour strip x 0.35–0.65 · y 0.06–0.21; the four panels — North x 0.36–0.64 · y 0.22–0.44, Central x 0.10–0.36 · y 0.40–0.62, East x 0.64–0.90 · y 0.40–0.62, South x 0.36–0.64 · y 0.58–0.80; bottom-right clock x 0.72–0.99 · y 0.82–0.99).
+
+ONLY the register flips to NIGHT: the markets become glowing 夜市 NIGHT-MARKETS — neon signs, dense warm paper lanterns, sizzling lamplit stalls, steam catching the neon, tiny distant figures lit by stall-light — under a festive lantern-NEON glow (lavender / magenta) and a gentle moon. Region / identity colours stay WARM, never a cold or red-alarm register. Same few tiny SECULAR landmarks (Taipei 101 lit up in the north, the Penghu sea-arch, the Taroko / Sun-Moon-Lake hints — lake + mountains only, no shrine). Keep the bustle OUT of the calm UI rectangles.
+
+DO NOT DRAW: any railway / rail / train / HSR anywhere in the art; any card slots, boxes, decks, grid, dials, clock, tokens, or colour-zone diamond; any text / labels / numbers (繁體 only if a shop-sign glyph is truly unavoidable, NEVER Simplified). NO large foreground people (tiny distant figures only). Reads UPRIGHT from every seat. SECULAR only — no temple, deity, shrine or worship imagery. Landscape ~1.36:1, high-resolution PNG (not SVG). Save build/mockups/FIG-MAP-ISLAND-night.png.
 ```
 
 **Scale note.** The board slot is **2280 × 1680 px (~1.36:1)** at 300 DPI (see the SCALE TABLE and the
@@ -135,8 +140,8 @@ dimensioned layout in `art/map-board.md`). Real component sizes on this board: a
 scale). Generate large, export at that aspect. Prep with `python tools/mockup/prep_mockup.py --image
 <download> --fit 2280x1680 --pad --game games/travel-agents --out FIG-MAP-ISLAND-day.png` (no `--key-bg` —
 the map is a full backdrop, not a cut-out). Per-region illustrated vignettes (`FIG-MAP-NORTH` etc.) are
-**NOT** part of this soft backdrop — the regions read as plain colour-zones (richer per-region scenes stay a
-future option in `art/map-board.md`, East consultant-gated).
+**NOT** part of this backdrop — the code paints the region tints + panels on top; richer per-region scenes
+stay a future option for a human-illustrated board in `art/map-board.md` (East consultant-gated).
 
 ---
 
