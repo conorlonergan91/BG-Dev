@@ -65,7 +65,7 @@ The V7 taxonomy is **six generic categories**, each card illustrated as a **mix*
 | **Meat** | 肉 | 肉 | North signature | pork belly · beef shank · sausage · poultry (incl. turkey) |
 | **Tea** | 茶 | 茶 | Central signature | high-mountain oolong · black tea · bubble-tea leaf base |
 | **Seafood** | 海鮮 | 海 | South signature | oyster · milkfish · shrimp · clam · squid |
-| **Pantry** | 糧 | 糧 | East signature | valley rice · glutinous rice · noodles · flour |
+| **Staples** | 糧 | 糧 | East signature | rice · noodles · flour · tofu |
 | **Sugar** | 糖 | 糖 | Common (Central & South) | cane sugar |
 | **Vegetables** | 菜 | 菜 | Common (North & East) | greens · cabbage · radish · bamboo shoot · scallion · roselle |
 
@@ -114,6 +114,7 @@ CURRENT form (§3), or flag it if resolving it is a mechanics/value question.
 | Retired term | Replaced by (V7) | Note |
 |---|---|---|
 | **Buzz** | Followers | Pure rename (CD v6.4 lock). |
+| **Rice & Noodles / 米麵 / Pantry** (the East-signature type's player-facing label) | **Staples** (繁體 糧 unchanged) | CD rename 2026-08-11, **presentation only**. The type now reads as **Staples** and its illustration spans rice · noodles · flour · **tofu** (was rice/noodles/flour). Canonical 繁體 stays **糧**; the code suit key stays `pantry`. ⚠ Sweep remaining player-facing "Pantry"/"米麵" mentions (e.g. EV-D12 "糧 Pantry rice", any rulebook copy) to "Staples" → `bg-continuity`. |
 | **Reach** (← Reputation / Prestige) | Followers-max (the dial) | Pure rename; the Reputation → Reach → Followers-max lineage. |
 | **Tour Tickets / Tour-Ticket / missions** | Bookings 開團 | Pure rename. |
 | **Bribe** (the vendor-win action) | **Sign Up** | CD rename 2026-08-11, **presentation only**. "Bribe" carried the wrong connotation; **Sign Up** fits the travel-agent frame (a vendor signs up to your tour) and keeps the warm, comedic, never-corruption tone. **Mechanic unchanged** (biggest committed-follower crowd + crowd-floor + pay recipe − region discounts → the vendor joins your tour); **no component-data value touched.** Verb *sign up a vendor*; gerund *signing up*; noun *sign-up*; keyword/label **Sign Up**. |
