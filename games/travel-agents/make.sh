@@ -30,6 +30,11 @@ rm -rf build
 # A vendor with no FIG-VEND file falls back to the drawn region emblem (graceful, like an art-less ingredient).
 mkdir -p build/mockups
 cp art/mockups/FIG-VEND-*.png build/mockups/ 2>/dev/null || true
+# VENDOR-BACK illustrations (CD Ghibli pivot): the breakfast-shop (DAY) + night-market (NIGHT) shop scenes
+# for the vendor card BACKS. FIG-BACK-VEND-DAY.png / FIG-BACK-VEND-NIGHT.png (portrait 750×1050). When
+# present, render_back_svg embeds them as the full-bleed vendor-back backdrop (with a small region+phase
+# sort overlay); ABSENT → the vendor back stays the byte-identical code-drawn 早市/夜市 market back.
+cp art/mockups/FIG-BACK-VEND-*.png build/mockups/ 2>/dev/null || true
 # The PHASED decks (vendors / tickets / ingredients / events) render as `png` only here — their
 # play-ready sheets come from the day/night SPLITS below (top-level PnP + Screentop), so the mixed
 # full-CSV screentop sheet (one NEUTRAL back) is deliberately NOT produced: it would hide the

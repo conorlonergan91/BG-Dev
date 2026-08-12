@@ -541,6 +541,15 @@ def _deck_is_tour(rows: list[dict]) -> bool:
     return bool(types) and types <= {"booking", "mission", "boundary"}
 
 
+def _deck_is_vendor(rows: list[dict]) -> bool:
+    """True when a deck is a Travel-Agents VENDOR deck — every row carries both `tier` and `recipe`
+    (the same _is_vendor signature the vendor FACE dispatches on). Used only to gate the illustrated
+    vendor-back hook (FIG-BACK-VEND-<PHASE>): ingredient/market decks (carry `ingredient`, no `tier`),
+    tour/booking decks (booking/mission/boundary), and Beacon (cargo/passenger/…) never match, so their
+    backs are byte-unchanged. All-rows (not any) so a stray mixed CSV can't accidentally trip the hook."""
+    return bool(rows) and all(_is_vendor(r) for r in rows)
+
+
 def _hazard_stripes(x: float, y: float, w: float, h: float, a: str, b: str) -> str:
     """A hi-vis maintenance hazard band (diagonal a/b bars) — the 'roadworks' read, drawn (no pattern)."""
     step = 34
@@ -1096,14 +1105,24 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
 
 
 def render_back_svg(slug: str, theme: dict, phase: str | None = None,
-                    region: str | None = None) -> str:
+                    region: str | None = None, is_vendor: bool = False) -> str:
     """Shared card back. Themes that declare a `back` config (Travel Agents' night-market) get a bespoke
     local-market back, with a day/night/general variant layered on from `phase` and (optionally) a REGION
     channel from `region` for a homogeneous region+phase market deck; every other theme (Beacon's nautical,
-    …) falls through to the unchanged generic ring back."""
+    …) falls through to the unchanged generic ring back.
+
+    `is_vendor` (a VENDOR deck) opts into the illustrated-back HOOK: when the CD's Ghibli shop scene
+    FIG-BACK-VEND-<PHASE>.png is present on disk, the vendor back becomes that full-bleed illustration
+    with a small functional overlay; when it is ABSENT (the normal state) the hook returns None and the
+    vendor back renders EXACTLY as today (byte-identical). Non-vendor decks pass is_vendor=False and are
+    untouched."""
     bstyle = back_style(theme, phase, region)
     if bstyle is None:
         return _render_back_generic(slug, theme)
+    if is_vendor:
+        illustrated = _render_back_vendor_illustrated(slug, theme, bstyle, phase, region)
+        if illustrated is not None:
+            return illustrated
     return _render_back_travel_agents(slug, theme, bstyle)
 
 
@@ -1296,6 +1315,75 @@ def _render_back_travel_agents(slug: str, theme: dict, b: dict) -> str:
 </svg>"""
 
 
+def _render_back_vendor_illustrated(slug: str, theme: dict, b: dict, phase: str | None,
+                                    region: str | None) -> str | None:
+    """The illustrated VENDOR-BACK hook (CD 2026-08 Ghibli pivot). When the CD's shop-scene illustration
+    FIG-BACK-VEND-<PHASE>.png (PHASE = DAY / NIGHT; portrait 750×1050) is present in the mockups dir
+    (_ING_MOCKUPS_DIR, set from make.sh's build/mockups), render it as the vendor back's FULL-BLEED
+    backdrop — embedded self-contained as a base64 data URI (so it survives cairosvg→PNG), scaled with
+    preserveAspectRatio meet so the painting is NEVER distorted, filling the panel inside the constant
+    dusk-indigo TA edge. A DAY back drops in the breakfast-shop (早餐店), a NIGHT back the 夜市 night market.
+
+    The heavy code-drawn market motif/awning/steamer/lane is DROPPED when the illustration is present —
+    the painting is the hero. Only a SMALL, subtle FUNCTIONAL overlay stays so a face-down vendor pile
+    still sorts at a glance: the region emblem + N/C/S/E letter in a top corner (only when the deck is a
+    homogeneous single region — a mixed-region vendor deck omits it), and a minimal day/night cue (drawn
+    sun/moon + 早/夜) in the other corner. Both sit on a soft translucent roundel so they read over any
+    illustration without fighting it.
+
+    Returns None (→ caller keeps the byte-identical code-drawn back) when:
+      • the phase is not day/night (a mixed-phase vendor deck has no single scene), or
+      • no FIG-BACK-VEND-<PHASE>.png is on disk (the normal state right now).
+    So committing this hook with no art present changes NOTHING in the shipped renders."""
+    ph = (phase or "").strip().lower()
+    if ph not in ("day", "night"):
+        return None
+    fig_id = f"FIG-BACK-VEND-{ph.upper()}"
+    radius = theme["radius"]
+    tfont = theme["title_font"]
+    ground = b["ground"]                     # constant dusk-indigo TA edge
+    ink = b["stamp"]                         # phase silhouette ink (contrast-safe per phase)
+    ix, iy, iw, ih = 40, 40, CARD_W - 80, CARD_H - 80
+    # Full-bleed illustration inside the TA edge. meet (via _embed_fig_png) never distorts; a 750×1050
+    # painting into this near-portrait panel fills it with at most a hair of letterbox reading as the edge.
+    img = _embed_fig_png(fig_id, ix, iy, iw, ih, rx=radius - 10)
+    if img is None:                          # no art on disk → graceful fallback (byte-identical code back)
+        return None
+
+    # --- functional overlay (kept small so the painting dominates) --------------------------------------
+    overlay = []
+    # region cue (top-LEFT) — only for a homogeneous single-region vendor deck (back_style set region_*).
+    rcol = b.get("region_color")
+    if rcol:
+        remb = b.get("region_emblem", "circle")
+        ren = (b.get("region_en", "") or "").strip()
+        rletter = ren[:1].upper() if ren else "?"
+        cxp, cyp, rp = ix + 66, iy + 66, 50
+        rtxt = pick_text_color(rcol, dark=theme["ink"], light="#ffffff")
+        overlay.append(
+            f'<circle cx="{cxp}" cy="{cyp}" r="{rp}" fill="#ffffff" opacity="0.86" stroke="{ink}" stroke-width="3"/>'
+            + emblem_svg(remb, cxp - 15, cyp, 17, rcol, stroke=theme["ink"]) +
+            f'<text x="{cxp + 20}" y="{cyp + 12}" font-size="40" fill="{rcol}" text-anchor="middle" '
+            f'font-family="{tfont}" font-weight="bold">{esc(rletter)}</text>')
+    # day/night cue (top-RIGHT) — drawn sun/moon + 早/夜 (never colour alone; survives greyscale).
+    char = b.get("char", "早" if ph == "day" else "夜")
+    emblem = b.get("emblem", "sun" if ph == "day" else "moon")
+    cxd, cyd, rd = ix + iw - 66, iy + 66, 50
+    overlay.append(
+        f'<circle cx="{cxd}" cy="{cyd}" r="{rd}" fill="#ffffff" opacity="0.86" stroke="{ink}" stroke-width="3"/>'
+        + emblem_svg(emblem, cxd - 16, cyd, 18, ink) +
+        f'<text x="{cxd + 20}" y="{cyd + 13}" font-size="42" fill="{ink}" text-anchor="middle" '
+        f'font-family="{tfont}" font-weight="bold">{esc(char)}</text>')
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
+  <rect width="{CARD_W}" height="{CARD_H}" rx="{radius}" fill="{ground}"/>
+  <rect x="{ix}" y="{iy}" width="{iw}" height="{ih}" rx="{radius-10}" fill="{ground}"/>
+  {img}
+  <rect x="{ix}" y="{iy}" width="{iw}" height="{ih}" rx="{radius-10}" fill="none" stroke="{ink}" stroke-width="6"/>
+  {"".join(overlay)}
+</svg>"""
+
+
 def load_rows(csv_path: Path) -> list[dict]:
     with csv_path.open(newline="", encoding="utf-8") as f:
         return list(csv.DictReader(f))
@@ -1377,7 +1465,10 @@ def main() -> int:
     # branch never reads its day/night market variants.
     if _deck_is_tour(rows):
         back_phase, back_region = "any", None
-    back_svg = render_back_svg(slug, theme, back_phase, back_region)
+    # VENDOR decks opt into the illustrated-back hook (FIG-BACK-VEND-<PHASE>): a day/night vendor pile
+    # gets the CD's shop-scene painting as its back WHEN the art is on disk, else the byte-identical
+    # code-drawn market back. Gated on _deck_is_vendor so only vendor decks are ever affected.
+    back_svg = render_back_svg(slug, theme, back_phase, back_region, is_vendor=_deck_is_vendor(rows))
     (args.out / "svg" / "_back.svg").write_text(back_svg, encoding="utf-8")
     print(f"[svg]  wrote {len(svg_paths)} card SVGs -> {args.out/'svg'}  "
           f"(back phase: {back_phase or 'neutral'}, region: {back_region or 'mixed/neutral'})")
