@@ -35,6 +35,11 @@ cp art/mockups/FIG-VEND-*.png build/mockups/ 2>/dev/null || true
 # present, render_back_svg embeds them as the full-bleed vendor-back backdrop (with a small region+phase
 # sort overlay); ABSENT → the vendor back stays the byte-identical code-drawn 早市/夜市 market back.
 cp art/mockups/FIG-BACK-VEND-*.png build/mockups/ 2>/dev/null || true
+# TOUR (booking) hero art (CD-provided tour illustrations): copy FIG-TOUR-<id>.png into build/mockups so
+# the booking render embeds each tour's illustration as its card face (render_card_svg dispatches to the
+# illustrated booking layout when FIG-TOUR-<id>.png is present). A tour with no FIG-TOUR file falls back
+# to the byte-identical text booking card (the ~43 art-less tours are unchanged).
+cp art/mockups/FIG-TOUR-*.png build/mockups/ 2>/dev/null || true
 # FUNCTIONAL ICONS (CD-provided AI art): illustrated versions of the 8 functional icons — the 6 ingredient
 # suit glyphs (meat/tea/seafood/pantry/sugar/veg), the follower cost-cell bust, and the ticket reward glyph.
 # The raw art is drawn on a DARK ground with a coloured glow, so KEY the background transparent at build time

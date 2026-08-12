@@ -638,6 +638,22 @@ def _is_boundary(row: dict) -> bool:
     return str(row.get("type", "")).strip().lower() == "boundary"
 
 
+def _is_booking(row: dict) -> bool:
+    """A Travel-Agents TOUR/BOOKING card: type ∈ {booking, mission} (the 開團 scoring deck). No other
+    game types match, so this never fires for Beacon (cargo/passenger/…)."""
+    return str(row.get("type", "")).strip().lower() in ("booking", "mission")
+
+
+def _has_tour_art(row: dict) -> bool:
+    """True only when a FIG-TOUR-<id>.png illustration is on disk in the TA mock-up dir. This is the ONLY
+    gate for the illustrated booking face: art-less bookings (the ~43 with no FIG-TOUR file) and every
+    non-TA deck (whose _ING_MOCKUPS_DIR has no such file) return False → the byte-identical text fallback."""
+    if not _ING_MOCKUPS_DIR:
+        return False
+    tid = str(row.get("id", "")).strip()
+    return bool(tid) and (Path(_ING_MOCKUPS_DIR) / f"FIG-TOUR-{tid}.png").is_file()
+
+
 def _deck_is_tour(rows: list[dict]) -> bool:
     """True when a deck is a Travel-Agents TOUR/BOOKING deck — every row is a booking / mission / boundary
     card (the seeded DUSK/LAST-TRAIN clock cards ride along). CD 2026-08-11: any-time tours shuffle INTO the
@@ -989,6 +1005,139 @@ def _render_boundary_svg(row: dict, theme: dict) -> str:
 </svg>"""
 
 
+def _render_booking_illustrated(row: dict, theme: dict) -> str:
+    """CD 2026-08-12 (bg-infodesign) — the illustrated TOUR/BOOKING face. Fires ONLY when a
+    FIG-TOUR-<id>.png is on disk (gated by _has_tour_art at the dispatch), so the ~43 art-less tours and
+    every non-TA deck fall through to the byte-identical text card in render_card_svg.
+
+    LAYOUT — hero illustration window + solid/scrim text bands, mirroring the vendor card family so a tour
+    and a vendor read as one object. The tour art is NOT a uniform template (n_all4 is a wide boarding-pass
+    ticket, d_south2 a square Tainan stamp with baked-in text), so nothing game-critical is overlaid on the
+    RAW art: every load-bearing read sits on its own solid band or scrim.
+      • NAME  → a solid boarding-pass-blue HEADER BAND at the top (English first, 繁體 secondary) — the same
+        header treatment as the vendor face; guaranteed legible on flat colour, never fighting the art.
+      • ILLUSTRATION → a framed HERO WINDOW below the header, embedded with meet (never cropped/distorted).
+      • REQUIREMENT (what you must WIN) → the formatted `target`, bold white on a translucent ink SCRIM
+        ribbon across the bottom of the hero (the vendor-back / map-composite scrim technique) — reads over
+        any art.
+      • VALUE → the gold "+N value" TICKET pill riding the hero's TOP-RIGHT corner, identical to the vendor
+        reward pill (same gold, same ticket glyph) so tour + vendor rewards are one visual family.
+      • DAY-ONLY sun glyph → a small ☀日 badge on the hero's TOP-LEFT corner for phase=day tours only
+        (night/any: none) — the existing day-only rule preserved, just relocated onto the illustration
+        (symmetric with the value pill) so it never collides with the bottom requirement scrim."""
+    ink, text, muted, accent, radius = (theme["ink"], theme["text"], theme["muted"],
+                                        theme["accent"], theme["radius"])
+    tfont, bfont = theme["title_font"], theme["body_font"]
+    ctype = (row.get("type") or "").strip().lower()
+    suit = resolve_suit(theme, ctype)                     # booking → boarding-pass blue; mission → gold
+    scol, semb = suit["color"], suit["emblem"]
+    gold = theme["suits"].get("signature", {}).get("color", "#C9A227")
+    pstyle = phase_style(row.get("phase"))
+    frame_col = pstyle["frame"] if pstyle else ink
+    page_cols = pstyle["page"] if pstyle else None
+    tid = str(row.get("id", "")).strip()
+
+    # --- header band (boarding-pass blue): English NAME first, 繁體 secondary (grows to fit, like vendors) ---
+    eng = str(row.get("name", "")).strip()
+    han = str(row.get("hanzi", "")).strip()
+    title_lines = wrap(eng, max_chars=20) or [""]
+    ty0 = MARGIN + 44
+    title_tspans = "".join(
+        f'<tspan x="{MARGIN}" y="{ty0 + i * TITLE_LINE_H}">{esc(l)}</tspan>'
+        for i, l in enumerate(title_lines))
+    sec_y = ty0 + (len(title_lines) - 1) * TITLE_LINE_H + 44
+    header_h = (sec_y + 20) - 26
+    header_end = 26 + header_h
+    sec_line = (f'<text x="{MARGIN}" y="{sec_y}" font-size="30" fill="#ffffff" opacity="0.92" '
+                f'font-family="{tfont}">{esc(han)}</text>') if han else ""
+    # a small ticket deck-badge top-right of the band (says "this is a tour ticket" at a glance)
+    tk_bx, tk_by = CARD_W - MARGIN - 24, MARGIN + 24
+    deck_badge = (f'<circle cx="{tk_bx}" cy="{tk_by}" r="34" fill="#ffffff" opacity="0.92"/>'
+                  + emblem_svg("ticket", tk_bx, tk_by, 18, scol))
+
+    # --- HERO IMAGE window: embed FIG-TOUR-<id>.png (meet → never cropped) inside a framed plate --------
+    px, py = MARGIN, header_end + 20
+    img_bottom = CARD_H - MARGIN
+    pw = CARD_W - 2 * MARGIN
+    ph = img_bottom - py
+    hero_x0, hero_x1, hero_top = px, px + pw, py
+    _mock = _embed_fig_png(f"FIG-TOUR-{tid}", px, py, pw, ph, rx=20)
+    if _mock:
+        plate = (f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" opacity="0.5"/>'
+                 + _mock +
+                 f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="none" '
+                 f'stroke="{scol}" stroke-width="3"/>')
+    else:                                                 # defensive only (dispatch guarantees art present)
+        plate = (f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="20" fill="#ffffff" opacity="0.4" '
+                 f'stroke="{scol}" stroke-width="3" stroke-dasharray="14 9"/>'
+                 + emblem_svg(semb, px + pw/2, py + ph/2, 110, scol, stroke=ink))
+
+    # --- REQUIREMENT scrim ribbon (what you must WIN): formatted target, bold white on a translucent ink
+    # scrim across the bottom of the hero — legible over any art (the vendor-back / map-composite technique) --
+    req = format_target(row.get("target", ""))
+    if not req:                                           # tours all carry a target; degrade to the effect lead
+        req = " ".join(str(row.get("effect", "")).split()).upper()
+    req_lines = wrap(req, max_chars=24)[:3] or [""]
+    rl_h = 46
+    band_h = 30 + len(req_lines) * rl_h
+    band_x = px + 14
+    band_w = pw - 28
+    band_y = img_bottom - 16 - band_h
+    req_tspans = "".join(
+        f'<tspan x="{CARD_W/2}" y="{band_y + 22 + rl_h * 0.72 + i * rl_h:.0f}">{esc(l)}</tspan>'
+        for i, l in enumerate(req_lines))
+    req_scrim = (
+        f'<rect x="{band_x}" y="{band_y}" width="{band_w}" height="{band_h}" rx="18" '
+        f'fill="{ink}" opacity="0.84"/>'
+        f'<text font-size="38" fill="#ffffff" text-anchor="middle" font-family="{tfont}" '
+        f'font-weight="bold" letter-spacing="1">{req_tspans}</text>')
+
+    # --- VALUE: gold "+N value" ticket pill riding the hero TOP-RIGHT corner (identical to the vendor pill) --
+    value = str(row.get("value", "")).strip()
+    value_pill = ""
+    if value != "":
+        label = f"+{value} value"
+        rp_h = 54
+        rp_w = 74 + 21 * len(label)
+        rp_x = hero_x1 - rp_w
+        rp_y = hero_top - 6
+        rp_cy = rp_y + rp_h / 2
+        value_pill = (
+            f'<rect x="{rp_x}" y="{rp_y}" width="{rp_w}" height="{rp_h}" rx="{rp_h/2}" fill="{gold}" '
+            f'stroke="#ffffff" stroke-width="2"/>'
+            + emblem_svg("ticket", rp_x + 38, rp_cy, 20, "#ffffff") +
+            f'<text x="{rp_x + rp_w - 26}" y="{rp_cy + 15}" font-size="38" fill="#ffffff" text-anchor="end" '
+            f'font-family="{tfont}" font-weight="bold">{esc(label)}</text>')
+
+    # --- DAY-ONLY sun glyph (hero TOP-LEFT corner) — the day→dusk resolve cue; night/any tours get none ----
+    day_badge = ""
+    if (row.get("phase") or "").strip().lower() == "day":
+        dc = pstyle["frame"] if pstyle else "#E6A930"
+        bx, by, br = hero_x0 + 44, hero_top + 40, 42
+        day_badge = (
+            f'<circle cx="{bx}" cy="{by}" r="{br}" fill="#ffffff" stroke="{dc}" stroke-width="5"/>'
+            + emblem_svg("sun", bx, by - 8, 19, dc)
+            + f'<text x="{bx}" y="{by + 27}" font-size="26" fill="{dc}" text-anchor="middle" '
+              f'font-family="{tfont}" font-weight="bold">日</text>')
+
+    inner_frame = (f'<rect x="14" y="14" width="{CARD_W-28}" height="{CARD_H-28}" rx="{radius-4}" '
+                   f'fill="none" stroke="{frame_col}" stroke-width="2" opacity="0.45"/>') if pstyle else ""
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{CARD_W}" height="{CARD_H}" viewBox="0 0 {CARD_W} {CARD_H}">
+  <defs>{page_gradient(theme, 'pg', page_cols)}</defs>
+  <rect x="4" y="4" width="{CARD_W-8}" height="{CARD_H-8}" rx="{radius}" fill="url(#pg)" stroke="{frame_col}" stroke-width="6"/>
+  {inner_frame}
+  <rect x="26" y="26" width="{CARD_W-52}" height="{CARD_H-52}" rx="{radius-10}" fill="none" stroke="{scol}" stroke-width="2" opacity="0.5"/>
+  <path d="M26 {26+radius-10} a {radius-10} {radius-10} 0 0 1 {radius-10} -{radius-10} h {CARD_W-52-2*(radius-10)} a {radius-10} {radius-10} 0 0 1 {radius-10} {radius-10} v {header_h-(radius-10)} h -{CARD_W-52} z" fill="{scol}"/>
+  <text font-size="{TITLE_SIZE}" fill="#ffffff" font-family="{tfont}" font-weight="bold">{title_tspans}</text>
+  {sec_line}
+  {deck_badge}
+  {plate}
+  {day_badge}
+  {value_pill}
+  {req_scrim}
+</svg>"""
+
+
 def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> str:
     if _is_vendor(row):
         return render_vendor_svg(row, theme, glyph_map)
@@ -1000,6 +1149,8 @@ def render_card_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> st
         return _render_island_banner(row, theme)
     if _is_character(row):
         return _render_character_svg(row, theme)
+    if _is_booking(row) and _has_tour_art(row):
+        return _render_booking_illustrated(row, theme)
     ctype = (row.get("type") or "").strip()
     suit = resolve_suit(theme, ctype)
     scol = suit["color"]
