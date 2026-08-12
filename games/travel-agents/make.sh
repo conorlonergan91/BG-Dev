@@ -98,18 +98,25 @@ for d in build/top/decks/*.csv; do
     python3 $T/cards/build_cards.py --csv "$d" --out build/top --theme "$theme" --formats screentop --tight-grid --ing-mockups-dir build/mockups $tok
 done
 
-# Board (the region-ring table-layout) — ring + HSR + vendor slots + per-region day/night market decks +
-# placeholder zones for every component. Rendered in BOTH states (mirrors the dusk flip): day / night.
-# The functional code board still renders (data-driven, always in sync with map.json) — kept as the
-# reference layer for future re-compositing → build/map-*-functional.png.
+# Board (the region-ring table layout) — ring + HSR + vendor slots + per-region market decks + the meeple
+# keep-clear halos + the round/dice clock. Rendered in BOTH states (mirrors the dusk flip): day / night.
+# TWO layers per phase, both from the SAME data-driven render (render_regionmap), so they can never drift:
+#   • build/map-<phase>-functional.png — the functional overlay on the CREAM ground (NO backdrop). Kept as
+#     the position REFERENCE layer (its geometry IS the map-board.md spec). Byte-identical to the pre-art
+#     render, so nothing downstream breaks before/without the island art.
+#   • build/map-<phase>.png (SHIPPED) — the SAME overlay COMPOSITED over the CD's AI island backdrop
+#     (FIG-MAP-ISLAND-<phase>.png) as the full-canvas base layer. render_regionmap swaps the cream ground for
+#     the illustration, drops the code island/glow (the art carries them), and bumps the region panels /
+#     tour row / clock to a stronger phase-ground scrim + reserves a per-region meeple keep-clear halo so
+#     everything stays legible on top of the art. This REPLACES the old `cp FIG-MAP-ISLAND → map-<phase>.png`
+#     that overwrote (threw away) the functional board.
+# Backdrops are copied into build/mockups/ (mirrors the FIG-VEND / FIG-ING copies). If a phase's island art
+# is absent the composite falls back GRACEFULLY to the cream functional board (never a backdrop-only map).
+cp art/mockups/FIG-MAP-ISLAND-*.png build/mockups/ 2>/dev/null || true
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --out build/map-day-functional.png
 python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --out build/map-night-functional.png
-# SHIPPED map = the CD's AI-illustrated composite (warm watercolour / neon-night island + the functional
-# overlay composited on top), committed at art/mockups/FIG-MAP-ISLAND-<phase>.png. This is what snapshots
-# into exports/ and embeds into the rulebook's FIG-SETUP. NOTE (curated asset): if the functional layout
-# changes again, re-composite from build/map-*-functional.png — the shipped map is not auto-regenerated.
-cp art/mockups/FIG-MAP-ISLAND-day.png   build/map-day.png
-cp art/mockups/FIG-MAP-ISLAND-night.png build/map-night.png
+python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase day   --backdrop build/mockups/FIG-MAP-ISLAND-day.png   --out build/map-day.png
+python3 $T/boards/build_board.py --type regionmap --spec components/map.json --theme "$theme" --phase night --backdrop build/mockups/FIG-MAP-ISLAND-night.png --out build/map-night.png
 
 # Per-player CHARACTER BOARDS (6 A4-LANDSCAPE mats, one per characters.csv row) — CD REDESIGN 2026-08 v2.
 # Each board carries: English name TOP-LEFT + 漢字 TOP-RIGHT with the Tâi-lô romanisation beneath it, and
