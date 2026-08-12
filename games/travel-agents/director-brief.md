@@ -17,6 +17,11 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-12 — Vendor card: move the VP ticket pill top-right under the location glyph; fix the day/night banner overlapping the border.**
+  - **Ask:** *"For the vendor cards I think the ticket VP pill should be on the top right under the location glyphs. Also the day and night banners down the bottom are overlapping with the card border and it looks sloppy."*
+  - **Context:** Reaction to the icon-swapped vendor card. Reward should sit top-right beneath the region pill (▲N); the bottom day/night footer banner currently collides with the rounded card frame.
+  - **Status:** `captured` → `bg-infodesign` (relocate the reward ticket pill to top-right under the region pill; inset/restyle the phase footer so it sits cleanly inside the border).
+
 - **2026-08-11 — Map: composite the functional layer over the backdrop; accurate Taiwan + bustling vibe.**
   - **Ask:** the CD's first AI map (a serene watercolour blob) was wrong: *"the island doesn't look like Taiwan… Taiwan has mountains in the middle and the railway is around the coastline not through the middle… the HSR should be between the overlay regions, not on the island illustration. Where are the region overlays, the card-deck/pile spaces, the meeples, the clock? …the board should evoke the hectic race, bustling breakfast shops and local markets, some sites — not a serene picturesque watercolour, it's too much of a contrast from the game."*
   - **Root cause (mine):** the functional board (region panels, card slots, tour row, HSR, clock) is fully code-rendered and always has been — but `make.sh` `cp`-overwrites it with the AI backdrop, shipping only the backdrop. The "follow-up composite step" was never wired.
