@@ -17,6 +17,11 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-12 — Wire the remaining tour art, then merge to main via PR.**
+  - **Ask:** *"Wire in the rest that I sent over as needed and then merge everything so far to main with a PR."*
+  - **Context:** everything else from the art batch is wired (map, ingredient cards, icons, vendor backs, vendor-card layout). The remaining unwired assets are the two tour illustrations (FIG-TOUR-n_all4 環島, FIG-TOUR-d_south2 府城); the bowl-count is held (generic count motif, no id). After wiring, cut a PR to main.
+  - **Status:** `captured` → `bg-infodesign` adds the booking-card tour-illustration slot (embed FIG-TOUR-<id> with the functional reads overlaid, graceful text fallback for the ~43 art-less tours); then orchestrator rebuilds, commits, and opens the PR.
+
 - **2026-08-12 — Vendor card: badges onto the illustration-border corners (engine bonus left, ticket VP right).**
   - **Ask:** *"I like the way you have the icon in the border. How about we move the engine bonus to the left corner of the illustration border and the ticket VP pill to the right."*
   - **Context:** the CD liked the engine-bonus gift-tag pinned to the hero-image border (currently top-centre). Move it to the illustration's top-LEFT corner and move the reward ticket pill from the header to the illustration's top-RIGHT corner — a symmetric pair riding the hero frame.
