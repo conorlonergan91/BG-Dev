@@ -17,6 +17,11 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-12 — Vendor engine bonus: top-centre, as the ingredient icon, no "−1".**
+  - **Ask:** *"Put the engine bonus for the card in the top centre and use the ingredient icons. No need for the −1 as that's obvious from the rules. Unless it's a multiple then use ×2 etc (although I'm not sure if we have such engine bonuses)."*
+  - **Context / verified:** the day-food region discount IS a signature-ingredient discount (sim: an owned region icon discounts that region's signature ingredient — N→Meat, C→Tea, S→Seafood, E→Staples; sugar/veg commons never discounted). So showing the ingredient icon is mechanically accurate. Every day-food vendor grants exactly ONE icon → no multiples exist in current data; the ×N path is coded for safety only.
+  - **Status:** `captured` → `bg-infodesign`: move the engine-bonus to top-centre as the region's signature-ingredient icon (FIG-ICON), drop the "−1", ×N only if a vendor ever grants >1; remove the old bottom-right region "−1" cell.
+
 - **2026-08-12 — Vendor card: move the VP ticket pill top-right under the location glyph; fix the day/night banner overlapping the border.**
   - **Ask:** *"For the vendor cards I think the ticket VP pill should be on the top right under the location glyphs. Also the day and night banners down the bottom are overlapping with the card border and it looks sloppy."*
   - **Context:** Reaction to the icon-swapped vendor card. Reward should sit top-right beneath the region pill (▲N); the bottom day/night footer banner currently collides with the rounded card frame.
