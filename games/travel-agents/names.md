@@ -14,7 +14,7 @@
 > print — this table does not discharge that). Indigenous items (E01 竹筒飯, E04 石板烤肉) are consultant-
 > gated even for mock-ups.
 >
-> Status: **V7-M (multiplayer 3–6)** · Last swept 2026-08-11 (`bg-continuity`: renamed the vendor-win action **Bribe → Sign Up** — §3 glossary row + §4 retired-terms row + §3 region-icon "on future sign-ups". Earlier 2026-08-10: reconciled §1 character kits + §3 dial row to `components/characters.csv` canon — C1 Old Favours, C3 her/return-1, C4 deep pool of 8, C6 Travel-cost baseline; logged the retired spy-era framing + `tickets-only` + the retired kit shapes in §4. Earlier: retitled **Travel Agents: Taiwan Food Tour**; §3 flat −1 cancel + two-track VP; C5 name **老大 The Big Boss**).
+> Status: **V7-M (multiplayer 3–6)** · Last swept **2026-08-12** (`bg-continuity`, post-art-batch alignment sweep: corrected §4 ingredient-map **rice→Pantry ⇒ rice→Staples**; refreshed the §4 Staples/EV-D12 note with the located Pantry remnants + owners; opened a §5 flag for the **Sugar vs 糖珠 "Sugar & Pearls"** name-drift (shipped data/glyphs vs names.md/game-bible). Character + term tables otherwise current; all other drift routed to owners, not fixed here.). Earlier 2026-08-11 (`bg-continuity`: renamed the vendor-win action **Bribe → Sign Up** — §3 glossary row + §4 retired-terms row + §3 region-icon "on future sign-ups". Earlier 2026-08-10: reconciled §1 character kits + §3 dial row to `components/characters.csv` canon — C1 Old Favours, C3 her/return-1, C4 deep pool of 8, C6 Travel-cost baseline; logged the retired spy-era framing + `tickets-only` + the retired kit shapes in §4. Earlier: retitled **Travel Agents: Taiwan Food Tour**; §3 flat −1 cancel + two-track VP; C5 name **老大 The Big Boss**).
 > Supersedes the roster table in `v7-plan.md` as the canonical name reference.
 
 ---
@@ -114,7 +114,7 @@ CURRENT form (§3), or flag it if resolving it is a mechanics/value question.
 | Retired term | Replaced by (V7) | Note |
 |---|---|---|
 | **Buzz** | Followers | Pure rename (CD v6.4 lock). |
-| **Rice & Noodles / 米麵 / Pantry** (the East-signature type's player-facing label) | **Staples** (繁體 糧 unchanged) | CD rename 2026-08-11, **presentation only**. The type now reads as **Staples** and its illustration spans rice · noodles · flour · **tofu** (was rice/noodles/flour). Canonical 繁體 stays **糧**; the code suit key stays `pantry`. ⚠ Sweep remaining player-facing "Pantry"/"米麵" mentions (e.g. EV-D12 "糧 Pantry rice", any rulebook copy) to "Staples" → `bg-continuity`. |
+| **Rice & Noodles / 米麵 / Pantry** (the East-signature type's player-facing label) | **Staples** (繁體 糧 unchanged) | CD rename 2026-08-11, **presentation only**. The type now reads as **Staples** and its illustration spans rice · noodles · flour · **tofu** (was rice/noodles/flour). Canonical 繁體 stays **糧**; the code suit key stays `pantry`. ⚠ 2026-08-12 sweep — the remaining player-facing "Pantry" remnants located (all outside the continuity edit-lane → routed, not fixed here): **`components/events.csv` EV-D12** ("takes 1 free 糧 Pantry rice" → `bg-developer`/`bg-copywriter`, CSV text); **`art/art-style.md` L200** ("Pantry = a wide rice bowl…" — stale term AND stale single-bowl illustration → `bg-art-director`); **`game-bible.md` §taxonomy (L74/188)** + **`identity.md` L94** ("糧 Pantry" category label → `bg-archivist`/`bg-theme`). The code suit key `pantry` and canonical 繁體 糧 correctly stay. |
 | **Reach** (← Reputation / Prestige) | Followers-max (the dial) | Pure rename; the Reputation → Reach → Followers-max lineage. |
 | **Tour Tickets / Tour-Ticket / missions** | Bookings 開團 | Pure rename. |
 | **Bribe** (the vendor-win action) | **Sign Up** | CD rename 2026-08-11, **presentation only**. "Bribe" carried the wrong connotation; **Sign Up** fits the travel-agent frame (a vendor signs up to your tour) and keeps the warm, comedic, never-corruption tone. **Mechanic unchanged** (biggest committed-follower crowd + crowd-floor + pay recipe − region discounts → the vendor joins your tour); **no component-data value touched.** Verb *sign up a vendor*; gerund *signing up*; noun *sign-up*; keyword/label **Sign Up**. |
@@ -127,7 +127,7 @@ CURRENT form (§3), or flag it if resolving it is a mechanics/value question.
 | **SOLD** (win label) | COMPLETED 成團 | Also removes the clash with the 完售 "Sold Out" event. |
 | **遺珠 / "the Ones That Got Away" / "Published Tours" / "Departures"** | CANCELLED 取消 | One canonical lose-pile name everywhere. |
 | **"the Queue"** | *(retired)* | Old flavour-skin for the Buzz stack; Followers is self-flavouring. |
-| **the 5 specific ingredients** — 豬肉 pork · 茶 tea · 海鮮 seafood · 米 rice · 糖 sugar | the SIX generic categories (§2) | pork→Meat 肉 · rice→Pantry 糧 · + Vegetables 菜 (new); tea/seafood/sugar 繁體 unchanged. |
+| **the 5 specific ingredients** — 豬肉 pork · 茶 tea · 海鮮 seafood · 米 rice · 糖 sugar | the SIX generic categories (§2) | pork→Meat 肉 · rice→Staples 糧 · + Vegetables 菜 (new); tea/seafood/sugar 繁體 unchanged. |
 | **早餐店 / 夜市攤 / 飲料店 venue types** | plain board terms | dropped as rules keywords. |
 | **Beverage Row / the drinks fork** | drinks are just low-value vendors | mixed into every region's deck. |
 | **Code Red** (end-trigger) | the plain last-train close | dropped. |
@@ -153,6 +153,14 @@ CURRENT form (§3), or flag it if resolving it is a mechanics/value question.
 - **`components/events.csv` EV-D07** effect text names the granted ingredient "**(豬肉 Pork)**" — the
   retired specific term; the North signature is now **肉 Meat**. → text fix for `bg-developer` (a CSV/
   component-data file; not edited here per the presentation-only lane).
+- **Sugar common — name drift (NEW 2026-08-12) → CD / `bg-theme` canonical call.** The shipped data + glyphs
+  render the Central/South common as **糖珠 "Sugar & Pearls"** (`components/ingredients.csv` every sugar row;
+  `components/recipe-glyphs.csv`), but **`names.md` §2 + `game-bible.md` §ingredient-taxonomy** call it **糖
+  "Sugar"**. So a player's card says *Sugar & Pearls* while the rulebook/table say *Sugar* — real
+  doc-vs-data drift. Sanctioned only as a *cosmetic* option by decision-log 1A ("rice/noodles/pearls captured
+  cosmetically on the mono cards"), never locked. **Decision needed:** (A) adopt **糖珠 Sugar & Pearls** as
+  canonical → I update §2 + game-bible; or (B) revert the data to **糖 Sugar**. Presentation-only — no
+  mechanic/value affected. Then `bg-continuity` reconciles the table to the winner.
 - **S04 turkey rice Tâi-lô** — *hóe-ke-bah-pn̄g* is best-effort → **consultant confirms** (binding). Same
   for all Indigenous terms (E01 竹筒飯, E04 石板烤肉) → consultant, never AI romanisation. → `bg-publishing`.
 - **The 5 new V7-M day dishes (§6) Tâi-lô** — *Pn̄g-thoân · Kuah-pau · Tuā-mī-kⁿ · Ô-á-tsian ·

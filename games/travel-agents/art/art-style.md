@@ -197,7 +197,7 @@ the Ghibli line.)**
 - **Illustrated icon system (bg-art-director 2026-08, locked).** The six ingredient types and the
   followers currency render as **little drawn, food-true silhouettes** in the warm market hand, NOT
   abstract geometry: **Meat** = a striped pork-belly slab; **Tea** = a pointed tea-leaf sprig on a stem;
-  **Seafood** = a plump fish (body + fan tail); **Pantry** = a wide rice bowl with a rice mound; **Sugar**
+  **Seafood** = a plump fish (body + fan tail); **Staples** = a wide rice bowl with a rice mound; **Sugar**
   = a four-pearl boba cluster; **Vegetables** = a three-lobe leafy bok-choy; **Followers** = a
   head-and-shoulders fan bust. Each keeps its category's suit COLOUR and is a **distinct silhouette**, so a
   colour-blind player tells them apart by shape alone (dual-coded; access = 0 errors, every confusable pair

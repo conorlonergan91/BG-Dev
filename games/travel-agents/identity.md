@@ -91,7 +91,7 @@ A player should be able to half-guess the rules from the fiction. The core moves
   next stall an easier sign (a promoter's reputation snowballs), and it lets a held tour's pattern come
   true. The vendors are the means, the completed tours the end.
 - **Travel because the food lives *there*.** Six real ingredient types map to real geography — 肉 Meat
-  (North) · 茶 Tea (Central) · 海鮮 Seafood (South) · 糧 Pantry (East) · 糖 Sugar and 菜 Vegetables (the
+  (North) · 茶 Tea (Central) · 海鮮 Seafood (South) · 糧 Staples (East) · 糖 Sugar and 菜 Vegetables (the
   commons). Most night dishes are cross-region, so travelling *is* the game. Rename the setting and the
   recipes break.
 - **The day is the real Taiwan food day.** Morning carts build toward the night-market climax: the day
