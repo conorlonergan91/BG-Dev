@@ -11,31 +11,58 @@ nothing drifts.
 
 ---
 
-## The touchstone
-The CD's look touchstone is the art style of **Agent Avenue** — its **fun, lighthearted, cartoonish but
-*stylised*** look. **Take the LOOK, not the lore** — borrow the cartoon style only, none of that game's
-setting. The world here is a **Wacky-Races-style dash between battle-hungry rival travel agents building the
+## The touchstone (CD pivot 2026-08 — the definitive hand)
+The illustration hand is **Studio-Ghibli-inspired**: **warm, hand-painted anime** — the cosy, tactile,
+emotive look of a hand-painted animated film. Soft painterly light, gentle rounded outlines, luminous
+watercolour-like colour, lovingly-rendered detail, and — above all — **food made to look irresistibly
+delicious in the famous "Ghibli food" way** (glistening highlights, soft curling steam, generous abundance;
+you can almost taste it). Characters are warmly **caricatured with exaggerated body features** and big
+expressive faces. This is **deliberately NOT photoreal**, and **deliberately NOT the flat, generic
+"AI/ChatGPT cartoon" look** the earlier art drifted into — it is a painterly, characterful, film-quality
+hand. **Take the FEEL only** (warm hand-painted anime, delicious food) — never copy any specific
+copyrighted frame, character, or film.
+
+The world it dresses is a **Wacky-Races-style dash between battle-hungry rival travel agents building the
 island's best Taiwan street-food tour** — warm, characterful **Taiwanese street-food & neighbourhood
 personalities**, a bustling, over-the-top day-to-night-market race.
 
-## The look (what "stylised cartoon" means here)
-- **Fun, lighthearted, cartoonish — but polished and STYLISED**, not crude doodle. Clean, confident linework;
-  bold, mostly-flat colour with simple stylised shading; strong silhouettes; expressive, characterful faces.
+> **Two style tracks — keep them apart.** Everything *illustrated* (ingredient art, vendor/dish art,
+> character art, tour tickets, card backs, cover) is the **Ghibli hand** above. The tiny **functional icons**
+> (the `FIG-ICON-<type>` set — 6 ingredients + follower + ticket) are a **separate, deliberate style track**:
+> flat, bold **emoji/sticker** silhouettes that must read at ~40 px. **Do NOT Ghibli-fy the icons** — see the
+> Icon-set section. Illustrations = painterly Ghibli; icons = flat emoji.
+
+## The look (what the Ghibli hand means here)
+- **Warm hand-painted anime — painterly, not flat.** Soft, luminous colour laid down like gouache /
+  watercolour; **gentle, slightly-organic outlines** (a soft ink line, not a hard uniform vector stroke);
+  soft directional light and gentle ambient shadow that give things a rounded, tactile, hand-made feel.
+  **Never** the flat, evenly-lit, plasticky "AI cartoon" default.
+- **The famous "Ghibli food" — make it DELICIOUS.** Food is the beating heart of this game, so render it
+  the way Ghibli renders a bowl of noodles or a fried egg: **glistening highlights, soft rising steam,
+  springy/juicy/crisp textures, generous abundance**, warm inviting light. A dish should make the player
+  hungry. This is the single biggest quality bar for the vendor and ingredient art.
+- **Characters caricatured with exaggerated body features** — warm animated-ensemble caricature: bodies
+  and features pushed for charm and instant readability (a round belly, a tiny bird-frame, a broad
+  huggable build, big hands, a beaming over-large grin), big expressive faces. Push the exaggeration
+  further than a "dignified realistic" figure — but it stays **warm caricature, never mockery** (see the
+  sensitivity guardrail).
 - **A cohesive night-market palette** carried across every component: **warm daytime golds/ambers → neon-lit
-  night-market violets/teals** (matches the game's day→night arc and the existing `night-market` theme).
-- **At-a-glance clarity first** (this is a game, not an illustration gallery): the art serves readability —
-  a character, a dish, a region must read instantly at component size.
-- **One cohesive cast:** the six characters and the vendors all look like they belong to the same charming,
-  slightly-exaggerated world — same linework weight, same colour language, same level of stylisation.
+  night-market violets/teals** (matches the game's day→night arc and the existing `night-market` theme),
+  now rendered as soft painterly light rather than flat fills.
+- **At-a-glance clarity first** (this is a game, not an illustration gallery): the painterly hand still
+  serves readability — a character, a dish, a region must read instantly at component size.
+- **One cohesive cast:** the six characters, the vendors, the dishes all look like one illustrator painted
+  them in one afternoon — same soft line, same painterly light, same warm palette, same level of caricature.
 - **Dial the ENERGY up — dynamic, competitive, a little CHAOTIC** (CD steer; **this is a Wacky-Races-style
-  race-and-battle game**). Characters and **events** especially: high-energy action poses, a sense of urgency
-  and scramble, competitive fire and glee, motion / speed lines — capture the frantic, elbows-out contest of
-  rivals racing the island and battling over vendors. Keep the **polished original style** (NOT an over-caricatured big-head look)
-  and the dignity guardrail (competitive/chaotic ≠ mean or mocking).
+  race-and-battle game**). High-energy action poses, urgency and scramble, competitive glee, motion / speed
+  lines — but always inside the warm Ghibli hand and the dignity guardrail (competitive/chaotic ≠ mean).
 
 ## The characters (the six)
-Warm, affectionate, instantly-distinct **personalities** — lovable street-food/travel types, each exaggerated
-for **charm and readability**:
+Warm, affectionate, instantly-distinct **personalities** — lovable street-food/travel types, each drawn in
+the Ghibli hand and **caricatured with exaggerated body features for charm and readability** (a build /
+silhouette / signature feature pushed well past realistic so each reads in a heartbeat — the round-bellied
+uncle, the tiny-framed bottomless eater, the broad huggable boss). Exaggeration = **warm caricature, never
+mockery**; every one of the six stays recognisable and dignified:
 - **The Old Councillor** (里長伯) — a cheerful apron-or-suit neighbourhood elder with real local clout.
 - **The Homebody** (媽寶) — an earnest young office worker clutching a mum-packed lunchbox, phone to ear.
 - **The Big Eater** (大胃王) — a joyful competitive eater, all appetite, mid-bite.
@@ -81,8 +108,11 @@ tokens rest on.
   or a contrast the play needs, function wins and the art gets the rest.
 
 ## ⚠ The sensitivity guardrail (BINDING — read before writing any character prompt)
-"**Caricature**" here means **charming personality exaggeration** — the warm, expressive stylisation of a
-great animated ensemble — **NOT ethnic caricature, racial stereotype, or mockery.** This is a real culture
+"**Caricature**" here means **charming personality + body exaggeration** — the warm, expressive stylisation
+of a great animated ensemble, bodies and features pushed for charm (a round belly, a tiny frame, a broad
+build, a beaming grin) — **NOT ethnic caricature, racial stereotype, or mockery.** The exaggeration is of
+*personality and physique for warmth*, never of ethnicity; when a feature could read as an ethnic stereotype,
+pull it back. This is a real culture
 (Taiwan), and the rails are binding: **dignified local characters**, real dishes rendered accurately and
 respectfully, **secular** settings only (no temple/deity/ghost-month/funerary imagery), anti-extraction
 framing (celebration, never a tourist's gaze). Every character reads **warm, likeable, and dignified** — we
@@ -91,22 +121,40 @@ before final art; native-review watch-items: the Big Boss's warmth, the granny's
 names.)
 
 ## How to cite this in a prompt
-Open every brief with one line, e.g.:
-> *Style: per `art/art-style.md` — fun, lighthearted, **stylised** cartoon (Agent Avenue-style cartoon look;
-> Taiwan street-food travel-agent theme — a wacky, over-the-top food-tour race); clean linework, bold flat
-> colour, night-market palette (warm day → neon night); warm, dignified Taiwanese characters, charming not
-> caricatured. Human-illustrated; no AI final art.*
-Then add the component-specific subject, composition, and the reserved size/figure code.
+Open every **illustration** brief with one line, e.g.:
+> *Style: per `art/art-style.md` — warm, hand-painted **Studio-Ghibli-inspired anime** (Taiwan street-food
+> travel-agent theme — a wacky, over-the-top food-tour race); soft painterly light, gentle organic
+> outlines, luminous colour, **irresistibly-delicious "Ghibli food"** (glisten, steam, abundance); warm,
+> dignified Taiwanese characters **caricatured with exaggerated body features**; night-market palette (warm
+> day → neon night). Deliberately NOT photoreal and NOT a flat "AI cartoon". Ghibli = the FEEL only, never a
+> copied frame. Human-illustrated final art; AI for labelled mock-ups only.*
+Then add the component-specific subject, composition, and the reserved size/figure code. **(The tiny
+`FIG-ICON-*` functional icons are the exception — they cite the separate flat-emoji ICON STYLE ANCHOR, not
+the Ghibli line.)**
 
 ---
 
 ## Locked vs Fluid (living — art-director pass 2026-08)
 
-**LOCKED (the house look, set by the six approved character finals — every asset matches this hand):**
-- Polished **stylised cartoon** — clean confident linework, bold mostly-flat colour with soft cel-shading,
-  **dignified adult proportions (NOT big-head chibi)**, expressive warm faces.
+**LOCKED (the house look — CD Ghibli pivot 2026-08; every illustration matches this hand):**
+- **Warm, hand-painted Studio-Ghibli-inspired anime** — soft painterly light, gentle organic outlines,
+  luminous watercolour-like colour, lovingly-rendered tactile detail, expressive warm faces; **characters
+  caricatured with exaggerated body features** (build/frame/signature feature pushed for charm). Food
+  rendered **irresistibly delicious** the famous "Ghibli food" way (glisten, steam, abundance). **NOT
+  photoreal, NOT a flat "AI/ChatGPT cartoon".** *(This supersedes the earlier "dignified adult proportions,
+  NOT big-head chibi, flat cel-shaded" note — the hand is now painterly and the bodies are exaggerated. It
+  also retires the "Agent Avenue" touchstone.)*
+- **Ghibli = the FEEL only** — warm hand-painted anime and delicious food. Never instruct copying a
+  specific copyrighted Ghibli frame, character, or film.
+- **Two style tracks, locked apart:** illustrations = the painterly Ghibli hand; the `FIG-ICON-<type>`
+  functional icons = flat bold emoji/sticker (unchanged — see the Icon-set section).
 - **Cut-out on a plain flat pale-cream ground** with a soft contact shadow; **no baked background, no dark
-  vignette/glow.** This is now the house composition for **characters AND vendors.**
+  vignette/glow.** This is the house composition for **characters AND vendor dishes** (now painted in the
+  Ghibli hand rather than flat cartoon).
+- **Ingredient art = the category's items FLOATING APART on a clean pale-cream ground — never plated,
+  stacked, or touching** (CD steer 2026-08 — "on a plate, all touching" read as gross). Each item fresh,
+  separated, and Ghibli-delicious. Meat is shown as **RAW cuts** (it's an ingredient) — fresh, glistening,
+  appetising, **never gory**. Staples (糧) shows **rice, noodles, flour AND tofu** floating apart.
 - Night-market palette: lantern vermilion `#D64545`, jade teal `#1F8A7A`, golden amber `#E6A930`, dusk
   indigo `#26324D`, on bao-paper cream `#F7F1E3`.
 - **Vendors = dish-hero cut-outs** (the dish alone, no people/stall/scene) — CD steer, locked.
@@ -137,6 +185,15 @@ Then add the component-specific subject, composition, and the reserved size/figu
   palette, never colour alone** (basket vs lantern + 早 vs 夜 + sun vs moon) — setup/storage rely on it; a
   neutral/any-time variant stays working. Any future human-illustrated back keeps that basket-vs-lantern
   silhouette so the sort survives.
+- **Illustrated VENDOR card backs (CD steer 2026-08 — art, not the code motif; Ghibli hand).** The CD wants
+  the vendor deck's backs to be **illustrated shop scenes, NO humans — just the shop/stall**: **DAY vendor
+  back = a Taiwanese breakfast-shop (早餐店)** storefront (the soy-milk-and-egg-crepe morning feel); **NIGHT
+  vendor back = a night-market (夜市)** stall/lane (lanterns, neon). Full briefs in `card-backs.md`;
+  embeddable filenames **`FIG-BACK-VEND-DAY.png` / `FIG-BACK-VEND-NIGHT.png`** (portrait card-back aspect,
+  750×1050). **These keep the day-vs-night face-down sort** (breakfast-shop morning warmth + 早 vs lantern
+  night glow + 夜 — motif + palette, never colour alone). **WIRING these PNGs into the renderer is a LATER
+  step the orchestrator does once the CD delivers the art** — for now they are briefs only; the code market
+  back above stays the shipping playtest back.
 - **Illustrated icon system (bg-art-director 2026-08, locked).** The six ingredient types and the
   followers currency render as **little drawn, food-true silhouettes** in the warm market hand, NOT
   abstract geometry: **Meat** = a striped pork-belly slab; **Tea** = a pointed tea-leaf sprig on a stem;
@@ -184,23 +241,29 @@ Then add the component-specific subject, composition, and the reserved size/figu
 > **This file is the canonical scaffolding.** The other art files' mock-up sections all cite the **STYLE
 > ANCHOR**, the **SCALE TABLE**, and the **sensitivity rails** below — they don't repeat them.
 
-### STYLE ANCHOR (paste this verbatim at the start of EVERY mock-up prompt)
+### STYLE ANCHOR (paste this verbatim at the start of EVERY illustration mock-up prompt)
 
-> A warm, lighthearted, **over-the-top-but-dignified stylised cartoon** illustration — the fun,
-> characterful cartoon *look* of Agent Avenue applied to **our own theme: a wacky, over-the-top race between
-> battle-hungry rival Taiwanese street-food travel agents** (its art style only, not its setting).
-> Clean, confident linework; bold, mostly-flat colour with simple stylised shading; strong readable
-> silhouettes; expressive, affectionate faces — lively and appealing, **NOT an over-caricatured big-head
-> style**. **Compose the character and their own props ONLY — a clean cut-out with NO background scenery
-> (no maps, flags, HSR lines, region labels, or speech bubbles), on a plain flat background.** Cohesive
-> **night-market palette**: warm daytime golds and
-> ambers glowing into neon-lit night-market violets and teals — lantern vermilion `#D64545`, jade teal
-> `#1F8A7A`, golden amber `#E6A930`, dusk indigo `#26324D`, on bao-paper cream `#F7F1E3`. Cozy, inviting,
-> celebratory. **The single most important goal: convey the WARMTH at the heart of this game** — the
-> friendly, food-loving, celebratory spirit of Taiwan's night markets should be *felt at a glance*.
-> Dignified Taiwanese locals and faithfully-rendered real dishes; **charming personality exaggeration,
-> never ethnic caricature or mockery**; **secular settings only** — no temple, deity, ghost-month or
-> funerary imagery.
+> *(This is for ILLUSTRATIONS — characters, vendor dishes, ingredients, tour tickets, card backs, cover.
+> The tiny `FIG-ICON-*` functional icons use the separate flat-emoji ICON STYLE ANCHOR instead.)*
+>
+> A warm, **hand-painted Studio-Ghibli-inspired anime illustration** — the cosy, tactile, emotive look of a
+> hand-painted animated film, applied to **our own theme: a wacky, over-the-top race between battle-hungry
+> rival Taiwanese street-food travel agents.** Soft painterly light; **gentle, slightly-organic outlines**
+> (a soft ink line, not a hard uniform vector stroke); luminous, watercolour-like colour with soft
+> ambient shading; lovingly-rendered, tactile detail. Food rendered to look **irresistibly delicious in the
+> famous "Ghibli food" way — glistening highlights, soft curling steam, springy/juicy/crisp textures,
+> generous abundance, warm inviting light** (it should make you hungry). Characters warmly **caricatured
+> with exaggerated body features** and big, expressive, affectionate faces. **Deliberately NOT photoreal,
+> and deliberately NOT the flat, evenly-lit, generic "AI/ChatGPT cartoon" look** — this is painterly and
+> characterful. **"Ghibli" here means the FEEL only (warm hand-painted anime + delicious food); do NOT copy
+> any specific copyrighted frame, character, or film.** Cohesive **night-market palette** rendered as soft
+> painterly light: warm daytime golds and ambers glowing into neon-lit night-market violets and teals —
+> lantern vermilion `#D64545`, jade teal `#1F8A7A`, golden amber `#E6A930`, dusk indigo `#26324D`, on
+> bao-paper cream `#F7F1E3`. Cozy, inviting, celebratory. **The single most important goal: convey the
+> WARMTH at the heart of this game** — the friendly, food-loving spirit of Taiwan's markets, felt at a
+> glance. Dignified Taiwanese locals and faithfully-rendered real dishes; **charming personality + body
+> exaggeration, never ethnic caricature or mockery**; **secular settings only** — no temple, deity,
+> ghost-month or funerary imagery.
 
 ### SCALE TABLE (px @ 300 DPI — the exact slot each mock-up must drop into)
 
@@ -212,9 +275,10 @@ image drops cleanly into its SVG slot. Background: **transparent** for cut-out c
 | Slot | FIG code | Size (px) | Physical | Aspect | Background | Composition note |
 |---|---|---|---|---|---|---|
 | Character-board image | `FIG-CHAR-<slug>` | **900 × 1380** | 76.2 × 116.8 mm | **~0.65:1 TALL PORTRAIT** | transparent | full-figure hero standing tall; the slot is the **LEFT column** at (70,308) on the **A4-landscape 3508×2480 board**, with the Followers dial beneath it (CD redesign 2026-08 **v2** — was 900×1700 on the RIGHT in v1; 490×600 on the old 1680×1380 board). **Compose TALL** — a standing full-figure reads best. Auto-embedded when `build/mockups/FIG-CHAR-<slug>.png` exists (data-URI), else a dashed placeholder renders. `preserveAspectRatio=meet` letterboxes (never crops), so any tall crop drops in cleanly; exact 900×1380 fills edge-to-edge. Prep to size: `--fit 900x1380 --pad` |
-| Ingredient card art | `FIG-ING-<id>` | **642 × 560** | 54.4 × 47.4 mm | **~1.15:1** | simple | on a 750×1050 poker card at (54,168); shows a **MIX** of that generic category (e.g. Meat = pork belly + beef + sausage + poultry together) |
+| Ingredient card art | `FIG-ING-<id>` | **642 × 560** | 54.4 × 47.4 mm | **~1.15:1** | simple | on a 750×1050 poker card at (54,168); a **MIX** of that generic category **FLOATING APART on a clean pale-cream ground — never plated, stacked, or touching** (CD steer). Ghibli-delicious. Meat = **RAW** cuts (pork belly + beef shank + poultry), fresh not gory; Staples 糧 = rice + noodles + flour + tofu |
 | Vendor card face | `FIG-VEND-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | plain pale-cream | **dish-hero CUT-OUT** — the signature dish alone on a plain warm ground, exactly like the character cut-outs (NO people, NO stall/market scene, NO background). Keep the hero dish in the **upper ~55%** so the translucent UI panels stay legible below; **54 px safe margin**; see drop-in note below |
 | Tour / Booking card face | `FIG-TOUR-<id>` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | poker-card face, **54 px safe margin**; see drop-in note below |
+| Vendor card BACK (day/night) | `FIG-BACK-VEND-DAY` / `FIG-BACK-VEND-NIGHT` | **750 × 1050** | 63.5 × 88.9 mm | **~0.71:1** | full-bleed | illustrated shop scene, **NO humans** — DAY = a breakfast-shop (早餐店) storefront; NIGHT = a night-market (夜市) stall/lane. Ghibli hand. Keeps the day-vs-night face-down sort (morning warmth + 早 vs lantern glow + 夜). **Wiring into the renderer is a LATER step — briefs only for now** (see `card-backs.md`). |
 | Region map (shared board) | **code-rendered — NOT an AI mock-up** | **2280 × 1680** | 193 × 142.2 mm | **~1.36:1** | — | The map is the **code board** `build_board.py --type regionmap` (two states, `--phase day\|night`), styled to match the house hand — **it is not generated from an AI prompt.** It already carries every component's real, scaled slot (vendor cards, market decks, clock band + Booking row, HSR spine + on-track 停 event, pawn start, supply, setup table). Any future *human-illustrated* backdrop paints *behind* those fixed zones. See the Practicality rail. |
 
 **Vendor & Tour card drop-in (read `render_vendor_svg` in `tools/cards/build_cards.py`).** The vendor
@@ -225,10 +289,11 @@ card. Those UI elements are drawn as **translucent white boxes (opacity ~0.45–
 whatever art is behind them.
 
 **Vendors are DISH-HERO CUT-OUTS (CD steer 2026-08 — this replaces the old full-bleed painted-scene
-approach).** The signature **dish is the hero, rendered alone on a plain warm pale-cream ground — exactly
-like the character cut-outs**: NO people, NO stall, NO market scene, NO background. This is both a warmth
-and a **legibility** win: a clean dish on a calm ground sits far better under the translucent PAY/DRAW/ICON
-panels than a busy painted scene did. **Compose the dish in the upper ~55%** of the face (under the header
+approach).** The signature **dish is the hero, painted in the Ghibli hand and rendered alone on a plain warm
+pale-cream ground — exactly like the character cut-outs**: NO people, NO stall, NO market scene, NO
+background. Push the **"Ghibli food" deliciousness** — glisten, steam, springy/juicy textures, abundance;
+this is where the appetite-appeal lives. This is both a warmth and a **legibility** win: a clean dish on a
+calm ground sits far better under the translucent PAY/DRAW/ICON panels than a busy painted scene did. **Compose the dish in the upper ~55%** of the face (under the header
 band, above the PAY/DRAW/ICON stack) and leave the lower area as calm plain ground so the panels stay
 legible. The place a dish comes from is provenance only — **illustrate the food, never the location.**
 Tour tickets keep the full-bleed **boarding-pass** treatment: the icon-motif read in a clear upper window,

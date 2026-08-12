@@ -1,20 +1,32 @@
 # Mock-up kickoffs — paste one at a time (AFTER uploading the art-context zip)
 
+> **⚑ CD ART PIVOT (2026-08) — the illustration hand is now Studio-Ghibli-inspired.** Everything
+> *illustrated* (characters, vendor dishes, ingredients, tour tickets, card backs, cover) is now the **warm,
+> hand-painted Ghibli anime hand**: soft painterly light, gentle organic outlines, luminous colour,
+> **irresistibly-delicious "Ghibli food"**, and **characters caricatured with exaggerated body features** —
+> deliberately NOT photoreal and NOT the flat "AI/ChatGPT cartoon" look the earlier mock-ups drifted into.
+> The **tiny `FIG-ICON-*` functional icons stay a separate flat-emoji track** (do NOT Ghibli-fy them). Full
+> anchor in `art-style.md`.
+
 **Workflow (phone-friendly):**
 1. Upload **every `.md` from `ta-art-context.zip`** to ChatGPT as context/knowledge, in one go. (The zip
    sits at `games/travel-agents/art/ta-art-context.zip` — it bundles this file + `art-style.md` + the six
-   component briefs + one style-reference PNG. It is **regenerable** — rebuild it with the one-liner in the
-   zip's `README.txt` whenever a brief changes.)
-2. **Attach a liked earlier character/card as a STYLE REFERENCE image** and tell the tool to *match that art
-   style* — this locks the look far better than words alone (CD's finding). The zip ships
-   `FIG-CHAR-influencer.png` as the reference; build the whole set outward from your favourite so it stays
-   cohesive.
+   component briefs + one seed PNG. It is **regenerable** — rebuild it with the one-liner in the zip's
+   `README.txt` whenever a brief changes.)
+2. **Generate ONE new Ghibli hero FIRST, approve it, then attach THAT as the style-reference image** for
+   everything else (tell the tool to *match that exact hand*). This locks the look far better than words
+   alone (CD's finding), and building outward from one approved Ghibli piece keeps all assets cohesive.
+   **Recommend generating a character (e.g. the Globetrotter) or the cover as the hero.** ⚠ **Do NOT attach
+   the old `FIG-CHAR-influencer.png` as the reference** — those earlier six characters are the flat
+   "ChatGPT cartoon" look we are moving away from; attaching one will drag the new art back to the old
+   style. The seed PNG in the zip is context only, not the style target. Re-do the six characters in the
+   Ghibli hand.
 3. Then paste **one kickoff block below per generation.**
 
 **The big idea:** each character's POSE should **dramatize their game ability** — not just "running."
-Zany, high-energy, competitive (it's a race-and-battle game), but warm — and the original polished cartoon
-style, a clean single-subject cut-out on a plain background, no scenery. Send me the PNGs (or drop them in
-`build/mockups/`) and I'll key + fit + embed them.
+Zany, high-energy, competitive (it's a race-and-battle game), but warm — in the **warm hand-painted Ghibli
+hand with exaggerated body features**, a clean single-subject cut-out on a plain background, no scenery.
+Send me the PNGs (or drop them in `build/mockups/`) and I'll key + fit + embed them.
 
 > **Policy note (CD steer 2026-08 — prototype).** The studio's default "no AI final art" rail is **lifted
 > for THIS prototype**: AI art is now wanted for the prototype deliverables (characters, vendors, tours,
@@ -31,32 +43,32 @@ style, a clean single-subject cut-out on a plain background, no scenery. Send me
 
 ### The Globetrotter (阿嬤) — `FIG-CHAR-globetrotter`  ⚑
 ```
-Generate a mock-up illustration of THE GLOBETROTTER (阿嬤) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. ABILITY to dramatize: her free senior EasyCard lets her zip to ANY corner of the island in a single move — the unstoppable speed-demon granny, always one stop ahead. POSE (zany, over-the-top): her little red mobility-scooter POPPING A WHEELIE / leaning hard into a screaming turn, silver curls and scarf streaming in the wind, sunglasses on, a manic gleeful grin, her 悠遊卡 EasyCard (the senior 敬老悠遊卡) thrust up high like a trophy in a victory peace-sign, snacks flying out of the front basket, big motion & speed lines. AGE IS HER ADVANTAGE, NEVER HER FRAILTY. STYLE: the warm, characterful stylised cartoon of the original designs — clean confident linework, bold mostly-flat colour, expressive face; NOT an over-caricatured big-head style; competitive/chaotic but warm, never mean. JUST the character and her own props (scooter, EasyCard, snack basket) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
+Generate a mock-up illustration of THE GLOBETROTTER (阿嬤) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. ABILITY to dramatize: her free senior EasyCard lets her zip to ANY corner of the island in a single move — the unstoppable speed-demon granny, always one stop ahead. BODY (exaggerated Ghibli caricature): a tiny, spry, bird-boned little granny — small rounded frame leaning forward into the speed, big round spectacles, an over-large wild pouf of silver curls, dainty hands gripping the throttle. POSE (zany, over-the-top): her little red mobility-scooter POPPING A WHEELIE / leaning hard into a screaming turn, silver curls and scarf streaming in the wind, sunglasses on, a manic gleeful grin, her 悠遊卡 EasyCard (the senior 敬老悠遊卡) thrust up high like a trophy in a victory peace-sign, snacks flying out of the front basket, big motion & speed lines. AGE IS HER ADVANTAGE, NEVER HER FRAILTY. STYLE: warm, hand-painted STUDIO-GHIBLI-INSPIRED anime — soft painterly light, gentle organic outlines (not a hard vector stroke), luminous colour, big expressive face, and the BODY CARICATURED WITH EXAGGERATED FEATURES for charm and instant readability; deliberately NOT photoreal and NOT a flat "AI/ChatGPT cartoon"; Ghibli = the FEEL only, never a copied frame/character; competitive/chaotic but warm, never mean. JUST the character and her own props (scooter, EasyCard, snack basket) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
 ```
 
 ### The Old Councillor (里長伯) — `FIG-CHAR-old-councillor`
 ```
-Generate a mock-up illustration of THE OLD COUNCILLOR (里長伯) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. ABILITY to dramatize: "Old Favours" — on his HOME TURF everyone owes him a favour and everything's cheaper; he's the beloved king of his own borough. POSE (zany, over-the-top): planting one foot triumphantly up on a crate/stool like he's claiming his patch, his megaphone raised and BLARING a rally ("鄉親作伙來!"), his free arm flung wide to gather his neighbours in — a comic, chest-out "this whole lane is MINE!" pride, apron + lanyard/sash, motion lines. A beloved borough boss — dignified and folksy, NEVER a pompous or corrupt-politician gag. STYLE: the warm, characterful stylised cartoon of the original designs — clean confident linework, bold mostly-flat colour, expressive face; NOT an over-caricatured big-head style; competitive/chaotic but warm. JUST the character and his own props (megaphone, apron, lanyard) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
+Generate a mock-up illustration of THE OLD COUNCILLOR (里長伯) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. ABILITY to dramatize: "Old Favours" — on his HOME TURF everyone owes him a favour and everything's cheaper; he's the beloved king of his own borough. BODY (exaggerated Ghibli caricature): a round, portly, barrel-chested uncle with a proud pot belly, short legs, and a big jowly beaming face — folksy warmth in every curve. POSE (zany, over-the-top): planting one foot triumphantly up on a crate/stool like he's claiming his patch, his megaphone raised and BLARING a rally ("鄉親作伙來!"), his free arm flung wide to gather his neighbours in — a comic, chest-out "this whole lane is MINE!" pride, apron + lanyard/sash, motion lines. A beloved borough boss — dignified and folksy, NEVER a pompous or corrupt-politician gag. STYLE: warm, hand-painted STUDIO-GHIBLI-INSPIRED anime — soft painterly light, gentle organic outlines (not a hard vector stroke), luminous colour, big expressive face, and the BODY CARICATURED WITH EXAGGERATED FEATURES for charm and instant readability; deliberately NOT photoreal and NOT a flat "AI/ChatGPT cartoon"; Ghibli = the FEEL only, never a copied frame/character; competitive/chaotic but warm. JUST the character and his own props (megaphone, apron, lanyard) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
 ```
 
 ### The Homebody (媽寶) — `FIG-CHAR-homebody`
 ```
-Generate a mock-up illustration of THE HOMEBODY (媽寶) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. ABILITY to dramatize: "Mum's Packed Lunch" — he's the ONLY agent who keeps getting fresh supplies wherever he travels, because mum packs him everything. POSE (zany, over-the-top): staggering along under a comically TEETERING TOWER of mum-packed lunchboxes (便當) and grocery bags (spring onions and drinks poking out, about to topple), tie flapping, phone wedged against his shoulder mid-call ("Ma — which stall next?!"), glasses askew, a delighted-but-overloaded grin — impossibly over-provisioned, motion & speed lines. Warm, relatable, self-teasing — NEVER a mocking "mama's boy." STYLE: the warm, characterful stylised cartoon of the original designs — clean confident linework, bold mostly-flat colour, expressive face; NOT an over-caricatured big-head style; competitive/chaotic but warm. JUST the character and his own props (the stack of lunchboxes/bags, phone, satchel) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
+Generate a mock-up illustration of THE HOMEBODY (媽寶) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. ABILITY to dramatize: "Mum's Packed Lunch" — he's the ONLY agent who keeps getting fresh supplies wherever he travels, because mum packs him everything. BODY (exaggerated Ghibli caricature): a soft, round-shouldered, slightly pudgy young office worker — a bit doughy and boyish, big round glasses, a mop of neat hair, small under the load he carries. POSE (zany, over-the-top): staggering along under a comically TEETERING TOWER of mum-packed lunchboxes (便當) and grocery bags (spring onions and drinks poking out, about to topple), tie flapping, phone wedged against his shoulder mid-call ("Ma — which stall next?!"), glasses askew, a delighted-but-overloaded grin — impossibly over-provisioned, motion & speed lines. Warm, relatable, self-teasing — NEVER a mocking "mama's boy." STYLE: warm, hand-painted STUDIO-GHIBLI-INSPIRED anime — soft painterly light, gentle organic outlines (not a hard vector stroke), luminous colour, big expressive face, and the BODY CARICATURED WITH EXAGGERATED FEATURES for charm and instant readability; deliberately NOT photoreal and NOT a flat "AI/ChatGPT cartoon"; Ghibli = the FEEL only, never a copied frame/character; competitive/chaotic but warm. JUST the character and his own props (the stack of lunchboxes/bags, phone, satchel) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
 ```
 
 ### The Big Eater (大胃王) — `FIG-CHAR-big-eater`
 ```
-Generate a mock-up illustration of THE BIG EATER (大胃王) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. IMPORTANT: make her a SLIM, PETITE YOUNG WOMAN (true to Taiwan's famous tiny-but-bottomless competitive eaters) — a small frame with an impossibly huge appetite. ABILITY to dramatize: "Bottomless" — she clears the whole table and greedily grabs even MORE. POSE (zany, over-the-top): cheeks bulging mid-ENORMOUS mouthful, one hand shovelling noodles in with chopsticks while the OTHER hand greedily SNATCHES a 4th bowl off a towering, wobbling stack of empty bowls; a "挑戰極限" headband, sparkling delighted eyes, sauce-splash motion lines. Joyful and celebratory of Taiwan's abundance, NEVER gross-out or shaming. STYLE: the warm, characterful stylised cartoon of the original designs — clean confident linework, bold mostly-flat colour, expressive face; NOT an over-caricatured big-head style; competitive/chaotic but warm. JUST the character and her own props (bowls, chopsticks, food) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
+Generate a mock-up illustration of THE BIG EATER (大胃王) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. IMPORTANT: make her a SLIM, PETITE YOUNG WOMAN (true to Taiwan's famous tiny-but-bottomless competitive eaters). BODY (exaggerated Ghibli caricature): PUSH THE CONTRAST — an impossibly tiny, delicate bird-frame with a wasp waist, yet cheeks comically OVER-BULGED mid-mouthful; the little-body / bottomless-appetite gag is the whole joke. ABILITY to dramatize: "Bottomless" — she clears the whole table and greedily grabs even MORE. POSE (zany, over-the-top): cheeks bulging mid-ENORMOUS mouthful, one hand shovelling noodles in with chopsticks while the OTHER hand greedily SNATCHES a 4th bowl off a towering, wobbling stack of empty bowls; a "挑戰極限" headband, sparkling delighted eyes, sauce-splash motion lines. Joyful and celebratory of Taiwan's abundance, NEVER gross-out or shaming. STYLE: warm, hand-painted STUDIO-GHIBLI-INSPIRED anime — soft painterly light, gentle organic outlines (not a hard vector stroke), luminous colour, big expressive face, and the BODY CARICATURED WITH EXAGGERATED FEATURES for charm and instant readability; deliberately NOT photoreal and NOT a flat "AI/ChatGPT cartoon"; Ghibli = the FEEL only, never a copied frame/character; competitive/chaotic but warm. JUST the character and her own props (bowls, chopsticks, food) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
 ```
 
 ### The Influencer (網紅) — `FIG-CHAR-influencer`
 ```
-Generate a mock-up illustration of THE INFLUENCER (網紅) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. ABILITY to dramatize: "Going Viral" — she starts the game ALREADY FAMOUS, with a huge follower head-start. POSE (zany, over-the-top): an exuberant viral pose — phone-on-a-selfie-stick thrust up for the shot, a big wink and peace-sign, a food bowl balanced in the other hand — with a visible EXPLOSION of floating like-hearts and a spiking 📈 follower counter bursting around her (these are character FX, NOT a background scene), motion lines. She genuinely, ridiculously loves the food — an affectionate wink at influencer culture, NEVER sneering or vain. STYLE: the warm, characterful stylised cartoon of the original designs — clean confident linework, bold mostly-flat colour, expressive face; NOT an over-caricatured big-head style; competitive/chaotic but warm. JUST the character and her own props (phone/selfie-stick, bowl, the like-heart FX) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
+Generate a mock-up illustration of THE INFLUENCER (網紅) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. ABILITY to dramatize: "Going Viral" — she starts the game ALREADY FAMOUS, with a huge follower head-start. BODY (exaggerated Ghibli caricature): tall, willowy, long-limbed and impossibly photogenic — an exaggeratedly poised, leggy fashion-forward frame, big sparkling eyes, a confident tilt. POSE (zany, over-the-top): an exuberant viral pose — phone-on-a-selfie-stick thrust up for the shot, a big wink and peace-sign, a food bowl balanced in the other hand — with a visible EXPLOSION of floating like-hearts and a spiking 📈 follower counter bursting around her (these are character FX, NOT a background scene), motion lines. She genuinely, ridiculously loves the food — an affectionate wink at influencer culture, NEVER sneering or vain. STYLE: warm, hand-painted STUDIO-GHIBLI-INSPIRED anime — soft painterly light, gentle organic outlines (not a hard vector stroke), luminous colour, big expressive face, and the BODY CARICATURED WITH EXAGGERATED FEATURES for charm and instant readability; deliberately NOT photoreal and NOT a flat "AI/ChatGPT cartoon"; Ghibli = the FEEL only, never a copied frame/character; competitive/chaotic but warm. JUST the character and her own props (phone/selfie-stick, bowl, the like-heart FX) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
 ```
 
 ### The Big Boss (老大) — `FIG-CHAR-big-boss`  ⚑ #1 dignity watch
 ```
-Generate a mock-up illustration of THE BIG BOSS (老大) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. ABILITY to dramatize: "Everybody Knows 老大" — the whole market likes and yields to him, so he wins any tie. POSE (zany, over-the-top): a big warm SWAGGER, arms flung wide in a giant "eyyy, my friend!" greeting, gold chain, tiger-patch bomber jacket (老大), a bulging takeaway bag of night-market food swinging from one hand, a beaming cinema-charm laugh, motion lines. SOLO (no stall-owner). HE MUST READ AS A WARM, GENEROUS, AFFECTIONATE BOSS — NEVER gangster, menacing, or a triad/gang caricature; the friendly local fixer who gets you the best table, not a tough guy (老大 leans boss/gang-coded — the warmth is load-bearing; consultant sign-off required before final art). STYLE: the warm, characterful stylised cartoon of the original designs — clean confident linework, bold mostly-flat colour, expressive face; NOT an over-caricatured big-head style; competitive/chaotic but warm. JUST the character and his own props (bomber jacket, gold chain, takeaway bag) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
+Generate a mock-up illustration of THE BIG BOSS (老大) for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. ABILITY to dramatize: "Everybody Knows 老大" — the whole market likes and yields to him, so he wins any tie. BODY (exaggerated Ghibli caricature): a BIG, broad, huggable barrel of a man — huge shoulders, giant warm hands, a big round beaming face; his size reads as GENEROUS and jolly, a gentle giant, never looming or menacing. POSE (zany, over-the-top): a big warm SWAGGER, arms flung wide in a giant "eyyy, my friend!" greeting, gold chain, tiger-patch bomber jacket (老大), a bulging takeaway bag of night-market food swinging from one hand, a beaming cinema-charm laugh, motion lines. SOLO (no stall-owner). HE MUST READ AS A WARM, GENEROUS, AFFECTIONATE BOSS — NEVER gangster, menacing, or a triad/gang caricature; the friendly local fixer who gets you the best table, not a tough guy (老大 leans boss/gang-coded — the warmth is load-bearing; consultant sign-off required before final art). STYLE: warm, hand-painted STUDIO-GHIBLI-INSPIRED anime — soft painterly light, gentle organic outlines (not a hard vector stroke), luminous colour, big expressive face, and the BODY CARICATURED WITH EXAGGERATED FEATURES for charm and instant readability; deliberately NOT photoreal and NOT a flat "AI/ChatGPT cartoon"; Ghibli = the FEEL only, never a copied frame/character; competitive/chaotic but warm. JUST the character and his own props (bomber jacket, gold chain, takeaway bag) — NO background scenery. Single character, full-figure, PORTRAIT (about 4:5), plain flat pale-cream background, NO dark vignette or glow, high-resolution PNG.
 ```
 
 ---
@@ -113,12 +125,14 @@ in `art/map-board.md`, East consultant-gated).
 
 ## The 29 VENDORS — `FIG-VEND-*` (grouped North / Central / South / East)
 
-**The big idea for vendors (CD steer):** **the DISH is the hero.** No people, no stall, no market scene,
-no background — a **clean food CUT-OUT on a plain flat pale-cream ground, exactly like the character art**.
-The place named in each block is only the dish's **real source** — **illustrate the FOOD faithfully; do NOT
-draw the place, the market, or any scene.** Every dish visually **distinct** (its own vessel, presentation,
-colour). Think of the beautiful, faithfully-rendered bowls in the approved character art — that quality,
-isolated on the cream.
+**The big idea for vendors (CD steer):** **the DISH is the hero — and it must look IRRESISTIBLY
+DELICIOUS.** Paint each dish in the warm hand-painted **Ghibli-food** way — glistening highlights, soft
+curling steam, springy/juicy/crisp textures, generous abundance, warm inviting light (make the player
+hungry). No people, no stall, no market scene, no background — a **clean food CUT-OUT on a plain flat
+pale-cream ground, exactly like the character cut-outs**. The place named in each block is only the dish's
+**real source** — **illustrate the FOOD faithfully; do NOT draw the place, the market, or any scene.**
+Every dish visually **distinct** (its own vessel, presentation, colour). This is the single biggest
+appetite-appeal bar in the game.
 
 > **Day vs night roles (V7-M).** The cut-out mock-up always sits on the plain cream ground, so day/night
 > palette does **not** change here — but the two roles differ on the finished card and in `vendor-art.md`:
@@ -127,10 +141,11 @@ isolated on the cream.
 > keep day dishes **generous but humble**, and render the **apex ★ night trophies the biggest / most
 > abundant / most dramatic** of their region (as the ★ blocks already say).
 
-**Before you paste (do once):** upload the art-context `.md` files, then **attach an approved character
-mock-up as a STYLE-REFERENCE image** and tell the tool to *match that art style* — it locks the look and
-keeps all 29 cohesive. Then paste **one block at a time.** Each block below is **complete and self-contained**
-— it already carries every constraint, so you can paste it as-is.
+**Before you paste (do once):** upload the art-context `.md` files, then **attach your approved new Ghibli
+hero as the STYLE-REFERENCE image** (NOT the old flat cards) and tell the tool to *match that exact
+hand* — it locks the Ghibli look and keeps all 29 cohesive. Then paste **one block at a time.** Each block
+below is **complete and self-contained** — it already carries every constraint, so you can paste it as-is;
+the attached Ghibli reference supplies the painterly hand and the "delicious food" finish.
 
 **Every block ends with the same guardrails** (baked into each so nothing drifts): *NO people, NO stall or
 market scene, NO background, NO text or labels. Single dish, centred, a soft contact shadow beneath (like
@@ -235,6 +250,32 @@ FIG-VEND-E05 · Roselle Tea 洛神花茶 (drink; from 太麻里) — art style o
 
 ---
 
+## The VENDOR card BACKS — `FIG-BACK-VEND-*` (illustrated shop scenes, NO humans)
+
+**CD steer (2026-08):** replace the code-drawn market motif on the **vendor deck backs** with **illustrated
+shop scenes** in the Ghibli hand — **NO humans, just the shop/stall.** Two backs, one per phase deck, and
+they must stay **sortable face-down** (breakfast-shop morning warmth vs lantern-lit night — motif + palette,
+never colour alone). Full direction in `card-backs.md`. **Portrait card-back, 750 × 1050, ~0.71:1,
+full-bleed** (no cut-out). Attach your approved Ghibli hero as the style reference. Save to
+`build/mockups/FIG-BACK-VEND-DAY.png` / `FIG-BACK-VEND-NIGHT.png`.
+
+> **⚑ Wiring note (orchestrator, LATER):** these PNGs are **briefs only** for now. Dropping them into the
+> renderer as the vendor-deck backs is a **follow-up render step the orchestrator does once the CD delivers
+> the art** (embed behind the back layer in `build_cards.py`); the code market back stays the shipping
+> playtest back until then. Do NOT expect auto-embed yet.
+
+### `FIG-BACK-VEND-DAY` — the breakfast-shop back (早餐店)
+```
+Generate a mock-up VENDOR CARD BACK for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached Ghibli reference. Cite art/art-style.md — warm hand-painted STUDIO-GHIBLI-INSPIRED anime, soft painterly light, gentle organic outlines, luminous colour, delicious "Ghibli food" warmth. SUBJECT: a classic Taiwanese morning BREAKFAST SHOP (早餐店) storefront, seen head-on — a cheerful little shopfront with a hot flat griddle, a big warm soy-milk (豆漿) urn, stacks of rolled egg crepes (蛋餅) and 燒餅油條, a hanging 繁體 menu board, gentle rising steam, warm morning-gold light. Cozy, inviting, everyone's-neighbourhood-breakfast feeling. ABSOLUTELY NO PEOPLE / NO HUMANS — just the shop, its counter, food and equipment. Traditional 繁體 only on any signage (never Simplified). Secular only — no temple/deity/rite. Composition reads as a warm centred storefront vignette filling a PORTRAIT card back; keep it a clear morning-gold register so it sorts apart from the night back at a glance. Portrait ~0.71:1 (750×1050), full-bleed, high-resolution PNG (not SVG). Save build/mockups/FIG-BACK-VEND-DAY.png.
+```
+
+### `FIG-BACK-VEND-NIGHT` — the night-market back (夜市)
+```
+Now generate the matching NIGHT VENDOR CARD BACK, same Ghibli hand and same head-on storefront/stall framing so the two backs feel like a pair. SUBJECT: a Taiwanese NIGHT-MARKET (夜市) stall/lane — a glowing food stall strung with warm paper LANTERNS and a little NEON sign, a sizzling griddle, hanging skewers and food, steam rising into a dusk-violet sky, festive warm-neon violet/teal glow over dusk indigo. Lively, cozy, celebratory night-out feeling. ABSOLUTELY NO PEOPLE / NO HUMANS — just the stall/lane, lanterns, food and lights. Traditional 繁體 only on any signage (never Simplified). Secular only — no temple/deity/rite, even if a market sits near one. Keep the lantern-and-neon NIGHT register clearly distinct from the morning-gold DAY back so the decks sort apart face-down at a glance (lanterns vs breakfast-griddle motif + night palette). Portrait ~0.71:1 (750×1050), full-bleed, high-resolution PNG (not SVG). Save build/mockups/FIG-BACK-VEND-NIGHT.png.
+```
+
+---
+
 ## The TOURS — `FIG-TOUR-*` (boarding-pass tickets — secular)
 
 **Shared rails (this section):** cite the uploaded `art/art-style.md` + `art/tour-art.md`; attach a liked
@@ -282,45 +323,48 @@ Square/CKS), `d_south2` 府城, `d_central2` 臺中舊城, `d_east1` 太魯閣, 
 
 ## INGREDIENT / food cards — `FIG-ING-*` (the six generic categories)
 
-**Shared rails (this section):** cite the uploaded `art/art-style.md`; attach a liked earlier card as a
-**style-reference image**. There are **SIX** generic ingredient categories — each card's art shows a
-**MIX** of real Taiwan examples of that category (not a single item), full-bleed card face, warm and
-appetising. **Distinguishable by picture + emblem SHAPE, not colour alone** (bg-access: Meat-red and
-Veg-green are a red/green pair — the distinct emblem is the required redundant encoding). Real food
-rendered faithfully; secular. 繁體字. Mock-up only. Save `build/mockups/FIG-ING-<id>.png`.
+**Shared rails (this section):** cite the uploaded `art/art-style.md` (the Ghibli hand); attach your
+**approved new Ghibli hero** as the **style-reference image** (NOT the old flat cards). There are **SIX**
+generic ingredient categories — each card's art shows a **MIX** of real Taiwan examples of that category
+(not a single item). **⚑ CD steer (2026-08): the items FLOAT APART on a clean pale-cream ground — NEVER
+plated, stacked, or touching** ("on a plate, all touching" read as gross). Each item **fresh, separated,
+and Ghibli-DELICIOUS** (glisten, soft light, appetising). **Distinguishable by picture + emblem SHAPE, not
+colour alone** (bg-access: Meat-red and Veg-green are a red/green pair — the distinct emblem is the required
+redundant encoding). Real food rendered faithfully; secular. 繁體字. Mock-up only. Save
+`build/mockups/FIG-ING-<id>.png`.
 ```
-FIG-ING-meat — 肉 MEAT (North signature). A warm MIX in one appetising spread: pork belly + beef shank + a grilled sausage + poultry (incl. turkey). Emblem: hex.
-```
-```
-FIG-ING-tea — 茶 TEA (Central signature). A MIX: high-mountain oolong leaves + black tea + the bubble-tea leaf base, a teapot/cup cue. Emblem: triangle.
-```
-```
-FIG-ING-seafood — 海鮮 SEAFOOD (South signature). A MIX: oyster + milkfish + shrimp + clam + squid on ice. Emblem: square.
+FIG-ING-meat — 肉 MEAT (North signature). A MIX of RAW cuts FLOATING APART (not plated, not stacked, not touching): a glossy striped slab of raw pork belly + a raw beef shank + a piece of raw poultry. Fresh, glistening and appetising — add a tasteful garnish sprig / clean highlights to keep it delicious; it is an INGREDIENT, so raw — but NOT gory, bloody, or gross. Ghibli-delicious. Emblem: hex.
 ```
 ```
-FIG-ING-pantry — 糧 PANTRY (East signature). A MIX of staples: valley rice + glutinous rice + noodles + flour. Emblem: circle.
+FIG-ING-tea — 茶 TEA (Central signature). A MIX FLOATING APART (not plated/touching): high-mountain oolong leaves + black tea + the bubble-tea leaf base, a small teapot or cup floating alongside. Ghibli-delicious. Emblem: triangle.
 ```
 ```
-FIG-ING-sugar — 糖 SUGAR (common — Central & South). Cane sugar: cut cane + a bowl of amber crystals/syrup. Emblem: beam.
+FIG-ING-seafood — 海鮮 SEAFOOD (South signature). A MIX FLOATING APART (not plated/touching, no shared ice bed): a plump oyster + a milkfish + a shrimp + a clam + a squid, each drifting separately, fresh and glistening. Ghibli-delicious. Emblem: square.
 ```
 ```
-FIG-ING-veg — 菜 VEGETABLES (common — North & East). A MIX: leafy greens + cabbage + radish/daikon + bamboo shoot + scallion + roselle + wintermelon. Emblem: a NEW leaf mark (green) — must read as clearly DISTINCT in shape from Meat's hex.
+FIG-ING-staples — 糧 STAPLES (East signature) [renamed from "Rice & Noodles"/"Pantry"]. A MIX FLOATING APART (not plated/touching): a mound of steamed rice + a tangle of noodles + a scoop/dusting of flour + a soft white block of tofu, each drifting separately, fresh and appetising. Ghibli-delicious. Emblem: circle. [file: FIG-ING-pantry.png — the pipeline slug stays `pantry`.]
+```
+```
+FIG-ING-sugar — 糖 SUGAR (common — Central & South). Cane sugar FLOATING APART (not plated/touching): a cut length of sugar cane + a little heap of amber crystals + a drizzle of syrup, drifting separately. Ghibli-delicious. Emblem: beam.
+```
+```
+FIG-ING-veg — 菜 VEGETABLES (common — North & East). A MIX FLOATING APART (not plated/touching, no basket): leafy greens + a cabbage + a radish/daikon + a bamboo shoot + a scallion + roselle + wintermelon, each drifting separately, fresh and crisp. Ghibli-delicious. Emblem: a NEW leaf mark (green) — must read as clearly DISTINCT in shape from Meat's hex.
 ```
 
 ---
 
 ## The BOX COVER — `FIG-COVER` (the night-market identity hero)
 
-**Shared rails (this section):** cite the uploaded `art/art-style.md` (the one look) + this file's STYLE
-ANCHOR; **attach an approved character mock-up as a STYLE-REFERENCE image** so the cover reads as the same
-hand as the cast. This is the game's **identity hero** — the warmth of the whole game at a glance: rival
+**Shared rails (this section):** cite the uploaded `art/art-style.md` (the Ghibli hand) + this file's STYLE
+ANCHOR; **attach your approved new Ghibli hero as the STYLE-REFERENCE image** (NOT the old flat cards) so
+the cover reads as the same painterly hand as the cast. This is the game's **identity hero** — the warmth of the whole game at a glance: rival
 travel agents racing an island of street food. Unlike the drop-in slots, the cover is a **standalone hero
 image with no functional overlay** — so it CAN be a full painted scene (this is the one place scenery is
 wanted). Generate large; a **~1:1 to ~5:4 box-top framing** works for a mock-up. Save
 `build/mockups/FIG-COVER.png`. Mock-up prop — not the final printed cover.
 
 ```
-Generate a mock-up BOX COVER illustration for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. Cite art/art-style.md. HERO IDENTITY IMAGE: a joyful, chaotic race between rival TRAVEL AGENTS building the island's best Taiwanese street-food tour — capture the WARMTH and competitive glee at the heart of the game. Compose a lively night-market hero scene: two or three of the game's characters (e.g. the speed-demon granny on her scooter popping a wheelie, the influencer with her selfie-stick, the big boss with his takeaway bag) scrambling through a glowing night-market lane strung with warm paper lanterns, steaming bowls and stalls of famous Taiwanese dishes (bao, beef noodle, bubble tea, grilled sausage) flying past, a stylised map of Taiwan and a drawn HSR rail hinted in the background, motion and speed lines. Leave a clean, calmer band across the TOP for a title treatment (do not draw the title text — leave space for it). STYLE: the warm, polished stylised cartoon of the cast — clean confident linework, bold mostly-flat colour with soft cel-shading, expressive dignified faces, NOT an over-caricatured big-head style; night-market palette (warm daytime golds/ambers glowing into neon-lit night violets/teals) on a warm ground. Dignified Taiwanese locals and faithfully-rendered real dishes; charming personality exaggeration, NEVER ethnic caricature or mockery; SECULAR only — no temple, deity, ghost-month or funerary imagery. Traditional 繁體 only if any glyph appears (prefer none — leave title space blank). Full painted scene (this is the ONE asset where scenery is wanted). Box-top framing ~1:1 to ~5:4, high-resolution PNG (not SVG). Save build/mockups/FIG-COVER.png.
+Generate a mock-up BOX COVER illustration for the board game Travel Agents: Taiwan Food Tour, in the art style of the attached reference. Cite art/art-style.md. HERO IDENTITY IMAGE: a joyful, chaotic race between rival TRAVEL AGENTS building the island's best Taiwanese street-food tour — capture the WARMTH and competitive glee at the heart of the game. Compose a lively night-market hero scene: two or three of the game's characters (e.g. the speed-demon granny on her scooter popping a wheelie, the influencer with her selfie-stick, the big boss with his takeaway bag) scrambling through a glowing night-market lane strung with warm paper lanterns, steaming bowls and stalls of famous Taiwanese dishes (bao, beef noodle, bubble tea, grilled sausage) flying past, a stylised map of Taiwan and a drawn HSR rail hinted in the background, motion and speed lines. Leave a clean, calmer band across the TOP for a title treatment (do not draw the title text — leave space for it). STYLE: warm, hand-painted STUDIO-GHIBLI-INSPIRED anime — soft painterly light, gentle organic outlines, luminous colour, lovingly-rendered delicious "Ghibli food", expressive dignified faces with the characters CARICATURED with exaggerated body features; deliberately NOT photoreal and NOT a flat "AI/ChatGPT cartoon"; Ghibli = the FEEL only, never a copied frame; night-market palette (warm daytime golds/ambers glowing into neon-lit night violets/teals) on a warm ground. Dignified Taiwanese locals and faithfully-rendered real dishes; charming personality exaggeration, NEVER ethnic caricature or mockery; SECULAR only — no temple, deity, ghost-month or funerary imagery. Traditional 繁體 only if any glyph appears (prefer none — leave title space blank). Full painted scene (this is the ONE asset where scenery is wanted). Box-top framing ~1:1 to ~5:4, high-resolution PNG (not SVG). Save build/mockups/FIG-COVER.png.
 ```
 
 ---
@@ -332,11 +376,12 @@ Generate a mock-up BOX COVER illustration for the board game Travel Agents: Taiw
 compatible with the SVG placeholders `bg-art-director` drew, so **keep the SAME recognisable shape and the
 SAME type colour for each** — that's what keeps them colour-blind-safe (distinct by SHAPE, not hue alone).
 
-> **This set is a DELIBERATE style break from everything above.** The characters, vendors, map and cover
-> are the warm, semi-realistic hand referenced by `FIG-CHAR-influencer.png`. **These icons are NOT that.**
-> They are a cohesive **custom EMOJI / STICKER set** — flat, bold, chunky, friendly. **Do NOT attach a
-> character or a dish mock-up as the style reference here** — a realistic reference will drag the icons
-> realistic. Instead: generate **ONE icon first** (recommend the Meat pork-belly slab — the simplest bold
+> **This set is a DELIBERATE style break from everything above — and the Ghibli pivot does NOT touch it.**
+> The characters, vendors, map and cover are now the warm hand-painted **Ghibli** illustration hand.
+> **These icons are NOT that** — they stay a cohesive **custom EMOJI / STICKER set**: flat, bold, chunky,
+> friendly, readable at ~40 px. **Do NOT Ghibli-fy them, and do NOT attach a character or a dish mock-up as
+> the style reference here** — a painterly reference will drag the icons painterly. Instead: generate **ONE
+> icon first** (recommend the Meat pork-belly slab — the simplest bold
 > silhouette), approve it, then **attach THAT approved icon as the style-reference image** for the other 7
 > and say *"match this exact flat emoji style, line weight and finish."* Build the set outward from the
 > first icon so all 8 sit together as one hand.
@@ -374,7 +419,7 @@ FIG-ICON-tea — 茶 TEA. Subject: a single pointed TEA LEAF / sprig on a short 
 FIG-ICON-seafood — 海鮮 SEAFOOD. Subject: a plump little FISH — a rounded oval body with a fan tail and one tiny punched-out eye. Dominant fill colour: amber #E6A930. Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-seafood.png.
 ```
 ```
-FIG-ICON-pantry — 糧 PANTRY (Rice & Noodles). Subject: a wide, shallow RICE BOWL holding a rounded mound of rice (a couple of noodle loops on top is fine). Dominant fill colour: indigo / navy #26324D. Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-pantry.png.
+FIG-ICON-pantry — 糧 STAPLES (rice/noodles/flour/tofu). Subject: a wide, shallow RICE BOWL holding a rounded mound of rice (a couple of noodle loops on top is fine). Dominant fill colour: indigo / navy #26324D. Transparent, square, tiny-legible. KEEP THE EXISTING FLAT-EMOJI SHAPE — file slug stays `pantry`. Save build/mockups/FIG-ICON-pantry.png.
 ```
 ```
 FIG-ICON-sugar — 糖 SUGAR. Subject: a compact CLUSTER OF FOUR round BOBA / TAPIOCA PEARLS (brown-sugar sweetness), touching. Dominant fill colour: caramel / brown #B5835A. Transparent, square, tiny-legible. Save build/mockups/FIG-ICON-sugar.png.
