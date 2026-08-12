@@ -48,6 +48,13 @@ FIG_BLOCK_RE = re.compile(
     r'<blockquote>\s*((?:(?!</blockquote>).)*?\[FIG-[A-Z0-9-]+(?:\|[^\]]+)?\](?:(?!</blockquote>).)*?)\s*</blockquote>',
     re.DOTALL)
 FIG_CODE_RE = re.compile(r'\[FIG-([A-Z0-9-]+)(?:\|([^\]]+))?\]')
+# Figure ids that get the HERO treatment: a dedicated full-page LANDSCAPE spread (see landscape_fig_css).
+# FIG-BOARD is the "board at a glance" figure every seat reads all game — square/portrait it squeezed into
+# the A5 content width and its ①–⑤ legend rendered at ~5–6pt; on a rotated landscape page it fills ≈190mm
+# and the legend reads comfortably large. Its generator (make_rulebook_figures.board_figure) lays it out
+# wide (board + a big legend column) to suit this. Only these ids get the class + higher embed resolution,
+# so every other figure — and any rulebook without them (Beacon) — is untouched.
+LANDSCAPE_FIG_CODES = {"FIG-BOARD"}
 # In --rich, drop the `🖼 [FIG-CODE|path] —` authoring marker from the caption, leaving just the brief.
 FIG_CAP_MARKER_RE = re.compile(r'🖼\s*(?:<strong>)?\s*\[FIG-[A-Z0-9-]+(?:\|[^\]]+)?\]\s*(?:</strong>)?\s*(?:—|–|-)?\s*')
 
@@ -98,15 +105,20 @@ def insert_figure_boxes(body_html: str, embed: bool = False) -> str:
         img = (cm.group(2).strip() if (cm and cm.group(2)) else "")
         resolved = _find_asset(img) if (embed and img) else (Path(img) if img else None)
         have = bool(resolved and resolved.exists())
+        # Hero (landscape, full-page) figures get their own class + a higher embed resolution, since they
+        # fill ~190mm and their fine legend type has to stay crisp. Everything else keeps the old path.
+        landscape = ("FIG-" + code) in LANDSCAPE_FIG_CODES
+        fig_cls = "figbox figbox--landscape" if landscape else "figbox"
+        embed_w = 1800 if landscape else 900
         if have and embed:
-            reserve = f'<img class="figimg" src="{_embed_image_datauri(resolved, 900)}" alt="{html.escape(code)}"/>'
+            reserve = f'<img class="figimg" src="{_embed_image_datauri(resolved, embed_w)}" alt="{html.escape(code)}"/>'
         elif have:
             reserve = f'<img class="figimg" src="{html.escape(img)}" alt="{html.escape(code)}"/>'
         else:
             reserve = (f'<div class="figreserve"><span class="figcode">🖼 FIG · {html.escape(code)}</span>'
                        f'<span class="fignote">illustration reserved — see art brief</span></div>')
         caption = FIG_CAP_MARKER_RE.sub("", inner) if embed else inner
-        return f'<figure class="figbox">{reserve}<figcaption>{caption}</figcaption></figure>'
+        return f'<figure class="{fig_cls}">{reserve}<figcaption>{caption}</figcaption></figure>'
     return FIG_BLOCK_RE.sub(repl, body_html)
 
 
@@ -468,6 +480,26 @@ def css(theme: dict) -> str:
     """
 
 
+def landscape_fig_css(theme: dict) -> str:
+    """Extra CSS for the hero landscape figure(s). Appended ONLY when a `figbox--landscape` figure is
+    actually present, so any rulebook without one (Beacon, or a TA build before FIG-BOARD) keeps a
+    byte-identical <style>. A named @page gives the figure its own physically-landscape A5 leaf; the
+    reader turns the book a quarter-turn and the board + its ①–⑤ legend fill the page."""
+    accent, muted = theme["accent"], theme["muted"]
+    return f"""
+    @page landscape-fig {{ size: A5 landscape; margin: 8mm;
+             @bottom-center {{ content: counter(page); color: {muted}; font-size: 9pt; }} }}
+    figure.figbox--landscape {{ page: landscape-fig; margin: 0;
+             page-break-before: always; page-break-after: always;
+             display: flex; flex-direction: column; align-items: center; justify-content: center;
+             height: 100%; }}
+    figure.figbox--landscape .figimg {{ width: 100%; height: auto; max-height: 88%; border-radius: 6pt; }}
+    figure.figbox--landscape figcaption {{ margin-top: 5pt; text-align: center; border: none;
+             padding: 0; color: {muted}; font-size: 9.5pt; }}
+    figure.figbox--landscape figcaption p {{ margin: 0; }}
+    """
+
+
 def rich_css(theme: dict) -> str:
     """Extra styling layered ON TOP of css(theme), only in --rich mode: a full-page cover, portrait-
     beside-text agent cards, warmer section headers, and softened callouts. Appended after css(theme),
@@ -551,16 +583,19 @@ def main():
         body = re.sub(r'<p>\s*' + re.escape(ICON_TOKEN) + r'\s*</p>', legend, body)
         body = body.replace(ICON_TOKEN, legend)
     title = args.title or args.md.stem
+    # Hero landscape figures need a named @page — appended ONLY if such a figure is actually present, so a
+    # rulebook without one (Beacon) keeps a byte-identical <style>.
+    fig_css = landscape_fig_css(theme) if 'figbox--landscape' in body else ""
     if args.rich:
         # TA-content-driven: wrap "Meet the Agents" prose into portrait cards (no-op without that section).
         body = wrap_agent_cards(body, args.portraits_dir)
         cover = cover_page_html(theme, title, args.subtitle, args.cover_image)
-        style = css(theme) + rich_css(theme)
+        style = css(theme) + rich_css(theme) + fig_css
         doc = (f"<!doctype html><html><head><meta charset='utf-8'><title>{html.escape(title)}</title>"
                f"<style>{style}</style></head><body>{cover}{body}</body></html>")
     else:
         doc = (f"<!doctype html><html><head><meta charset='utf-8'><title>{html.escape(title)}</title>"
-               f"<style>{css(theme)}</style></head><body>{body}</body></html>")
+               f"<style>{css(theme) + fig_css}</style></head><body>{body}</body></html>")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     html_path = args.out.with_suffix(".html")

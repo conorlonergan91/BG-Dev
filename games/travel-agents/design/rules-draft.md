@@ -130,7 +130,7 @@ trophies** (§5). Most points is **Top Agent** (§9).
 
 ## 2. Setup
 
-> 🖼 **[FIG-SETUP|build/map-day.png]** — the shared board: four regions in a ring, each with its vendor deck, stall slot, market deck, and discard.
+> 🖼 **[FIG-BOARD|build/figures/FIG-BOARD.png]**
 
 Everything sits on **one shared board, readable from any seat. Everyone starts in Taipei (North).**
 
@@ -151,6 +151,18 @@ Everything sits on **one shared board, readable from any seat. Everyone starts i
 
 There are deliberately **fewer stalls than agents** — so you'll collide over them. First player is
 whoever ate street food most recently, then clockwise; the Influencer 網紅 takes the **last** seat.
+
+## Know your cards
+
+> 🖼 **[FIG-VENDOR|build/figures/FIG-VENDOR.png]**
+
+<!--fig-->
+
+> 🖼 **[FIG-TOUR|build/figures/FIG-TOUR.png]**
+
+<!--fig-->
+
+> 🖼 **[FIG-INGREDIENT|build/figures/FIG-INGREDIENT.png]**
 
 ## 3. Your turn
 

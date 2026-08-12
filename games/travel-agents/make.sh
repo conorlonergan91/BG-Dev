@@ -195,6 +195,10 @@ python3 $T/cards/build_cover.py --title "$title" --subtitle "A crowded market of
 # rulebook is byte-identical. --cover-image points at FIG-COVER.png: it auto-embeds a dedicated cover
 # illustration WHEN the illustrator delivers one, and until then falls back to a tasteful themed title
 # page (the CD's stated fallback). Swap to build/cover.png here if you prefer the auto box-cover render.
+# Annotated "how to read this component" figures (FIG-VENDOR/TOUR/INGREDIENT/BOARD) — callout diagrams
+# over the real card/board renders, embedded in the rulebook's teaching flow. Must run AFTER the card +
+# board renders above and BEFORE build_rulebook (which references build/figures/FIG-*.png).
+python3 art/make_rulebook_figures.py
 python3 $T/rulebook/build_rulebook.py --md design/rules-draft.md --title "$title" --theme "$theme" \
     --rich --cover-image art/mockups/FIG-COVER.png --portraits-dir art/mockups \
     --subtitle "A crowded market of rival agencies — a warm Taiwan food-tour scrum" \

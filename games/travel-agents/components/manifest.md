@@ -1,116 +1,119 @@
-# Travel Agents: Taiwan — Component Manifest (V7)
+# Travel Agents: Taiwan Food Tour — Component Manifest
 
-> The physical bill of materials for the **V7** multiplayer (3–6 players, area-majority) prototype.
+> The physical bill of materials for the 3–6-player area-majority prototype.
 > **Data is the source of truth** (`components/*.csv|json`); renders in `build/` regenerate via `make.sh`
-> and snapshot to `exports/`. Counts below are the **base card set**; the **quantity-scaling levers**
-> (Followers pool, Bookings deck depth, ingredient market depth, face-up vendor slots) scale with player
-> count per the tables in `map.json` — no new component *type* is added by scaling. Card sizes/materials
-> feed prototyping + manufacturing (see `knowledge/manufacturing-specs.md`).
+> and snapshot to `exports/`. Card counts below are the base set; the **quantity-scaling levers** (Bookings
+> deck depth, face-up vendor slots, event-deck mix) scale with player count per the tables in `map.json` — no
+> new component *type* is added by scaling. Card sizes/materials feed prototyping + manufacturing (see
+> `knowledge/manufacturing-specs.md`). Names English-first per `names.md`; mechanics per `game-bible.md`.
+> _Stamp: V7-M · 2026-08-12._
 
 ## Cards
 
-| Component | File | Cards | Size | Notes |
-|---|---|---:|---|---|
-| **Vendor deck** | `vendors.csv` | **24** | poker 63.5×88.9 mm | Per region, split by `phase` into a DAY deck + a NIGHT deck; drinks mixed in as low-value vendors. Face = **recipe (`ingredient_cost`) + region icon-or-none** (vendors DON'T score). **V7-M: the `draw` and `buzz_cost` columns are DROPPED** — `draw` was vestigial and the crowd-fight is now pure most-followers-wins **plurality (no threshold)**, so a stall's only real cost is its ingredients. The `trending` column marks which vendors can receive a **Trending** marker (20 yes; the 4 printed ★ apex are `no` — a printed apex is the permanent marquee, distinct from the dynamic Trending). |
-| **Bookings deck** | `bookings.csv` | **45** | poker | The **SOLE scoring vector** (was "Tour Tickets"/"missions"). 繁體 **開團** *kāi-tuán*. DAY 20 + NIGHT 25 = **44 distinct patterns / 45 physical cards** (遍地開花 printed once per deck). **The Bookings deck IS the deck-driven clock** — DAY-deck-out → 黃昏 DUSK, NIGHT-deck-out → 末班車 LAST TRAIN, via **2 seeded boundary cards** (see below). Judged into COMPLETED 成團 / CANCELLED 取消 piles. **V7-M: the 3 prestige Bookings retarget from the retired `draw` to total `ingredient_cost`** — `d_prestige8` → day ≥ 4, `n_prestige14` → total ≥ 9, `g_prestige12` → total ≥ 7 (leaning into the pricey night marquees). |
-| **Booking boundary cards** | (seed into `bookings.csv` decks at print) | **2** | poker | **黃昏 DUSK** at the bottom of the DAY deck; **末班車 LAST TRAIN** at the bottom of the NIGHT deck. Self-announcing clock. *(Currently a rules/print instruction; add as 2 rows or a print-seed note in the deck build — flagged to bg-infodesign.)* |
-| **Ingredient / food market cards** | `ingredients.csv` | **62** | poker (or mini) | **Ingredients are CARDS now** (the v6.4 model change), drawn on a Market Run / Convenience Store / (媽寶) Travel. 5 types — 豬肉 pork · 茶 tea · 海鮮 seafood · 米 rice · 糖 sugar — per-region day/night decks; renewable (reshuffle on empty). **Pictorial** (a drawn ingredient, no CJK reliance) → bg-infodesign / bg-access. |
-| **Event cards** | `events.csv` | **27** | poker (or mini) | Scoped ⦿/⬢/➤ hazards/boons (tax-not-destroy) + the **follower economy** (3 *grow 1 follower* EV-D09/N13/N14, 2 *return 1 to your own supply* 負評/出包 EV-N15/N16) + the **Trending** event (爆紅 "Gone Viral" → drop a Trending marker; winner **grows 1 follower**) + **2 table-wide 排班保養 "Scheduled Maintenance"** (island-wide banner). Shuffled into the matching region+phase ingredient deck. |
-| **Character boards** | `characters.csv` | **6** | landscape mat | 里長伯 The Old Councillor · 媽寶 The Homebody · 大胃王 The Big Eater · 網紅 The Influencer · 老大 The Big Boss · 阿嬤 The Globetrotter. Ability + flaw are **icon-only** on the board (rulebook carries the words); each row carries `ability_code` + `flaw_code`. **V7-M: two new columns `max` (pool size: 6; 網紅 8) + `start_meeples` (on-board at setup: 2).** |
+| Component | File | Distinct | Physical | Size | Notes |
+|---|---|---:|---:|---|---|
+| **Vendor cards** | `vendors.csv` | **30** | 30 | poker 63.5×88.9 mm | Per region, split by `phase` into a **DAY** set (cheap low-VP engine-seeds) + a **NIGHT** set (scarce expensive trophies); drinks mixed in as low-value stalls. Face = **recipe (`ingredient_cost`) + `min_followers` crowd-floor + `vp` + region icon** (day food only). The `trending` flag marks which vendors can receive a **Trending** marker (**26** yes; the 4 ★ apex are `no` — the printed apex is the permanent marquee, distinct from the dynamic Trending). |
+| **Booking cards** | `bookings.csv` | **45** | 45 | poker | The tour objectives (開團 *kāi-tuán*). Split **6 day (☀) / 8 night (☾) / 31 any-time (⟳)**; value **3–11**. Drawn into a face-up row + **Pot-Luck (隨緣開團)** blind draw; hand-limit 3, cancel-to-claim. Judged into COMPLETED 成團 / CANCELLED 取消 piles. A per-count `counts` tag sets the deck at setup (3p ≈ 38 rows, 4–6p all 45). **Not the clock** and **not reshuffled** — pure finite tour-supply. |
+| **Ingredient market cards** | `ingredients.csv` | **16** | 62 | poker (or mini) | The **six generic categories**, each card art a **MIX** of real examples: **肉 Meat** (North sig) · **茶 Tea** (Central sig) · **海鮮 Seafood** (South sig) · **糧 Staples** (East sig) · **糖 Sugar** (common Central & South) · **菜 Vegetables** (common North & East). Dealt as a signature + common per region×phase market deck (8 decks × 2 rows). **Renewable** (reshuffle on empty). **Pictorial** (distinguishable by picture + shape, not colour alone) → bg-infodesign / bg-access. *(Sugar cards currently label 糖珠 Sugar & Pearls in the data — reconciliation pending a CD call; see flags.)* |
+| **Event cards** | `events.csv` | **54** | 54 | poker (or mini) | The **VERB · SCOPE · DURATION** framework: scoped (⦿ self · ✦ rival · ⬢ region · ➤ neighbour · ▦ board) hazards/boons (tax-not-destroy), the **follower economy** (grow / return-to-supply), the **Trending** drop (爆紅 "Gone Viral" → drop a Trending marker; winner grows 1 follower), **2 tour catch-up boons** (重新開團 / 有人接手), and **2 table-wide 排班保養 Scheduled Maintenance** banners (island-wide, HSR down for a round). Salted into the matching region+phase market deck; a per-count subset is dealt each game (`map.json → event_deck_mix`). |
+| **Character mats** | `characters.csv` | **6** | 6 | landscape mat | The Old Councillor (里長伯) · The Homebody (媽寶) · The Big Eater (大胃王) · The Influencer (網紅) · The Big Boss (老大) · The Globetrotter (阿嬤). Ability + flaw are **icon-only** on the mat (rulebook carries the words); each row carries `ability_code` + `flaw_code`, plus `max` (pool size — 6; the Influencer 8) and `start_meeples` (on-board at setup: 2). Printed tri-lingual (English · 繁體 · Tâi-lô). |
 
-**Total base cards: 158** (24 + 45 + 62 + 27) + **6 character boards** + **2 boundary cards**.
+**Base card totals: 145 distinct card faces / 191 physical cards** (vendors 30 + bookings 45 + ingredients 16→62 + events 54), **+ 6 character mats**.
 
 ### Recipe-chip glyph key (render helper, NOT a physical component)
-`recipe-glyphs.csv` maps the 5 ingredient ids → 繁體 label + colour for the vendor recipe chips. It exists
-because the ingredient **tokens** were dropped (ingredients are cards); it is passed to the card renderer via
-`--tokens-csv` and is **never printed as a component**.
+`recipe-glyphs.csv` maps the ingredient ids → 繁體 label + colour for the vendor recipe chips. Passed to the
+card renderer via `--tokens-csv`; **never printed as a component**. *(`*-split.csv` variants belong to the
+parked 8-type-taxonomy branch — flag-gated, not in the ship config.)*
 
-### Vendor deck — the CD-4 soft night-cost curve (validated, carried from v6.3.1)
-`{N:1}` = 1 pork · `K` = the common (sugar) · `→X` = cross-region pull · ★ = printed apex (no icon).
+### Vendor deck — regions, phases & apex
+30 vendors across four regions; **18 day + 12 night**. Day **food** seeds carry their region's discount icon
+(they ARE the engine); day **drinks** (◇) and **all night** vendors (trophies + ★ apex) carry **no icon**.
+One ★ apex per region, all in the night set. Night trophies are expensive (cost 5–9) and high-VP.
 
-| Region | Face-up (4p) | Day vendors (cost) | Night vendors (cost) | Apex ★ |
-|---|:--:|---|---|---|
-| North 北 (pork) | **2** | 肉包 {N:1}, 蛋餅 {N:1}, 豆漿◇{K:1} | 胡椒餅 {N:2,C:1}→C, 牛肉麵 {N:2,S:1}→S, ★大香腸 {N:3,S:1}→S, 珍奶◇{K:1} | 大香腸 (Draw 7, cost 4) |
-| Central 中 (tea) | 2 | 肉圓 {C:1}, 麵線 {C:1}, 珍珠奶茶◇{K:1}, 冬瓜茶◇{K:1} | 大腸包小腸 {C:2,S:1}→S, ★逢甲名物 {C:2,S:2}→S | 逢甲名物 (Draw 6, cost 4) |
-| South 南 (seafood) | 2 | 虱目魚粥 {S:1}, 碗粿 {S:1}, 木瓜牛奶◇{K:1} | 蚵仔煎 {S:2,N:1}→N, 棺材板 {S:2,E:1}→E, ★擔仔麵 {S:3,E:1}→E | 擔仔麵 (Draw 7, cost 4) |
-| East 東 (rice) | 1 | 竹筒飯 {E:2}, 米糕 {E:1}, 洛神花茶◇{K:1} | 麻糬 {E:2,C:1}→C, ★石板烤肉 {E:3,N:2}→N | **石板烤肉 (Draw 8, cost 5 — TOP)** |
+| Region | Day (5/5/4/4) | Night | Apex ★ (night, no-icon) |
+|---|---|---|---|
+| **North 北** (10) | Pork Bao, Egg Crepe, Soy Milk◇, Rice Ball, Gua Bao | Pepper Bun, ★Beef Noodle, Big Sausage, Bubble Tea◇, Bubble Tea◇ (dup) | **★ Beef Noodle (牛肉麵)** |
+| **Central 中** (7) | Ba-wan, Misua, Bubble Tea◇, Wintermelon Tea◇, Thick Noodle Soup | Sausage-in-Sausage, ★Fengjia Signature | **★ Fengjia Signature (逢甲名物)** |
+| **South 南** (7) | Milkfish Congee, Rice Bowl Cake, Papaya Milk◇, Oyster Omelette | Chiayi Turkey Rice, Coffin Bread, ★Tan-tsú-mī | **★ Tan-tsú-mī (擔仔麵)** |
+| **East 東** (6) | Bamboo-Tube Rice, Rice Cake, Roselle Tea◇, Scallion Pancake | Mochi, ★Stone-Slab BBQ | **★ Stone-Slab BBQ (石板烤肉)** — top apex |
 
-Counts: **N 7 · C 6 · S 6 · E 5 = 24 vendors** (◇ = 6 drinks; 4 apex ★, all night, no icon). Every night
-marquee is cross-region (needs a two-region engine). *(Face-up counts shown at 4p; per-count slots in `map.json`.)*
+Counts: **N 10 · C 7 · S 7 · E 6 = 30** (◇ = 7 drinks; 4 apex ★). The night set is **11 unique + 1
+duplicate** (a second cheap 珍奶 Bubble Tea clock-filler). Most night dishes are cross-region (a two-region
+engine). `vp = ingredient_cost + min_followers − 2` (range **0–11** per `game-bible.md`).
 
 ## Tokens, markers & follower meeples (`tokens.csv`)
 
-**V7-M MEEPLE SWAP (CD mandate):** the abstract **Followers-max dial is RETIRED** and replaced by physical,
-colour-coded **Follower meeples**. Each player owns a fixed per-colour pool = their character's `max`
-(component count enforces the old ceiling — zero tracking). A follower is only ever in your **supply**, on
-**your board**, or committed **on a stall**. Win a contested stall → your followers come home to your board;
-lose it → your followers go back to **your own** supply (they never join the winner).
+Followers are physical, colour-coded **meeples** — a fixed per-colour pool per player (component count enforces
+the ceiling; no dial tracking). A follower is only ever in your **supply**, on **your board**, or committed
+**on a stall**; win a contested stall → your followers come home to your board, lose it → back to **your own**
+supply (they never join the winner).
 
 | Component | Qty (max 6p) | Notes |
 |---|---:|---|
-| **Follower meeples** 粉 | **48** (6 colours × 8) | Per-player, per-colour pool — **NOT a shared table pool**. 8 per colour so any colour can field 網紅's `max` 8; the other five characters use 6. Colours match the agent pawns (A–F). Start: `start_meeples` (2) on your board, the rest in your colour's supply. |
-| **Trending marker** 紅 | **4** | The DYNAMIC 爆紅 going-viral marker (Gone Viral drops it; whoever WINS that vendor **grows 1 follower**). Distinct from the printed ★ apex. |
+| **Follower meeples** 粉 | **48** (6 colours × 8) | Per-player, per-colour pool — **not** a shared table pool. 8 per colour so any colour can field the Influencer's pool of 8; the other five characters use 6. Colours match the agent pawns (A–F). Setup: 2 on your board (`start_meeples`), the rest in your colour's supply. |
+| **Trending marker** 紅 | **4** | The dynamic 爆紅 going-viral marker (Gone Viral drops it; whoever WINS that vendor grows 1 follower). Distinct from the printed ★ apex. |
 | **Rave-Review / Tours-Completed marker** 團 | **6** (1/player) | Per-player; hosts the 好評 boons at your 2nd & 4th completed tour. |
 | **HSR-closed marker** 停 | **1** | Sits on the 停 HSR slot while a Scheduled Maintenance card is active (N↔S closed). |
-| **COMPLETED 成團 pile marker** | **6** | Win-pile area marker, per player. |
-| **CANCELLED 取消 pile marker** | **6** | Lose-pile area marker, per player. |
-| **Agent pawns** | **6** | One per agent on the region ring — all start in **Taipei (North hub)**. Scaled 4 → 6 for the 3–6p roster. |
-| **Closing-Time die** 關 | **1** | **The game's FIRST die / randomness** (CD refinement 2026-08-10, §17.3/§17.9b). A **CUSTOM d6**: 4 region faces **North / Central / South / East** (each drawn with that region's colour + emblem + 繁體 — dual-coded, CVD-safe, matching the board's region encoding) + **2 BLANK faces** (a 1/3 reprieve). After track round 3, roll it — a region face closes that region's oldest face-up stall (die-removal is no-loss; committed crowds come home). **bg-architect flag:** a custom-printed d6 is a real COGS line (custom tooling/MOQ vs stock) — see the fallback (stock d6 + a region↔number key: 1–4 = N/C/S/E, 5–6 = BLANK). |
-| **Closing-Time track marker** 關 | **1** | Sits on the **3-space round track (1 · 2 · 3)** printed on the board's clock band; advance 1 per round. After round 3 → roll the die + reset to 1. The track prints on the board (`map.json` art), so only the marker is a punch-out token. |
-
-**NEW in tokens.csv (§17.9b — the Closing-Time die):** the **Closing-Time die** and **Closing-Time track
-marker** — the game's **first dice / randomness** (a deliberate excitement add per the CD). The die is the
-vendor clock's forcing function (§17.3); the track paces it (roll once per 3 rounds).
-
-**DROPPED from tokens.csv (V7-M):** the single grey **Followers** row and the **Followers-max dial** row
-(both replaced by the 48 per-colour Follower meeples above). *(Earlier, in V7: the 5 ingredient tokens →
-`ingredients.csv`, and the vendor-claims clock marker → deck-driven clock.)*
+| **COMPLETED 成團 pile marker** 成 | **6** | Win-pile area marker, per player. |
+| **CANCELLED 取消 pile marker** 取 | **6** | Lose-pile area marker, per player. |
+| **Agent pawns** | **6** | One per agent on the region ring — all start in **Taipei (North hub)**. |
+| **Closing-Time die** 關 | **1** | The game's only die — a **custom d6**: 4 region faces **North / Central / South / East** (each drawn with that region's colour + emblem + 繁體 — dual-coded, CVD-safe) + **2 BLANK** faces (a 1/3 reprieve). The vendor clock's forcing function: a region face closes that region's oldest face-up stall (contested or not — committed followers come home, no penalty). Day cadence: roll after L rounds (L=2 at 3p, L=3 at 4–6p); night cadence: every round. **bg-architect flag:** a custom-printed d6 is a real COGS line vs stock — fallback is a stock d6 + a region↔number key (1–4 = N/C/S/E, 5–6 = BLANK). |
+| **Closing-Time track marker** 關 | **1** | Sits on the **3-space round track (1 · 2 · 3)** printed on the board's clock band; advance 1 per round, then roll the die per the cadence and reset. The track prints on the board (`map.json` art), so only the marker is a punch-out token. |
 
 ## Board & aid
 
 | Component | File / source | Qty | Notes |
 |---|---|---:|---|
-| **Region-ring board** | `map.json` | 1 | **Neutral shared N-player** board (no across-the-table mirror): 4-region diamond, ring + HSR spine, phase-split face-up vendor slots, **Taipei common-start hub**, 停 Scheduled-Maintenance slot. **No score/clock track** (deck-driven clock). RENDER REBUILD owed → bg-infodesign. |
-| **Player aid** | `player-aid.json` | 1–2 | Stripped to the **"On your turn"** actions only (the rest → rulebook). |
-
-**No score/VP track, no clock track** — scoring is the Bookings tally (§ rules), and the clock is the
-Booking deck itself.
+| **Region-ring board** | `map.json` | 1 | One **neutral shared 3–6-player** board readable from any seat: 4-region diamond (北 red triangle · 中 teal diamond · 東 dark-blue square · 南 gold circle), ring + HSR spine (N↔S), phase-split face-up vendor slots + market decks, **Taipei common-start hub**, 停 Scheduled-Maintenance HSR slot, the **Closing-Time 3-round clock band**, and per-colour follower supply trays. |
+| **Player aid** | `player-aid.json` | 6 (1/player) | Poker-card-sized, **double-sided**: a shared FRONT listing the six turn actions (label + one-line reminder; full teach → rulebook), and one BACK per character with that agent's ability + flaw in brief, tinted in the character's colour (漢字 + Tâi-lô + catchphrase). Pulls display fields from `characters.csv` so it can't drift. |
 
 ## Per-count quantity scaling (data in `map.json`)
 | | 3p | 4p | 5p | 6p |
 |---|---:|---:|---:|---:|
 | **Bookings — DAY deck** (3·(N+1)) | 12 | 15 | 18 | 21 |
 | **Bookings — NIGHT deck** (4·(N+1)) | 16 | 20 | 24 | 28 |
-| **Followers per colour** (`max`) | 6 · 網紅 8 | 6 · 網紅 8 | 6 · 網紅 8 | 6 · 網紅 8 |
-| **Face-up vendor slots** N/C/S/E (corrected scaling, dbd7dda) | 1/1/1/1 | 1/1/1/1 | 1/1/2/1 | 2/1/2/1 |
+| **Followers per colour** (`max`) | 6 · Influencer 8 | 6 · Influencer 8 | 6 · Influencer 8 | 6 · Influencer 8 |
+| **Face-up vendor slots** N/C/S/E | 1/1/1/1 | 1/1/1/1 | 1/1/2/1 | 2/1/2/1 |
+| **Events dealt per deck** (day / night) | 1 / 2 | 2 / 3 | 2 / 3 | 3 / 4 |
 
-The follower pool no longer scales with player count — it is a **fixed per-colour pool = your character's
-`max`** (a physical component ceiling, not a shared table pool). **V7-M scarcity:** the FULL vendor pool
-(13 day / 12 night) is used at every count — **NO per-count pool subset** (dbd7dda: shrinking it backfires);
-only the face-up SLOTS scale, thematically (base N1/C1/S1/E1 → +1 South @5p → +1 North @6p, East kept
-thinnest), still ~1.0–1.33 stalls/agent (floor 1/region) with **SLOW / per-round** refill — the load-bearing
-lever that forces the contested crowd-fight. The 3p Bookings deck drops the 7 HEAVY ≥4-claim tours (a
-`counts` tag; ~38 rows); 4–6p use all 45 (on-ramp default IN). The
-45-card Bookings set covers the deepest single-phase draw; at higher counts the common/easy patterns are
-duplicated to keep the shared face-up row refilling (a print-quantity step, not new patterns). The DAY/NIGHT
-deck sizes above are the **clock** — seed the 黃昏 / 末班車 boundary card below each.
+The follower pool is a **fixed per-colour pool = your character's `max`** (a physical component ceiling, not a
+shared table pool). The FULL 30-vendor pool (18 day / 12 night) is used at every count — **no per-count pool
+subset**; only the face-up slots scale (thematically: +1 South @5p → +1 North @6p, East kept thinnest), with
+**slow / per-round** refill — the load-bearing lever that forces the contested crowd-fight. The 3p Bookings
+deck sets aside the 7 HEAVY ≥4-claim tours (a `counts` tag) → ~38 rows; 4–6p use all 45. The DAY/NIGHT vendor
+pools are the clock (18 day → 黃昏 DUSK; 12 night → 末班車 LAST TRAIN), paced by the Closing-Time die.
 
 ## Component-type count (complexity budget: max 8)
-Cards (vendors / bookings / ingredient-food / events — one card *type*), character boards, region board,
-tokens (Follower meeples / Trending / pile+Rave markers / 停 / pawns). The **V7-M meeple swap is
-type-neutral** — followers were already a token and the dial row is deleted, so no new component *type* is
-introduced (the Follower meeples live inside `tokens.csv`). *Note:* `check_complexity.py` reports
-`component_types 9/8` from its **component-file-count** proxy (9 files in `components/`) — a pre-existing
-over-budget flag unchanged by this pass; bg-elegance owns whether to consciously raise the budget or count by
-physical type. Boundary cards live inside the Bookings deck. (bg-elegance owns the check.)
+Cards (vendors / bookings / ingredients / events — one card *type*), character mats, region board, tokens
+(follower meeples / Trending / pile + Rave markers / 停 / pawns / die + track marker). Reported **8/8** on the
+mono ship config. (bg-elegance owns the gauge.)
 
 ## Notes / flags
-- **Two-track scoring:** score = Σ COMPLETED 成團 tour value **+** Σ printed `vp` on won vendors **−** 1 per CANCELLED 取消 Booking (flat −1).
-- **Deck-driven clock:** the Bookings deck IS the clock — needs the 2 seeded boundary cards (黃昏 / 末班車) at print.
-- **Ingredients are pictorial CARDS** (5 types) → bg-infodesign (art) + bg-access (distinguishable by picture + shape, not colour alone).
-- **6 character boards, icon-only ability/flaw** → **V7-M recoded** `ability_code`s: `favours_home_draw` (Old Councillor — REPLACES `discount_home` + `away_tax`), `deep_pool` (Influencer — REPLACES `start_max_4`; the pool size now lives in the `max` column), `margin_win:1` (Big Boss — REPLACES `win_ties`; baseline N=1). Unchanged: `travel_draw_left`, `visit_keep3` + `hazard_twice_visit`, `travel_anywhere`, `goes_last`, `none`. **bg-infodesign owes glyphs** for `favours_home_draw`, `deep_pool`, `margin_win` (the renderer already has an unused `bribe_margin1` glyph — two bars + '1' — that fits `margin_win`; wire it to read the `:N`); the retired `discount_home` / `away_tax` / `start_max_4` / `win_ties` glyphs can be dropped. **NB the board renderer still draws a Followers DIAL** in the left column — that dial-face must become a collected-follower pool + per-colour supply tray (presentation pass).
-- **East 石板烤肉 (Indigenous-forward):** #1 pre-art item — paid Taiwanese/Indigenous consultant sign-off on dish + naming + framing BEFORE art.
-- **繁體 + Tâi-lô** on every vendor/dish; romanisations first-pass → native reviewer (incl. 開團 blessing) to confirm.
-- **BINDING wording rail:** frame any follower loss as *the crowd ebbing / drifting to a rival's stall*, never a bare "−N". **On a lost contest / bad-review, your followers return to YOUR OWN supply — they do NOT defect to the rival** ("the crowd drifts to the rival's stall" describes the stall's new allegiance, not a meeple transfer). Keep the word "meeple" out of flavour voice — always "followers / your crowd".
-- **BINDING sensitivity rail — #1 PAID-CONSULTANT item BEFORE art:** the Old Councillor's `favours_home_draw` (Old Favours) must read as **warm inbound goodwill** — neighbours look after a beloved lifelong local public servant, bringing him the day's best — and **NEVER** string-pulling / patronage / favour-trading / bribery. A favours-politician theme is a top sensitivity risk in the roster (it must read as warm inbound goodwill, never patronage).
-- **Paid Taiwanese cultural + language consultant before art/print is STILL required** (not discharged by this pass).
+- **Two-track scoring:** score = Σ printed `vp` on won vendors (0–11 each) **+** Σ full value of COMPLETED 成團
+  tours (3–11 each) **−** 1 per CANCELLED 取消 Booking (flat −1). Followers score nothing.
+- **The clock** is **vendor depletion + the Closing-Time die** (18 day → DUSK; 12 night → LAST TRAIN) — **not**
+  the Booking decks, and **no boundary cards** are seeded.
+- **Ingredients are pictorial CARDS** (6 categories) → bg-infodesign (art) + bg-access (distinguishable by
+  picture + shape, not colour alone).
+- **Character mats, icon-only ability/flaw** — glyphs owed by bg-infodesign for `favours_home_draw`,
+  `deep_pool`, `margin_win`; the board renderer's presentation pass must render collected-follower pools +
+  per-colour supply trays (no abstract dial face).
+- **East Stone-Slab BBQ (石板烤肉) + Bamboo-Tube Rice (竹筒飯)** are Indigenous-forward → **paid Taiwanese/
+  Indigenous consultant** sign-off on dish + naming + framing BEFORE art (#1 pre-art item).
+- **繁體 + Tâi-lô** on every vendor/dish; romanisations are best-effort → native reviewer to confirm (binding
+  before art/print; the 5 new day dishes + 開團 blessing included).
+- **BINDING wording rail:** frame any follower loss as *the crowd ebbing / drifting to a rival's stall*, never a
+  bare "−N". On a lost contest, your followers return to **your own** supply — they do **not** defect to the
+  rival. Keep "meeple" out of flavour voice — always "followers / your crowd".
+- **BINDING sensitivity rail:** the Old Councillor's Old Favours (`favours_home_draw`) must read as **warm
+  inbound goodwill**, never patronage/favour-trading; the Big Boss (老大) is a **playful, affectionate fixer**,
+  never a triad/gang caricature. Both consultant-gated portrayals.
+- **Open flags (not resolved here — routed):**
+  - **Vendor `vp` range** reads **0–11** in `vendors.csv` + `game-bible.md`, but `names.md` §3 still says
+    "1–6" — a doc-vs-data mismatch → bg-continuity.
+  - **Sugar common** is labelled **糖珠 Sugar & Pearls** in `ingredients.csv` / `recipe-glyphs.csv` but **糖
+    Sugar** in `names.md` / `game-bible.md` — canonical-name call pending the CD (`names.md` §5).
+  - **Followers-max "dial"** — `tokens.csv` carries **no dial component** (the pool ceiling is the meeple count),
+    but `game-bible.md` + `names.md` §3 still describe a printed dial → dial-vs-meeple-pool model to reconcile
+    (bg-producer / bg-continuity).
+  - **Event count** is **54** in `events.csv`; `game-bible.md` rounds it to "~52" → minor reconcile.
