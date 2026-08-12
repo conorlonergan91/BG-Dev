@@ -71,7 +71,7 @@ A **3–6-player area-majority engine-builder** with a genuine *fight* at its ce
   is a fixed **6 meeples** (the Influencer 網紅 owns **8**); total committed ≤ your **Followers-max dial**.
 - **Multi-ingredient recipes + set collection — the 6-type palette.** Every vendor is a multi-ingredient,
   mostly cross-region dish. Ingredients are the **six generic categories** (each card art a MIX): **肉 Meat**
-  (N sig) · **茶 Tea** (C sig) · **海鮮 Seafood** (S sig) · **糧 Staples** (E sig) · **糖 Sugar** (common C&S)
+  (N sig) · **茶 Tea** (C sig) · **海鮮 Seafood** (S sig) · **糧 Staples** (E sig) · **糖珠 Sugar & Pearls** (common C&S)
   · **菜 Vegetables** (common N&E). Real food geography; most night dishes force a two-region engine.
 - **Push-your-luck ingredient sourcing.** Each region has a face-down market deck (its signature + commons +
   salted **events**). **Market Run** = flip 3, keep 2 (events fire by scope). **Convenience Store** = top card of
@@ -185,7 +185,7 @@ Bookings. §14 invariant: `vp = ingredient_cost + min_followers − 2`. Detail: 
 *(⚠ see the Currency flags at the top — `rules-draft.md` §1/§9 + `names.md` §3 still read tickets-only.)*
 
 ## Ingredient taxonomy
-- **MONO 6-type SHIPS** — 肉 Meat · 茶 Tea · 海鮮 Seafood · 糧 Staples · 糖 Sugar · 菜 Vegetables (each card
+- **MONO 6-type SHIPS** — 肉 Meat · 茶 Tea · 海鮮 Seafood · 糧 Staples · 糖珠 Sugar & Pearls · 菜 Vegetables (each card
   art a MIX of real examples). Balance-clean at every count (CD decision 1A, N=400 + N=300 re-smoke).
 - **8-type split PARKED** — a non-destructive, flag-gated experimental branch (`SPLIT_TAXONOMY`, default OFF):
   Pantry → Rice 米 / Noodles 麵 and Sugar → Sugar 糖 / Pearls 珍珠 (`*-split.csv` stay in the tree, unused by

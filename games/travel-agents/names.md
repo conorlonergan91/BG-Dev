@@ -66,7 +66,7 @@ The V7 taxonomy is **six generic categories**, each card illustrated as a **mix*
 | **Tea** | 茶 | 茶 | Central signature | high-mountain oolong · black tea · bubble-tea leaf base |
 | **Seafood** | 海鮮 | 海 | South signature | oyster · milkfish · shrimp · clam · squid |
 | **Staples** | 糧 | 糧 | East signature | rice · noodles · flour · tofu |
-| **Sugar** | 糖 | 糖 | Common (Central & South) | cane sugar |
+| **Sugar & Pearls** | 糖珠 | 糖珠 | Common (Central & South) | cane sugar · brown sugar · tapioca pearls |
 | **Vegetables** | 菜 | 菜 | Common (North & East) | greens · cabbage · radish · bamboo shoot · scallion · roselle |
 
 ---
@@ -153,14 +153,10 @@ CURRENT form (§3), or flag it if resolving it is a mechanics/value question.
 - **`components/events.csv` EV-D07** effect text names the granted ingredient "**(豬肉 Pork)**" — the
   retired specific term; the North signature is now **肉 Meat**. → text fix for `bg-developer` (a CSV/
   component-data file; not edited here per the presentation-only lane).
-- **Sugar common — name drift (NEW 2026-08-12) → CD / `bg-theme` canonical call.** The shipped data + glyphs
-  render the Central/South common as **糖珠 "Sugar & Pearls"** (`components/ingredients.csv` every sugar row;
-  `components/recipe-glyphs.csv`), but **`names.md` §2 + `game-bible.md` §ingredient-taxonomy** call it **糖
-  "Sugar"**. So a player's card says *Sugar & Pearls* while the rulebook/table say *Sugar* — real
-  doc-vs-data drift. Sanctioned only as a *cosmetic* option by decision-log 1A ("rice/noodles/pearls captured
-  cosmetically on the mono cards"), never locked. **Decision needed:** (A) adopt **糖珠 Sugar & Pearls** as
-  canonical → I update §2 + game-bible; or (B) revert the data to **糖 Sugar**. Presentation-only — no
-  mechanic/value affected. Then `bg-continuity` reconciles the table to the winner.
+- **Sugar common — name drift RESOLVED (CD, 2026-08-12): adopt 糖珠 "Sugar & Pearls" as canonical.** The
+  cards + glyphs (`components/ingredients.csv`, `recipe-glyphs.csv`) render the Central/South common as
+  **糖珠 "Sugar & Pearls"**; the docs now match (option A — §2 above, `game-bible.md`, `identity.md` all
+  updated). "Sugar" remains fine as prose shorthand. Presentation-only — no mechanic/value affected.
 - **S04 turkey rice Tâi-lô** — *hóe-ke-bah-pn̄g* is best-effort → **consultant confirms** (binding). Same
   for all Indigenous terms (E01 竹筒飯, E04 石板烤肉) → consultant, never AI romanisation. → `bg-publishing`.
 - **The 5 new V7-M day dishes (§6) Tâi-lô** — *Pn̄g-thoân · Kuah-pau · Tuā-mī-kⁿ · Ô-á-tsian ·

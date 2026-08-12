@@ -17,6 +17,16 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-12 — "Go with your recommendation for the other bits" (post-sweep open items).**
+  - **Ask:** after the alignment sweep punch-list, the CD delegated the open non-art decisions to the orchestrator's recommendations.
+  - **Resolutions (my recommendations, now in force):**
+    - **Sugar naming → adopt 糖珠 "Sugar & Pearls"** as canonical (cards already print it); docs reconciled (`names.md` §2/§5, `game-bible.md`, `identity.md`). "Sugar" stays prose shorthand.
+    - **Board / player-aid icons → KEEP the SVG emblems** (crisper + dual-coded at the tiny scale they render on the board/aids; the AI raster icons shine on the cards where there's room). Intentional — not a mismatch to "fix".
+    - **FIG-BOARD → landscape / half-page repro** in the rulebook (→ `bg-rulebook`).
+    - **Mechanics flags → a `bg-design` pass**: N06 Big Sausage seafood-in-recipe oddity + the "Draw" (人氣) data-vs-rules residue (resolve which is canonical; balance-safe fixes only, flag any re-sim).
+  - **Deferred (low, noted not chased):** the stale `map.json` top-level `_note` clock description (→ `bg-infodesign` board-render doc pass); the Followers-max "dial"-as-component question (tokens.csv has no dial token — component-model call for `bg-architect`/`bg-developer`); `art/rulebook-figures.md` stale (retired Buzz/Reach/2p copy — archive/reconcile).
+  - **CD-owned (art):** character art — 3 Ghibli delivered + wired; other 3 keep originals. Cover — still to regenerate (singular "Tour", warm Big Boss).
+
 - **2026-08-12 — Wire the remaining tour art, then merge to main via PR.**
   - **Ask:** *"Wire in the rest that I sent over as needed and then merge everything so far to main with a PR."*
   - **Context:** everything else from the art batch is wired (map, ingredient cards, icons, vendor backs, vendor-card layout). The remaining unwired assets are the two tour illustrations (FIG-TOUR-n_all4 環島, FIG-TOUR-d_south2 府城); the bowl-count is held (generic count motif, no id). After wiring, cut a PR to main.
