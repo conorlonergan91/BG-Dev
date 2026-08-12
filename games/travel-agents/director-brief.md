@@ -17,6 +17,11 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-12 — Vendor card: badges onto the illustration-border corners (engine bonus left, ticket VP right).**
+  - **Ask:** *"I like the way you have the icon in the border. How about we move the engine bonus to the left corner of the illustration border and the ticket VP pill to the right."*
+  - **Context:** the CD liked the engine-bonus gift-tag pinned to the hero-image border (currently top-centre). Move it to the illustration's top-LEFT corner and move the reward ticket pill from the header to the illustration's top-RIGHT corner — a symmetric pair riding the hero frame.
+  - **Status:** `captured` → `bg-infodesign` (engine-bonus badge → top-left corner of the hero border; reward ticket pill → top-right corner; keep both existing styles; region pill/title/cost row/footer intact).
+
 - **2026-08-12 — Vendor engine bonus: top-centre, as the ingredient icon, no "−1".**
   - **Ask:** *"Put the engine bonus for the card in the top centre and use the ingredient icons. No need for the −1 as that's obvious from the rules. Unless it's a multiple then use ×2 etc (although I'm not sure if we have such engine bonuses)."*
   - **Context / verified:** the day-food region discount IS a signature-ingredient discount (sim: an owned region icon discounts that region's signature ingredient — N→Meat, C→Tea, S→Seafood, E→Staples; sugar/veg commons never discounted). So showing the ingredient icon is mechanically accurate. Every day-food vendor grants exactly ONE icon → no multiples exist in current data; the ×N path is coded for safety only.
