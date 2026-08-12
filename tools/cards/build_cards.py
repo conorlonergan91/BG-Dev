@@ -397,7 +397,27 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
     pstyle = phase_style(row.get("phase"))
     frame_col = pstyle["frame"] if pstyle else ink
     page_cols = pstyle["page"] if pstyle else None
-    ribbon = phase_ribbon_svg(pstyle, CARD_W, CARD_H, MARGIN, tfont)
+    # PHASE FOOTER (vendor-local, CD 2026-08-12): the shared phase_ribbon_svg sat in the very bottom margin
+    # (y ≈ CARD_H-46), where its full-width pill ran across the inner accent frames and up against the
+    # rounded outer border — sloppy. Draw a vendor-OWN slim footer INSET inside the region accent frame
+    # (its bottom edge is y = CARD_H-26) with a clean margin, so it never touches the card border. Same
+    # dual-coded read as the shared ribbon (phase colour + drawn badge + label). Other card types keep the
+    # shared phase_ribbon_svg untouched (byte-identical).
+    if pstyle:
+        fb_h = 40
+        fb_y = (CARD_H - 26) - 16 - fb_h               # 16 px inside the accent frame's bottom edge
+        fb_x0, fb_x1 = MARGIN + 6, CARD_W - MARGIN - 6
+        fb_w = fb_x1 - fb_x0
+        fb_cy = fb_y + fb_h / 2
+        ribbon = (
+            f'<rect x="{fb_x0}" y="{fb_y}" width="{fb_w}" height="{fb_h}" rx="{fb_h/2}" '
+            f'fill="{pstyle["tag_fill"]}" opacity="0.96"/>'
+            + emblem_svg(pstyle.get("emblem", "spark"), fb_x0 + 34, fb_cy, 14, pstyle["tag_ink"]) +
+            f'<text x="{CARD_W/2}" y="{fb_cy + 10}" font-size="27" fill="{pstyle["tag_ink"]}" '
+            f'text-anchor="middle" font-family="{tfont}" font-weight="bold" letter-spacing="4">'
+            f'{esc(pstyle["label"])}</text>')
+    else:
+        ribbon = ""
 
     recipe = [s.strip() for s in (row.get("recipe") or "").split(";") if s.strip()]
     icon = str(row.get("icon", "")).strip().upper()  # N/C/S/E discount icon (day food), or blank (night/drink)
@@ -504,23 +524,28 @@ def render_vendor_svg(row: dict, theme: dict, glyph_map: dict | None = None) -> 
                     f'text-anchor="middle" font-family="{tfont}" font-weight="bold">{esc(min_f)}</text>')
     pay_block = chips
 
-    # --- REWARD ROW: the points (vp) render as a "+N" TICKET pill in the BOOKING value-chip language, so a
-    # vendor's reward and a tour's reward read as one visual family (CD steer — the ticket glyph is the
-    # tour-package fiction; replaces the old gold-★ points cell). The day-engine DISCOUNT (-1 region icon,
-    # day FOOD vendors only — night/drinks/apex carry none) stays as a small perk mark on the reward side.
+    # --- REWARD (points): the vp renders as a "+N" gold TICKET pill in the BOOKING value-chip language, so a
+    # vendor's reward and a tour's reward read as one visual family (the ticket glyph is the tour-package
+    # fiction). CD 2026-08-12: the pill lives TOP-RIGHT, directly UNDER the region ▲N pill — the top-right
+    # corner now reads top→bottom region pill → reward pill, and the bottom of the card is freed. It is
+    # right-aligned to the same margin edge as the region pill and sized to sit neatly beneath it (inside the
+    # region header band, clear of the left-aligned title and the hero image below). A thin white keyline
+    # separates the gold from the region-colour band. The day-engine DISCOUNT (-1 region icon, day FOOD
+    # vendors only — night/drinks/apex carry none) stays as a small perk mark on the bottom reward line.
     stats = ""
     have_disc = bool(icon) and not is_apex
     if vp != "":
         label = f"+{vp}"
-        pill_h = 66
-        pill_w = 100 + 30 * len(label)
-        # pill left when a discount shares the row; centred otherwise (keeps the row balanced)
-        pill_x = MARGIN if have_disc else (CARD_W - pill_w) / 2
-        pill_y = reward_cy - pill_h/2
+        rp_h = 50
+        rp_w = 78 + 26 * len(label)
+        rp_x = CARD_W - MARGIN - rp_w                   # right edge aligned with the region pill (CARD_W-MARGIN)
+        rp_y = (MARGIN - 8) + 46 + 14                   # 14 px below the region pill (its pill_y + pill_h)
+        rp_cy = rp_y + rp_h / 2
         stats += (
-            f'<rect x="{pill_x}" y="{pill_y}" width="{pill_w}" height="{pill_h}" rx="{pill_h/2}" fill="{gold}"/>'
-            + emblem_svg("ticket", pill_x + 44, reward_cy, 23, "#ffffff") +
-            f'<text x="{pill_x + 82}" y="{reward_cy + 17}" font-size="46" fill="#ffffff" '
+            f'<rect x="{rp_x}" y="{rp_y}" width="{rp_w}" height="{rp_h}" rx="{rp_h/2}" fill="{gold}" '
+            f'stroke="#ffffff" stroke-width="2"/>'
+            + emblem_svg("ticket", rp_x + 36, rp_cy, 19, "#ffffff") +
+            f'<text x="{rp_x + rp_w - 24}" y="{rp_cy + 15}" font-size="42" fill="#ffffff" text-anchor="end" '
             f'font-family="{tfont}" font-weight="bold">{esc(label)}</text>')
     if have_disc:                                      # discount icon = the DAY-engine perk this vendor grants
         drs = resolve_suit(theme, {"N": "north", "C": "central",
