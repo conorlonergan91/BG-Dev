@@ -21,6 +21,7 @@
   - **Ask:** *"I like the way you have the icon in the border. How about we move the engine bonus to the left corner of the illustration border and the ticket VP pill to the right."*
   - **Context:** the CD liked the engine-bonus gift-tag pinned to the hero-image border (currently top-centre). Move it to the illustration's top-LEFT corner and move the reward ticket pill from the header to the illustration's top-RIGHT corner — a symmetric pair riding the hero frame.
   - **Status:** `captured` → `bg-infodesign` (engine-bonus badge → top-left corner of the hero border; reward ticket pill → top-right corner; keep both existing styles; region pill/title/cost row/footer intact).
+  - **Follow-on (same pass):** *"make the ingredient and follower costs centred vertically in that space and increase size appropriately."* → the cost row (pay chips + follower cell) vertically centred in the band below the hero image and scaled up to read boldly.
 
 - **2026-08-12 — Vendor engine bonus: top-centre, as the ingredient icon, no "−1".**
   - **Ask:** *"Put the engine bonus for the card in the top centre and use the ingredient icons. No need for the −1 as that's obvious from the rules. Unless it's a multiple then use ×2 etc (although I'm not sure if we have such engine bonuses)."*
