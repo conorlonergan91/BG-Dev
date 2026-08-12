@@ -17,6 +17,11 @@
 
 <!-- Newest at top. Append each substantive CD steer as it arrives. -->
 
+- **2026-08-11 — Vendor card polish round 2: kill the cross-region badge, one cost row, booking-style ticket reward, illustrated icons.**
+  - **Ask:** *"No need for cross region badge — get rid of it. Also all the 'cost' should be on the same row (ingredients + followers), and then for the rewards the points should look the same as how they're displayed on the bookings. The glyph for points should be a ticket rather than a star thing. We should have illustrated icons instead of glyphs for ingredients and followers."*
+  - **Context:** Reaction to the round-1 vendor redesign. CD wants the card to read as **COST (ingredients + followers together) → REWARD (points)**, with the reward matching the Bookings' `+N value` pill and a **ticket** glyph replacing the gold star, and the abstract geometric type/follower glyphs upgraded to **illustrated** (little drawn) icons.
+  - **Status:** `captured` → in flight to `bg-art-director` (illustrated icon set + card visual simplification; Beacon byte-identical; dual-coding/CVD floor preserved). Cross-region badge → removed (this also closes the earlier A/B/C badge-accuracy question: answer = C, drop it).
+
 - **2026-08-11 — Beef Noodle is the apex; vendor cards are too busy; any-tours share the day/night back.**
   - **Ask (three steers, one message):** *(1)* *"Can we change beef noodle to be the apex dish instead of
     the sausage."* *(2)* *"I also think the vendor cards are very busy and have way too much going on — we
